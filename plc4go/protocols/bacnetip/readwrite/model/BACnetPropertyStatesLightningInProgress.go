@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesLightningInProgress) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLightningInProgress")
 		}
 
-		// Simple Field (lightningInProgress)
-		if pushErr := writeBuffer.PushContext("lightningInProgress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lightningInProgress")
-		}
-		_lightningInProgressErr := writeBuffer.WriteSerializable(ctx, m.GetLightningInProgress())
-		if popErr := writeBuffer.PopContext("lightningInProgress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lightningInProgress")
-		}
-		if _lightningInProgressErr != nil {
-			return errors.Wrap(_lightningInProgressErr, "Error serializing 'lightningInProgress' field")
+		if err := WriteSimpleField[BACnetLightingInProgressTagged](ctx, "lightningInProgress", m.GetLightningInProgress(), WriteComplex[BACnetLightingInProgressTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lightningInProgress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLightningInProgress"); popErr != nil {

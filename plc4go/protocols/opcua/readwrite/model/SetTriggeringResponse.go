@@ -347,56 +347,36 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for SetTriggeringResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (noOfAddResults)
-		noOfAddResults := int32(m.GetNoOfAddResults())
-		_noOfAddResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfAddResults", 32, int32((noOfAddResults)))
-		if _noOfAddResultsErr != nil {
-			return errors.Wrap(_noOfAddResultsErr, "Error serializing 'noOfAddResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfAddResults", m.GetNoOfAddResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfAddResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "addResults", m.GetAddResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'addResults' field")
 		}
 
-		// Simple Field (noOfAddDiagnosticInfos)
-		noOfAddDiagnosticInfos := int32(m.GetNoOfAddDiagnosticInfos())
-		_noOfAddDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfAddDiagnosticInfos", 32, int32((noOfAddDiagnosticInfos)))
-		if _noOfAddDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfAddDiagnosticInfosErr, "Error serializing 'noOfAddDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfAddDiagnosticInfos", m.GetNoOfAddDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfAddDiagnosticInfos' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "addDiagnosticInfos", m.GetAddDiagnosticInfos(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'addDiagnosticInfos' field")
 		}
 
-		// Simple Field (noOfRemoveResults)
-		noOfRemoveResults := int32(m.GetNoOfRemoveResults())
-		_noOfRemoveResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfRemoveResults", 32, int32((noOfRemoveResults)))
-		if _noOfRemoveResultsErr != nil {
-			return errors.Wrap(_noOfRemoveResultsErr, "Error serializing 'noOfRemoveResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfRemoveResults", m.GetNoOfRemoveResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfRemoveResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "removeResults", m.GetRemoveResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'removeResults' field")
 		}
 
-		// Simple Field (noOfRemoveDiagnosticInfos)
-		noOfRemoveDiagnosticInfos := int32(m.GetNoOfRemoveDiagnosticInfos())
-		_noOfRemoveDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfRemoveDiagnosticInfos", 32, int32((noOfRemoveDiagnosticInfos)))
-		if _noOfRemoveDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfRemoveDiagnosticInfosErr, "Error serializing 'noOfRemoveDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfRemoveDiagnosticInfos", m.GetNoOfRemoveDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfRemoveDiagnosticInfos' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "removeDiagnosticInfos", m.GetRemoveDiagnosticInfos(), writeBuffer); err != nil {

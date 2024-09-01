@@ -212,18 +212,12 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) SerializeWithWr
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")
 		}
 
-		// Simple Field (function)
-		function := uint8(m.GetFunction())
-		_functionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("function", 8, uint8((function)))
-		if _functionErr != nil {
-			return errors.Wrap(_functionErr, "Error serializing 'function' field")
+		if err := WriteSimpleField[uint8](ctx, "function", m.GetFunction(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'function' field")
 		}
 
-		// Simple Field (jobId)
-		jobId := uint8(m.GetJobId())
-		_jobIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("jobId", 8, uint8((jobId)))
-		if _jobIdErr != nil {
-			return errors.Wrap(_jobIdErr, "Error serializing 'jobId' field")
+		if err := WriteSimpleField[uint8](ctx, "jobId", m.GetJobId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'jobId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCyclicServicesUnsubscribeRequest"); popErr != nil {

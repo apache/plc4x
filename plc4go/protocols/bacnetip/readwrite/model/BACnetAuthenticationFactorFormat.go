@@ -196,16 +196,8 @@ func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(ctx context
 		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationFactorFormat")
 	}
 
-	// Simple Field (formatType)
-	if pushErr := writeBuffer.PushContext("formatType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for formatType")
-	}
-	_formatTypeErr := writeBuffer.WriteSerializable(ctx, m.GetFormatType())
-	if popErr := writeBuffer.PopContext("formatType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for formatType")
-	}
-	if _formatTypeErr != nil {
-		return errors.Wrap(_formatTypeErr, "Error serializing 'formatType' field")
+	if err := WriteSimpleField[BACnetAuthenticationFactorTypeTagged](ctx, "formatType", m.GetFormatType(), WriteComplex[BACnetAuthenticationFactorTypeTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'formatType' field")
 	}
 
 	if err := WriteOptionalField[BACnetVendorIdTagged](ctx, "vendorId", GetRef(m.GetVendorId()), WriteComplex[BACnetVendorIdTagged](writeBuffer), true); err != nil {

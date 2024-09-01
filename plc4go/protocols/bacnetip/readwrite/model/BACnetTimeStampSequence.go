@@ -181,16 +181,8 @@ func (m *_BACnetTimeStampSequence) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BACnetTimeStampSequence")
 		}
 
-		// Simple Field (sequenceNumber)
-		if pushErr := writeBuffer.PushContext("sequenceNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sequenceNumber")
-		}
-		_sequenceNumberErr := writeBuffer.WriteSerializable(ctx, m.GetSequenceNumber())
-		if popErr := writeBuffer.PopContext("sequenceNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sequenceNumber")
-		}
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimeStampSequence"); popErr != nil {

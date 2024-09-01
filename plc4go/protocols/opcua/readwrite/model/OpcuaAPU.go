@@ -158,16 +158,8 @@ func (m *_OpcuaAPU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		return errors.Wrap(pushErr, "Error pushing for OpcuaAPU")
 	}
 
-	// Simple Field (message)
-	if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for message")
-	}
-	_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
-	if popErr := writeBuffer.PopContext("message"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for message")
-	}
-	if _messageErr != nil {
-		return errors.Wrap(_messageErr, "Error serializing 'message' field")
+	if err := WriteSimpleField[MessagePDU](ctx, "message", m.GetMessage(), WriteComplex[MessagePDU](writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'message' field")
 	}
 
 	if popErr := writeBuffer.PopContext("OpcuaAPU"); popErr != nil {

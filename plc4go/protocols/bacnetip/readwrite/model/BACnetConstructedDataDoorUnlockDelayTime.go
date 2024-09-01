@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorUnlockDelayTime")
 		}
 
-		// Simple Field (doorUnlockDelayTime)
-		if pushErr := writeBuffer.PushContext("doorUnlockDelayTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doorUnlockDelayTime")
-		}
-		_doorUnlockDelayTimeErr := writeBuffer.WriteSerializable(ctx, m.GetDoorUnlockDelayTime())
-		if popErr := writeBuffer.PopContext("doorUnlockDelayTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doorUnlockDelayTime")
-		}
-		if _doorUnlockDelayTimeErr != nil {
-			return errors.Wrap(_doorUnlockDelayTimeErr, "Error serializing 'doorUnlockDelayTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorUnlockDelayTime", m.GetDoorUnlockDelayTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doorUnlockDelayTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

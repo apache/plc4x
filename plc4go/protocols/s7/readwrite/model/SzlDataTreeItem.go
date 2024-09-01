@@ -218,36 +218,24 @@ func (m *_SzlDataTreeItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for SzlDataTreeItem")
 	}
 
-	// Simple Field (itemIndex)
-	itemIndex := uint16(m.GetItemIndex())
-	_itemIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("itemIndex", 16, uint16((itemIndex)))
-	if _itemIndexErr != nil {
-		return errors.Wrap(_itemIndexErr, "Error serializing 'itemIndex' field")
+	if err := WriteSimpleField[uint16](ctx, "itemIndex", m.GetItemIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'itemIndex' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "mlfb", m.GetMlfb(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'mlfb' field")
 	}
 
-	// Simple Field (moduleTypeId)
-	moduleTypeId := uint16(m.GetModuleTypeId())
-	_moduleTypeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("moduleTypeId", 16, uint16((moduleTypeId)))
-	if _moduleTypeIdErr != nil {
-		return errors.Wrap(_moduleTypeIdErr, "Error serializing 'moduleTypeId' field")
+	if err := WriteSimpleField[uint16](ctx, "moduleTypeId", m.GetModuleTypeId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'moduleTypeId' field")
 	}
 
-	// Simple Field (ausbg)
-	ausbg := uint16(m.GetAusbg())
-	_ausbgErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("ausbg", 16, uint16((ausbg)))
-	if _ausbgErr != nil {
-		return errors.Wrap(_ausbgErr, "Error serializing 'ausbg' field")
+	if err := WriteSimpleField[uint16](ctx, "ausbg", m.GetAusbg(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ausbg' field")
 	}
 
-	// Simple Field (ausbe)
-	ausbe := uint16(m.GetAusbe())
-	_ausbeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("ausbe", 16, uint16((ausbe)))
-	if _ausbeErr != nil {
-		return errors.Wrap(_ausbeErr, "Error serializing 'ausbe' field")
+	if err := WriteSimpleField[uint16](ctx, "ausbe", m.GetAusbe(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ausbe' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SzlDataTreeItem"); popErr != nil {

@@ -283,48 +283,28 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(err, "Error serializing 'transportSize' field")
 		}
 
-		// Simple Field (numberOfElements)
-		numberOfElements := uint16(m.GetNumberOfElements())
-		_numberOfElementsErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("numberOfElements", 16, uint16((numberOfElements)))
-		if _numberOfElementsErr != nil {
-			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
+		if err := WriteSimpleField[uint16](ctx, "numberOfElements", m.GetNumberOfElements(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfElements' field")
 		}
 
-		// Simple Field (dbNumber)
-		dbNumber := uint16(m.GetDbNumber())
-		_dbNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dbNumber", 16, uint16((dbNumber)))
-		if _dbNumberErr != nil {
-			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
+		if err := WriteSimpleField[uint16](ctx, "dbNumber", m.GetDbNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dbNumber' field")
 		}
 
-		// Simple Field (area)
-		if pushErr := writeBuffer.PushContext("area"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for area")
-		}
-		_areaErr := writeBuffer.WriteSerializable(ctx, m.GetArea())
-		if popErr := writeBuffer.PopContext("area"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for area")
-		}
-		if _areaErr != nil {
-			return errors.Wrap(_areaErr, "Error serializing 'area' field")
+		if err := WriteSimpleEnumField[MemoryArea](ctx, "area", "MemoryArea", m.GetArea(), WriteEnum[MemoryArea, uint8](MemoryArea.GetValue, MemoryArea.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'area' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 5)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (byteAddress)
-		byteAddress := uint16(m.GetByteAddress())
-		_byteAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("byteAddress", 16, uint16((byteAddress)))
-		if _byteAddressErr != nil {
-			return errors.Wrap(_byteAddressErr, "Error serializing 'byteAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "byteAddress", m.GetByteAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'byteAddress' field")
 		}
 
-		// Simple Field (bitAddress)
-		bitAddress := uint8(m.GetBitAddress())
-		_bitAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("bitAddress", 3, uint8((bitAddress)))
-		if _bitAddressErr != nil {
-			return errors.Wrap(_bitAddressErr, "Error serializing 'bitAddress' field")
+		if err := WriteSimpleField[uint8](ctx, "bitAddress", m.GetBitAddress(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7AddressAny"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataHigherDeck) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataHigherDeck")
 		}
 
-		// Simple Field (higherDeck)
-		if pushErr := writeBuffer.PushContext("higherDeck"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for higherDeck")
-		}
-		_higherDeckErr := writeBuffer.WriteSerializable(ctx, m.GetHigherDeck())
-		if popErr := writeBuffer.PopContext("higherDeck"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for higherDeck")
-		}
-		if _higherDeckErr != nil {
-			return errors.Wrap(_higherDeckErr, "Error serializing 'higherDeck' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "higherDeck", m.GetHigherDeck(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'higherDeck' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

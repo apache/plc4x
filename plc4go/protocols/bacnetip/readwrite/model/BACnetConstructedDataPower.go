@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPower) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPower")
 		}
 
-		// Simple Field (power)
-		if pushErr := writeBuffer.PushContext("power"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for power")
-		}
-		_powerErr := writeBuffer.WriteSerializable(ctx, m.GetPower())
-		if popErr := writeBuffer.PopContext("power"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for power")
-		}
-		if _powerErr != nil {
-			return errors.Wrap(_powerErr, "Error serializing 'power' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "power", m.GetPower(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'power' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

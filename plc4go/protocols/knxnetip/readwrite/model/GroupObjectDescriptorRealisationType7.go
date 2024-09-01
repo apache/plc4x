@@ -280,77 +280,40 @@ func (m *_GroupObjectDescriptorRealisationType7) SerializeWithWriteBuffer(ctx co
 		return errors.Wrap(pushErr, "Error pushing for GroupObjectDescriptorRealisationType7")
 	}
 
-	// Simple Field (dataAddress)
-	dataAddress := uint16(m.GetDataAddress())
-	_dataAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataAddress", 16, uint16((dataAddress)))
-	if _dataAddressErr != nil {
-		return errors.Wrap(_dataAddressErr, "Error serializing 'dataAddress' field")
+	if err := WriteSimpleField[uint16](ctx, "dataAddress", m.GetDataAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataAddress' field")
 	}
 
-	// Simple Field (updateEnable)
-	updateEnable := bool(m.GetUpdateEnable())
-	_updateEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("updateEnable", (updateEnable))
-	if _updateEnableErr != nil {
-		return errors.Wrap(_updateEnableErr, "Error serializing 'updateEnable' field")
+	if err := WriteSimpleField[bool](ctx, "updateEnable", m.GetUpdateEnable(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'updateEnable' field")
 	}
 
-	// Simple Field (transmitEnable)
-	transmitEnable := bool(m.GetTransmitEnable())
-	_transmitEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("transmitEnable", (transmitEnable))
-	if _transmitEnableErr != nil {
-		return errors.Wrap(_transmitEnableErr, "Error serializing 'transmitEnable' field")
+	if err := WriteSimpleField[bool](ctx, "transmitEnable", m.GetTransmitEnable(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'transmitEnable' field")
 	}
 
-	// Simple Field (segmentSelectorEnable)
-	segmentSelectorEnable := bool(m.GetSegmentSelectorEnable())
-	_segmentSelectorEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("segmentSelectorEnable", (segmentSelectorEnable))
-	if _segmentSelectorEnableErr != nil {
-		return errors.Wrap(_segmentSelectorEnableErr, "Error serializing 'segmentSelectorEnable' field")
+	if err := WriteSimpleField[bool](ctx, "segmentSelectorEnable", m.GetSegmentSelectorEnable(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'segmentSelectorEnable' field")
 	}
 
-	// Simple Field (writeEnable)
-	writeEnable := bool(m.GetWriteEnable())
-	_writeEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("writeEnable", (writeEnable))
-	if _writeEnableErr != nil {
-		return errors.Wrap(_writeEnableErr, "Error serializing 'writeEnable' field")
+	if err := WriteSimpleField[bool](ctx, "writeEnable", m.GetWriteEnable(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'writeEnable' field")
 	}
 
-	// Simple Field (readEnable)
-	readEnable := bool(m.GetReadEnable())
-	_readEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("readEnable", (readEnable))
-	if _readEnableErr != nil {
-		return errors.Wrap(_readEnableErr, "Error serializing 'readEnable' field")
+	if err := WriteSimpleField[bool](ctx, "readEnable", m.GetReadEnable(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'readEnable' field")
 	}
 
-	// Simple Field (communicationEnable)
-	communicationEnable := bool(m.GetCommunicationEnable())
-	_communicationEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("communicationEnable", (communicationEnable))
-	if _communicationEnableErr != nil {
-		return errors.Wrap(_communicationEnableErr, "Error serializing 'communicationEnable' field")
+	if err := WriteSimpleField[bool](ctx, "communicationEnable", m.GetCommunicationEnable(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'communicationEnable' field")
 	}
 
-	// Simple Field (priority)
-	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for priority")
-	}
-	_priorityErr := writeBuffer.WriteSerializable(ctx, m.GetPriority())
-	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for priority")
-	}
-	if _priorityErr != nil {
-		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
+	if err := WriteSimpleEnumField[CEMIPriority](ctx, "priority", "CEMIPriority", m.GetPriority(), WriteEnum[CEMIPriority, uint8](CEMIPriority.GetValue, CEMIPriority.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'priority' field")
 	}
 
-	// Simple Field (valueType)
-	if pushErr := writeBuffer.PushContext("valueType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for valueType")
-	}
-	_valueTypeErr := writeBuffer.WriteSerializable(ctx, m.GetValueType())
-	if popErr := writeBuffer.PopContext("valueType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for valueType")
-	}
-	if _valueTypeErr != nil {
-		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
+	if err := WriteSimpleEnumField[ComObjectValueType](ctx, "valueType", "ComObjectValueType", m.GetValueType(), WriteEnum[ComObjectValueType, uint8](ComObjectValueType.GetValue, ComObjectValueType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueType' field")
 	}
 
 	if popErr := writeBuffer.PopContext("GroupObjectDescriptorRealisationType7"); popErr != nil {

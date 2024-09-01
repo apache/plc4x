@@ -181,16 +181,8 @@ func (m *_BACnetShedLevelPercent) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for BACnetShedLevelPercent")
 		}
 
-		// Simple Field (percent)
-		if pushErr := writeBuffer.PushContext("percent"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for percent")
-		}
-		_percentErr := writeBuffer.WriteSerializable(ctx, m.GetPercent())
-		if popErr := writeBuffer.PopContext("percent"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for percent")
-		}
-		if _percentErr != nil {
-			return errors.Wrap(_percentErr, "Error serializing 'percent' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "percent", m.GetPercent(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'percent' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetShedLevelPercent"); popErr != nil {

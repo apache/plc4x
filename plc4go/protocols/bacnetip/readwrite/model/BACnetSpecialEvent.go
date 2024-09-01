@@ -184,40 +184,16 @@ func (m *_BACnetSpecialEvent) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(pushErr, "Error pushing for BACnetSpecialEvent")
 	}
 
-	// Simple Field (period)
-	if pushErr := writeBuffer.PushContext("period"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for period")
-	}
-	_periodErr := writeBuffer.WriteSerializable(ctx, m.GetPeriod())
-	if popErr := writeBuffer.PopContext("period"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for period")
-	}
-	if _periodErr != nil {
-		return errors.Wrap(_periodErr, "Error serializing 'period' field")
+	if err := WriteSimpleField[BACnetSpecialEventPeriod](ctx, "period", m.GetPeriod(), WriteComplex[BACnetSpecialEventPeriod](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'period' field")
 	}
 
-	// Simple Field (listOfTimeValues)
-	if pushErr := writeBuffer.PushContext("listOfTimeValues"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfTimeValues")
-	}
-	_listOfTimeValuesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfTimeValues())
-	if popErr := writeBuffer.PopContext("listOfTimeValues"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfTimeValues")
-	}
-	if _listOfTimeValuesErr != nil {
-		return errors.Wrap(_listOfTimeValuesErr, "Error serializing 'listOfTimeValues' field")
+	if err := WriteSimpleField[BACnetSpecialEventListOfTimeValues](ctx, "listOfTimeValues", m.GetListOfTimeValues(), WriteComplex[BACnetSpecialEventListOfTimeValues](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfTimeValues' field")
 	}
 
-	// Simple Field (eventPriority)
-	if pushErr := writeBuffer.PushContext("eventPriority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for eventPriority")
-	}
-	_eventPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetEventPriority())
-	if popErr := writeBuffer.PopContext("eventPriority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for eventPriority")
-	}
-	if _eventPriorityErr != nil {
-		return errors.Wrap(_eventPriorityErr, "Error serializing 'eventPriority' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "eventPriority", m.GetEventPriority(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventPriority' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetSpecialEvent"); popErr != nil {

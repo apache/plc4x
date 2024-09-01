@@ -190,28 +190,12 @@ func (m *_BACnetLandingCallStatus) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetLandingCallStatus")
 	}
 
-	// Simple Field (floorNumber)
-	if pushErr := writeBuffer.PushContext("floorNumber"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for floorNumber")
-	}
-	_floorNumberErr := writeBuffer.WriteSerializable(ctx, m.GetFloorNumber())
-	if popErr := writeBuffer.PopContext("floorNumber"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for floorNumber")
-	}
-	if _floorNumberErr != nil {
-		return errors.Wrap(_floorNumberErr, "Error serializing 'floorNumber' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "floorNumber", m.GetFloorNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'floorNumber' field")
 	}
 
-	// Simple Field (command)
-	if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for command")
-	}
-	_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
-	if popErr := writeBuffer.PopContext("command"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for command")
-	}
-	if _commandErr != nil {
-		return errors.Wrap(_commandErr, "Error serializing 'command' field")
+	if err := WriteSimpleField[BACnetLandingCallStatusCommand](ctx, "command", m.GetCommand(), WriteComplex[BACnetLandingCallStatusCommand](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'command' field")
 	}
 
 	if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "floorText", GetRef(m.GetFloorText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {

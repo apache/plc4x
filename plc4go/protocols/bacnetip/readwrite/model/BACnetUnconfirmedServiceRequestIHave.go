@@ -220,40 +220,16 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestIHave")
 		}
 
-		// Simple Field (deviceIdentifier)
-		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
-		}
-		_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceIdentifier())
-		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
-		}
-		if _deviceIdentifierErr != nil {
-			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", m.GetDeviceIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 		}
 
-		// Simple Field (objectIdentifier)
-		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-		}
-		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
-		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectIdentifier")
-		}
-		if _objectIdentifierErr != nil {
-			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", m.GetObjectIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 
-		// Simple Field (objectName)
-		if pushErr := writeBuffer.PushContext("objectName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectName")
-		}
-		_objectNameErr := writeBuffer.WriteSerializable(ctx, m.GetObjectName())
-		if popErr := writeBuffer.PopContext("objectName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectName")
-		}
-		if _objectNameErr != nil {
-			return errors.Wrap(_objectNameErr, "Error serializing 'objectName' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "objectName", m.GetObjectName(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestIHave"); popErr != nil {

@@ -213,16 +213,8 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (labelFlavour)
-	if pushErr := writeBuffer.PushContext("labelFlavour"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for labelFlavour")
-	}
-	_labelFlavourErr := writeBuffer.WriteSerializable(ctx, m.GetLabelFlavour())
-	if popErr := writeBuffer.PopContext("labelFlavour"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for labelFlavour")
-	}
-	if _labelFlavourErr != nil {
-		return errors.Wrap(_labelFlavourErr, "Error serializing 'labelFlavour' field")
+	if err := WriteSimpleEnumField[LightingLabelFlavour](ctx, "labelFlavour", "LightingLabelFlavour", m.GetLabelFlavour(), WriteEnum[LightingLabelFlavour, uint8](LightingLabelFlavour.GetValue, LightingLabelFlavour.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'labelFlavour' field")
 	}
 
 	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
@@ -233,16 +225,8 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(err, "Error serializing 'reserved' field number 3")
 	}
 
-	// Simple Field (labelType)
-	if pushErr := writeBuffer.PushContext("labelType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for labelType")
-	}
-	_labelTypeErr := writeBuffer.WriteSerializable(ctx, m.GetLabelType())
-	if popErr := writeBuffer.PopContext("labelType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for labelType")
-	}
-	if _labelTypeErr != nil {
-		return errors.Wrap(_labelTypeErr, "Error serializing 'labelType' field")
+	if err := WriteSimpleEnumField[LightingLabelType](ctx, "labelType", "LightingLabelType", m.GetLabelType(), WriteEnum[LightingLabelType, uint8](LightingLabelType.GetValue, LightingLabelType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'labelType' field")
 	}
 
 	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {

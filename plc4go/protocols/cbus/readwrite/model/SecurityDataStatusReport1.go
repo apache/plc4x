@@ -240,40 +240,16 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataStatusReport1")
 		}
 
-		// Simple Field (armCodeType)
-		if pushErr := writeBuffer.PushContext("armCodeType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for armCodeType")
-		}
-		_armCodeTypeErr := writeBuffer.WriteSerializable(ctx, m.GetArmCodeType())
-		if popErr := writeBuffer.PopContext("armCodeType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for armCodeType")
-		}
-		if _armCodeTypeErr != nil {
-			return errors.Wrap(_armCodeTypeErr, "Error serializing 'armCodeType' field")
+		if err := WriteSimpleField[SecurityArmCode](ctx, "armCodeType", m.GetArmCodeType(), WriteComplex[SecurityArmCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'armCodeType' field")
 		}
 
-		// Simple Field (tamperStatus)
-		if pushErr := writeBuffer.PushContext("tamperStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for tamperStatus")
-		}
-		_tamperStatusErr := writeBuffer.WriteSerializable(ctx, m.GetTamperStatus())
-		if popErr := writeBuffer.PopContext("tamperStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for tamperStatus")
-		}
-		if _tamperStatusErr != nil {
-			return errors.Wrap(_tamperStatusErr, "Error serializing 'tamperStatus' field")
+		if err := WriteSimpleField[TamperStatus](ctx, "tamperStatus", m.GetTamperStatus(), WriteComplex[TamperStatus](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tamperStatus' field")
 		}
 
-		// Simple Field (panicStatus)
-		if pushErr := writeBuffer.PushContext("panicStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for panicStatus")
-		}
-		_panicStatusErr := writeBuffer.WriteSerializable(ctx, m.GetPanicStatus())
-		if popErr := writeBuffer.PopContext("panicStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for panicStatus")
-		}
-		if _panicStatusErr != nil {
-			return errors.Wrap(_panicStatusErr, "Error serializing 'panicStatus' field")
+		if err := WriteSimpleField[PanicStatus](ctx, "panicStatus", m.GetPanicStatus(), WriteComplex[PanicStatus](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'panicStatus' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "zoneStatus", m.GetZoneStatus(), writeBuffer); err != nil {

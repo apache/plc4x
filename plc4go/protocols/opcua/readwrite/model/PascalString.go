@@ -196,11 +196,8 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(_stringLengthErr, "Error serializing 'stringLength' field")
 	}
 
-	// Simple Field (stringValue)
-	stringValue := string(m.GetStringValue())
-	_stringValueErr := /*TODO: migrate me*/ writeBuffer.WriteString("stringValue", uint32((stringLength)*(8)), (stringValue), utils.WithEncoding("UTF-8)"))
-	if _stringValueErr != nil {
-		return errors.Wrap(_stringValueErr, "Error serializing 'stringValue' field")
+	if err := WriteSimpleField[string](ctx, "stringValue", m.GetStringValue(), WriteString(writeBuffer, int32(int32(m.GetStringLength())*int32(int32(8))))); err != nil {
+		return errors.Wrap(err, "Error serializing 'stringValue' field")
 	}
 
 	if popErr := writeBuffer.PopContext("PascalString"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDeviceType) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDeviceType")
 		}
 
-		// Simple Field (deviceType)
-		if pushErr := writeBuffer.PushContext("deviceType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceType")
-		}
-		_deviceTypeErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceType())
-		if popErr := writeBuffer.PopContext("deviceType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceType")
-		}
-		if _deviceTypeErr != nil {
-			return errors.Wrap(_deviceTypeErr, "Error serializing 'deviceType' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "deviceType", m.GetDeviceType(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceType' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

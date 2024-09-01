@@ -223,11 +223,8 @@ func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataPauseResume")
 		}
 
-		// Simple Field (operation)
-		operation := byte(m.GetOperation())
-		_operationErr := /*TODO: migrate me*/ writeBuffer.WriteByte("operation", (operation))
-		if _operationErr != nil {
-			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
+		if err := WriteSimpleField[byte](ctx, "operation", m.GetOperation(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'operation' field")
 		}
 		// Virtual field
 		isPause := m.GetIsPause()

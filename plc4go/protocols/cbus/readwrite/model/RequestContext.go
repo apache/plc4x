@@ -152,11 +152,8 @@ func (m *_RequestContext) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for RequestContext")
 	}
 
-	// Simple Field (sendIdentifyRequestBefore)
-	sendIdentifyRequestBefore := bool(m.GetSendIdentifyRequestBefore())
-	_sendIdentifyRequestBeforeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("sendIdentifyRequestBefore", (sendIdentifyRequestBefore))
-	if _sendIdentifyRequestBeforeErr != nil {
-		return errors.Wrap(_sendIdentifyRequestBeforeErr, "Error serializing 'sendIdentifyRequestBefore' field")
+	if err := WriteSimpleField[bool](ctx, "sendIdentifyRequestBefore", m.GetSendIdentifyRequestBefore(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sendIdentifyRequestBefore' field")
 	}
 
 	if popErr := writeBuffer.PopContext("RequestContext"); popErr != nil {

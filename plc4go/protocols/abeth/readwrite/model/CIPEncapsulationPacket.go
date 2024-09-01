@@ -284,29 +284,20 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 		return errors.Wrap(err, "Error serializing 'packetLen' field")
 	}
 
-	// Simple Field (sessionHandle)
-	sessionHandle := uint32(m.GetSessionHandle())
-	_sessionHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sessionHandle", 32, uint32((sessionHandle)))
-	if _sessionHandleErr != nil {
-		return errors.Wrap(_sessionHandleErr, "Error serializing 'sessionHandle' field")
+	if err := WriteSimpleField[uint32](ctx, "sessionHandle", m.GetSessionHandle(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sessionHandle' field")
 	}
 
-	// Simple Field (status)
-	status := uint32(m.GetStatus())
-	_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("status", 32, uint32((status)))
-	if _statusErr != nil {
-		return errors.Wrap(_statusErr, "Error serializing 'status' field")
+	if err := WriteSimpleField[uint32](ctx, "status", m.GetStatus(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "senderContext", m.GetSenderContext(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'senderContext' field")
 	}
 
-	// Simple Field (options)
-	options := uint32(m.GetOptions())
-	_optionsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("options", 32, uint32((options)))
-	if _optionsErr != nil {
-		return errors.Wrap(_optionsErr, "Error serializing 'options' field")
+	if err := WriteSimpleField[uint32](ctx, "options", m.GetOptions(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'options' field")
 	}
 
 	if err := WriteReservedField[uint32](ctx, "reserved", uint32(0x00000000), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {

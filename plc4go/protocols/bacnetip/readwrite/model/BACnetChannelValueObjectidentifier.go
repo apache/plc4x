@@ -181,16 +181,8 @@ func (m *_BACnetChannelValueObjectidentifier) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueObjectidentifier")
 		}
 
-		// Simple Field (objectidentifierValue)
-		if pushErr := writeBuffer.PushContext("objectidentifierValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectidentifierValue")
-		}
-		_objectidentifierValueErr := writeBuffer.WriteSerializable(ctx, m.GetObjectidentifierValue())
-		if popErr := writeBuffer.PopContext("objectidentifierValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectidentifierValue")
-		}
-		if _objectidentifierValueErr != nil {
-			return errors.Wrap(_objectidentifierValueErr, "Error serializing 'objectidentifierValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "objectidentifierValue", m.GetObjectidentifierValue(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectidentifierValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueObjectidentifier"); popErr != nil {

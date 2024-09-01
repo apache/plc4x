@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataArchive) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataArchive")
 		}
 
-		// Simple Field (archive)
-		if pushErr := writeBuffer.PushContext("archive"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for archive")
-		}
-		_archiveErr := writeBuffer.WriteSerializable(ctx, m.GetArchive())
-		if popErr := writeBuffer.PopContext("archive"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for archive")
-		}
-		if _archiveErr != nil {
-			return errors.Wrap(_archiveErr, "Error serializing 'archive' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "archive", m.GetArchive(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'archive' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

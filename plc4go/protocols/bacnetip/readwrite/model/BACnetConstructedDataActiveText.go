@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataActiveText) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataActiveText")
 		}
 
-		// Simple Field (activeText)
-		if pushErr := writeBuffer.PushContext("activeText"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for activeText")
-		}
-		_activeTextErr := writeBuffer.WriteSerializable(ctx, m.GetActiveText())
-		if popErr := writeBuffer.PopContext("activeText"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for activeText")
-		}
-		if _activeTextErr != nil {
-			return errors.Wrap(_activeTextErr, "Error serializing 'activeText' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "activeText", m.GetActiveText(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'activeText' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

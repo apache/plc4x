@@ -185,11 +185,8 @@ func (m *_ApduDataExtAuthorizeResponse) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for ApduDataExtAuthorizeResponse")
 		}
 
-		// Simple Field (level)
-		level := uint8(m.GetLevel())
-		_levelErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("level", 8, uint8((level)))
-		if _levelErr != nil {
-			return errors.Wrap(_levelErr, "Error serializing 'level' field")
+		if err := WriteSimpleField[uint8](ctx, "level", m.GetLevel(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataExtAuthorizeResponse"); popErr != nil {

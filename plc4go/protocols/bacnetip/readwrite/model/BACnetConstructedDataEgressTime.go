@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEgressTime) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEgressTime")
 		}
 
-		// Simple Field (egressTime)
-		if pushErr := writeBuffer.PushContext("egressTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for egressTime")
-		}
-		_egressTimeErr := writeBuffer.WriteSerializable(ctx, m.GetEgressTime())
-		if popErr := writeBuffer.PopContext("egressTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for egressTime")
-		}
-		if _egressTimeErr != nil {
-			return errors.Wrap(_egressTimeErr, "Error serializing 'egressTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "egressTime", m.GetEgressTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'egressTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

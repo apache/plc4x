@@ -183,11 +183,8 @@ func (m *_ModbusPDUReadFileRecordResponseItem) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(err, "Error serializing 'dataLength' field")
 	}
 
-	// Simple Field (referenceType)
-	referenceType := uint8(m.GetReferenceType())
-	_referenceTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("referenceType", 8, uint8((referenceType)))
-	if _referenceTypeErr != nil {
-		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
+	if err := WriteSimpleField[uint8](ctx, "referenceType", m.GetReferenceType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'referenceType' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

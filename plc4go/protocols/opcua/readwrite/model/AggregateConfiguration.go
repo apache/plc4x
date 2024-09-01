@@ -276,43 +276,28 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (treatUncertainAsBad)
-		treatUncertainAsBad := bool(m.GetTreatUncertainAsBad())
-		_treatUncertainAsBadErr := /*TODO: migrate me*/ writeBuffer.WriteBit("treatUncertainAsBad", (treatUncertainAsBad))
-		if _treatUncertainAsBadErr != nil {
-			return errors.Wrap(_treatUncertainAsBadErr, "Error serializing 'treatUncertainAsBad' field")
+		if err := WriteSimpleField[bool](ctx, "treatUncertainAsBad", m.GetTreatUncertainAsBad(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'treatUncertainAsBad' field")
 		}
 
-		// Simple Field (useServerCapabilitiesDefaults)
-		useServerCapabilitiesDefaults := bool(m.GetUseServerCapabilitiesDefaults())
-		_useServerCapabilitiesDefaultsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("useServerCapabilitiesDefaults", (useServerCapabilitiesDefaults))
-		if _useServerCapabilitiesDefaultsErr != nil {
-			return errors.Wrap(_useServerCapabilitiesDefaultsErr, "Error serializing 'useServerCapabilitiesDefaults' field")
+		if err := WriteSimpleField[bool](ctx, "useServerCapabilitiesDefaults", m.GetUseServerCapabilitiesDefaults(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'useServerCapabilitiesDefaults' field")
 		}
 
-		// Simple Field (percentDataBad)
-		percentDataBad := uint8(m.GetPercentDataBad())
-		_percentDataBadErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("percentDataBad", 8, uint8((percentDataBad)))
-		if _percentDataBadErr != nil {
-			return errors.Wrap(_percentDataBadErr, "Error serializing 'percentDataBad' field")
+		if err := WriteSimpleField[uint8](ctx, "percentDataBad", m.GetPercentDataBad(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'percentDataBad' field")
 		}
 
-		// Simple Field (percentDataGood)
-		percentDataGood := uint8(m.GetPercentDataGood())
-		_percentDataGoodErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("percentDataGood", 8, uint8((percentDataGood)))
-		if _percentDataGoodErr != nil {
-			return errors.Wrap(_percentDataGoodErr, "Error serializing 'percentDataGood' field")
+		if err := WriteSimpleField[uint8](ctx, "percentDataGood", m.GetPercentDataGood(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'percentDataGood' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (useSlopedExtrapolation)
-		useSlopedExtrapolation := bool(m.GetUseSlopedExtrapolation())
-		_useSlopedExtrapolationErr := /*TODO: migrate me*/ writeBuffer.WriteBit("useSlopedExtrapolation", (useSlopedExtrapolation))
-		if _useSlopedExtrapolationErr != nil {
-			return errors.Wrap(_useSlopedExtrapolationErr, "Error serializing 'useSlopedExtrapolation' field")
+		if err := WriteSimpleField[bool](ctx, "useSlopedExtrapolation", m.GetUseSlopedExtrapolation(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'useSlopedExtrapolation' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AggregateConfiguration"); popErr != nil {

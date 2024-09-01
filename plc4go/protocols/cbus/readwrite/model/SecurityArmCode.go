@@ -241,11 +241,8 @@ func (m *_SecurityArmCode) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for SecurityArmCode")
 	}
 
-	// Simple Field (code)
-	code := uint8(m.GetCode())
-	_codeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("code", 8, uint8((code)))
-	if _codeErr != nil {
-		return errors.Wrap(_codeErr, "Error serializing 'code' field")
+	if err := WriteSimpleField[uint8](ctx, "code", m.GetCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'code' field")
 	}
 	// Virtual field
 	isDisarmed := m.GetIsDisarmed()

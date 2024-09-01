@@ -215,16 +215,8 @@ func (pm *_CALReply) SerializeParent(ctx context.Context, writeBuffer utils.Writ
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Simple Field (calData)
-	if pushErr := writeBuffer.PushContext("calData"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for calData")
-	}
-	_calDataErr := writeBuffer.WriteSerializable(ctx, m.GetCalData())
-	if popErr := writeBuffer.PopContext("calData"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for calData")
-	}
-	if _calDataErr != nil {
-		return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
+	if err := WriteSimpleField[CALData](ctx, "calData", m.GetCalData(), WriteComplex[CALData](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'calData' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CALReply"); popErr != nil {

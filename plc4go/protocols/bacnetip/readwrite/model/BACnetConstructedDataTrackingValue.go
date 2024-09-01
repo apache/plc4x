@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTrackingValue) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTrackingValue")
 		}
 
-		// Simple Field (trackingValue)
-		if pushErr := writeBuffer.PushContext("trackingValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for trackingValue")
-		}
-		_trackingValueErr := writeBuffer.WriteSerializable(ctx, m.GetTrackingValue())
-		if popErr := writeBuffer.PopContext("trackingValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for trackingValue")
-		}
-		if _trackingValueErr != nil {
-			return errors.Wrap(_trackingValueErr, "Error serializing 'trackingValue' field")
+		if err := WriteSimpleField[BACnetLifeSafetyStateTagged](ctx, "trackingValue", m.GetTrackingValue(), WriteComplex[BACnetLifeSafetyStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackingValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

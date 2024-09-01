@@ -182,11 +182,8 @@ func (m *_TriggerControlDataTriggerEvent) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for TriggerControlDataTriggerEvent")
 		}
 
-		// Simple Field (actionSelector)
-		actionSelector := byte(m.GetActionSelector())
-		_actionSelectorErr := /*TODO: migrate me*/ writeBuffer.WriteByte("actionSelector", (actionSelector))
-		if _actionSelectorErr != nil {
-			return errors.Wrap(_actionSelectorErr, "Error serializing 'actionSelector' field")
+		if err := WriteSimpleField[byte](ctx, "actionSelector", m.GetActionSelector(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'actionSelector' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TriggerControlDataTriggerEvent"); popErr != nil {

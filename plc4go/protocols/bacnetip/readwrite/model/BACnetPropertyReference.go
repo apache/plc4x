@@ -174,16 +174,8 @@ func (m *_BACnetPropertyReference) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetPropertyReference")
 	}
 
-	// Simple Field (propertyIdentifier)
-	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
-	}
-	_propertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyIdentifier())
-	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
-	}
-	if _propertyIdentifierErr != nil {
-		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
+	if err := WriteSimpleField[BACnetPropertyIdentifierTagged](ctx, "propertyIdentifier", m.GetPropertyIdentifier(), WriteComplex[BACnetPropertyIdentifierTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 	}
 
 	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {

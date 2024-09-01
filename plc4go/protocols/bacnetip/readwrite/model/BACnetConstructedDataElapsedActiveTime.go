@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataElapsedActiveTime) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataElapsedActiveTime")
 		}
 
-		// Simple Field (elapsedActiveTime)
-		if pushErr := writeBuffer.PushContext("elapsedActiveTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for elapsedActiveTime")
-		}
-		_elapsedActiveTimeErr := writeBuffer.WriteSerializable(ctx, m.GetElapsedActiveTime())
-		if popErr := writeBuffer.PopContext("elapsedActiveTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for elapsedActiveTime")
-		}
-		if _elapsedActiveTimeErr != nil {
-			return errors.Wrap(_elapsedActiveTimeErr, "Error serializing 'elapsedActiveTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "elapsedActiveTime", m.GetElapsedActiveTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'elapsedActiveTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

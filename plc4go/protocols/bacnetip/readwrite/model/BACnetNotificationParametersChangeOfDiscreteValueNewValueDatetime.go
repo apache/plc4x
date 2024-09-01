@@ -185,16 +185,8 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Ser
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime")
 		}
 
-		// Simple Field (dateTimeValue)
-		if pushErr := writeBuffer.PushContext("dateTimeValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dateTimeValue")
-		}
-		_dateTimeValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateTimeValue())
-		if popErr := writeBuffer.PopContext("dateTimeValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dateTimeValue")
-		}
-		if _dateTimeValueErr != nil {
-			return errors.Wrap(_dateTimeValueErr, "Error serializing 'dateTimeValue' field")
+		if err := WriteSimpleField[BACnetDateTimeEnclosed](ctx, "dateTimeValue", m.GetDateTimeValue(), WriteComplex[BACnetDateTimeEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dateTimeValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime"); popErr != nil {

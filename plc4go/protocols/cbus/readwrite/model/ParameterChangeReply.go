@@ -184,16 +184,8 @@ func (m *_ParameterChangeReply) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ParameterChangeReply")
 		}
 
-		// Simple Field (parameterChange)
-		if pushErr := writeBuffer.PushContext("parameterChange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameterChange")
-		}
-		_parameterChangeErr := writeBuffer.WriteSerializable(ctx, m.GetParameterChange())
-		if popErr := writeBuffer.PopContext("parameterChange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameterChange")
-		}
-		if _parameterChangeErr != nil {
-			return errors.Wrap(_parameterChangeErr, "Error serializing 'parameterChange' field")
+		if err := WriteSimpleField[ParameterChange](ctx, "parameterChange", m.GetParameterChange(), WriteComplex[ParameterChange](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'parameterChange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParameterChangeReply"); popErr != nil {

@@ -185,16 +185,8 @@ func (m *_BACnetLogDataLogStatus) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogStatus")
 		}
 
-		// Simple Field (logStatus)
-		if pushErr := writeBuffer.PushContext("logStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for logStatus")
-		}
-		_logStatusErr := writeBuffer.WriteSerializable(ctx, m.GetLogStatus())
-		if popErr := writeBuffer.PopContext("logStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for logStatus")
-		}
-		if _logStatusErr != nil {
-			return errors.Wrap(_logStatusErr, "Error serializing 'logStatus' field")
+		if err := WriteSimpleField[BACnetLogStatusTagged](ctx, "logStatus", m.GetLogStatus(), WriteComplex[BACnetLogStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'logStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogStatus"); popErr != nil {

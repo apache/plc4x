@@ -224,18 +224,12 @@ func (m *_ComObjectTableRealisationType1) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for ComObjectTableRealisationType1")
 		}
 
-		// Simple Field (numEntries)
-		numEntries := uint8(m.GetNumEntries())
-		_numEntriesErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numEntries", 8, uint8((numEntries)))
-		if _numEntriesErr != nil {
-			return errors.Wrap(_numEntriesErr, "Error serializing 'numEntries' field")
+		if err := WriteSimpleField[uint8](ctx, "numEntries", m.GetNumEntries(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numEntries' field")
 		}
 
-		// Simple Field (ramFlagsTablePointer)
-		ramFlagsTablePointer := uint8(m.GetRamFlagsTablePointer())
-		_ramFlagsTablePointerErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("ramFlagsTablePointer", 8, uint8((ramFlagsTablePointer)))
-		if _ramFlagsTablePointerErr != nil {
-			return errors.Wrap(_ramFlagsTablePointerErr, "Error serializing 'ramFlagsTablePointer' field")
+		if err := WriteSimpleField[uint8](ctx, "ramFlagsTablePointer", m.GetRamFlagsTablePointer(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ramFlagsTablePointer' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "comObjectDescriptors", m.GetComObjectDescriptors(), writeBuffer); err != nil {

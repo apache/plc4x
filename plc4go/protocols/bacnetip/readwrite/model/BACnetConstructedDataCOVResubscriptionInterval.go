@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCOVResubscriptionInterval")
 		}
 
-		// Simple Field (covResubscriptionInterval)
-		if pushErr := writeBuffer.PushContext("covResubscriptionInterval"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for covResubscriptionInterval")
-		}
-		_covResubscriptionIntervalErr := writeBuffer.WriteSerializable(ctx, m.GetCovResubscriptionInterval())
-		if popErr := writeBuffer.PopContext("covResubscriptionInterval"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for covResubscriptionInterval")
-		}
-		if _covResubscriptionIntervalErr != nil {
-			return errors.Wrap(_covResubscriptionIntervalErr, "Error serializing 'covResubscriptionInterval' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "covResubscriptionInterval", m.GetCovResubscriptionInterval(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'covResubscriptionInterval' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

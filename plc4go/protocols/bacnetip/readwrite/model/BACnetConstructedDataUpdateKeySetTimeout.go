@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUpdateKeySetTimeout")
 		}
 
-		// Simple Field (updateKeySetTimeout)
-		if pushErr := writeBuffer.PushContext("updateKeySetTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for updateKeySetTimeout")
-		}
-		_updateKeySetTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetUpdateKeySetTimeout())
-		if popErr := writeBuffer.PopContext("updateKeySetTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for updateKeySetTimeout")
-		}
-		if _updateKeySetTimeoutErr != nil {
-			return errors.Wrap(_updateKeySetTimeoutErr, "Error serializing 'updateKeySetTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "updateKeySetTimeout", m.GetUpdateKeySetTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'updateKeySetTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

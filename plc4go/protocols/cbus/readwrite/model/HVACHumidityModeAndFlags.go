@@ -368,11 +368,8 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (auxiliaryLevel)
-	auxiliaryLevel := bool(m.GetAuxiliaryLevel())
-	_auxiliaryLevelErr := /*TODO: migrate me*/ writeBuffer.WriteBit("auxiliaryLevel", (auxiliaryLevel))
-	if _auxiliaryLevelErr != nil {
-		return errors.Wrap(_auxiliaryLevelErr, "Error serializing 'auxiliaryLevel' field")
+	if err := WriteSimpleField[bool](ctx, "auxiliaryLevel", m.GetAuxiliaryLevel(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'auxiliaryLevel' field")
 	}
 	// Virtual field
 	isAuxLevelUnused := m.GetIsAuxLevelUnused()
@@ -387,11 +384,8 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(_isAuxLevelUsedErr, "Error serializing 'isAuxLevelUsed' field")
 	}
 
-	// Simple Field (guard)
-	guard := bool(m.GetGuard())
-	_guardErr := /*TODO: migrate me*/ writeBuffer.WriteBit("guard", (guard))
-	if _guardErr != nil {
-		return errors.Wrap(_guardErr, "Error serializing 'guard' field")
+	if err := WriteSimpleField[bool](ctx, "guard", m.GetGuard(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'guard' field")
 	}
 	// Virtual field
 	isGuardDisabled := m.GetIsGuardDisabled()
@@ -406,11 +400,8 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(_isGuardEnabledErr, "Error serializing 'isGuardEnabled' field")
 	}
 
-	// Simple Field (setback)
-	setback := bool(m.GetSetback())
-	_setbackErr := /*TODO: migrate me*/ writeBuffer.WriteBit("setback", (setback))
-	if _setbackErr != nil {
-		return errors.Wrap(_setbackErr, "Error serializing 'setback' field")
+	if err := WriteSimpleField[bool](ctx, "setback", m.GetSetback(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'setback' field")
 	}
 	// Virtual field
 	isSetbackDisabled := m.GetIsSetbackDisabled()
@@ -425,11 +416,8 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(_isSetbackEnabledErr, "Error serializing 'isSetbackEnabled' field")
 	}
 
-	// Simple Field (level)
-	level := bool(m.GetLevel())
-	_levelErr := /*TODO: migrate me*/ writeBuffer.WriteBit("level", (level))
-	if _levelErr != nil {
-		return errors.Wrap(_levelErr, "Error serializing 'level' field")
+	if err := WriteSimpleField[bool](ctx, "level", m.GetLevel(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'level' field")
 	}
 	// Virtual field
 	isLevelHumidity := m.GetIsLevelHumidity()
@@ -444,16 +432,8 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(_isLevelRawErr, "Error serializing 'isLevelRaw' field")
 	}
 
-	// Simple Field (mode)
-	if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for mode")
-	}
-	_modeErr := writeBuffer.WriteSerializable(ctx, m.GetMode())
-	if popErr := writeBuffer.PopContext("mode"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for mode")
-	}
-	if _modeErr != nil {
-		return errors.Wrap(_modeErr, "Error serializing 'mode' field")
+	if err := WriteSimpleEnumField[HVACHumidityModeAndFlagsMode](ctx, "mode", "HVACHumidityModeAndFlagsMode", m.GetMode(), WriteEnum[HVACHumidityModeAndFlagsMode, uint8](HVACHumidityModeAndFlagsMode.GetValue, HVACHumidityModeAndFlagsMode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 3))); err != nil {
+		return errors.Wrap(err, "Error serializing 'mode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("HVACHumidityModeAndFlags"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataScaleFactor) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataScaleFactor")
 		}
 
-		// Simple Field (scaleFactor)
-		if pushErr := writeBuffer.PushContext("scaleFactor"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for scaleFactor")
-		}
-		_scaleFactorErr := writeBuffer.WriteSerializable(ctx, m.GetScaleFactor())
-		if popErr := writeBuffer.PopContext("scaleFactor"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for scaleFactor")
-		}
-		if _scaleFactorErr != nil {
-			return errors.Wrap(_scaleFactorErr, "Error serializing 'scaleFactor' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "scaleFactor", m.GetScaleFactor(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'scaleFactor' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

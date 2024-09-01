@@ -211,23 +211,12 @@ func (m *_AdsAddDeviceNotificationResponse) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for AdsAddDeviceNotificationResponse")
 		}
 
-		// Simple Field (result)
-		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for result")
-		}
-		_resultErr := writeBuffer.WriteSerializable(ctx, m.GetResult())
-		if popErr := writeBuffer.PopContext("result"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for result")
-		}
-		if _resultErr != nil {
-			return errors.Wrap(_resultErr, "Error serializing 'result' field")
+		if err := WriteSimpleEnumField[ReturnCode](ctx, "result", "ReturnCode", m.GetResult(), WriteEnum[ReturnCode, uint32](ReturnCode.GetValue, ReturnCode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'result' field")
 		}
 
-		// Simple Field (notificationHandle)
-		notificationHandle := uint32(m.GetNotificationHandle())
-		_notificationHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("notificationHandle", 32, uint32((notificationHandle)))
-		if _notificationHandleErr != nil {
-			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
+		if err := WriteSimpleField[uint32](ctx, "notificationHandle", m.GetNotificationHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationHandle' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsAddDeviceNotificationResponse"); popErr != nil {

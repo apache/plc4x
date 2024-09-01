@@ -182,11 +182,8 @@ func (m *_MeteringDataOilConsumption) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for MeteringDataOilConsumption")
 		}
 
-		// Simple Field (L)
-		L := uint32(m.GetL())
-		_LErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("L", 32, uint32((L)))
-		if _LErr != nil {
-			return errors.Wrap(_LErr, "Error serializing 'L' field")
+		if err := WriteSimpleField[uint32](ctx, "L", m.GetL(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'L' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MeteringDataOilConsumption"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataChannelNumber) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataChannelNumber")
 		}
 
-		// Simple Field (channelNumber)
-		if pushErr := writeBuffer.PushContext("channelNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for channelNumber")
-		}
-		_channelNumberErr := writeBuffer.WriteSerializable(ctx, m.GetChannelNumber())
-		if popErr := writeBuffer.PopContext("channelNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for channelNumber")
-		}
-		if _channelNumberErr != nil {
-			return errors.Wrap(_channelNumberErr, "Error serializing 'channelNumber' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "channelNumber", m.GetChannelNumber(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'channelNumber' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

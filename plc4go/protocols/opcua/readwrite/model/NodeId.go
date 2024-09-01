@@ -192,16 +192,8 @@ func (m *_NodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (nodeId)
-	if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for nodeId")
-	}
-	_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-	if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for nodeId")
-	}
-	if _nodeIdErr != nil {
-		return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+	if err := WriteSimpleField[NodeIdTypeDefinition](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeIdTypeDefinition](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'nodeId' field")
 	}
 	// Virtual field
 	id := m.GetId()

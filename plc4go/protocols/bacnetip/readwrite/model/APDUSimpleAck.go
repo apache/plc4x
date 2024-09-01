@@ -217,23 +217,12 @@ func (m *_APDUSimpleAck) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
-		if _originalInvokeIdErr != nil {
-			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
+		if err := WriteSimpleField[uint8](ctx, "originalInvokeId", m.GetOriginalInvokeId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalInvokeId' field")
 		}
 
-		// Simple Field (serviceChoice)
-		if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serviceChoice")
-		}
-		_serviceChoiceErr := writeBuffer.WriteSerializable(ctx, m.GetServiceChoice())
-		if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serviceChoice")
-		}
-		if _serviceChoiceErr != nil {
-			return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
+		if err := WriteSimpleEnumField[BACnetConfirmedServiceChoice](ctx, "serviceChoice", "BACnetConfirmedServiceChoice", m.GetServiceChoice(), WriteEnum[BACnetConfirmedServiceChoice, uint8](BACnetConfirmedServiceChoice.GetValue, BACnetConfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceChoice' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUSimpleAck"); popErr != nil {

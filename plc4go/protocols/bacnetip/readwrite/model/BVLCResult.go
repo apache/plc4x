@@ -185,16 +185,8 @@ func (m *_BVLCResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(pushErr, "Error pushing for BVLCResult")
 		}
 
-		// Simple Field (code)
-		if pushErr := writeBuffer.PushContext("code"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for code")
-		}
-		_codeErr := writeBuffer.WriteSerializable(ctx, m.GetCode())
-		if popErr := writeBuffer.PopContext("code"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for code")
-		}
-		if _codeErr != nil {
-			return errors.Wrap(_codeErr, "Error serializing 'code' field")
+		if err := WriteSimpleEnumField[BVLCResultCode](ctx, "code", "BVLCResultCode", m.GetCode(), WriteEnum[BVLCResultCode, uint16](BVLCResultCode.GetValue, BVLCResultCode.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16)), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'code' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCResult"); popErr != nil {

@@ -223,11 +223,8 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionAlarmAckResponse")
 		}
 
-		// Simple Field (functionId)
-		functionId := uint8(m.GetFunctionId())
-		_functionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
-		if _functionIdErr != nil {
-			return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+		if err := WriteSimpleField[uint8](ctx, "functionId", m.GetFunctionId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'functionId' field")
 		}
 		numberOfObjects := uint8(uint8(len(m.GetMessageObjects())))
 		if err := WriteImplicitField(ctx, "numberOfObjects", numberOfObjects, WriteUnsignedByte(writeBuffer, 8)); err != nil {

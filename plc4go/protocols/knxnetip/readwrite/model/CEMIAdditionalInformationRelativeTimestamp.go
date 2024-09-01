@@ -213,16 +213,8 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(c
 			return errors.Wrap(err, "Error serializing 'len' field")
 		}
 
-		// Simple Field (relativeTimestamp)
-		if pushErr := writeBuffer.PushContext("relativeTimestamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for relativeTimestamp")
-		}
-		_relativeTimestampErr := writeBuffer.WriteSerializable(ctx, m.GetRelativeTimestamp())
-		if popErr := writeBuffer.PopContext("relativeTimestamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for relativeTimestamp")
-		}
-		if _relativeTimestampErr != nil {
-			return errors.Wrap(_relativeTimestampErr, "Error serializing 'relativeTimestamp' field")
+		if err := WriteSimpleField[RelativeTimestamp](ctx, "relativeTimestamp", m.GetRelativeTimestamp(), WriteComplex[RelativeTimestamp](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'relativeTimestamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CEMIAdditionalInformationRelativeTimestamp"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRestoreCompletionTime")
 		}
 
-		// Simple Field (completionTime)
-		if pushErr := writeBuffer.PushContext("completionTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for completionTime")
-		}
-		_completionTimeErr := writeBuffer.WriteSerializable(ctx, m.GetCompletionTime())
-		if popErr := writeBuffer.PopContext("completionTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for completionTime")
-		}
-		if _completionTimeErr != nil {
-			return errors.Wrap(_completionTimeErr, "Error serializing 'completionTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "completionTime", m.GetCompletionTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'completionTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

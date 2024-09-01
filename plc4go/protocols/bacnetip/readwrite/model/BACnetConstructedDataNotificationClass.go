@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataNotificationClass) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNotificationClass")
 		}
 
-		// Simple Field (notificationClass)
-		if pushErr := writeBuffer.PushContext("notificationClass"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notificationClass")
-		}
-		_notificationClassErr := writeBuffer.WriteSerializable(ctx, m.GetNotificationClass())
-		if popErr := writeBuffer.PopContext("notificationClass"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notificationClass")
-		}
-		if _notificationClassErr != nil {
-			return errors.Wrap(_notificationClassErr, "Error serializing 'notificationClass' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "notificationClass", m.GetNotificationClass(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationClass' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

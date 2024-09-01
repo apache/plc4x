@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataGroupID) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataGroupID")
 		}
 
-		// Simple Field (groupId)
-		if pushErr := writeBuffer.PushContext("groupId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for groupId")
-		}
-		_groupIdErr := writeBuffer.WriteSerializable(ctx, m.GetGroupId())
-		if popErr := writeBuffer.PopContext("groupId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for groupId")
-		}
-		if _groupIdErr != nil {
-			return errors.Wrap(_groupIdErr, "Error serializing 'groupId' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "groupId", m.GetGroupId(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'groupId' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

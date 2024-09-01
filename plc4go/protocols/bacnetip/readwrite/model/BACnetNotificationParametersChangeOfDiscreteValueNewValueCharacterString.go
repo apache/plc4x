@@ -185,16 +185,8 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStri
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString")
 		}
 
-		// Simple Field (characterStringValue)
-		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
-		}
-		_characterStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetCharacterStringValue())
-		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for characterStringValue")
-		}
-		if _characterStringValueErr != nil {
-			return errors.Wrap(_characterStringValueErr, "Error serializing 'characterStringValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", m.GetCharacterStringValue(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'characterStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString"); popErr != nil {

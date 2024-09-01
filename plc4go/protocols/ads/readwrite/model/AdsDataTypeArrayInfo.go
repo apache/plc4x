@@ -195,18 +195,12 @@ func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for AdsDataTypeArrayInfo")
 	}
 
-	// Simple Field (lowerBound)
-	lowerBound := uint32(m.GetLowerBound())
-	_lowerBoundErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("lowerBound", 32, uint32((lowerBound)))
-	if _lowerBoundErr != nil {
-		return errors.Wrap(_lowerBoundErr, "Error serializing 'lowerBound' field")
+	if err := WriteSimpleField[uint32](ctx, "lowerBound", m.GetLowerBound(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'lowerBound' field")
 	}
 
-	// Simple Field (numElements)
-	numElements := uint32(m.GetNumElements())
-	_numElementsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("numElements", 32, uint32((numElements)))
-	if _numElementsErr != nil {
-		return errors.Wrap(_numElementsErr, "Error serializing 'numElements' field")
+	if err := WriteSimpleField[uint32](ctx, "numElements", m.GetNumElements(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numElements' field")
 	}
 	// Virtual field
 	upperBound := m.GetUpperBound()

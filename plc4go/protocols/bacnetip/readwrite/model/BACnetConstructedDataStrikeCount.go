@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataStrikeCount) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStrikeCount")
 		}
 
-		// Simple Field (strikeCount)
-		if pushErr := writeBuffer.PushContext("strikeCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for strikeCount")
-		}
-		_strikeCountErr := writeBuffer.WriteSerializable(ctx, m.GetStrikeCount())
-		if popErr := writeBuffer.PopContext("strikeCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for strikeCount")
-		}
-		if _strikeCountErr != nil {
-			return errors.Wrap(_strikeCountErr, "Error serializing 'strikeCount' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "strikeCount", m.GetStrikeCount(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'strikeCount' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

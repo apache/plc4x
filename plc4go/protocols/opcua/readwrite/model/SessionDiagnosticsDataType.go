@@ -921,479 +921,180 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for SessionDiagnosticsDataType")
 		}
 
-		// Simple Field (sessionId)
-		if pushErr := writeBuffer.PushContext("sessionId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sessionId")
-		}
-		_sessionIdErr := writeBuffer.WriteSerializable(ctx, m.GetSessionId())
-		if popErr := writeBuffer.PopContext("sessionId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sessionId")
-		}
-		if _sessionIdErr != nil {
-			return errors.Wrap(_sessionIdErr, "Error serializing 'sessionId' field")
+		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sessionId' field")
 		}
 
-		// Simple Field (sessionName)
-		if pushErr := writeBuffer.PushContext("sessionName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sessionName")
-		}
-		_sessionNameErr := writeBuffer.WriteSerializable(ctx, m.GetSessionName())
-		if popErr := writeBuffer.PopContext("sessionName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sessionName")
-		}
-		if _sessionNameErr != nil {
-			return errors.Wrap(_sessionNameErr, "Error serializing 'sessionName' field")
+		if err := WriteSimpleField[PascalString](ctx, "sessionName", m.GetSessionName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sessionName' field")
 		}
 
-		// Simple Field (clientDescription)
-		if pushErr := writeBuffer.PushContext("clientDescription"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clientDescription")
-		}
-		_clientDescriptionErr := writeBuffer.WriteSerializable(ctx, m.GetClientDescription())
-		if popErr := writeBuffer.PopContext("clientDescription"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clientDescription")
-		}
-		if _clientDescriptionErr != nil {
-			return errors.Wrap(_clientDescriptionErr, "Error serializing 'clientDescription' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "clientDescription", m.GetClientDescription(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientDescription' field")
 		}
 
-		// Simple Field (serverUri)
-		if pushErr := writeBuffer.PushContext("serverUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverUri")
-		}
-		_serverUriErr := writeBuffer.WriteSerializable(ctx, m.GetServerUri())
-		if popErr := writeBuffer.PopContext("serverUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverUri")
-		}
-		if _serverUriErr != nil {
-			return errors.Wrap(_serverUriErr, "Error serializing 'serverUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverUri' field")
 		}
 
-		// Simple Field (endpointUrl)
-		if pushErr := writeBuffer.PushContext("endpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrl")
-		}
-		_endpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetEndpointUrl())
-		if popErr := writeBuffer.PopContext("endpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrl")
-		}
-		if _endpointUrlErr != nil {
-			return errors.Wrap(_endpointUrlErr, "Error serializing 'endpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		// Simple Field (noOfLocaleIds)
-		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
-		if _noOfLocaleIdsErr != nil {
-			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLocaleIds", m.GetNoOfLocaleIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'localeIds' field")
 		}
 
-		// Simple Field (actualSessionTimeout)
-		actualSessionTimeout := float64(m.GetActualSessionTimeout())
-		_actualSessionTimeoutErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("actualSessionTimeout", 64, (actualSessionTimeout))
-		if _actualSessionTimeoutErr != nil {
-			return errors.Wrap(_actualSessionTimeoutErr, "Error serializing 'actualSessionTimeout' field")
+		if err := WriteSimpleField[float64](ctx, "actualSessionTimeout", m.GetActualSessionTimeout(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'actualSessionTimeout' field")
 		}
 
-		// Simple Field (maxResponseMessageSize)
-		maxResponseMessageSize := uint32(m.GetMaxResponseMessageSize())
-		_maxResponseMessageSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxResponseMessageSize", 32, uint32((maxResponseMessageSize)))
-		if _maxResponseMessageSizeErr != nil {
-			return errors.Wrap(_maxResponseMessageSizeErr, "Error serializing 'maxResponseMessageSize' field")
+		if err := WriteSimpleField[uint32](ctx, "maxResponseMessageSize", m.GetMaxResponseMessageSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxResponseMessageSize' field")
 		}
 
-		// Simple Field (clientConnectionTime)
-		clientConnectionTime := int64(m.GetClientConnectionTime())
-		_clientConnectionTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("clientConnectionTime", 64, int64((clientConnectionTime)))
-		if _clientConnectionTimeErr != nil {
-			return errors.Wrap(_clientConnectionTimeErr, "Error serializing 'clientConnectionTime' field")
+		if err := WriteSimpleField[int64](ctx, "clientConnectionTime", m.GetClientConnectionTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientConnectionTime' field")
 		}
 
-		// Simple Field (clientLastContactTime)
-		clientLastContactTime := int64(m.GetClientLastContactTime())
-		_clientLastContactTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("clientLastContactTime", 64, int64((clientLastContactTime)))
-		if _clientLastContactTimeErr != nil {
-			return errors.Wrap(_clientLastContactTimeErr, "Error serializing 'clientLastContactTime' field")
+		if err := WriteSimpleField[int64](ctx, "clientLastContactTime", m.GetClientLastContactTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientLastContactTime' field")
 		}
 
-		// Simple Field (currentSubscriptionsCount)
-		currentSubscriptionsCount := uint32(m.GetCurrentSubscriptionsCount())
-		_currentSubscriptionsCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("currentSubscriptionsCount", 32, uint32((currentSubscriptionsCount)))
-		if _currentSubscriptionsCountErr != nil {
-			return errors.Wrap(_currentSubscriptionsCountErr, "Error serializing 'currentSubscriptionsCount' field")
+		if err := WriteSimpleField[uint32](ctx, "currentSubscriptionsCount", m.GetCurrentSubscriptionsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentSubscriptionsCount' field")
 		}
 
-		// Simple Field (currentMonitoredItemsCount)
-		currentMonitoredItemsCount := uint32(m.GetCurrentMonitoredItemsCount())
-		_currentMonitoredItemsCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("currentMonitoredItemsCount", 32, uint32((currentMonitoredItemsCount)))
-		if _currentMonitoredItemsCountErr != nil {
-			return errors.Wrap(_currentMonitoredItemsCountErr, "Error serializing 'currentMonitoredItemsCount' field")
+		if err := WriteSimpleField[uint32](ctx, "currentMonitoredItemsCount", m.GetCurrentMonitoredItemsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentMonitoredItemsCount' field")
 		}
 
-		// Simple Field (currentPublishRequestsInQueue)
-		currentPublishRequestsInQueue := uint32(m.GetCurrentPublishRequestsInQueue())
-		_currentPublishRequestsInQueueErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("currentPublishRequestsInQueue", 32, uint32((currentPublishRequestsInQueue)))
-		if _currentPublishRequestsInQueueErr != nil {
-			return errors.Wrap(_currentPublishRequestsInQueueErr, "Error serializing 'currentPublishRequestsInQueue' field")
+		if err := WriteSimpleField[uint32](ctx, "currentPublishRequestsInQueue", m.GetCurrentPublishRequestsInQueue(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentPublishRequestsInQueue' field")
 		}
 
-		// Simple Field (totalRequestCount)
-		if pushErr := writeBuffer.PushContext("totalRequestCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for totalRequestCount")
-		}
-		_totalRequestCountErr := writeBuffer.WriteSerializable(ctx, m.GetTotalRequestCount())
-		if popErr := writeBuffer.PopContext("totalRequestCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for totalRequestCount")
-		}
-		if _totalRequestCountErr != nil {
-			return errors.Wrap(_totalRequestCountErr, "Error serializing 'totalRequestCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "totalRequestCount", m.GetTotalRequestCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalRequestCount' field")
 		}
 
-		// Simple Field (unauthorizedRequestCount)
-		unauthorizedRequestCount := uint32(m.GetUnauthorizedRequestCount())
-		_unauthorizedRequestCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("unauthorizedRequestCount", 32, uint32((unauthorizedRequestCount)))
-		if _unauthorizedRequestCountErr != nil {
-			return errors.Wrap(_unauthorizedRequestCountErr, "Error serializing 'unauthorizedRequestCount' field")
+		if err := WriteSimpleField[uint32](ctx, "unauthorizedRequestCount", m.GetUnauthorizedRequestCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unauthorizedRequestCount' field")
 		}
 
-		// Simple Field (readCount)
-		if pushErr := writeBuffer.PushContext("readCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for readCount")
-		}
-		_readCountErr := writeBuffer.WriteSerializable(ctx, m.GetReadCount())
-		if popErr := writeBuffer.PopContext("readCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for readCount")
-		}
-		if _readCountErr != nil {
-			return errors.Wrap(_readCountErr, "Error serializing 'readCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "readCount", m.GetReadCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'readCount' field")
 		}
 
-		// Simple Field (historyReadCount)
-		if pushErr := writeBuffer.PushContext("historyReadCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for historyReadCount")
-		}
-		_historyReadCountErr := writeBuffer.WriteSerializable(ctx, m.GetHistoryReadCount())
-		if popErr := writeBuffer.PopContext("historyReadCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for historyReadCount")
-		}
-		if _historyReadCountErr != nil {
-			return errors.Wrap(_historyReadCountErr, "Error serializing 'historyReadCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "historyReadCount", m.GetHistoryReadCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'historyReadCount' field")
 		}
 
-		// Simple Field (writeCount)
-		if pushErr := writeBuffer.PushContext("writeCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for writeCount")
-		}
-		_writeCountErr := writeBuffer.WriteSerializable(ctx, m.GetWriteCount())
-		if popErr := writeBuffer.PopContext("writeCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for writeCount")
-		}
-		if _writeCountErr != nil {
-			return errors.Wrap(_writeCountErr, "Error serializing 'writeCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "writeCount", m.GetWriteCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeCount' field")
 		}
 
-		// Simple Field (historyUpdateCount)
-		if pushErr := writeBuffer.PushContext("historyUpdateCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for historyUpdateCount")
-		}
-		_historyUpdateCountErr := writeBuffer.WriteSerializable(ctx, m.GetHistoryUpdateCount())
-		if popErr := writeBuffer.PopContext("historyUpdateCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for historyUpdateCount")
-		}
-		if _historyUpdateCountErr != nil {
-			return errors.Wrap(_historyUpdateCountErr, "Error serializing 'historyUpdateCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "historyUpdateCount", m.GetHistoryUpdateCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'historyUpdateCount' field")
 		}
 
-		// Simple Field (callCount)
-		if pushErr := writeBuffer.PushContext("callCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for callCount")
-		}
-		_callCountErr := writeBuffer.WriteSerializable(ctx, m.GetCallCount())
-		if popErr := writeBuffer.PopContext("callCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for callCount")
-		}
-		if _callCountErr != nil {
-			return errors.Wrap(_callCountErr, "Error serializing 'callCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "callCount", m.GetCallCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'callCount' field")
 		}
 
-		// Simple Field (createMonitoredItemsCount)
-		if pushErr := writeBuffer.PushContext("createMonitoredItemsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for createMonitoredItemsCount")
-		}
-		_createMonitoredItemsCountErr := writeBuffer.WriteSerializable(ctx, m.GetCreateMonitoredItemsCount())
-		if popErr := writeBuffer.PopContext("createMonitoredItemsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for createMonitoredItemsCount")
-		}
-		if _createMonitoredItemsCountErr != nil {
-			return errors.Wrap(_createMonitoredItemsCountErr, "Error serializing 'createMonitoredItemsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "createMonitoredItemsCount", m.GetCreateMonitoredItemsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'createMonitoredItemsCount' field")
 		}
 
-		// Simple Field (modifyMonitoredItemsCount)
-		if pushErr := writeBuffer.PushContext("modifyMonitoredItemsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for modifyMonitoredItemsCount")
-		}
-		_modifyMonitoredItemsCountErr := writeBuffer.WriteSerializable(ctx, m.GetModifyMonitoredItemsCount())
-		if popErr := writeBuffer.PopContext("modifyMonitoredItemsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for modifyMonitoredItemsCount")
-		}
-		if _modifyMonitoredItemsCountErr != nil {
-			return errors.Wrap(_modifyMonitoredItemsCountErr, "Error serializing 'modifyMonitoredItemsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "modifyMonitoredItemsCount", m.GetModifyMonitoredItemsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'modifyMonitoredItemsCount' field")
 		}
 
-		// Simple Field (setMonitoringModeCount)
-		if pushErr := writeBuffer.PushContext("setMonitoringModeCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setMonitoringModeCount")
-		}
-		_setMonitoringModeCountErr := writeBuffer.WriteSerializable(ctx, m.GetSetMonitoringModeCount())
-		if popErr := writeBuffer.PopContext("setMonitoringModeCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setMonitoringModeCount")
-		}
-		if _setMonitoringModeCountErr != nil {
-			return errors.Wrap(_setMonitoringModeCountErr, "Error serializing 'setMonitoringModeCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "setMonitoringModeCount", m.GetSetMonitoringModeCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setMonitoringModeCount' field")
 		}
 
-		// Simple Field (setTriggeringCount)
-		if pushErr := writeBuffer.PushContext("setTriggeringCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setTriggeringCount")
-		}
-		_setTriggeringCountErr := writeBuffer.WriteSerializable(ctx, m.GetSetTriggeringCount())
-		if popErr := writeBuffer.PopContext("setTriggeringCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setTriggeringCount")
-		}
-		if _setTriggeringCountErr != nil {
-			return errors.Wrap(_setTriggeringCountErr, "Error serializing 'setTriggeringCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "setTriggeringCount", m.GetSetTriggeringCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setTriggeringCount' field")
 		}
 
-		// Simple Field (deleteMonitoredItemsCount)
-		if pushErr := writeBuffer.PushContext("deleteMonitoredItemsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deleteMonitoredItemsCount")
-		}
-		_deleteMonitoredItemsCountErr := writeBuffer.WriteSerializable(ctx, m.GetDeleteMonitoredItemsCount())
-		if popErr := writeBuffer.PopContext("deleteMonitoredItemsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deleteMonitoredItemsCount")
-		}
-		if _deleteMonitoredItemsCountErr != nil {
-			return errors.Wrap(_deleteMonitoredItemsCountErr, "Error serializing 'deleteMonitoredItemsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteMonitoredItemsCount", m.GetDeleteMonitoredItemsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteMonitoredItemsCount' field")
 		}
 
-		// Simple Field (createSubscriptionCount)
-		if pushErr := writeBuffer.PushContext("createSubscriptionCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for createSubscriptionCount")
-		}
-		_createSubscriptionCountErr := writeBuffer.WriteSerializable(ctx, m.GetCreateSubscriptionCount())
-		if popErr := writeBuffer.PopContext("createSubscriptionCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for createSubscriptionCount")
-		}
-		if _createSubscriptionCountErr != nil {
-			return errors.Wrap(_createSubscriptionCountErr, "Error serializing 'createSubscriptionCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "createSubscriptionCount", m.GetCreateSubscriptionCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'createSubscriptionCount' field")
 		}
 
-		// Simple Field (modifySubscriptionCount)
-		if pushErr := writeBuffer.PushContext("modifySubscriptionCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for modifySubscriptionCount")
-		}
-		_modifySubscriptionCountErr := writeBuffer.WriteSerializable(ctx, m.GetModifySubscriptionCount())
-		if popErr := writeBuffer.PopContext("modifySubscriptionCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for modifySubscriptionCount")
-		}
-		if _modifySubscriptionCountErr != nil {
-			return errors.Wrap(_modifySubscriptionCountErr, "Error serializing 'modifySubscriptionCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "modifySubscriptionCount", m.GetModifySubscriptionCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'modifySubscriptionCount' field")
 		}
 
-		// Simple Field (setPublishingModeCount)
-		if pushErr := writeBuffer.PushContext("setPublishingModeCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setPublishingModeCount")
-		}
-		_setPublishingModeCountErr := writeBuffer.WriteSerializable(ctx, m.GetSetPublishingModeCount())
-		if popErr := writeBuffer.PopContext("setPublishingModeCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setPublishingModeCount")
-		}
-		if _setPublishingModeCountErr != nil {
-			return errors.Wrap(_setPublishingModeCountErr, "Error serializing 'setPublishingModeCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "setPublishingModeCount", m.GetSetPublishingModeCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setPublishingModeCount' field")
 		}
 
-		// Simple Field (publishCount)
-		if pushErr := writeBuffer.PushContext("publishCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for publishCount")
-		}
-		_publishCountErr := writeBuffer.WriteSerializable(ctx, m.GetPublishCount())
-		if popErr := writeBuffer.PopContext("publishCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for publishCount")
-		}
-		if _publishCountErr != nil {
-			return errors.Wrap(_publishCountErr, "Error serializing 'publishCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "publishCount", m.GetPublishCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'publishCount' field")
 		}
 
-		// Simple Field (republishCount)
-		if pushErr := writeBuffer.PushContext("republishCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for republishCount")
-		}
-		_republishCountErr := writeBuffer.WriteSerializable(ctx, m.GetRepublishCount())
-		if popErr := writeBuffer.PopContext("republishCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for republishCount")
-		}
-		if _republishCountErr != nil {
-			return errors.Wrap(_republishCountErr, "Error serializing 'republishCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "republishCount", m.GetRepublishCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'republishCount' field")
 		}
 
-		// Simple Field (transferSubscriptionsCount)
-		if pushErr := writeBuffer.PushContext("transferSubscriptionsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transferSubscriptionsCount")
-		}
-		_transferSubscriptionsCountErr := writeBuffer.WriteSerializable(ctx, m.GetTransferSubscriptionsCount())
-		if popErr := writeBuffer.PopContext("transferSubscriptionsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transferSubscriptionsCount")
-		}
-		if _transferSubscriptionsCountErr != nil {
-			return errors.Wrap(_transferSubscriptionsCountErr, "Error serializing 'transferSubscriptionsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "transferSubscriptionsCount", m.GetTransferSubscriptionsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transferSubscriptionsCount' field")
 		}
 
-		// Simple Field (deleteSubscriptionsCount)
-		if pushErr := writeBuffer.PushContext("deleteSubscriptionsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deleteSubscriptionsCount")
-		}
-		_deleteSubscriptionsCountErr := writeBuffer.WriteSerializable(ctx, m.GetDeleteSubscriptionsCount())
-		if popErr := writeBuffer.PopContext("deleteSubscriptionsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deleteSubscriptionsCount")
-		}
-		if _deleteSubscriptionsCountErr != nil {
-			return errors.Wrap(_deleteSubscriptionsCountErr, "Error serializing 'deleteSubscriptionsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteSubscriptionsCount", m.GetDeleteSubscriptionsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteSubscriptionsCount' field")
 		}
 
-		// Simple Field (addNodesCount)
-		if pushErr := writeBuffer.PushContext("addNodesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addNodesCount")
-		}
-		_addNodesCountErr := writeBuffer.WriteSerializable(ctx, m.GetAddNodesCount())
-		if popErr := writeBuffer.PopContext("addNodesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addNodesCount")
-		}
-		if _addNodesCountErr != nil {
-			return errors.Wrap(_addNodesCountErr, "Error serializing 'addNodesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "addNodesCount", m.GetAddNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'addNodesCount' field")
 		}
 
-		// Simple Field (addReferencesCount)
-		if pushErr := writeBuffer.PushContext("addReferencesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addReferencesCount")
-		}
-		_addReferencesCountErr := writeBuffer.WriteSerializable(ctx, m.GetAddReferencesCount())
-		if popErr := writeBuffer.PopContext("addReferencesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addReferencesCount")
-		}
-		if _addReferencesCountErr != nil {
-			return errors.Wrap(_addReferencesCountErr, "Error serializing 'addReferencesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "addReferencesCount", m.GetAddReferencesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'addReferencesCount' field")
 		}
 
-		// Simple Field (deleteNodesCount)
-		if pushErr := writeBuffer.PushContext("deleteNodesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deleteNodesCount")
-		}
-		_deleteNodesCountErr := writeBuffer.WriteSerializable(ctx, m.GetDeleteNodesCount())
-		if popErr := writeBuffer.PopContext("deleteNodesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deleteNodesCount")
-		}
-		if _deleteNodesCountErr != nil {
-			return errors.Wrap(_deleteNodesCountErr, "Error serializing 'deleteNodesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteNodesCount", m.GetDeleteNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteNodesCount' field")
 		}
 
-		// Simple Field (deleteReferencesCount)
-		if pushErr := writeBuffer.PushContext("deleteReferencesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deleteReferencesCount")
-		}
-		_deleteReferencesCountErr := writeBuffer.WriteSerializable(ctx, m.GetDeleteReferencesCount())
-		if popErr := writeBuffer.PopContext("deleteReferencesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deleteReferencesCount")
-		}
-		if _deleteReferencesCountErr != nil {
-			return errors.Wrap(_deleteReferencesCountErr, "Error serializing 'deleteReferencesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "deleteReferencesCount", m.GetDeleteReferencesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteReferencesCount' field")
 		}
 
-		// Simple Field (browseCount)
-		if pushErr := writeBuffer.PushContext("browseCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for browseCount")
-		}
-		_browseCountErr := writeBuffer.WriteSerializable(ctx, m.GetBrowseCount())
-		if popErr := writeBuffer.PopContext("browseCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for browseCount")
-		}
-		if _browseCountErr != nil {
-			return errors.Wrap(_browseCountErr, "Error serializing 'browseCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "browseCount", m.GetBrowseCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'browseCount' field")
 		}
 
-		// Simple Field (browseNextCount)
-		if pushErr := writeBuffer.PushContext("browseNextCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for browseNextCount")
-		}
-		_browseNextCountErr := writeBuffer.WriteSerializable(ctx, m.GetBrowseNextCount())
-		if popErr := writeBuffer.PopContext("browseNextCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for browseNextCount")
-		}
-		if _browseNextCountErr != nil {
-			return errors.Wrap(_browseNextCountErr, "Error serializing 'browseNextCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "browseNextCount", m.GetBrowseNextCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'browseNextCount' field")
 		}
 
-		// Simple Field (translateBrowsePathsToNodeIdsCount)
-		if pushErr := writeBuffer.PushContext("translateBrowsePathsToNodeIdsCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for translateBrowsePathsToNodeIdsCount")
-		}
-		_translateBrowsePathsToNodeIdsCountErr := writeBuffer.WriteSerializable(ctx, m.GetTranslateBrowsePathsToNodeIdsCount())
-		if popErr := writeBuffer.PopContext("translateBrowsePathsToNodeIdsCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for translateBrowsePathsToNodeIdsCount")
-		}
-		if _translateBrowsePathsToNodeIdsCountErr != nil {
-			return errors.Wrap(_translateBrowsePathsToNodeIdsCountErr, "Error serializing 'translateBrowsePathsToNodeIdsCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "translateBrowsePathsToNodeIdsCount", m.GetTranslateBrowsePathsToNodeIdsCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'translateBrowsePathsToNodeIdsCount' field")
 		}
 
-		// Simple Field (queryFirstCount)
-		if pushErr := writeBuffer.PushContext("queryFirstCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for queryFirstCount")
-		}
-		_queryFirstCountErr := writeBuffer.WriteSerializable(ctx, m.GetQueryFirstCount())
-		if popErr := writeBuffer.PopContext("queryFirstCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for queryFirstCount")
-		}
-		if _queryFirstCountErr != nil {
-			return errors.Wrap(_queryFirstCountErr, "Error serializing 'queryFirstCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "queryFirstCount", m.GetQueryFirstCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'queryFirstCount' field")
 		}
 
-		// Simple Field (queryNextCount)
-		if pushErr := writeBuffer.PushContext("queryNextCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for queryNextCount")
-		}
-		_queryNextCountErr := writeBuffer.WriteSerializable(ctx, m.GetQueryNextCount())
-		if popErr := writeBuffer.PopContext("queryNextCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for queryNextCount")
-		}
-		if _queryNextCountErr != nil {
-			return errors.Wrap(_queryNextCountErr, "Error serializing 'queryNextCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "queryNextCount", m.GetQueryNextCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'queryNextCount' field")
 		}
 
-		// Simple Field (registerNodesCount)
-		if pushErr := writeBuffer.PushContext("registerNodesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for registerNodesCount")
-		}
-		_registerNodesCountErr := writeBuffer.WriteSerializable(ctx, m.GetRegisterNodesCount())
-		if popErr := writeBuffer.PopContext("registerNodesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for registerNodesCount")
-		}
-		if _registerNodesCountErr != nil {
-			return errors.Wrap(_registerNodesCountErr, "Error serializing 'registerNodesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "registerNodesCount", m.GetRegisterNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'registerNodesCount' field")
 		}
 
-		// Simple Field (unregisterNodesCount)
-		if pushErr := writeBuffer.PushContext("unregisterNodesCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unregisterNodesCount")
-		}
-		_unregisterNodesCountErr := writeBuffer.WriteSerializable(ctx, m.GetUnregisterNodesCount())
-		if popErr := writeBuffer.PopContext("unregisterNodesCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unregisterNodesCount")
-		}
-		if _unregisterNodesCountErr != nil {
-			return errors.Wrap(_unregisterNodesCountErr, "Error serializing 'unregisterNodesCount' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "unregisterNodesCount", m.GetUnregisterNodesCount(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unregisterNodesCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SessionDiagnosticsDataType"); popErr != nil {

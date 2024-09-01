@@ -234,47 +234,20 @@ func (m *_OpenSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for OpenSecureChannelResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (serverProtocolVersion)
-		serverProtocolVersion := uint32(m.GetServerProtocolVersion())
-		_serverProtocolVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("serverProtocolVersion", 32, uint32((serverProtocolVersion)))
-		if _serverProtocolVersionErr != nil {
-			return errors.Wrap(_serverProtocolVersionErr, "Error serializing 'serverProtocolVersion' field")
+		if err := WriteSimpleField[uint32](ctx, "serverProtocolVersion", m.GetServerProtocolVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverProtocolVersion' field")
 		}
 
-		// Simple Field (securityToken)
-		if pushErr := writeBuffer.PushContext("securityToken"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityToken")
-		}
-		_securityTokenErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityToken())
-		if popErr := writeBuffer.PopContext("securityToken"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityToken")
-		}
-		if _securityTokenErr != nil {
-			return errors.Wrap(_securityTokenErr, "Error serializing 'securityToken' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "securityToken", m.GetSecurityToken(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityToken' field")
 		}
 
-		// Simple Field (serverNonce)
-		if pushErr := writeBuffer.PushContext("serverNonce"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverNonce")
-		}
-		_serverNonceErr := writeBuffer.WriteSerializable(ctx, m.GetServerNonce())
-		if popErr := writeBuffer.PopContext("serverNonce"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverNonce")
-		}
-		if _serverNonceErr != nil {
-			return errors.Wrap(_serverNonceErr, "Error serializing 'serverNonce' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "serverNonce", m.GetServerNonce(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverNonce' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpenSecureChannelResponse"); popErr != nil {

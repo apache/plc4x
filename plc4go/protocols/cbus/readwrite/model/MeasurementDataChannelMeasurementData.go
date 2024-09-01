@@ -307,51 +307,28 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for MeasurementDataChannelMeasurementData")
 		}
 
-		// Simple Field (deviceId)
-		deviceId := uint8(m.GetDeviceId())
-		_deviceIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("deviceId", 8, uint8((deviceId)))
-		if _deviceIdErr != nil {
-			return errors.Wrap(_deviceIdErr, "Error serializing 'deviceId' field")
+		if err := WriteSimpleField[uint8](ctx, "deviceId", m.GetDeviceId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceId' field")
 		}
 
-		// Simple Field (channel)
-		channel := uint8(m.GetChannel())
-		_channelErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("channel", 8, uint8((channel)))
-		if _channelErr != nil {
-			return errors.Wrap(_channelErr, "Error serializing 'channel' field")
+		if err := WriteSimpleField[uint8](ctx, "channel", m.GetChannel(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'channel' field")
 		}
 
-		// Simple Field (units)
-		if pushErr := writeBuffer.PushContext("units"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for units")
-		}
-		_unitsErr := writeBuffer.WriteSerializable(ctx, m.GetUnits())
-		if popErr := writeBuffer.PopContext("units"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for units")
-		}
-		if _unitsErr != nil {
-			return errors.Wrap(_unitsErr, "Error serializing 'units' field")
+		if err := WriteSimpleEnumField[MeasurementUnits](ctx, "units", "MeasurementUnits", m.GetUnits(), WriteEnum[MeasurementUnits, uint8](MeasurementUnits.GetValue, MeasurementUnits.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'units' field")
 		}
 
-		// Simple Field (multiplier)
-		multiplier := int8(m.GetMultiplier())
-		_multiplierErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("multiplier", 8, int8((multiplier)))
-		if _multiplierErr != nil {
-			return errors.Wrap(_multiplierErr, "Error serializing 'multiplier' field")
+		if err := WriteSimpleField[int8](ctx, "multiplier", m.GetMultiplier(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'multiplier' field")
 		}
 
-		// Simple Field (msb)
-		msb := uint8(m.GetMsb())
-		_msbErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("msb", 8, uint8((msb)))
-		if _msbErr != nil {
-			return errors.Wrap(_msbErr, "Error serializing 'msb' field")
+		if err := WriteSimpleField[uint8](ctx, "msb", m.GetMsb(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'msb' field")
 		}
 
-		// Simple Field (lsb)
-		lsb := uint8(m.GetLsb())
-		_lsbErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("lsb", 8, uint8((lsb)))
-		if _lsbErr != nil {
-			return errors.Wrap(_lsbErr, "Error serializing 'lsb' field")
+		if err := WriteSimpleField[uint8](ctx, "lsb", m.GetLsb(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lsb' field")
 		}
 		// Virtual field
 		rawValue := m.GetRawValue()

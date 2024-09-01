@@ -217,35 +217,16 @@ func (m *_ModificationInfo) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for ModificationInfo")
 		}
 
-		// Simple Field (modificationTime)
-		modificationTime := int64(m.GetModificationTime())
-		_modificationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("modificationTime", 64, int64((modificationTime)))
-		if _modificationTimeErr != nil {
-			return errors.Wrap(_modificationTimeErr, "Error serializing 'modificationTime' field")
+		if err := WriteSimpleField[int64](ctx, "modificationTime", m.GetModificationTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'modificationTime' field")
 		}
 
-		// Simple Field (updateType)
-		if pushErr := writeBuffer.PushContext("updateType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for updateType")
-		}
-		_updateTypeErr := writeBuffer.WriteSerializable(ctx, m.GetUpdateType())
-		if popErr := writeBuffer.PopContext("updateType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for updateType")
-		}
-		if _updateTypeErr != nil {
-			return errors.Wrap(_updateTypeErr, "Error serializing 'updateType' field")
+		if err := WriteSimpleEnumField[HistoryUpdateType](ctx, "updateType", "HistoryUpdateType", m.GetUpdateType(), WriteEnum[HistoryUpdateType, uint32](HistoryUpdateType.GetValue, HistoryUpdateType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'updateType' field")
 		}
 
-		// Simple Field (userName)
-		if pushErr := writeBuffer.PushContext("userName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userName")
-		}
-		_userNameErr := writeBuffer.WriteSerializable(ctx, m.GetUserName())
-		if popErr := writeBuffer.PopContext("userName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userName")
-		}
-		if _userNameErr != nil {
-			return errors.Wrap(_userNameErr, "Error serializing 'userName' field")
+		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModificationInfo"); popErr != nil {

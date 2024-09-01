@@ -181,16 +181,8 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestWhoHasObjectName")
 		}
 
-		// Simple Field (objectName)
-		if pushErr := writeBuffer.PushContext("objectName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectName")
-		}
-		_objectNameErr := writeBuffer.WriteSerializable(ctx, m.GetObjectName())
-		if popErr := writeBuffer.PopContext("objectName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectName")
-		}
-		if _objectNameErr != nil {
-			return errors.Wrap(_objectNameErr, "Error serializing 'objectName' field")
+		if err := WriteSimpleField[BACnetContextTagCharacterString](ctx, "objectName", m.GetObjectName(), WriteComplex[BACnetContextTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestWhoHasObjectName"); popErr != nil {

@@ -184,40 +184,16 @@ func (m *_BACnetEventTimestamps) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for BACnetEventTimestamps")
 	}
 
-	// Simple Field (toOffnormal)
-	if pushErr := writeBuffer.PushContext("toOffnormal"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toOffnormal")
-	}
-	_toOffnormalErr := writeBuffer.WriteSerializable(ctx, m.GetToOffnormal())
-	if popErr := writeBuffer.PopContext("toOffnormal"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toOffnormal")
-	}
-	if _toOffnormalErr != nil {
-		return errors.Wrap(_toOffnormalErr, "Error serializing 'toOffnormal' field")
+	if err := WriteSimpleField[BACnetTimeStamp](ctx, "toOffnormal", m.GetToOffnormal(), WriteComplex[BACnetTimeStamp](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toOffnormal' field")
 	}
 
-	// Simple Field (toFault)
-	if pushErr := writeBuffer.PushContext("toFault"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toFault")
-	}
-	_toFaultErr := writeBuffer.WriteSerializable(ctx, m.GetToFault())
-	if popErr := writeBuffer.PopContext("toFault"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toFault")
-	}
-	if _toFaultErr != nil {
-		return errors.Wrap(_toFaultErr, "Error serializing 'toFault' field")
+	if err := WriteSimpleField[BACnetTimeStamp](ctx, "toFault", m.GetToFault(), WriteComplex[BACnetTimeStamp](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toFault' field")
 	}
 
-	// Simple Field (toNormal)
-	if pushErr := writeBuffer.PushContext("toNormal"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toNormal")
-	}
-	_toNormalErr := writeBuffer.WriteSerializable(ctx, m.GetToNormal())
-	if popErr := writeBuffer.PopContext("toNormal"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toNormal")
-	}
-	if _toNormalErr != nil {
-		return errors.Wrap(_toNormalErr, "Error serializing 'toNormal' field")
+	if err := WriteSimpleField[BACnetTimeStamp](ctx, "toNormal", m.GetToNormal(), WriteComplex[BACnetTimeStamp](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toNormal' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventTimestamps"); popErr != nil {

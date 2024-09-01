@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIPv6Address) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6Address")
 		}
 
-		// Simple Field (ipv6Address)
-		if pushErr := writeBuffer.PushContext("ipv6Address"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipv6Address")
-		}
-		_ipv6AddressErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6Address())
-		if popErr := writeBuffer.PopContext("ipv6Address"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipv6Address")
-		}
-		if _ipv6AddressErr != nil {
-			return errors.Wrap(_ipv6AddressErr, "Error serializing 'ipv6Address' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "ipv6Address", m.GetIpv6Address(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipv6Address' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

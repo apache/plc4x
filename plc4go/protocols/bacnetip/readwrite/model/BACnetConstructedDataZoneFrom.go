@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataZoneFrom) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataZoneFrom")
 		}
 
-		// Simple Field (zoneFrom)
-		if pushErr := writeBuffer.PushContext("zoneFrom"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneFrom")
-		}
-		_zoneFromErr := writeBuffer.WriteSerializable(ctx, m.GetZoneFrom())
-		if popErr := writeBuffer.PopContext("zoneFrom"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneFrom")
-		}
-		if _zoneFromErr != nil {
-			return errors.Wrap(_zoneFromErr, "Error serializing 'zoneFrom' field")
+		if err := WriteSimpleField[BACnetDeviceObjectReference](ctx, "zoneFrom", m.GetZoneFrom(), WriteComplex[BACnetDeviceObjectReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneFrom' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

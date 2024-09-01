@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPv6Mode")
 		}
 
-		// Simple Field (bacnetIpv6Mode)
-		if pushErr := writeBuffer.PushContext("bacnetIpv6Mode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bacnetIpv6Mode")
-		}
-		_bacnetIpv6ModeErr := writeBuffer.WriteSerializable(ctx, m.GetBacnetIpv6Mode())
-		if popErr := writeBuffer.PopContext("bacnetIpv6Mode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bacnetIpv6Mode")
-		}
-		if _bacnetIpv6ModeErr != nil {
-			return errors.Wrap(_bacnetIpv6ModeErr, "Error serializing 'bacnetIpv6Mode' field")
+		if err := WriteSimpleField[BACnetIPModeTagged](ctx, "bacnetIpv6Mode", m.GetBacnetIpv6Mode(), WriteComplex[BACnetIPModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bacnetIpv6Mode' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

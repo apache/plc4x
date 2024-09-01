@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesMaintenance) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesMaintenance")
 		}
 
-		// Simple Field (maintenance)
-		if pushErr := writeBuffer.PushContext("maintenance"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maintenance")
-		}
-		_maintenanceErr := writeBuffer.WriteSerializable(ctx, m.GetMaintenance())
-		if popErr := writeBuffer.PopContext("maintenance"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maintenance")
-		}
-		if _maintenanceErr != nil {
-			return errors.Wrap(_maintenanceErr, "Error serializing 'maintenance' field")
+		if err := WriteSimpleField[BACnetMaintenanceTagged](ctx, "maintenance", m.GetMaintenance(), WriteComplex[BACnetMaintenanceTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maintenance' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesMaintenance"); popErr != nil {

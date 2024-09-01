@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPacketReorderTime) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPacketReorderTime")
 		}
 
-		// Simple Field (packetReorderTime)
-		if pushErr := writeBuffer.PushContext("packetReorderTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for packetReorderTime")
-		}
-		_packetReorderTimeErr := writeBuffer.WriteSerializable(ctx, m.GetPacketReorderTime())
-		if popErr := writeBuffer.PopContext("packetReorderTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for packetReorderTime")
-		}
-		if _packetReorderTimeErr != nil {
-			return errors.Wrap(_packetReorderTimeErr, "Error serializing 'packetReorderTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "packetReorderTime", m.GetPacketReorderTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'packetReorderTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

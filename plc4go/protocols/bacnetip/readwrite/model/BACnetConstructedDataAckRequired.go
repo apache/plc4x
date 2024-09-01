@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAckRequired) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAckRequired")
 		}
 
-		// Simple Field (ackRequired)
-		if pushErr := writeBuffer.PushContext("ackRequired"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ackRequired")
-		}
-		_ackRequiredErr := writeBuffer.WriteSerializable(ctx, m.GetAckRequired())
-		if popErr := writeBuffer.PopContext("ackRequired"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ackRequired")
-		}
-		if _ackRequiredErr != nil {
-			return errors.Wrap(_ackRequiredErr, "Error serializing 'ackRequired' field")
+		if err := WriteSimpleField[BACnetEventTransitionBitsTagged](ctx, "ackRequired", m.GetAckRequired(), WriteComplex[BACnetEventTransitionBitsTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ackRequired' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

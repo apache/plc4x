@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNetworkInterfaceName")
 		}
 
-		// Simple Field (networkInterfaceName)
-		if pushErr := writeBuffer.PushContext("networkInterfaceName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for networkInterfaceName")
-		}
-		_networkInterfaceNameErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkInterfaceName())
-		if popErr := writeBuffer.PopContext("networkInterfaceName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for networkInterfaceName")
-		}
-		if _networkInterfaceNameErr != nil {
-			return errors.Wrap(_networkInterfaceNameErr, "Error serializing 'networkInterfaceName' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "networkInterfaceName", m.GetNetworkInterfaceName(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkInterfaceName' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

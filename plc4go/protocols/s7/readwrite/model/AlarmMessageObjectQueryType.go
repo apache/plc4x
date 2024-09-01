@@ -300,11 +300,8 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for AlarmMessageObjectQueryType")
 	}
 
-	// Simple Field (lengthDataset)
-	lengthDataset := uint8(m.GetLengthDataset())
-	_lengthDatasetErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("lengthDataset", 8, uint8((lengthDataset)))
-	if _lengthDatasetErr != nil {
-		return errors.Wrap(_lengthDatasetErr, "Error serializing 'lengthDataset' field")
+	if err := WriteSimpleField[uint8](ctx, "lengthDataset", m.GetLengthDataset(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'lengthDataset' field")
 	}
 
 	if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x0000), WriteUnsignedShort(writeBuffer, 16)); err != nil {
@@ -315,88 +312,32 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(err, "Error serializing 'variableSpec' field")
 	}
 
-	// Simple Field (eventState)
-	if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for eventState")
-	}
-	_eventStateErr := writeBuffer.WriteSerializable(ctx, m.GetEventState())
-	if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for eventState")
-	}
-	if _eventStateErr != nil {
-		return errors.Wrap(_eventStateErr, "Error serializing 'eventState' field")
+	if err := WriteSimpleField[State](ctx, "eventState", m.GetEventState(), WriteComplex[State](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventState' field")
 	}
 
-	// Simple Field (ackStateGoing)
-	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
-	}
-	_ackStateGoingErr := writeBuffer.WriteSerializable(ctx, m.GetAckStateGoing())
-	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ackStateGoing")
-	}
-	if _ackStateGoingErr != nil {
-		return errors.Wrap(_ackStateGoingErr, "Error serializing 'ackStateGoing' field")
+	if err := WriteSimpleField[State](ctx, "ackStateGoing", m.GetAckStateGoing(), WriteComplex[State](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ackStateGoing' field")
 	}
 
-	// Simple Field (ackStateComing)
-	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
-	}
-	_ackStateComingErr := writeBuffer.WriteSerializable(ctx, m.GetAckStateComing())
-	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ackStateComing")
-	}
-	if _ackStateComingErr != nil {
-		return errors.Wrap(_ackStateComingErr, "Error serializing 'ackStateComing' field")
+	if err := WriteSimpleField[State](ctx, "ackStateComing", m.GetAckStateComing(), WriteComplex[State](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ackStateComing' field")
 	}
 
-	// Simple Field (timeComing)
-	if pushErr := writeBuffer.PushContext("timeComing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeComing")
-	}
-	_timeComingErr := writeBuffer.WriteSerializable(ctx, m.GetTimeComing())
-	if popErr := writeBuffer.PopContext("timeComing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeComing")
-	}
-	if _timeComingErr != nil {
-		return errors.Wrap(_timeComingErr, "Error serializing 'timeComing' field")
+	if err := WriteSimpleField[DateAndTime](ctx, "timeComing", m.GetTimeComing(), WriteComplex[DateAndTime](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeComing' field")
 	}
 
-	// Simple Field (valueComing)
-	if pushErr := writeBuffer.PushContext("valueComing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for valueComing")
-	}
-	_valueComingErr := writeBuffer.WriteSerializable(ctx, m.GetValueComing())
-	if popErr := writeBuffer.PopContext("valueComing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for valueComing")
-	}
-	if _valueComingErr != nil {
-		return errors.Wrap(_valueComingErr, "Error serializing 'valueComing' field")
+	if err := WriteSimpleField[AssociatedValueType](ctx, "valueComing", m.GetValueComing(), WriteComplex[AssociatedValueType](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueComing' field")
 	}
 
-	// Simple Field (timeGoing)
-	if pushErr := writeBuffer.PushContext("timeGoing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeGoing")
-	}
-	_timeGoingErr := writeBuffer.WriteSerializable(ctx, m.GetTimeGoing())
-	if popErr := writeBuffer.PopContext("timeGoing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeGoing")
-	}
-	if _timeGoingErr != nil {
-		return errors.Wrap(_timeGoingErr, "Error serializing 'timeGoing' field")
+	if err := WriteSimpleField[DateAndTime](ctx, "timeGoing", m.GetTimeGoing(), WriteComplex[DateAndTime](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeGoing' field")
 	}
 
-	// Simple Field (valueGoing)
-	if pushErr := writeBuffer.PushContext("valueGoing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for valueGoing")
-	}
-	_valueGoingErr := writeBuffer.WriteSerializable(ctx, m.GetValueGoing())
-	if popErr := writeBuffer.PopContext("valueGoing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for valueGoing")
-	}
-	if _valueGoingErr != nil {
-		return errors.Wrap(_valueGoingErr, "Error serializing 'valueGoing' field")
+	if err := WriteSimpleField[AssociatedValueType](ctx, "valueGoing", m.GetValueGoing(), WriteComplex[AssociatedValueType](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueGoing' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageObjectQueryType"); popErr != nil {

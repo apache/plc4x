@@ -185,16 +185,8 @@ func (m *_SALDataMeasurement) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for SALDataMeasurement")
 		}
 
-		// Simple Field (measurementData)
-		if pushErr := writeBuffer.PushContext("measurementData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for measurementData")
-		}
-		_measurementDataErr := writeBuffer.WriteSerializable(ctx, m.GetMeasurementData())
-		if popErr := writeBuffer.PopContext("measurementData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for measurementData")
-		}
-		if _measurementDataErr != nil {
-			return errors.Wrap(_measurementDataErr, "Error serializing 'measurementData' field")
+		if err := WriteSimpleField[MeasurementData](ctx, "measurementData", m.GetMeasurementData(), WriteComplex[MeasurementData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'measurementData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataMeasurement"); popErr != nil {

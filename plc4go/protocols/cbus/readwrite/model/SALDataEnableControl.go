@@ -185,16 +185,8 @@ func (m *_SALDataEnableControl) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SALDataEnableControl")
 		}
 
-		// Simple Field (enableControlData)
-		if pushErr := writeBuffer.PushContext("enableControlData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enableControlData")
-		}
-		_enableControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetEnableControlData())
-		if popErr := writeBuffer.PopContext("enableControlData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enableControlData")
-		}
-		if _enableControlDataErr != nil {
-			return errors.Wrap(_enableControlDataErr, "Error serializing 'enableControlData' field")
+		if err := WriteSimpleField[EnableControlData](ctx, "enableControlData", m.GetEnableControlData(), WriteComplex[EnableControlData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enableControlData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataEnableControl"); popErr != nil {

@@ -202,28 +202,12 @@ func (m *_DescriptionResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for DescriptionResponse")
 		}
 
-		// Simple Field (dibDeviceInfo)
-		if pushErr := writeBuffer.PushContext("dibDeviceInfo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dibDeviceInfo")
-		}
-		_dibDeviceInfoErr := writeBuffer.WriteSerializable(ctx, m.GetDibDeviceInfo())
-		if popErr := writeBuffer.PopContext("dibDeviceInfo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dibDeviceInfo")
-		}
-		if _dibDeviceInfoErr != nil {
-			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
+		if err := WriteSimpleField[DIBDeviceInfo](ctx, "dibDeviceInfo", m.GetDibDeviceInfo(), WriteComplex[DIBDeviceInfo](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dibDeviceInfo' field")
 		}
 
-		// Simple Field (dibSuppSvcFamilies)
-		if pushErr := writeBuffer.PushContext("dibSuppSvcFamilies"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dibSuppSvcFamilies")
-		}
-		_dibSuppSvcFamiliesErr := writeBuffer.WriteSerializable(ctx, m.GetDibSuppSvcFamilies())
-		if popErr := writeBuffer.PopContext("dibSuppSvcFamilies"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dibSuppSvcFamilies")
-		}
-		if _dibSuppSvcFamiliesErr != nil {
-			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
+		if err := WriteSimpleField[DIBSuppSvcFamilies](ctx, "dibSuppSvcFamilies", m.GetDibSuppSvcFamilies(), WriteComplex[DIBSuppSvcFamilies](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DescriptionResponse"); popErr != nil {

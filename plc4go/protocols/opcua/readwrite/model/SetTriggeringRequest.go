@@ -289,48 +289,28 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SetTriggeringRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (subscriptionId)
-		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
-		if _subscriptionIdErr != nil {
-			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		// Simple Field (triggeringItemId)
-		triggeringItemId := uint32(m.GetTriggeringItemId())
-		_triggeringItemIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("triggeringItemId", 32, uint32((triggeringItemId)))
-		if _triggeringItemIdErr != nil {
-			return errors.Wrap(_triggeringItemIdErr, "Error serializing 'triggeringItemId' field")
+		if err := WriteSimpleField[uint32](ctx, "triggeringItemId", m.GetTriggeringItemId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'triggeringItemId' field")
 		}
 
-		// Simple Field (noOfLinksToAdd)
-		noOfLinksToAdd := int32(m.GetNoOfLinksToAdd())
-		_noOfLinksToAddErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLinksToAdd", 32, int32((noOfLinksToAdd)))
-		if _noOfLinksToAddErr != nil {
-			return errors.Wrap(_noOfLinksToAddErr, "Error serializing 'noOfLinksToAdd' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLinksToAdd", m.GetNoOfLinksToAdd(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLinksToAdd' field")
 		}
 
 		if err := WriteSimpleTypeArrayField(ctx, "linksToAdd", m.GetLinksToAdd(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'linksToAdd' field")
 		}
 
-		// Simple Field (noOfLinksToRemove)
-		noOfLinksToRemove := int32(m.GetNoOfLinksToRemove())
-		_noOfLinksToRemoveErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLinksToRemove", 32, int32((noOfLinksToRemove)))
-		if _noOfLinksToRemoveErr != nil {
-			return errors.Wrap(_noOfLinksToRemoveErr, "Error serializing 'noOfLinksToRemove' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLinksToRemove", m.GetNoOfLinksToRemove(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLinksToRemove' field")
 		}
 
 		if err := WriteSimpleTypeArrayField(ctx, "linksToRemove", m.GetLinksToRemove(), WriteUnsignedInt(writeBuffer, 32)); err != nil {

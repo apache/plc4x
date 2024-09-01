@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLightingOutputFeedbackValue) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingOutputFeedbackValue")
 		}
 
-		// Simple Field (feedbackValue)
-		if pushErr := writeBuffer.PushContext("feedbackValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for feedbackValue")
-		}
-		_feedbackValueErr := writeBuffer.WriteSerializable(ctx, m.GetFeedbackValue())
-		if popErr := writeBuffer.PopContext("feedbackValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for feedbackValue")
-		}
-		if _feedbackValueErr != nil {
-			return errors.Wrap(_feedbackValueErr, "Error serializing 'feedbackValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "feedbackValue", m.GetFeedbackValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'feedbackValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

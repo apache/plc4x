@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesBinaryLightningValue")
 		}
 
-		// Simple Field (binaryLightningValue)
-		if pushErr := writeBuffer.PushContext("binaryLightningValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for binaryLightningValue")
-		}
-		_binaryLightningValueErr := writeBuffer.WriteSerializable(ctx, m.GetBinaryLightningValue())
-		if popErr := writeBuffer.PopContext("binaryLightningValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for binaryLightningValue")
-		}
-		if _binaryLightningValueErr != nil {
-			return errors.Wrap(_binaryLightningValueErr, "Error serializing 'binaryLightningValue' field")
+		if err := WriteSimpleField[BACnetBinaryLightingPVTagged](ctx, "binaryLightningValue", m.GetBinaryLightningValue(), WriteComplex[BACnetBinaryLightingPVTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'binaryLightningValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesBinaryLightningValue"); popErr != nil {

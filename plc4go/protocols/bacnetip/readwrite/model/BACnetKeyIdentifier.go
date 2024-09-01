@@ -168,28 +168,12 @@ func (m *_BACnetKeyIdentifier) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for BACnetKeyIdentifier")
 	}
 
-	// Simple Field (algorithm)
-	if pushErr := writeBuffer.PushContext("algorithm"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for algorithm")
-	}
-	_algorithmErr := writeBuffer.WriteSerializable(ctx, m.GetAlgorithm())
-	if popErr := writeBuffer.PopContext("algorithm"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for algorithm")
-	}
-	if _algorithmErr != nil {
-		return errors.Wrap(_algorithmErr, "Error serializing 'algorithm' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "algorithm", m.GetAlgorithm(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'algorithm' field")
 	}
 
-	// Simple Field (keyId)
-	if pushErr := writeBuffer.PushContext("keyId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for keyId")
-	}
-	_keyIdErr := writeBuffer.WriteSerializable(ctx, m.GetKeyId())
-	if popErr := writeBuffer.PopContext("keyId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for keyId")
-	}
-	if _keyIdErr != nil {
-		return errors.Wrap(_keyIdErr, "Error serializing 'keyId' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "keyId", m.GetKeyId(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'keyId' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetKeyIdentifier"); popErr != nil {

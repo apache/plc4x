@@ -185,16 +185,8 @@ func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for SALDataIrrigationControl")
 		}
 
-		// Simple Field (irrigationControlData)
-		if pushErr := writeBuffer.PushContext("irrigationControlData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for irrigationControlData")
-		}
-		_irrigationControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetIrrigationControlData())
-		if popErr := writeBuffer.PopContext("irrigationControlData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for irrigationControlData")
-		}
-		if _irrigationControlDataErr != nil {
-			return errors.Wrap(_irrigationControlDataErr, "Error serializing 'irrigationControlData' field")
+		if err := WriteSimpleField[LightingData](ctx, "irrigationControlData", m.GetIrrigationControlData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'irrigationControlData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataIrrigationControl"); popErr != nil {

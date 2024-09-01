@@ -184,40 +184,16 @@ func (m *_BACnetAuthenticationFactor) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationFactor")
 	}
 
-	// Simple Field (formatType)
-	if pushErr := writeBuffer.PushContext("formatType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for formatType")
-	}
-	_formatTypeErr := writeBuffer.WriteSerializable(ctx, m.GetFormatType())
-	if popErr := writeBuffer.PopContext("formatType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for formatType")
-	}
-	if _formatTypeErr != nil {
-		return errors.Wrap(_formatTypeErr, "Error serializing 'formatType' field")
+	if err := WriteSimpleField[BACnetAuthenticationFactorTypeTagged](ctx, "formatType", m.GetFormatType(), WriteComplex[BACnetAuthenticationFactorTypeTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'formatType' field")
 	}
 
-	// Simple Field (formatClass)
-	if pushErr := writeBuffer.PushContext("formatClass"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for formatClass")
-	}
-	_formatClassErr := writeBuffer.WriteSerializable(ctx, m.GetFormatClass())
-	if popErr := writeBuffer.PopContext("formatClass"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for formatClass")
-	}
-	if _formatClassErr != nil {
-		return errors.Wrap(_formatClassErr, "Error serializing 'formatClass' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "formatClass", m.GetFormatClass(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'formatClass' field")
 	}
 
-	// Simple Field (value)
-	if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for value")
-	}
-	_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-	if popErr := writeBuffer.PopContext("value"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for value")
-	}
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteSimpleField[BACnetContextTagOctetString](ctx, "value", m.GetValue(), WriteComplex[BACnetContextTagOctetString](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAuthenticationFactor"); popErr != nil {

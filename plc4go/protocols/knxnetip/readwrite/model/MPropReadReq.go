@@ -253,39 +253,24 @@ func (m *_MPropReadReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for MPropReadReq")
 		}
 
-		// Simple Field (interfaceObjectType)
-		interfaceObjectType := uint16(m.GetInterfaceObjectType())
-		_interfaceObjectTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("interfaceObjectType", 16, uint16((interfaceObjectType)))
-		if _interfaceObjectTypeErr != nil {
-			return errors.Wrap(_interfaceObjectTypeErr, "Error serializing 'interfaceObjectType' field")
+		if err := WriteSimpleField[uint16](ctx, "interfaceObjectType", m.GetInterfaceObjectType(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'interfaceObjectType' field")
 		}
 
-		// Simple Field (objectInstance)
-		objectInstance := uint8(m.GetObjectInstance())
-		_objectInstanceErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectInstance", 8, uint8((objectInstance)))
-		if _objectInstanceErr != nil {
-			return errors.Wrap(_objectInstanceErr, "Error serializing 'objectInstance' field")
+		if err := WriteSimpleField[uint8](ctx, "objectInstance", m.GetObjectInstance(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectInstance' field")
 		}
 
-		// Simple Field (propertyId)
-		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
-		if _propertyIdErr != nil {
-			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
+		if err := WriteSimpleField[uint8](ctx, "propertyId", m.GetPropertyId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyId' field")
 		}
 
-		// Simple Field (numberOfElements)
-		numberOfElements := uint8(m.GetNumberOfElements())
-		_numberOfElementsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfElements", 4, uint8((numberOfElements)))
-		if _numberOfElementsErr != nil {
-			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
+		if err := WriteSimpleField[uint8](ctx, "numberOfElements", m.GetNumberOfElements(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfElements' field")
 		}
 
-		// Simple Field (startIndex)
-		startIndex := uint16(m.GetStartIndex())
-		_startIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("startIndex", 12, uint16((startIndex)))
-		if _startIndexErr != nil {
-			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
+		if err := WriteSimpleField[uint16](ctx, "startIndex", m.GetStartIndex(), WriteUnsignedShort(writeBuffer, 12)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startIndex' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MPropReadReq"); popErr != nil {

@@ -245,46 +245,24 @@ func (m *_RelativePathElement) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for RelativePathElement")
 		}
 
-		// Simple Field (referenceTypeId)
-		if pushErr := writeBuffer.PushContext("referenceTypeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceTypeId")
-		}
-		_referenceTypeIdErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceTypeId())
-		if popErr := writeBuffer.PopContext("referenceTypeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceTypeId")
-		}
-		if _referenceTypeIdErr != nil {
-			return errors.Wrap(_referenceTypeIdErr, "Error serializing 'referenceTypeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "referenceTypeId", m.GetReferenceTypeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceTypeId' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 6)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (includeSubtypes)
-		includeSubtypes := bool(m.GetIncludeSubtypes())
-		_includeSubtypesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("includeSubtypes", (includeSubtypes))
-		if _includeSubtypesErr != nil {
-			return errors.Wrap(_includeSubtypesErr, "Error serializing 'includeSubtypes' field")
+		if err := WriteSimpleField[bool](ctx, "includeSubtypes", m.GetIncludeSubtypes(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'includeSubtypes' field")
 		}
 
-		// Simple Field (isInverse)
-		isInverse := bool(m.GetIsInverse())
-		_isInverseErr := /*TODO: migrate me*/ writeBuffer.WriteBit("isInverse", (isInverse))
-		if _isInverseErr != nil {
-			return errors.Wrap(_isInverseErr, "Error serializing 'isInverse' field")
+		if err := WriteSimpleField[bool](ctx, "isInverse", m.GetIsInverse(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isInverse' field")
 		}
 
-		// Simple Field (targetName)
-		if pushErr := writeBuffer.PushContext("targetName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetName")
-		}
-		_targetNameErr := writeBuffer.WriteSerializable(ctx, m.GetTargetName())
-		if popErr := writeBuffer.PopContext("targetName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetName")
-		}
-		if _targetNameErr != nil {
-			return errors.Wrap(_targetNameErr, "Error serializing 'targetName' field")
+		if err := WriteSimpleField[QualifiedName](ctx, "targetName", m.GetTargetName(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RelativePathElement"); popErr != nil {

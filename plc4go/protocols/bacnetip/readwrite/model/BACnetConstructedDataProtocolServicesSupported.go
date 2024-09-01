@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolServicesSupported")
 		}
 
-		// Simple Field (protocolServicesSupported)
-		if pushErr := writeBuffer.PushContext("protocolServicesSupported"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolServicesSupported")
-		}
-		_protocolServicesSupportedErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolServicesSupported())
-		if popErr := writeBuffer.PopContext("protocolServicesSupported"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolServicesSupported")
-		}
-		if _protocolServicesSupportedErr != nil {
-			return errors.Wrap(_protocolServicesSupportedErr, "Error serializing 'protocolServicesSupported' field")
+		if err := WriteSimpleField[BACnetServicesSupportedTagged](ctx, "protocolServicesSupported", m.GetProtocolServicesSupported(), WriteComplex[BACnetServicesSupportedTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolServicesSupported' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

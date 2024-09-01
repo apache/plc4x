@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesNetworkType) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesNetworkType")
 		}
 
-		// Simple Field (networkType)
-		if pushErr := writeBuffer.PushContext("networkType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for networkType")
-		}
-		_networkTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkType())
-		if popErr := writeBuffer.PopContext("networkType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for networkType")
-		}
-		if _networkTypeErr != nil {
-			return errors.Wrap(_networkTypeErr, "Error serializing 'networkType' field")
+		if err := WriteSimpleField[BACnetNetworkTypeTagged](ctx, "networkType", m.GetNetworkType(), WriteComplex[BACnetNetworkTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesNetworkType"); popErr != nil {

@@ -209,11 +209,8 @@ func (m *_NLMInitializeRoutingTableAck) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for NLMInitializeRoutingTableAck")
 		}
 
-		// Simple Field (numberOfPorts)
-		numberOfPorts := uint8(m.GetNumberOfPorts())
-		_numberOfPortsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfPorts", 8, uint8((numberOfPorts)))
-		if _numberOfPortsErr != nil {
-			return errors.Wrap(_numberOfPortsErr, "Error serializing 'numberOfPorts' field")
+		if err := WriteSimpleField[uint8](ctx, "numberOfPorts", m.GetNumberOfPorts(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfPorts' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "portMappings", m.GetPortMappings(), writeBuffer); err != nil {

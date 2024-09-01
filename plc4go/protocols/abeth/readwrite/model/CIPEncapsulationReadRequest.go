@@ -190,16 +190,8 @@ func (m *_CIPEncapsulationReadRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for CIPEncapsulationReadRequest")
 		}
 
-		// Simple Field (request)
-		if pushErr := writeBuffer.PushContext("request"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for request")
-		}
-		_requestErr := writeBuffer.WriteSerializable(ctx, m.GetRequest())
-		if popErr := writeBuffer.PopContext("request"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for request")
-		}
-		if _requestErr != nil {
-			return errors.Wrap(_requestErr, "Error serializing 'request' field")
+		if err := WriteSimpleField[DF1RequestMessage](ctx, "request", m.GetRequest(), WriteComplex[DF1RequestMessage](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'request' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CIPEncapsulationReadRequest"); popErr != nil {

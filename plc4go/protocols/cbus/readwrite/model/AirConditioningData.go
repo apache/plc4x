@@ -258,16 +258,8 @@ func (pm *_AirConditioningData) SerializeParent(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for AirConditioningData")
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
+	if err := WriteSimpleEnumField[AirConditioningCommandTypeContainer](ctx, "commandTypeContainer", "AirConditioningCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[AirConditioningCommandTypeContainer, uint8](AirConditioningCommandTypeContainer.GetValue, AirConditioningCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
 	commandType := m.GetCommandType()

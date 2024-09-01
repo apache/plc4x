@@ -250,39 +250,24 @@ func (m *_ClockAndTimekeepingDataUpdateDate) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for ClockAndTimekeepingDataUpdateDate")
 		}
 
-		// Simple Field (yearHigh)
-		yearHigh := byte(m.GetYearHigh())
-		_yearHighErr := /*TODO: migrate me*/ writeBuffer.WriteByte("yearHigh", (yearHigh))
-		if _yearHighErr != nil {
-			return errors.Wrap(_yearHighErr, "Error serializing 'yearHigh' field")
+		if err := WriteSimpleField[byte](ctx, "yearHigh", m.GetYearHigh(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'yearHigh' field")
 		}
 
-		// Simple Field (yearLow)
-		yearLow := byte(m.GetYearLow())
-		_yearLowErr := /*TODO: migrate me*/ writeBuffer.WriteByte("yearLow", (yearLow))
-		if _yearLowErr != nil {
-			return errors.Wrap(_yearLowErr, "Error serializing 'yearLow' field")
+		if err := WriteSimpleField[byte](ctx, "yearLow", m.GetYearLow(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'yearLow' field")
 		}
 
-		// Simple Field (month)
-		month := uint8(m.GetMonth())
-		_monthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 8, uint8((month)))
-		if _monthErr != nil {
-			return errors.Wrap(_monthErr, "Error serializing 'month' field")
+		if err := WriteSimpleField[uint8](ctx, "month", m.GetMonth(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'month' field")
 		}
 
-		// Simple Field (day)
-		day := uint8(m.GetDay())
-		_dayErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("day", 8, uint8((day)))
-		if _dayErr != nil {
-			return errors.Wrap(_dayErr, "Error serializing 'day' field")
+		if err := WriteSimpleField[uint8](ctx, "day", m.GetDay(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'day' field")
 		}
 
-		// Simple Field (dayOfWeek)
-		dayOfWeek := uint8(m.GetDayOfWeek())
-		_dayOfWeekErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
-		if _dayOfWeekErr != nil {
-			return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
+		if err := WriteSimpleField[uint8](ctx, "dayOfWeek", m.GetDayOfWeek(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dayOfWeek' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ClockAndTimekeepingDataUpdateDate"); popErr != nil {

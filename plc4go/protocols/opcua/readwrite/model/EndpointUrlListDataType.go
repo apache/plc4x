@@ -207,11 +207,8 @@ func (m *_EndpointUrlListDataType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for EndpointUrlListDataType")
 		}
 
-		// Simple Field (noOfEndpointUrlList)
-		noOfEndpointUrlList := int32(m.GetNoOfEndpointUrlList())
-		_noOfEndpointUrlListErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfEndpointUrlList", 32, int32((noOfEndpointUrlList)))
-		if _noOfEndpointUrlListErr != nil {
-			return errors.Wrap(_noOfEndpointUrlListErr, "Error serializing 'noOfEndpointUrlList' field")
+		if err := WriteSimpleField[int32](ctx, "noOfEndpointUrlList", m.GetNoOfEndpointUrlList(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfEndpointUrlList' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "endpointUrlList", m.GetEndpointUrlList(), writeBuffer); err != nil {

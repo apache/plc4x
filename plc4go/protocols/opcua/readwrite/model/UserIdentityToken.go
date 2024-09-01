@@ -213,28 +213,12 @@ func (m *_UserIdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(err, "Error serializing 'policyLength' field")
 		}
 
-		// Simple Field (policyId)
-		if pushErr := writeBuffer.PushContext("policyId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for policyId")
-		}
-		_policyIdErr := writeBuffer.WriteSerializable(ctx, m.GetPolicyId())
-		if popErr := writeBuffer.PopContext("policyId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for policyId")
-		}
-		if _policyIdErr != nil {
-			return errors.Wrap(_policyIdErr, "Error serializing 'policyId' field")
+		if err := WriteSimpleField[PascalString](ctx, "policyId", m.GetPolicyId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'policyId' field")
 		}
 
-		// Simple Field (userIdentityTokenDefinition)
-		if pushErr := writeBuffer.PushContext("userIdentityTokenDefinition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userIdentityTokenDefinition")
-		}
-		_userIdentityTokenDefinitionErr := writeBuffer.WriteSerializable(ctx, m.GetUserIdentityTokenDefinition())
-		if popErr := writeBuffer.PopContext("userIdentityTokenDefinition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userIdentityTokenDefinition")
-		}
-		if _userIdentityTokenDefinitionErr != nil {
-			return errors.Wrap(_userIdentityTokenDefinitionErr, "Error serializing 'userIdentityTokenDefinition' field")
+		if err := WriteSimpleField[UserIdentityTokenDefinition](ctx, "userIdentityTokenDefinition", m.GetUserIdentityTokenDefinition(), WriteComplex[UserIdentityTokenDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userIdentityTokenDefinition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UserIdentityToken"); popErr != nil {

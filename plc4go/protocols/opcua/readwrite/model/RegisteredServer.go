@@ -361,97 +361,48 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for RegisteredServer")
 		}
 
-		// Simple Field (serverUri)
-		if pushErr := writeBuffer.PushContext("serverUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverUri")
-		}
-		_serverUriErr := writeBuffer.WriteSerializable(ctx, m.GetServerUri())
-		if popErr := writeBuffer.PopContext("serverUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverUri")
-		}
-		if _serverUriErr != nil {
-			return errors.Wrap(_serverUriErr, "Error serializing 'serverUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverUri' field")
 		}
 
-		// Simple Field (productUri)
-		if pushErr := writeBuffer.PushContext("productUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for productUri")
-		}
-		_productUriErr := writeBuffer.WriteSerializable(ctx, m.GetProductUri())
-		if popErr := writeBuffer.PopContext("productUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for productUri")
-		}
-		if _productUriErr != nil {
-			return errors.Wrap(_productUriErr, "Error serializing 'productUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "productUri", m.GetProductUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'productUri' field")
 		}
 
-		// Simple Field (noOfServerNames)
-		noOfServerNames := int32(m.GetNoOfServerNames())
-		_noOfServerNamesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerNames", 32, int32((noOfServerNames)))
-		if _noOfServerNamesErr != nil {
-			return errors.Wrap(_noOfServerNamesErr, "Error serializing 'noOfServerNames' field")
+		if err := WriteSimpleField[int32](ctx, "noOfServerNames", m.GetNoOfServerNames(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServerNames' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "serverNames", m.GetServerNames(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverNames' field")
 		}
 
-		// Simple Field (serverType)
-		if pushErr := writeBuffer.PushContext("serverType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverType")
-		}
-		_serverTypeErr := writeBuffer.WriteSerializable(ctx, m.GetServerType())
-		if popErr := writeBuffer.PopContext("serverType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverType")
-		}
-		if _serverTypeErr != nil {
-			return errors.Wrap(_serverTypeErr, "Error serializing 'serverType' field")
+		if err := WriteSimpleEnumField[ApplicationType](ctx, "serverType", "ApplicationType", m.GetServerType(), WriteEnum[ApplicationType, uint32](ApplicationType.GetValue, ApplicationType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverType' field")
 		}
 
-		// Simple Field (gatewayServerUri)
-		if pushErr := writeBuffer.PushContext("gatewayServerUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for gatewayServerUri")
-		}
-		_gatewayServerUriErr := writeBuffer.WriteSerializable(ctx, m.GetGatewayServerUri())
-		if popErr := writeBuffer.PopContext("gatewayServerUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for gatewayServerUri")
-		}
-		if _gatewayServerUriErr != nil {
-			return errors.Wrap(_gatewayServerUriErr, "Error serializing 'gatewayServerUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "gatewayServerUri", m.GetGatewayServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'gatewayServerUri' field")
 		}
 
-		// Simple Field (noOfDiscoveryUrls)
-		noOfDiscoveryUrls := int32(m.GetNoOfDiscoveryUrls())
-		_noOfDiscoveryUrlsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiscoveryUrls", 32, int32((noOfDiscoveryUrls)))
-		if _noOfDiscoveryUrlsErr != nil {
-			return errors.Wrap(_noOfDiscoveryUrlsErr, "Error serializing 'noOfDiscoveryUrls' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDiscoveryUrls", m.GetNoOfDiscoveryUrls(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDiscoveryUrls' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "discoveryUrls", m.GetDiscoveryUrls(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'discoveryUrls' field")
 		}
 
-		// Simple Field (semaphoreFilePath)
-		if pushErr := writeBuffer.PushContext("semaphoreFilePath"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for semaphoreFilePath")
-		}
-		_semaphoreFilePathErr := writeBuffer.WriteSerializable(ctx, m.GetSemaphoreFilePath())
-		if popErr := writeBuffer.PopContext("semaphoreFilePath"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for semaphoreFilePath")
-		}
-		if _semaphoreFilePathErr != nil {
-			return errors.Wrap(_semaphoreFilePathErr, "Error serializing 'semaphoreFilePath' field")
+		if err := WriteSimpleField[PascalString](ctx, "semaphoreFilePath", m.GetSemaphoreFilePath(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'semaphoreFilePath' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (isOnline)
-		isOnline := bool(m.GetIsOnline())
-		_isOnlineErr := /*TODO: migrate me*/ writeBuffer.WriteBit("isOnline", (isOnline))
-		if _isOnlineErr != nil {
-			return errors.Wrap(_isOnlineErr, "Error serializing 'isOnline' field")
+		if err := WriteSimpleField[bool](ctx, "isOnline", m.GetIsOnline(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isOnline' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RegisteredServer"); popErr != nil {

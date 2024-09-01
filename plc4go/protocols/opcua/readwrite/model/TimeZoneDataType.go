@@ -211,22 +211,16 @@ func (m *_TimeZoneDataType) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for TimeZoneDataType")
 		}
 
-		// Simple Field (offset)
-		offset := int16(m.GetOffset())
-		_offsetErr := /*TODO: migrate me*/ writeBuffer.WriteInt16("offset", 16, int16((offset)))
-		if _offsetErr != nil {
-			return errors.Wrap(_offsetErr, "Error serializing 'offset' field")
+		if err := WriteSimpleField[int16](ctx, "offset", m.GetOffset(), WriteSignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'offset' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (daylightSavingInOffset)
-		daylightSavingInOffset := bool(m.GetDaylightSavingInOffset())
-		_daylightSavingInOffsetErr := /*TODO: migrate me*/ writeBuffer.WriteBit("daylightSavingInOffset", (daylightSavingInOffset))
-		if _daylightSavingInOffsetErr != nil {
-			return errors.Wrap(_daylightSavingInOffsetErr, "Error serializing 'daylightSavingInOffset' field")
+		if err := WriteSimpleField[bool](ctx, "daylightSavingInOffset", m.GetDaylightSavingInOffset(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'daylightSavingInOffset' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TimeZoneDataType"); popErr != nil {

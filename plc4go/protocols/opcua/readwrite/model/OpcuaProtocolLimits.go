@@ -200,32 +200,20 @@ func (m *_OpcuaProtocolLimits) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for OpcuaProtocolLimits")
 	}
 
-	// Simple Field (receiveBufferSize)
-	receiveBufferSize := uint32(m.GetReceiveBufferSize())
-	_receiveBufferSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("receiveBufferSize", 32, uint32((receiveBufferSize)))
-	if _receiveBufferSizeErr != nil {
-		return errors.Wrap(_receiveBufferSizeErr, "Error serializing 'receiveBufferSize' field")
+	if err := WriteSimpleField[uint32](ctx, "receiveBufferSize", m.GetReceiveBufferSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'receiveBufferSize' field")
 	}
 
-	// Simple Field (sendBufferSize)
-	sendBufferSize := uint32(m.GetSendBufferSize())
-	_sendBufferSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sendBufferSize", 32, uint32((sendBufferSize)))
-	if _sendBufferSizeErr != nil {
-		return errors.Wrap(_sendBufferSizeErr, "Error serializing 'sendBufferSize' field")
+	if err := WriteSimpleField[uint32](ctx, "sendBufferSize", m.GetSendBufferSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sendBufferSize' field")
 	}
 
-	// Simple Field (maxMessageSize)
-	maxMessageSize := uint32(m.GetMaxMessageSize())
-	_maxMessageSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxMessageSize", 32, uint32((maxMessageSize)))
-	if _maxMessageSizeErr != nil {
-		return errors.Wrap(_maxMessageSizeErr, "Error serializing 'maxMessageSize' field")
+	if err := WriteSimpleField[uint32](ctx, "maxMessageSize", m.GetMaxMessageSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'maxMessageSize' field")
 	}
 
-	// Simple Field (maxChunkCount)
-	maxChunkCount := uint32(m.GetMaxChunkCount())
-	_maxChunkCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxChunkCount", 32, uint32((maxChunkCount)))
-	if _maxChunkCountErr != nil {
-		return errors.Wrap(_maxChunkCountErr, "Error serializing 'maxChunkCount' field")
+	if err := WriteSimpleField[uint32](ctx, "maxChunkCount", m.GetMaxChunkCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'maxChunkCount' field")
 	}
 
 	if popErr := writeBuffer.PopContext("OpcuaProtocolLimits"); popErr != nil {

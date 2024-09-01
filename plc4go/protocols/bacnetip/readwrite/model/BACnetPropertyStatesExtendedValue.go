@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesExtendedValue) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesExtendedValue")
 		}
 
-		// Simple Field (extendedValue)
-		if pushErr := writeBuffer.PushContext("extendedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for extendedValue")
-		}
-		_extendedValueErr := writeBuffer.WriteSerializable(ctx, m.GetExtendedValue())
-		if popErr := writeBuffer.PopContext("extendedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for extendedValue")
-		}
-		if _extendedValueErr != nil {
-			return errors.Wrap(_extendedValueErr, "Error serializing 'extendedValue' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedValue", m.GetExtendedValue(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'extendedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesExtendedValue"); popErr != nil {

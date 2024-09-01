@@ -251,49 +251,24 @@ func (m *_MonitoredItemCreateResult) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for MonitoredItemCreateResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (monitoredItemId)
-		monitoredItemId := uint32(m.GetMonitoredItemId())
-		_monitoredItemIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("monitoredItemId", 32, uint32((monitoredItemId)))
-		if _monitoredItemIdErr != nil {
-			return errors.Wrap(_monitoredItemIdErr, "Error serializing 'monitoredItemId' field")
+		if err := WriteSimpleField[uint32](ctx, "monitoredItemId", m.GetMonitoredItemId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoredItemId' field")
 		}
 
-		// Simple Field (revisedSamplingInterval)
-		revisedSamplingInterval := float64(m.GetRevisedSamplingInterval())
-		_revisedSamplingIntervalErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("revisedSamplingInterval", 64, (revisedSamplingInterval))
-		if _revisedSamplingIntervalErr != nil {
-			return errors.Wrap(_revisedSamplingIntervalErr, "Error serializing 'revisedSamplingInterval' field")
+		if err := WriteSimpleField[float64](ctx, "revisedSamplingInterval", m.GetRevisedSamplingInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedSamplingInterval' field")
 		}
 
-		// Simple Field (revisedQueueSize)
-		revisedQueueSize := uint32(m.GetRevisedQueueSize())
-		_revisedQueueSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("revisedQueueSize", 32, uint32((revisedQueueSize)))
-		if _revisedQueueSizeErr != nil {
-			return errors.Wrap(_revisedQueueSizeErr, "Error serializing 'revisedQueueSize' field")
+		if err := WriteSimpleField[uint32](ctx, "revisedQueueSize", m.GetRevisedQueueSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedQueueSize' field")
 		}
 
-		// Simple Field (filterResult)
-		if pushErr := writeBuffer.PushContext("filterResult"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filterResult")
-		}
-		_filterResultErr := writeBuffer.WriteSerializable(ctx, m.GetFilterResult())
-		if popErr := writeBuffer.PopContext("filterResult"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filterResult")
-		}
-		if _filterResultErr != nil {
-			return errors.Wrap(_filterResultErr, "Error serializing 'filterResult' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "filterResult", m.GetFilterResult(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'filterResult' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredItemCreateResult"); popErr != nil {

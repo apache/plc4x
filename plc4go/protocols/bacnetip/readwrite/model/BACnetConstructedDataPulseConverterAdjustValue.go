@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPulseConverterAdjustValue")
 		}
 
-		// Simple Field (adjustValue)
-		if pushErr := writeBuffer.PushContext("adjustValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for adjustValue")
-		}
-		_adjustValueErr := writeBuffer.WriteSerializable(ctx, m.GetAdjustValue())
-		if popErr := writeBuffer.PopContext("adjustValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for adjustValue")
-		}
-		if _adjustValueErr != nil {
-			return errors.Wrap(_adjustValueErr, "Error serializing 'adjustValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "adjustValue", m.GetAdjustValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'adjustValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

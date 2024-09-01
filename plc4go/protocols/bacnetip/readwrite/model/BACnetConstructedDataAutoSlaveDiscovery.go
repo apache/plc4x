@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAutoSlaveDiscovery")
 		}
 
-		// Simple Field (autoSlaveDiscovery)
-		if pushErr := writeBuffer.PushContext("autoSlaveDiscovery"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for autoSlaveDiscovery")
-		}
-		_autoSlaveDiscoveryErr := writeBuffer.WriteSerializable(ctx, m.GetAutoSlaveDiscovery())
-		if popErr := writeBuffer.PopContext("autoSlaveDiscovery"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for autoSlaveDiscovery")
-		}
-		if _autoSlaveDiscoveryErr != nil {
-			return errors.Wrap(_autoSlaveDiscoveryErr, "Error serializing 'autoSlaveDiscovery' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "autoSlaveDiscovery", m.GetAutoSlaveDiscovery(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'autoSlaveDiscovery' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -200,16 +200,8 @@ func (m *_APDUUnconfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (serviceRequest)
-		if pushErr := writeBuffer.PushContext("serviceRequest"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serviceRequest")
-		}
-		_serviceRequestErr := writeBuffer.WriteSerializable(ctx, m.GetServiceRequest())
-		if popErr := writeBuffer.PopContext("serviceRequest"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serviceRequest")
-		}
-		if _serviceRequestErr != nil {
-			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
+		if err := WriteSimpleField[BACnetUnconfirmedServiceRequest](ctx, "serviceRequest", m.GetServiceRequest(), WriteComplex[BACnetUnconfirmedServiceRequest](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceRequest' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUUnconfirmedRequest"); popErr != nil {

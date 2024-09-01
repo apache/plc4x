@@ -206,23 +206,12 @@ func (m *_OpcuaAcknowledgeResponse) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for OpcuaAcknowledgeResponse")
 		}
 
-		// Simple Field (version)
-		version := uint32(m.GetVersion())
-		_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("version", 32, uint32((version)))
-		if _versionErr != nil {
-			return errors.Wrap(_versionErr, "Error serializing 'version' field")
+		if err := WriteSimpleField[uint32](ctx, "version", m.GetVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'version' field")
 		}
 
-		// Simple Field (limits)
-		if pushErr := writeBuffer.PushContext("limits"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for limits")
-		}
-		_limitsErr := writeBuffer.WriteSerializable(ctx, m.GetLimits())
-		if popErr := writeBuffer.PopContext("limits"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for limits")
-		}
-		if _limitsErr != nil {
-			return errors.Wrap(_limitsErr, "Error serializing 'limits' field")
+		if err := WriteSimpleField[OpcuaProtocolLimits](ctx, "limits", m.GetLimits(), WriteComplex[OpcuaProtocolLimits](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'limits' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaAcknowledgeResponse"); popErr != nil {

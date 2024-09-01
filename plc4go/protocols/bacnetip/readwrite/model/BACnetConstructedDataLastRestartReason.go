@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastRestartReason) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastRestartReason")
 		}
 
-		// Simple Field (lastRestartReason)
-		if pushErr := writeBuffer.PushContext("lastRestartReason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastRestartReason")
-		}
-		_lastRestartReasonErr := writeBuffer.WriteSerializable(ctx, m.GetLastRestartReason())
-		if popErr := writeBuffer.PopContext("lastRestartReason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastRestartReason")
-		}
-		if _lastRestartReasonErr != nil {
-			return errors.Wrap(_lastRestartReasonErr, "Error serializing 'lastRestartReason' field")
+		if err := WriteSimpleField[BACnetRestartReasonTagged](ctx, "lastRestartReason", m.GetLastRestartReason(), WriteComplex[BACnetRestartReasonTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastRestartReason' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

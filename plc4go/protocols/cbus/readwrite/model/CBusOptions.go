@@ -280,67 +280,40 @@ func (m *_CBusOptions) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for CBusOptions")
 	}
 
-	// Simple Field (connect)
-	connect := bool(m.GetConnect())
-	_connectErr := /*TODO: migrate me*/ writeBuffer.WriteBit("connect", (connect))
-	if _connectErr != nil {
-		return errors.Wrap(_connectErr, "Error serializing 'connect' field")
+	if err := WriteSimpleField[bool](ctx, "connect", m.GetConnect(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'connect' field")
 	}
 
-	// Simple Field (smart)
-	smart := bool(m.GetSmart())
-	_smartErr := /*TODO: migrate me*/ writeBuffer.WriteBit("smart", (smart))
-	if _smartErr != nil {
-		return errors.Wrap(_smartErr, "Error serializing 'smart' field")
+	if err := WriteSimpleField[bool](ctx, "smart", m.GetSmart(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'smart' field")
 	}
 
-	// Simple Field (idmon)
-	idmon := bool(m.GetIdmon())
-	_idmonErr := /*TODO: migrate me*/ writeBuffer.WriteBit("idmon", (idmon))
-	if _idmonErr != nil {
-		return errors.Wrap(_idmonErr, "Error serializing 'idmon' field")
+	if err := WriteSimpleField[bool](ctx, "idmon", m.GetIdmon(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'idmon' field")
 	}
 
-	// Simple Field (exstat)
-	exstat := bool(m.GetExstat())
-	_exstatErr := /*TODO: migrate me*/ writeBuffer.WriteBit("exstat", (exstat))
-	if _exstatErr != nil {
-		return errors.Wrap(_exstatErr, "Error serializing 'exstat' field")
+	if err := WriteSimpleField[bool](ctx, "exstat", m.GetExstat(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'exstat' field")
 	}
 
-	// Simple Field (monitor)
-	monitor := bool(m.GetMonitor())
-	_monitorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("monitor", (monitor))
-	if _monitorErr != nil {
-		return errors.Wrap(_monitorErr, "Error serializing 'monitor' field")
+	if err := WriteSimpleField[bool](ctx, "monitor", m.GetMonitor(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monitor' field")
 	}
 
-	// Simple Field (monall)
-	monall := bool(m.GetMonall())
-	_monallErr := /*TODO: migrate me*/ writeBuffer.WriteBit("monall", (monall))
-	if _monallErr != nil {
-		return errors.Wrap(_monallErr, "Error serializing 'monall' field")
+	if err := WriteSimpleField[bool](ctx, "monall", m.GetMonall(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monall' field")
 	}
 
-	// Simple Field (pun)
-	pun := bool(m.GetPun())
-	_punErr := /*TODO: migrate me*/ writeBuffer.WriteBit("pun", (pun))
-	if _punErr != nil {
-		return errors.Wrap(_punErr, "Error serializing 'pun' field")
+	if err := WriteSimpleField[bool](ctx, "pun", m.GetPun(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'pun' field")
 	}
 
-	// Simple Field (pcn)
-	pcn := bool(m.GetPcn())
-	_pcnErr := /*TODO: migrate me*/ writeBuffer.WriteBit("pcn", (pcn))
-	if _pcnErr != nil {
-		return errors.Wrap(_pcnErr, "Error serializing 'pcn' field")
+	if err := WriteSimpleField[bool](ctx, "pcn", m.GetPcn(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'pcn' field")
 	}
 
-	// Simple Field (srchk)
-	srchk := bool(m.GetSrchk())
-	_srchkErr := /*TODO: migrate me*/ writeBuffer.WriteBit("srchk", (srchk))
-	if _srchkErr != nil {
-		return errors.Wrap(_srchkErr, "Error serializing 'srchk' field")
+	if err := WriteSimpleField[bool](ctx, "srchk", m.GetSrchk(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'srchk' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CBusOptions"); popErr != nil {

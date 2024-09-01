@@ -212,23 +212,12 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 		}
 
-		// Simple Field (szlId)
-		if pushErr := writeBuffer.PushContext("szlId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for szlId")
-		}
-		_szlIdErr := writeBuffer.WriteSerializable(ctx, m.GetSzlId())
-		if popErr := writeBuffer.PopContext("szlId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for szlId")
-		}
-		if _szlIdErr != nil {
-			return errors.Wrap(_szlIdErr, "Error serializing 'szlId' field")
+		if err := WriteSimpleField[SzlId](ctx, "szlId", m.GetSzlId(), WriteComplex[SzlId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'szlId' field")
 		}
 
-		// Simple Field (szlIndex)
-		szlIndex := uint16(m.GetSzlIndex())
-		_szlIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("szlIndex", 16, uint16((szlIndex)))
-		if _szlIndexErr != nil {
-			return errors.Wrap(_szlIndexErr, "Error serializing 'szlIndex' field")
+		if err := WriteSimpleField[uint16](ctx, "szlIndex", m.GetSzlIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'szlIndex' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); popErr != nil {

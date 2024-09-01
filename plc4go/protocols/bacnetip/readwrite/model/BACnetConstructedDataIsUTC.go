@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIsUTC) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIsUTC")
 		}
 
-		// Simple Field (isUtc)
-		if pushErr := writeBuffer.PushContext("isUtc"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for isUtc")
-		}
-		_isUtcErr := writeBuffer.WriteSerializable(ctx, m.GetIsUtc())
-		if popErr := writeBuffer.PopContext("isUtc"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for isUtc")
-		}
-		if _isUtcErr != nil {
-			return errors.Wrap(_isUtcErr, "Error serializing 'isUtc' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "isUtc", m.GetIsUtc(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isUtc' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -229,11 +229,8 @@ func (m *_CipReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(err, "Error serializing 'tag' field")
 		}
 
-		// Simple Field (elementNb)
-		elementNb := uint16(m.GetElementNb())
-		_elementNbErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("elementNb", 16, uint16((elementNb)))
-		if _elementNbErr != nil {
-			return errors.Wrap(_elementNbErr, "Error serializing 'elementNb' field")
+		if err := WriteSimpleField[uint16](ctx, "elementNb", m.GetElementNb(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'elementNb' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipReadRequest"); popErr != nil {

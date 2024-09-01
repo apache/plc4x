@@ -200,18 +200,12 @@ func (m *_ConfigurationVersionDataType) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for ConfigurationVersionDataType")
 		}
 
-		// Simple Field (majorVersion)
-		majorVersion := uint32(m.GetMajorVersion())
-		_majorVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("majorVersion", 32, uint32((majorVersion)))
-		if _majorVersionErr != nil {
-			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
+		if err := WriteSimpleField[uint32](ctx, "majorVersion", m.GetMajorVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'majorVersion' field")
 		}
 
-		// Simple Field (minorVersion)
-		minorVersion := uint32(m.GetMinorVersion())
-		_minorVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("minorVersion", 32, uint32((minorVersion)))
-		if _minorVersionErr != nil {
-			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
+		if err := WriteSimpleField[uint32](ctx, "minorVersion", m.GetMinorVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minorVersion' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConfigurationVersionDataType"); popErr != nil {

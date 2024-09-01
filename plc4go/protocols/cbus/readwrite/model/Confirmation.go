@@ -217,32 +217,16 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for Confirmation")
 	}
 
-	// Simple Field (alpha)
-	if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for alpha")
-	}
-	_alphaErr := writeBuffer.WriteSerializable(ctx, m.GetAlpha())
-	if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for alpha")
-	}
-	if _alphaErr != nil {
-		return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
+	if err := WriteSimpleField[Alpha](ctx, "alpha", m.GetAlpha(), WriteComplex[Alpha](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'alpha' field")
 	}
 
 	if err := WriteOptionalField[Alpha](ctx, "secondAlpha", GetRef(m.GetSecondAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'secondAlpha' field")
 	}
 
-	// Simple Field (confirmationType)
-	if pushErr := writeBuffer.PushContext("confirmationType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for confirmationType")
-	}
-	_confirmationTypeErr := writeBuffer.WriteSerializable(ctx, m.GetConfirmationType())
-	if popErr := writeBuffer.PopContext("confirmationType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for confirmationType")
-	}
-	if _confirmationTypeErr != nil {
-		return errors.Wrap(_confirmationTypeErr, "Error serializing 'confirmationType' field")
+	if err := WriteSimpleEnumField[ConfirmationType](ctx, "confirmationType", "ConfirmationType", m.GetConfirmationType(), WriteEnum[ConfirmationType, byte](ConfirmationType.GetValue, ConfirmationType.PLC4XEnumName, WriteByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'confirmationType' field")
 	}
 	// Virtual field
 	isSuccess := m.GetIsSuccess()

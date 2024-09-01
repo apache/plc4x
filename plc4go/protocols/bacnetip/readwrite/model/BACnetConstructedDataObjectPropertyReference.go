@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataObjectPropertyReference) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataObjectPropertyReference")
 		}
 
-		// Simple Field (propertyReference)
-		if pushErr := writeBuffer.PushContext("propertyReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyReference")
-		}
-		_propertyReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyReference())
-		if popErr := writeBuffer.PopContext("propertyReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyReference")
-		}
-		if _propertyReferenceErr != nil {
-			return errors.Wrap(_propertyReferenceErr, "Error serializing 'propertyReference' field")
+		if err := WriteSimpleField[BACnetDeviceObjectPropertyReference](ctx, "propertyReference", m.GetPropertyReference(), WriteComplex[BACnetDeviceObjectPropertyReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyReference' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

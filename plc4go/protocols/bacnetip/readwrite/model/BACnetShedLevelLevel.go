@@ -181,16 +181,8 @@ func (m *_BACnetShedLevelLevel) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for BACnetShedLevelLevel")
 		}
 
-		// Simple Field (level)
-		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for level")
-		}
-		_levelErr := writeBuffer.WriteSerializable(ctx, m.GetLevel())
-		if popErr := writeBuffer.PopContext("level"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for level")
-		}
-		if _levelErr != nil {
-			return errors.Wrap(_levelErr, "Error serializing 'level' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "level", m.GetLevel(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetShedLevelLevel"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTraceFlag) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTraceFlag")
 		}
 
-		// Simple Field (traceFlag)
-		if pushErr := writeBuffer.PushContext("traceFlag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for traceFlag")
-		}
-		_traceFlagErr := writeBuffer.WriteSerializable(ctx, m.GetTraceFlag())
-		if popErr := writeBuffer.PopContext("traceFlag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for traceFlag")
-		}
-		if _traceFlagErr != nil {
-			return errors.Wrap(_traceFlagErr, "Error serializing 'traceFlag' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "traceFlag", m.GetTraceFlag(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'traceFlag' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -347,51 +347,36 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for TrustListDataType")
 		}
 
-		// Simple Field (specifiedLists)
-		specifiedLists := uint32(m.GetSpecifiedLists())
-		_specifiedListsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("specifiedLists", 32, uint32((specifiedLists)))
-		if _specifiedListsErr != nil {
-			return errors.Wrap(_specifiedListsErr, "Error serializing 'specifiedLists' field")
+		if err := WriteSimpleField[uint32](ctx, "specifiedLists", m.GetSpecifiedLists(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'specifiedLists' field")
 		}
 
-		// Simple Field (noOfTrustedCertificates)
-		noOfTrustedCertificates := int32(m.GetNoOfTrustedCertificates())
-		_noOfTrustedCertificatesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfTrustedCertificates", 32, int32((noOfTrustedCertificates)))
-		if _noOfTrustedCertificatesErr != nil {
-			return errors.Wrap(_noOfTrustedCertificatesErr, "Error serializing 'noOfTrustedCertificates' field")
+		if err := WriteSimpleField[int32](ctx, "noOfTrustedCertificates", m.GetNoOfTrustedCertificates(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfTrustedCertificates' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "trustedCertificates", m.GetTrustedCertificates(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'trustedCertificates' field")
 		}
 
-		// Simple Field (noOfTrustedCrls)
-		noOfTrustedCrls := int32(m.GetNoOfTrustedCrls())
-		_noOfTrustedCrlsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfTrustedCrls", 32, int32((noOfTrustedCrls)))
-		if _noOfTrustedCrlsErr != nil {
-			return errors.Wrap(_noOfTrustedCrlsErr, "Error serializing 'noOfTrustedCrls' field")
+		if err := WriteSimpleField[int32](ctx, "noOfTrustedCrls", m.GetNoOfTrustedCrls(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfTrustedCrls' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "trustedCrls", m.GetTrustedCrls(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'trustedCrls' field")
 		}
 
-		// Simple Field (noOfIssuerCertificates)
-		noOfIssuerCertificates := int32(m.GetNoOfIssuerCertificates())
-		_noOfIssuerCertificatesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfIssuerCertificates", 32, int32((noOfIssuerCertificates)))
-		if _noOfIssuerCertificatesErr != nil {
-			return errors.Wrap(_noOfIssuerCertificatesErr, "Error serializing 'noOfIssuerCertificates' field")
+		if err := WriteSimpleField[int32](ctx, "noOfIssuerCertificates", m.GetNoOfIssuerCertificates(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfIssuerCertificates' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "issuerCertificates", m.GetIssuerCertificates(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'issuerCertificates' field")
 		}
 
-		// Simple Field (noOfIssuerCrls)
-		noOfIssuerCrls := int32(m.GetNoOfIssuerCrls())
-		_noOfIssuerCrlsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfIssuerCrls", 32, int32((noOfIssuerCrls)))
-		if _noOfIssuerCrlsErr != nil {
-			return errors.Wrap(_noOfIssuerCrlsErr, "Error serializing 'noOfIssuerCrls' field")
+		if err := WriteSimpleField[int32](ctx, "noOfIssuerCrls", m.GetNoOfIssuerCrls(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfIssuerCrls' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "issuerCrls", m.GetIssuerCrls(), writeBuffer); err != nil {

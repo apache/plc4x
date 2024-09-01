@@ -181,11 +181,8 @@ func (m *_AirConditioningDataSetZoneGroupOn) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataSetZoneGroupOn")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataSetZoneGroupOn"); popErr != nil {

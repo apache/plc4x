@@ -251,64 +251,24 @@ func (m *_UserTokenPolicy) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for UserTokenPolicy")
 		}
 
-		// Simple Field (policyId)
-		if pushErr := writeBuffer.PushContext("policyId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for policyId")
-		}
-		_policyIdErr := writeBuffer.WriteSerializable(ctx, m.GetPolicyId())
-		if popErr := writeBuffer.PopContext("policyId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for policyId")
-		}
-		if _policyIdErr != nil {
-			return errors.Wrap(_policyIdErr, "Error serializing 'policyId' field")
+		if err := WriteSimpleField[PascalString](ctx, "policyId", m.GetPolicyId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'policyId' field")
 		}
 
-		// Simple Field (tokenType)
-		if pushErr := writeBuffer.PushContext("tokenType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for tokenType")
-		}
-		_tokenTypeErr := writeBuffer.WriteSerializable(ctx, m.GetTokenType())
-		if popErr := writeBuffer.PopContext("tokenType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for tokenType")
-		}
-		if _tokenTypeErr != nil {
-			return errors.Wrap(_tokenTypeErr, "Error serializing 'tokenType' field")
+		if err := WriteSimpleEnumField[UserTokenType](ctx, "tokenType", "UserTokenType", m.GetTokenType(), WriteEnum[UserTokenType, uint32](UserTokenType.GetValue, UserTokenType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'tokenType' field")
 		}
 
-		// Simple Field (issuedTokenType)
-		if pushErr := writeBuffer.PushContext("issuedTokenType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for issuedTokenType")
-		}
-		_issuedTokenTypeErr := writeBuffer.WriteSerializable(ctx, m.GetIssuedTokenType())
-		if popErr := writeBuffer.PopContext("issuedTokenType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for issuedTokenType")
-		}
-		if _issuedTokenTypeErr != nil {
-			return errors.Wrap(_issuedTokenTypeErr, "Error serializing 'issuedTokenType' field")
+		if err := WriteSimpleField[PascalString](ctx, "issuedTokenType", m.GetIssuedTokenType(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'issuedTokenType' field")
 		}
 
-		// Simple Field (issuerEndpointUrl)
-		if pushErr := writeBuffer.PushContext("issuerEndpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for issuerEndpointUrl")
-		}
-		_issuerEndpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetIssuerEndpointUrl())
-		if popErr := writeBuffer.PopContext("issuerEndpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for issuerEndpointUrl")
-		}
-		if _issuerEndpointUrlErr != nil {
-			return errors.Wrap(_issuerEndpointUrlErr, "Error serializing 'issuerEndpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "issuerEndpointUrl", m.GetIssuerEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'issuerEndpointUrl' field")
 		}
 
-		// Simple Field (securityPolicyUri)
-		if pushErr := writeBuffer.PushContext("securityPolicyUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityPolicyUri")
-		}
-		_securityPolicyUriErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityPolicyUri())
-		if popErr := writeBuffer.PopContext("securityPolicyUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityPolicyUri")
-		}
-		if _securityPolicyUriErr != nil {
-			return errors.Wrap(_securityPolicyUriErr, "Error serializing 'securityPolicyUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UserTokenPolicy"); popErr != nil {

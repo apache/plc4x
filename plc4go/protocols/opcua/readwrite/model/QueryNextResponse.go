@@ -241,39 +241,20 @@ func (m *_QueryNextResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for QueryNextResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (noOfQueryDataSets)
-		noOfQueryDataSets := int32(m.GetNoOfQueryDataSets())
-		_noOfQueryDataSetsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfQueryDataSets", 32, int32((noOfQueryDataSets)))
-		if _noOfQueryDataSetsErr != nil {
-			return errors.Wrap(_noOfQueryDataSetsErr, "Error serializing 'noOfQueryDataSets' field")
+		if err := WriteSimpleField[int32](ctx, "noOfQueryDataSets", m.GetNoOfQueryDataSets(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfQueryDataSets' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "queryDataSets", m.GetQueryDataSets(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'queryDataSets' field")
 		}
 
-		// Simple Field (revisedContinuationPoint)
-		if pushErr := writeBuffer.PushContext("revisedContinuationPoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for revisedContinuationPoint")
-		}
-		_revisedContinuationPointErr := writeBuffer.WriteSerializable(ctx, m.GetRevisedContinuationPoint())
-		if popErr := writeBuffer.PopContext("revisedContinuationPoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for revisedContinuationPoint")
-		}
-		if _revisedContinuationPointErr != nil {
-			return errors.Wrap(_revisedContinuationPointErr, "Error serializing 'revisedContinuationPoint' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "revisedContinuationPoint", m.GetRevisedContinuationPoint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedContinuationPoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("QueryNextResponse"); popErr != nil {

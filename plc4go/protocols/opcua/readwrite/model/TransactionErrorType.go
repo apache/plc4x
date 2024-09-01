@@ -217,40 +217,16 @@ func (m *_TransactionErrorType) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for TransactionErrorType")
 		}
 
-		// Simple Field (targetId)
-		if pushErr := writeBuffer.PushContext("targetId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetId")
-		}
-		_targetIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetId())
-		if popErr := writeBuffer.PopContext("targetId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetId")
-		}
-		if _targetIdErr != nil {
-			return errors.Wrap(_targetIdErr, "Error serializing 'targetId' field")
+		if err := WriteSimpleField[NodeId](ctx, "targetId", m.GetTargetId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetId' field")
 		}
 
-		// Simple Field (error)
-		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for error")
-		}
-		_errorErr := writeBuffer.WriteSerializable(ctx, m.GetError())
-		if popErr := writeBuffer.PopContext("error"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for error")
-		}
-		if _errorErr != nil {
-			return errors.Wrap(_errorErr, "Error serializing 'error' field")
+		if err := WriteSimpleField[StatusCode](ctx, "error", m.GetError(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'error' field")
 		}
 
-		// Simple Field (message)
-		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for message")
-		}
-		_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
-		if popErr := writeBuffer.PopContext("message"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for message")
-		}
-		if _messageErr != nil {
-			return errors.Wrap(_messageErr, "Error serializing 'message' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "message", m.GetMessage(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TransactionErrorType"); popErr != nil {

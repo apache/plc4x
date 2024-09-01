@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLocalForwardingOnly")
 		}
 
-		// Simple Field (localForwardingOnly)
-		if pushErr := writeBuffer.PushContext("localForwardingOnly"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localForwardingOnly")
-		}
-		_localForwardingOnlyErr := writeBuffer.WriteSerializable(ctx, m.GetLocalForwardingOnly())
-		if popErr := writeBuffer.PopContext("localForwardingOnly"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localForwardingOnly")
-		}
-		if _localForwardingOnlyErr != nil {
-			return errors.Wrap(_localForwardingOnlyErr, "Error serializing 'localForwardingOnly' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "localForwardingOnly", m.GetLocalForwardingOnly(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'localForwardingOnly' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

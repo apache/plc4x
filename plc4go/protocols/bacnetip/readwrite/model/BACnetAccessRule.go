@@ -228,48 +228,24 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(pushErr, "Error pushing for BACnetAccessRule")
 	}
 
-	// Simple Field (timeRangeSpecifier)
-	if pushErr := writeBuffer.PushContext("timeRangeSpecifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeRangeSpecifier")
-	}
-	_timeRangeSpecifierErr := writeBuffer.WriteSerializable(ctx, m.GetTimeRangeSpecifier())
-	if popErr := writeBuffer.PopContext("timeRangeSpecifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeRangeSpecifier")
-	}
-	if _timeRangeSpecifierErr != nil {
-		return errors.Wrap(_timeRangeSpecifierErr, "Error serializing 'timeRangeSpecifier' field")
+	if err := WriteSimpleField[BACnetAccessRuleTimeRangeSpecifierTagged](ctx, "timeRangeSpecifier", m.GetTimeRangeSpecifier(), WriteComplex[BACnetAccessRuleTimeRangeSpecifierTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeRangeSpecifier' field")
 	}
 
 	if err := WriteOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "timeRange", GetRef(m.GetTimeRange()), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'timeRange' field")
 	}
 
-	// Simple Field (locationSpecifier)
-	if pushErr := writeBuffer.PushContext("locationSpecifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for locationSpecifier")
-	}
-	_locationSpecifierErr := writeBuffer.WriteSerializable(ctx, m.GetLocationSpecifier())
-	if popErr := writeBuffer.PopContext("locationSpecifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for locationSpecifier")
-	}
-	if _locationSpecifierErr != nil {
-		return errors.Wrap(_locationSpecifierErr, "Error serializing 'locationSpecifier' field")
+	if err := WriteSimpleField[BACnetAccessRuleLocationSpecifierTagged](ctx, "locationSpecifier", m.GetLocationSpecifier(), WriteComplex[BACnetAccessRuleLocationSpecifierTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'locationSpecifier' field")
 	}
 
 	if err := WriteOptionalField[BACnetDeviceObjectReferenceEnclosed](ctx, "location", GetRef(m.GetLocation()), WriteComplex[BACnetDeviceObjectReferenceEnclosed](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'location' field")
 	}
 
-	// Simple Field (enable)
-	if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for enable")
-	}
-	_enableErr := writeBuffer.WriteSerializable(ctx, m.GetEnable())
-	if popErr := writeBuffer.PopContext("enable"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for enable")
-	}
-	if _enableErr != nil {
-		return errors.Wrap(_enableErr, "Error serializing 'enable' field")
+	if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "enable", m.GetEnable(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'enable' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAccessRule"); popErr != nil {

@@ -270,33 +270,24 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(err, "Error serializing 'serviceLen' field")
 		}
 
-		// Simple Field (encapsulationProtocol)
-		encapsulationProtocol := uint16(m.GetEncapsulationProtocol())
-		_encapsulationProtocolErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("encapsulationProtocol", 16, uint16((encapsulationProtocol)))
-		if _encapsulationProtocolErr != nil {
-			return errors.Wrap(_encapsulationProtocolErr, "Error serializing 'encapsulationProtocol' field")
+		if err := WriteSimpleField[uint16](ctx, "encapsulationProtocol", m.GetEncapsulationProtocol(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'encapsulationProtocol' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 2)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (supportsCIPEncapsulation)
-		supportsCIPEncapsulation := bool(m.GetSupportsCIPEncapsulation())
-		_supportsCIPEncapsulationErr := /*TODO: migrate me*/ writeBuffer.WriteBit("supportsCIPEncapsulation", (supportsCIPEncapsulation))
-		if _supportsCIPEncapsulationErr != nil {
-			return errors.Wrap(_supportsCIPEncapsulationErr, "Error serializing 'supportsCIPEncapsulation' field")
+		if err := WriteSimpleField[bool](ctx, "supportsCIPEncapsulation", m.GetSupportsCIPEncapsulation(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'supportsCIPEncapsulation' field")
 		}
 
 		if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x00), WriteUnsignedShort(writeBuffer, 12)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (supportsUDP)
-		supportsUDP := bool(m.GetSupportsUDP())
-		_supportsUDPErr := /*TODO: migrate me*/ writeBuffer.WriteBit("supportsUDP", (supportsUDP))
-		if _supportsUDPErr != nil {
-			return errors.Wrap(_supportsUDPErr, "Error serializing 'supportsUDP' field")
+		if err := WriteSimpleField[bool](ctx, "supportsUDP", m.GetSupportsUDP(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'supportsUDP' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

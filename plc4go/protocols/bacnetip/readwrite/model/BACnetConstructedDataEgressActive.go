@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEgressActive) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEgressActive")
 		}
 
-		// Simple Field (egressActive)
-		if pushErr := writeBuffer.PushContext("egressActive"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for egressActive")
-		}
-		_egressActiveErr := writeBuffer.WriteSerializable(ctx, m.GetEgressActive())
-		if popErr := writeBuffer.PopContext("egressActive"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for egressActive")
-		}
-		if _egressActiveErr != nil {
-			return errors.Wrap(_egressActiveErr, "Error serializing 'egressActive' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "egressActive", m.GetEgressActive(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'egressActive' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

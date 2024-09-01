@@ -204,18 +204,12 @@ func (m *_S7MessageResponseData) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for S7MessageResponseData")
 		}
 
-		// Simple Field (errorClass)
-		errorClass := uint8(m.GetErrorClass())
-		_errorClassErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("errorClass", 8, uint8((errorClass)))
-		if _errorClassErr != nil {
-			return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
+		if err := WriteSimpleField[uint8](ctx, "errorClass", m.GetErrorClass(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorClass' field")
 		}
 
-		// Simple Field (errorCode)
-		errorCode := uint8(m.GetErrorCode())
-		_errorCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("errorCode", 8, uint8((errorCode)))
-		if _errorCodeErr != nil {
-			return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
+		if err := WriteSimpleField[uint8](ctx, "errorCode", m.GetErrorCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorCode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7MessageResponseData"); popErr != nil {

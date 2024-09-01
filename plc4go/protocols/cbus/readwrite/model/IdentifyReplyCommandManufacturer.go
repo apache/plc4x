@@ -185,11 +185,8 @@ func (m *_IdentifyReplyCommandManufacturer) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandManufacturer")
 		}
 
-		// Simple Field (manufacturerName)
-		manufacturerName := string(m.GetManufacturerName())
-		_manufacturerNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("manufacturerName", uint32(64), (manufacturerName), utils.WithEncoding("UTF-8)"))
-		if _manufacturerNameErr != nil {
-			return errors.Wrap(_manufacturerNameErr, "Error serializing 'manufacturerName' field")
+		if err := WriteSimpleField[string](ctx, "manufacturerName", m.GetManufacturerName(), WriteString(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'manufacturerName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandManufacturer"); popErr != nil {

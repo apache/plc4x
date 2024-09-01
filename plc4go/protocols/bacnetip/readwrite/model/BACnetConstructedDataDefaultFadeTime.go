@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDefaultFadeTime) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultFadeTime")
 		}
 
-		// Simple Field (defaultFadeTime)
-		if pushErr := writeBuffer.PushContext("defaultFadeTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for defaultFadeTime")
-		}
-		_defaultFadeTimeErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultFadeTime())
-		if popErr := writeBuffer.PopContext("defaultFadeTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for defaultFadeTime")
-		}
-		if _defaultFadeTimeErr != nil {
-			return errors.Wrap(_defaultFadeTimeErr, "Error serializing 'defaultFadeTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "defaultFadeTime", m.GetDefaultFadeTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'defaultFadeTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

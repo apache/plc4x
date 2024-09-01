@@ -312,61 +312,28 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataHumidityScheduleEntry")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
-		// Simple Field (zoneList)
-		if pushErr := writeBuffer.PushContext("zoneList"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneList")
-		}
-		_zoneListErr := writeBuffer.WriteSerializable(ctx, m.GetZoneList())
-		if popErr := writeBuffer.PopContext("zoneList"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneList")
-		}
-		if _zoneListErr != nil {
-			return errors.Wrap(_zoneListErr, "Error serializing 'zoneList' field")
+		if err := WriteSimpleField[HVACZoneList](ctx, "zoneList", m.GetZoneList(), WriteComplex[HVACZoneList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneList' field")
 		}
 
-		// Simple Field (entry)
-		entry := uint8(m.GetEntry())
-		_entryErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("entry", 8, uint8((entry)))
-		if _entryErr != nil {
-			return errors.Wrap(_entryErr, "Error serializing 'entry' field")
+		if err := WriteSimpleField[uint8](ctx, "entry", m.GetEntry(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'entry' field")
 		}
 
-		// Simple Field (format)
-		format := byte(m.GetFormat())
-		_formatErr := /*TODO: migrate me*/ writeBuffer.WriteByte("format", (format))
-		if _formatErr != nil {
-			return errors.Wrap(_formatErr, "Error serializing 'format' field")
+		if err := WriteSimpleField[byte](ctx, "format", m.GetFormat(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'format' field")
 		}
 
-		// Simple Field (humidityModeAndFlags)
-		if pushErr := writeBuffer.PushContext("humidityModeAndFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for humidityModeAndFlags")
-		}
-		_humidityModeAndFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetHumidityModeAndFlags())
-		if popErr := writeBuffer.PopContext("humidityModeAndFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for humidityModeAndFlags")
-		}
-		if _humidityModeAndFlagsErr != nil {
-			return errors.Wrap(_humidityModeAndFlagsErr, "Error serializing 'humidityModeAndFlags' field")
+		if err := WriteSimpleField[HVACHumidityModeAndFlags](ctx, "humidityModeAndFlags", m.GetHumidityModeAndFlags(), WriteComplex[HVACHumidityModeAndFlags](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'humidityModeAndFlags' field")
 		}
 
-		// Simple Field (startTime)
-		if pushErr := writeBuffer.PushContext("startTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for startTime")
-		}
-		_startTimeErr := writeBuffer.WriteSerializable(ctx, m.GetStartTime())
-		if popErr := writeBuffer.PopContext("startTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for startTime")
-		}
-		if _startTimeErr != nil {
-			return errors.Wrap(_startTimeErr, "Error serializing 'startTime' field")
+		if err := WriteSimpleField[HVACStartTime](ctx, "startTime", m.GetStartTime(), WriteComplex[HVACStartTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startTime' field")
 		}
 
 		if err := WriteOptionalField[HVACHumidity](ctx, "level", GetRef(m.GetLevel()), WriteComplex[HVACHumidity](writeBuffer), true); err != nil {

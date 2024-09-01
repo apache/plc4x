@@ -205,28 +205,12 @@ func (m *_DeviceConfigurationRequest) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for DeviceConfigurationRequest")
 		}
 
-		// Simple Field (deviceConfigurationRequestDataBlock)
-		if pushErr := writeBuffer.PushContext("deviceConfigurationRequestDataBlock"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceConfigurationRequestDataBlock")
-		}
-		_deviceConfigurationRequestDataBlockErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceConfigurationRequestDataBlock())
-		if popErr := writeBuffer.PopContext("deviceConfigurationRequestDataBlock"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceConfigurationRequestDataBlock")
-		}
-		if _deviceConfigurationRequestDataBlockErr != nil {
-			return errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error serializing 'deviceConfigurationRequestDataBlock' field")
+		if err := WriteSimpleField[DeviceConfigurationRequestDataBlock](ctx, "deviceConfigurationRequestDataBlock", m.GetDeviceConfigurationRequestDataBlock(), WriteComplex[DeviceConfigurationRequestDataBlock](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceConfigurationRequestDataBlock' field")
 		}
 
-		// Simple Field (cemi)
-		if pushErr := writeBuffer.PushContext("cemi"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for cemi")
-		}
-		_cemiErr := writeBuffer.WriteSerializable(ctx, m.GetCemi())
-		if popErr := writeBuffer.PopContext("cemi"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for cemi")
-		}
-		if _cemiErr != nil {
-			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
+		if err := WriteSimpleField[CEMI](ctx, "cemi", m.GetCemi(), WriteComplex[CEMI](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cemi' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeviceConfigurationRequest"); popErr != nil {

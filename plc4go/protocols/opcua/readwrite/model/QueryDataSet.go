@@ -241,35 +241,16 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for QueryDataSet")
 		}
 
-		// Simple Field (nodeId)
-		if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeId")
-		}
-		_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-		if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeId")
-		}
-		if _nodeIdErr != nil {
-			return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
-		// Simple Field (typeDefinitionNode)
-		if pushErr := writeBuffer.PushContext("typeDefinitionNode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for typeDefinitionNode")
-		}
-		_typeDefinitionNodeErr := writeBuffer.WriteSerializable(ctx, m.GetTypeDefinitionNode())
-		if popErr := writeBuffer.PopContext("typeDefinitionNode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for typeDefinitionNode")
-		}
-		if _typeDefinitionNodeErr != nil {
-			return errors.Wrap(_typeDefinitionNodeErr, "Error serializing 'typeDefinitionNode' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", m.GetTypeDefinitionNode(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'typeDefinitionNode' field")
 		}
 
-		// Simple Field (noOfValues)
-		noOfValues := int32(m.GetNoOfValues())
-		_noOfValuesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfValues", 32, int32((noOfValues)))
-		if _noOfValuesErr != nil {
-			return errors.Wrap(_noOfValuesErr, "Error serializing 'noOfValues' field")
+		if err := WriteSimpleField[int32](ctx, "noOfValues", m.GetNoOfValues(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfValues' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "values", m.GetValues(), writeBuffer); err != nil {

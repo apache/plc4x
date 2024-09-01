@@ -207,11 +207,8 @@ func (m *_RelativePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for RelativePath")
 		}
 
-		// Simple Field (noOfElements)
-		noOfElements := int32(m.GetNoOfElements())
-		_noOfElementsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfElements", 32, int32((noOfElements)))
-		if _noOfElementsErr != nil {
-			return errors.Wrap(_noOfElementsErr, "Error serializing 'noOfElements' field")
+		if err := WriteSimpleField[int32](ctx, "noOfElements", m.GetNoOfElements(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfElements' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "elements", m.GetElements(), writeBuffer); err != nil {

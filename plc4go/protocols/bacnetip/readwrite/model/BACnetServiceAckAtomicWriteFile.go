@@ -185,16 +185,8 @@ func (m *_BACnetServiceAckAtomicWriteFile) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckAtomicWriteFile")
 		}
 
-		// Simple Field (fileStartPosition)
-		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
-		}
-		_fileStartPositionErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartPosition())
-		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileStartPosition")
-		}
-		if _fileStartPositionErr != nil {
-			return errors.Wrap(_fileStartPositionErr, "Error serializing 'fileStartPosition' field")
+		if err := WriteSimpleField[BACnetContextTagSignedInteger](ctx, "fileStartPosition", m.GetFileStartPosition(), WriteComplex[BACnetContextTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileStartPosition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAtomicWriteFile"); popErr != nil {

@@ -209,28 +209,12 @@ func (m *_OpcuaOpenResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for OpcuaOpenResponse")
 		}
 
-		// Simple Field (openResponse)
-		if pushErr := writeBuffer.PushContext("openResponse"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openResponse")
-		}
-		_openResponseErr := writeBuffer.WriteSerializable(ctx, m.GetOpenResponse())
-		if popErr := writeBuffer.PopContext("openResponse"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openResponse")
-		}
-		if _openResponseErr != nil {
-			return errors.Wrap(_openResponseErr, "Error serializing 'openResponse' field")
+		if err := WriteSimpleField[OpenChannelMessage](ctx, "openResponse", m.GetOpenResponse(), WriteComplex[OpenChannelMessage](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openResponse' field")
 		}
 
-		// Simple Field (message)
-		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for message")
-		}
-		_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
-		if popErr := writeBuffer.PopContext("message"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for message")
-		}
-		if _messageErr != nil {
-			return errors.Wrap(_messageErr, "Error serializing 'message' field")
+		if err := WriteSimpleField[Payload](ctx, "message", m.GetMessage(), WriteComplex[Payload](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaOpenResponse"); popErr != nil {

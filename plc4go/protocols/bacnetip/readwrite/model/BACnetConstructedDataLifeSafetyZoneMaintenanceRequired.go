@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) SerializeWithW
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
 		}
 
-		// Simple Field (maintenanceRequired)
-		if pushErr := writeBuffer.PushContext("maintenanceRequired"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maintenanceRequired")
-		}
-		_maintenanceRequiredErr := writeBuffer.WriteSerializable(ctx, m.GetMaintenanceRequired())
-		if popErr := writeBuffer.PopContext("maintenanceRequired"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maintenanceRequired")
-		}
-		if _maintenanceRequiredErr != nil {
-			return errors.Wrap(_maintenanceRequiredErr, "Error serializing 'maintenanceRequired' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "maintenanceRequired", m.GetMaintenanceRequired(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maintenanceRequired' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

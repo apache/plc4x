@@ -289,28 +289,12 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestSubscribeCOVProperty")
 		}
 
-		// Simple Field (subscriberProcessIdentifier)
-		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
-		}
-		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetSubscriberProcessIdentifier())
-		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
-		}
-		if _subscriberProcessIdentifierErr != nil {
-			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "subscriberProcessIdentifier", m.GetSubscriberProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
-		// Simple Field (monitoredObjectIdentifier)
-		if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
-		}
-		_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredObjectIdentifier())
-		if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
-		}
-		if _monitoredObjectIdentifierErr != nil {
-			return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "monitoredObjectIdentifier", m.GetMonitoredObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoredObjectIdentifier' field")
 		}
 
 		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", GetRef(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
@@ -321,16 +305,8 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) SerializeWithWriteB
 			return errors.Wrap(err, "Error serializing 'lifetime' field")
 		}
 
-		// Simple Field (monitoredPropertyIdentifier)
-		if pushErr := writeBuffer.PushContext("monitoredPropertyIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for monitoredPropertyIdentifier")
-		}
-		_monitoredPropertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredPropertyIdentifier())
-		if popErr := writeBuffer.PopContext("monitoredPropertyIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for monitoredPropertyIdentifier")
-		}
-		if _monitoredPropertyIdentifierErr != nil {
-			return errors.Wrap(_monitoredPropertyIdentifierErr, "Error serializing 'monitoredPropertyIdentifier' field")
+		if err := WriteSimpleField[BACnetPropertyReferenceEnclosed](ctx, "monitoredPropertyIdentifier", m.GetMonitoredPropertyIdentifier(), WriteComplex[BACnetPropertyReferenceEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoredPropertyIdentifier' field")
 		}
 
 		if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", GetRef(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {

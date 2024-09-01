@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataReadOnly) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReadOnly")
 		}
 
-		// Simple Field (readOnly)
-		if pushErr := writeBuffer.PushContext("readOnly"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for readOnly")
-		}
-		_readOnlyErr := writeBuffer.WriteSerializable(ctx, m.GetReadOnly())
-		if popErr := writeBuffer.PopContext("readOnly"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for readOnly")
-		}
-		if _readOnlyErr != nil {
-			return errors.Wrap(_readOnlyErr, "Error serializing 'readOnly' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "readOnly", m.GetReadOnly(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'readOnly' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

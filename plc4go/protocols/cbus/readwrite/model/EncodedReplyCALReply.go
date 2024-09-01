@@ -184,16 +184,8 @@ func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for EncodedReplyCALReply")
 		}
 
-		// Simple Field (calReply)
-		if pushErr := writeBuffer.PushContext("calReply"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for calReply")
-		}
-		_calReplyErr := writeBuffer.WriteSerializable(ctx, m.GetCalReply())
-		if popErr := writeBuffer.PopContext("calReply"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for calReply")
-		}
-		if _calReplyErr != nil {
-			return errors.Wrap(_calReplyErr, "Error serializing 'calReply' field")
+		if err := WriteSimpleField[CALReply](ctx, "calReply", m.GetCalReply(), WriteComplex[CALReply](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'calReply' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EncodedReplyCALReply"); popErr != nil {

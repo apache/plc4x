@@ -31,7 +31,7 @@ type DataWriterSimpleString struct {
 
 var _ DataWriter[string] = (*DataWriterSimpleString)(nil)
 
-func NewDataWriterSimpleString(WritBuffer utils.WriteBuffer, bitLength uint32) *DataWriterSimpleString {
+func NewDataWriterSimpleString(WritBuffer utils.WriteBuffer, bitLength int32) *DataWriterSimpleString {
 	return &DataWriterSimpleString{
 		DataWriterSimpleBase: NewDataWriterSimpleBase[string](WritBuffer, uint(bitLength)),
 	}

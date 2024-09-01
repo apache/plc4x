@@ -275,52 +275,32 @@ func (pm *_LDataFrame) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(pushErr, "Error pushing for LDataFrame")
 	}
 
-	// Simple Field (frameType)
-	frameType := bool(m.GetFrameType())
-	_frameTypeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("frameType", (frameType))
-	if _frameTypeErr != nil {
-		return errors.Wrap(_frameTypeErr, "Error serializing 'frameType' field")
+	if err := WriteSimpleField[bool](ctx, "frameType", m.GetFrameType(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'frameType' field")
 	}
 
 	if err := WriteDiscriminatorField(ctx, "polling", m.GetPolling(), WriteBoolean(writeBuffer)); err != nil {
 		return errors.Wrap(err, "Error serializing 'polling' field")
 	}
 
-	// Simple Field (notRepeated)
-	notRepeated := bool(m.GetNotRepeated())
-	_notRepeatedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("notRepeated", (notRepeated))
-	if _notRepeatedErr != nil {
-		return errors.Wrap(_notRepeatedErr, "Error serializing 'notRepeated' field")
+	if err := WriteSimpleField[bool](ctx, "notRepeated", m.GetNotRepeated(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'notRepeated' field")
 	}
 
 	if err := WriteDiscriminatorField(ctx, "notAckFrame", m.GetNotAckFrame(), WriteBoolean(writeBuffer)); err != nil {
 		return errors.Wrap(err, "Error serializing 'notAckFrame' field")
 	}
 
-	// Simple Field (priority)
-	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for priority")
-	}
-	_priorityErr := writeBuffer.WriteSerializable(ctx, m.GetPriority())
-	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for priority")
-	}
-	if _priorityErr != nil {
-		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
+	if err := WriteSimpleEnumField[CEMIPriority](ctx, "priority", "CEMIPriority", m.GetPriority(), WriteEnum[CEMIPriority, uint8](CEMIPriority.GetValue, CEMIPriority.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'priority' field")
 	}
 
-	// Simple Field (acknowledgeRequested)
-	acknowledgeRequested := bool(m.GetAcknowledgeRequested())
-	_acknowledgeRequestedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("acknowledgeRequested", (acknowledgeRequested))
-	if _acknowledgeRequestedErr != nil {
-		return errors.Wrap(_acknowledgeRequestedErr, "Error serializing 'acknowledgeRequested' field")
+	if err := WriteSimpleField[bool](ctx, "acknowledgeRequested", m.GetAcknowledgeRequested(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'acknowledgeRequested' field")
 	}
 
-	// Simple Field (errorFlag)
-	errorFlag := bool(m.GetErrorFlag())
-	_errorFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("errorFlag", (errorFlag))
-	if _errorFlagErr != nil {
-		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
+	if err := WriteSimpleField[bool](ctx, "errorFlag", m.GetErrorFlag(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'errorFlag' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

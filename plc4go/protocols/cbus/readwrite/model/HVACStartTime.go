@@ -241,11 +241,8 @@ func (m *_HVACStartTime) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for HVACStartTime")
 	}
 
-	// Simple Field (minutesSinceSunday12AM)
-	minutesSinceSunday12AM := uint16(m.GetMinutesSinceSunday12AM())
-	_minutesSinceSunday12AMErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("minutesSinceSunday12AM", 16, uint16((minutesSinceSunday12AM)))
-	if _minutesSinceSunday12AMErr != nil {
-		return errors.Wrap(_minutesSinceSunday12AMErr, "Error serializing 'minutesSinceSunday12AM' field")
+	if err := WriteSimpleField[uint16](ctx, "minutesSinceSunday12AM", m.GetMinutesSinceSunday12AM(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'minutesSinceSunday12AM' field")
 	}
 	// Virtual field
 	hoursSinceSunday12AM := m.GetHoursSinceSunday12AM()

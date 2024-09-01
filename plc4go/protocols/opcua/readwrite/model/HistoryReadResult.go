@@ -217,40 +217,16 @@ func (m *_HistoryReadResult) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for HistoryReadResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (continuationPoint)
-		if pushErr := writeBuffer.PushContext("continuationPoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for continuationPoint")
-		}
-		_continuationPointErr := writeBuffer.WriteSerializable(ctx, m.GetContinuationPoint())
-		if popErr := writeBuffer.PopContext("continuationPoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for continuationPoint")
-		}
-		if _continuationPointErr != nil {
-			return errors.Wrap(_continuationPointErr, "Error serializing 'continuationPoint' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "continuationPoint", m.GetContinuationPoint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'continuationPoint' field")
 		}
 
-		// Simple Field (historyData)
-		if pushErr := writeBuffer.PushContext("historyData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for historyData")
-		}
-		_historyDataErr := writeBuffer.WriteSerializable(ctx, m.GetHistoryData())
-		if popErr := writeBuffer.PopContext("historyData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for historyData")
-		}
-		if _historyDataErr != nil {
-			return errors.Wrap(_historyDataErr, "Error serializing 'historyData' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "historyData", m.GetHistoryData(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'historyData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("HistoryReadResult"); popErr != nil {

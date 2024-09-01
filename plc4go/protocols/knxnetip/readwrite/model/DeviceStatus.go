@@ -167,11 +167,8 @@ func (m *_DeviceStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (programMode)
-	programMode := bool(m.GetProgramMode())
-	_programModeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("programMode", (programMode))
-	if _programModeErr != nil {
-		return errors.Wrap(_programModeErr, "Error serializing 'programMode' field")
+	if err := WriteSimpleField[bool](ctx, "programMode", m.GetProgramMode(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'programMode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DeviceStatus"); popErr != nil {

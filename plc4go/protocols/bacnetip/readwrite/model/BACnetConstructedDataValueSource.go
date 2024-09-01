@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataValueSource) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValueSource")
 		}
 
-		// Simple Field (valueSource)
-		if pushErr := writeBuffer.PushContext("valueSource"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for valueSource")
-		}
-		_valueSourceErr := writeBuffer.WriteSerializable(ctx, m.GetValueSource())
-		if popErr := writeBuffer.PopContext("valueSource"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for valueSource")
-		}
-		if _valueSourceErr != nil {
-			return errors.Wrap(_valueSourceErr, "Error serializing 'valueSource' field")
+		if err := WriteSimpleField[BACnetValueSource](ctx, "valueSource", m.GetValueSource(), WriteComplex[BACnetValueSource](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'valueSource' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

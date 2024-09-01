@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDatabaseRevision) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDatabaseRevision")
 		}
 
-		// Simple Field (databaseRevision)
-		if pushErr := writeBuffer.PushContext("databaseRevision"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for databaseRevision")
-		}
-		_databaseRevisionErr := writeBuffer.WriteSerializable(ctx, m.GetDatabaseRevision())
-		if popErr := writeBuffer.PopContext("databaseRevision"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for databaseRevision")
-		}
-		if _databaseRevisionErr != nil {
-			return errors.Wrap(_databaseRevisionErr, "Error serializing 'databaseRevision' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "databaseRevision", m.GetDatabaseRevision(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'databaseRevision' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

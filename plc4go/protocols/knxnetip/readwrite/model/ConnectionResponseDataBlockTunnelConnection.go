@@ -184,16 +184,8 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for ConnectionResponseDataBlockTunnelConnection")
 		}
 
-		// Simple Field (knxAddress)
-		if pushErr := writeBuffer.PushContext("knxAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for knxAddress")
-		}
-		_knxAddressErr := writeBuffer.WriteSerializable(ctx, m.GetKnxAddress())
-		if popErr := writeBuffer.PopContext("knxAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for knxAddress")
-		}
-		if _knxAddressErr != nil {
-			return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
+		if err := WriteSimpleField[KnxAddress](ctx, "knxAddress", m.GetKnxAddress(), WriteComplex[KnxAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'knxAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectionResponseDataBlockTunnelConnection"); popErr != nil {

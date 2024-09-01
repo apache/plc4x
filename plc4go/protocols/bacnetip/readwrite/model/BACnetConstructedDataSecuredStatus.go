@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataSecuredStatus) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSecuredStatus")
 		}
 
-		// Simple Field (securedStatus)
-		if pushErr := writeBuffer.PushContext("securedStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securedStatus")
-		}
-		_securedStatusErr := writeBuffer.WriteSerializable(ctx, m.GetSecuredStatus())
-		if popErr := writeBuffer.PopContext("securedStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securedStatus")
-		}
-		if _securedStatusErr != nil {
-			return errors.Wrap(_securedStatusErr, "Error serializing 'securedStatus' field")
+		if err := WriteSimpleField[BACnetDoorSecuredStatusTagged](ctx, "securedStatus", m.GetSecuredStatus(), WriteComplex[BACnetDoorSecuredStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securedStatus' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

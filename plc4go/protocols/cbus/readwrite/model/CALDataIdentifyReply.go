@@ -201,28 +201,12 @@ func (m *_CALDataIdentifyReply) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for CALDataIdentifyReply")
 		}
 
-		// Simple Field (attribute)
-		if pushErr := writeBuffer.PushContext("attribute"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for attribute")
-		}
-		_attributeErr := writeBuffer.WriteSerializable(ctx, m.GetAttribute())
-		if popErr := writeBuffer.PopContext("attribute"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for attribute")
-		}
-		if _attributeErr != nil {
-			return errors.Wrap(_attributeErr, "Error serializing 'attribute' field")
+		if err := WriteSimpleEnumField[Attribute](ctx, "attribute", "Attribute", m.GetAttribute(), WriteEnum[Attribute, uint8](Attribute.GetValue, Attribute.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'attribute' field")
 		}
 
-		// Simple Field (identifyReplyCommand)
-		if pushErr := writeBuffer.PushContext("identifyReplyCommand"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for identifyReplyCommand")
-		}
-		_identifyReplyCommandErr := writeBuffer.WriteSerializable(ctx, m.GetIdentifyReplyCommand())
-		if popErr := writeBuffer.PopContext("identifyReplyCommand"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for identifyReplyCommand")
-		}
-		if _identifyReplyCommandErr != nil {
-			return errors.Wrap(_identifyReplyCommandErr, "Error serializing 'identifyReplyCommand' field")
+		if err := WriteSimpleField[IdentifyReplyCommand](ctx, "identifyReplyCommand", m.GetIdentifyReplyCommand(), WriteComplex[IdentifyReplyCommand](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'identifyReplyCommand' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataIdentifyReply"); popErr != nil {

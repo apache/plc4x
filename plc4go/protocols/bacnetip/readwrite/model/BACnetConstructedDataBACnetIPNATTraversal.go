@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPNATTraversal")
 		}
 
-		// Simple Field (bacnetIPNATTraversal)
-		if pushErr := writeBuffer.PushContext("bacnetIPNATTraversal"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bacnetIPNATTraversal")
-		}
-		_bacnetIPNATTraversalErr := writeBuffer.WriteSerializable(ctx, m.GetBacnetIPNATTraversal())
-		if popErr := writeBuffer.PopContext("bacnetIPNATTraversal"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bacnetIPNATTraversal")
-		}
-		if _bacnetIPNATTraversalErr != nil {
-			return errors.Wrap(_bacnetIPNATTraversalErr, "Error serializing 'bacnetIPNATTraversal' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "bacnetIPNATTraversal", m.GetBacnetIPNATTraversal(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bacnetIPNATTraversal' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

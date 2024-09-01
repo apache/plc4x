@@ -200,18 +200,12 @@ func (m *_ClassID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 			return errors.Wrap(pushErr, "Error pushing for ClassID")
 		}
 
-		// Simple Field (format)
-		format := uint8(m.GetFormat())
-		_formatErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("format", 2, uint8((format)))
-		if _formatErr != nil {
-			return errors.Wrap(_formatErr, "Error serializing 'format' field")
+		if err := WriteSimpleField[uint8](ctx, "format", m.GetFormat(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+			return errors.Wrap(err, "Error serializing 'format' field")
 		}
 
-		// Simple Field (segmentClass)
-		segmentClass := uint8(m.GetSegmentClass())
-		_segmentClassErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("segmentClass", 8, uint8((segmentClass)))
-		if _segmentClassErr != nil {
-			return errors.Wrap(_segmentClassErr, "Error serializing 'segmentClass' field")
+		if err := WriteSimpleField[uint8](ctx, "segmentClass", m.GetSegmentClass(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ClassID"); popErr != nil {

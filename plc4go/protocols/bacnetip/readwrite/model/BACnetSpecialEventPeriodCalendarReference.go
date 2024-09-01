@@ -181,16 +181,8 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetSpecialEventPeriodCalendarReference")
 		}
 
-		// Simple Field (calendarReference)
-		if pushErr := writeBuffer.PushContext("calendarReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for calendarReference")
-		}
-		_calendarReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetCalendarReference())
-		if popErr := writeBuffer.PopContext("calendarReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for calendarReference")
-		}
-		if _calendarReferenceErr != nil {
-			return errors.Wrap(_calendarReferenceErr, "Error serializing 'calendarReference' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "calendarReference", m.GetCalendarReference(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'calendarReference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetSpecialEventPeriodCalendarReference"); popErr != nil {

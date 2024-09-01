@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesShedState) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesShedState")
 		}
 
-		// Simple Field (shedState)
-		if pushErr := writeBuffer.PushContext("shedState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for shedState")
-		}
-		_shedStateErr := writeBuffer.WriteSerializable(ctx, m.GetShedState())
-		if popErr := writeBuffer.PopContext("shedState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for shedState")
-		}
-		if _shedStateErr != nil {
-			return errors.Wrap(_shedStateErr, "Error serializing 'shedState' field")
+		if err := WriteSimpleField[BACnetShedStateTagged](ctx, "shedState", m.GetShedState(), WriteComplex[BACnetShedStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'shedState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesShedState"); popErr != nil {

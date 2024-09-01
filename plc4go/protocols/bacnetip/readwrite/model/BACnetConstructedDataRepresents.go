@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataRepresents) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRepresents")
 		}
 
-		// Simple Field (represents)
-		if pushErr := writeBuffer.PushContext("represents"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for represents")
-		}
-		_representsErr := writeBuffer.WriteSerializable(ctx, m.GetRepresents())
-		if popErr := writeBuffer.PopContext("represents"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for represents")
-		}
-		if _representsErr != nil {
-			return errors.Wrap(_representsErr, "Error serializing 'represents' field")
+		if err := WriteSimpleField[BACnetDeviceObjectReference](ctx, "represents", m.GetRepresents(), WriteComplex[BACnetDeviceObjectReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'represents' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

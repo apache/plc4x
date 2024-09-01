@@ -206,11 +206,8 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for FirmataMessageDigitalIO")
 		}
 
-		// Simple Field (pinBlock)
-		pinBlock := uint8(m.GetPinBlock())
-		_pinBlockErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pinBlock", 4, uint8((pinBlock)))
-		if _pinBlockErr != nil {
-			return errors.Wrap(_pinBlockErr, "Error serializing 'pinBlock' field")
+		if err := WriteSimpleField[uint8](ctx, "pinBlock", m.GetPinBlock(), WriteUnsignedByte(writeBuffer, 4), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pinBlock' field")
 		}
 
 		if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteSignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {

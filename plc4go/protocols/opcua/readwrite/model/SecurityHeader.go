@@ -168,18 +168,12 @@ func (m *_SecurityHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for SecurityHeader")
 	}
 
-	// Simple Field (secureChannelId)
-	secureChannelId := uint32(m.GetSecureChannelId())
-	_secureChannelIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("secureChannelId", 32, uint32((secureChannelId)))
-	if _secureChannelIdErr != nil {
-		return errors.Wrap(_secureChannelIdErr, "Error serializing 'secureChannelId' field")
+	if err := WriteSimpleField[uint32](ctx, "secureChannelId", m.GetSecureChannelId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'secureChannelId' field")
 	}
 
-	// Simple Field (secureTokenId)
-	secureTokenId := uint32(m.GetSecureTokenId())
-	_secureTokenIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("secureTokenId", 32, uint32((secureTokenId)))
-	if _secureTokenIdErr != nil {
-		return errors.Wrap(_secureTokenIdErr, "Error serializing 'secureTokenId' field")
+	if err := WriteSimpleField[uint32](ctx, "secureTokenId", m.GetSecureTokenId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'secureTokenId' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SecurityHeader"); popErr != nil {

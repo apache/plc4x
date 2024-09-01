@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBufferSize) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBufferSize")
 		}
 
-		// Simple Field (bufferSize)
-		if pushErr := writeBuffer.PushContext("bufferSize"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bufferSize")
-		}
-		_bufferSizeErr := writeBuffer.WriteSerializable(ctx, m.GetBufferSize())
-		if popErr := writeBuffer.PopContext("bufferSize"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bufferSize")
-		}
-		if _bufferSizeErr != nil {
-			return errors.Wrap(_bufferSizeErr, "Error serializing 'bufferSize' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "bufferSize", m.GetBufferSize(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bufferSize' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

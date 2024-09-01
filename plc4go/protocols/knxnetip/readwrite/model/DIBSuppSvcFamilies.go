@@ -185,11 +185,8 @@ func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Simple Field (descriptionType)
-	descriptionType := uint8(m.GetDescriptionType())
-	_descriptionTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("descriptionType", 8, uint8((descriptionType)))
-	if _descriptionTypeErr != nil {
-		return errors.Wrap(_descriptionTypeErr, "Error serializing 'descriptionType' field")
+	if err := WriteSimpleField[uint8](ctx, "descriptionType", m.GetDescriptionType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'descriptionType' field")
 	}
 
 	if err := WriteComplexTypeArrayField(ctx, "serviceIds", m.GetServiceIds(), writeBuffer); err != nil {

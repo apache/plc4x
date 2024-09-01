@@ -185,16 +185,8 @@ func (m *_ApduDataOther) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for ApduDataOther")
 		}
 
-		// Simple Field (extendedApdu)
-		if pushErr := writeBuffer.PushContext("extendedApdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for extendedApdu")
-		}
-		_extendedApduErr := writeBuffer.WriteSerializable(ctx, m.GetExtendedApdu())
-		if popErr := writeBuffer.PopContext("extendedApdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for extendedApdu")
-		}
-		if _extendedApduErr != nil {
-			return errors.Wrap(_extendedApduErr, "Error serializing 'extendedApdu' field")
+		if err := WriteSimpleField[ApduDataExt](ctx, "extendedApdu", m.GetExtendedApdu(), WriteComplex[ApduDataExt](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'extendedApdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataOther"); popErr != nil {

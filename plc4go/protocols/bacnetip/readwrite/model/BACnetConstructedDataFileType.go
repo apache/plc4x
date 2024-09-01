@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataFileType) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFileType")
 		}
 
-		// Simple Field (fileType)
-		if pushErr := writeBuffer.PushContext("fileType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileType")
-		}
-		_fileTypeErr := writeBuffer.WriteSerializable(ctx, m.GetFileType())
-		if popErr := writeBuffer.PopContext("fileType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileType")
-		}
-		if _fileTypeErr != nil {
-			return errors.Wrap(_fileTypeErr, "Error serializing 'fileType' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "fileType", m.GetFileType(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileType' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

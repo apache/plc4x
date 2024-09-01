@@ -272,62 +272,32 @@ func (m *_DeleteReferencesItem) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for DeleteReferencesItem")
 		}
 
-		// Simple Field (sourceNodeId)
-		if pushErr := writeBuffer.PushContext("sourceNodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sourceNodeId")
-		}
-		_sourceNodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetSourceNodeId())
-		if popErr := writeBuffer.PopContext("sourceNodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sourceNodeId")
-		}
-		if _sourceNodeIdErr != nil {
-			return errors.Wrap(_sourceNodeIdErr, "Error serializing 'sourceNodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "sourceNodeId", m.GetSourceNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceNodeId' field")
 		}
 
-		// Simple Field (referenceTypeId)
-		if pushErr := writeBuffer.PushContext("referenceTypeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceTypeId")
-		}
-		_referenceTypeIdErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceTypeId())
-		if popErr := writeBuffer.PopContext("referenceTypeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceTypeId")
-		}
-		if _referenceTypeIdErr != nil {
-			return errors.Wrap(_referenceTypeIdErr, "Error serializing 'referenceTypeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "referenceTypeId", m.GetReferenceTypeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceTypeId' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (isForward)
-		isForward := bool(m.GetIsForward())
-		_isForwardErr := /*TODO: migrate me*/ writeBuffer.WriteBit("isForward", (isForward))
-		if _isForwardErr != nil {
-			return errors.Wrap(_isForwardErr, "Error serializing 'isForward' field")
+		if err := WriteSimpleField[bool](ctx, "isForward", m.GetIsForward(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isForward' field")
 		}
 
-		// Simple Field (targetNodeId)
-		if pushErr := writeBuffer.PushContext("targetNodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetNodeId")
-		}
-		_targetNodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetNodeId())
-		if popErr := writeBuffer.PopContext("targetNodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetNodeId")
-		}
-		if _targetNodeIdErr != nil {
-			return errors.Wrap(_targetNodeIdErr, "Error serializing 'targetNodeId' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "targetNodeId", m.GetTargetNodeId(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetNodeId' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (deleteBidirectional)
-		deleteBidirectional := bool(m.GetDeleteBidirectional())
-		_deleteBidirectionalErr := /*TODO: migrate me*/ writeBuffer.WriteBit("deleteBidirectional", (deleteBidirectional))
-		if _deleteBidirectionalErr != nil {
-			return errors.Wrap(_deleteBidirectionalErr, "Error serializing 'deleteBidirectional' field")
+		if err := WriteSimpleField[bool](ctx, "deleteBidirectional", m.GetDeleteBidirectional(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteBidirectional' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeleteReferencesItem"); popErr != nil {

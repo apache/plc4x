@@ -248,22 +248,16 @@ func (m *_ContentFilterResult) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for ContentFilterResult")
 		}
 
-		// Simple Field (noOfElementResults)
-		noOfElementResults := int32(m.GetNoOfElementResults())
-		_noOfElementResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfElementResults", 32, int32((noOfElementResults)))
-		if _noOfElementResultsErr != nil {
-			return errors.Wrap(_noOfElementResultsErr, "Error serializing 'noOfElementResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfElementResults", m.GetNoOfElementResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfElementResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "elementResults", m.GetElementResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'elementResults' field")
 		}
 
-		// Simple Field (noOfElementDiagnosticInfos)
-		noOfElementDiagnosticInfos := int32(m.GetNoOfElementDiagnosticInfos())
-		_noOfElementDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfElementDiagnosticInfos", 32, int32((noOfElementDiagnosticInfos)))
-		if _noOfElementDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfElementDiagnosticInfosErr, "Error serializing 'noOfElementDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfElementDiagnosticInfos", m.GetNoOfElementDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfElementDiagnosticInfos' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "elementDiagnosticInfos", m.GetElementDiagnosticInfos(), writeBuffer); err != nil {

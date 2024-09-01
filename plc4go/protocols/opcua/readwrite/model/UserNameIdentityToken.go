@@ -217,40 +217,16 @@ func (m *_UserNameIdentityToken) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for UserNameIdentityToken")
 		}
 
-		// Simple Field (userName)
-		if pushErr := writeBuffer.PushContext("userName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userName")
-		}
-		_userNameErr := writeBuffer.WriteSerializable(ctx, m.GetUserName())
-		if popErr := writeBuffer.PopContext("userName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userName")
-		}
-		if _userNameErr != nil {
-			return errors.Wrap(_userNameErr, "Error serializing 'userName' field")
+		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userName' field")
 		}
 
-		// Simple Field (password)
-		if pushErr := writeBuffer.PushContext("password"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for password")
-		}
-		_passwordErr := writeBuffer.WriteSerializable(ctx, m.GetPassword())
-		if popErr := writeBuffer.PopContext("password"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for password")
-		}
-		if _passwordErr != nil {
-			return errors.Wrap(_passwordErr, "Error serializing 'password' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "password", m.GetPassword(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'password' field")
 		}
 
-		// Simple Field (encryptionAlgorithm)
-		if pushErr := writeBuffer.PushContext("encryptionAlgorithm"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for encryptionAlgorithm")
-		}
-		_encryptionAlgorithmErr := writeBuffer.WriteSerializable(ctx, m.GetEncryptionAlgorithm())
-		if popErr := writeBuffer.PopContext("encryptionAlgorithm"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for encryptionAlgorithm")
-		}
-		if _encryptionAlgorithmErr != nil {
-			return errors.Wrap(_encryptionAlgorithmErr, "Error serializing 'encryptionAlgorithm' field")
+		if err := WriteSimpleField[PascalString](ctx, "encryptionAlgorithm", m.GetEncryptionAlgorithm(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'encryptionAlgorithm' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UserNameIdentityToken"); popErr != nil {

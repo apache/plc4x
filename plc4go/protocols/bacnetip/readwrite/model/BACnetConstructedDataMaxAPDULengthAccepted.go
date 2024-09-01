@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaxAPDULengthAccepted")
 		}
 
-		// Simple Field (maxApduLengthAccepted)
-		if pushErr := writeBuffer.PushContext("maxApduLengthAccepted"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxApduLengthAccepted")
-		}
-		_maxApduLengthAcceptedErr := writeBuffer.WriteSerializable(ctx, m.GetMaxApduLengthAccepted())
-		if popErr := writeBuffer.PopContext("maxApduLengthAccepted"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxApduLengthAccepted")
-		}
-		if _maxApduLengthAcceptedErr != nil {
-			return errors.Wrap(_maxApduLengthAcceptedErr, "Error serializing 'maxApduLengthAccepted' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxApduLengthAccepted", m.GetMaxApduLengthAccepted(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxApduLengthAccepted' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

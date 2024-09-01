@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDefaultTimeout) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultTimeout")
 		}
 
-		// Simple Field (defaultTimeout)
-		if pushErr := writeBuffer.PushContext("defaultTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for defaultTimeout")
-		}
-		_defaultTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultTimeout())
-		if popErr := writeBuffer.PopContext("defaultTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for defaultTimeout")
-		}
-		if _defaultTimeoutErr != nil {
-			return errors.Wrap(_defaultTimeoutErr, "Error serializing 'defaultTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "defaultTimeout", m.GetDefaultTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'defaultTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

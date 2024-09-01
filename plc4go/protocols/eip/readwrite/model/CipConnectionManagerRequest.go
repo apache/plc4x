@@ -510,152 +510,76 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(err, "Error serializing 'requestPathSize' field")
 		}
 
-		// Simple Field (classSegment)
-		if pushErr := writeBuffer.PushContext("classSegment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for classSegment")
-		}
-		_classSegmentErr := writeBuffer.WriteSerializable(ctx, m.GetClassSegment())
-		if popErr := writeBuffer.PopContext("classSegment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for classSegment")
-		}
-		if _classSegmentErr != nil {
-			return errors.Wrap(_classSegmentErr, "Error serializing 'classSegment' field")
+		if err := WriteSimpleField[PathSegment](ctx, "classSegment", m.GetClassSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'classSegment' field")
 		}
 
-		// Simple Field (instanceSegment)
-		if pushErr := writeBuffer.PushContext("instanceSegment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for instanceSegment")
-		}
-		_instanceSegmentErr := writeBuffer.WriteSerializable(ctx, m.GetInstanceSegment())
-		if popErr := writeBuffer.PopContext("instanceSegment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for instanceSegment")
-		}
-		if _instanceSegmentErr != nil {
-			return errors.Wrap(_instanceSegmentErr, "Error serializing 'instanceSegment' field")
+		if err := WriteSimpleField[PathSegment](ctx, "instanceSegment", m.GetInstanceSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'instanceSegment' field")
 		}
 
-		// Simple Field (priority)
-		priority := uint8(m.GetPriority())
-		_priorityErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("priority", 4, uint8((priority)))
-		if _priorityErr != nil {
-			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
+		if err := WriteSimpleField[uint8](ctx, "priority", m.GetPriority(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priority' field")
 		}
 
-		// Simple Field (tickTime)
-		tickTime := uint8(m.GetTickTime())
-		_tickTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("tickTime", 4, uint8((tickTime)))
-		if _tickTimeErr != nil {
-			return errors.Wrap(_tickTimeErr, "Error serializing 'tickTime' field")
+		if err := WriteSimpleField[uint8](ctx, "tickTime", m.GetTickTime(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tickTime' field")
 		}
 
-		// Simple Field (timeoutTicks)
-		timeoutTicks := uint8(m.GetTimeoutTicks())
-		_timeoutTicksErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("timeoutTicks", 8, uint8((timeoutTicks)))
-		if _timeoutTicksErr != nil {
-			return errors.Wrap(_timeoutTicksErr, "Error serializing 'timeoutTicks' field")
+		if err := WriteSimpleField[uint8](ctx, "timeoutTicks", m.GetTimeoutTicks(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeoutTicks' field")
 		}
 
-		// Simple Field (otConnectionId)
-		otConnectionId := uint32(m.GetOtConnectionId())
-		_otConnectionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("otConnectionId", 32, uint32((otConnectionId)))
-		if _otConnectionIdErr != nil {
-			return errors.Wrap(_otConnectionIdErr, "Error serializing 'otConnectionId' field")
+		if err := WriteSimpleField[uint32](ctx, "otConnectionId", m.GetOtConnectionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'otConnectionId' field")
 		}
 
-		// Simple Field (toConnectionId)
-		toConnectionId := uint32(m.GetToConnectionId())
-		_toConnectionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("toConnectionId", 32, uint32((toConnectionId)))
-		if _toConnectionIdErr != nil {
-			return errors.Wrap(_toConnectionIdErr, "Error serializing 'toConnectionId' field")
+		if err := WriteSimpleField[uint32](ctx, "toConnectionId", m.GetToConnectionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'toConnectionId' field")
 		}
 
-		// Simple Field (connectionSerialNumber)
-		connectionSerialNumber := uint16(m.GetConnectionSerialNumber())
-		_connectionSerialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("connectionSerialNumber", 16, uint16((connectionSerialNumber)))
-		if _connectionSerialNumberErr != nil {
-			return errors.Wrap(_connectionSerialNumberErr, "Error serializing 'connectionSerialNumber' field")
+		if err := WriteSimpleField[uint16](ctx, "connectionSerialNumber", m.GetConnectionSerialNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionSerialNumber' field")
 		}
 
-		// Simple Field (originatorVendorId)
-		originatorVendorId := uint16(m.GetOriginatorVendorId())
-		_originatorVendorIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("originatorVendorId", 16, uint16((originatorVendorId)))
-		if _originatorVendorIdErr != nil {
-			return errors.Wrap(_originatorVendorIdErr, "Error serializing 'originatorVendorId' field")
+		if err := WriteSimpleField[uint16](ctx, "originatorVendorId", m.GetOriginatorVendorId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originatorVendorId' field")
 		}
 
-		// Simple Field (originatorSerialNumber)
-		originatorSerialNumber := uint32(m.GetOriginatorSerialNumber())
-		_originatorSerialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("originatorSerialNumber", 32, uint32((originatorSerialNumber)))
-		if _originatorSerialNumberErr != nil {
-			return errors.Wrap(_originatorSerialNumberErr, "Error serializing 'originatorSerialNumber' field")
+		if err := WriteSimpleField[uint32](ctx, "originatorSerialNumber", m.GetOriginatorSerialNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originatorSerialNumber' field")
 		}
 
-		// Simple Field (timeoutMultiplier)
-		timeoutMultiplier := uint8(m.GetTimeoutMultiplier())
-		_timeoutMultiplierErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("timeoutMultiplier", 8, uint8((timeoutMultiplier)))
-		if _timeoutMultiplierErr != nil {
-			return errors.Wrap(_timeoutMultiplierErr, "Error serializing 'timeoutMultiplier' field")
+		if err := WriteSimpleField[uint8](ctx, "timeoutMultiplier", m.GetTimeoutMultiplier(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeoutMultiplier' field")
 		}
 
 		if err := WriteReservedField[uint32](ctx, "reserved", uint32(0x000000), WriteUnsignedInt(writeBuffer, 24)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (otRpi)
-		otRpi := uint32(m.GetOtRpi())
-		_otRpiErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("otRpi", 32, uint32((otRpi)))
-		if _otRpiErr != nil {
-			return errors.Wrap(_otRpiErr, "Error serializing 'otRpi' field")
+		if err := WriteSimpleField[uint32](ctx, "otRpi", m.GetOtRpi(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'otRpi' field")
 		}
 
-		// Simple Field (otConnectionParameters)
-		if pushErr := writeBuffer.PushContext("otConnectionParameters"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for otConnectionParameters")
-		}
-		_otConnectionParametersErr := writeBuffer.WriteSerializable(ctx, m.GetOtConnectionParameters())
-		if popErr := writeBuffer.PopContext("otConnectionParameters"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for otConnectionParameters")
-		}
-		if _otConnectionParametersErr != nil {
-			return errors.Wrap(_otConnectionParametersErr, "Error serializing 'otConnectionParameters' field")
+		if err := WriteSimpleField[NetworkConnectionParameters](ctx, "otConnectionParameters", m.GetOtConnectionParameters(), WriteComplex[NetworkConnectionParameters](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'otConnectionParameters' field")
 		}
 
-		// Simple Field (toRpi)
-		toRpi := uint32(m.GetToRpi())
-		_toRpiErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("toRpi", 32, uint32((toRpi)))
-		if _toRpiErr != nil {
-			return errors.Wrap(_toRpiErr, "Error serializing 'toRpi' field")
+		if err := WriteSimpleField[uint32](ctx, "toRpi", m.GetToRpi(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'toRpi' field")
 		}
 
-		// Simple Field (toConnectionParameters)
-		if pushErr := writeBuffer.PushContext("toConnectionParameters"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for toConnectionParameters")
-		}
-		_toConnectionParametersErr := writeBuffer.WriteSerializable(ctx, m.GetToConnectionParameters())
-		if popErr := writeBuffer.PopContext("toConnectionParameters"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for toConnectionParameters")
-		}
-		if _toConnectionParametersErr != nil {
-			return errors.Wrap(_toConnectionParametersErr, "Error serializing 'toConnectionParameters' field")
+		if err := WriteSimpleField[NetworkConnectionParameters](ctx, "toConnectionParameters", m.GetToConnectionParameters(), WriteComplex[NetworkConnectionParameters](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'toConnectionParameters' field")
 		}
 
-		// Simple Field (transportType)
-		if pushErr := writeBuffer.PushContext("transportType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transportType")
-		}
-		_transportTypeErr := writeBuffer.WriteSerializable(ctx, m.GetTransportType())
-		if popErr := writeBuffer.PopContext("transportType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportType")
-		}
-		if _transportTypeErr != nil {
-			return errors.Wrap(_transportTypeErr, "Error serializing 'transportType' field")
+		if err := WriteSimpleField[TransportType](ctx, "transportType", m.GetTransportType(), WriteComplex[TransportType](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transportType' field")
 		}
 
-		// Simple Field (connectionPathSize)
-		connectionPathSize := uint8(m.GetConnectionPathSize())
-		_connectionPathSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("connectionPathSize", 8, uint8((connectionPathSize)))
-		if _connectionPathSizeErr != nil {
-			return errors.Wrap(_connectionPathSizeErr, "Error serializing 'connectionPathSize' field")
+		if err := WriteSimpleField[uint8](ctx, "connectionPathSize", m.GetConnectionPathSize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionPathSize' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "connectionPaths", m.GetConnectionPaths(), writeBuffer); err != nil {

@@ -190,16 +190,8 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for ParameterValueInterfaceOptions1PowerUpSettings")
 		}
 
-		// Simple Field (value)
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
-		}
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[InterfaceOptions1PowerUpSettings](ctx, "value", m.GetValue(), WriteComplex[InterfaceOptions1PowerUpSettings](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParameterValueInterfaceOptions1PowerUpSettings"); popErr != nil {

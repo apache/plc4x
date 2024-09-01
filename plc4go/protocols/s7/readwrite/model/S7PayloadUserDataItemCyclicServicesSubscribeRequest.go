@@ -253,30 +253,16 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) SerializeWithWrit
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCyclicServicesSubscribeRequest")
 		}
 
-		// Simple Field (itemsCount)
-		itemsCount := uint16(m.GetItemsCount())
-		_itemsCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("itemsCount", 16, uint16((itemsCount)))
-		if _itemsCountErr != nil {
-			return errors.Wrap(_itemsCountErr, "Error serializing 'itemsCount' field")
+		if err := WriteSimpleField[uint16](ctx, "itemsCount", m.GetItemsCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemsCount' field")
 		}
 
-		// Simple Field (timeBase)
-		if pushErr := writeBuffer.PushContext("timeBase"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeBase")
-		}
-		_timeBaseErr := writeBuffer.WriteSerializable(ctx, m.GetTimeBase())
-		if popErr := writeBuffer.PopContext("timeBase"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeBase")
-		}
-		if _timeBaseErr != nil {
-			return errors.Wrap(_timeBaseErr, "Error serializing 'timeBase' field")
+		if err := WriteSimpleEnumField[TimeBase](ctx, "timeBase", "TimeBase", m.GetTimeBase(), WriteEnum[TimeBase, uint8](TimeBase.GetValue, TimeBase.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeBase' field")
 		}
 
-		// Simple Field (timeFactor)
-		timeFactor := uint8(m.GetTimeFactor())
-		_timeFactorErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("timeFactor", 8, uint8((timeFactor)))
-		if _timeFactorErr != nil {
-			return errors.Wrap(_timeFactorErr, "Error serializing 'timeFactor' field")
+		if err := WriteSimpleField[uint8](ctx, "timeFactor", m.GetTimeFactor(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeFactor' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "item", m.GetItem(), writeBuffer); err != nil {

@@ -185,16 +185,8 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) Serializ
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfValueNewValueChangedBits")
 		}
 
-		// Simple Field (changedBits)
-		if pushErr := writeBuffer.PushContext("changedBits"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for changedBits")
-		}
-		_changedBitsErr := writeBuffer.WriteSerializable(ctx, m.GetChangedBits())
-		if popErr := writeBuffer.PopContext("changedBits"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for changedBits")
-		}
-		if _changedBitsErr != nil {
-			return errors.Wrap(_changedBitsErr, "Error serializing 'changedBits' field")
+		if err := WriteSimpleField[BACnetContextTagBitString](ctx, "changedBits", m.GetChangedBits(), WriteComplex[BACnetContextTagBitString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'changedBits' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfValueNewValueChangedBits"); popErr != nil {

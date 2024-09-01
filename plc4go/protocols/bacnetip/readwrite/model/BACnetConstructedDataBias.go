@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBias) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBias")
 		}
 
-		// Simple Field (bias)
-		if pushErr := writeBuffer.PushContext("bias"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bias")
-		}
-		_biasErr := writeBuffer.WriteSerializable(ctx, m.GetBias())
-		if popErr := writeBuffer.PopContext("bias"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bias")
-		}
-		if _biasErr != nil {
-			return errors.Wrap(_biasErr, "Error serializing 'bias' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "bias", m.GetBias(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bias' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

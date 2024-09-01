@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataGlobalIdentifier) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataGlobalIdentifier")
 		}
 
-		// Simple Field (globalIdentifier)
-		if pushErr := writeBuffer.PushContext("globalIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for globalIdentifier")
-		}
-		_globalIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetGlobalIdentifier())
-		if popErr := writeBuffer.PopContext("globalIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for globalIdentifier")
-		}
-		if _globalIdentifierErr != nil {
-			return errors.Wrap(_globalIdentifierErr, "Error serializing 'globalIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "globalIdentifier", m.GetGlobalIdentifier(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'globalIdentifier' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

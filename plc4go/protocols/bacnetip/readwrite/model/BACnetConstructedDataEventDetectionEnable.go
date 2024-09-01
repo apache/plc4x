@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEventDetectionEnable) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventDetectionEnable")
 		}
 
-		// Simple Field (eventDetectionEnable)
-		if pushErr := writeBuffer.PushContext("eventDetectionEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventDetectionEnable")
-		}
-		_eventDetectionEnableErr := writeBuffer.WriteSerializable(ctx, m.GetEventDetectionEnable())
-		if popErr := writeBuffer.PopContext("eventDetectionEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventDetectionEnable")
-		}
-		if _eventDetectionEnableErr != nil {
-			return errors.Wrap(_eventDetectionEnableErr, "Error serializing 'eventDetectionEnable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "eventDetectionEnable", m.GetEventDetectionEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventDetectionEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

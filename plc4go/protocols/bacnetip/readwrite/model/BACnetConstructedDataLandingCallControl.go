@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLandingCallControl) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLandingCallControl")
 		}
 
-		// Simple Field (landingCallControl)
-		if pushErr := writeBuffer.PushContext("landingCallControl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for landingCallControl")
-		}
-		_landingCallControlErr := writeBuffer.WriteSerializable(ctx, m.GetLandingCallControl())
-		if popErr := writeBuffer.PopContext("landingCallControl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for landingCallControl")
-		}
-		if _landingCallControlErr != nil {
-			return errors.Wrap(_landingCallControlErr, "Error serializing 'landingCallControl' field")
+		if err := WriteSimpleField[BACnetLandingCallStatus](ctx, "landingCallControl", m.GetLandingCallControl(), WriteComplex[BACnetLandingCallStatus](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'landingCallControl' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

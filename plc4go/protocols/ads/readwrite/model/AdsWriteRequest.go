@@ -239,18 +239,12 @@ func (m *_AdsWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for AdsWriteRequest")
 		}
 
-		// Simple Field (indexGroup)
-		indexGroup := uint32(m.GetIndexGroup())
-		_indexGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
-		if _indexGroupErr != nil {
-			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
+		if err := WriteSimpleField[uint32](ctx, "indexGroup", m.GetIndexGroup(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexGroup' field")
 		}
 
-		// Simple Field (indexOffset)
-		indexOffset := uint32(m.GetIndexOffset())
-		_indexOffsetErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
-		if _indexOffsetErr != nil {
-			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
+		if err := WriteSimpleField[uint32](ctx, "indexOffset", m.GetIndexOffset(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexOffset' field")
 		}
 		length := uint32(uint32(len(m.GetData())))
 		if err := WriteImplicitField(ctx, "length", length, WriteUnsignedInt(writeBuffer, 32)); err != nil {

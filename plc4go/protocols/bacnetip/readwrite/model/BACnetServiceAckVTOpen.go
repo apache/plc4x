@@ -185,16 +185,8 @@ func (m *_BACnetServiceAckVTOpen) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckVTOpen")
 		}
 
-		// Simple Field (remoteVtSessionIdentifier)
-		if pushErr := writeBuffer.PushContext("remoteVtSessionIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for remoteVtSessionIdentifier")
-		}
-		_remoteVtSessionIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetRemoteVtSessionIdentifier())
-		if popErr := writeBuffer.PopContext("remoteVtSessionIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for remoteVtSessionIdentifier")
-		}
-		if _remoteVtSessionIdentifierErr != nil {
-			return errors.Wrap(_remoteVtSessionIdentifierErr, "Error serializing 'remoteVtSessionIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "remoteVtSessionIdentifier", m.GetRemoteVtSessionIdentifier(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'remoteVtSessionIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckVTOpen"); popErr != nil {

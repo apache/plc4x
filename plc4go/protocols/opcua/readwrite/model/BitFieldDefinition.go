@@ -255,28 +255,12 @@ func (m *_BitFieldDefinition) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for BitFieldDefinition")
 		}
 
-		// Simple Field (name)
-		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for name")
-		}
-		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for name")
-		}
-		if _nameErr != nil {
-			return errors.Wrap(_nameErr, "Error serializing 'name' field")
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
-		// Simple Field (description)
-		if pushErr := writeBuffer.PushContext("description"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for description")
-		}
-		_descriptionErr := writeBuffer.WriteSerializable(ctx, m.GetDescription())
-		if popErr := writeBuffer.PopContext("description"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for description")
-		}
-		if _descriptionErr != nil {
-			return errors.Wrap(_descriptionErr, "Error serializing 'description' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "description", m.GetDescription(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'description' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
@@ -287,18 +271,12 @@ func (m *_BitFieldDefinition) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (startingBitPosition)
-		startingBitPosition := uint32(m.GetStartingBitPosition())
-		_startingBitPositionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("startingBitPosition", 32, uint32((startingBitPosition)))
-		if _startingBitPositionErr != nil {
-			return errors.Wrap(_startingBitPositionErr, "Error serializing 'startingBitPosition' field")
+		if err := WriteSimpleField[uint32](ctx, "startingBitPosition", m.GetStartingBitPosition(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startingBitPosition' field")
 		}
 
-		// Simple Field (endingBitPosition)
-		endingBitPosition := uint32(m.GetEndingBitPosition())
-		_endingBitPositionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("endingBitPosition", 32, uint32((endingBitPosition)))
-		if _endingBitPositionErr != nil {
-			return errors.Wrap(_endingBitPositionErr, "Error serializing 'endingBitPosition' field")
+		if err := WriteSimpleField[uint32](ctx, "endingBitPosition", m.GetEndingBitPosition(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endingBitPosition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BitFieldDefinition"); popErr != nil {

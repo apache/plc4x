@@ -152,16 +152,8 @@ func (m *_BACnetAssignedLandingCalls) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for BACnetAssignedLandingCalls")
 	}
 
-	// Simple Field (landingCalls)
-	if pushErr := writeBuffer.PushContext("landingCalls"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for landingCalls")
-	}
-	_landingCallsErr := writeBuffer.WriteSerializable(ctx, m.GetLandingCalls())
-	if popErr := writeBuffer.PopContext("landingCalls"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for landingCalls")
-	}
-	if _landingCallsErr != nil {
-		return errors.Wrap(_landingCallsErr, "Error serializing 'landingCalls' field")
+	if err := WriteSimpleField[BACnetAssignedLandingCallsLandingCallsList](ctx, "landingCalls", m.GetLandingCalls(), WriteComplex[BACnetAssignedLandingCallsLandingCallsList](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'landingCalls' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAssignedLandingCalls"); popErr != nil {

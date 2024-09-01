@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataExpirationTime) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataExpirationTime")
 		}
 
-		// Simple Field (expirationTime)
-		if pushErr := writeBuffer.PushContext("expirationTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for expirationTime")
-		}
-		_expirationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetExpirationTime())
-		if popErr := writeBuffer.PopContext("expirationTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for expirationTime")
-		}
-		if _expirationTimeErr != nil {
-			return errors.Wrap(_expirationTimeErr, "Error serializing 'expirationTime' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "expirationTime", m.GetExpirationTime(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'expirationTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

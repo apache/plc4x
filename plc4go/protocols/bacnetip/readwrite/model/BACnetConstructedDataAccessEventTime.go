@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAccessEventTime) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessEventTime")
 		}
 
-		// Simple Field (accessEventTime)
-		if pushErr := writeBuffer.PushContext("accessEventTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessEventTime")
-		}
-		_accessEventTimeErr := writeBuffer.WriteSerializable(ctx, m.GetAccessEventTime())
-		if popErr := writeBuffer.PopContext("accessEventTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessEventTime")
-		}
-		if _accessEventTimeErr != nil {
-			return errors.Wrap(_accessEventTimeErr, "Error serializing 'accessEventTime' field")
+		if err := WriteSimpleField[BACnetTimeStamp](ctx, "accessEventTime", m.GetAccessEventTime(), WriteComplex[BACnetTimeStamp](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessEventTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

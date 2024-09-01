@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataScheduleDefault) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataScheduleDefault")
 		}
 
-		// Simple Field (scheduleDefault)
-		if pushErr := writeBuffer.PushContext("scheduleDefault"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for scheduleDefault")
-		}
-		_scheduleDefaultErr := writeBuffer.WriteSerializable(ctx, m.GetScheduleDefault())
-		if popErr := writeBuffer.PopContext("scheduleDefault"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for scheduleDefault")
-		}
-		if _scheduleDefaultErr != nil {
-			return errors.Wrap(_scheduleDefaultErr, "Error serializing 'scheduleDefault' field")
+		if err := WriteSimpleField[BACnetConstructedDataElement](ctx, "scheduleDefault", m.GetScheduleDefault(), WriteComplex[BACnetConstructedDataElement](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'scheduleDefault' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

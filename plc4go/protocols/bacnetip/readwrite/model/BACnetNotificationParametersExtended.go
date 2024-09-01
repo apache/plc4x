@@ -254,64 +254,24 @@ func (m *_BACnetNotificationParametersExtended) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersExtended")
 		}
 
-		// Simple Field (innerOpeningTag)
-		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
-		}
-		_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
-		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
-		}
-		if _innerOpeningTagErr != nil {
-			return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "innerOpeningTag", m.GetInnerOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'innerOpeningTag' field")
 		}
 
-		// Simple Field (vendorId)
-		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorId")
-		}
-		_vendorIdErr := writeBuffer.WriteSerializable(ctx, m.GetVendorId())
-		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorId")
-		}
-		if _vendorIdErr != nil {
-			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
+		if err := WriteSimpleField[BACnetVendorIdTagged](ctx, "vendorId", m.GetVendorId(), WriteComplex[BACnetVendorIdTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vendorId' field")
 		}
 
-		// Simple Field (extendedEventType)
-		if pushErr := writeBuffer.PushContext("extendedEventType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for extendedEventType")
-		}
-		_extendedEventTypeErr := writeBuffer.WriteSerializable(ctx, m.GetExtendedEventType())
-		if popErr := writeBuffer.PopContext("extendedEventType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for extendedEventType")
-		}
-		if _extendedEventTypeErr != nil {
-			return errors.Wrap(_extendedEventTypeErr, "Error serializing 'extendedEventType' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedEventType", m.GetExtendedEventType(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'extendedEventType' field")
 		}
 
-		// Simple Field (parameters)
-		if pushErr := writeBuffer.PushContext("parameters"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameters")
-		}
-		_parametersErr := writeBuffer.WriteSerializable(ctx, m.GetParameters())
-		if popErr := writeBuffer.PopContext("parameters"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameters")
-		}
-		if _parametersErr != nil {
-			return errors.Wrap(_parametersErr, "Error serializing 'parameters' field")
+		if err := WriteSimpleField[BACnetNotificationParametersExtendedParameters](ctx, "parameters", m.GetParameters(), WriteComplex[BACnetNotificationParametersExtendedParameters](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'parameters' field")
 		}
 
-		// Simple Field (innerClosingTag)
-		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
-		}
-		_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
-		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for innerClosingTag")
-		}
-		if _innerClosingTagErr != nil {
-			return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "innerClosingTag", m.GetInnerClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'innerClosingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersExtended"); popErr != nil {

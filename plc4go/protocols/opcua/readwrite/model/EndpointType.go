@@ -234,52 +234,20 @@ func (m *_EndpointType) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for EndpointType")
 		}
 
-		// Simple Field (endpointUrl)
-		if pushErr := writeBuffer.PushContext("endpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrl")
-		}
-		_endpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetEndpointUrl())
-		if popErr := writeBuffer.PopContext("endpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrl")
-		}
-		if _endpointUrlErr != nil {
-			return errors.Wrap(_endpointUrlErr, "Error serializing 'endpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		// Simple Field (securityMode)
-		if pushErr := writeBuffer.PushContext("securityMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityMode")
-		}
-		_securityModeErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityMode())
-		if popErr := writeBuffer.PopContext("securityMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityMode")
-		}
-		if _securityModeErr != nil {
-			return errors.Wrap(_securityModeErr, "Error serializing 'securityMode' field")
+		if err := WriteSimpleEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", m.GetSecurityMode(), WriteEnum[MessageSecurityMode, uint32](MessageSecurityMode.GetValue, MessageSecurityMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityMode' field")
 		}
 
-		// Simple Field (securityPolicyUri)
-		if pushErr := writeBuffer.PushContext("securityPolicyUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityPolicyUri")
-		}
-		_securityPolicyUriErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityPolicyUri())
-		if popErr := writeBuffer.PopContext("securityPolicyUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityPolicyUri")
-		}
-		if _securityPolicyUriErr != nil {
-			return errors.Wrap(_securityPolicyUriErr, "Error serializing 'securityPolicyUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 
-		// Simple Field (transportProfileUri)
-		if pushErr := writeBuffer.PushContext("transportProfileUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transportProfileUri")
-		}
-		_transportProfileUriErr := writeBuffer.WriteSerializable(ctx, m.GetTransportProfileUri())
-		if popErr := writeBuffer.PopContext("transportProfileUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportProfileUri")
-		}
-		if _transportProfileUriErr != nil {
-			return errors.Wrap(_transportProfileUriErr, "Error serializing 'transportProfileUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "transportProfileUri", m.GetTransportProfileUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transportProfileUri' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EndpointType"); popErr != nil {

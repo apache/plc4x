@@ -232,52 +232,20 @@ func (m *_BACnetFaultParameterFaultOutOfRange) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultOutOfRange")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (minNormalValue)
-		if pushErr := writeBuffer.PushContext("minNormalValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for minNormalValue")
-		}
-		_minNormalValueErr := writeBuffer.WriteSerializable(ctx, m.GetMinNormalValue())
-		if popErr := writeBuffer.PopContext("minNormalValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for minNormalValue")
-		}
-		if _minNormalValueErr != nil {
-			return errors.Wrap(_minNormalValueErr, "Error serializing 'minNormalValue' field")
+		if err := WriteSimpleField[BACnetFaultParameterFaultOutOfRangeMinNormalValue](ctx, "minNormalValue", m.GetMinNormalValue(), WriteComplex[BACnetFaultParameterFaultOutOfRangeMinNormalValue](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minNormalValue' field")
 		}
 
-		// Simple Field (maxNormalValue)
-		if pushErr := writeBuffer.PushContext("maxNormalValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxNormalValue")
-		}
-		_maxNormalValueErr := writeBuffer.WriteSerializable(ctx, m.GetMaxNormalValue())
-		if popErr := writeBuffer.PopContext("maxNormalValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxNormalValue")
-		}
-		if _maxNormalValueErr != nil {
-			return errors.Wrap(_maxNormalValueErr, "Error serializing 'maxNormalValue' field")
+		if err := WriteSimpleField[BACnetFaultParameterFaultOutOfRangeMaxNormalValue](ctx, "maxNormalValue", m.GetMaxNormalValue(), WriteComplex[BACnetFaultParameterFaultOutOfRangeMaxNormalValue](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxNormalValue' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultOutOfRange"); popErr != nil {

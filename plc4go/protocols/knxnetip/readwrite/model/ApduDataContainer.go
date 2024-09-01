@@ -188,16 +188,8 @@ func (m *_ApduDataContainer) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ApduDataContainer")
 		}
 
-		// Simple Field (dataApdu)
-		if pushErr := writeBuffer.PushContext("dataApdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataApdu")
-		}
-		_dataApduErr := writeBuffer.WriteSerializable(ctx, m.GetDataApdu())
-		if popErr := writeBuffer.PopContext("dataApdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataApdu")
-		}
-		if _dataApduErr != nil {
-			return errors.Wrap(_dataApduErr, "Error serializing 'dataApdu' field")
+		if err := WriteSimpleField[ApduData](ctx, "dataApdu", m.GetDataApdu(), WriteComplex[ApduData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataApdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataContainer"); popErr != nil {

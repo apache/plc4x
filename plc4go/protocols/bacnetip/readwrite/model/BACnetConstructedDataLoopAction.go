@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLoopAction) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLoopAction")
 		}
 
-		// Simple Field (action)
-		if pushErr := writeBuffer.PushContext("action"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for action")
-		}
-		_actionErr := writeBuffer.WriteSerializable(ctx, m.GetAction())
-		if popErr := writeBuffer.PopContext("action"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for action")
-		}
-		if _actionErr != nil {
-			return errors.Wrap(_actionErr, "Error serializing 'action' field")
+		if err := WriteSimpleField[BACnetActionTagged](ctx, "action", m.GetAction(), WriteComplex[BACnetActionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'action' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

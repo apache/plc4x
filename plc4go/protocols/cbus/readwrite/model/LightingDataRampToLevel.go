@@ -198,18 +198,12 @@ func (m *_LightingDataRampToLevel) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for LightingDataRampToLevel")
 		}
 
-		// Simple Field (group)
-		group := byte(m.GetGroup())
-		_groupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("group", (group))
-		if _groupErr != nil {
-			return errors.Wrap(_groupErr, "Error serializing 'group' field")
+		if err := WriteSimpleField[byte](ctx, "group", m.GetGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'group' field")
 		}
 
-		// Simple Field (level)
-		level := byte(m.GetLevel())
-		_levelErr := /*TODO: migrate me*/ writeBuffer.WriteByte("level", (level))
-		if _levelErr != nil {
-			return errors.Wrap(_levelErr, "Error serializing 'level' field")
+		if err := WriteSimpleField[byte](ctx, "level", m.GetLevel(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LightingDataRampToLevel"); popErr != nil {

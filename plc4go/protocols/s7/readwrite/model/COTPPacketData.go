@@ -205,18 +205,12 @@ func (m *_COTPPacketData) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for COTPPacketData")
 		}
 
-		// Simple Field (eot)
-		eot := bool(m.GetEot())
-		_eotErr := /*TODO: migrate me*/ writeBuffer.WriteBit("eot", (eot))
-		if _eotErr != nil {
-			return errors.Wrap(_eotErr, "Error serializing 'eot' field")
+		if err := WriteSimpleField[bool](ctx, "eot", m.GetEot(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eot' field")
 		}
 
-		// Simple Field (tpduRef)
-		tpduRef := uint8(m.GetTpduRef())
-		_tpduRefErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("tpduRef", 7, uint8((tpduRef)))
-		if _tpduRefErr != nil {
-			return errors.Wrap(_tpduRefErr, "Error serializing 'tpduRef' field")
+		if err := WriteSimpleField[uint8](ctx, "tpduRef", m.GetTpduRef(), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tpduRef' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPPacketData"); popErr != nil {

@@ -185,16 +185,8 @@ func (m *_SALDataAudioAndVideo) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SALDataAudioAndVideo")
 		}
 
-		// Simple Field (audioVideoData)
-		if pushErr := writeBuffer.PushContext("audioVideoData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for audioVideoData")
-		}
-		_audioVideoDataErr := writeBuffer.WriteSerializable(ctx, m.GetAudioVideoData())
-		if popErr := writeBuffer.PopContext("audioVideoData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for audioVideoData")
-		}
-		if _audioVideoDataErr != nil {
-			return errors.Wrap(_audioVideoDataErr, "Error serializing 'audioVideoData' field")
+		if err := WriteSimpleField[LightingData](ctx, "audioVideoData", m.GetAudioVideoData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'audioVideoData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataAudioAndVideo"); popErr != nil {

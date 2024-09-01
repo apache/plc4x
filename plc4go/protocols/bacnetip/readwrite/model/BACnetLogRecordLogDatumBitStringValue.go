@@ -185,16 +185,8 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumBitStringValue")
 		}
 
-		// Simple Field (bitStringValue)
-		if pushErr := writeBuffer.PushContext("bitStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
-		}
-		_bitStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetBitStringValue())
-		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bitStringValue")
-		}
-		if _bitStringValueErr != nil {
-			return errors.Wrap(_bitStringValueErr, "Error serializing 'bitStringValue' field")
+		if err := WriteSimpleField[BACnetContextTagBitString](ctx, "bitStringValue", m.GetBitStringValue(), WriteComplex[BACnetContextTagBitString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumBitStringValue"); popErr != nil {

@@ -206,28 +206,12 @@ func (m *_OpcuaMessageError) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for OpcuaMessageError")
 		}
 
-		// Simple Field (error)
-		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for error")
-		}
-		_errorErr := writeBuffer.WriteSerializable(ctx, m.GetError())
-		if popErr := writeBuffer.PopContext("error"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for error")
-		}
-		if _errorErr != nil {
-			return errors.Wrap(_errorErr, "Error serializing 'error' field")
+		if err := WriteSimpleEnumField[OpcuaStatusCode](ctx, "error", "OpcuaStatusCode", m.GetError(), WriteEnum[OpcuaStatusCode, uint32](OpcuaStatusCode.GetValue, OpcuaStatusCode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'error' field")
 		}
 
-		// Simple Field (reason)
-		if pushErr := writeBuffer.PushContext("reason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reason")
-		}
-		_reasonErr := writeBuffer.WriteSerializable(ctx, m.GetReason())
-		if popErr := writeBuffer.PopContext("reason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reason")
-		}
-		if _reasonErr != nil {
-			return errors.Wrap(_reasonErr, "Error serializing 'reason' field")
+		if err := WriteSimpleField[PascalString](ctx, "reason", m.GetReason(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaMessageError"); popErr != nil {

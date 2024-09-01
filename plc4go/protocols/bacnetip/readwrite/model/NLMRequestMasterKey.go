@@ -204,11 +204,8 @@ func (m *_NLMRequestMasterKey) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for NLMRequestMasterKey")
 		}
 
-		// Simple Field (numberOfSupportedKeyAlgorithms)
-		numberOfSupportedKeyAlgorithms := uint8(m.GetNumberOfSupportedKeyAlgorithms())
-		_numberOfSupportedKeyAlgorithmsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfSupportedKeyAlgorithms", 8, uint8((numberOfSupportedKeyAlgorithms)))
-		if _numberOfSupportedKeyAlgorithmsErr != nil {
-			return errors.Wrap(_numberOfSupportedKeyAlgorithmsErr, "Error serializing 'numberOfSupportedKeyAlgorithms' field")
+		if err := WriteSimpleField[uint8](ctx, "numberOfSupportedKeyAlgorithms", m.GetNumberOfSupportedKeyAlgorithms(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfSupportedKeyAlgorithms' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "encryptionAndSignatureAlgorithms", m.GetEncryptionAndSignatureAlgorithms(), WriteByteArray(writeBuffer, 8)); err != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIPSubnetMask) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPSubnetMask")
 		}
 
-		// Simple Field (ipSubnetMask)
-		if pushErr := writeBuffer.PushContext("ipSubnetMask"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipSubnetMask")
-		}
-		_ipSubnetMaskErr := writeBuffer.WriteSerializable(ctx, m.GetIpSubnetMask())
-		if popErr := writeBuffer.PopContext("ipSubnetMask"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipSubnetMask")
-		}
-		if _ipSubnetMaskErr != nil {
-			return errors.Wrap(_ipSubnetMaskErr, "Error serializing 'ipSubnetMask' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "ipSubnetMask", m.GetIpSubnetMask(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipSubnetMask' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -186,18 +186,12 @@ func (m *_AdsNotificationSample) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for AdsNotificationSample")
 	}
 
-	// Simple Field (notificationHandle)
-	notificationHandle := uint32(m.GetNotificationHandle())
-	_notificationHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("notificationHandle", 32, uint32((notificationHandle)))
-	if _notificationHandleErr != nil {
-		return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
+	if err := WriteSimpleField[uint32](ctx, "notificationHandle", m.GetNotificationHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'notificationHandle' field")
 	}
 
-	// Simple Field (sampleSize)
-	sampleSize := uint32(m.GetSampleSize())
-	_sampleSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sampleSize", 32, uint32((sampleSize)))
-	if _sampleSizeErr != nil {
-		return errors.Wrap(_sampleSizeErr, "Error serializing 'sampleSize' field")
+	if err := WriteSimpleField[uint32](ctx, "sampleSize", m.GetSampleSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sampleSize' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

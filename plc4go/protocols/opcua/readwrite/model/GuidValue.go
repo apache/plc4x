@@ -220,25 +220,16 @@ func (m *_GuidValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for GuidValue")
 	}
 
-	// Simple Field (data1)
-	data1 := uint32(m.GetData1())
-	_data1Err := /*TODO: migrate me*/ writeBuffer.WriteUint32("data1", 32, uint32((data1)))
-	if _data1Err != nil {
-		return errors.Wrap(_data1Err, "Error serializing 'data1' field")
+	if err := WriteSimpleField[uint32](ctx, "data1", m.GetData1(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'data1' field")
 	}
 
-	// Simple Field (data2)
-	data2 := uint16(m.GetData2())
-	_data2Err := /*TODO: migrate me*/ writeBuffer.WriteUint16("data2", 16, uint16((data2)))
-	if _data2Err != nil {
-		return errors.Wrap(_data2Err, "Error serializing 'data2' field")
+	if err := WriteSimpleField[uint16](ctx, "data2", m.GetData2(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'data2' field")
 	}
 
-	// Simple Field (data3)
-	data3 := uint16(m.GetData3())
-	_data3Err := /*TODO: migrate me*/ writeBuffer.WriteUint16("data3", 16, uint16((data3)))
-	if _data3Err != nil {
-		return errors.Wrap(_data3Err, "Error serializing 'data3' field")
+	if err := WriteSimpleField[uint16](ctx, "data3", m.GetData3(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'data3' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "data4", m.GetData4(), WriteByteArray(writeBuffer, 8)); err != nil {

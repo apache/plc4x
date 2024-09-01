@@ -184,25 +184,16 @@ func (m *_TransportType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for TransportType")
 	}
 
-	// Simple Field (direction)
-	direction := bool(m.GetDirection())
-	_directionErr := /*TODO: migrate me*/ writeBuffer.WriteBit("direction", (direction))
-	if _directionErr != nil {
-		return errors.Wrap(_directionErr, "Error serializing 'direction' field")
+	if err := WriteSimpleField[bool](ctx, "direction", m.GetDirection(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'direction' field")
 	}
 
-	// Simple Field (trigger)
-	trigger := uint8(m.GetTrigger())
-	_triggerErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("trigger", 3, uint8((trigger)))
-	if _triggerErr != nil {
-		return errors.Wrap(_triggerErr, "Error serializing 'trigger' field")
+	if err := WriteSimpleField[uint8](ctx, "trigger", m.GetTrigger(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'trigger' field")
 	}
 
-	// Simple Field (classTransport)
-	classTransport := uint8(m.GetClassTransport())
-	_classTransportErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("classTransport", 4, uint8((classTransport)))
-	if _classTransportErr != nil {
-		return errors.Wrap(_classTransportErr, "Error serializing 'classTransport' field")
+	if err := WriteSimpleField[uint8](ctx, "classTransport", m.GetClassTransport(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		return errors.Wrap(err, "Error serializing 'classTransport' field")
 	}
 
 	if popErr := writeBuffer.PopContext("TransportType"); popErr != nil {

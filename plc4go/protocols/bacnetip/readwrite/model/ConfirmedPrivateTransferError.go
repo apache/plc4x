@@ -240,40 +240,16 @@ func (m *_ConfirmedPrivateTransferError) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for ConfirmedPrivateTransferError")
 		}
 
-		// Simple Field (errorType)
-		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorType")
-		}
-		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
-		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorType")
-		}
-		if _errorTypeErr != nil {
-			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
+		if err := WriteSimpleField[ErrorEnclosed](ctx, "errorType", m.GetErrorType(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorType' field")
 		}
 
-		// Simple Field (vendorId)
-		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorId")
-		}
-		_vendorIdErr := writeBuffer.WriteSerializable(ctx, m.GetVendorId())
-		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorId")
-		}
-		if _vendorIdErr != nil {
-			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
+		if err := WriteSimpleField[BACnetVendorIdTagged](ctx, "vendorId", m.GetVendorId(), WriteComplex[BACnetVendorIdTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vendorId' field")
 		}
 
-		// Simple Field (serviceNumber)
-		if pushErr := writeBuffer.PushContext("serviceNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serviceNumber")
-		}
-		_serviceNumberErr := writeBuffer.WriteSerializable(ctx, m.GetServiceNumber())
-		if popErr := writeBuffer.PopContext("serviceNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serviceNumber")
-		}
-		if _serviceNumberErr != nil {
-			return errors.Wrap(_serviceNumberErr, "Error serializing 'serviceNumber' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "serviceNumber", m.GetServiceNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceNumber' field")
 		}
 
 		if err := WriteOptionalField[BACnetConstructedData](ctx, "errorParameters", GetRef(m.GetErrorParameters()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {

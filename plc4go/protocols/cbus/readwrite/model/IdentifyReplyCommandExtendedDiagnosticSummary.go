@@ -548,56 +548,28 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandExtendedDiagnosticSummary")
 		}
 
-		// Simple Field (lowApplication)
-		if pushErr := writeBuffer.PushContext("lowApplication"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lowApplication")
-		}
-		_lowApplicationErr := writeBuffer.WriteSerializable(ctx, m.GetLowApplication())
-		if popErr := writeBuffer.PopContext("lowApplication"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lowApplication")
-		}
-		if _lowApplicationErr != nil {
-			return errors.Wrap(_lowApplicationErr, "Error serializing 'lowApplication' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "lowApplication", "ApplicationIdContainer", m.GetLowApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'lowApplication' field")
 		}
 
-		// Simple Field (highApplication)
-		if pushErr := writeBuffer.PushContext("highApplication"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for highApplication")
-		}
-		_highApplicationErr := writeBuffer.WriteSerializable(ctx, m.GetHighApplication())
-		if popErr := writeBuffer.PopContext("highApplication"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for highApplication")
-		}
-		if _highApplicationErr != nil {
-			return errors.Wrap(_highApplicationErr, "Error serializing 'highApplication' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "highApplication", "ApplicationIdContainer", m.GetHighApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'highApplication' field")
 		}
 
-		// Simple Field (area)
-		area := byte(m.GetArea())
-		_areaErr := /*TODO: migrate me*/ writeBuffer.WriteByte("area", (area))
-		if _areaErr != nil {
-			return errors.Wrap(_areaErr, "Error serializing 'area' field")
+		if err := WriteSimpleField[byte](ctx, "area", m.GetArea(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'area' field")
 		}
 
-		// Simple Field (crc)
-		crc := uint16(m.GetCrc())
-		_crcErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("crc", 16, uint16((crc)))
-		if _crcErr != nil {
-			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
+		if err := WriteSimpleField[uint16](ctx, "crc", m.GetCrc(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'crc' field")
 		}
 
-		// Simple Field (serialNumber)
-		serialNumber := uint32(m.GetSerialNumber())
-		_serialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("serialNumber", 32, uint32((serialNumber)))
-		if _serialNumberErr != nil {
-			return errors.Wrap(_serialNumberErr, "Error serializing 'serialNumber' field")
+		if err := WriteSimpleField[uint32](ctx, "serialNumber", m.GetSerialNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serialNumber' field")
 		}
 
-		// Simple Field (networkVoltage)
-		networkVoltage := byte(m.GetNetworkVoltage())
-		_networkVoltageErr := /*TODO: migrate me*/ writeBuffer.WriteByte("networkVoltage", (networkVoltage))
-		if _networkVoltageErr != nil {
-			return errors.Wrap(_networkVoltageErr, "Error serializing 'networkVoltage' field")
+		if err := WriteSimpleField[byte](ctx, "networkVoltage", m.GetNetworkVoltage(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkVoltage' field")
 		}
 		// Virtual field
 		networkVoltageInVolts := m.GetNetworkVoltageInVolts()
@@ -606,25 +578,16 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 			return errors.Wrap(_networkVoltageInVoltsErr, "Error serializing 'networkVoltageInVolts' field")
 		}
 
-		// Simple Field (unitInLearnMode)
-		unitInLearnMode := bool(m.GetUnitInLearnMode())
-		_unitInLearnModeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("unitInLearnMode", (unitInLearnMode))
-		if _unitInLearnModeErr != nil {
-			return errors.Wrap(_unitInLearnModeErr, "Error serializing 'unitInLearnMode' field")
+		if err := WriteSimpleField[bool](ctx, "unitInLearnMode", m.GetUnitInLearnMode(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitInLearnMode' field")
 		}
 
-		// Simple Field (networkVoltageLow)
-		networkVoltageLow := bool(m.GetNetworkVoltageLow())
-		_networkVoltageLowErr := /*TODO: migrate me*/ writeBuffer.WriteBit("networkVoltageLow", (networkVoltageLow))
-		if _networkVoltageLowErr != nil {
-			return errors.Wrap(_networkVoltageLowErr, "Error serializing 'networkVoltageLow' field")
+		if err := WriteSimpleField[bool](ctx, "networkVoltageLow", m.GetNetworkVoltageLow(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkVoltageLow' field")
 		}
 
-		// Simple Field (networkVoltageMarginal)
-		networkVoltageMarginal := bool(m.GetNetworkVoltageMarginal())
-		_networkVoltageMarginalErr := /*TODO: migrate me*/ writeBuffer.WriteBit("networkVoltageMarginal", (networkVoltageMarginal))
-		if _networkVoltageMarginalErr != nil {
-			return errors.Wrap(_networkVoltageMarginalErr, "Error serializing 'networkVoltageMarginal' field")
+		if err := WriteSimpleField[bool](ctx, "networkVoltageMarginal", m.GetNetworkVoltageMarginal(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkVoltageMarginal' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
@@ -639,74 +602,44 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 			return errors.Wrap(err, "Error serializing 'reserved' field number 3")
 		}
 
-		// Simple Field (enableChecksumAlarm)
-		enableChecksumAlarm := bool(m.GetEnableChecksumAlarm())
-		_enableChecksumAlarmErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enableChecksumAlarm", (enableChecksumAlarm))
-		if _enableChecksumAlarmErr != nil {
-			return errors.Wrap(_enableChecksumAlarmErr, "Error serializing 'enableChecksumAlarm' field")
+		if err := WriteSimpleField[bool](ctx, "enableChecksumAlarm", m.GetEnableChecksumAlarm(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enableChecksumAlarm' field")
 		}
 
-		// Simple Field (outputUnit)
-		outputUnit := bool(m.GetOutputUnit())
-		_outputUnitErr := /*TODO: migrate me*/ writeBuffer.WriteBit("outputUnit", (outputUnit))
-		if _outputUnitErr != nil {
-			return errors.Wrap(_outputUnitErr, "Error serializing 'outputUnit' field")
+		if err := WriteSimpleField[bool](ctx, "outputUnit", m.GetOutputUnit(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'outputUnit' field")
 		}
 
-		// Simple Field (installationMMIError)
-		installationMMIError := bool(m.GetInstallationMMIError())
-		_installationMMIErrorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("installationMMIError", (installationMMIError))
-		if _installationMMIErrorErr != nil {
-			return errors.Wrap(_installationMMIErrorErr, "Error serializing 'installationMMIError' field")
+		if err := WriteSimpleField[bool](ctx, "installationMMIError", m.GetInstallationMMIError(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'installationMMIError' field")
 		}
 
-		// Simple Field (EEWriteError)
-		EEWriteError := bool(m.GetEEWriteError())
-		_EEWriteErrorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("EEWriteError", (EEWriteError))
-		if _EEWriteErrorErr != nil {
-			return errors.Wrap(_EEWriteErrorErr, "Error serializing 'EEWriteError' field")
+		if err := WriteSimpleField[bool](ctx, "EEWriteError", m.GetEEWriteError(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'EEWriteError' field")
 		}
 
-		// Simple Field (EEChecksumError)
-		EEChecksumError := bool(m.GetEEChecksumError())
-		_EEChecksumErrorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("EEChecksumError", (EEChecksumError))
-		if _EEChecksumErrorErr != nil {
-			return errors.Wrap(_EEChecksumErrorErr, "Error serializing 'EEChecksumError' field")
+		if err := WriteSimpleField[bool](ctx, "EEChecksumError", m.GetEEChecksumError(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'EEChecksumError' field")
 		}
 
-		// Simple Field (EEDataError)
-		EEDataError := bool(m.GetEEDataError())
-		_EEDataErrorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("EEDataError", (EEDataError))
-		if _EEDataErrorErr != nil {
-			return errors.Wrap(_EEDataErrorErr, "Error serializing 'EEDataError' field")
+		if err := WriteSimpleField[bool](ctx, "EEDataError", m.GetEEDataError(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'EEDataError' field")
 		}
 
-		// Simple Field (microReset)
-		microReset := bool(m.GetMicroReset())
-		_microResetErr := /*TODO: migrate me*/ writeBuffer.WriteBit("microReset", (microReset))
-		if _microResetErr != nil {
-			return errors.Wrap(_microResetErr, "Error serializing 'microReset' field")
+		if err := WriteSimpleField[bool](ctx, "microReset", m.GetMicroReset(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'microReset' field")
 		}
 
-		// Simple Field (commsTxError)
-		commsTxError := bool(m.GetCommsTxError())
-		_commsTxErrorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("commsTxError", (commsTxError))
-		if _commsTxErrorErr != nil {
-			return errors.Wrap(_commsTxErrorErr, "Error serializing 'commsTxError' field")
+		if err := WriteSimpleField[bool](ctx, "commsTxError", m.GetCommsTxError(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'commsTxError' field")
 		}
 
-		// Simple Field (internalStackOverflow)
-		internalStackOverflow := bool(m.GetInternalStackOverflow())
-		_internalStackOverflowErr := /*TODO: migrate me*/ writeBuffer.WriteBit("internalStackOverflow", (internalStackOverflow))
-		if _internalStackOverflowErr != nil {
-			return errors.Wrap(_internalStackOverflowErr, "Error serializing 'internalStackOverflow' field")
+		if err := WriteSimpleField[bool](ctx, "internalStackOverflow", m.GetInternalStackOverflow(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'internalStackOverflow' field")
 		}
 
-		// Simple Field (microPowerReset)
-		microPowerReset := bool(m.GetMicroPowerReset())
-		_microPowerResetErr := /*TODO: migrate me*/ writeBuffer.WriteBit("microPowerReset", (microPowerReset))
-		if _microPowerResetErr != nil {
-			return errors.Wrap(_microPowerResetErr, "Error serializing 'microPowerReset' field")
+		if err := WriteSimpleField[bool](ctx, "microPowerReset", m.GetMicroPowerReset(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'microPowerReset' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandExtendedDiagnosticSummary"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBlinkWarnEnable")
 		}
 
-		// Simple Field (blinkWarnEnable)
-		if pushErr := writeBuffer.PushContext("blinkWarnEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for blinkWarnEnable")
-		}
-		_blinkWarnEnableErr := writeBuffer.WriteSerializable(ctx, m.GetBlinkWarnEnable())
-		if popErr := writeBuffer.PopContext("blinkWarnEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for blinkWarnEnable")
-		}
-		if _blinkWarnEnableErr != nil {
-			return errors.Wrap(_blinkWarnEnableErr, "Error serializing 'blinkWarnEnable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "blinkWarnEnable", m.GetBlinkWarnEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'blinkWarnEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

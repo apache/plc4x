@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTimerState) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimerState")
 		}
 
-		// Simple Field (timerState)
-		if pushErr := writeBuffer.PushContext("timerState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timerState")
-		}
-		_timerStateErr := writeBuffer.WriteSerializable(ctx, m.GetTimerState())
-		if popErr := writeBuffer.PopContext("timerState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timerState")
-		}
-		if _timerStateErr != nil {
-			return errors.Wrap(_timerStateErr, "Error serializing 'timerState' field")
+		if err := WriteSimpleField[BACnetTimerStateTagged](ctx, "timerState", m.GetTimerState(), WriteComplex[BACnetTimerStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timerState' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

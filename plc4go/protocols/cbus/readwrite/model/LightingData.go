@@ -230,16 +230,8 @@ func (pm *_LightingData) SerializeParent(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(pushErr, "Error pushing for LightingData")
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
+	if err := WriteSimpleEnumField[LightingCommandTypeContainer](ctx, "commandTypeContainer", "LightingCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[LightingCommandTypeContainer, uint8](LightingCommandTypeContainer.GetValue, LightingCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
 	commandType := m.GetCommandType()

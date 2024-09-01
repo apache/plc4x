@@ -182,11 +182,8 @@ func (m *_SecurityDataDisplayMessage) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataDisplayMessage")
 		}
 
-		// Simple Field (message)
-		message := string(m.GetMessage())
-		_messageErr := /*TODO: migrate me*/ writeBuffer.WriteString("message", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (message), utils.WithEncoding("UTF-8)"))
-		if _messageErr != nil {
-			return errors.Wrap(_messageErr, "Error serializing 'message' field")
+		if err := WriteSimpleField[string](ctx, "message", m.GetMessage(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SecurityDataDisplayMessage"); popErr != nil {

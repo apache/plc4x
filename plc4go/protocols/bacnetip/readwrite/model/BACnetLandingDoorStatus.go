@@ -152,16 +152,8 @@ func (m *_BACnetLandingDoorStatus) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetLandingDoorStatus")
 	}
 
-	// Simple Field (landingDoors)
-	if pushErr := writeBuffer.PushContext("landingDoors"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for landingDoors")
-	}
-	_landingDoorsErr := writeBuffer.WriteSerializable(ctx, m.GetLandingDoors())
-	if popErr := writeBuffer.PopContext("landingDoors"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for landingDoors")
-	}
-	if _landingDoorsErr != nil {
-		return errors.Wrap(_landingDoorsErr, "Error serializing 'landingDoors' field")
+	if err := WriteSimpleField[BACnetLandingDoorStatusLandingDoorsList](ctx, "landingDoors", m.GetLandingDoors(), WriteComplex[BACnetLandingDoorStatusLandingDoorsList](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'landingDoors' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLandingDoorStatus"); popErr != nil {

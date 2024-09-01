@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataValueSet) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValueSet")
 		}
 
-		// Simple Field (valueSet)
-		if pushErr := writeBuffer.PushContext("valueSet"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for valueSet")
-		}
-		_valueSetErr := writeBuffer.WriteSerializable(ctx, m.GetValueSet())
-		if popErr := writeBuffer.PopContext("valueSet"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for valueSet")
-		}
-		if _valueSetErr != nil {
-			return errors.Wrap(_valueSetErr, "Error serializing 'valueSet' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "valueSet", m.GetValueSet(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'valueSet' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

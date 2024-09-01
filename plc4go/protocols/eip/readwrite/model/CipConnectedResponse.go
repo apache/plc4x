@@ -248,18 +248,12 @@ func (m *_CipConnectedResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (status)
-		status := uint8(m.GetStatus())
-		_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("status", 8, uint8((status)))
-		if _statusErr != nil {
-			return errors.Wrap(_statusErr, "Error serializing 'status' field")
+		if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'status' field")
 		}
 
-		// Simple Field (additionalStatusWords)
-		additionalStatusWords := uint8(m.GetAdditionalStatusWords())
-		_additionalStatusWordsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("additionalStatusWords", 8, uint8((additionalStatusWords)))
-		if _additionalStatusWordsErr != nil {
-			return errors.Wrap(_additionalStatusWordsErr, "Error serializing 'additionalStatusWords' field")
+		if err := WriteSimpleField[uint8](ctx, "additionalStatusWords", m.GetAdditionalStatusWords(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'additionalStatusWords' field")
 		}
 
 		if err := WriteOptionalField[CIPDataConnected](ctx, "data", GetRef(m.GetData()), WriteComplex[CIPDataConnected](writeBuffer), true); err != nil {

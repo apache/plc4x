@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTimeOfStrikeCountReset) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeOfStrikeCountReset")
 		}
 
-		// Simple Field (timeOfStrikeCountReset)
-		if pushErr := writeBuffer.PushContext("timeOfStrikeCountReset"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeOfStrikeCountReset")
-		}
-		_timeOfStrikeCountResetErr := writeBuffer.WriteSerializable(ctx, m.GetTimeOfStrikeCountReset())
-		if popErr := writeBuffer.PopContext("timeOfStrikeCountReset"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeOfStrikeCountReset")
-		}
-		if _timeOfStrikeCountResetErr != nil {
-			return errors.Wrap(_timeOfStrikeCountResetErr, "Error serializing 'timeOfStrikeCountReset' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "timeOfStrikeCountReset", m.GetTimeOfStrikeCountReset(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeOfStrikeCountReset' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

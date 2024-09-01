@@ -204,16 +204,8 @@ func (m *_NLMVendorProprietaryMessage) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for NLMVendorProprietaryMessage")
 		}
 
-		// Simple Field (vendorId)
-		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorId")
-		}
-		_vendorIdErr := writeBuffer.WriteSerializable(ctx, m.GetVendorId())
-		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorId")
-		}
-		if _vendorIdErr != nil {
-			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
+		if err := WriteSimpleEnumField[BACnetVendorId](ctx, "vendorId", "BACnetVendorId", m.GetVendorId(), WriteEnum[BACnetVendorId, uint16](BACnetVendorId.GetValue, BACnetVendorId.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+			return errors.Wrap(err, "Error serializing 'vendorId' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "proprietaryMessage", m.GetProprietaryMessage(), WriteByteArray(writeBuffer, 8)); err != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEventEnable) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventEnable")
 		}
 
-		// Simple Field (eventEnable)
-		if pushErr := writeBuffer.PushContext("eventEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventEnable")
-		}
-		_eventEnableErr := writeBuffer.WriteSerializable(ctx, m.GetEventEnable())
-		if popErr := writeBuffer.PopContext("eventEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventEnable")
-		}
-		if _eventEnableErr != nil {
-			return errors.Wrap(_eventEnableErr, "Error serializing 'eventEnable' field")
+		if err := WriteSimpleField[BACnetEventTransitionBitsTagged](ctx, "eventEnable", m.GetEventEnable(), WriteComplex[BACnetEventTransitionBitsTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

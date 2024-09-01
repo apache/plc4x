@@ -266,76 +266,28 @@ func (m *_BACnetEventParameterUnsignedOutOfRange) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterUnsignedOutOfRange")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (timeDelay)
-		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeDelay")
-		}
-		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
-		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeDelay")
-		}
-		if _timeDelayErr != nil {
-			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", m.GetTimeDelay(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeDelay' field")
 		}
 
-		// Simple Field (lowLimit)
-		if pushErr := writeBuffer.PushContext("lowLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lowLimit")
-		}
-		_lowLimitErr := writeBuffer.WriteSerializable(ctx, m.GetLowLimit())
-		if popErr := writeBuffer.PopContext("lowLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lowLimit")
-		}
-		if _lowLimitErr != nil {
-			return errors.Wrap(_lowLimitErr, "Error serializing 'lowLimit' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "lowLimit", m.GetLowLimit(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lowLimit' field")
 		}
 
-		// Simple Field (highLimit)
-		if pushErr := writeBuffer.PushContext("highLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for highLimit")
-		}
-		_highLimitErr := writeBuffer.WriteSerializable(ctx, m.GetHighLimit())
-		if popErr := writeBuffer.PopContext("highLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for highLimit")
-		}
-		if _highLimitErr != nil {
-			return errors.Wrap(_highLimitErr, "Error serializing 'highLimit' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "highLimit", m.GetHighLimit(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'highLimit' field")
 		}
 
-		// Simple Field (deadband)
-		if pushErr := writeBuffer.PushContext("deadband"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deadband")
-		}
-		_deadbandErr := writeBuffer.WriteSerializable(ctx, m.GetDeadband())
-		if popErr := writeBuffer.PopContext("deadband"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deadband")
-		}
-		if _deadbandErr != nil {
-			return errors.Wrap(_deadbandErr, "Error serializing 'deadband' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "deadband", m.GetDeadband(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deadband' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterUnsignedOutOfRange"); popErr != nil {

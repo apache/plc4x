@@ -185,11 +185,8 @@ func (m *_IdentifyReplyCommandType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandType")
 		}
 
-		// Simple Field (unitType)
-		unitType := string(m.GetUnitType())
-		_unitTypeErr := /*TODO: migrate me*/ writeBuffer.WriteString("unitType", uint32(64), (unitType), utils.WithEncoding("UTF-8)"))
-		if _unitTypeErr != nil {
-			return errors.Wrap(_unitTypeErr, "Error serializing 'unitType' field")
+		if err := WriteSimpleField[string](ctx, "unitType", m.GetUnitType(), WriteString(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandType"); popErr != nil {

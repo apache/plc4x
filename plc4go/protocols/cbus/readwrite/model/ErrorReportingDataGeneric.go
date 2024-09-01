@@ -362,37 +362,20 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for ErrorReportingDataGeneric")
 		}
 
-		// Simple Field (systemCategory)
-		if pushErr := writeBuffer.PushContext("systemCategory"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for systemCategory")
-		}
-		_systemCategoryErr := writeBuffer.WriteSerializable(ctx, m.GetSystemCategory())
-		if popErr := writeBuffer.PopContext("systemCategory"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for systemCategory")
-		}
-		if _systemCategoryErr != nil {
-			return errors.Wrap(_systemCategoryErr, "Error serializing 'systemCategory' field")
+		if err := WriteSimpleField[ErrorReportingSystemCategory](ctx, "systemCategory", m.GetSystemCategory(), WriteComplex[ErrorReportingSystemCategory](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'systemCategory' field")
 		}
 
-		// Simple Field (mostRecent)
-		mostRecent := bool(m.GetMostRecent())
-		_mostRecentErr := /*TODO: migrate me*/ writeBuffer.WriteBit("mostRecent", (mostRecent))
-		if _mostRecentErr != nil {
-			return errors.Wrap(_mostRecentErr, "Error serializing 'mostRecent' field")
+		if err := WriteSimpleField[bool](ctx, "mostRecent", m.GetMostRecent(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'mostRecent' field")
 		}
 
-		// Simple Field (acknowledge)
-		acknowledge := bool(m.GetAcknowledge())
-		_acknowledgeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("acknowledge", (acknowledge))
-		if _acknowledgeErr != nil {
-			return errors.Wrap(_acknowledgeErr, "Error serializing 'acknowledge' field")
+		if err := WriteSimpleField[bool](ctx, "acknowledge", m.GetAcknowledge(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'acknowledge' field")
 		}
 
-		// Simple Field (mostSevere)
-		mostSevere := bool(m.GetMostSevere())
-		_mostSevereErr := /*TODO: migrate me*/ writeBuffer.WriteBit("mostSevere", (mostSevere))
-		if _mostSevereErr != nil {
-			return errors.Wrap(_mostSevereErr, "Error serializing 'mostSevere' field")
+		if err := WriteSimpleField[bool](ctx, "mostSevere", m.GetMostSevere(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'mostSevere' field")
 		}
 		// Virtual field
 		isMostSevereError := m.GetIsMostSevereError()
@@ -413,37 +396,20 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_isMostRecentAndMostSevereErr, "Error serializing 'isMostRecentAndMostSevere' field")
 		}
 
-		// Simple Field (severity)
-		if pushErr := writeBuffer.PushContext("severity"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for severity")
-		}
-		_severityErr := writeBuffer.WriteSerializable(ctx, m.GetSeverity())
-		if popErr := writeBuffer.PopContext("severity"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for severity")
-		}
-		if _severityErr != nil {
-			return errors.Wrap(_severityErr, "Error serializing 'severity' field")
+		if err := WriteSimpleEnumField[ErrorReportingSeverity](ctx, "severity", "ErrorReportingSeverity", m.GetSeverity(), WriteEnum[ErrorReportingSeverity, uint8](ErrorReportingSeverity.GetValue, ErrorReportingSeverity.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 3))); err != nil {
+			return errors.Wrap(err, "Error serializing 'severity' field")
 		}
 
-		// Simple Field (deviceId)
-		deviceId := uint8(m.GetDeviceId())
-		_deviceIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("deviceId", 8, uint8((deviceId)))
-		if _deviceIdErr != nil {
-			return errors.Wrap(_deviceIdErr, "Error serializing 'deviceId' field")
+		if err := WriteSimpleField[uint8](ctx, "deviceId", m.GetDeviceId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceId' field")
 		}
 
-		// Simple Field (errorData1)
-		errorData1 := uint8(m.GetErrorData1())
-		_errorData1Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("errorData1", 8, uint8((errorData1)))
-		if _errorData1Err != nil {
-			return errors.Wrap(_errorData1Err, "Error serializing 'errorData1' field")
+		if err := WriteSimpleField[uint8](ctx, "errorData1", m.GetErrorData1(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorData1' field")
 		}
 
-		// Simple Field (errorData2)
-		errorData2 := uint8(m.GetErrorData2())
-		_errorData2Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("errorData2", 8, uint8((errorData2)))
-		if _errorData2Err != nil {
-			return errors.Wrap(_errorData2Err, "Error serializing 'errorData2' field")
+		if err := WriteSimpleField[uint8](ctx, "errorData2", m.GetErrorData2(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorData2' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ErrorReportingDataGeneric"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPriorityForWriting) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPriorityForWriting")
 		}
 
-		// Simple Field (priorityForWriting)
-		if pushErr := writeBuffer.PushContext("priorityForWriting"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for priorityForWriting")
-		}
-		_priorityForWritingErr := writeBuffer.WriteSerializable(ctx, m.GetPriorityForWriting())
-		if popErr := writeBuffer.PopContext("priorityForWriting"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for priorityForWriting")
-		}
-		if _priorityForWritingErr != nil {
-			return errors.Wrap(_priorityForWritingErr, "Error serializing 'priorityForWriting' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "priorityForWriting", m.GetPriorityForWriting(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priorityForWriting' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

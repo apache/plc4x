@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAckedTransitions) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAckedTransitions")
 		}
 
-		// Simple Field (ackedTransitions)
-		if pushErr := writeBuffer.PushContext("ackedTransitions"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ackedTransitions")
-		}
-		_ackedTransitionsErr := writeBuffer.WriteSerializable(ctx, m.GetAckedTransitions())
-		if popErr := writeBuffer.PopContext("ackedTransitions"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ackedTransitions")
-		}
-		if _ackedTransitionsErr != nil {
-			return errors.Wrap(_ackedTransitionsErr, "Error serializing 'ackedTransitions' field")
+		if err := WriteSimpleField[BACnetEventTransitionBitsTagged](ctx, "ackedTransitions", m.GetAckedTransitions(), WriteComplex[BACnetEventTransitionBitsTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ackedTransitions' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

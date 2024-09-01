@@ -225,25 +225,16 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUMaskWriteHoldingRegisterRequest")
 		}
 
-		// Simple Field (referenceAddress)
-		referenceAddress := uint16(m.GetReferenceAddress())
-		_referenceAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("referenceAddress", 16, uint16((referenceAddress)))
-		if _referenceAddressErr != nil {
-			return errors.Wrap(_referenceAddressErr, "Error serializing 'referenceAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "referenceAddress", m.GetReferenceAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceAddress' field")
 		}
 
-		// Simple Field (andMask)
-		andMask := uint16(m.GetAndMask())
-		_andMaskErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("andMask", 16, uint16((andMask)))
-		if _andMaskErr != nil {
-			return errors.Wrap(_andMaskErr, "Error serializing 'andMask' field")
+		if err := WriteSimpleField[uint16](ctx, "andMask", m.GetAndMask(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'andMask' field")
 		}
 
-		// Simple Field (orMask)
-		orMask := uint16(m.GetOrMask())
-		_orMaskErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("orMask", 16, uint16((orMask)))
-		if _orMaskErr != nil {
-			return errors.Wrap(_orMaskErr, "Error serializing 'orMask' field")
+		if err := WriteSimpleField[uint16](ctx, "orMask", m.GetOrMask(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'orMask' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUMaskWriteHoldingRegisterRequest"); popErr != nil {

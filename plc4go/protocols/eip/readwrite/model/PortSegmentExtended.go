@@ -242,18 +242,12 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for PortSegmentExtended")
 		}
 
-		// Simple Field (port)
-		port := uint8(m.GetPort())
-		_portErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("port", 4, uint8((port)))
-		if _portErr != nil {
-			return errors.Wrap(_portErr, "Error serializing 'port' field")
+		if err := WriteSimpleField[uint8](ctx, "port", m.GetPort(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'port' field")
 		}
 
-		// Simple Field (linkAddressSize)
-		linkAddressSize := uint8(m.GetLinkAddressSize())
-		_linkAddressSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("linkAddressSize", 8, uint8((linkAddressSize)))
-		if _linkAddressSizeErr != nil {
-			return errors.Wrap(_linkAddressSizeErr, "Error serializing 'linkAddressSize' field")
+		if err := WriteSimpleField[uint8](ctx, "linkAddressSize", m.GetLinkAddressSize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'linkAddressSize' field")
 		}
 		// Virtual field
 		paddingByte := m.GetPaddingByte()
@@ -262,11 +256,8 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_paddingByteErr, "Error serializing 'paddingByte' field")
 		}
 
-		// Simple Field (address)
-		address := string(m.GetAddress())
-		_addressErr := /*TODO: migrate me*/ writeBuffer.WriteString("address", uint32(((m.GetLinkAddressSize())*(8))+((m.GetPaddingByte())*(8))), (address), utils.WithEncoding("UTF-8)"))
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[string](ctx, "address", m.GetAddress(), WriteString(writeBuffer, int32(int32((int32(m.GetLinkAddressSize())*int32(int32(8))))+int32((int32(m.GetPaddingByte())*int32(int32(8))))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PortSegmentExtended"); popErr != nil {

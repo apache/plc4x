@@ -188,16 +188,8 @@ func (m *_DF1CommandRequestMessage) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for DF1CommandRequestMessage")
 		}
 
-		// Simple Field (command)
-		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for command")
-		}
-		_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
-		if popErr := writeBuffer.PopContext("command"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for command")
-		}
-		if _commandErr != nil {
-			return errors.Wrap(_commandErr, "Error serializing 'command' field")
+		if err := WriteSimpleField[DF1RequestCommand](ctx, "command", m.GetCommand(), WriteComplex[DF1RequestCommand](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'command' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DF1CommandRequestMessage"); popErr != nil {

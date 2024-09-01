@@ -185,16 +185,8 @@ func (m *_BACnetLogRecordLogDatumFailure) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogRecordLogDatumFailure")
 		}
 
-		// Simple Field (failure)
-		if pushErr := writeBuffer.PushContext("failure"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for failure")
-		}
-		_failureErr := writeBuffer.WriteSerializable(ctx, m.GetFailure())
-		if popErr := writeBuffer.PopContext("failure"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for failure")
-		}
-		if _failureErr != nil {
-			return errors.Wrap(_failureErr, "Error serializing 'failure' field")
+		if err := WriteSimpleField[ErrorEnclosed](ctx, "failure", m.GetFailure(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'failure' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogRecordLogDatumFailure"); popErr != nil {

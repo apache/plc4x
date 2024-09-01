@@ -182,16 +182,8 @@ func (m *_TelephonyDataDialInFailure) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for TelephonyDataDialInFailure")
 		}
 
-		// Simple Field (reason)
-		if pushErr := writeBuffer.PushContext("reason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reason")
-		}
-		_reasonErr := writeBuffer.WriteSerializable(ctx, m.GetReason())
-		if popErr := writeBuffer.PopContext("reason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reason")
-		}
-		if _reasonErr != nil {
-			return errors.Wrap(_reasonErr, "Error serializing 'reason' field")
+		if err := WriteSimpleEnumField[DialInFailureReason](ctx, "reason", "DialInFailureReason", m.GetReason(), WriteEnum[DialInFailureReason, uint8](DialInFailureReason.GetValue, DialInFailureReason.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'reason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TelephonyDataDialInFailure"); popErr != nil {

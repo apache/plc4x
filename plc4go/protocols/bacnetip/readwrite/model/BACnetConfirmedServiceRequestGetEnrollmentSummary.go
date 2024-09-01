@@ -301,16 +301,8 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestGetEnrollmentSummary")
 		}
 
-		// Simple Field (acknowledgmentFilter)
-		if pushErr := writeBuffer.PushContext("acknowledgmentFilter"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for acknowledgmentFilter")
-		}
-		_acknowledgmentFilterErr := writeBuffer.WriteSerializable(ctx, m.GetAcknowledgmentFilter())
-		if popErr := writeBuffer.PopContext("acknowledgmentFilter"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for acknowledgmentFilter")
-		}
-		if _acknowledgmentFilterErr != nil {
-			return errors.Wrap(_acknowledgmentFilterErr, "Error serializing 'acknowledgmentFilter' field")
+		if err := WriteSimpleField[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged](ctx, "acknowledgmentFilter", m.GetAcknowledgmentFilter(), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'acknowledgmentFilter' field")
 		}
 
 		if err := WriteOptionalField[BACnetRecipientProcessEnclosed](ctx, "enrollmentFilter", GetRef(m.GetEnrollmentFilter()), WriteComplex[BACnetRecipientProcessEnclosed](writeBuffer), true); err != nil {

@@ -223,28 +223,12 @@ func (m *_GetAttributeAllRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(err, "Error serializing 'requestPathSize' field")
 		}
 
-		// Simple Field (classSegment)
-		if pushErr := writeBuffer.PushContext("classSegment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for classSegment")
-		}
-		_classSegmentErr := writeBuffer.WriteSerializable(ctx, m.GetClassSegment())
-		if popErr := writeBuffer.PopContext("classSegment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for classSegment")
-		}
-		if _classSegmentErr != nil {
-			return errors.Wrap(_classSegmentErr, "Error serializing 'classSegment' field")
+		if err := WriteSimpleField[PathSegment](ctx, "classSegment", m.GetClassSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'classSegment' field")
 		}
 
-		// Simple Field (instanceSegment)
-		if pushErr := writeBuffer.PushContext("instanceSegment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for instanceSegment")
-		}
-		_instanceSegmentErr := writeBuffer.WriteSerializable(ctx, m.GetInstanceSegment())
-		if popErr := writeBuffer.PopContext("instanceSegment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for instanceSegment")
-		}
-		if _instanceSegmentErr != nil {
-			return errors.Wrap(_instanceSegmentErr, "Error serializing 'instanceSegment' field")
+		if err := WriteSimpleField[PathSegment](ctx, "instanceSegment", m.GetInstanceSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'instanceSegment' field")
 		}
 
 		if popErr := writeBuffer.PopContext("GetAttributeAllRequest"); popErr != nil {

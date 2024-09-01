@@ -182,11 +182,8 @@ func (m *_MediaTransportControlDataSetCategory) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataSetCategory")
 		}
 
-		// Simple Field (categoryNumber)
-		categoryNumber := uint8(m.GetCategoryNumber())
-		_categoryNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("categoryNumber", 8, uint8((categoryNumber)))
-		if _categoryNumberErr != nil {
-			return errors.Wrap(_categoryNumberErr, "Error serializing 'categoryNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "categoryNumber", m.GetCategoryNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'categoryNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataSetCategory"); popErr != nil {

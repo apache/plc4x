@@ -184,16 +184,8 @@ func (m *_CALDataIdentify) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for CALDataIdentify")
 		}
 
-		// Simple Field (attribute)
-		if pushErr := writeBuffer.PushContext("attribute"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for attribute")
-		}
-		_attributeErr := writeBuffer.WriteSerializable(ctx, m.GetAttribute())
-		if popErr := writeBuffer.PopContext("attribute"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for attribute")
-		}
-		if _attributeErr != nil {
-			return errors.Wrap(_attributeErr, "Error serializing 'attribute' field")
+		if err := WriteSimpleEnumField[Attribute](ctx, "attribute", "Attribute", m.GetAttribute(), WriteEnum[Attribute, uint8](Attribute.GetValue, Attribute.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'attribute' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataIdentify"); popErr != nil {

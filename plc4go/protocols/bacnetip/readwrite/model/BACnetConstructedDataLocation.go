@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLocation) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLocation")
 		}
 
-		// Simple Field (location)
-		if pushErr := writeBuffer.PushContext("location"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for location")
-		}
-		_locationErr := writeBuffer.WriteSerializable(ctx, m.GetLocation())
-		if popErr := writeBuffer.PopContext("location"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for location")
-		}
-		if _locationErr != nil {
-			return errors.Wrap(_locationErr, "Error serializing 'location' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "location", m.GetLocation(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'location' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

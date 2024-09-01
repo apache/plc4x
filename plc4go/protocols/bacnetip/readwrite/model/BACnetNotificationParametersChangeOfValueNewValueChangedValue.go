@@ -185,16 +185,8 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) Seriali
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfValueNewValueChangedValue")
 		}
 
-		// Simple Field (changedValue)
-		if pushErr := writeBuffer.PushContext("changedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for changedValue")
-		}
-		_changedValueErr := writeBuffer.WriteSerializable(ctx, m.GetChangedValue())
-		if popErr := writeBuffer.PopContext("changedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for changedValue")
-		}
-		if _changedValueErr != nil {
-			return errors.Wrap(_changedValueErr, "Error serializing 'changedValue' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "changedValue", m.GetChangedValue(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'changedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue"); popErr != nil {

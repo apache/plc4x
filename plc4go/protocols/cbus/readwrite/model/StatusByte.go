@@ -200,52 +200,20 @@ func (m *_StatusByte) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for StatusByte")
 	}
 
-	// Simple Field (gav3)
-	if pushErr := writeBuffer.PushContext("gav3"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for gav3")
-	}
-	_gav3Err := writeBuffer.WriteSerializable(ctx, m.GetGav3())
-	if popErr := writeBuffer.PopContext("gav3"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for gav3")
-	}
-	if _gav3Err != nil {
-		return errors.Wrap(_gav3Err, "Error serializing 'gav3' field")
+	if err := WriteSimpleEnumField[GAVState](ctx, "gav3", "GAVState", m.GetGav3(), WriteEnum[GAVState, uint8](GAVState.GetValue, GAVState.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'gav3' field")
 	}
 
-	// Simple Field (gav2)
-	if pushErr := writeBuffer.PushContext("gav2"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for gav2")
-	}
-	_gav2Err := writeBuffer.WriteSerializable(ctx, m.GetGav2())
-	if popErr := writeBuffer.PopContext("gav2"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for gav2")
-	}
-	if _gav2Err != nil {
-		return errors.Wrap(_gav2Err, "Error serializing 'gav2' field")
+	if err := WriteSimpleEnumField[GAVState](ctx, "gav2", "GAVState", m.GetGav2(), WriteEnum[GAVState, uint8](GAVState.GetValue, GAVState.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'gav2' field")
 	}
 
-	// Simple Field (gav1)
-	if pushErr := writeBuffer.PushContext("gav1"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for gav1")
-	}
-	_gav1Err := writeBuffer.WriteSerializable(ctx, m.GetGav1())
-	if popErr := writeBuffer.PopContext("gav1"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for gav1")
-	}
-	if _gav1Err != nil {
-		return errors.Wrap(_gav1Err, "Error serializing 'gav1' field")
+	if err := WriteSimpleEnumField[GAVState](ctx, "gav1", "GAVState", m.GetGav1(), WriteEnum[GAVState, uint8](GAVState.GetValue, GAVState.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'gav1' field")
 	}
 
-	// Simple Field (gav0)
-	if pushErr := writeBuffer.PushContext("gav0"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for gav0")
-	}
-	_gav0Err := writeBuffer.WriteSerializable(ctx, m.GetGav0())
-	if popErr := writeBuffer.PopContext("gav0"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for gav0")
-	}
-	if _gav0Err != nil {
-		return errors.Wrap(_gav0Err, "Error serializing 'gav0' field")
+	if err := WriteSimpleEnumField[GAVState](ctx, "gav0", "GAVState", m.GetGav0(), WriteEnum[GAVState, uint8](GAVState.GetValue, GAVState.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'gav0' field")
 	}
 
 	if popErr := writeBuffer.PopContext("StatusByte"); popErr != nil {

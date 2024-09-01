@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataInstantaneousPower) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInstantaneousPower")
 		}
 
-		// Simple Field (instantaneousPower)
-		if pushErr := writeBuffer.PushContext("instantaneousPower"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for instantaneousPower")
-		}
-		_instantaneousPowerErr := writeBuffer.WriteSerializable(ctx, m.GetInstantaneousPower())
-		if popErr := writeBuffer.PopContext("instantaneousPower"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for instantaneousPower")
-		}
-		if _instantaneousPowerErr != nil {
-			return errors.Wrap(_instantaneousPowerErr, "Error serializing 'instantaneousPower' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "instantaneousPower", m.GetInstantaneousPower(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'instantaneousPower' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

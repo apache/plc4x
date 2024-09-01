@@ -181,11 +181,8 @@ func (m *_LightingDataOn) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for LightingDataOn")
 		}
 
-		// Simple Field (group)
-		group := byte(m.GetGroup())
-		_groupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("group", (group))
-		if _groupErr != nil {
-			return errors.Wrap(_groupErr, "Error serializing 'group' field")
+		if err := WriteSimpleField[byte](ctx, "group", m.GetGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'group' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LightingDataOn"); popErr != nil {

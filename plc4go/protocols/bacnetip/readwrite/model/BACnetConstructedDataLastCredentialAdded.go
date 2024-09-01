@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastCredentialAdded) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastCredentialAdded")
 		}
 
-		// Simple Field (lastCredentialAdded)
-		if pushErr := writeBuffer.PushContext("lastCredentialAdded"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastCredentialAdded")
-		}
-		_lastCredentialAddedErr := writeBuffer.WriteSerializable(ctx, m.GetLastCredentialAdded())
-		if popErr := writeBuffer.PopContext("lastCredentialAdded"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastCredentialAdded")
-		}
-		if _lastCredentialAddedErr != nil {
-			return errors.Wrap(_lastCredentialAddedErr, "Error serializing 'lastCredentialAdded' field")
+		if err := WriteSimpleField[BACnetDeviceObjectReference](ctx, "lastCredentialAdded", m.GetLastCredentialAdded(), WriteComplex[BACnetDeviceObjectReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastCredentialAdded' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -179,11 +179,8 @@ func (m *_ModbusDeviceInformationObject) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(pushErr, "Error pushing for ModbusDeviceInformationObject")
 	}
 
-	// Simple Field (objectId)
-	objectId := uint8(m.GetObjectId())
-	_objectIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectId", 8, uint8((objectId)))
-	if _objectIdErr != nil {
-		return errors.Wrap(_objectIdErr, "Error serializing 'objectId' field")
+	if err := WriteSimpleField[uint8](ctx, "objectId", m.GetObjectId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'objectId' field")
 	}
 	objectLength := uint8(uint8(len(m.GetData())))
 	if err := WriteImplicitField(ctx, "objectLength", objectLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {

@@ -212,16 +212,8 @@ func (m *_CBusPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (statusRequest)
-		if pushErr := writeBuffer.PushContext("statusRequest"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusRequest")
-		}
-		_statusRequestErr := writeBuffer.WriteSerializable(ctx, m.GetStatusRequest())
-		if popErr := writeBuffer.PopContext("statusRequest"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusRequest")
-		}
-		if _statusRequestErr != nil {
-			return errors.Wrap(_statusRequestErr, "Error serializing 'statusRequest' field")
+		if err := WriteSimpleField[StatusRequest](ctx, "statusRequest", m.GetStatusRequest(), WriteComplex[StatusRequest](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusRequest' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusPointToMultiPointCommandStatus"); popErr != nil {

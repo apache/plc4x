@@ -200,28 +200,12 @@ func (m *_KeyValuePair) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for KeyValuePair")
 		}
 
-		// Simple Field (key)
-		if pushErr := writeBuffer.PushContext("key"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for key")
-		}
-		_keyErr := writeBuffer.WriteSerializable(ctx, m.GetKey())
-		if popErr := writeBuffer.PopContext("key"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for key")
-		}
-		if _keyErr != nil {
-			return errors.Wrap(_keyErr, "Error serializing 'key' field")
+		if err := WriteSimpleField[QualifiedName](ctx, "key", m.GetKey(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'key' field")
 		}
 
-		// Simple Field (value)
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
-		}
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[Variant](ctx, "value", m.GetValue(), WriteComplex[Variant](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("KeyValuePair"); popErr != nil {

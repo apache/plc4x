@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPrescale) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPrescale")
 		}
 
-		// Simple Field (prescale)
-		if pushErr := writeBuffer.PushContext("prescale"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for prescale")
-		}
-		_prescaleErr := writeBuffer.WriteSerializable(ctx, m.GetPrescale())
-		if popErr := writeBuffer.PopContext("prescale"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for prescale")
-		}
-		if _prescaleErr != nil {
-			return errors.Wrap(_prescaleErr, "Error serializing 'prescale' field")
+		if err := WriteSimpleField[BACnetPrescale](ctx, "prescale", m.GetPrescale(), WriteComplex[BACnetPrescale](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'prescale' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

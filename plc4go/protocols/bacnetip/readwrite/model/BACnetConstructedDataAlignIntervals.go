@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAlignIntervals) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAlignIntervals")
 		}
 
-		// Simple Field (alignIntervals)
-		if pushErr := writeBuffer.PushContext("alignIntervals"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alignIntervals")
-		}
-		_alignIntervalsErr := writeBuffer.WriteSerializable(ctx, m.GetAlignIntervals())
-		if popErr := writeBuffer.PopContext("alignIntervals"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alignIntervals")
-		}
-		if _alignIntervalsErr != nil {
-			return errors.Wrap(_alignIntervalsErr, "Error serializing 'alignIntervals' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "alignIntervals", m.GetAlignIntervals(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'alignIntervals' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -289,37 +289,20 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for LDataExtended")
 		}
 
-		// Simple Field (groupAddress)
-		groupAddress := bool(m.GetGroupAddress())
-		_groupAddressErr := /*TODO: migrate me*/ writeBuffer.WriteBit("groupAddress", (groupAddress))
-		if _groupAddressErr != nil {
-			return errors.Wrap(_groupAddressErr, "Error serializing 'groupAddress' field")
+		if err := WriteSimpleField[bool](ctx, "groupAddress", m.GetGroupAddress(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'groupAddress' field")
 		}
 
-		// Simple Field (hopCount)
-		hopCount := uint8(m.GetHopCount())
-		_hopCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("hopCount", 3, uint8((hopCount)))
-		if _hopCountErr != nil {
-			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
+		if err := WriteSimpleField[uint8](ctx, "hopCount", m.GetHopCount(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hopCount' field")
 		}
 
-		// Simple Field (extendedFrameFormat)
-		extendedFrameFormat := uint8(m.GetExtendedFrameFormat())
-		_extendedFrameFormatErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("extendedFrameFormat", 4, uint8((extendedFrameFormat)))
-		if _extendedFrameFormatErr != nil {
-			return errors.Wrap(_extendedFrameFormatErr, "Error serializing 'extendedFrameFormat' field")
+		if err := WriteSimpleField[uint8](ctx, "extendedFrameFormat", m.GetExtendedFrameFormat(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'extendedFrameFormat' field")
 		}
 
-		// Simple Field (sourceAddress)
-		if pushErr := writeBuffer.PushContext("sourceAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
-		}
-		_sourceAddressErr := writeBuffer.WriteSerializable(ctx, m.GetSourceAddress())
-		if popErr := writeBuffer.PopContext("sourceAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sourceAddress")
-		}
-		if _sourceAddressErr != nil {
-			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
+		if err := WriteSimpleField[KnxAddress](ctx, "sourceAddress", m.GetSourceAddress(), WriteComplex[KnxAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceAddress' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "destinationAddress", m.GetDestinationAddress(), WriteByteArray(writeBuffer, 8)); err != nil {
@@ -330,16 +313,8 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(err, "Error serializing 'dataLength' field")
 		}
 
-		// Simple Field (apdu)
-		if pushErr := writeBuffer.PushContext("apdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for apdu")
-		}
-		_apduErr := writeBuffer.WriteSerializable(ctx, m.GetApdu())
-		if popErr := writeBuffer.PopContext("apdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for apdu")
-		}
-		if _apduErr != nil {
-			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
+		if err := WriteSimpleField[Apdu](ctx, "apdu", m.GetApdu(), WriteComplex[Apdu](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'apdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LDataExtended"); popErr != nil {

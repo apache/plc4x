@@ -200,28 +200,12 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) SerializeWithWr
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 		}
 
-		// Simple Field (referenceIndex)
-		if pushErr := writeBuffer.PushContext("referenceIndex"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceIndex")
-		}
-		_referenceIndexErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceIndex())
-		if popErr := writeBuffer.PopContext("referenceIndex"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceIndex")
-		}
-		if _referenceIndexErr != nil {
-			return errors.Wrap(_referenceIndexErr, "Error serializing 'referenceIndex' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referenceIndex", m.GetReferenceIndex(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceIndex' field")
 		}
 
-		// Simple Field (count)
-		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for count")
-		}
-		_countErr := writeBuffer.WriteSerializable(ctx, m.GetCount())
-		if popErr := writeBuffer.PopContext("count"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for count")
-		}
-		if _countErr != nil {
-			return errors.Wrap(_countErr, "Error serializing 'count' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", m.GetCount(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'count' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition"); popErr != nil {

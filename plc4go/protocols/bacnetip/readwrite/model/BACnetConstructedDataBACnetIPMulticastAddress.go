@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPMulticastAddress")
 		}
 
-		// Simple Field (ipMulticastAddress)
-		if pushErr := writeBuffer.PushContext("ipMulticastAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipMulticastAddress")
-		}
-		_ipMulticastAddressErr := writeBuffer.WriteSerializable(ctx, m.GetIpMulticastAddress())
-		if popErr := writeBuffer.PopContext("ipMulticastAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipMulticastAddress")
-		}
-		if _ipMulticastAddressErr != nil {
-			return errors.Wrap(_ipMulticastAddressErr, "Error serializing 'ipMulticastAddress' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "ipMulticastAddress", m.GetIpMulticastAddress(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipMulticastAddress' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

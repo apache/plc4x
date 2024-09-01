@@ -182,11 +182,8 @@ func (m *_MeteringDataOtherWaterConsumption) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for MeteringDataOtherWaterConsumption")
 		}
 
-		// Simple Field (kL)
-		kL := uint32(m.GetKL())
-		_kLErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("kL", 32, uint32((kL)))
-		if _kLErr != nil {
-			return errors.Wrap(_kLErr, "Error serializing 'kL' field")
+		if err := WriteSimpleField[uint32](ctx, "kL", m.GetKL(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'kL' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MeteringDataOtherWaterConsumption"); popErr != nil {

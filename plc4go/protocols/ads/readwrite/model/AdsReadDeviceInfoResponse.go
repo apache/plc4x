@@ -264,37 +264,20 @@ func (m *_AdsReadDeviceInfoResponse) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for AdsReadDeviceInfoResponse")
 		}
 
-		// Simple Field (result)
-		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for result")
-		}
-		_resultErr := writeBuffer.WriteSerializable(ctx, m.GetResult())
-		if popErr := writeBuffer.PopContext("result"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for result")
-		}
-		if _resultErr != nil {
-			return errors.Wrap(_resultErr, "Error serializing 'result' field")
+		if err := WriteSimpleEnumField[ReturnCode](ctx, "result", "ReturnCode", m.GetResult(), WriteEnum[ReturnCode, uint32](ReturnCode.GetValue, ReturnCode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'result' field")
 		}
 
-		// Simple Field (majorVersion)
-		majorVersion := uint8(m.GetMajorVersion())
-		_majorVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("majorVersion", 8, uint8((majorVersion)))
-		if _majorVersionErr != nil {
-			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
+		if err := WriteSimpleField[uint8](ctx, "majorVersion", m.GetMajorVersion(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'majorVersion' field")
 		}
 
-		// Simple Field (minorVersion)
-		minorVersion := uint8(m.GetMinorVersion())
-		_minorVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("minorVersion", 8, uint8((minorVersion)))
-		if _minorVersionErr != nil {
-			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
+		if err := WriteSimpleField[uint8](ctx, "minorVersion", m.GetMinorVersion(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minorVersion' field")
 		}
 
-		// Simple Field (version)
-		version := uint16(m.GetVersion())
-		_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("version", 16, uint16((version)))
-		if _versionErr != nil {
-			return errors.Wrap(_versionErr, "Error serializing 'version' field")
+		if err := WriteSimpleField[uint16](ctx, "version", m.GetVersion(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'version' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "device", m.GetDevice(), WriteByteArray(writeBuffer, 8)); err != nil {

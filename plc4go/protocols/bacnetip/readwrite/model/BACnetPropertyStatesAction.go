@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesAction) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesAction")
 		}
 
-		// Simple Field (action)
-		if pushErr := writeBuffer.PushContext("action"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for action")
-		}
-		_actionErr := writeBuffer.WriteSerializable(ctx, m.GetAction())
-		if popErr := writeBuffer.PopContext("action"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for action")
-		}
-		if _actionErr != nil {
-			return errors.Wrap(_actionErr, "Error serializing 'action' field")
+		if err := WriteSimpleField[BACnetActionTagged](ctx, "action", m.GetAction(), WriteComplex[BACnetActionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'action' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesAction"); popErr != nil {

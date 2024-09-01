@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAnalogInputInterfaceValue")
 		}
 
-		// Simple Field (interfaceValue)
-		if pushErr := writeBuffer.PushContext("interfaceValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for interfaceValue")
-		}
-		_interfaceValueErr := writeBuffer.WriteSerializable(ctx, m.GetInterfaceValue())
-		if popErr := writeBuffer.PopContext("interfaceValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for interfaceValue")
-		}
-		if _interfaceValueErr != nil {
-			return errors.Wrap(_interfaceValueErr, "Error serializing 'interfaceValue' field")
+		if err := WriteSimpleField[BACnetOptionalREAL](ctx, "interfaceValue", m.GetInterfaceValue(), WriteComplex[BACnetOptionalREAL](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'interfaceValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

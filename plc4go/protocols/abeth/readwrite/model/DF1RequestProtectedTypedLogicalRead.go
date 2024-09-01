@@ -251,39 +251,24 @@ func (m *_DF1RequestProtectedTypedLogicalRead) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for DF1RequestProtectedTypedLogicalRead")
 		}
 
-		// Simple Field (byteSize)
-		byteSize := uint8(m.GetByteSize())
-		_byteSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("byteSize", 8, uint8((byteSize)))
-		if _byteSizeErr != nil {
-			return errors.Wrap(_byteSizeErr, "Error serializing 'byteSize' field")
+		if err := WriteSimpleField[uint8](ctx, "byteSize", m.GetByteSize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'byteSize' field")
 		}
 
-		// Simple Field (fileNumber)
-		fileNumber := uint8(m.GetFileNumber())
-		_fileNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("fileNumber", 8, uint8((fileNumber)))
-		if _fileNumberErr != nil {
-			return errors.Wrap(_fileNumberErr, "Error serializing 'fileNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "fileNumber", m.GetFileNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileNumber' field")
 		}
 
-		// Simple Field (fileType)
-		fileType := uint8(m.GetFileType())
-		_fileTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("fileType", 8, uint8((fileType)))
-		if _fileTypeErr != nil {
-			return errors.Wrap(_fileTypeErr, "Error serializing 'fileType' field")
+		if err := WriteSimpleField[uint8](ctx, "fileType", m.GetFileType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileType' field")
 		}
 
-		// Simple Field (elementNumber)
-		elementNumber := uint8(m.GetElementNumber())
-		_elementNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("elementNumber", 8, uint8((elementNumber)))
-		if _elementNumberErr != nil {
-			return errors.Wrap(_elementNumberErr, "Error serializing 'elementNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "elementNumber", m.GetElementNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'elementNumber' field")
 		}
 
-		// Simple Field (subElementNumber)
-		subElementNumber := uint8(m.GetSubElementNumber())
-		_subElementNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("subElementNumber", 8, uint8((subElementNumber)))
-		if _subElementNumberErr != nil {
-			return errors.Wrap(_subElementNumberErr, "Error serializing 'subElementNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "subElementNumber", m.GetSubElementNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subElementNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DF1RequestProtectedTypedLogicalRead"); popErr != nil {

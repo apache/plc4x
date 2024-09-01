@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesAccessCredentialDisable")
 		}
 
-		// Simple Field (accessCredentialDisable)
-		if pushErr := writeBuffer.PushContext("accessCredentialDisable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessCredentialDisable")
-		}
-		_accessCredentialDisableErr := writeBuffer.WriteSerializable(ctx, m.GetAccessCredentialDisable())
-		if popErr := writeBuffer.PopContext("accessCredentialDisable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessCredentialDisable")
-		}
-		if _accessCredentialDisableErr != nil {
-			return errors.Wrap(_accessCredentialDisableErr, "Error serializing 'accessCredentialDisable' field")
+		if err := WriteSimpleField[BACnetAccessCredentialDisableTagged](ctx, "accessCredentialDisable", m.GetAccessCredentialDisable(), WriteComplex[BACnetAccessCredentialDisableTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessCredentialDisable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesAccessCredentialDisable"); popErr != nil {

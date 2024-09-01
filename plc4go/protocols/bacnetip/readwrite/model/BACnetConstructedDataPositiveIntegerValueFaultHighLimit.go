@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueFaultHighLimit) SerializeWith
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPositiveIntegerValueFaultHighLimit")
 		}
 
-		// Simple Field (faultHighLimit)
-		if pushErr := writeBuffer.PushContext("faultHighLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for faultHighLimit")
-		}
-		_faultHighLimitErr := writeBuffer.WriteSerializable(ctx, m.GetFaultHighLimit())
-		if popErr := writeBuffer.PopContext("faultHighLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for faultHighLimit")
-		}
-		if _faultHighLimitErr != nil {
-			return errors.Wrap(_faultHighLimitErr, "Error serializing 'faultHighLimit' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "faultHighLimit", m.GetFaultHighLimit(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'faultHighLimit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

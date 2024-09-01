@@ -224,23 +224,12 @@ func (m *_HistoryUpdateRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for HistoryUpdateRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (noOfHistoryUpdateDetails)
-		noOfHistoryUpdateDetails := int32(m.GetNoOfHistoryUpdateDetails())
-		_noOfHistoryUpdateDetailsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfHistoryUpdateDetails", 32, int32((noOfHistoryUpdateDetails)))
-		if _noOfHistoryUpdateDetailsErr != nil {
-			return errors.Wrap(_noOfHistoryUpdateDetailsErr, "Error serializing 'noOfHistoryUpdateDetails' field")
+		if err := WriteSimpleField[int32](ctx, "noOfHistoryUpdateDetails", m.GetNoOfHistoryUpdateDetails(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfHistoryUpdateDetails' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "historyUpdateDetails", m.GetHistoryUpdateDetails(), writeBuffer); err != nil {

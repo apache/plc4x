@@ -177,11 +177,8 @@ func (m *_HVACTemperature) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for HVACTemperature")
 	}
 
-	// Simple Field (temperatureValue)
-	temperatureValue := int16(m.GetTemperatureValue())
-	_temperatureValueErr := /*TODO: migrate me*/ writeBuffer.WriteInt16("temperatureValue", 16, int16((temperatureValue)))
-	if _temperatureValueErr != nil {
-		return errors.Wrap(_temperatureValueErr, "Error serializing 'temperatureValue' field")
+	if err := WriteSimpleField[int16](ctx, "temperatureValue", m.GetTemperatureValue(), WriteSignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'temperatureValue' field")
 	}
 	// Virtual field
 	temperatureInCelcius := m.GetTemperatureInCelcius()

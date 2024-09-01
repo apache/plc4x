@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTimeDelayNormal) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeDelayNormal")
 		}
 
-		// Simple Field (timeDelayNormal)
-		if pushErr := writeBuffer.PushContext("timeDelayNormal"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeDelayNormal")
-		}
-		_timeDelayNormalErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelayNormal())
-		if popErr := writeBuffer.PopContext("timeDelayNormal"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeDelayNormal")
-		}
-		if _timeDelayNormalErr != nil {
-			return errors.Wrap(_timeDelayNormalErr, "Error serializing 'timeDelayNormal' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeDelayNormal", m.GetTimeDelayNormal(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeDelayNormal' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

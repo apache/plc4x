@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataManipulatedVariableReference")
 		}
 
-		// Simple Field (manipulatedVariableReference)
-		if pushErr := writeBuffer.PushContext("manipulatedVariableReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for manipulatedVariableReference")
-		}
-		_manipulatedVariableReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetManipulatedVariableReference())
-		if popErr := writeBuffer.PopContext("manipulatedVariableReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for manipulatedVariableReference")
-		}
-		if _manipulatedVariableReferenceErr != nil {
-			return errors.Wrap(_manipulatedVariableReferenceErr, "Error serializing 'manipulatedVariableReference' field")
+		if err := WriteSimpleField[BACnetObjectPropertyReference](ctx, "manipulatedVariableReference", m.GetManipulatedVariableReference(), WriteComplex[BACnetObjectPropertyReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'manipulatedVariableReference' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

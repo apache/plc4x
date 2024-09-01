@@ -223,11 +223,8 @@ func (m *_TelephonyDataRecallLastNumberRequest) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for TelephonyDataRecallLastNumberRequest")
 		}
 
-		// Simple Field (recallLastNumberType)
-		recallLastNumberType := byte(m.GetRecallLastNumberType())
-		_recallLastNumberTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("recallLastNumberType", (recallLastNumberType))
-		if _recallLastNumberTypeErr != nil {
-			return errors.Wrap(_recallLastNumberTypeErr, "Error serializing 'recallLastNumberType' field")
+		if err := WriteSimpleField[byte](ctx, "recallLastNumberType", m.GetRecallLastNumberType(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'recallLastNumberType' field")
 		}
 		// Virtual field
 		isNumberOfLastOutgoingCall := m.GetIsNumberOfLastOutgoingCall()

@@ -188,40 +188,16 @@ func (m *_BACnetPropertyStatesEnclosed) SerializeWithWriteBuffer(ctx context.Con
 		return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesEnclosed")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (propertyState)
-	if pushErr := writeBuffer.PushContext("propertyState"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for propertyState")
-	}
-	_propertyStateErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyState())
-	if popErr := writeBuffer.PopContext("propertyState"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for propertyState")
-	}
-	if _propertyStateErr != nil {
-		return errors.Wrap(_propertyStateErr, "Error serializing 'propertyState' field")
+	if err := WriteSimpleField[BACnetPropertyStates](ctx, "propertyState", m.GetPropertyState(), WriteComplex[BACnetPropertyStates](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'propertyState' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPropertyStatesEnclosed"); popErr != nil {

@@ -183,16 +183,8 @@ func (m *_AdsDiscoveryBlockPassword) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockPassword")
 		}
 
-		// Simple Field (password)
-		if pushErr := writeBuffer.PushContext("password"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for password")
-		}
-		_passwordErr := writeBuffer.WriteSerializable(ctx, m.GetPassword())
-		if popErr := writeBuffer.PopContext("password"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for password")
-		}
-		if _passwordErr != nil {
-			return errors.Wrap(_passwordErr, "Error serializing 'password' field")
+		if err := WriteSimpleField[AmsString](ctx, "password", m.GetPassword(), WriteComplex[AmsString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'password' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDiscoveryBlockPassword"); popErr != nil {

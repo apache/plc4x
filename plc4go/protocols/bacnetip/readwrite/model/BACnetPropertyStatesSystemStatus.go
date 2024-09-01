@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesSystemStatus) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesSystemStatus")
 		}
 
-		// Simple Field (systemStatus)
-		if pushErr := writeBuffer.PushContext("systemStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for systemStatus")
-		}
-		_systemStatusErr := writeBuffer.WriteSerializable(ctx, m.GetSystemStatus())
-		if popErr := writeBuffer.PopContext("systemStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for systemStatus")
-		}
-		if _systemStatusErr != nil {
-			return errors.Wrap(_systemStatusErr, "Error serializing 'systemStatus' field")
+		if err := WriteSimpleField[BACnetDeviceStatusTagged](ctx, "systemStatus", m.GetSystemStatus(), WriteComplex[BACnetDeviceStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'systemStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesSystemStatus"); popErr != nil {

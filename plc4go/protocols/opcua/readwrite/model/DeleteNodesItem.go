@@ -211,27 +211,16 @@ func (m *_DeleteNodesItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for DeleteNodesItem")
 		}
 
-		// Simple Field (nodeId)
-		if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeId")
-		}
-		_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-		if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeId")
-		}
-		if _nodeIdErr != nil {
-			return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (deleteTargetReferences)
-		deleteTargetReferences := bool(m.GetDeleteTargetReferences())
-		_deleteTargetReferencesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("deleteTargetReferences", (deleteTargetReferences))
-		if _deleteTargetReferencesErr != nil {
-			return errors.Wrap(_deleteTargetReferencesErr, "Error serializing 'deleteTargetReferences' field")
+		if err := WriteSimpleField[bool](ctx, "deleteTargetReferences", m.GetDeleteTargetReferences(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deleteTargetReferences' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeleteNodesItem"); popErr != nil {

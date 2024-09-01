@@ -154,11 +154,8 @@ func (m *_Dummy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return errors.Wrap(pushErr, "Error pushing for Dummy")
 	}
 
-	// Simple Field (dummy)
-	dummy := uint16(m.GetDummy())
-	_dummyErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dummy", 16, uint16((dummy)))
-	if _dummyErr != nil {
-		return errors.Wrap(_dummyErr, "Error serializing 'dummy' field")
+	if err := WriteSimpleField[uint16](ctx, "dummy", m.GetDummy(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dummy' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Dummy"); popErr != nil {

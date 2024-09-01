@@ -224,23 +224,12 @@ func (m *_GetEndpointsResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for GetEndpointsResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (noOfEndpoints)
-		noOfEndpoints := int32(m.GetNoOfEndpoints())
-		_noOfEndpointsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfEndpoints", 32, int32((noOfEndpoints)))
-		if _noOfEndpointsErr != nil {
-			return errors.Wrap(_noOfEndpointsErr, "Error serializing 'noOfEndpoints' field")
+		if err := WriteSimpleField[int32](ctx, "noOfEndpoints", m.GetNoOfEndpoints(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfEndpoints' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "endpoints", m.GetEndpoints(), writeBuffer); err != nil {

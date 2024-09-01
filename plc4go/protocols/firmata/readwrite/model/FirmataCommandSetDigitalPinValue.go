@@ -213,22 +213,16 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for FirmataCommandSetDigitalPinValue")
 		}
 
-		// Simple Field (pin)
-		pin := uint8(m.GetPin())
-		_pinErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pin", 8, uint8((pin)))
-		if _pinErr != nil {
-			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
+		if err := WriteSimpleField[uint8](ctx, "pin", m.GetPin(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pin' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (on)
-		on := bool(m.GetOn())
-		_onErr := /*TODO: migrate me*/ writeBuffer.WriteBit("on", (on))
-		if _onErr != nil {
-			return errors.Wrap(_onErr, "Error serializing 'on' field")
+		if err := WriteSimpleField[bool](ctx, "on", m.GetOn(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'on' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandSetDigitalPinValue"); popErr != nil {

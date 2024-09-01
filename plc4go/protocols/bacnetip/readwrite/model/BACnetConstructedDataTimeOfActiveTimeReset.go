@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTimeOfActiveTimeReset) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeOfActiveTimeReset")
 		}
 
-		// Simple Field (timeOfActiveTimeReset)
-		if pushErr := writeBuffer.PushContext("timeOfActiveTimeReset"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeOfActiveTimeReset")
-		}
-		_timeOfActiveTimeResetErr := writeBuffer.WriteSerializable(ctx, m.GetTimeOfActiveTimeReset())
-		if popErr := writeBuffer.PopContext("timeOfActiveTimeReset"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeOfActiveTimeReset")
-		}
-		if _timeOfActiveTimeResetErr != nil {
-			return errors.Wrap(_timeOfActiveTimeResetErr, "Error serializing 'timeOfActiveTimeReset' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "timeOfActiveTimeReset", m.GetTimeOfActiveTimeReset(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeOfActiveTimeReset' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

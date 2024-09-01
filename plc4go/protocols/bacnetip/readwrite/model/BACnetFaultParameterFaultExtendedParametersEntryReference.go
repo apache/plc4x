@@ -181,16 +181,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) SerializeWi
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryReference")
 		}
 
-		// Simple Field (reference)
-		if pushErr := writeBuffer.PushContext("reference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reference")
-		}
-		_referenceErr := writeBuffer.WriteSerializable(ctx, m.GetReference())
-		if popErr := writeBuffer.PopContext("reference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reference")
-		}
-		if _referenceErr != nil {
-			return errors.Wrap(_referenceErr, "Error serializing 'reference' field")
+		if err := WriteSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", m.GetReference(), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); popErr != nil {

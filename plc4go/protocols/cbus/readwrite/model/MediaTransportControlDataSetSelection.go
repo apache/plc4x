@@ -199,18 +199,12 @@ func (m *_MediaTransportControlDataSetSelection) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataSetSelection")
 		}
 
-		// Simple Field (selectionHi)
-		selectionHi := byte(m.GetSelectionHi())
-		_selectionHiErr := /*TODO: migrate me*/ writeBuffer.WriteByte("selectionHi", (selectionHi))
-		if _selectionHiErr != nil {
-			return errors.Wrap(_selectionHiErr, "Error serializing 'selectionHi' field")
+		if err := WriteSimpleField[byte](ctx, "selectionHi", m.GetSelectionHi(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'selectionHi' field")
 		}
 
-		// Simple Field (selectionLo)
-		selectionLo := byte(m.GetSelectionLo())
-		_selectionLoErr := /*TODO: migrate me*/ writeBuffer.WriteByte("selectionLo", (selectionLo))
-		if _selectionLoErr != nil {
-			return errors.Wrap(_selectionLoErr, "Error serializing 'selectionLo' field")
+		if err := WriteSimpleField[byte](ctx, "selectionLo", m.GetSelectionLo(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'selectionLo' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataSetSelection"); popErr != nil {

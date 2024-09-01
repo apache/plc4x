@@ -208,18 +208,12 @@ func (m *_ModbusPDUWriteSingleCoilResponse) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUWriteSingleCoilResponse")
 		}
 
-		// Simple Field (address)
-		address := uint16(m.GetAddress())
-		_addressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("address", 16, uint16((address)))
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[uint16](ctx, "address", m.GetAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
-		// Simple Field (value)
-		value := uint16(m.GetValue())
-		_valueErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("value", 16, uint16((value)))
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[uint16](ctx, "value", m.GetValue(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUWriteSingleCoilResponse"); popErr != nil {

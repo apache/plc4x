@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastAccessEvent) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastAccessEvent")
 		}
 
-		// Simple Field (lastAccessEvent)
-		if pushErr := writeBuffer.PushContext("lastAccessEvent"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastAccessEvent")
-		}
-		_lastAccessEventErr := writeBuffer.WriteSerializable(ctx, m.GetLastAccessEvent())
-		if popErr := writeBuffer.PopContext("lastAccessEvent"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastAccessEvent")
-		}
-		if _lastAccessEventErr != nil {
-			return errors.Wrap(_lastAccessEventErr, "Error serializing 'lastAccessEvent' field")
+		if err := WriteSimpleField[BACnetAccessEventTagged](ctx, "lastAccessEvent", m.GetLastAccessEvent(), WriteComplex[BACnetAccessEventTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastAccessEvent' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

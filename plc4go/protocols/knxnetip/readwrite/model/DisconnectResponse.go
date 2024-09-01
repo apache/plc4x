@@ -202,23 +202,12 @@ func (m *_DisconnectResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for DisconnectResponse")
 		}
 
-		// Simple Field (communicationChannelId)
-		communicationChannelId := uint8(m.GetCommunicationChannelId())
-		_communicationChannelIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
-		if _communicationChannelIdErr != nil {
-			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
+		if err := WriteSimpleField[uint8](ctx, "communicationChannelId", m.GetCommunicationChannelId(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'communicationChannelId' field")
 		}
 
-		// Simple Field (status)
-		if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for status")
-		}
-		_statusErr := writeBuffer.WriteSerializable(ctx, m.GetStatus())
-		if popErr := writeBuffer.PopContext("status"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for status")
-		}
-		if _statusErr != nil {
-			return errors.Wrap(_statusErr, "Error serializing 'status' field")
+		if err := WriteSimpleEnumField[Status](ctx, "status", "Status", m.GetStatus(), WriteEnum[Status, uint8](Status.GetValue, Status.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'status' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DisconnectResponse"); popErr != nil {

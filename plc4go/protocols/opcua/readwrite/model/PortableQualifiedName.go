@@ -200,28 +200,12 @@ func (m *_PortableQualifiedName) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for PortableQualifiedName")
 		}
 
-		// Simple Field (namespaceUri)
-		if pushErr := writeBuffer.PushContext("namespaceUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for namespaceUri")
-		}
-		_namespaceUriErr := writeBuffer.WriteSerializable(ctx, m.GetNamespaceUri())
-		if popErr := writeBuffer.PopContext("namespaceUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for namespaceUri")
-		}
-		if _namespaceUriErr != nil {
-			return errors.Wrap(_namespaceUriErr, "Error serializing 'namespaceUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "namespaceUri", m.GetNamespaceUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'namespaceUri' field")
 		}
 
-		// Simple Field (name)
-		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for name")
-		}
-		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for name")
-		}
-		if _nameErr != nil {
-			return errors.Wrap(_nameErr, "Error serializing 'name' field")
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PortableQualifiedName"); popErr != nil {

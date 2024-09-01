@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBackupAndRestoreState")
 		}
 
-		// Simple Field (backupAndRestoreState)
-		if pushErr := writeBuffer.PushContext("backupAndRestoreState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for backupAndRestoreState")
-		}
-		_backupAndRestoreStateErr := writeBuffer.WriteSerializable(ctx, m.GetBackupAndRestoreState())
-		if popErr := writeBuffer.PopContext("backupAndRestoreState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for backupAndRestoreState")
-		}
-		if _backupAndRestoreStateErr != nil {
-			return errors.Wrap(_backupAndRestoreStateErr, "Error serializing 'backupAndRestoreState' field")
+		if err := WriteSimpleField[BACnetBackupStateTagged](ctx, "backupAndRestoreState", m.GetBackupAndRestoreState(), WriteComplex[BACnetBackupStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'backupAndRestoreState' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

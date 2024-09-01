@@ -263,47 +263,20 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Simple Field (requestId)
-	requestId := uint32(m.GetRequestId())
-	_requestIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestId", 32, uint32((requestId)))
-	if _requestIdErr != nil {
-		return errors.Wrap(_requestIdErr, "Error serializing 'requestId' field")
+	if err := WriteSimpleField[uint32](ctx, "requestId", m.GetRequestId(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'requestId' field")
 	}
 
-	// Simple Field (operation)
-	if pushErr := writeBuffer.PushContext("operation"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for operation")
-	}
-	_operationErr := writeBuffer.WriteSerializable(ctx, m.GetOperation())
-	if popErr := writeBuffer.PopContext("operation"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for operation")
-	}
-	if _operationErr != nil {
-		return errors.Wrap(_operationErr, "Error serializing 'operation' field")
+	if err := WriteSimpleEnumField[Operation](ctx, "operation", "Operation", m.GetOperation(), WriteEnum[Operation, uint32](Operation.GetValue, Operation.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32)), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'operation' field")
 	}
 
-	// Simple Field (amsNetId)
-	if pushErr := writeBuffer.PushContext("amsNetId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for amsNetId")
-	}
-	_amsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetAmsNetId())
-	if popErr := writeBuffer.PopContext("amsNetId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for amsNetId")
-	}
-	if _amsNetIdErr != nil {
-		return errors.Wrap(_amsNetIdErr, "Error serializing 'amsNetId' field")
+	if err := WriteSimpleField[AmsNetId](ctx, "amsNetId", m.GetAmsNetId(), WriteComplex[AmsNetId](writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'amsNetId' field")
 	}
 
-	// Simple Field (portNumber)
-	if pushErr := writeBuffer.PushContext("portNumber"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for portNumber")
-	}
-	_portNumberErr := writeBuffer.WriteSerializable(ctx, m.GetPortNumber())
-	if popErr := writeBuffer.PopContext("portNumber"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for portNumber")
-	}
-	if _portNumberErr != nil {
-		return errors.Wrap(_portNumberErr, "Error serializing 'portNumber' field")
+	if err := WriteSimpleEnumField[AdsPortNumbers](ctx, "portNumber", "AdsPortNumbers", m.GetPortNumber(), WriteEnum[AdsPortNumbers, uint16](AdsPortNumbers.GetValue, AdsPortNumbers.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16)), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'portNumber' field")
 	}
 	numBlocks := uint32(uint32(len(m.GetBlocks())))
 	if err := WriteImplicitField(ctx, "numBlocks", numBlocks, WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {

@@ -234,47 +234,20 @@ func (m *_OpenChannelMessageRequest) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for OpenChannelMessageRequest")
 		}
 
-		// Simple Field (secureChannelId)
-		secureChannelId := int32(m.GetSecureChannelId())
-		_secureChannelIdErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("secureChannelId", 32, int32((secureChannelId)))
-		if _secureChannelIdErr != nil {
-			return errors.Wrap(_secureChannelIdErr, "Error serializing 'secureChannelId' field")
+		if err := WriteSimpleField[int32](ctx, "secureChannelId", m.GetSecureChannelId(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'secureChannelId' field")
 		}
 
-		// Simple Field (endpoint)
-		if pushErr := writeBuffer.PushContext("endpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpoint")
-		}
-		_endpointErr := writeBuffer.WriteSerializable(ctx, m.GetEndpoint())
-		if popErr := writeBuffer.PopContext("endpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpoint")
-		}
-		if _endpointErr != nil {
-			return errors.Wrap(_endpointErr, "Error serializing 'endpoint' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpoint", m.GetEndpoint(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpoint' field")
 		}
 
-		// Simple Field (senderCertificate)
-		if pushErr := writeBuffer.PushContext("senderCertificate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for senderCertificate")
-		}
-		_senderCertificateErr := writeBuffer.WriteSerializable(ctx, m.GetSenderCertificate())
-		if popErr := writeBuffer.PopContext("senderCertificate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for senderCertificate")
-		}
-		if _senderCertificateErr != nil {
-			return errors.Wrap(_senderCertificateErr, "Error serializing 'senderCertificate' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "senderCertificate", m.GetSenderCertificate(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'senderCertificate' field")
 		}
 
-		// Simple Field (receiverCertificateThumbprint)
-		if pushErr := writeBuffer.PushContext("receiverCertificateThumbprint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for receiverCertificateThumbprint")
-		}
-		_receiverCertificateThumbprintErr := writeBuffer.WriteSerializable(ctx, m.GetReceiverCertificateThumbprint())
-		if popErr := writeBuffer.PopContext("receiverCertificateThumbprint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for receiverCertificateThumbprint")
-		}
-		if _receiverCertificateThumbprintErr != nil {
-			return errors.Wrap(_receiverCertificateThumbprintErr, "Error serializing 'receiverCertificateThumbprint' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "receiverCertificateThumbprint", m.GetReceiverCertificateThumbprint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'receiverCertificateThumbprint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpenChannelMessageRequest"); popErr != nil {

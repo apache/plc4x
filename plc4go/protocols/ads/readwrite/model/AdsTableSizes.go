@@ -234,46 +234,28 @@ func (m *_AdsTableSizes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for AdsTableSizes")
 	}
 
-	// Simple Field (symbolCount)
-	symbolCount := uint32(m.GetSymbolCount())
-	_symbolCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("symbolCount", 32, uint32((symbolCount)))
-	if _symbolCountErr != nil {
-		return errors.Wrap(_symbolCountErr, "Error serializing 'symbolCount' field")
+	if err := WriteSimpleField[uint32](ctx, "symbolCount", m.GetSymbolCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'symbolCount' field")
 	}
 
-	// Simple Field (symbolLength)
-	symbolLength := uint32(m.GetSymbolLength())
-	_symbolLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("symbolLength", 32, uint32((symbolLength)))
-	if _symbolLengthErr != nil {
-		return errors.Wrap(_symbolLengthErr, "Error serializing 'symbolLength' field")
+	if err := WriteSimpleField[uint32](ctx, "symbolLength", m.GetSymbolLength(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'symbolLength' field")
 	}
 
-	// Simple Field (dataTypeCount)
-	dataTypeCount := uint32(m.GetDataTypeCount())
-	_dataTypeCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("dataTypeCount", 32, uint32((dataTypeCount)))
-	if _dataTypeCountErr != nil {
-		return errors.Wrap(_dataTypeCountErr, "Error serializing 'dataTypeCount' field")
+	if err := WriteSimpleField[uint32](ctx, "dataTypeCount", m.GetDataTypeCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataTypeCount' field")
 	}
 
-	// Simple Field (dataTypeLength)
-	dataTypeLength := uint32(m.GetDataTypeLength())
-	_dataTypeLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("dataTypeLength", 32, uint32((dataTypeLength)))
-	if _dataTypeLengthErr != nil {
-		return errors.Wrap(_dataTypeLengthErr, "Error serializing 'dataTypeLength' field")
+	if err := WriteSimpleField[uint32](ctx, "dataTypeLength", m.GetDataTypeLength(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataTypeLength' field")
 	}
 
-	// Simple Field (extraCount)
-	extraCount := uint32(m.GetExtraCount())
-	_extraCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("extraCount", 32, uint32((extraCount)))
-	if _extraCountErr != nil {
-		return errors.Wrap(_extraCountErr, "Error serializing 'extraCount' field")
+	if err := WriteSimpleField[uint32](ctx, "extraCount", m.GetExtraCount(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'extraCount' field")
 	}
 
-	// Simple Field (extraLength)
-	extraLength := uint32(m.GetExtraLength())
-	_extraLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("extraLength", 32, uint32((extraLength)))
-	if _extraLengthErr != nil {
-		return errors.Wrap(_extraLengthErr, "Error serializing 'extraLength' field")
+	if err := WriteSimpleField[uint32](ctx, "extraLength", m.GetExtraLength(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'extraLength' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AdsTableSizes"); popErr != nil {

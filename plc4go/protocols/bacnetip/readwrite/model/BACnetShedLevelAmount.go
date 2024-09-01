@@ -181,16 +181,8 @@ func (m *_BACnetShedLevelAmount) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for BACnetShedLevelAmount")
 		}
 
-		// Simple Field (amount)
-		if pushErr := writeBuffer.PushContext("amount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for amount")
-		}
-		_amountErr := writeBuffer.WriteSerializable(ctx, m.GetAmount())
-		if popErr := writeBuffer.PopContext("amount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for amount")
-		}
-		if _amountErr != nil {
-			return errors.Wrap(_amountErr, "Error serializing 'amount' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "amount", m.GetAmount(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'amount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetShedLevelAmount"); popErr != nil {

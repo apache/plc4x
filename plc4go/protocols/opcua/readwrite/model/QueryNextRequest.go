@@ -228,39 +228,20 @@ func (m *_QueryNextRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for QueryNextRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (releaseContinuationPoint)
-		releaseContinuationPoint := bool(m.GetReleaseContinuationPoint())
-		_releaseContinuationPointErr := /*TODO: migrate me*/ writeBuffer.WriteBit("releaseContinuationPoint", (releaseContinuationPoint))
-		if _releaseContinuationPointErr != nil {
-			return errors.Wrap(_releaseContinuationPointErr, "Error serializing 'releaseContinuationPoint' field")
+		if err := WriteSimpleField[bool](ctx, "releaseContinuationPoint", m.GetReleaseContinuationPoint(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'releaseContinuationPoint' field")
 		}
 
-		// Simple Field (continuationPoint)
-		if pushErr := writeBuffer.PushContext("continuationPoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for continuationPoint")
-		}
-		_continuationPointErr := writeBuffer.WriteSerializable(ctx, m.GetContinuationPoint())
-		if popErr := writeBuffer.PopContext("continuationPoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for continuationPoint")
-		}
-		if _continuationPointErr != nil {
-			return errors.Wrap(_continuationPointErr, "Error serializing 'continuationPoint' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "continuationPoint", m.GetContinuationPoint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'continuationPoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("QueryNextRequest"); popErr != nil {

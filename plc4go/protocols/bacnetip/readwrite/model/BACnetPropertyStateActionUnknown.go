@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStateActionUnknown) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStateActionUnknown")
 		}
 
-		// Simple Field (unknownValue)
-		if pushErr := writeBuffer.PushContext("unknownValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unknownValue")
-		}
-		_unknownValueErr := writeBuffer.WriteSerializable(ctx, m.GetUnknownValue())
-		if popErr := writeBuffer.PopContext("unknownValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unknownValue")
-		}
-		if _unknownValueErr != nil {
-			return errors.Wrap(_unknownValueErr, "Error serializing 'unknownValue' field")
+		if err := WriteSimpleField[BACnetContextTagUnknown](ctx, "unknownValue", m.GetUnknownValue(), WriteComplex[BACnetContextTagUnknown](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unknownValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStateActionUnknown"); popErr != nil {

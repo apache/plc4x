@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataNetworkNumberQuality) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNetworkNumberQuality")
 		}
 
-		// Simple Field (networkNumberQuality)
-		if pushErr := writeBuffer.PushContext("networkNumberQuality"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for networkNumberQuality")
-		}
-		_networkNumberQualityErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkNumberQuality())
-		if popErr := writeBuffer.PopContext("networkNumberQuality"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for networkNumberQuality")
-		}
-		if _networkNumberQualityErr != nil {
-			return errors.Wrap(_networkNumberQualityErr, "Error serializing 'networkNumberQuality' field")
+		if err := WriteSimpleField[BACnetNetworkNumberQualityTagged](ctx, "networkNumberQuality", m.GetNetworkNumberQuality(), WriteComplex[BACnetNetworkNumberQualityTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkNumberQuality' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

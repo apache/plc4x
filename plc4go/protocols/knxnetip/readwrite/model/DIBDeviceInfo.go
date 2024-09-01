@@ -297,87 +297,36 @@ func (m *_DIBDeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Simple Field (descriptionType)
-	descriptionType := uint8(m.GetDescriptionType())
-	_descriptionTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("descriptionType", 8, uint8((descriptionType)))
-	if _descriptionTypeErr != nil {
-		return errors.Wrap(_descriptionTypeErr, "Error serializing 'descriptionType' field")
+	if err := WriteSimpleField[uint8](ctx, "descriptionType", m.GetDescriptionType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'descriptionType' field")
 	}
 
-	// Simple Field (knxMedium)
-	if pushErr := writeBuffer.PushContext("knxMedium"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for knxMedium")
-	}
-	_knxMediumErr := writeBuffer.WriteSerializable(ctx, m.GetKnxMedium())
-	if popErr := writeBuffer.PopContext("knxMedium"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for knxMedium")
-	}
-	if _knxMediumErr != nil {
-		return errors.Wrap(_knxMediumErr, "Error serializing 'knxMedium' field")
+	if err := WriteSimpleEnumField[KnxMedium](ctx, "knxMedium", "KnxMedium", m.GetKnxMedium(), WriteEnum[KnxMedium, uint8](KnxMedium.GetValue, KnxMedium.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'knxMedium' field")
 	}
 
-	// Simple Field (deviceStatus)
-	if pushErr := writeBuffer.PushContext("deviceStatus"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for deviceStatus")
-	}
-	_deviceStatusErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceStatus())
-	if popErr := writeBuffer.PopContext("deviceStatus"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for deviceStatus")
-	}
-	if _deviceStatusErr != nil {
-		return errors.Wrap(_deviceStatusErr, "Error serializing 'deviceStatus' field")
+	if err := WriteSimpleField[DeviceStatus](ctx, "deviceStatus", m.GetDeviceStatus(), WriteComplex[DeviceStatus](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceStatus' field")
 	}
 
-	// Simple Field (knxAddress)
-	if pushErr := writeBuffer.PushContext("knxAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for knxAddress")
-	}
-	_knxAddressErr := writeBuffer.WriteSerializable(ctx, m.GetKnxAddress())
-	if popErr := writeBuffer.PopContext("knxAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for knxAddress")
-	}
-	if _knxAddressErr != nil {
-		return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
+	if err := WriteSimpleField[KnxAddress](ctx, "knxAddress", m.GetKnxAddress(), WriteComplex[KnxAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'knxAddress' field")
 	}
 
-	// Simple Field (projectInstallationIdentifier)
-	if pushErr := writeBuffer.PushContext("projectInstallationIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for projectInstallationIdentifier")
-	}
-	_projectInstallationIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetProjectInstallationIdentifier())
-	if popErr := writeBuffer.PopContext("projectInstallationIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for projectInstallationIdentifier")
-	}
-	if _projectInstallationIdentifierErr != nil {
-		return errors.Wrap(_projectInstallationIdentifierErr, "Error serializing 'projectInstallationIdentifier' field")
+	if err := WriteSimpleField[ProjectInstallationIdentifier](ctx, "projectInstallationIdentifier", m.GetProjectInstallationIdentifier(), WriteComplex[ProjectInstallationIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'projectInstallationIdentifier' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "knxNetIpDeviceSerialNumber", m.GetKnxNetIpDeviceSerialNumber(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'knxNetIpDeviceSerialNumber' field")
 	}
 
-	// Simple Field (knxNetIpDeviceMulticastAddress)
-	if pushErr := writeBuffer.PushContext("knxNetIpDeviceMulticastAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for knxNetIpDeviceMulticastAddress")
-	}
-	_knxNetIpDeviceMulticastAddressErr := writeBuffer.WriteSerializable(ctx, m.GetKnxNetIpDeviceMulticastAddress())
-	if popErr := writeBuffer.PopContext("knxNetIpDeviceMulticastAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for knxNetIpDeviceMulticastAddress")
-	}
-	if _knxNetIpDeviceMulticastAddressErr != nil {
-		return errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error serializing 'knxNetIpDeviceMulticastAddress' field")
+	if err := WriteSimpleField[IPAddress](ctx, "knxNetIpDeviceMulticastAddress", m.GetKnxNetIpDeviceMulticastAddress(), WriteComplex[IPAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'knxNetIpDeviceMulticastAddress' field")
 	}
 
-	// Simple Field (knxNetIpDeviceMacAddress)
-	if pushErr := writeBuffer.PushContext("knxNetIpDeviceMacAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for knxNetIpDeviceMacAddress")
-	}
-	_knxNetIpDeviceMacAddressErr := writeBuffer.WriteSerializable(ctx, m.GetKnxNetIpDeviceMacAddress())
-	if popErr := writeBuffer.PopContext("knxNetIpDeviceMacAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for knxNetIpDeviceMacAddress")
-	}
-	if _knxNetIpDeviceMacAddressErr != nil {
-		return errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error serializing 'knxNetIpDeviceMacAddress' field")
+	if err := WriteSimpleField[MACAddress](ctx, "knxNetIpDeviceMacAddress", m.GetKnxNetIpDeviceMacAddress(), WriteComplex[MACAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'knxNetIpDeviceMacAddress' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "deviceFriendlyName", m.GetDeviceFriendlyName(), WriteByteArray(writeBuffer, 8)); err != nil {

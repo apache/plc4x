@@ -240,16 +240,8 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandOutputUnitSummary")
 		}
 
-		// Simple Field (unitFlags)
-		if pushErr := writeBuffer.PushContext("unitFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unitFlags")
-		}
-		_unitFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetUnitFlags())
-		if popErr := writeBuffer.PopContext("unitFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unitFlags")
-		}
-		if _unitFlagsErr != nil {
-			return errors.Wrap(_unitFlagsErr, "Error serializing 'unitFlags' field")
+		if err := WriteSimpleField[IdentifyReplyCommandUnitSummary](ctx, "unitFlags", m.GetUnitFlags(), WriteComplex[IdentifyReplyCommandUnitSummary](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitFlags' field")
 		}
 
 		if err := WriteOptionalField[byte](ctx, "gavStoreEnabledByte1", m.GetGavStoreEnabledByte1(), WriteByte(writeBuffer, 8), true); err != nil {
@@ -260,11 +252,8 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(err, "Error serializing 'gavStoreEnabledByte2' field")
 		}
 
-		// Simple Field (timeFromLastRecoverOfMainsInSeconds)
-		timeFromLastRecoverOfMainsInSeconds := uint8(m.GetTimeFromLastRecoverOfMainsInSeconds())
-		_timeFromLastRecoverOfMainsInSecondsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("timeFromLastRecoverOfMainsInSeconds", 8, uint8((timeFromLastRecoverOfMainsInSeconds)))
-		if _timeFromLastRecoverOfMainsInSecondsErr != nil {
-			return errors.Wrap(_timeFromLastRecoverOfMainsInSecondsErr, "Error serializing 'timeFromLastRecoverOfMainsInSeconds' field")
+		if err := WriteSimpleField[uint8](ctx, "timeFromLastRecoverOfMainsInSeconds", m.GetTimeFromLastRecoverOfMainsInSeconds(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeFromLastRecoverOfMainsInSeconds' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandOutputUnitSummary"); popErr != nil {

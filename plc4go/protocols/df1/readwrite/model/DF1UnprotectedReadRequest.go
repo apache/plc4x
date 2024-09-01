@@ -203,18 +203,12 @@ func (m *_DF1UnprotectedReadRequest) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for DF1UnprotectedReadRequest")
 		}
 
-		// Simple Field (address)
-		address := uint16(m.GetAddress())
-		_addressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("address", 16, uint16((address)))
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[uint16](ctx, "address", m.GetAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
-		// Simple Field (size)
-		size := uint8(m.GetSize())
-		_sizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("size", 8, uint8((size)))
-		if _sizeErr != nil {
-			return errors.Wrap(_sizeErr, "Error serializing 'size' field")
+		if err := WriteSimpleField[uint8](ctx, "size", m.GetSize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'size' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DF1UnprotectedReadRequest"); popErr != nil {

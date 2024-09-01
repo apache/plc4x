@@ -186,16 +186,8 @@ func (m *_BACnetNotificationParametersComplexEventType) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersComplexEventType")
 		}
 
-		// Simple Field (listOfValues)
-		if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfValues")
-		}
-		_listOfValuesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfValues())
-		if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfValues")
-		}
-		if _listOfValuesErr != nil {
-			return errors.Wrap(_listOfValuesErr, "Error serializing 'listOfValues' field")
+		if err := WriteSimpleField[BACnetPropertyValues](ctx, "listOfValues", m.GetListOfValues(), WriteComplex[BACnetPropertyValues](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersComplexEventType"); popErr != nil {

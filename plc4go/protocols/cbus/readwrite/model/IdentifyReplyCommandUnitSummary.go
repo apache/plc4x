@@ -264,60 +264,36 @@ func (m *_IdentifyReplyCommandUnitSummary) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandUnitSummary")
 	}
 
-	// Simple Field (assertingNetworkBurden)
-	assertingNetworkBurden := bool(m.GetAssertingNetworkBurden())
-	_assertingNetworkBurdenErr := /*TODO: migrate me*/ writeBuffer.WriteBit("assertingNetworkBurden", (assertingNetworkBurden))
-	if _assertingNetworkBurdenErr != nil {
-		return errors.Wrap(_assertingNetworkBurdenErr, "Error serializing 'assertingNetworkBurden' field")
+	if err := WriteSimpleField[bool](ctx, "assertingNetworkBurden", m.GetAssertingNetworkBurden(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assertingNetworkBurden' field")
 	}
 
-	// Simple Field (restrikeTimingActive)
-	restrikeTimingActive := bool(m.GetRestrikeTimingActive())
-	_restrikeTimingActiveErr := /*TODO: migrate me*/ writeBuffer.WriteBit("restrikeTimingActive", (restrikeTimingActive))
-	if _restrikeTimingActiveErr != nil {
-		return errors.Wrap(_restrikeTimingActiveErr, "Error serializing 'restrikeTimingActive' field")
+	if err := WriteSimpleField[bool](ctx, "restrikeTimingActive", m.GetRestrikeTimingActive(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'restrikeTimingActive' field")
 	}
 
-	// Simple Field (remoteOFFInputAsserted)
-	remoteOFFInputAsserted := bool(m.GetRemoteOFFInputAsserted())
-	_remoteOFFInputAssertedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("remoteOFFInputAsserted", (remoteOFFInputAsserted))
-	if _remoteOFFInputAssertedErr != nil {
-		return errors.Wrap(_remoteOFFInputAssertedErr, "Error serializing 'remoteOFFInputAsserted' field")
+	if err := WriteSimpleField[bool](ctx, "remoteOFFInputAsserted", m.GetRemoteOFFInputAsserted(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'remoteOFFInputAsserted' field")
 	}
 
-	// Simple Field (remoteONInputAsserted)
-	remoteONInputAsserted := bool(m.GetRemoteONInputAsserted())
-	_remoteONInputAssertedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("remoteONInputAsserted", (remoteONInputAsserted))
-	if _remoteONInputAssertedErr != nil {
-		return errors.Wrap(_remoteONInputAssertedErr, "Error serializing 'remoteONInputAsserted' field")
+	if err := WriteSimpleField[bool](ctx, "remoteONInputAsserted", m.GetRemoteONInputAsserted(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'remoteONInputAsserted' field")
 	}
 
-	// Simple Field (localToggleEnabled)
-	localToggleEnabled := bool(m.GetLocalToggleEnabled())
-	_localToggleEnabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("localToggleEnabled", (localToggleEnabled))
-	if _localToggleEnabledErr != nil {
-		return errors.Wrap(_localToggleEnabledErr, "Error serializing 'localToggleEnabled' field")
+	if err := WriteSimpleField[bool](ctx, "localToggleEnabled", m.GetLocalToggleEnabled(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'localToggleEnabled' field")
 	}
 
-	// Simple Field (localToggleActiveState)
-	localToggleActiveState := bool(m.GetLocalToggleActiveState())
-	_localToggleActiveStateErr := /*TODO: migrate me*/ writeBuffer.WriteBit("localToggleActiveState", (localToggleActiveState))
-	if _localToggleActiveStateErr != nil {
-		return errors.Wrap(_localToggleActiveStateErr, "Error serializing 'localToggleActiveState' field")
+	if err := WriteSimpleField[bool](ctx, "localToggleActiveState", m.GetLocalToggleActiveState(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'localToggleActiveState' field")
 	}
 
-	// Simple Field (clockGenerationEnabled)
-	clockGenerationEnabled := bool(m.GetClockGenerationEnabled())
-	_clockGenerationEnabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("clockGenerationEnabled", (clockGenerationEnabled))
-	if _clockGenerationEnabledErr != nil {
-		return errors.Wrap(_clockGenerationEnabledErr, "Error serializing 'clockGenerationEnabled' field")
+	if err := WriteSimpleField[bool](ctx, "clockGenerationEnabled", m.GetClockGenerationEnabled(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'clockGenerationEnabled' field")
 	}
 
-	// Simple Field (unitGeneratingClock)
-	unitGeneratingClock := bool(m.GetUnitGeneratingClock())
-	_unitGeneratingClockErr := /*TODO: migrate me*/ writeBuffer.WriteBit("unitGeneratingClock", (unitGeneratingClock))
-	if _unitGeneratingClockErr != nil {
-		return errors.Wrap(_unitGeneratingClockErr, "Error serializing 'unitGeneratingClock' field")
+	if err := WriteSimpleField[bool](ctx, "unitGeneratingClock", m.GetUnitGeneratingClock(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'unitGeneratingClock' field")
 	}
 
 	if popErr := writeBuffer.PopContext("IdentifyReplyCommandUnitSummary"); popErr != nil {

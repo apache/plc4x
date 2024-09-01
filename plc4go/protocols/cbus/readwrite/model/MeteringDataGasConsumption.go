@@ -182,11 +182,8 @@ func (m *_MeteringDataGasConsumption) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for MeteringDataGasConsumption")
 		}
 
-		// Simple Field (mJ)
-		mJ := uint32(m.GetMJ())
-		_mJErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("mJ", 32, uint32((mJ)))
-		if _mJErr != nil {
-			return errors.Wrap(_mJErr, "Error serializing 'mJ' field")
+		if err := WriteSimpleField[uint32](ctx, "mJ", m.GetMJ(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'mJ' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MeteringDataGasConsumption"); popErr != nil {

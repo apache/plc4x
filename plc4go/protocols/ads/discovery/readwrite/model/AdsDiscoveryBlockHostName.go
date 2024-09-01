@@ -183,16 +183,8 @@ func (m *_AdsDiscoveryBlockHostName) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockHostName")
 		}
 
-		// Simple Field (hostName)
-		if pushErr := writeBuffer.PushContext("hostName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hostName")
-		}
-		_hostNameErr := writeBuffer.WriteSerializable(ctx, m.GetHostName())
-		if popErr := writeBuffer.PopContext("hostName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hostName")
-		}
-		if _hostNameErr != nil {
-			return errors.Wrap(_hostNameErr, "Error serializing 'hostName' field")
+		if err := WriteSimpleField[AmsString](ctx, "hostName", m.GetHostName(), WriteComplex[AmsString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hostName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDiscoveryBlockHostName"); popErr != nil {

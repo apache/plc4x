@@ -200,28 +200,12 @@ func (m *_RepublishResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for RepublishResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (notificationMessage)
-		if pushErr := writeBuffer.PushContext("notificationMessage"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notificationMessage")
-		}
-		_notificationMessageErr := writeBuffer.WriteSerializable(ctx, m.GetNotificationMessage())
-		if popErr := writeBuffer.PopContext("notificationMessage"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notificationMessage")
-		}
-		if _notificationMessageErr != nil {
-			return errors.Wrap(_notificationMessageErr, "Error serializing 'notificationMessage' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "notificationMessage", m.GetNotificationMessage(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationMessage' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RepublishResponse"); popErr != nil {

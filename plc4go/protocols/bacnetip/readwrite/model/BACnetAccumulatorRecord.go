@@ -200,52 +200,20 @@ func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetAccumulatorRecord")
 	}
 
-	// Simple Field (timestamp)
-	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timestamp")
-	}
-	_timestampErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamp())
-	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timestamp")
-	}
-	if _timestampErr != nil {
-		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
+	if err := WriteSimpleField[BACnetDateTimeEnclosed](ctx, "timestamp", m.GetTimestamp(), WriteComplex[BACnetDateTimeEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timestamp' field")
 	}
 
-	// Simple Field (presentValue)
-	if pushErr := writeBuffer.PushContext("presentValue"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for presentValue")
-	}
-	_presentValueErr := writeBuffer.WriteSerializable(ctx, m.GetPresentValue())
-	if popErr := writeBuffer.PopContext("presentValue"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for presentValue")
-	}
-	if _presentValueErr != nil {
-		return errors.Wrap(_presentValueErr, "Error serializing 'presentValue' field")
+	if err := WriteSimpleField[BACnetContextTagSignedInteger](ctx, "presentValue", m.GetPresentValue(), WriteComplex[BACnetContextTagSignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'presentValue' field")
 	}
 
-	// Simple Field (accumulatedValue)
-	if pushErr := writeBuffer.PushContext("accumulatedValue"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for accumulatedValue")
-	}
-	_accumulatedValueErr := writeBuffer.WriteSerializable(ctx, m.GetAccumulatedValue())
-	if popErr := writeBuffer.PopContext("accumulatedValue"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for accumulatedValue")
-	}
-	if _accumulatedValueErr != nil {
-		return errors.Wrap(_accumulatedValueErr, "Error serializing 'accumulatedValue' field")
+	if err := WriteSimpleField[BACnetContextTagSignedInteger](ctx, "accumulatedValue", m.GetAccumulatedValue(), WriteComplex[BACnetContextTagSignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'accumulatedValue' field")
 	}
 
-	// Simple Field (accumulatorStatus)
-	if pushErr := writeBuffer.PushContext("accumulatorStatus"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for accumulatorStatus")
-	}
-	_accumulatorStatusErr := writeBuffer.WriteSerializable(ctx, m.GetAccumulatorStatus())
-	if popErr := writeBuffer.PopContext("accumulatorStatus"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for accumulatorStatus")
-	}
-	if _accumulatorStatusErr != nil {
-		return errors.Wrap(_accumulatorStatusErr, "Error serializing 'accumulatorStatus' field")
+	if err := WriteSimpleField[BACnetAccumulatorRecordAccumulatorStatusTagged](ctx, "accumulatorStatus", m.GetAccumulatorStatus(), WriteComplex[BACnetAccumulatorRecordAccumulatorStatusTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'accumulatorStatus' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAccumulatorRecord"); popErr != nil {

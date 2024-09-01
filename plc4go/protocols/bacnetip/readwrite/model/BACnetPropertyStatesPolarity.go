@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesPolarity) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesPolarity")
 		}
 
-		// Simple Field (polarity)
-		if pushErr := writeBuffer.PushContext("polarity"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for polarity")
-		}
-		_polarityErr := writeBuffer.WriteSerializable(ctx, m.GetPolarity())
-		if popErr := writeBuffer.PopContext("polarity"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for polarity")
-		}
-		if _polarityErr != nil {
-			return errors.Wrap(_polarityErr, "Error serializing 'polarity' field")
+		if err := WriteSimpleField[BACnetPolarityTagged](ctx, "polarity", m.GetPolarity(), WriteComplex[BACnetPolarityTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'polarity' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesPolarity"); popErr != nil {

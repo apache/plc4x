@@ -285,83 +285,32 @@ func (m *_FieldTargetDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for FieldTargetDataType")
 		}
 
-		// Simple Field (dataSetFieldId)
-		if pushErr := writeBuffer.PushContext("dataSetFieldId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataSetFieldId")
-		}
-		_dataSetFieldIdErr := writeBuffer.WriteSerializable(ctx, m.GetDataSetFieldId())
-		if popErr := writeBuffer.PopContext("dataSetFieldId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataSetFieldId")
-		}
-		if _dataSetFieldIdErr != nil {
-			return errors.Wrap(_dataSetFieldIdErr, "Error serializing 'dataSetFieldId' field")
+		if err := WriteSimpleField[GuidValue](ctx, "dataSetFieldId", m.GetDataSetFieldId(), WriteComplex[GuidValue](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataSetFieldId' field")
 		}
 
-		// Simple Field (receiverIndexRange)
-		if pushErr := writeBuffer.PushContext("receiverIndexRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for receiverIndexRange")
-		}
-		_receiverIndexRangeErr := writeBuffer.WriteSerializable(ctx, m.GetReceiverIndexRange())
-		if popErr := writeBuffer.PopContext("receiverIndexRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for receiverIndexRange")
-		}
-		if _receiverIndexRangeErr != nil {
-			return errors.Wrap(_receiverIndexRangeErr, "Error serializing 'receiverIndexRange' field")
+		if err := WriteSimpleField[PascalString](ctx, "receiverIndexRange", m.GetReceiverIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'receiverIndexRange' field")
 		}
 
-		// Simple Field (targetNodeId)
-		if pushErr := writeBuffer.PushContext("targetNodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetNodeId")
-		}
-		_targetNodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetNodeId())
-		if popErr := writeBuffer.PopContext("targetNodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetNodeId")
-		}
-		if _targetNodeIdErr != nil {
-			return errors.Wrap(_targetNodeIdErr, "Error serializing 'targetNodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "targetNodeId", m.GetTargetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetNodeId' field")
 		}
 
-		// Simple Field (attributeId)
-		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
-		if _attributeIdErr != nil {
-			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
+		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'attributeId' field")
 		}
 
-		// Simple Field (writeIndexRange)
-		if pushErr := writeBuffer.PushContext("writeIndexRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for writeIndexRange")
-		}
-		_writeIndexRangeErr := writeBuffer.WriteSerializable(ctx, m.GetWriteIndexRange())
-		if popErr := writeBuffer.PopContext("writeIndexRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for writeIndexRange")
-		}
-		if _writeIndexRangeErr != nil {
-			return errors.Wrap(_writeIndexRangeErr, "Error serializing 'writeIndexRange' field")
+		if err := WriteSimpleField[PascalString](ctx, "writeIndexRange", m.GetWriteIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeIndexRange' field")
 		}
 
-		// Simple Field (overrideValueHandling)
-		if pushErr := writeBuffer.PushContext("overrideValueHandling"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for overrideValueHandling")
-		}
-		_overrideValueHandlingErr := writeBuffer.WriteSerializable(ctx, m.GetOverrideValueHandling())
-		if popErr := writeBuffer.PopContext("overrideValueHandling"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for overrideValueHandling")
-		}
-		if _overrideValueHandlingErr != nil {
-			return errors.Wrap(_overrideValueHandlingErr, "Error serializing 'overrideValueHandling' field")
+		if err := WriteSimpleEnumField[OverrideValueHandling](ctx, "overrideValueHandling", "OverrideValueHandling", m.GetOverrideValueHandling(), WriteEnum[OverrideValueHandling, uint32](OverrideValueHandling.GetValue, OverrideValueHandling.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'overrideValueHandling' field")
 		}
 
-		// Simple Field (overrideValue)
-		if pushErr := writeBuffer.PushContext("overrideValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for overrideValue")
-		}
-		_overrideValueErr := writeBuffer.WriteSerializable(ctx, m.GetOverrideValue())
-		if popErr := writeBuffer.PopContext("overrideValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for overrideValue")
-		}
-		if _overrideValueErr != nil {
-			return errors.Wrap(_overrideValueErr, "Error serializing 'overrideValue' field")
+		if err := WriteSimpleField[Variant](ctx, "overrideValue", m.GetOverrideValue(), WriteComplex[Variant](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'overrideValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FieldTargetDataType"); popErr != nil {

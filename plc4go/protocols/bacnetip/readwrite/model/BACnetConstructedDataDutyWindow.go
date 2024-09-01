@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDutyWindow) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDutyWindow")
 		}
 
-		// Simple Field (dutyWindow)
-		if pushErr := writeBuffer.PushContext("dutyWindow"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dutyWindow")
-		}
-		_dutyWindowErr := writeBuffer.WriteSerializable(ctx, m.GetDutyWindow())
-		if popErr := writeBuffer.PopContext("dutyWindow"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dutyWindow")
-		}
-		if _dutyWindowErr != nil {
-			return errors.Wrap(_dutyWindowErr, "Error serializing 'dutyWindow' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "dutyWindow", m.GetDutyWindow(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dutyWindow' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

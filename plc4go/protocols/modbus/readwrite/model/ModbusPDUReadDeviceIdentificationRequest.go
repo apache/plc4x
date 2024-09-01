@@ -237,23 +237,12 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(err, "Error serializing 'meiType' field")
 		}
 
-		// Simple Field (level)
-		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for level")
-		}
-		_levelErr := writeBuffer.WriteSerializable(ctx, m.GetLevel())
-		if popErr := writeBuffer.PopContext("level"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for level")
-		}
-		if _levelErr != nil {
-			return errors.Wrap(_levelErr, "Error serializing 'level' field")
+		if err := WriteSimpleEnumField[ModbusDeviceInformationLevel](ctx, "level", "ModbusDeviceInformationLevel", m.GetLevel(), WriteEnum[ModbusDeviceInformationLevel, uint8](ModbusDeviceInformationLevel.GetValue, ModbusDeviceInformationLevel.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
-		// Simple Field (objectId)
-		objectId := uint8(m.GetObjectId())
-		_objectIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectId", 8, uint8((objectId)))
-		if _objectIdErr != nil {
-			return errors.Wrap(_objectIdErr, "Error serializing 'objectId' field")
+		if err := WriteSimpleField[uint8](ctx, "objectId", m.GetObjectId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadDeviceIdentificationRequest"); popErr != nil {

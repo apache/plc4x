@@ -256,11 +256,8 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (fanMode)
-	fanMode := bool(m.GetFanMode())
-	_fanModeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("fanMode", (fanMode))
-	if _fanModeErr != nil {
-		return errors.Wrap(_fanModeErr, "Error serializing 'fanMode' field")
+	if err := WriteSimpleField[bool](ctx, "fanMode", m.GetFanMode(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'fanMode' field")
 	}
 	// Virtual field
 	isFanModeAutomatic := m.GetIsFanModeAutomatic()
@@ -275,11 +272,8 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(_isFanModeContinuousErr, "Error serializing 'isFanModeContinuous' field")
 	}
 
-	// Simple Field (mode)
-	mode := uint8(m.GetMode())
-	_modeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("mode", 6, uint8((mode)))
-	if _modeErr != nil {
-		return errors.Wrap(_modeErr, "Error serializing 'mode' field")
+	if err := WriteSimpleField[uint8](ctx, "mode", m.GetMode(), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+		return errors.Wrap(err, "Error serializing 'mode' field")
 	}
 	// Virtual field
 	isFanSpeedAtDefaultSpeed := m.GetIsFanSpeedAtDefaultSpeed()

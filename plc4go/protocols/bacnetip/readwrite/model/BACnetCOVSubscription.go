@@ -222,52 +222,20 @@ func (m *_BACnetCOVSubscription) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for BACnetCOVSubscription")
 	}
 
-	// Simple Field (recipient)
-	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for recipient")
-	}
-	_recipientErr := writeBuffer.WriteSerializable(ctx, m.GetRecipient())
-	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for recipient")
-	}
-	if _recipientErr != nil {
-		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
+	if err := WriteSimpleField[BACnetRecipientProcessEnclosed](ctx, "recipient", m.GetRecipient(), WriteComplex[BACnetRecipientProcessEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'recipient' field")
 	}
 
-	// Simple Field (monitoredPropertyReference)
-	if pushErr := writeBuffer.PushContext("monitoredPropertyReference"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for monitoredPropertyReference")
-	}
-	_monitoredPropertyReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredPropertyReference())
-	if popErr := writeBuffer.PopContext("monitoredPropertyReference"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for monitoredPropertyReference")
-	}
-	if _monitoredPropertyReferenceErr != nil {
-		return errors.Wrap(_monitoredPropertyReferenceErr, "Error serializing 'monitoredPropertyReference' field")
+	if err := WriteSimpleField[BACnetObjectPropertyReferenceEnclosed](ctx, "monitoredPropertyReference", m.GetMonitoredPropertyReference(), WriteComplex[BACnetObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monitoredPropertyReference' field")
 	}
 
-	// Simple Field (issueConfirmedNotifications)
-	if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
-	}
-	_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(ctx, m.GetIssueConfirmedNotifications())
-	if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
-	}
-	if _issueConfirmedNotificationsErr != nil {
-		return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
+	if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", m.GetIssueConfirmedNotifications(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 	}
 
-	// Simple Field (timeRemaining)
-	if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeRemaining")
-	}
-	_timeRemainingErr := writeBuffer.WriteSerializable(ctx, m.GetTimeRemaining())
-	if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeRemaining")
-	}
-	if _timeRemainingErr != nil {
-		return errors.Wrap(_timeRemainingErr, "Error serializing 'timeRemaining' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeRemaining", m.GetTimeRemaining(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeRemaining' field")
 	}
 
 	if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", GetRef(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {

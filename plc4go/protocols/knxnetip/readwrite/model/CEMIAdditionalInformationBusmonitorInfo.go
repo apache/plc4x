@@ -298,46 +298,28 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(err, "Error serializing 'len' field")
 		}
 
-		// Simple Field (frameErrorFlag)
-		frameErrorFlag := bool(m.GetFrameErrorFlag())
-		_frameErrorFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("frameErrorFlag", (frameErrorFlag))
-		if _frameErrorFlagErr != nil {
-			return errors.Wrap(_frameErrorFlagErr, "Error serializing 'frameErrorFlag' field")
+		if err := WriteSimpleField[bool](ctx, "frameErrorFlag", m.GetFrameErrorFlag(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'frameErrorFlag' field")
 		}
 
-		// Simple Field (bitErrorFlag)
-		bitErrorFlag := bool(m.GetBitErrorFlag())
-		_bitErrorFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("bitErrorFlag", (bitErrorFlag))
-		if _bitErrorFlagErr != nil {
-			return errors.Wrap(_bitErrorFlagErr, "Error serializing 'bitErrorFlag' field")
+		if err := WriteSimpleField[bool](ctx, "bitErrorFlag", m.GetBitErrorFlag(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitErrorFlag' field")
 		}
 
-		// Simple Field (parityErrorFlag)
-		parityErrorFlag := bool(m.GetParityErrorFlag())
-		_parityErrorFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("parityErrorFlag", (parityErrorFlag))
-		if _parityErrorFlagErr != nil {
-			return errors.Wrap(_parityErrorFlagErr, "Error serializing 'parityErrorFlag' field")
+		if err := WriteSimpleField[bool](ctx, "parityErrorFlag", m.GetParityErrorFlag(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'parityErrorFlag' field")
 		}
 
-		// Simple Field (unknownFlag)
-		unknownFlag := bool(m.GetUnknownFlag())
-		_unknownFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("unknownFlag", (unknownFlag))
-		if _unknownFlagErr != nil {
-			return errors.Wrap(_unknownFlagErr, "Error serializing 'unknownFlag' field")
+		if err := WriteSimpleField[bool](ctx, "unknownFlag", m.GetUnknownFlag(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unknownFlag' field")
 		}
 
-		// Simple Field (lostFlag)
-		lostFlag := bool(m.GetLostFlag())
-		_lostFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("lostFlag", (lostFlag))
-		if _lostFlagErr != nil {
-			return errors.Wrap(_lostFlagErr, "Error serializing 'lostFlag' field")
+		if err := WriteSimpleField[bool](ctx, "lostFlag", m.GetLostFlag(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lostFlag' field")
 		}
 
-		// Simple Field (sequenceNumber)
-		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceNumber", 3, uint8((sequenceNumber)))
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CEMIAdditionalInformationBusmonitorInfo"); popErr != nil {

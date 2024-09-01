@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesLockStatus) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLockStatus")
 		}
 
-		// Simple Field (lockStatus)
-		if pushErr := writeBuffer.PushContext("lockStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lockStatus")
-		}
-		_lockStatusErr := writeBuffer.WriteSerializable(ctx, m.GetLockStatus())
-		if popErr := writeBuffer.PopContext("lockStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lockStatus")
-		}
-		if _lockStatusErr != nil {
-			return errors.Wrap(_lockStatusErr, "Error serializing 'lockStatus' field")
+		if err := WriteSimpleField[BACnetLockStatusTagged](ctx, "lockStatus", m.GetLockStatus(), WriteComplex[BACnetLockStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lockStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLockStatus"); popErr != nil {

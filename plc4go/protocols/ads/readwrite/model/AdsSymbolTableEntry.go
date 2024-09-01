@@ -595,134 +595,80 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for AdsSymbolTableEntry")
 	}
 
-	// Simple Field (entryLength)
-	entryLength := uint32(m.GetEntryLength())
-	_entryLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("entryLength", 32, uint32((entryLength)))
-	if _entryLengthErr != nil {
-		return errors.Wrap(_entryLengthErr, "Error serializing 'entryLength' field")
+	if err := WriteSimpleField[uint32](ctx, "entryLength", m.GetEntryLength(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'entryLength' field")
 	}
 
-	// Simple Field (group)
-	group := uint32(m.GetGroup())
-	_groupErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("group", 32, uint32((group)))
-	if _groupErr != nil {
-		return errors.Wrap(_groupErr, "Error serializing 'group' field")
+	if err := WriteSimpleField[uint32](ctx, "group", m.GetGroup(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'group' field")
 	}
 
-	// Simple Field (offset)
-	offset := uint32(m.GetOffset())
-	_offsetErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("offset", 32, uint32((offset)))
-	if _offsetErr != nil {
-		return errors.Wrap(_offsetErr, "Error serializing 'offset' field")
+	if err := WriteSimpleField[uint32](ctx, "offset", m.GetOffset(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'offset' field")
 	}
 
-	// Simple Field (size)
-	size := uint32(m.GetSize())
-	_sizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("size", 32, uint32((size)))
-	if _sizeErr != nil {
-		return errors.Wrap(_sizeErr, "Error serializing 'size' field")
+	if err := WriteSimpleField[uint32](ctx, "size", m.GetSize(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'size' field")
 	}
 
-	// Simple Field (dataType)
-	dataType := uint32(m.GetDataType())
-	_dataTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("dataType", 32, uint32((dataType)))
-	if _dataTypeErr != nil {
-		return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
+	if err := WriteSimpleField[uint32](ctx, "dataType", m.GetDataType(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataType' field")
 	}
 
-	// Simple Field (flagMethodDeref)
-	flagMethodDeref := bool(m.GetFlagMethodDeref())
-	_flagMethodDerefErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagMethodDeref", (flagMethodDeref))
-	if _flagMethodDerefErr != nil {
-		return errors.Wrap(_flagMethodDerefErr, "Error serializing 'flagMethodDeref' field")
+	if err := WriteSimpleField[bool](ctx, "flagMethodDeref", m.GetFlagMethodDeref(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagMethodDeref' field")
 	}
 
-	// Simple Field (flagItfMethodAccess)
-	flagItfMethodAccess := bool(m.GetFlagItfMethodAccess())
-	_flagItfMethodAccessErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagItfMethodAccess", (flagItfMethodAccess))
-	if _flagItfMethodAccessErr != nil {
-		return errors.Wrap(_flagItfMethodAccessErr, "Error serializing 'flagItfMethodAccess' field")
+	if err := WriteSimpleField[bool](ctx, "flagItfMethodAccess", m.GetFlagItfMethodAccess(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagItfMethodAccess' field")
 	}
 
-	// Simple Field (flagReadOnly)
-	flagReadOnly := bool(m.GetFlagReadOnly())
-	_flagReadOnlyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagReadOnly", (flagReadOnly))
-	if _flagReadOnlyErr != nil {
-		return errors.Wrap(_flagReadOnlyErr, "Error serializing 'flagReadOnly' field")
+	if err := WriteSimpleField[bool](ctx, "flagReadOnly", m.GetFlagReadOnly(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagReadOnly' field")
 	}
 
-	// Simple Field (flagTComInterfacePointer)
-	flagTComInterfacePointer := bool(m.GetFlagTComInterfacePointer())
-	_flagTComInterfacePointerErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagTComInterfacePointer", (flagTComInterfacePointer))
-	if _flagTComInterfacePointerErr != nil {
-		return errors.Wrap(_flagTComInterfacePointerErr, "Error serializing 'flagTComInterfacePointer' field")
+	if err := WriteSimpleField[bool](ctx, "flagTComInterfacePointer", m.GetFlagTComInterfacePointer(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagTComInterfacePointer' field")
 	}
 
-	// Simple Field (flagTypeGuid)
-	flagTypeGuid := bool(m.GetFlagTypeGuid())
-	_flagTypeGuidErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagTypeGuid", (flagTypeGuid))
-	if _flagTypeGuidErr != nil {
-		return errors.Wrap(_flagTypeGuidErr, "Error serializing 'flagTypeGuid' field")
+	if err := WriteSimpleField[bool](ctx, "flagTypeGuid", m.GetFlagTypeGuid(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagTypeGuid' field")
 	}
 
-	// Simple Field (flagReferenceTo)
-	flagReferenceTo := bool(m.GetFlagReferenceTo())
-	_flagReferenceToErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagReferenceTo", (flagReferenceTo))
-	if _flagReferenceToErr != nil {
-		return errors.Wrap(_flagReferenceToErr, "Error serializing 'flagReferenceTo' field")
+	if err := WriteSimpleField[bool](ctx, "flagReferenceTo", m.GetFlagReferenceTo(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagReferenceTo' field")
 	}
 
-	// Simple Field (flagBitValue)
-	flagBitValue := bool(m.GetFlagBitValue())
-	_flagBitValueErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagBitValue", (flagBitValue))
-	if _flagBitValueErr != nil {
-		return errors.Wrap(_flagBitValueErr, "Error serializing 'flagBitValue' field")
+	if err := WriteSimpleField[bool](ctx, "flagBitValue", m.GetFlagBitValue(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagBitValue' field")
 	}
 
-	// Simple Field (flagPersistent)
-	flagPersistent := bool(m.GetFlagPersistent())
-	_flagPersistentErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagPersistent", (flagPersistent))
-	if _flagPersistentErr != nil {
-		return errors.Wrap(_flagPersistentErr, "Error serializing 'flagPersistent' field")
+	if err := WriteSimpleField[bool](ctx, "flagPersistent", m.GetFlagPersistent(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagPersistent' field")
 	}
 
 	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 3), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (flagExtendedFlags)
-	flagExtendedFlags := bool(m.GetFlagExtendedFlags())
-	_flagExtendedFlagsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagExtendedFlags", (flagExtendedFlags))
-	if _flagExtendedFlagsErr != nil {
-		return errors.Wrap(_flagExtendedFlagsErr, "Error serializing 'flagExtendedFlags' field")
+	if err := WriteSimpleField[bool](ctx, "flagExtendedFlags", m.GetFlagExtendedFlags(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagExtendedFlags' field")
 	}
 
-	// Simple Field (flagInitOnReset)
-	flagInitOnReset := bool(m.GetFlagInitOnReset())
-	_flagInitOnResetErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagInitOnReset", (flagInitOnReset))
-	if _flagInitOnResetErr != nil {
-		return errors.Wrap(_flagInitOnResetErr, "Error serializing 'flagInitOnReset' field")
+	if err := WriteSimpleField[bool](ctx, "flagInitOnReset", m.GetFlagInitOnReset(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagInitOnReset' field")
 	}
 
-	// Simple Field (flagStatic)
-	flagStatic := bool(m.GetFlagStatic())
-	_flagStaticErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagStatic", (flagStatic))
-	if _flagStaticErr != nil {
-		return errors.Wrap(_flagStaticErr, "Error serializing 'flagStatic' field")
+	if err := WriteSimpleField[bool](ctx, "flagStatic", m.GetFlagStatic(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagStatic' field")
 	}
 
-	// Simple Field (flagAttributes)
-	flagAttributes := bool(m.GetFlagAttributes())
-	_flagAttributesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagAttributes", (flagAttributes))
-	if _flagAttributesErr != nil {
-		return errors.Wrap(_flagAttributesErr, "Error serializing 'flagAttributes' field")
+	if err := WriteSimpleField[bool](ctx, "flagAttributes", m.GetFlagAttributes(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagAttributes' field")
 	}
 
-	// Simple Field (flagContextMask)
-	flagContextMask := bool(m.GetFlagContextMask())
-	_flagContextMaskErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagContextMask", (flagContextMask))
-	if _flagContextMaskErr != nil {
-		return errors.Wrap(_flagContextMaskErr, "Error serializing 'flagContextMask' field")
+	if err := WriteSimpleField[bool](ctx, "flagContextMask", m.GetFlagContextMask(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flagContextMask' field")
 	}
 
 	if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x0000), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
@@ -741,33 +687,24 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(err, "Error serializing 'commentLength' field")
 	}
 
-	// Simple Field (name)
-	name := string(m.GetName())
-	_nameErr := /*TODO: migrate me*/ writeBuffer.WriteString("name", uint32((uint16(len(m.GetName())))*(8)), (name), utils.WithEncoding("UTF-8)"))
-	if _nameErr != nil {
-		return errors.Wrap(_nameErr, "Error serializing 'name' field")
+	if err := WriteSimpleField[string](ctx, "name", m.GetName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetName())))*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'name' field")
 	}
 
 	if err := WriteConstField(ctx, "nameTerminator", AdsSymbolTableEntry_NAMETERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'nameTerminator' field")
 	}
 
-	// Simple Field (dataTypeName)
-	dataTypeName := string(m.GetDataTypeName())
-	_dataTypeNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("dataTypeName", uint32((uint16(len(m.GetDataTypeName())))*(8)), (dataTypeName), utils.WithEncoding("UTF-8)"))
-	if _dataTypeNameErr != nil {
-		return errors.Wrap(_dataTypeNameErr, "Error serializing 'dataTypeName' field")
+	if err := WriteSimpleField[string](ctx, "dataTypeName", m.GetDataTypeName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetDataTypeName())))*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataTypeName' field")
 	}
 
 	if err := WriteConstField(ctx, "dataTypeNameTerminator", AdsSymbolTableEntry_DATATYPENAMETERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'dataTypeNameTerminator' field")
 	}
 
-	// Simple Field (comment)
-	comment := string(m.GetComment())
-	_commentErr := /*TODO: migrate me*/ writeBuffer.WriteString("comment", uint32((uint16(len(m.GetComment())))*(8)), (comment), utils.WithEncoding("UTF-8)"))
-	if _commentErr != nil {
-		return errors.Wrap(_commentErr, "Error serializing 'comment' field")
+	if err := WriteSimpleField[string](ctx, "comment", m.GetComment(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetComment())))*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'comment' field")
 	}
 
 	if err := WriteConstField(ctx, "commentTerminator", AdsSymbolTableEntry_COMMENTTERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {

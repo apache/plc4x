@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataInProcess) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInProcess")
 		}
 
-		// Simple Field (inProcess)
-		if pushErr := writeBuffer.PushContext("inProcess"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for inProcess")
-		}
-		_inProcessErr := writeBuffer.WriteSerializable(ctx, m.GetInProcess())
-		if popErr := writeBuffer.PopContext("inProcess"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for inProcess")
-		}
-		if _inProcessErr != nil {
-			return errors.Wrap(_inProcessErr, "Error serializing 'inProcess' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "inProcess", m.GetInProcess(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'inProcess' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

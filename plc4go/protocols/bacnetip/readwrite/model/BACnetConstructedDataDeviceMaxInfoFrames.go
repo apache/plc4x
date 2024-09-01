@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDeviceMaxInfoFrames")
 		}
 
-		// Simple Field (maxInfoFrames)
-		if pushErr := writeBuffer.PushContext("maxInfoFrames"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxInfoFrames")
-		}
-		_maxInfoFramesErr := writeBuffer.WriteSerializable(ctx, m.GetMaxInfoFrames())
-		if popErr := writeBuffer.PopContext("maxInfoFrames"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxInfoFrames")
-		}
-		if _maxInfoFramesErr != nil {
-			return errors.Wrap(_maxInfoFramesErr, "Error serializing 'maxInfoFrames' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxInfoFrames", m.GetMaxInfoFrames(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxInfoFrames' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

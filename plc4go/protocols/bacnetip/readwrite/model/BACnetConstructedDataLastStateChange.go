@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastStateChange) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastStateChange")
 		}
 
-		// Simple Field (lastStateChange)
-		if pushErr := writeBuffer.PushContext("lastStateChange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastStateChange")
-		}
-		_lastStateChangeErr := writeBuffer.WriteSerializable(ctx, m.GetLastStateChange())
-		if popErr := writeBuffer.PopContext("lastStateChange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastStateChange")
-		}
-		if _lastStateChangeErr != nil {
-			return errors.Wrap(_lastStateChangeErr, "Error serializing 'lastStateChange' field")
+		if err := WriteSimpleField[BACnetTimerTransitionTagged](ctx, "lastStateChange", m.GetLastStateChange(), WriteComplex[BACnetTimerTransitionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastStateChange' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

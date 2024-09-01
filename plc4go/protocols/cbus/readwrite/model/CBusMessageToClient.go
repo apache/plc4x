@@ -186,16 +186,8 @@ func (m *_CBusMessageToClient) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for CBusMessageToClient")
 		}
 
-		// Simple Field (reply)
-		if pushErr := writeBuffer.PushContext("reply"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reply")
-		}
-		_replyErr := writeBuffer.WriteSerializable(ctx, m.GetReply())
-		if popErr := writeBuffer.PopContext("reply"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reply")
-		}
-		if _replyErr != nil {
-			return errors.Wrap(_replyErr, "Error serializing 'reply' field")
+		if err := WriteSimpleField[ReplyOrConfirmation](ctx, "reply", m.GetReply(), WriteComplex[ReplyOrConfirmation](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reply' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusMessageToClient"); popErr != nil {

@@ -292,65 +292,32 @@ func (m *_QueryFirstRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for QueryFirstRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (view)
-		if pushErr := writeBuffer.PushContext("view"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for view")
-		}
-		_viewErr := writeBuffer.WriteSerializable(ctx, m.GetView())
-		if popErr := writeBuffer.PopContext("view"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for view")
-		}
-		if _viewErr != nil {
-			return errors.Wrap(_viewErr, "Error serializing 'view' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "view", m.GetView(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'view' field")
 		}
 
-		// Simple Field (noOfNodeTypes)
-		noOfNodeTypes := int32(m.GetNoOfNodeTypes())
-		_noOfNodeTypesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodeTypes", 32, int32((noOfNodeTypes)))
-		if _noOfNodeTypesErr != nil {
-			return errors.Wrap(_noOfNodeTypesErr, "Error serializing 'noOfNodeTypes' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNodeTypes", m.GetNoOfNodeTypes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNodeTypes' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "nodeTypes", m.GetNodeTypes(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'nodeTypes' field")
 		}
 
-		// Simple Field (filter)
-		if pushErr := writeBuffer.PushContext("filter"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filter")
-		}
-		_filterErr := writeBuffer.WriteSerializable(ctx, m.GetFilter())
-		if popErr := writeBuffer.PopContext("filter"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filter")
-		}
-		if _filterErr != nil {
-			return errors.Wrap(_filterErr, "Error serializing 'filter' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "filter", m.GetFilter(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'filter' field")
 		}
 
-		// Simple Field (maxDataSetsToReturn)
-		maxDataSetsToReturn := uint32(m.GetMaxDataSetsToReturn())
-		_maxDataSetsToReturnErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxDataSetsToReturn", 32, uint32((maxDataSetsToReturn)))
-		if _maxDataSetsToReturnErr != nil {
-			return errors.Wrap(_maxDataSetsToReturnErr, "Error serializing 'maxDataSetsToReturn' field")
+		if err := WriteSimpleField[uint32](ctx, "maxDataSetsToReturn", m.GetMaxDataSetsToReturn(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxDataSetsToReturn' field")
 		}
 
-		// Simple Field (maxReferencesToReturn)
-		maxReferencesToReturn := uint32(m.GetMaxReferencesToReturn())
-		_maxReferencesToReturnErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxReferencesToReturn", 32, uint32((maxReferencesToReturn)))
-		if _maxReferencesToReturnErr != nil {
-			return errors.Wrap(_maxReferencesToReturnErr, "Error serializing 'maxReferencesToReturn' field")
+		if err := WriteSimpleField[uint32](ctx, "maxReferencesToReturn", m.GetMaxReferencesToReturn(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxReferencesToReturn' field")
 		}
 
 		if popErr := writeBuffer.PopContext("QueryFirstRequest"); popErr != nil {

@@ -200,28 +200,12 @@ func (m *_DataTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for DataTypeDescription")
 		}
 
-		// Simple Field (dataTypeId)
-		if pushErr := writeBuffer.PushContext("dataTypeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataTypeId")
-		}
-		_dataTypeIdErr := writeBuffer.WriteSerializable(ctx, m.GetDataTypeId())
-		if popErr := writeBuffer.PopContext("dataTypeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataTypeId")
-		}
-		if _dataTypeIdErr != nil {
-			return errors.Wrap(_dataTypeIdErr, "Error serializing 'dataTypeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "dataTypeId", m.GetDataTypeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataTypeId' field")
 		}
 
-		// Simple Field (name)
-		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for name")
-		}
-		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for name")
-		}
-		if _nameErr != nil {
-			return errors.Wrap(_nameErr, "Error serializing 'name' field")
+		if err := WriteSimpleField[QualifiedName](ctx, "name", m.GetName(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DataTypeDescription"); popErr != nil {

@@ -243,40 +243,16 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestLifeSafetyOperation")
 		}
 
-		// Simple Field (requestingProcessIdentifier)
-		if pushErr := writeBuffer.PushContext("requestingProcessIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestingProcessIdentifier")
-		}
-		_requestingProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetRequestingProcessIdentifier())
-		if popErr := writeBuffer.PopContext("requestingProcessIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestingProcessIdentifier")
-		}
-		if _requestingProcessIdentifierErr != nil {
-			return errors.Wrap(_requestingProcessIdentifierErr, "Error serializing 'requestingProcessIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "requestingProcessIdentifier", m.GetRequestingProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestingProcessIdentifier' field")
 		}
 
-		// Simple Field (requestingSource)
-		if pushErr := writeBuffer.PushContext("requestingSource"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestingSource")
-		}
-		_requestingSourceErr := writeBuffer.WriteSerializable(ctx, m.GetRequestingSource())
-		if popErr := writeBuffer.PopContext("requestingSource"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestingSource")
-		}
-		if _requestingSourceErr != nil {
-			return errors.Wrap(_requestingSourceErr, "Error serializing 'requestingSource' field")
+		if err := WriteSimpleField[BACnetContextTagCharacterString](ctx, "requestingSource", m.GetRequestingSource(), WriteComplex[BACnetContextTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestingSource' field")
 		}
 
-		// Simple Field (request)
-		if pushErr := writeBuffer.PushContext("request"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for request")
-		}
-		_requestErr := writeBuffer.WriteSerializable(ctx, m.GetRequest())
-		if popErr := writeBuffer.PopContext("request"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for request")
-		}
-		if _requestErr != nil {
-			return errors.Wrap(_requestErr, "Error serializing 'request' field")
+		if err := WriteSimpleField[BACnetLifeSafetyOperationTagged](ctx, "request", m.GetRequest(), WriteComplex[BACnetLifeSafetyOperationTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'request' field")
 		}
 
 		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {

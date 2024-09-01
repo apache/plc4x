@@ -379,103 +379,48 @@ func (m *_FieldMetaData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for FieldMetaData")
 		}
 
-		// Simple Field (name)
-		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for name")
-		}
-		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for name")
-		}
-		if _nameErr != nil {
-			return errors.Wrap(_nameErr, "Error serializing 'name' field")
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
-		// Simple Field (description)
-		if pushErr := writeBuffer.PushContext("description"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for description")
-		}
-		_descriptionErr := writeBuffer.WriteSerializable(ctx, m.GetDescription())
-		if popErr := writeBuffer.PopContext("description"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for description")
-		}
-		if _descriptionErr != nil {
-			return errors.Wrap(_descriptionErr, "Error serializing 'description' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "description", m.GetDescription(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'description' field")
 		}
 
-		// Simple Field (fieldFlags)
-		if pushErr := writeBuffer.PushContext("fieldFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fieldFlags")
-		}
-		_fieldFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetFieldFlags())
-		if popErr := writeBuffer.PopContext("fieldFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fieldFlags")
-		}
-		if _fieldFlagsErr != nil {
-			return errors.Wrap(_fieldFlagsErr, "Error serializing 'fieldFlags' field")
+		if err := WriteSimpleEnumField[DataSetFieldFlags](ctx, "fieldFlags", "DataSetFieldFlags", m.GetFieldFlags(), WriteEnum[DataSetFieldFlags, uint16](DataSetFieldFlags.GetValue, DataSetFieldFlags.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+			return errors.Wrap(err, "Error serializing 'fieldFlags' field")
 		}
 
-		// Simple Field (builtInType)
-		builtInType := uint8(m.GetBuiltInType())
-		_builtInTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("builtInType", 8, uint8((builtInType)))
-		if _builtInTypeErr != nil {
-			return errors.Wrap(_builtInTypeErr, "Error serializing 'builtInType' field")
+		if err := WriteSimpleField[uint8](ctx, "builtInType", m.GetBuiltInType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'builtInType' field")
 		}
 
-		// Simple Field (dataType)
-		if pushErr := writeBuffer.PushContext("dataType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataType")
-		}
-		_dataTypeErr := writeBuffer.WriteSerializable(ctx, m.GetDataType())
-		if popErr := writeBuffer.PopContext("dataType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataType")
-		}
-		if _dataTypeErr != nil {
-			return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
+		if err := WriteSimpleField[NodeId](ctx, "dataType", m.GetDataType(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataType' field")
 		}
 
-		// Simple Field (valueRank)
-		valueRank := int32(m.GetValueRank())
-		_valueRankErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("valueRank", 32, int32((valueRank)))
-		if _valueRankErr != nil {
-			return errors.Wrap(_valueRankErr, "Error serializing 'valueRank' field")
+		if err := WriteSimpleField[int32](ctx, "valueRank", m.GetValueRank(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'valueRank' field")
 		}
 
-		// Simple Field (noOfArrayDimensions)
-		noOfArrayDimensions := int32(m.GetNoOfArrayDimensions())
-		_noOfArrayDimensionsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfArrayDimensions", 32, int32((noOfArrayDimensions)))
-		if _noOfArrayDimensionsErr != nil {
-			return errors.Wrap(_noOfArrayDimensionsErr, "Error serializing 'noOfArrayDimensions' field")
+		if err := WriteSimpleField[int32](ctx, "noOfArrayDimensions", m.GetNoOfArrayDimensions(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfArrayDimensions' field")
 		}
 
 		if err := WriteSimpleTypeArrayField(ctx, "arrayDimensions", m.GetArrayDimensions(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'arrayDimensions' field")
 		}
 
-		// Simple Field (maxStringLength)
-		maxStringLength := uint32(m.GetMaxStringLength())
-		_maxStringLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxStringLength", 32, uint32((maxStringLength)))
-		if _maxStringLengthErr != nil {
-			return errors.Wrap(_maxStringLengthErr, "Error serializing 'maxStringLength' field")
+		if err := WriteSimpleField[uint32](ctx, "maxStringLength", m.GetMaxStringLength(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxStringLength' field")
 		}
 
-		// Simple Field (dataSetFieldId)
-		if pushErr := writeBuffer.PushContext("dataSetFieldId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataSetFieldId")
-		}
-		_dataSetFieldIdErr := writeBuffer.WriteSerializable(ctx, m.GetDataSetFieldId())
-		if popErr := writeBuffer.PopContext("dataSetFieldId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataSetFieldId")
-		}
-		if _dataSetFieldIdErr != nil {
-			return errors.Wrap(_dataSetFieldIdErr, "Error serializing 'dataSetFieldId' field")
+		if err := WriteSimpleField[GuidValue](ctx, "dataSetFieldId", m.GetDataSetFieldId(), WriteComplex[GuidValue](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataSetFieldId' field")
 		}
 
-		// Simple Field (noOfProperties)
-		noOfProperties := int32(m.GetNoOfProperties())
-		_noOfPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfProperties", 32, int32((noOfProperties)))
-		if _noOfPropertiesErr != nil {
-			return errors.Wrap(_noOfPropertiesErr, "Error serializing 'noOfProperties' field")
+		if err := WriteSimpleField[int32](ctx, "noOfProperties", m.GetNoOfProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfProperties' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "properties", m.GetProperties(), writeBuffer); err != nil {

@@ -393,29 +393,20 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for APDUComplexAck")
 		}
 
-		// Simple Field (segmentedMessage)
-		segmentedMessage := bool(m.GetSegmentedMessage())
-		_segmentedMessageErr := /*TODO: migrate me*/ writeBuffer.WriteBit("segmentedMessage", (segmentedMessage))
-		if _segmentedMessageErr != nil {
-			return errors.Wrap(_segmentedMessageErr, "Error serializing 'segmentedMessage' field")
+		if err := WriteSimpleField[bool](ctx, "segmentedMessage", m.GetSegmentedMessage(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentedMessage' field")
 		}
 
-		// Simple Field (moreFollows)
-		moreFollows := bool(m.GetMoreFollows())
-		_moreFollowsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("moreFollows", (moreFollows))
-		if _moreFollowsErr != nil {
-			return errors.Wrap(_moreFollowsErr, "Error serializing 'moreFollows' field")
+		if err := WriteSimpleField[bool](ctx, "moreFollows", m.GetMoreFollows(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'moreFollows' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 2)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
-		if _originalInvokeIdErr != nil {
-			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
+		if err := WriteSimpleField[uint8](ctx, "originalInvokeId", m.GetOriginalInvokeId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalInvokeId' field")
 		}
 
 		if err := WriteOptionalField[uint8](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {

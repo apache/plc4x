@@ -225,11 +225,8 @@ func (m *_BACnetTagPayloadObjectIdentifier) SerializeWithWriteBuffer(ctx context
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}
 
-	// Simple Field (instanceNumber)
-	instanceNumber := uint32(m.GetInstanceNumber())
-	_instanceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("instanceNumber", 22, uint32((instanceNumber)))
-	if _instanceNumberErr != nil {
-		return errors.Wrap(_instanceNumberErr, "Error serializing 'instanceNumber' field")
+	if err := WriteSimpleField[uint32](ctx, "instanceNumber", m.GetInstanceNumber(), WriteUnsignedInt(writeBuffer, 22)); err != nil {
+		return errors.Wrap(err, "Error serializing 'instanceNumber' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadObjectIdentifier"); popErr != nil {

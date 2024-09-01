@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDistributionKeyRevision")
 		}
 
-		// Simple Field (distributionKeyRevision)
-		if pushErr := writeBuffer.PushContext("distributionKeyRevision"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for distributionKeyRevision")
-		}
-		_distributionKeyRevisionErr := writeBuffer.WriteSerializable(ctx, m.GetDistributionKeyRevision())
-		if popErr := writeBuffer.PopContext("distributionKeyRevision"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for distributionKeyRevision")
-		}
-		if _distributionKeyRevisionErr != nil {
-			return errors.Wrap(_distributionKeyRevisionErr, "Error serializing 'distributionKeyRevision' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "distributionKeyRevision", m.GetDistributionKeyRevision(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'distributionKeyRevision' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

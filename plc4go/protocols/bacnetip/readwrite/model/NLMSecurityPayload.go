@@ -204,11 +204,8 @@ func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for NLMSecurityPayload")
 		}
 
-		// Simple Field (payloadLength)
-		payloadLength := uint16(m.GetPayloadLength())
-		_payloadLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("payloadLength", 16, uint16((payloadLength)))
-		if _payloadLengthErr != nil {
-			return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
+		if err := WriteSimpleField[uint16](ctx, "payloadLength", m.GetPayloadLength(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'payloadLength' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "payload", m.GetPayload(), WriteByteArray(writeBuffer, 8)); err != nil {

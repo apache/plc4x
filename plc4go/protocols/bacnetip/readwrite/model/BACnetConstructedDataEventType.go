@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEventType) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventType")
 		}
 
-		// Simple Field (eventType)
-		if pushErr := writeBuffer.PushContext("eventType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventType")
-		}
-		_eventTypeErr := writeBuffer.WriteSerializable(ctx, m.GetEventType())
-		if popErr := writeBuffer.PopContext("eventType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventType")
-		}
-		if _eventTypeErr != nil {
-			return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
+		if err := WriteSimpleField[BACnetEventTypeTagged](ctx, "eventType", m.GetEventType(), WriteComplex[BACnetEventTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventType' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

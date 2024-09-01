@@ -183,16 +183,8 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueLightingCommand")
 		}
 
-		// Simple Field (ligthingCommandValue)
-		if pushErr := writeBuffer.PushContext("ligthingCommandValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ligthingCommandValue")
-		}
-		_ligthingCommandValueErr := writeBuffer.WriteSerializable(ctx, m.GetLigthingCommandValue())
-		if popErr := writeBuffer.PopContext("ligthingCommandValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ligthingCommandValue")
-		}
-		if _ligthingCommandValueErr != nil {
-			return errors.Wrap(_ligthingCommandValueErr, "Error serializing 'ligthingCommandValue' field")
+		if err := WriteSimpleField[BACnetLightingCommandEnclosed](ctx, "ligthingCommandValue", m.GetLigthingCommandValue(), WriteComplex[BACnetLightingCommandEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ligthingCommandValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueLightingCommand"); popErr != nil {

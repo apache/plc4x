@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultStepIncrement")
 		}
 
-		// Simple Field (defaultStepIncrement)
-		if pushErr := writeBuffer.PushContext("defaultStepIncrement"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for defaultStepIncrement")
-		}
-		_defaultStepIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultStepIncrement())
-		if popErr := writeBuffer.PopContext("defaultStepIncrement"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for defaultStepIncrement")
-		}
-		if _defaultStepIncrementErr != nil {
-			return errors.Wrap(_defaultStepIncrementErr, "Error serializing 'defaultStepIncrement' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "defaultStepIncrement", m.GetDefaultStepIncrement(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'defaultStepIncrement' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

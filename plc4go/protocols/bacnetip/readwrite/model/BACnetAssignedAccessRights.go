@@ -168,28 +168,12 @@ func (m *_BACnetAssignedAccessRights) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for BACnetAssignedAccessRights")
 	}
 
-	// Simple Field (assignedAccessRights)
-	if pushErr := writeBuffer.PushContext("assignedAccessRights"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for assignedAccessRights")
-	}
-	_assignedAccessRightsErr := writeBuffer.WriteSerializable(ctx, m.GetAssignedAccessRights())
-	if popErr := writeBuffer.PopContext("assignedAccessRights"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for assignedAccessRights")
-	}
-	if _assignedAccessRightsErr != nil {
-		return errors.Wrap(_assignedAccessRightsErr, "Error serializing 'assignedAccessRights' field")
+	if err := WriteSimpleField[BACnetDeviceObjectReferenceEnclosed](ctx, "assignedAccessRights", m.GetAssignedAccessRights(), WriteComplex[BACnetDeviceObjectReferenceEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assignedAccessRights' field")
 	}
 
-	// Simple Field (enable)
-	if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for enable")
-	}
-	_enableErr := writeBuffer.WriteSerializable(ctx, m.GetEnable())
-	if popErr := writeBuffer.PopContext("enable"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for enable")
-	}
-	if _enableErr != nil {
-		return errors.Wrap(_enableErr, "Error serializing 'enable' field")
+	if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "enable", m.GetEnable(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'enable' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAssignedAccessRights"); popErr != nil {

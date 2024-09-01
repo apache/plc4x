@@ -241,28 +241,12 @@ func (m *_BACnetLogStatusTagged) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for BACnetLogStatusTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Simple Field (payload)
-	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for payload")
-	}
-	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
-	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for payload")
-	}
-	if _payloadErr != nil {
-		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+	if err := WriteSimpleField[BACnetTagPayloadBitString](ctx, "payload", m.GetPayload(), WriteComplex[BACnetTagPayloadBitString](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'payload' field")
 	}
 	// Virtual field
 	logDisabled := m.GetLogDisabled()

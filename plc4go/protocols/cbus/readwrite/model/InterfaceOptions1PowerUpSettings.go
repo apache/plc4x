@@ -152,16 +152,8 @@ func (m *_InterfaceOptions1PowerUpSettings) SerializeWithWriteBuffer(ctx context
 		return errors.Wrap(pushErr, "Error pushing for InterfaceOptions1PowerUpSettings")
 	}
 
-	// Simple Field (interfaceOptions1)
-	if pushErr := writeBuffer.PushContext("interfaceOptions1"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for interfaceOptions1")
-	}
-	_interfaceOptions1Err := writeBuffer.WriteSerializable(ctx, m.GetInterfaceOptions1())
-	if popErr := writeBuffer.PopContext("interfaceOptions1"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for interfaceOptions1")
-	}
-	if _interfaceOptions1Err != nil {
-		return errors.Wrap(_interfaceOptions1Err, "Error serializing 'interfaceOptions1' field")
+	if err := WriteSimpleField[InterfaceOptions1](ctx, "interfaceOptions1", m.GetInterfaceOptions1(), WriteComplex[InterfaceOptions1](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'interfaceOptions1' field")
 	}
 
 	if popErr := writeBuffer.PopContext("InterfaceOptions1PowerUpSettings"); popErr != nil {

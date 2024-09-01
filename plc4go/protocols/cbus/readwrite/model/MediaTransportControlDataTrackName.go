@@ -182,11 +182,8 @@ func (m *_MediaTransportControlDataTrackName) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataTrackName")
 		}
 
-		// Simple Field (trackName)
-		trackName := string(m.GetTrackName())
-		_trackNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("trackName", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (trackName), utils.WithEncoding("UTF-8)"))
-		if _trackNameErr != nil {
-			return errors.Wrap(_trackNameErr, "Error serializing 'trackName' field")
+		if err := WriteSimpleField[string](ctx, "trackName", m.GetTrackName(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataTrackName"); popErr != nil {

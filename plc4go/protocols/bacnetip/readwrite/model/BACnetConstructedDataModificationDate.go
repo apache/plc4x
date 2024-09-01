@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataModificationDate) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataModificationDate")
 		}
 
-		// Simple Field (modificationDate)
-		if pushErr := writeBuffer.PushContext("modificationDate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for modificationDate")
-		}
-		_modificationDateErr := writeBuffer.WriteSerializable(ctx, m.GetModificationDate())
-		if popErr := writeBuffer.PopContext("modificationDate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for modificationDate")
-		}
-		if _modificationDateErr != nil {
-			return errors.Wrap(_modificationDateErr, "Error serializing 'modificationDate' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "modificationDate", m.GetModificationDate(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'modificationDate' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

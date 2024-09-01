@@ -224,23 +224,12 @@ func (m *_DeleteNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for DeleteNodesRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (noOfNodesToDelete)
-		noOfNodesToDelete := int32(m.GetNoOfNodesToDelete())
-		_noOfNodesToDeleteErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToDelete", 32, int32((noOfNodesToDelete)))
-		if _noOfNodesToDeleteErr != nil {
-			return errors.Wrap(_noOfNodesToDeleteErr, "Error serializing 'noOfNodesToDelete' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNodesToDelete", m.GetNoOfNodesToDelete(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNodesToDelete' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "nodesToDelete", m.GetNodesToDelete(), writeBuffer); err != nil {

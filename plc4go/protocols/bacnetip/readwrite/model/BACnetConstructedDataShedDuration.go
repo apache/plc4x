@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataShedDuration) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataShedDuration")
 		}
 
-		// Simple Field (shedDuration)
-		if pushErr := writeBuffer.PushContext("shedDuration"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for shedDuration")
-		}
-		_shedDurationErr := writeBuffer.WriteSerializable(ctx, m.GetShedDuration())
-		if popErr := writeBuffer.PopContext("shedDuration"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for shedDuration")
-		}
-		if _shedDurationErr != nil {
-			return errors.Wrap(_shedDurationErr, "Error serializing 'shedDuration' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "shedDuration", m.GetShedDuration(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'shedDuration' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

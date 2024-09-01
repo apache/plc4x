@@ -217,40 +217,16 @@ func (m *_UserManagementDataType) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for UserManagementDataType")
 		}
 
-		// Simple Field (userName)
-		if pushErr := writeBuffer.PushContext("userName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userName")
-		}
-		_userNameErr := writeBuffer.WriteSerializable(ctx, m.GetUserName())
-		if popErr := writeBuffer.PopContext("userName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userName")
-		}
-		if _userNameErr != nil {
-			return errors.Wrap(_userNameErr, "Error serializing 'userName' field")
+		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userName' field")
 		}
 
-		// Simple Field (userConfiguration)
-		if pushErr := writeBuffer.PushContext("userConfiguration"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userConfiguration")
-		}
-		_userConfigurationErr := writeBuffer.WriteSerializable(ctx, m.GetUserConfiguration())
-		if popErr := writeBuffer.PopContext("userConfiguration"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userConfiguration")
-		}
-		if _userConfigurationErr != nil {
-			return errors.Wrap(_userConfigurationErr, "Error serializing 'userConfiguration' field")
+		if err := WriteSimpleEnumField[UserConfigurationMask](ctx, "userConfiguration", "UserConfigurationMask", m.GetUserConfiguration(), WriteEnum[UserConfigurationMask, uint32](UserConfigurationMask.GetValue, UserConfigurationMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'userConfiguration' field")
 		}
 
-		// Simple Field (description)
-		if pushErr := writeBuffer.PushContext("description"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for description")
-		}
-		_descriptionErr := writeBuffer.WriteSerializable(ctx, m.GetDescription())
-		if popErr := writeBuffer.PopContext("description"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for description")
-		}
-		if _descriptionErr != nil {
-			return errors.Wrap(_descriptionErr, "Error serializing 'description' field")
+		if err := WriteSimpleField[PascalString](ctx, "description", m.GetDescription(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'description' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UserManagementDataType"); popErr != nil {

@@ -265,33 +265,24 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for SessionlessInvokeResponseType")
 		}
 
-		// Simple Field (noOfNamespaceUris)
-		noOfNamespaceUris := int32(m.GetNoOfNamespaceUris())
-		_noOfNamespaceUrisErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNamespaceUris", 32, int32((noOfNamespaceUris)))
-		if _noOfNamespaceUrisErr != nil {
-			return errors.Wrap(_noOfNamespaceUrisErr, "Error serializing 'noOfNamespaceUris' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNamespaceUris", m.GetNoOfNamespaceUris(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNamespaceUris' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "namespaceUris", m.GetNamespaceUris(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'namespaceUris' field")
 		}
 
-		// Simple Field (noOfServerUris)
-		noOfServerUris := int32(m.GetNoOfServerUris())
-		_noOfServerUrisErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerUris", 32, int32((noOfServerUris)))
-		if _noOfServerUrisErr != nil {
-			return errors.Wrap(_noOfServerUrisErr, "Error serializing 'noOfServerUris' field")
+		if err := WriteSimpleField[int32](ctx, "noOfServerUris", m.GetNoOfServerUris(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServerUris' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "serverUris", m.GetServerUris(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverUris' field")
 		}
 
-		// Simple Field (serviceId)
-		serviceId := uint32(m.GetServiceId())
-		_serviceIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("serviceId", 32, uint32((serviceId)))
-		if _serviceIdErr != nil {
-			return errors.Wrap(_serviceIdErr, "Error serializing 'serviceId' field")
+		if err := WriteSimpleField[uint32](ctx, "serviceId", m.GetServiceId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SessionlessInvokeResponseType"); popErr != nil {

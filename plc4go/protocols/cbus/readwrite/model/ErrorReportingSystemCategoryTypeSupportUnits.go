@@ -184,16 +184,8 @@ func (m *_ErrorReportingSystemCategoryTypeSupportUnits) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for ErrorReportingSystemCategoryTypeSupportUnits")
 		}
 
-		// Simple Field (categoryForType)
-		if pushErr := writeBuffer.PushContext("categoryForType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for categoryForType")
-		}
-		_categoryForTypeErr := writeBuffer.WriteSerializable(ctx, m.GetCategoryForType())
-		if popErr := writeBuffer.PopContext("categoryForType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for categoryForType")
-		}
-		if _categoryForTypeErr != nil {
-			return errors.Wrap(_categoryForTypeErr, "Error serializing 'categoryForType' field")
+		if err := WriteSimpleEnumField[ErrorReportingSystemCategoryTypeForSupportUnits](ctx, "categoryForType", "ErrorReportingSystemCategoryTypeForSupportUnits", m.GetCategoryForType(), WriteEnum[ErrorReportingSystemCategoryTypeForSupportUnits, uint8](ErrorReportingSystemCategoryTypeForSupportUnits.GetValue, ErrorReportingSystemCategoryTypeForSupportUnits.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
+			return errors.Wrap(err, "Error serializing 'categoryForType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ErrorReportingSystemCategoryTypeSupportUnits"); popErr != nil {

@@ -200,32 +200,20 @@ func (m *_ClassSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for ClassSegment")
 	}
 
-	// Simple Field (pathSegmentType)
-	pathSegmentType := uint8(m.GetPathSegmentType())
-	_pathSegmentTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pathSegmentType", 3, uint8((pathSegmentType)))
-	if _pathSegmentTypeErr != nil {
-		return errors.Wrap(_pathSegmentTypeErr, "Error serializing 'pathSegmentType' field")
+	if err := WriteSimpleField[uint8](ctx, "pathSegmentType", m.GetPathSegmentType(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'pathSegmentType' field")
 	}
 
-	// Simple Field (logicalSegmentType)
-	logicalSegmentType := uint8(m.GetLogicalSegmentType())
-	_logicalSegmentTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("logicalSegmentType", 3, uint8((logicalSegmentType)))
-	if _logicalSegmentTypeErr != nil {
-		return errors.Wrap(_logicalSegmentTypeErr, "Error serializing 'logicalSegmentType' field")
+	if err := WriteSimpleField[uint8](ctx, "logicalSegmentType", m.GetLogicalSegmentType(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'logicalSegmentType' field")
 	}
 
-	// Simple Field (logicalSegmentFormat)
-	logicalSegmentFormat := uint8(m.GetLogicalSegmentFormat())
-	_logicalSegmentFormatErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("logicalSegmentFormat", 2, uint8((logicalSegmentFormat)))
-	if _logicalSegmentFormatErr != nil {
-		return errors.Wrap(_logicalSegmentFormatErr, "Error serializing 'logicalSegmentFormat' field")
+	if err := WriteSimpleField[uint8](ctx, "logicalSegmentFormat", m.GetLogicalSegmentFormat(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+		return errors.Wrap(err, "Error serializing 'logicalSegmentFormat' field")
 	}
 
-	// Simple Field (classSegment)
-	classSegment := uint8(m.GetClassSegment())
-	_classSegmentErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("classSegment", 8, uint8((classSegment)))
-	if _classSegmentErr != nil {
-		return errors.Wrap(_classSegmentErr, "Error serializing 'classSegment' field")
+	if err := WriteSimpleField[uint8](ctx, "classSegment", m.GetClassSegment(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'classSegment' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ClassSegment"); popErr != nil {

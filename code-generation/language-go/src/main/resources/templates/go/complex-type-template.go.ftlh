@@ -1396,15 +1396,15 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 							func (wb utils.WriteBuffer, val any) error {
 						return ${optionalField.type.asComplexTypeReference().orElseThrow().name}.
 								StaticSerialize(wb, val
-						<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>
+							<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>
 							,
-							<#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>
+								<#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>
 								${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}
-								<#sep>, </#sep>
-							</#list>
-						</#if>
-						}
-							)
+									<#sep>, </#sep>
+								</#list>
+							</#if>
+								)
+							}
 						)
 						<#if optionalField.conditionExpression.present>
 							,
@@ -1469,29 +1469,52 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 					<#break>
 				<#case "simple">
 					<#assign simpleField = field.asSimpleField().orElseThrow()>
+					<#assign typedField = field.asTypedField().orElseThrow()>
+					<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Simple Field (${simpleField.name})
-					<#if simpleField.type.isSimpleTypeReference()>
-						<#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
-						<#assign simpleFieldLogicalName><#if simpleField.type.isSimpleTypeReference() && !helper.isEnumField(field)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
-	${simpleField.name} := ${helper.getLanguageTypeNameForField(field)}(m.Get${simpleField.name?cap_first}())
-						<#if helper.isEnumField(field)>
-	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleFieldLogicalName, simpleTypeReference, "(" + simpleField.name + ")", simpleField, "utils.WithAdditionalStringRepresentation(m.Get${simpleField.name?cap_first}().PLC4XEnumName())")}
-						<#else>
-	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleFieldLogicalName, simpleTypeReference, "(" + simpleField.name + ")", simpleField)}
-						</#if>
+				<@compress single_line=true>
+					if err:=
+					<#if typedField.type.isEnumTypeReference()>
+	WriteSimpleEnumField[${helper.getLanguageTypeNameForField(simpleField)}](
+						ctx,
+						"${simpleField.name}",
+						"${helper.getLanguageTypeNameForField(field)}",
+						m.Get${simpleField.name?cap_first}(),
+						${helper.getEnumDataWriterCall(simpleField.type, simpleField.name, "value")}
+						${helper.getFieldOptions(typedField, parserArguments)}
+					)
+					<#elseif simpleField.type.isDataIoTypeReference()>
+	WriteSimpleField[${helper.getLanguageTypeNameForField(simpleField)}](
+						ctx,
+						"${simpleField.name}",
+						${simpleField.name},
+						WriteDataIO(writeBuffer,
+							func (wb utils.WriteBuffer, val any) error {
+								return ${simpleField.type.asComplexTypeReference().orElseThrow().name}.
+								StaticSerialize(wb, val
+								<#if simpleField.type.asComplexTypeReference().orElseThrow().params?has_content>
+								,
+									<#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>
+									${helper.toParseExpression(simpleField, helper.anyTypeReference, param, parserArguments)}
+									<#sep>, </#sep>
+									</#list>
+								</#if>
+								)
+							}
+						)
+						${helper.getFieldOptions(typedField, parserArguments)})));
 					<#else>
-						<#assign complexTypeReference = simpleField.type>
-	if pushErr := writeBuffer.PushContext("${simpleField.name}"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-	_${simpleField.name}Err := writeBuffer.WriteSerializable(ctx, m.Get${simpleField.name?cap_first}())
-	if popErr := writeBuffer.PopContext("${simpleField.name}"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
+	WriteSimpleField[${helper.getLanguageTypeNameForField(simpleField)}](
+						ctx,
+						"${simpleField.name}",
+						m.Get${simpleField.name?cap_first}(),
+						${helper.getDataWriterCall(typedField.type, simpleField.name)}
+						${helper.getFieldOptions(typedField, parserArguments)})
 					</#if>
-	if _${simpleField.name}Err != nil {
-		return errors.Wrap(_${simpleField.name}Err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
+						;err != nil {
+					</@compress>
+
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>
 				<#case "switch">

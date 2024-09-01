@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataStartTime) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStartTime")
 		}
 
-		// Simple Field (startTime)
-		if pushErr := writeBuffer.PushContext("startTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for startTime")
-		}
-		_startTimeErr := writeBuffer.WriteSerializable(ctx, m.GetStartTime())
-		if popErr := writeBuffer.PopContext("startTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for startTime")
-		}
-		if _startTimeErr != nil {
-			return errors.Wrap(_startTimeErr, "Error serializing 'startTime' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "startTime", m.GetStartTime(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

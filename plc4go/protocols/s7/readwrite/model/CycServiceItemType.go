@@ -238,18 +238,12 @@ func (pm *_CycServiceItemType) SerializeParent(ctx context.Context, writeBuffer 
 		return errors.Wrap(err, "Error serializing 'functionId' field")
 	}
 
-	// Simple Field (byteLength)
-	byteLength := uint8(m.GetByteLength())
-	_byteLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("byteLength", 8, uint8((byteLength)))
-	if _byteLengthErr != nil {
-		return errors.Wrap(_byteLengthErr, "Error serializing 'byteLength' field")
+	if err := WriteSimpleField[uint8](ctx, "byteLength", m.GetByteLength(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'byteLength' field")
 	}
 
-	// Simple Field (syntaxId)
-	syntaxId := uint8(m.GetSyntaxId())
-	_syntaxIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("syntaxId", 8, uint8((syntaxId)))
-	if _syntaxIdErr != nil {
-		return errors.Wrap(_syntaxIdErr, "Error serializing 'syntaxId' field")
+	if err := WriteSimpleField[uint8](ctx, "syntaxId", m.GetSyntaxId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'syntaxId' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

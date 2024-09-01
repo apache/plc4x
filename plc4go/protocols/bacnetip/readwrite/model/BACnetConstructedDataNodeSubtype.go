@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNodeSubtype")
 		}
 
-		// Simple Field (nodeSubType)
-		if pushErr := writeBuffer.PushContext("nodeSubType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeSubType")
-		}
-		_nodeSubTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNodeSubType())
-		if popErr := writeBuffer.PopContext("nodeSubType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeSubType")
-		}
-		if _nodeSubTypeErr != nil {
-			return errors.Wrap(_nodeSubTypeErr, "Error serializing 'nodeSubType' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "nodeSubType", m.GetNodeSubType(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeSubType' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -241,30 +241,16 @@ func (m *_FindServersOnNetworkResponse) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for FindServersOnNetworkResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (lastCounterResetTime)
-		lastCounterResetTime := int64(m.GetLastCounterResetTime())
-		_lastCounterResetTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("lastCounterResetTime", 64, int64((lastCounterResetTime)))
-		if _lastCounterResetTimeErr != nil {
-			return errors.Wrap(_lastCounterResetTimeErr, "Error serializing 'lastCounterResetTime' field")
+		if err := WriteSimpleField[int64](ctx, "lastCounterResetTime", m.GetLastCounterResetTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastCounterResetTime' field")
 		}
 
-		// Simple Field (noOfServers)
-		noOfServers := int32(m.GetNoOfServers())
-		_noOfServersErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServers", 32, int32((noOfServers)))
-		if _noOfServersErr != nil {
-			return errors.Wrap(_noOfServersErr, "Error serializing 'noOfServers' field")
+		if err := WriteSimpleField[int32](ctx, "noOfServers", m.GetNoOfServers(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServers' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "servers", m.GetServers(), writeBuffer); err != nil {

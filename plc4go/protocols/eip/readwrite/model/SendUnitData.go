@@ -258,11 +258,8 @@ func (m *_SendUnitData) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(err, "Error serializing 'interfaceHandle' field")
 		}
 
-		// Simple Field (timeout)
-		timeout := uint16(m.GetTimeout())
-		_timeoutErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("timeout", 16, uint16((timeout)))
-		if _timeoutErr != nil {
-			return errors.Wrap(_timeoutErr, "Error serializing 'timeout' field")
+		if err := WriteSimpleField[uint16](ctx, "timeout", m.GetTimeout(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeout' field")
 		}
 		typeIdCount := uint16(uint16(len(m.GetTypeIds())))
 		if err := WriteImplicitField(ctx, "typeIdCount", typeIdCount, WriteUnsignedShort(writeBuffer, 16)); err != nil {

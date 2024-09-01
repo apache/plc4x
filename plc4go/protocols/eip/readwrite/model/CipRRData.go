@@ -246,18 +246,12 @@ func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(pushErr, "Error pushing for CipRRData")
 		}
 
-		// Simple Field (interfaceHandle)
-		interfaceHandle := uint32(m.GetInterfaceHandle())
-		_interfaceHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("interfaceHandle", 32, uint32((interfaceHandle)))
-		if _interfaceHandleErr != nil {
-			return errors.Wrap(_interfaceHandleErr, "Error serializing 'interfaceHandle' field")
+		if err := WriteSimpleField[uint32](ctx, "interfaceHandle", m.GetInterfaceHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'interfaceHandle' field")
 		}
 
-		// Simple Field (timeout)
-		timeout := uint16(m.GetTimeout())
-		_timeoutErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("timeout", 16, uint16((timeout)))
-		if _timeoutErr != nil {
-			return errors.Wrap(_timeoutErr, "Error serializing 'timeout' field")
+		if err := WriteSimpleField[uint16](ctx, "timeout", m.GetTimeout(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeout' field")
 		}
 		typeIdCount := uint16(uint16(len(m.GetTypeIds())))
 		if err := WriteImplicitField(ctx, "typeIdCount", typeIdCount, WriteUnsignedShort(writeBuffer, 16)); err != nil {

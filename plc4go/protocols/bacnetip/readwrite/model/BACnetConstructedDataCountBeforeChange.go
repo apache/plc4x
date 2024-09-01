@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataCountBeforeChange) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCountBeforeChange")
 		}
 
-		// Simple Field (countBeforeChange)
-		if pushErr := writeBuffer.PushContext("countBeforeChange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for countBeforeChange")
-		}
-		_countBeforeChangeErr := writeBuffer.WriteSerializable(ctx, m.GetCountBeforeChange())
-		if popErr := writeBuffer.PopContext("countBeforeChange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for countBeforeChange")
-		}
-		if _countBeforeChangeErr != nil {
-			return errors.Wrap(_countBeforeChangeErr, "Error serializing 'countBeforeChange' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "countBeforeChange", m.GetCountBeforeChange(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'countBeforeChange' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

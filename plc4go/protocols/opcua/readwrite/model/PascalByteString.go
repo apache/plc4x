@@ -170,11 +170,8 @@ func (m *_PascalByteString) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(pushErr, "Error pushing for PascalByteString")
 	}
 
-	// Simple Field (stringLength)
-	stringLength := int32(m.GetStringLength())
-	_stringLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("stringLength", 32, int32((stringLength)))
-	if _stringLengthErr != nil {
-		return errors.Wrap(_stringLengthErr, "Error serializing 'stringLength' field")
+	if err := WriteSimpleField[int32](ctx, "stringLength", m.GetStringLength(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'stringLength' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "stringValue", m.GetStringValue(), WriteByteArray(writeBuffer, 8)); err != nil {

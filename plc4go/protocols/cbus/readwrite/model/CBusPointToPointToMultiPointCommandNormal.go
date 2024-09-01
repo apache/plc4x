@@ -202,28 +202,12 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for CBusPointToPointToMultiPointCommandNormal")
 		}
 
-		// Simple Field (application)
-		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for application")
-		}
-		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
-		if popErr := writeBuffer.PopContext("application"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for application")
-		}
-		if _applicationErr != nil {
-			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		// Simple Field (salData)
-		if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for salData")
-		}
-		_salDataErr := writeBuffer.WriteSerializable(ctx, m.GetSalData())
-		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for salData")
-		}
-		if _salDataErr != nil {
-			return errors.Wrap(_salDataErr, "Error serializing 'salData' field")
+		if err := WriteSimpleField[SALData](ctx, "salData", m.GetSalData(), WriteComplex[SALData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'salData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusPointToPointToMultiPointCommandNormal"); popErr != nil {

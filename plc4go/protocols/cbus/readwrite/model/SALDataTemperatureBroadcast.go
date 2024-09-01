@@ -185,16 +185,8 @@ func (m *_SALDataTemperatureBroadcast) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for SALDataTemperatureBroadcast")
 		}
 
-		// Simple Field (temperatureBroadcastData)
-		if pushErr := writeBuffer.PushContext("temperatureBroadcastData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for temperatureBroadcastData")
-		}
-		_temperatureBroadcastDataErr := writeBuffer.WriteSerializable(ctx, m.GetTemperatureBroadcastData())
-		if popErr := writeBuffer.PopContext("temperatureBroadcastData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for temperatureBroadcastData")
-		}
-		if _temperatureBroadcastDataErr != nil {
-			return errors.Wrap(_temperatureBroadcastDataErr, "Error serializing 'temperatureBroadcastData' field")
+		if err := WriteSimpleField[TemperatureBroadcastData](ctx, "temperatureBroadcastData", m.GetTemperatureBroadcastData(), WriteComplex[TemperatureBroadcastData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'temperatureBroadcastData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataTemperatureBroadcast"); popErr != nil {

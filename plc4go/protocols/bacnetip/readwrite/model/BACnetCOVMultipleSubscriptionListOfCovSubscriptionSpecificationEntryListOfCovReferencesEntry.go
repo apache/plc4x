@@ -190,32 +190,16 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 		return errors.Wrap(pushErr, "Error pushing for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
 	}
 
-	// Simple Field (monitoredProperty)
-	if pushErr := writeBuffer.PushContext("monitoredProperty"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for monitoredProperty")
-	}
-	_monitoredPropertyErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredProperty())
-	if popErr := writeBuffer.PopContext("monitoredProperty"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for monitoredProperty")
-	}
-	if _monitoredPropertyErr != nil {
-		return errors.Wrap(_monitoredPropertyErr, "Error serializing 'monitoredProperty' field")
+	if err := WriteSimpleField[BACnetPropertyReferenceEnclosed](ctx, "monitoredProperty", m.GetMonitoredProperty(), WriteComplex[BACnetPropertyReferenceEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monitoredProperty' field")
 	}
 
 	if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", GetRef(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'covIncrement' field")
 	}
 
-	// Simple Field (timestamped)
-	if pushErr := writeBuffer.PushContext("timestamped"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timestamped")
-	}
-	_timestampedErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamped())
-	if popErr := writeBuffer.PopContext("timestamped"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timestamped")
-	}
-	if _timestampedErr != nil {
-		return errors.Wrap(_timestampedErr, "Error serializing 'timestamped' field")
+	if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "timestamped", m.GetTimestamped(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timestamped' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry"); popErr != nil {

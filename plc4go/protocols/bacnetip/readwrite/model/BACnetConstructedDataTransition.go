@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTransition")
 		}
 
-		// Simple Field (transition)
-		if pushErr := writeBuffer.PushContext("transition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transition")
-		}
-		_transitionErr := writeBuffer.WriteSerializable(ctx, m.GetTransition())
-		if popErr := writeBuffer.PopContext("transition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transition")
-		}
-		if _transitionErr != nil {
-			return errors.Wrap(_transitionErr, "Error serializing 'transition' field")
+		if err := WriteSimpleField[BACnetLightingTransitionTagged](ctx, "transition", m.GetTransition(), WriteComplex[BACnetLightingTransitionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transition' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

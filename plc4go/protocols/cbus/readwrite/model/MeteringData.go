@@ -256,16 +256,8 @@ func (pm *_MeteringData) SerializeParent(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(pushErr, "Error pushing for MeteringData")
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
+	if err := WriteSimpleEnumField[MeteringCommandTypeContainer](ctx, "commandTypeContainer", "MeteringCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[MeteringCommandTypeContainer, uint8](MeteringCommandTypeContainer.GetValue, MeteringCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
@@ -274,11 +266,8 @@ func (pm *_MeteringData) SerializeParent(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
-	// Simple Field (argument)
-	argument := byte(m.GetArgument())
-	_argumentErr := /*TODO: migrate me*/ writeBuffer.WriteByte("argument", (argument))
-	if _argumentErr != nil {
-		return errors.Wrap(_argumentErr, "Error serializing 'argument' field")
+	if err := WriteSimpleField[byte](ctx, "argument", m.GetArgument(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'argument' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

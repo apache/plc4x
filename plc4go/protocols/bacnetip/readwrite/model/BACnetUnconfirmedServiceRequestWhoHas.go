@@ -240,16 +240,8 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(err, "Error serializing 'deviceInstanceRangeHighLimit' field")
 		}
 
-		// Simple Field (object)
-		if pushErr := writeBuffer.PushContext("object"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for object")
-		}
-		_objectErr := writeBuffer.WriteSerializable(ctx, m.GetObject())
-		if popErr := writeBuffer.PopContext("object"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for object")
-		}
-		if _objectErr != nil {
-			return errors.Wrap(_objectErr, "Error serializing 'object' field")
+		if err := WriteSimpleField[BACnetUnconfirmedServiceRequestWhoHasObject](ctx, "object", m.GetObject(), WriteComplex[BACnetUnconfirmedServiceRequestWhoHasObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'object' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestWhoHas"); popErr != nil {

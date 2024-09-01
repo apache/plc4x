@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataNumberOfStates) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNumberOfStates")
 		}
 
-		// Simple Field (numberOfState)
-		if pushErr := writeBuffer.PushContext("numberOfState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for numberOfState")
-		}
-		_numberOfStateErr := writeBuffer.WriteSerializable(ctx, m.GetNumberOfState())
-		if popErr := writeBuffer.PopContext("numberOfState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for numberOfState")
-		}
-		if _numberOfStateErr != nil {
-			return errors.Wrap(_numberOfStateErr, "Error serializing 'numberOfState' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfState", m.GetNumberOfState(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfState' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

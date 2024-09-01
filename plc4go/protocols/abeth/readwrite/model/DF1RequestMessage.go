@@ -257,18 +257,12 @@ func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for DF1RequestMessage")
 	}
 
-	// Simple Field (destinationAddress)
-	destinationAddress := uint8(m.GetDestinationAddress())
-	_destinationAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("destinationAddress", 8, uint8((destinationAddress)))
-	if _destinationAddressErr != nil {
-		return errors.Wrap(_destinationAddressErr, "Error serializing 'destinationAddress' field")
+	if err := WriteSimpleField[uint8](ctx, "destinationAddress", m.GetDestinationAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'destinationAddress' field")
 	}
 
-	// Simple Field (sourceAddress)
-	sourceAddress := uint8(m.GetSourceAddress())
-	_sourceAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sourceAddress", 8, uint8((sourceAddress)))
-	if _sourceAddressErr != nil {
-		return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
+	if err := WriteSimpleField[uint8](ctx, "sourceAddress", m.GetSourceAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceAddress' field")
 	}
 
 	if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x0000), WriteUnsignedShort(writeBuffer, 16)); err != nil {
@@ -279,18 +273,12 @@ func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(err, "Error serializing 'commandCode' field")
 	}
 
-	// Simple Field (status)
-	status := uint8(m.GetStatus())
-	_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("status", 8, uint8((status)))
-	if _statusErr != nil {
-		return errors.Wrap(_statusErr, "Error serializing 'status' field")
+	if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
-	// Simple Field (transactionCounter)
-	transactionCounter := uint16(m.GetTransactionCounter())
-	_transactionCounterErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("transactionCounter", 16, uint16((transactionCounter)))
-	if _transactionCounterErr != nil {
-		return errors.Wrap(_transactionCounterErr, "Error serializing 'transactionCounter' field")
+	if err := WriteSimpleField[uint16](ctx, "transactionCounter", m.GetTransactionCounter(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'transactionCounter' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

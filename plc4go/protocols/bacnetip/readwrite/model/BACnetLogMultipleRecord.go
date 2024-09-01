@@ -168,28 +168,12 @@ func (m *_BACnetLogMultipleRecord) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetLogMultipleRecord")
 	}
 
-	// Simple Field (timestamp)
-	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timestamp")
-	}
-	_timestampErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamp())
-	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timestamp")
-	}
-	if _timestampErr != nil {
-		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
+	if err := WriteSimpleField[BACnetDateTimeEnclosed](ctx, "timestamp", m.GetTimestamp(), WriteComplex[BACnetDateTimeEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timestamp' field")
 	}
 
-	// Simple Field (logData)
-	if pushErr := writeBuffer.PushContext("logData"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for logData")
-	}
-	_logDataErr := writeBuffer.WriteSerializable(ctx, m.GetLogData())
-	if popErr := writeBuffer.PopContext("logData"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for logData")
-	}
-	if _logDataErr != nil {
-		return errors.Wrap(_logDataErr, "Error serializing 'logData' field")
+	if err := WriteSimpleField[BACnetLogData](ctx, "logData", m.GetLogData(), WriteComplex[BACnetLogData](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'logData' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLogMultipleRecord"); popErr != nil {

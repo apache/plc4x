@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAPDULength) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAPDULength")
 		}
 
-		// Simple Field (apduLength)
-		if pushErr := writeBuffer.PushContext("apduLength"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for apduLength")
-		}
-		_apduLengthErr := writeBuffer.WriteSerializable(ctx, m.GetApduLength())
-		if popErr := writeBuffer.PopContext("apduLength"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for apduLength")
-		}
-		if _apduLengthErr != nil {
-			return errors.Wrap(_apduLengthErr, "Error serializing 'apduLength' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduLength", m.GetApduLength(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'apduLength' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

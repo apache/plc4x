@@ -196,16 +196,8 @@ func (m *_UnConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(err, "Error serializing 'packetSize' field")
 		}
 
-		// Simple Field (service)
-		if pushErr := writeBuffer.PushContext("service"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for service")
-		}
-		_serviceErr := writeBuffer.WriteSerializable(ctx, m.GetService())
-		if popErr := writeBuffer.PopContext("service"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for service")
-		}
-		if _serviceErr != nil {
-			return errors.Wrap(_serviceErr, "Error serializing 'service' field")
+		if err := WriteSimpleField[CipService](ctx, "service", m.GetService(), WriteComplex[CipService](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'service' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UnConnectedDataItem"); popErr != nil {

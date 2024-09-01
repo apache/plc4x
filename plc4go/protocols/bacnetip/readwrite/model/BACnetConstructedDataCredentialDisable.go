@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataCredentialDisable) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCredentialDisable")
 		}
 
-		// Simple Field (credentialDisable)
-		if pushErr := writeBuffer.PushContext("credentialDisable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for credentialDisable")
-		}
-		_credentialDisableErr := writeBuffer.WriteSerializable(ctx, m.GetCredentialDisable())
-		if popErr := writeBuffer.PopContext("credentialDisable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for credentialDisable")
-		}
-		if _credentialDisableErr != nil {
-			return errors.Wrap(_credentialDisableErr, "Error serializing 'credentialDisable' field")
+		if err := WriteSimpleField[BACnetAccessCredentialDisableTagged](ctx, "credentialDisable", m.GetCredentialDisable(), WriteComplex[BACnetAccessCredentialDisableTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'credentialDisable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesRestartReason) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesRestartReason")
 		}
 
-		// Simple Field (restartReason)
-		if pushErr := writeBuffer.PushContext("restartReason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for restartReason")
-		}
-		_restartReasonErr := writeBuffer.WriteSerializable(ctx, m.GetRestartReason())
-		if popErr := writeBuffer.PopContext("restartReason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for restartReason")
-		}
-		if _restartReasonErr != nil {
-			return errors.Wrap(_restartReasonErr, "Error serializing 'restartReason' field")
+		if err := WriteSimpleField[BACnetRestartReasonTagged](ctx, "restartReason", m.GetRestartReason(), WriteComplex[BACnetRestartReasonTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'restartReason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesRestartReason"); popErr != nil {

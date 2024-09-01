@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAPDUTimeout) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAPDUTimeout")
 		}
 
-		// Simple Field (apduTimeout)
-		if pushErr := writeBuffer.PushContext("apduTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for apduTimeout")
-		}
-		_apduTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetApduTimeout())
-		if popErr := writeBuffer.PopContext("apduTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for apduTimeout")
-		}
-		if _apduTimeoutErr != nil {
-			return errors.Wrap(_apduTimeoutErr, "Error serializing 'apduTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduTimeout", m.GetApduTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'apduTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

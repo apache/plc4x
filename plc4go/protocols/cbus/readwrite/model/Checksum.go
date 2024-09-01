@@ -152,11 +152,8 @@ func (m *_Checksum) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		return errors.Wrap(pushErr, "Error pushing for Checksum")
 	}
 
-	// Simple Field (value)
-	value := byte(m.GetValue())
-	_valueErr := /*TODO: migrate me*/ writeBuffer.WriteByte("value", (value))
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteSimpleField[byte](ctx, "value", m.GetValue(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Checksum"); popErr != nil {

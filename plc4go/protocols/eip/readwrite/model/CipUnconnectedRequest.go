@@ -319,28 +319,12 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(err, "Error serializing 'requestPathSize' field")
 		}
 
-		// Simple Field (classSegment)
-		if pushErr := writeBuffer.PushContext("classSegment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for classSegment")
-		}
-		_classSegmentErr := writeBuffer.WriteSerializable(ctx, m.GetClassSegment())
-		if popErr := writeBuffer.PopContext("classSegment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for classSegment")
-		}
-		if _classSegmentErr != nil {
-			return errors.Wrap(_classSegmentErr, "Error serializing 'classSegment' field")
+		if err := WriteSimpleField[PathSegment](ctx, "classSegment", m.GetClassSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'classSegment' field")
 		}
 
-		// Simple Field (instanceSegment)
-		if pushErr := writeBuffer.PushContext("instanceSegment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for instanceSegment")
-		}
-		_instanceSegmentErr := writeBuffer.WriteSerializable(ctx, m.GetInstanceSegment())
-		if popErr := writeBuffer.PopContext("instanceSegment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for instanceSegment")
-		}
-		if _instanceSegmentErr != nil {
-			return errors.Wrap(_instanceSegmentErr, "Error serializing 'instanceSegment' field")
+		if err := WriteSimpleField[PathSegment](ctx, "instanceSegment", m.GetInstanceSegment(), WriteComplex[PathSegment](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'instanceSegment' field")
 		}
 
 		if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x9D05), WriteUnsignedShort(writeBuffer, 16)); err != nil {
@@ -351,34 +335,20 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(err, "Error serializing 'messageSize' field")
 		}
 
-		// Simple Field (unconnectedService)
-		if pushErr := writeBuffer.PushContext("unconnectedService"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unconnectedService")
-		}
-		_unconnectedServiceErr := writeBuffer.WriteSerializable(ctx, m.GetUnconnectedService())
-		if popErr := writeBuffer.PopContext("unconnectedService"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unconnectedService")
-		}
-		if _unconnectedServiceErr != nil {
-			return errors.Wrap(_unconnectedServiceErr, "Error serializing 'unconnectedService' field")
+		if err := WriteSimpleField[CipService](ctx, "unconnectedService", m.GetUnconnectedService(), WriteComplex[CipService](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unconnectedService' field")
 		}
 
 		if err := WriteConstField(ctx, "route", CipUnconnectedRequest_ROUTE, WriteUnsignedShort(writeBuffer, 16)); err != nil {
 			return errors.Wrap(err, "Error serializing 'route' field")
 		}
 
-		// Simple Field (backPlane)
-		backPlane := int8(m.GetBackPlane())
-		_backPlaneErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("backPlane", 8, int8((backPlane)))
-		if _backPlaneErr != nil {
-			return errors.Wrap(_backPlaneErr, "Error serializing 'backPlane' field")
+		if err := WriteSimpleField[int8](ctx, "backPlane", m.GetBackPlane(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'backPlane' field")
 		}
 
-		// Simple Field (slot)
-		slot := int8(m.GetSlot())
-		_slotErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("slot", 8, int8((slot)))
-		if _slotErr != nil {
-			return errors.Wrap(_slotErr, "Error serializing 'slot' field")
+		if err := WriteSimpleField[int8](ctx, "slot", m.GetSlot(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'slot' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipUnconnectedRequest"); popErr != nil {

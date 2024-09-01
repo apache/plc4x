@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastUseTime) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastUseTime")
 		}
 
-		// Simple Field (lastUseTime)
-		if pushErr := writeBuffer.PushContext("lastUseTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastUseTime")
-		}
-		_lastUseTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLastUseTime())
-		if popErr := writeBuffer.PopContext("lastUseTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastUseTime")
-		}
-		if _lastUseTimeErr != nil {
-			return errors.Wrap(_lastUseTimeErr, "Error serializing 'lastUseTime' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "lastUseTime", m.GetLastUseTime(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastUseTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

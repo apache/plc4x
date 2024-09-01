@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) SerializeWithWrit
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingCommandDefaultPriority")
 		}
 
-		// Simple Field (lightingCommandDefaultPriority)
-		if pushErr := writeBuffer.PushContext("lightingCommandDefaultPriority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lightingCommandDefaultPriority")
-		}
-		_lightingCommandDefaultPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetLightingCommandDefaultPriority())
-		if popErr := writeBuffer.PopContext("lightingCommandDefaultPriority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lightingCommandDefaultPriority")
-		}
-		if _lightingCommandDefaultPriorityErr != nil {
-			return errors.Wrap(_lightingCommandDefaultPriorityErr, "Error serializing 'lightingCommandDefaultPriority' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lightingCommandDefaultPriority", m.GetLightingCommandDefaultPriority(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lightingCommandDefaultPriority' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

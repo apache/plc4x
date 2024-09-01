@@ -187,16 +187,8 @@ func (m *_FirmataMessageCommand) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for FirmataMessageCommand")
 		}
 
-		// Simple Field (command)
-		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for command")
-		}
-		_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
-		if popErr := writeBuffer.PopContext("command"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for command")
-		}
-		if _commandErr != nil {
-			return errors.Wrap(_commandErr, "Error serializing 'command' field")
+		if err := WriteSimpleField[FirmataCommand](ctx, "command", m.GetCommand(), WriteComplex[FirmataCommand](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'command' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageCommand"); popErr != nil {

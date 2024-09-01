@@ -174,16 +174,8 @@ func (m *_BACnetBDTEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for BACnetBDTEntry")
 	}
 
-	// Simple Field (bbmdAddress)
-	if pushErr := writeBuffer.PushContext("bbmdAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for bbmdAddress")
-	}
-	_bbmdAddressErr := writeBuffer.WriteSerializable(ctx, m.GetBbmdAddress())
-	if popErr := writeBuffer.PopContext("bbmdAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for bbmdAddress")
-	}
-	if _bbmdAddressErr != nil {
-		return errors.Wrap(_bbmdAddressErr, "Error serializing 'bbmdAddress' field")
+	if err := WriteSimpleField[BACnetHostNPortEnclosed](ctx, "bbmdAddress", m.GetBbmdAddress(), WriteComplex[BACnetHostNPortEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'bbmdAddress' field")
 	}
 
 	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "broadcastMask", GetRef(m.GetBroadcastMask()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {

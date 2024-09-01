@@ -234,42 +234,20 @@ func (m *_PriorityMappingEntryType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for PriorityMappingEntryType")
 		}
 
-		// Simple Field (mappingUri)
-		if pushErr := writeBuffer.PushContext("mappingUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for mappingUri")
-		}
-		_mappingUriErr := writeBuffer.WriteSerializable(ctx, m.GetMappingUri())
-		if popErr := writeBuffer.PopContext("mappingUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for mappingUri")
-		}
-		if _mappingUriErr != nil {
-			return errors.Wrap(_mappingUriErr, "Error serializing 'mappingUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "mappingUri", m.GetMappingUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'mappingUri' field")
 		}
 
-		// Simple Field (priorityLabel)
-		if pushErr := writeBuffer.PushContext("priorityLabel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for priorityLabel")
-		}
-		_priorityLabelErr := writeBuffer.WriteSerializable(ctx, m.GetPriorityLabel())
-		if popErr := writeBuffer.PopContext("priorityLabel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for priorityLabel")
-		}
-		if _priorityLabelErr != nil {
-			return errors.Wrap(_priorityLabelErr, "Error serializing 'priorityLabel' field")
+		if err := WriteSimpleField[PascalString](ctx, "priorityLabel", m.GetPriorityLabel(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priorityLabel' field")
 		}
 
-		// Simple Field (priorityValue_PCP)
-		priorityValue_PCP := uint8(m.GetPriorityValue_PCP())
-		_priorityValue_PCPErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("priorityValue_PCP", 8, uint8((priorityValue_PCP)))
-		if _priorityValue_PCPErr != nil {
-			return errors.Wrap(_priorityValue_PCPErr, "Error serializing 'priorityValue_PCP' field")
+		if err := WriteSimpleField[uint8](ctx, "priorityValue_PCP", m.GetPriorityValue_PCP(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priorityValue_PCP' field")
 		}
 
-		// Simple Field (priorityValue_DSCP)
-		priorityValue_DSCP := uint32(m.GetPriorityValue_DSCP())
-		_priorityValue_DSCPErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("priorityValue_DSCP", 32, uint32((priorityValue_DSCP)))
-		if _priorityValue_DSCPErr != nil {
-			return errors.Wrap(_priorityValue_DSCPErr, "Error serializing 'priorityValue_DSCP' field")
+		if err := WriteSimpleField[uint32](ctx, "priorityValue_DSCP", m.GetPriorityValue_DSCP(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priorityValue_DSCP' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PriorityMappingEntryType"); popErr != nil {

@@ -287,11 +287,8 @@ func (m *_SecurityDataArmSystem) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataArmSystem")
 		}
 
-		// Simple Field (armMode)
-		armMode := byte(m.GetArmMode())
-		_armModeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("armMode", (armMode))
-		if _armModeErr != nil {
-			return errors.Wrap(_armModeErr, "Error serializing 'armMode' field")
+		if err := WriteSimpleField[byte](ctx, "armMode", m.GetArmMode(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'armMode' field")
 		}
 		// Virtual field
 		isReserved := m.GetIsReserved()

@@ -201,28 +201,12 @@ func (m *_ReplyOrConfirmationReply) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for ReplyOrConfirmationReply")
 		}
 
-		// Simple Field (reply)
-		if pushErr := writeBuffer.PushContext("reply"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reply")
-		}
-		_replyErr := writeBuffer.WriteSerializable(ctx, m.GetReply())
-		if popErr := writeBuffer.PopContext("reply"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reply")
-		}
-		if _replyErr != nil {
-			return errors.Wrap(_replyErr, "Error serializing 'reply' field")
+		if err := WriteSimpleField[Reply](ctx, "reply", m.GetReply(), WriteComplex[Reply](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reply' field")
 		}
 
-		// Simple Field (termination)
-		if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for termination")
-		}
-		_terminationErr := writeBuffer.WriteSerializable(ctx, m.GetTermination())
-		if popErr := writeBuffer.PopContext("termination"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for termination")
-		}
-		if _terminationErr != nil {
-			return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
+		if err := WriteSimpleField[ResponseTermination](ctx, "termination", m.GetTermination(), WriteComplex[ResponseTermination](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'termination' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ReplyOrConfirmationReply"); popErr != nil {

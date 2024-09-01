@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMinimumOffTime) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinimumOffTime")
 		}
 
-		// Simple Field (minimumOffTime)
-		if pushErr := writeBuffer.PushContext("minimumOffTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for minimumOffTime")
-		}
-		_minimumOffTimeErr := writeBuffer.WriteSerializable(ctx, m.GetMinimumOffTime())
-		if popErr := writeBuffer.PopContext("minimumOffTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for minimumOffTime")
-		}
-		if _minimumOffTimeErr != nil {
-			return errors.Wrap(_minimumOffTimeErr, "Error serializing 'minimumOffTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "minimumOffTime", m.GetMinimumOffTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minimumOffTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -209,11 +209,8 @@ func (m *_PanicStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for PanicStatus")
 	}
 
-	// Simple Field (status)
-	status := uint8(m.GetStatus())
-	_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("status", 8, uint8((status)))
-	if _statusErr != nil {
-		return errors.Wrap(_statusErr, "Error serializing 'status' field")
+	if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 	// Virtual field
 	isNoPanic := m.GetIsNoPanic()

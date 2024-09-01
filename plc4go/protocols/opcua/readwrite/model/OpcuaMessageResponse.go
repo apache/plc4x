@@ -209,28 +209,12 @@ func (m *_OpcuaMessageResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for OpcuaMessageResponse")
 		}
 
-		// Simple Field (securityHeader)
-		if pushErr := writeBuffer.PushContext("securityHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityHeader")
-		}
-		_securityHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityHeader())
-		if popErr := writeBuffer.PopContext("securityHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityHeader")
-		}
-		if _securityHeaderErr != nil {
-			return errors.Wrap(_securityHeaderErr, "Error serializing 'securityHeader' field")
+		if err := WriteSimpleField[SecurityHeader](ctx, "securityHeader", m.GetSecurityHeader(), WriteComplex[SecurityHeader](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityHeader' field")
 		}
 
-		// Simple Field (message)
-		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for message")
-		}
-		_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
-		if popErr := writeBuffer.PopContext("message"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for message")
-		}
-		if _messageErr != nil {
-			return errors.Wrap(_messageErr, "Error serializing 'message' field")
+		if err := WriteSimpleField[Payload](ctx, "message", m.GetMessage(), WriteComplex[Payload](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaMessageResponse"); popErr != nil {

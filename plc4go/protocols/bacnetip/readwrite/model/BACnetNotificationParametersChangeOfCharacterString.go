@@ -254,64 +254,24 @@ func (m *_BACnetNotificationParametersChangeOfCharacterString) SerializeWithWrit
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfCharacterString")
 		}
 
-		// Simple Field (innerOpeningTag)
-		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
-		}
-		_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
-		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
-		}
-		if _innerOpeningTagErr != nil {
-			return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "innerOpeningTag", m.GetInnerOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'innerOpeningTag' field")
 		}
 
-		// Simple Field (changedValue)
-		if pushErr := writeBuffer.PushContext("changedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for changedValue")
-		}
-		_changedValueErr := writeBuffer.WriteSerializable(ctx, m.GetChangedValue())
-		if popErr := writeBuffer.PopContext("changedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for changedValue")
-		}
-		if _changedValueErr != nil {
-			return errors.Wrap(_changedValueErr, "Error serializing 'changedValue' field")
+		if err := WriteSimpleField[BACnetContextTagCharacterString](ctx, "changedValue", m.GetChangedValue(), WriteComplex[BACnetContextTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'changedValue' field")
 		}
 
-		// Simple Field (statusFlags)
-		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusFlags")
-		}
-		_statusFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetStatusFlags())
-		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusFlags")
-		}
-		if _statusFlagsErr != nil {
-			return errors.Wrap(_statusFlagsErr, "Error serializing 'statusFlags' field")
+		if err := WriteSimpleField[BACnetStatusFlagsTagged](ctx, "statusFlags", m.GetStatusFlags(), WriteComplex[BACnetStatusFlagsTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusFlags' field")
 		}
 
-		// Simple Field (alarmValue)
-		if pushErr := writeBuffer.PushContext("alarmValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alarmValue")
-		}
-		_alarmValueErr := writeBuffer.WriteSerializable(ctx, m.GetAlarmValue())
-		if popErr := writeBuffer.PopContext("alarmValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alarmValue")
-		}
-		if _alarmValueErr != nil {
-			return errors.Wrap(_alarmValueErr, "Error serializing 'alarmValue' field")
+		if err := WriteSimpleField[BACnetContextTagCharacterString](ctx, "alarmValue", m.GetAlarmValue(), WriteComplex[BACnetContextTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'alarmValue' field")
 		}
 
-		// Simple Field (innerClosingTag)
-		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
-		}
-		_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
-		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for innerClosingTag")
-		}
-		if _innerClosingTagErr != nil {
-			return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "innerClosingTag", m.GetInnerClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'innerClosingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfCharacterString"); popErr != nil {

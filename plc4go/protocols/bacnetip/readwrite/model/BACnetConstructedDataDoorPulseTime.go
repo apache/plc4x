@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDoorPulseTime) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorPulseTime")
 		}
 
-		// Simple Field (doorPulseTime)
-		if pushErr := writeBuffer.PushContext("doorPulseTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doorPulseTime")
-		}
-		_doorPulseTimeErr := writeBuffer.WriteSerializable(ctx, m.GetDoorPulseTime())
-		if popErr := writeBuffer.PopContext("doorPulseTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doorPulseTime")
-		}
-		if _doorPulseTimeErr != nil {
-			return errors.Wrap(_doorPulseTimeErr, "Error serializing 'doorPulseTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorPulseTime", m.GetDoorPulseTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doorPulseTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

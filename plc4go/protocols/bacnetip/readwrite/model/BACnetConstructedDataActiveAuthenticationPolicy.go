@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataActiveAuthenticationPolicy) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataActiveAuthenticationPolicy")
 		}
 
-		// Simple Field (activeAuthenticationPolicy)
-		if pushErr := writeBuffer.PushContext("activeAuthenticationPolicy"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for activeAuthenticationPolicy")
-		}
-		_activeAuthenticationPolicyErr := writeBuffer.WriteSerializable(ctx, m.GetActiveAuthenticationPolicy())
-		if popErr := writeBuffer.PopContext("activeAuthenticationPolicy"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for activeAuthenticationPolicy")
-		}
-		if _activeAuthenticationPolicyErr != nil {
-			return errors.Wrap(_activeAuthenticationPolicyErr, "Error serializing 'activeAuthenticationPolicy' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "activeAuthenticationPolicy", m.GetActiveAuthenticationPolicy(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'activeAuthenticationPolicy' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

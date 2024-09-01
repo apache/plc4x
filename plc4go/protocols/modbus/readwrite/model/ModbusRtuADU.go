@@ -213,23 +213,12 @@ func (m *_ModbusRtuADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for ModbusRtuADU")
 		}
 
-		// Simple Field (address)
-		address := uint8(m.GetAddress())
-		_addressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("address", 8, uint8((address)))
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[uint8](ctx, "address", m.GetAddress(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
-		// Simple Field (pdu)
-		if pushErr := writeBuffer.PushContext("pdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pdu")
-		}
-		_pduErr := writeBuffer.WriteSerializable(ctx, m.GetPdu())
-		if popErr := writeBuffer.PopContext("pdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pdu")
-		}
-		if _pduErr != nil {
-			return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
+		if err := WriteSimpleField[ModbusPDU](ctx, "pdu", m.GetPdu(), WriteComplex[ModbusPDU](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pdu' field")
 		}
 
 		if err := WriteChecksumField[uint16](ctx, "crc", RtuCrcCheck(ctx, m.GetAddress(), m.GetPdu()), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {

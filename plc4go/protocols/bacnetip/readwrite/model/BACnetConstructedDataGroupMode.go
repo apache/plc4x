@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataGroupMode) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataGroupMode")
 		}
 
-		// Simple Field (groupMode)
-		if pushErr := writeBuffer.PushContext("groupMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for groupMode")
-		}
-		_groupModeErr := writeBuffer.WriteSerializable(ctx, m.GetGroupMode())
-		if popErr := writeBuffer.PopContext("groupMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for groupMode")
-		}
-		if _groupModeErr != nil {
-			return errors.Wrap(_groupModeErr, "Error serializing 'groupMode' field")
+		if err := WriteSimpleField[BACnetLiftGroupModeTagged](ctx, "groupMode", m.GetGroupMode(), WriteComplex[BACnetLiftGroupModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'groupMode' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

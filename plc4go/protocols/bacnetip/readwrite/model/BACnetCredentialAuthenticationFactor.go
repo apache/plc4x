@@ -168,28 +168,12 @@ func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(ctx con
 		return errors.Wrap(pushErr, "Error pushing for BACnetCredentialAuthenticationFactor")
 	}
 
-	// Simple Field (disable)
-	if pushErr := writeBuffer.PushContext("disable"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for disable")
-	}
-	_disableErr := writeBuffer.WriteSerializable(ctx, m.GetDisable())
-	if popErr := writeBuffer.PopContext("disable"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for disable")
-	}
-	if _disableErr != nil {
-		return errors.Wrap(_disableErr, "Error serializing 'disable' field")
+	if err := WriteSimpleField[BACnetAccessAuthenticationFactorDisableTagged](ctx, "disable", m.GetDisable(), WriteComplex[BACnetAccessAuthenticationFactorDisableTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'disable' field")
 	}
 
-	// Simple Field (authenticationFactor)
-	if pushErr := writeBuffer.PushContext("authenticationFactor"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for authenticationFactor")
-	}
-	_authenticationFactorErr := writeBuffer.WriteSerializable(ctx, m.GetAuthenticationFactor())
-	if popErr := writeBuffer.PopContext("authenticationFactor"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for authenticationFactor")
-	}
-	if _authenticationFactorErr != nil {
-		return errors.Wrap(_authenticationFactorErr, "Error serializing 'authenticationFactor' field")
+	if err := WriteSimpleField[BACnetAuthenticationFactorEnclosed](ctx, "authenticationFactor", m.GetAuthenticationFactor(), WriteComplex[BACnetAuthenticationFactorEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'authenticationFactor' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCredentialAuthenticationFactor"); popErr != nil {

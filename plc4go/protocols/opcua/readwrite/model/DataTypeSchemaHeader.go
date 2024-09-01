@@ -330,44 +330,32 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for DataTypeSchemaHeader")
 		}
 
-		// Simple Field (noOfNamespaces)
-		noOfNamespaces := int32(m.GetNoOfNamespaces())
-		_noOfNamespacesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNamespaces", 32, int32((noOfNamespaces)))
-		if _noOfNamespacesErr != nil {
-			return errors.Wrap(_noOfNamespacesErr, "Error serializing 'noOfNamespaces' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNamespaces", m.GetNoOfNamespaces(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNamespaces' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "namespaces", m.GetNamespaces(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'namespaces' field")
 		}
 
-		// Simple Field (noOfStructureDataTypes)
-		noOfStructureDataTypes := int32(m.GetNoOfStructureDataTypes())
-		_noOfStructureDataTypesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfStructureDataTypes", 32, int32((noOfStructureDataTypes)))
-		if _noOfStructureDataTypesErr != nil {
-			return errors.Wrap(_noOfStructureDataTypesErr, "Error serializing 'noOfStructureDataTypes' field")
+		if err := WriteSimpleField[int32](ctx, "noOfStructureDataTypes", m.GetNoOfStructureDataTypes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfStructureDataTypes' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "structureDataTypes", m.GetStructureDataTypes(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'structureDataTypes' field")
 		}
 
-		// Simple Field (noOfEnumDataTypes)
-		noOfEnumDataTypes := int32(m.GetNoOfEnumDataTypes())
-		_noOfEnumDataTypesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfEnumDataTypes", 32, int32((noOfEnumDataTypes)))
-		if _noOfEnumDataTypesErr != nil {
-			return errors.Wrap(_noOfEnumDataTypesErr, "Error serializing 'noOfEnumDataTypes' field")
+		if err := WriteSimpleField[int32](ctx, "noOfEnumDataTypes", m.GetNoOfEnumDataTypes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfEnumDataTypes' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "enumDataTypes", m.GetEnumDataTypes(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'enumDataTypes' field")
 		}
 
-		// Simple Field (noOfSimpleDataTypes)
-		noOfSimpleDataTypes := int32(m.GetNoOfSimpleDataTypes())
-		_noOfSimpleDataTypesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSimpleDataTypes", 32, int32((noOfSimpleDataTypes)))
-		if _noOfSimpleDataTypesErr != nil {
-			return errors.Wrap(_noOfSimpleDataTypesErr, "Error serializing 'noOfSimpleDataTypes' field")
+		if err := WriteSimpleField[int32](ctx, "noOfSimpleDataTypes", m.GetNoOfSimpleDataTypes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfSimpleDataTypes' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "simpleDataTypes", m.GetSimpleDataTypes(), writeBuffer); err != nil {

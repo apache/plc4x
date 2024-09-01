@@ -200,23 +200,12 @@ func (m *_MonitoredItemNotification) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for MonitoredItemNotification")
 		}
 
-		// Simple Field (clientHandle)
-		clientHandle := uint32(m.GetClientHandle())
-		_clientHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("clientHandle", 32, uint32((clientHandle)))
-		if _clientHandleErr != nil {
-			return errors.Wrap(_clientHandleErr, "Error serializing 'clientHandle' field")
+		if err := WriteSimpleField[uint32](ctx, "clientHandle", m.GetClientHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientHandle' field")
 		}
 
-		// Simple Field (value)
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
-		}
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[DataValue](ctx, "value", m.GetValue(), WriteComplex[DataValue](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredItemNotification"); popErr != nil {

@@ -200,18 +200,12 @@ func (m *_XVType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 			return errors.Wrap(pushErr, "Error pushing for XVType")
 		}
 
-		// Simple Field (x)
-		x := float64(m.GetX())
-		_xErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("x", 64, (x))
-		if _xErr != nil {
-			return errors.Wrap(_xErr, "Error serializing 'x' field")
+		if err := WriteSimpleField[float64](ctx, "x", m.GetX(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'x' field")
 		}
 
-		// Simple Field (value)
-		value := float32(m.GetValue())
-		_valueErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 32, (value))
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[float32](ctx, "value", m.GetValue(), WriteFloat(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("XVType"); popErr != nil {

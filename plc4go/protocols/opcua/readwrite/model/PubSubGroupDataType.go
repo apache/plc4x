@@ -344,76 +344,40 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for PubSubGroupDataType")
 		}
 
-		// Simple Field (name)
-		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for name")
-		}
-		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for name")
-		}
-		if _nameErr != nil {
-			return errors.Wrap(_nameErr, "Error serializing 'name' field")
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (enabled)
-		enabled := bool(m.GetEnabled())
-		_enabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enabled", (enabled))
-		if _enabledErr != nil {
-			return errors.Wrap(_enabledErr, "Error serializing 'enabled' field")
+		if err := WriteSimpleField[bool](ctx, "enabled", m.GetEnabled(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enabled' field")
 		}
 
-		// Simple Field (securityMode)
-		if pushErr := writeBuffer.PushContext("securityMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityMode")
-		}
-		_securityModeErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityMode())
-		if popErr := writeBuffer.PopContext("securityMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityMode")
-		}
-		if _securityModeErr != nil {
-			return errors.Wrap(_securityModeErr, "Error serializing 'securityMode' field")
+		if err := WriteSimpleEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", m.GetSecurityMode(), WriteEnum[MessageSecurityMode, uint32](MessageSecurityMode.GetValue, MessageSecurityMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityMode' field")
 		}
 
-		// Simple Field (securityGroupId)
-		if pushErr := writeBuffer.PushContext("securityGroupId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityGroupId")
-		}
-		_securityGroupIdErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityGroupId())
-		if popErr := writeBuffer.PopContext("securityGroupId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityGroupId")
-		}
-		if _securityGroupIdErr != nil {
-			return errors.Wrap(_securityGroupIdErr, "Error serializing 'securityGroupId' field")
+		if err := WriteSimpleField[PascalString](ctx, "securityGroupId", m.GetSecurityGroupId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityGroupId' field")
 		}
 
-		// Simple Field (noOfSecurityKeyServices)
-		noOfSecurityKeyServices := int32(m.GetNoOfSecurityKeyServices())
-		_noOfSecurityKeyServicesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSecurityKeyServices", 32, int32((noOfSecurityKeyServices)))
-		if _noOfSecurityKeyServicesErr != nil {
-			return errors.Wrap(_noOfSecurityKeyServicesErr, "Error serializing 'noOfSecurityKeyServices' field")
+		if err := WriteSimpleField[int32](ctx, "noOfSecurityKeyServices", m.GetNoOfSecurityKeyServices(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfSecurityKeyServices' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "securityKeyServices", m.GetSecurityKeyServices(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityKeyServices' field")
 		}
 
-		// Simple Field (maxNetworkMessageSize)
-		maxNetworkMessageSize := uint32(m.GetMaxNetworkMessageSize())
-		_maxNetworkMessageSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxNetworkMessageSize", 32, uint32((maxNetworkMessageSize)))
-		if _maxNetworkMessageSizeErr != nil {
-			return errors.Wrap(_maxNetworkMessageSizeErr, "Error serializing 'maxNetworkMessageSize' field")
+		if err := WriteSimpleField[uint32](ctx, "maxNetworkMessageSize", m.GetMaxNetworkMessageSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxNetworkMessageSize' field")
 		}
 
-		// Simple Field (noOfGroupProperties)
-		noOfGroupProperties := int32(m.GetNoOfGroupProperties())
-		_noOfGroupPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfGroupProperties", 32, int32((noOfGroupProperties)))
-		if _noOfGroupPropertiesErr != nil {
-			return errors.Wrap(_noOfGroupPropertiesErr, "Error serializing 'noOfGroupProperties' field")
+		if err := WriteSimpleField[int32](ctx, "noOfGroupProperties", m.GetNoOfGroupProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfGroupProperties' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "groupProperties", m.GetGroupProperties(), writeBuffer); err != nil {

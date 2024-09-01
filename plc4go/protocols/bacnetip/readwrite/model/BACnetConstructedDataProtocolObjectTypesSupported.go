@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolObjectTypesSupported")
 		}
 
-		// Simple Field (protocolObjectTypesSupported)
-		if pushErr := writeBuffer.PushContext("protocolObjectTypesSupported"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolObjectTypesSupported")
-		}
-		_protocolObjectTypesSupportedErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolObjectTypesSupported())
-		if popErr := writeBuffer.PopContext("protocolObjectTypesSupported"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolObjectTypesSupported")
-		}
-		if _protocolObjectTypesSupportedErr != nil {
-			return errors.Wrap(_protocolObjectTypesSupportedErr, "Error serializing 'protocolObjectTypesSupported' field")
+		if err := WriteSimpleField[BACnetObjectTypesSupportedTagged](ctx, "protocolObjectTypesSupported", m.GetProtocolObjectTypesSupported(), WriteComplex[BACnetObjectTypesSupportedTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolObjectTypesSupported' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

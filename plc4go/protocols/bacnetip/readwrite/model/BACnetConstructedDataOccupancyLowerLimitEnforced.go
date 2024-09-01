@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOccupancyLowerLimitEnforced")
 		}
 
-		// Simple Field (occupancyLowerLimitEnforced)
-		if pushErr := writeBuffer.PushContext("occupancyLowerLimitEnforced"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for occupancyLowerLimitEnforced")
-		}
-		_occupancyLowerLimitEnforcedErr := writeBuffer.WriteSerializable(ctx, m.GetOccupancyLowerLimitEnforced())
-		if popErr := writeBuffer.PopContext("occupancyLowerLimitEnforced"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for occupancyLowerLimitEnforced")
-		}
-		if _occupancyLowerLimitEnforcedErr != nil {
-			return errors.Wrap(_occupancyLowerLimitEnforcedErr, "Error serializing 'occupancyLowerLimitEnforced' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "occupancyLowerLimitEnforced", m.GetOccupancyLowerLimitEnforced(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'occupancyLowerLimitEnforced' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

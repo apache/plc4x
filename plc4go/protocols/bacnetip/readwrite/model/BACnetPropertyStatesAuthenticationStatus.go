@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesAuthenticationStatus")
 		}
 
-		// Simple Field (authenticationStatus)
-		if pushErr := writeBuffer.PushContext("authenticationStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for authenticationStatus")
-		}
-		_authenticationStatusErr := writeBuffer.WriteSerializable(ctx, m.GetAuthenticationStatus())
-		if popErr := writeBuffer.PopContext("authenticationStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for authenticationStatus")
-		}
-		if _authenticationStatusErr != nil {
-			return errors.Wrap(_authenticationStatusErr, "Error serializing 'authenticationStatus' field")
+		if err := WriteSimpleField[BACnetAuthenticationStatusTagged](ctx, "authenticationStatus", m.GetAuthenticationStatus(), WriteComplex[BACnetAuthenticationStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'authenticationStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesAuthenticationStatus"); popErr != nil {

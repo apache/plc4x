@@ -156,11 +156,8 @@ func (m *_CustomManufacturer) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(pushErr, "Error pushing for CustomManufacturer")
 	}
 
-	// Simple Field (customString)
-	customString := string(m.GetCustomString())
-	_customStringErr := /*TODO: migrate me*/ writeBuffer.WriteString("customString", uint32((8)*(m.GetNumBytes())), (customString), utils.WithEncoding("UTF-8)"))
-	if _customStringErr != nil {
-		return errors.Wrap(_customStringErr, "Error serializing 'customString' field")
+	if err := WriteSimpleField[string](ctx, "customString", m.GetCustomString(), WriteString(writeBuffer, int32(int32(int32(8))*int32(m.GetNumBytes())))); err != nil {
+		return errors.Wrap(err, "Error serializing 'customString' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CustomManufacturer"); popErr != nil {

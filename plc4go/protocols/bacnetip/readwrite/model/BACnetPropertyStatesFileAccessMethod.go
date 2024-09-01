@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesFileAccessMethod) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesFileAccessMethod")
 		}
 
-		// Simple Field (fileAccessMethod)
-		if pushErr := writeBuffer.PushContext("fileAccessMethod"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileAccessMethod")
-		}
-		_fileAccessMethodErr := writeBuffer.WriteSerializable(ctx, m.GetFileAccessMethod())
-		if popErr := writeBuffer.PopContext("fileAccessMethod"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileAccessMethod")
-		}
-		if _fileAccessMethodErr != nil {
-			return errors.Wrap(_fileAccessMethodErr, "Error serializing 'fileAccessMethod' field")
+		if err := WriteSimpleField[BACnetFileAccessMethodTagged](ctx, "fileAccessMethod", m.GetFileAccessMethod(), WriteComplex[BACnetFileAccessMethodTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileAccessMethod' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesFileAccessMethod"); popErr != nil {

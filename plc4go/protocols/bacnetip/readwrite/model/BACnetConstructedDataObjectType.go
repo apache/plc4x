@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataObjectType) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataObjectType")
 		}
 
-		// Simple Field (objectType)
-		if pushErr := writeBuffer.PushContext("objectType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectType")
-		}
-		_objectTypeErr := writeBuffer.WriteSerializable(ctx, m.GetObjectType())
-		if popErr := writeBuffer.PopContext("objectType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectType")
-		}
-		if _objectTypeErr != nil {
-			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
+		if err := WriteSimpleField[BACnetObjectTypeTagged](ctx, "objectType", m.GetObjectType(), WriteComplex[BACnetObjectTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectType' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

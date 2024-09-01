@@ -240,16 +240,8 @@ func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(err, "Error serializing 'requestPath' field")
 		}
 
-		// Simple Field (data)
-		if pushErr := writeBuffer.PushContext("data"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
-		}
-		_dataErr := writeBuffer.WriteSerializable(ctx, m.GetData())
-		if popErr := writeBuffer.PopContext("data"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
-		}
-		if _dataErr != nil {
-			return errors.Wrap(_dataErr, "Error serializing 'data' field")
+		if err := WriteSimpleField[Services](ctx, "data", m.GetData(), WriteComplex[Services](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MultipleServiceRequest"); popErr != nil {

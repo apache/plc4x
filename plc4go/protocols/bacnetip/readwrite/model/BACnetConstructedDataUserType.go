@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataUserType) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUserType")
 		}
 
-		// Simple Field (userType)
-		if pushErr := writeBuffer.PushContext("userType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userType")
-		}
-		_userTypeErr := writeBuffer.WriteSerializable(ctx, m.GetUserType())
-		if popErr := writeBuffer.PopContext("userType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userType")
-		}
-		if _userTypeErr != nil {
-			return errors.Wrap(_userTypeErr, "Error serializing 'userType' field")
+		if err := WriteSimpleField[BACnetAccessUserTypeTagged](ctx, "userType", m.GetUserType(), WriteComplex[BACnetAccessUserTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userType' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

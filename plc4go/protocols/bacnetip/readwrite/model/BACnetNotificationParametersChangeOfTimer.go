@@ -323,52 +323,20 @@ func (m *_BACnetNotificationParametersChangeOfTimer) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersChangeOfTimer")
 		}
 
-		// Simple Field (innerOpeningTag)
-		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
-		}
-		_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
-		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
-		}
-		if _innerOpeningTagErr != nil {
-			return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "innerOpeningTag", m.GetInnerOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'innerOpeningTag' field")
 		}
 
-		// Simple Field (newValue)
-		if pushErr := writeBuffer.PushContext("newValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for newValue")
-		}
-		_newValueErr := writeBuffer.WriteSerializable(ctx, m.GetNewValue())
-		if popErr := writeBuffer.PopContext("newValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for newValue")
-		}
-		if _newValueErr != nil {
-			return errors.Wrap(_newValueErr, "Error serializing 'newValue' field")
+		if err := WriteSimpleField[BACnetTimerStateTagged](ctx, "newValue", m.GetNewValue(), WriteComplex[BACnetTimerStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'newValue' field")
 		}
 
-		// Simple Field (statusFlags)
-		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusFlags")
-		}
-		_statusFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetStatusFlags())
-		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusFlags")
-		}
-		if _statusFlagsErr != nil {
-			return errors.Wrap(_statusFlagsErr, "Error serializing 'statusFlags' field")
+		if err := WriteSimpleField[BACnetStatusFlagsTagged](ctx, "statusFlags", m.GetStatusFlags(), WriteComplex[BACnetStatusFlagsTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusFlags' field")
 		}
 
-		// Simple Field (updateTime)
-		if pushErr := writeBuffer.PushContext("updateTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for updateTime")
-		}
-		_updateTimeErr := writeBuffer.WriteSerializable(ctx, m.GetUpdateTime())
-		if popErr := writeBuffer.PopContext("updateTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for updateTime")
-		}
-		if _updateTimeErr != nil {
-			return errors.Wrap(_updateTimeErr, "Error serializing 'updateTime' field")
+		if err := WriteSimpleField[BACnetDateTimeEnclosed](ctx, "updateTime", m.GetUpdateTime(), WriteComplex[BACnetDateTimeEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'updateTime' field")
 		}
 
 		if err := WriteOptionalField[BACnetTimerTransitionTagged](ctx, "lastStateChange", GetRef(m.GetLastStateChange()), WriteComplex[BACnetTimerTransitionTagged](writeBuffer), true); err != nil {
@@ -383,16 +351,8 @@ func (m *_BACnetNotificationParametersChangeOfTimer) SerializeWithWriteBuffer(ct
 			return errors.Wrap(err, "Error serializing 'expirationTime' field")
 		}
 
-		// Simple Field (innerClosingTag)
-		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
-		}
-		_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
-		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for innerClosingTag")
-		}
-		if _innerClosingTagErr != nil {
-			return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "innerClosingTag", m.GetInnerClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'innerClosingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersChangeOfTimer"); popErr != nil {

@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesReliability) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesReliability")
 		}
 
-		// Simple Field (reliability)
-		if pushErr := writeBuffer.PushContext("reliability"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reliability")
-		}
-		_reliabilityErr := writeBuffer.WriteSerializable(ctx, m.GetReliability())
-		if popErr := writeBuffer.PopContext("reliability"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reliability")
-		}
-		if _reliabilityErr != nil {
-			return errors.Wrap(_reliabilityErr, "Error serializing 'reliability' field")
+		if err := WriteSimpleField[BACnetReliabilityTagged](ctx, "reliability", m.GetReliability(), WriteComplex[BACnetReliabilityTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reliability' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesReliability"); popErr != nil {

@@ -261,22 +261,16 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 		}
 
-		// Simple Field (subscription)
-		subscription := uint8(m.GetSubscription())
-		_subscriptionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("subscription", 8, uint8((subscription)))
-		if _subscriptionErr != nil {
-			return errors.Wrap(_subscriptionErr, "Error serializing 'subscription' field")
+		if err := WriteSimpleField[uint8](ctx, "subscription", m.GetSubscription(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscription' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (magicKey)
-		magicKey := string(m.GetMagicKey())
-		_magicKeyErr := /*TODO: migrate me*/ writeBuffer.WriteString("magicKey", uint32(64), (magicKey), utils.WithEncoding("UTF-8)"))
-		if _magicKeyErr != nil {
-			return errors.Wrap(_magicKeyErr, "Error serializing 'magicKey' field")
+		if err := WriteSimpleField[string](ctx, "magicKey", m.GetMagicKey(), WriteString(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'magicKey' field")
 		}
 
 		if err := WriteOptionalEnumField[AlarmStateType](ctx, "alarmtype", "AlarmStateType", m.GetAlarmtype(), WriteEnum[AlarmStateType, uint8](AlarmStateType.GetValue, AlarmStateType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetSubscription()) >= (128))); err != nil {

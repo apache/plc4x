@@ -181,16 +181,8 @@ func (m *_BACnetChannelValueOctetString) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueOctetString")
 		}
 
-		// Simple Field (octetStringValue)
-		if pushErr := writeBuffer.PushContext("octetStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
-		}
-		_octetStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetOctetStringValue())
-		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for octetStringValue")
-		}
-		if _octetStringValueErr != nil {
-			return errors.Wrap(_octetStringValueErr, "Error serializing 'octetStringValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "octetStringValue", m.GetOctetStringValue(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'octetStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueOctetString"); popErr != nil {

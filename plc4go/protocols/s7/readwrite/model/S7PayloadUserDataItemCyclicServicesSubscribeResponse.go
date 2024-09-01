@@ -219,11 +219,8 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) SerializeWithWri
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCyclicServicesSubscribeResponse")
 		}
 
-		// Simple Field (itemsCount)
-		itemsCount := uint16(m.GetItemsCount())
-		_itemsCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("itemsCount", 16, uint16((itemsCount)))
-		if _itemsCountErr != nil {
-			return errors.Wrap(_itemsCountErr, "Error serializing 'itemsCount' field")
+		if err := WriteSimpleField[uint16](ctx, "itemsCount", m.GetItemsCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemsCount' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {

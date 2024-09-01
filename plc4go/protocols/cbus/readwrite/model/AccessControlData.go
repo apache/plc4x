@@ -266,16 +266,8 @@ func (pm *_AccessControlData) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for AccessControlData")
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
+	if err := WriteSimpleEnumField[AccessControlCommandTypeContainer](ctx, "commandTypeContainer", "AccessControlCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[AccessControlCommandTypeContainer, uint8](AccessControlCommandTypeContainer.GetValue, AccessControlCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
@@ -284,18 +276,12 @@ func (pm *_AccessControlData) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
-	// Simple Field (networkId)
-	networkId := byte(m.GetNetworkId())
-	_networkIdErr := /*TODO: migrate me*/ writeBuffer.WriteByte("networkId", (networkId))
-	if _networkIdErr != nil {
-		return errors.Wrap(_networkIdErr, "Error serializing 'networkId' field")
+	if err := WriteSimpleField[byte](ctx, "networkId", m.GetNetworkId(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkId' field")
 	}
 
-	// Simple Field (accessPointId)
-	accessPointId := byte(m.GetAccessPointId())
-	_accessPointIdErr := /*TODO: migrate me*/ writeBuffer.WriteByte("accessPointId", (accessPointId))
-	if _accessPointIdErr != nil {
-		return errors.Wrap(_accessPointIdErr, "Error serializing 'accessPointId' field")
+	if err := WriteSimpleField[byte](ctx, "accessPointId", m.GetAccessPointId(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'accessPointId' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

@@ -185,16 +185,8 @@ func (m *_SALDataHvacActuator) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for SALDataHvacActuator")
 		}
 
-		// Simple Field (hvacActuatorData)
-		if pushErr := writeBuffer.PushContext("hvacActuatorData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hvacActuatorData")
-		}
-		_hvacActuatorDataErr := writeBuffer.WriteSerializable(ctx, m.GetHvacActuatorData())
-		if popErr := writeBuffer.PopContext("hvacActuatorData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hvacActuatorData")
-		}
-		if _hvacActuatorDataErr != nil {
-			return errors.Wrap(_hvacActuatorDataErr, "Error serializing 'hvacActuatorData' field")
+		if err := WriteSimpleField[LightingData](ctx, "hvacActuatorData", m.GetHvacActuatorData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hvacActuatorData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataHvacActuator"); popErr != nil {

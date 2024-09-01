@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPv6UDPPort")
 		}
 
-		// Simple Field (ipv6UdpPort)
-		if pushErr := writeBuffer.PushContext("ipv6UdpPort"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipv6UdpPort")
-		}
-		_ipv6UdpPortErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6UdpPort())
-		if popErr := writeBuffer.PopContext("ipv6UdpPort"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipv6UdpPort")
-		}
-		if _ipv6UdpPortErr != nil {
-			return errors.Wrap(_ipv6UdpPortErr, "Error serializing 'ipv6UdpPort' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6UdpPort", m.GetIpv6UdpPort(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipv6UdpPort' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

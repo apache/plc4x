@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMachineRoomID) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMachineRoomID")
 		}
 
-		// Simple Field (machineRoomId)
-		if pushErr := writeBuffer.PushContext("machineRoomId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for machineRoomId")
-		}
-		_machineRoomIdErr := writeBuffer.WriteSerializable(ctx, m.GetMachineRoomId())
-		if popErr := writeBuffer.PopContext("machineRoomId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for machineRoomId")
-		}
-		if _machineRoomIdErr != nil {
-			return errors.Wrap(_machineRoomIdErr, "Error serializing 'machineRoomId' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "machineRoomId", m.GetMachineRoomId(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'machineRoomId' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

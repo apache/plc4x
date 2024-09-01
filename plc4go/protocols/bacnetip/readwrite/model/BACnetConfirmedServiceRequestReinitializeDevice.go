@@ -209,16 +209,8 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReinitializeDevice")
 		}
 
-		// Simple Field (reinitializedStateOfDevice)
-		if pushErr := writeBuffer.PushContext("reinitializedStateOfDevice"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reinitializedStateOfDevice")
-		}
-		_reinitializedStateOfDeviceErr := writeBuffer.WriteSerializable(ctx, m.GetReinitializedStateOfDevice())
-		if popErr := writeBuffer.PopContext("reinitializedStateOfDevice"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reinitializedStateOfDevice")
-		}
-		if _reinitializedStateOfDeviceErr != nil {
-			return errors.Wrap(_reinitializedStateOfDeviceErr, "Error serializing 'reinitializedStateOfDevice' field")
+		if err := WriteSimpleField[BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged](ctx, "reinitializedStateOfDevice", m.GetReinitializedStateOfDevice(), WriteComplex[BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reinitializedStateOfDevice' field")
 		}
 
 		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", GetRef(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {

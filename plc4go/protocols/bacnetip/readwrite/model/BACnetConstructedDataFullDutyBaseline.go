@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataFullDutyBaseline) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFullDutyBaseline")
 		}
 
-		// Simple Field (fullDutyBaseLine)
-		if pushErr := writeBuffer.PushContext("fullDutyBaseLine"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fullDutyBaseLine")
-		}
-		_fullDutyBaseLineErr := writeBuffer.WriteSerializable(ctx, m.GetFullDutyBaseLine())
-		if popErr := writeBuffer.PopContext("fullDutyBaseLine"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fullDutyBaseLine")
-		}
-		if _fullDutyBaseLineErr != nil {
-			return errors.Wrap(_fullDutyBaseLineErr, "Error serializing 'fullDutyBaseLine' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "fullDutyBaseLine", m.GetFullDutyBaseLine(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fullDutyBaseLine' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

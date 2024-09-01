@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataSetpoint) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSetpoint")
 		}
 
-		// Simple Field (setpoint)
-		if pushErr := writeBuffer.PushContext("setpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setpoint")
-		}
-		_setpointErr := writeBuffer.WriteSerializable(ctx, m.GetSetpoint())
-		if popErr := writeBuffer.PopContext("setpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setpoint")
-		}
-		if _setpointErr != nil {
-			return errors.Wrap(_setpointErr, "Error serializing 'setpoint' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "setpoint", m.GetSetpoint(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setpoint' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

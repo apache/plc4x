@@ -207,11 +207,8 @@ func (m *_AdditionalParametersType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for AdditionalParametersType")
 		}
 
-		// Simple Field (noOfParameters)
-		noOfParameters := int32(m.GetNoOfParameters())
-		_noOfParametersErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfParameters", 32, int32((noOfParameters)))
-		if _noOfParametersErr != nil {
-			return errors.Wrap(_noOfParametersErr, "Error serializing 'noOfParameters' field")
+		if err := WriteSimpleField[int32](ctx, "noOfParameters", m.GetNoOfParameters(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfParameters' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "parameters", m.GetParameters(), writeBuffer); err != nil {

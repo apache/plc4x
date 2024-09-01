@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIntegralConstant) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIntegralConstant")
 		}
 
-		// Simple Field (integralConstant)
-		if pushErr := writeBuffer.PushContext("integralConstant"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for integralConstant")
-		}
-		_integralConstantErr := writeBuffer.WriteSerializable(ctx, m.GetIntegralConstant())
-		if popErr := writeBuffer.PopContext("integralConstant"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for integralConstant")
-		}
-		if _integralConstantErr != nil {
-			return errors.Wrap(_integralConstantErr, "Error serializing 'integralConstant' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "integralConstant", m.GetIntegralConstant(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'integralConstant' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -367,11 +367,8 @@ func (m *_SecurityDataEmulatedKeypad) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataEmulatedKeypad")
 		}
 
-		// Simple Field (key)
-		key := byte(m.GetKey())
-		_keyErr := /*TODO: migrate me*/ writeBuffer.WriteByte("key", (key))
-		if _keyErr != nil {
-			return errors.Wrap(_keyErr, "Error serializing 'key' field")
+		if err := WriteSimpleField[byte](ctx, "key", m.GetKey(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'key' field")
 		}
 		// Virtual field
 		isAscii := m.GetIsAscii()

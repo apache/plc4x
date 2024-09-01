@@ -295,11 +295,8 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
 	}
 
-	// Simple Field (hour)
-	hour := uint8(m.GetHour())
-	_hourErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("hour", 8, uint8((hour)))
-	if _hourErr != nil {
-		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
+	if err := WriteSimpleField[uint8](ctx, "hour", m.GetHour(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'hour' field")
 	}
 	// Virtual field
 	hourIsWildcard := m.GetHourIsWildcard()
@@ -308,11 +305,8 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_hourIsWildcardErr, "Error serializing 'hourIsWildcard' field")
 	}
 
-	// Simple Field (minute)
-	minute := uint8(m.GetMinute())
-	_minuteErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("minute", 8, uint8((minute)))
-	if _minuteErr != nil {
-		return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
+	if err := WriteSimpleField[uint8](ctx, "minute", m.GetMinute(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'minute' field")
 	}
 	// Virtual field
 	minuteIsWildcard := m.GetMinuteIsWildcard()
@@ -321,11 +315,8 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_minuteIsWildcardErr, "Error serializing 'minuteIsWildcard' field")
 	}
 
-	// Simple Field (second)
-	second := uint8(m.GetSecond())
-	_secondErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("second", 8, uint8((second)))
-	if _secondErr != nil {
-		return errors.Wrap(_secondErr, "Error serializing 'second' field")
+	if err := WriteSimpleField[uint8](ctx, "second", m.GetSecond(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'second' field")
 	}
 	// Virtual field
 	secondIsWildcard := m.GetSecondIsWildcard()
@@ -334,11 +325,8 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_secondIsWildcardErr, "Error serializing 'secondIsWildcard' field")
 	}
 
-	// Simple Field (fractional)
-	fractional := uint8(m.GetFractional())
-	_fractionalErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("fractional", 8, uint8((fractional)))
-	if _fractionalErr != nil {
-		return errors.Wrap(_fractionalErr, "Error serializing 'fractional' field")
+	if err := WriteSimpleField[uint8](ctx, "fractional", m.GetFractional(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'fractional' field")
 	}
 	// Virtual field
 	fractionalIsWildcard := m.GetFractionalIsWildcard()

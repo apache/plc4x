@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataInactiveText) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInactiveText")
 		}
 
-		// Simple Field (inactiveText)
-		if pushErr := writeBuffer.PushContext("inactiveText"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for inactiveText")
-		}
-		_inactiveTextErr := writeBuffer.WriteSerializable(ctx, m.GetInactiveText())
-		if popErr := writeBuffer.PopContext("inactiveText"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for inactiveText")
-		}
-		if _inactiveTextErr != nil {
-			return errors.Wrap(_inactiveTextErr, "Error serializing 'inactiveText' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "inactiveText", m.GetInactiveText(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'inactiveText' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -219,40 +219,16 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ConnectionRequest")
 		}
 
-		// Simple Field (hpaiDiscoveryEndpoint)
-		if pushErr := writeBuffer.PushContext("hpaiDiscoveryEndpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hpaiDiscoveryEndpoint")
-		}
-		_hpaiDiscoveryEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiDiscoveryEndpoint())
-		if popErr := writeBuffer.PopContext("hpaiDiscoveryEndpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hpaiDiscoveryEndpoint")
-		}
-		if _hpaiDiscoveryEndpointErr != nil {
-			return errors.Wrap(_hpaiDiscoveryEndpointErr, "Error serializing 'hpaiDiscoveryEndpoint' field")
+		if err := WriteSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiDiscoveryEndpoint", m.GetHpaiDiscoveryEndpoint(), WriteComplex[HPAIDiscoveryEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hpaiDiscoveryEndpoint' field")
 		}
 
-		// Simple Field (hpaiDataEndpoint)
-		if pushErr := writeBuffer.PushContext("hpaiDataEndpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hpaiDataEndpoint")
-		}
-		_hpaiDataEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiDataEndpoint())
-		if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hpaiDataEndpoint")
-		}
-		if _hpaiDataEndpointErr != nil {
-			return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
+		if err := WriteSimpleField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", m.GetHpaiDataEndpoint(), WriteComplex[HPAIDataEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hpaiDataEndpoint' field")
 		}
 
-		// Simple Field (connectionRequestInformation)
-		if pushErr := writeBuffer.PushContext("connectionRequestInformation"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for connectionRequestInformation")
-		}
-		_connectionRequestInformationErr := writeBuffer.WriteSerializable(ctx, m.GetConnectionRequestInformation())
-		if popErr := writeBuffer.PopContext("connectionRequestInformation"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for connectionRequestInformation")
-		}
-		if _connectionRequestInformationErr != nil {
-			return errors.Wrap(_connectionRequestInformationErr, "Error serializing 'connectionRequestInformation' field")
+		if err := WriteSimpleField[ConnectionRequestInformation](ctx, "connectionRequestInformation", m.GetConnectionRequestInformation(), WriteComplex[ConnectionRequestInformation](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionRequestInformation' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectionRequest"); popErr != nil {

@@ -233,11 +233,8 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (burden)
-	burden := bool(m.GetBurden())
-	_burdenErr := /*TODO: migrate me*/ writeBuffer.WriteBit("burden", (burden))
-	if _burdenErr != nil {
-		return errors.Wrap(_burdenErr, "Error serializing 'burden' field")
+	if err := WriteSimpleField[bool](ctx, "burden", m.GetBurden(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'burden' field")
 	}
 
 	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
@@ -260,11 +257,8 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(err, "Error serializing 'reserved' field number 6")
 	}
 
-	// Simple Field (clockGen)
-	clockGen := bool(m.GetClockGen())
-	_clockGenErr := /*TODO: migrate me*/ writeBuffer.WriteBit("clockGen", (clockGen))
-	if _clockGenErr != nil {
-		return errors.Wrap(_clockGenErr, "Error serializing 'clockGen' field")
+	if err := WriteSimpleField[bool](ctx, "clockGen", m.GetClockGen(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'clockGen' field")
 	}
 
 	if popErr := writeBuffer.PopContext("InterfaceOptions2"); popErr != nil {

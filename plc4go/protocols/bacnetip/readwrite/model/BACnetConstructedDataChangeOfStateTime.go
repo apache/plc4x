@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataChangeOfStateTime) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataChangeOfStateTime")
 		}
 
-		// Simple Field (changeOfStateTime)
-		if pushErr := writeBuffer.PushContext("changeOfStateTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for changeOfStateTime")
-		}
-		_changeOfStateTimeErr := writeBuffer.WriteSerializable(ctx, m.GetChangeOfStateTime())
-		if popErr := writeBuffer.PopContext("changeOfStateTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for changeOfStateTime")
-		}
-		if _changeOfStateTimeErr != nil {
-			return errors.Wrap(_changeOfStateTimeErr, "Error serializing 'changeOfStateTime' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "changeOfStateTime", m.GetChangeOfStateTime(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'changeOfStateTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

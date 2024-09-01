@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMaxMaster) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaxMaster")
 		}
 
-		// Simple Field (maxMaster)
-		if pushErr := writeBuffer.PushContext("maxMaster"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxMaster")
-		}
-		_maxMasterErr := writeBuffer.WriteSerializable(ctx, m.GetMaxMaster())
-		if popErr := writeBuffer.PopContext("maxMaster"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxMaster")
-		}
-		if _maxMasterErr != nil {
-			return errors.Wrap(_maxMasterErr, "Error serializing 'maxMaster' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxMaster", m.GetMaxMaster(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxMaster' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

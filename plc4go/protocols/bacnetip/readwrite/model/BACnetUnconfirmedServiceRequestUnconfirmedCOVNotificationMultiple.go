@@ -260,56 +260,24 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Ser
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple")
 		}
 
-		// Simple Field (subscriberProcessIdentifier)
-		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
-		}
-		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetSubscriberProcessIdentifier())
-		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
-		}
-		if _subscriberProcessIdentifierErr != nil {
-			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "subscriberProcessIdentifier", m.GetSubscriberProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
-		// Simple Field (initiatingDeviceIdentifier)
-		if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for initiatingDeviceIdentifier")
-		}
-		_initiatingDeviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetInitiatingDeviceIdentifier())
-		if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for initiatingDeviceIdentifier")
-		}
-		if _initiatingDeviceIdentifierErr != nil {
-			return errors.Wrap(_initiatingDeviceIdentifierErr, "Error serializing 'initiatingDeviceIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "initiatingDeviceIdentifier", m.GetInitiatingDeviceIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'initiatingDeviceIdentifier' field")
 		}
 
-		// Simple Field (timeRemaining)
-		if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeRemaining")
-		}
-		_timeRemainingErr := writeBuffer.WriteSerializable(ctx, m.GetTimeRemaining())
-		if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeRemaining")
-		}
-		if _timeRemainingErr != nil {
-			return errors.Wrap(_timeRemainingErr, "Error serializing 'timeRemaining' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeRemaining", m.GetTimeRemaining(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeRemaining' field")
 		}
 
 		if err := WriteOptionalField[BACnetTimeStampEnclosed](ctx, "timestamp", GetRef(m.GetTimestamp()), WriteComplex[BACnetTimeStampEnclosed](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		// Simple Field (listOfCovNotifications)
-		if pushErr := writeBuffer.PushContext("listOfCovNotifications"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfCovNotifications")
-		}
-		_listOfCovNotificationsErr := writeBuffer.WriteSerializable(ctx, m.GetListOfCovNotifications())
-		if popErr := writeBuffer.PopContext("listOfCovNotifications"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfCovNotifications")
-		}
-		if _listOfCovNotificationsErr != nil {
-			return errors.Wrap(_listOfCovNotificationsErr, "Error serializing 'listOfCovNotifications' field")
+		if err := WriteSimpleField[ListOfCovNotificationsList](ctx, "listOfCovNotifications", m.GetListOfCovNotifications(), WriteComplex[ListOfCovNotificationsList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfCovNotifications' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"); popErr != nil {

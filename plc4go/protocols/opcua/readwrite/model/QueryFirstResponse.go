@@ -340,73 +340,40 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for QueryFirstResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (noOfQueryDataSets)
-		noOfQueryDataSets := int32(m.GetNoOfQueryDataSets())
-		_noOfQueryDataSetsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfQueryDataSets", 32, int32((noOfQueryDataSets)))
-		if _noOfQueryDataSetsErr != nil {
-			return errors.Wrap(_noOfQueryDataSetsErr, "Error serializing 'noOfQueryDataSets' field")
+		if err := WriteSimpleField[int32](ctx, "noOfQueryDataSets", m.GetNoOfQueryDataSets(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfQueryDataSets' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "queryDataSets", m.GetQueryDataSets(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'queryDataSets' field")
 		}
 
-		// Simple Field (continuationPoint)
-		if pushErr := writeBuffer.PushContext("continuationPoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for continuationPoint")
-		}
-		_continuationPointErr := writeBuffer.WriteSerializable(ctx, m.GetContinuationPoint())
-		if popErr := writeBuffer.PopContext("continuationPoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for continuationPoint")
-		}
-		if _continuationPointErr != nil {
-			return errors.Wrap(_continuationPointErr, "Error serializing 'continuationPoint' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "continuationPoint", m.GetContinuationPoint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'continuationPoint' field")
 		}
 
-		// Simple Field (noOfParsingResults)
-		noOfParsingResults := int32(m.GetNoOfParsingResults())
-		_noOfParsingResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfParsingResults", 32, int32((noOfParsingResults)))
-		if _noOfParsingResultsErr != nil {
-			return errors.Wrap(_noOfParsingResultsErr, "Error serializing 'noOfParsingResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfParsingResults", m.GetNoOfParsingResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfParsingResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "parsingResults", m.GetParsingResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'parsingResults' field")
 		}
 
-		// Simple Field (noOfDiagnosticInfos)
-		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
-		if _noOfDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "diagnosticInfos", m.GetDiagnosticInfos(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'diagnosticInfos' field")
 		}
 
-		// Simple Field (filterResult)
-		if pushErr := writeBuffer.PushContext("filterResult"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filterResult")
-		}
-		_filterResultErr := writeBuffer.WriteSerializable(ctx, m.GetFilterResult())
-		if popErr := writeBuffer.PopContext("filterResult"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filterResult")
-		}
-		if _filterResultErr != nil {
-			return errors.Wrap(_filterResultErr, "Error serializing 'filterResult' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "filterResult", m.GetFilterResult(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'filterResult' field")
 		}
 
 		if popErr := writeBuffer.PopContext("QueryFirstResponse"); popErr != nil {

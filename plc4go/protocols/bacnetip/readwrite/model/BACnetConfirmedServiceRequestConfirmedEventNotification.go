@@ -414,104 +414,40 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) SerializeWith
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedEventNotification")
 		}
 
-		// Simple Field (processIdentifier)
-		if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for processIdentifier")
-		}
-		_processIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetProcessIdentifier())
-		if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for processIdentifier")
-		}
-		if _processIdentifierErr != nil {
-			return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "processIdentifier", m.GetProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'processIdentifier' field")
 		}
 
-		// Simple Field (initiatingDeviceIdentifier)
-		if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for initiatingDeviceIdentifier")
-		}
-		_initiatingDeviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetInitiatingDeviceIdentifier())
-		if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for initiatingDeviceIdentifier")
-		}
-		if _initiatingDeviceIdentifierErr != nil {
-			return errors.Wrap(_initiatingDeviceIdentifierErr, "Error serializing 'initiatingDeviceIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "initiatingDeviceIdentifier", m.GetInitiatingDeviceIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'initiatingDeviceIdentifier' field")
 		}
 
-		// Simple Field (eventObjectIdentifier)
-		if pushErr := writeBuffer.PushContext("eventObjectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventObjectIdentifier")
-		}
-		_eventObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetEventObjectIdentifier())
-		if popErr := writeBuffer.PopContext("eventObjectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventObjectIdentifier")
-		}
-		if _eventObjectIdentifierErr != nil {
-			return errors.Wrap(_eventObjectIdentifierErr, "Error serializing 'eventObjectIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "eventObjectIdentifier", m.GetEventObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventObjectIdentifier' field")
 		}
 
-		// Simple Field (timestamp)
-		if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timestamp")
-		}
-		_timestampErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamp())
-		if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timestamp")
-		}
-		if _timestampErr != nil {
-			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
+		if err := WriteSimpleField[BACnetTimeStampEnclosed](ctx, "timestamp", m.GetTimestamp(), WriteComplex[BACnetTimeStampEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		// Simple Field (notificationClass)
-		if pushErr := writeBuffer.PushContext("notificationClass"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notificationClass")
-		}
-		_notificationClassErr := writeBuffer.WriteSerializable(ctx, m.GetNotificationClass())
-		if popErr := writeBuffer.PopContext("notificationClass"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notificationClass")
-		}
-		if _notificationClassErr != nil {
-			return errors.Wrap(_notificationClassErr, "Error serializing 'notificationClass' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "notificationClass", m.GetNotificationClass(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationClass' field")
 		}
 
-		// Simple Field (priority)
-		if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for priority")
-		}
-		_priorityErr := writeBuffer.WriteSerializable(ctx, m.GetPriority())
-		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for priority")
-		}
-		if _priorityErr != nil {
-			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "priority", m.GetPriority(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priority' field")
 		}
 
-		// Simple Field (eventType)
-		if pushErr := writeBuffer.PushContext("eventType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventType")
-		}
-		_eventTypeErr := writeBuffer.WriteSerializable(ctx, m.GetEventType())
-		if popErr := writeBuffer.PopContext("eventType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventType")
-		}
-		if _eventTypeErr != nil {
-			return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
+		if err := WriteSimpleField[BACnetEventTypeTagged](ctx, "eventType", m.GetEventType(), WriteComplex[BACnetEventTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventType' field")
 		}
 
 		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "messageText", GetRef(m.GetMessageText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageText' field")
 		}
 
-		// Simple Field (notifyType)
-		if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notifyType")
-		}
-		_notifyTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNotifyType())
-		if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notifyType")
-		}
-		if _notifyTypeErr != nil {
-			return errors.Wrap(_notifyTypeErr, "Error serializing 'notifyType' field")
+		if err := WriteSimpleField[BACnetNotifyTypeTagged](ctx, "notifyType", m.GetNotifyType(), WriteComplex[BACnetNotifyTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notifyType' field")
 		}
 
 		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "ackRequired", GetRef(m.GetAckRequired()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
@@ -522,16 +458,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) SerializeWith
 			return errors.Wrap(err, "Error serializing 'fromState' field")
 		}
 
-		// Simple Field (toState)
-		if pushErr := writeBuffer.PushContext("toState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for toState")
-		}
-		_toStateErr := writeBuffer.WriteSerializable(ctx, m.GetToState())
-		if popErr := writeBuffer.PopContext("toState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for toState")
-		}
-		if _toStateErr != nil {
-			return errors.Wrap(_toStateErr, "Error serializing 'toState' field")
+		if err := WriteSimpleField[BACnetEventStateTagged](ctx, "toState", m.GetToState(), WriteComplex[BACnetEventStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'toState' field")
 		}
 
 		if err := WriteOptionalField[BACnetNotificationParameters](ctx, "eventValues", GetRef(m.GetEventValues()), WriteComplex[BACnetNotificationParameters](writeBuffer), true); err != nil {

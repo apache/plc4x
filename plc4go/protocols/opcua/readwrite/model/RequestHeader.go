@@ -285,68 +285,32 @@ func (m *_RequestHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for RequestHeader")
 		}
 
-		// Simple Field (authenticationToken)
-		if pushErr := writeBuffer.PushContext("authenticationToken"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for authenticationToken")
-		}
-		_authenticationTokenErr := writeBuffer.WriteSerializable(ctx, m.GetAuthenticationToken())
-		if popErr := writeBuffer.PopContext("authenticationToken"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for authenticationToken")
-		}
-		if _authenticationTokenErr != nil {
-			return errors.Wrap(_authenticationTokenErr, "Error serializing 'authenticationToken' field")
+		if err := WriteSimpleField[NodeId](ctx, "authenticationToken", m.GetAuthenticationToken(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'authenticationToken' field")
 		}
 
-		// Simple Field (timestamp)
-		timestamp := int64(m.GetTimestamp())
-		_timestampErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("timestamp", 64, int64((timestamp)))
-		if _timestampErr != nil {
-			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
+		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		// Simple Field (requestHandle)
-		requestHandle := uint32(m.GetRequestHandle())
-		_requestHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestHandle", 32, uint32((requestHandle)))
-		if _requestHandleErr != nil {
-			return errors.Wrap(_requestHandleErr, "Error serializing 'requestHandle' field")
+		if err := WriteSimpleField[uint32](ctx, "requestHandle", m.GetRequestHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHandle' field")
 		}
 
-		// Simple Field (returnDiagnostics)
-		returnDiagnostics := uint32(m.GetReturnDiagnostics())
-		_returnDiagnosticsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("returnDiagnostics", 32, uint32((returnDiagnostics)))
-		if _returnDiagnosticsErr != nil {
-			return errors.Wrap(_returnDiagnosticsErr, "Error serializing 'returnDiagnostics' field")
+		if err := WriteSimpleField[uint32](ctx, "returnDiagnostics", m.GetReturnDiagnostics(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'returnDiagnostics' field")
 		}
 
-		// Simple Field (auditEntryId)
-		if pushErr := writeBuffer.PushContext("auditEntryId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for auditEntryId")
-		}
-		_auditEntryIdErr := writeBuffer.WriteSerializable(ctx, m.GetAuditEntryId())
-		if popErr := writeBuffer.PopContext("auditEntryId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for auditEntryId")
-		}
-		if _auditEntryIdErr != nil {
-			return errors.Wrap(_auditEntryIdErr, "Error serializing 'auditEntryId' field")
+		if err := WriteSimpleField[PascalString](ctx, "auditEntryId", m.GetAuditEntryId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'auditEntryId' field")
 		}
 
-		// Simple Field (timeoutHint)
-		timeoutHint := uint32(m.GetTimeoutHint())
-		_timeoutHintErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("timeoutHint", 32, uint32((timeoutHint)))
-		if _timeoutHintErr != nil {
-			return errors.Wrap(_timeoutHintErr, "Error serializing 'timeoutHint' field")
+		if err := WriteSimpleField[uint32](ctx, "timeoutHint", m.GetTimeoutHint(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeoutHint' field")
 		}
 
-		// Simple Field (additionalHeader)
-		if pushErr := writeBuffer.PushContext("additionalHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for additionalHeader")
-		}
-		_additionalHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetAdditionalHeader())
-		if popErr := writeBuffer.PopContext("additionalHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for additionalHeader")
-		}
-		if _additionalHeaderErr != nil {
-			return errors.Wrap(_additionalHeaderErr, "Error serializing 'additionalHeader' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "additionalHeader", m.GetAdditionalHeader(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'additionalHeader' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestHeader"); popErr != nil {

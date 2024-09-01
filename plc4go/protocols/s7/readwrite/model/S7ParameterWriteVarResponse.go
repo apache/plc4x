@@ -187,11 +187,8 @@ func (m *_S7ParameterWriteVarResponse) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for S7ParameterWriteVarResponse")
 		}
 
-		// Simple Field (numItems)
-		numItems := uint8(m.GetNumItems())
-		_numItemsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
-		if _numItemsErr != nil {
-			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
+		if err := WriteSimpleField[uint8](ctx, "numItems", m.GetNumItems(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numItems' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterWriteVarResponse"); popErr != nil {

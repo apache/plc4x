@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataSilenced) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSilenced")
 		}
 
-		// Simple Field (silenced)
-		if pushErr := writeBuffer.PushContext("silenced"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for silenced")
-		}
-		_silencedErr := writeBuffer.WriteSerializable(ctx, m.GetSilenced())
-		if popErr := writeBuffer.PopContext("silenced"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for silenced")
-		}
-		if _silencedErr != nil {
-			return errors.Wrap(_silencedErr, "Error serializing 'silenced' field")
+		if err := WriteSimpleField[BACnetSilencedStateTagged](ctx, "silenced", m.GetSilenced(), WriteComplex[BACnetSilencedStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'silenced' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

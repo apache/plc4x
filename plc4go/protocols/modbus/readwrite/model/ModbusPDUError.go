@@ -191,16 +191,8 @@ func (m *_ModbusPDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUError")
 		}
 
-		// Simple Field (exceptionCode)
-		if pushErr := writeBuffer.PushContext("exceptionCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for exceptionCode")
-		}
-		_exceptionCodeErr := writeBuffer.WriteSerializable(ctx, m.GetExceptionCode())
-		if popErr := writeBuffer.PopContext("exceptionCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for exceptionCode")
-		}
-		if _exceptionCodeErr != nil {
-			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
+		if err := WriteSimpleEnumField[ModbusErrorCode](ctx, "exceptionCode", "ModbusErrorCode", m.GetExceptionCode(), WriteEnum[ModbusErrorCode, uint8](ModbusErrorCode.GetValue, ModbusErrorCode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'exceptionCode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUError"); popErr != nil {

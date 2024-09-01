@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataProcessIdentifier) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProcessIdentifier")
 		}
 
-		// Simple Field (processIdentifier)
-		if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for processIdentifier")
-		}
-		_processIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetProcessIdentifier())
-		if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for processIdentifier")
-		}
-		if _processIdentifierErr != nil {
-			return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "processIdentifier", m.GetProcessIdentifier(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'processIdentifier' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

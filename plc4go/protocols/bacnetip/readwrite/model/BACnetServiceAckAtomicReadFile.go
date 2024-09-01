@@ -202,28 +202,12 @@ func (m *_BACnetServiceAckAtomicReadFile) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckAtomicReadFile")
 		}
 
-		// Simple Field (endOfFile)
-		if pushErr := writeBuffer.PushContext("endOfFile"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endOfFile")
-		}
-		_endOfFileErr := writeBuffer.WriteSerializable(ctx, m.GetEndOfFile())
-		if popErr := writeBuffer.PopContext("endOfFile"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endOfFile")
-		}
-		if _endOfFileErr != nil {
-			return errors.Wrap(_endOfFileErr, "Error serializing 'endOfFile' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "endOfFile", m.GetEndOfFile(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endOfFile' field")
 		}
 
-		// Simple Field (accessMethod)
-		if pushErr := writeBuffer.PushContext("accessMethod"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessMethod")
-		}
-		_accessMethodErr := writeBuffer.WriteSerializable(ctx, m.GetAccessMethod())
-		if popErr := writeBuffer.PopContext("accessMethod"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessMethod")
-		}
-		if _accessMethodErr != nil {
-			return errors.Wrap(_accessMethodErr, "Error serializing 'accessMethod' field")
+		if err := WriteSimpleField[BACnetServiceAckAtomicReadFileStreamOrRecord](ctx, "accessMethod", m.GetAccessMethod(), WriteComplex[BACnetServiceAckAtomicReadFileStreamOrRecord](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessMethod' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAtomicReadFile"); popErr != nil {

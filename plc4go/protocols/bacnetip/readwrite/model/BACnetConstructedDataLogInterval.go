@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLogInterval) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLogInterval")
 		}
 
-		// Simple Field (logInterval)
-		if pushErr := writeBuffer.PushContext("logInterval"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for logInterval")
-		}
-		_logIntervalErr := writeBuffer.WriteSerializable(ctx, m.GetLogInterval())
-		if popErr := writeBuffer.PopContext("logInterval"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for logInterval")
-		}
-		if _logIntervalErr != nil {
-			return errors.Wrap(_logIntervalErr, "Error serializing 'logInterval' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "logInterval", m.GetLogInterval(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'logInterval' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

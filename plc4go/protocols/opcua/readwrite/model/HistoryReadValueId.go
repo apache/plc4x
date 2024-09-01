@@ -234,52 +234,20 @@ func (m *_HistoryReadValueId) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for HistoryReadValueId")
 		}
 
-		// Simple Field (nodeId)
-		if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeId")
-		}
-		_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-		if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeId")
-		}
-		if _nodeIdErr != nil {
-			return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
-		// Simple Field (indexRange)
-		if pushErr := writeBuffer.PushContext("indexRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for indexRange")
-		}
-		_indexRangeErr := writeBuffer.WriteSerializable(ctx, m.GetIndexRange())
-		if popErr := writeBuffer.PopContext("indexRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for indexRange")
-		}
-		if _indexRangeErr != nil {
-			return errors.Wrap(_indexRangeErr, "Error serializing 'indexRange' field")
+		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexRange' field")
 		}
 
-		// Simple Field (dataEncoding)
-		if pushErr := writeBuffer.PushContext("dataEncoding"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataEncoding")
-		}
-		_dataEncodingErr := writeBuffer.WriteSerializable(ctx, m.GetDataEncoding())
-		if popErr := writeBuffer.PopContext("dataEncoding"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataEncoding")
-		}
-		if _dataEncodingErr != nil {
-			return errors.Wrap(_dataEncodingErr, "Error serializing 'dataEncoding' field")
+		if err := WriteSimpleField[QualifiedName](ctx, "dataEncoding", m.GetDataEncoding(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataEncoding' field")
 		}
 
-		// Simple Field (continuationPoint)
-		if pushErr := writeBuffer.PushContext("continuationPoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for continuationPoint")
-		}
-		_continuationPointErr := writeBuffer.WriteSerializable(ctx, m.GetContinuationPoint())
-		if popErr := writeBuffer.PopContext("continuationPoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for continuationPoint")
-		}
-		if _continuationPointErr != nil {
-			return errors.Wrap(_continuationPointErr, "Error serializing 'continuationPoint' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "continuationPoint", m.GetContinuationPoint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'continuationPoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("HistoryReadValueId"); popErr != nil {

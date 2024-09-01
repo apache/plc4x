@@ -220,64 +220,24 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) SerializeWit
 		return errors.Wrap(pushErr, "Error pushing for SubscribeCOVPropertyMultipleErrorFirstFailedSubscription")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (monitoredObjectIdentifier)
-	if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
-	}
-	_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredObjectIdentifier())
-	if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
-	}
-	if _monitoredObjectIdentifierErr != nil {
-		return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
+	if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "monitoredObjectIdentifier", m.GetMonitoredObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monitoredObjectIdentifier' field")
 	}
 
-	// Simple Field (monitoredPropertyReference)
-	if pushErr := writeBuffer.PushContext("monitoredPropertyReference"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for monitoredPropertyReference")
-	}
-	_monitoredPropertyReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredPropertyReference())
-	if popErr := writeBuffer.PopContext("monitoredPropertyReference"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for monitoredPropertyReference")
-	}
-	if _monitoredPropertyReferenceErr != nil {
-		return errors.Wrap(_monitoredPropertyReferenceErr, "Error serializing 'monitoredPropertyReference' field")
+	if err := WriteSimpleField[BACnetPropertyReferenceEnclosed](ctx, "monitoredPropertyReference", m.GetMonitoredPropertyReference(), WriteComplex[BACnetPropertyReferenceEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monitoredPropertyReference' field")
 	}
 
-	// Simple Field (errorType)
-	if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for errorType")
-	}
-	_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
-	if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for errorType")
-	}
-	if _errorTypeErr != nil {
-		return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
+	if err := WriteSimpleField[ErrorEnclosed](ctx, "errorType", m.GetErrorType(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'errorType' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription"); popErr != nil {

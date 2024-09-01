@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastNotifyRecord) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastNotifyRecord")
 		}
 
-		// Simple Field (lastNotifyRecord)
-		if pushErr := writeBuffer.PushContext("lastNotifyRecord"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastNotifyRecord")
-		}
-		_lastNotifyRecordErr := writeBuffer.WriteSerializable(ctx, m.GetLastNotifyRecord())
-		if popErr := writeBuffer.PopContext("lastNotifyRecord"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastNotifyRecord")
-		}
-		if _lastNotifyRecordErr != nil {
-			return errors.Wrap(_lastNotifyRecordErr, "Error serializing 'lastNotifyRecord' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lastNotifyRecord", m.GetLastNotifyRecord(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastNotifyRecord' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

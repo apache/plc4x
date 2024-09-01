@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesLiftGroupMode) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftGroupMode")
 		}
 
-		// Simple Field (liftGroupMode)
-		if pushErr := writeBuffer.PushContext("liftGroupMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for liftGroupMode")
-		}
-		_liftGroupModeErr := writeBuffer.WriteSerializable(ctx, m.GetLiftGroupMode())
-		if popErr := writeBuffer.PopContext("liftGroupMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for liftGroupMode")
-		}
-		if _liftGroupModeErr != nil {
-			return errors.Wrap(_liftGroupModeErr, "Error serializing 'liftGroupMode' field")
+		if err := WriteSimpleField[BACnetLiftGroupModeTagged](ctx, "liftGroupMode", m.GetLiftGroupMode(), WriteComplex[BACnetLiftGroupModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'liftGroupMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftGroupMode"); popErr != nil {

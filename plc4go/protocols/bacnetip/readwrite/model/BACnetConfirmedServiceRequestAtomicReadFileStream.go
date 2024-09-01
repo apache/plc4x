@@ -200,28 +200,12 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAtomicReadFileStream")
 		}
 
-		// Simple Field (fileStartPosition)
-		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
-		}
-		_fileStartPositionErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartPosition())
-		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileStartPosition")
-		}
-		if _fileStartPositionErr != nil {
-			return errors.Wrap(_fileStartPositionErr, "Error serializing 'fileStartPosition' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartPosition", m.GetFileStartPosition(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileStartPosition' field")
 		}
 
-		// Simple Field (requestOctetCount)
-		if pushErr := writeBuffer.PushContext("requestOctetCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestOctetCount")
-		}
-		_requestOctetCountErr := writeBuffer.WriteSerializable(ctx, m.GetRequestOctetCount())
-		if popErr := writeBuffer.PopContext("requestOctetCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestOctetCount")
-		}
-		if _requestOctetCountErr != nil {
-			return errors.Wrap(_requestOctetCountErr, "Error serializing 'requestOctetCount' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "requestOctetCount", m.GetRequestOctetCount(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestOctetCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAtomicReadFileStream"); popErr != nil {

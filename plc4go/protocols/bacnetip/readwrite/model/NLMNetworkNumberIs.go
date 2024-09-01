@@ -213,22 +213,16 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for NLMNetworkNumberIs")
 		}
 
-		// Simple Field (networkNumber)
-		networkNumber := uint16(m.GetNetworkNumber())
-		_networkNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("networkNumber", 16, uint16((networkNumber)))
-		if _networkNumberErr != nil {
-			return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
+		if err := WriteSimpleField[uint16](ctx, "networkNumber", m.GetNetworkNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkNumber' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (networkNumberConfigured)
-		networkNumberConfigured := bool(m.GetNetworkNumberConfigured())
-		_networkNumberConfiguredErr := /*TODO: migrate me*/ writeBuffer.WriteBit("networkNumberConfigured", (networkNumberConfigured))
-		if _networkNumberConfiguredErr != nil {
-			return errors.Wrap(_networkNumberConfiguredErr, "Error serializing 'networkNumberConfigured' field")
+		if err := WriteSimpleField[bool](ctx, "networkNumberConfigured", m.GetNetworkNumberConfigured(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkNumberConfigured' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMNetworkNumberIs"); popErr != nil {

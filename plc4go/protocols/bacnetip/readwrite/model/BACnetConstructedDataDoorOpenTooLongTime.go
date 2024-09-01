@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDoorOpenTooLongTime) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorOpenTooLongTime")
 		}
 
-		// Simple Field (doorOpenTooLongTime)
-		if pushErr := writeBuffer.PushContext("doorOpenTooLongTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doorOpenTooLongTime")
-		}
-		_doorOpenTooLongTimeErr := writeBuffer.WriteSerializable(ctx, m.GetDoorOpenTooLongTime())
-		if popErr := writeBuffer.PopContext("doorOpenTooLongTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doorOpenTooLongTime")
-		}
-		if _doorOpenTooLongTimeErr != nil {
-			return errors.Wrap(_doorOpenTooLongTimeErr, "Error serializing 'doorOpenTooLongTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorOpenTooLongTime", m.GetDoorOpenTooLongTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doorOpenTooLongTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

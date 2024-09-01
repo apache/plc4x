@@ -265,60 +265,36 @@ func (m *_DateAndTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for DateAndTime")
 	}
 
-	// Simple Field (year)
-	year := uint8(m.GetYear())
-	_yearErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("year", 8, uint8((year)))
-	if _yearErr != nil {
-		return errors.Wrap(_yearErr, "Error serializing 'year' field")
+	if err := WriteSimpleField[uint8](ctx, "year", m.GetYear(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'year' field")
 	}
 
-	// Simple Field (month)
-	month := uint8(m.GetMonth())
-	_monthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 8, uint8((month)))
-	if _monthErr != nil {
-		return errors.Wrap(_monthErr, "Error serializing 'month' field")
+	if err := WriteSimpleField[uint8](ctx, "month", m.GetMonth(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'month' field")
 	}
 
-	// Simple Field (day)
-	day := uint8(m.GetDay())
-	_dayErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("day", 8, uint8((day)))
-	if _dayErr != nil {
-		return errors.Wrap(_dayErr, "Error serializing 'day' field")
+	if err := WriteSimpleField[uint8](ctx, "day", m.GetDay(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'day' field")
 	}
 
-	// Simple Field (hour)
-	hour := uint8(m.GetHour())
-	_hourErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("hour", 8, uint8((hour)))
-	if _hourErr != nil {
-		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
+	if err := WriteSimpleField[uint8](ctx, "hour", m.GetHour(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'hour' field")
 	}
 
-	// Simple Field (minutes)
-	minutes := uint8(m.GetMinutes())
-	_minutesErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("minutes", 8, uint8((minutes)))
-	if _minutesErr != nil {
-		return errors.Wrap(_minutesErr, "Error serializing 'minutes' field")
+	if err := WriteSimpleField[uint8](ctx, "minutes", m.GetMinutes(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'minutes' field")
 	}
 
-	// Simple Field (seconds)
-	seconds := uint8(m.GetSeconds())
-	_secondsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("seconds", 8, uint8((seconds)))
-	if _secondsErr != nil {
-		return errors.Wrap(_secondsErr, "Error serializing 'seconds' field")
+	if err := WriteSimpleField[uint8](ctx, "seconds", m.GetSeconds(), WriteUnsignedByte(writeBuffer, 8), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'seconds' field")
 	}
 
-	// Simple Field (msec)
-	msec := uint16(m.GetMsec())
-	_msecErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("msec", 12, uint16((msec)))
-	if _msecErr != nil {
-		return errors.Wrap(_msecErr, "Error serializing 'msec' field")
+	if err := WriteSimpleField[uint16](ctx, "msec", m.GetMsec(), WriteUnsignedShort(writeBuffer, 12), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'msec' field")
 	}
 
-	// Simple Field (dow)
-	dow := uint8(m.GetDow())
-	_dowErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dow", 4, uint8((dow)))
-	if _dowErr != nil {
-		return errors.Wrap(_dowErr, "Error serializing 'dow' field")
+	if err := WriteSimpleField[uint8](ctx, "dow", m.GetDow(), WriteUnsignedByte(writeBuffer, 4), codegen.WithEncoding("BCD")); err != nil {
+		return errors.Wrap(err, "Error serializing 'dow' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DateAndTime"); popErr != nil {

@@ -181,16 +181,8 @@ func (m *_BACnetChannelValueBitString) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetChannelValueBitString")
 		}
 
-		// Simple Field (bitStringValue)
-		if pushErr := writeBuffer.PushContext("bitStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
-		}
-		_bitStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetBitStringValue())
-		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bitStringValue")
-		}
-		if _bitStringValueErr != nil {
-			return errors.Wrap(_bitStringValueErr, "Error serializing 'bitStringValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagBitString](ctx, "bitStringValue", m.GetBitStringValue(), WriteComplex[BACnetApplicationTagBitString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitStringValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetChannelValueBitString"); popErr != nil {

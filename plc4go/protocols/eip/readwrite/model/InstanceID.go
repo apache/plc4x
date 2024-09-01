@@ -200,18 +200,12 @@ func (m *_InstanceID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(pushErr, "Error pushing for InstanceID")
 		}
 
-		// Simple Field (format)
-		format := uint8(m.GetFormat())
-		_formatErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("format", 2, uint8((format)))
-		if _formatErr != nil {
-			return errors.Wrap(_formatErr, "Error serializing 'format' field")
+		if err := WriteSimpleField[uint8](ctx, "format", m.GetFormat(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+			return errors.Wrap(err, "Error serializing 'format' field")
 		}
 
-		// Simple Field (instance)
-		instance := uint8(m.GetInstance())
-		_instanceErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("instance", 8, uint8((instance)))
-		if _instanceErr != nil {
-			return errors.Wrap(_instanceErr, "Error serializing 'instance' field")
+		if err := WriteSimpleField[uint8](ctx, "instance", m.GetInstance(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'instance' field")
 		}
 
 		if popErr := writeBuffer.PopContext("InstanceID"); popErr != nil {

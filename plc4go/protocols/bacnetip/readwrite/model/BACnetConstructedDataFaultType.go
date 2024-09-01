@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataFaultType) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFaultType")
 		}
 
-		// Simple Field (faultType)
-		if pushErr := writeBuffer.PushContext("faultType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for faultType")
-		}
-		_faultTypeErr := writeBuffer.WriteSerializable(ctx, m.GetFaultType())
-		if popErr := writeBuffer.PopContext("faultType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for faultType")
-		}
-		if _faultTypeErr != nil {
-			return errors.Wrap(_faultTypeErr, "Error serializing 'faultType' field")
+		if err := WriteSimpleField[BACnetFaultTypeTagged](ctx, "faultType", m.GetFaultType(), WriteComplex[BACnetFaultTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'faultType' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

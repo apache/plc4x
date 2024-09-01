@@ -268,71 +268,28 @@ func (m *_BuildInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(pushErr, "Error pushing for BuildInfo")
 		}
 
-		// Simple Field (productUri)
-		if pushErr := writeBuffer.PushContext("productUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for productUri")
-		}
-		_productUriErr := writeBuffer.WriteSerializable(ctx, m.GetProductUri())
-		if popErr := writeBuffer.PopContext("productUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for productUri")
-		}
-		if _productUriErr != nil {
-			return errors.Wrap(_productUriErr, "Error serializing 'productUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "productUri", m.GetProductUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'productUri' field")
 		}
 
-		// Simple Field (manufacturerName)
-		if pushErr := writeBuffer.PushContext("manufacturerName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for manufacturerName")
-		}
-		_manufacturerNameErr := writeBuffer.WriteSerializable(ctx, m.GetManufacturerName())
-		if popErr := writeBuffer.PopContext("manufacturerName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for manufacturerName")
-		}
-		if _manufacturerNameErr != nil {
-			return errors.Wrap(_manufacturerNameErr, "Error serializing 'manufacturerName' field")
+		if err := WriteSimpleField[PascalString](ctx, "manufacturerName", m.GetManufacturerName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'manufacturerName' field")
 		}
 
-		// Simple Field (productName)
-		if pushErr := writeBuffer.PushContext("productName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for productName")
-		}
-		_productNameErr := writeBuffer.WriteSerializable(ctx, m.GetProductName())
-		if popErr := writeBuffer.PopContext("productName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for productName")
-		}
-		if _productNameErr != nil {
-			return errors.Wrap(_productNameErr, "Error serializing 'productName' field")
+		if err := WriteSimpleField[PascalString](ctx, "productName", m.GetProductName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'productName' field")
 		}
 
-		// Simple Field (softwareVersion)
-		if pushErr := writeBuffer.PushContext("softwareVersion"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for softwareVersion")
-		}
-		_softwareVersionErr := writeBuffer.WriteSerializable(ctx, m.GetSoftwareVersion())
-		if popErr := writeBuffer.PopContext("softwareVersion"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for softwareVersion")
-		}
-		if _softwareVersionErr != nil {
-			return errors.Wrap(_softwareVersionErr, "Error serializing 'softwareVersion' field")
+		if err := WriteSimpleField[PascalString](ctx, "softwareVersion", m.GetSoftwareVersion(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'softwareVersion' field")
 		}
 
-		// Simple Field (buildNumber)
-		if pushErr := writeBuffer.PushContext("buildNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for buildNumber")
-		}
-		_buildNumberErr := writeBuffer.WriteSerializable(ctx, m.GetBuildNumber())
-		if popErr := writeBuffer.PopContext("buildNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for buildNumber")
-		}
-		if _buildNumberErr != nil {
-			return errors.Wrap(_buildNumberErr, "Error serializing 'buildNumber' field")
+		if err := WriteSimpleField[PascalString](ctx, "buildNumber", m.GetBuildNumber(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'buildNumber' field")
 		}
 
-		// Simple Field (buildDate)
-		buildDate := int64(m.GetBuildDate())
-		_buildDateErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("buildDate", 64, int64((buildDate)))
-		if _buildDateErr != nil {
-			return errors.Wrap(_buildDateErr, "Error serializing 'buildDate' field")
+		if err := WriteSimpleField[int64](ctx, "buildDate", m.GetBuildDate(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'buildDate' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BuildInfo"); popErr != nil {

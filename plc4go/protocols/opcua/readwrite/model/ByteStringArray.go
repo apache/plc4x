@@ -170,11 +170,8 @@ func (m *_ByteStringArray) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for ByteStringArray")
 	}
 
-	// Simple Field (arrayLength)
-	arrayLength := int32(m.GetArrayLength())
-	_arrayLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("arrayLength", 32, int32((arrayLength)))
-	if _arrayLengthErr != nil {
-		return errors.Wrap(_arrayLengthErr, "Error serializing 'arrayLength' field")
+	if err := WriteSimpleField[int32](ctx, "arrayLength", m.GetArrayLength(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'arrayLength' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteUnsignedByte(writeBuffer, 8)); err != nil {

@@ -202,25 +202,16 @@ func (m *_NLMInitializeRoutingTablePortMapping) SerializeWithWriteBuffer(ctx con
 		return errors.Wrap(pushErr, "Error pushing for NLMInitializeRoutingTablePortMapping")
 	}
 
-	// Simple Field (destinationNetworkAddress)
-	destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-	_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
-	if _destinationNetworkAddressErr != nil {
-		return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
+	if err := WriteSimpleField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 	}
 
-	// Simple Field (portId)
-	portId := uint8(m.GetPortId())
-	_portIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("portId", 8, uint8((portId)))
-	if _portIdErr != nil {
-		return errors.Wrap(_portIdErr, "Error serializing 'portId' field")
+	if err := WriteSimpleField[uint8](ctx, "portId", m.GetPortId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'portId' field")
 	}
 
-	// Simple Field (portInfoLength)
-	portInfoLength := uint8(m.GetPortInfoLength())
-	_portInfoLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("portInfoLength", 8, uint8((portInfoLength)))
-	if _portInfoLengthErr != nil {
-		return errors.Wrap(_portInfoLengthErr, "Error serializing 'portInfoLength' field")
+	if err := WriteSimpleField[uint8](ctx, "portInfoLength", m.GetPortInfoLength(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'portInfoLength' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "portInfo", m.GetPortInfo(), WriteByteArray(writeBuffer, 8)); err != nil {

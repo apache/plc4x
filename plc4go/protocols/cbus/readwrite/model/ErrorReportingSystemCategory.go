@@ -184,40 +184,16 @@ func (m *_ErrorReportingSystemCategory) SerializeWithWriteBuffer(ctx context.Con
 		return errors.Wrap(pushErr, "Error pushing for ErrorReportingSystemCategory")
 	}
 
-	// Simple Field (systemCategoryClass)
-	if pushErr := writeBuffer.PushContext("systemCategoryClass"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for systemCategoryClass")
-	}
-	_systemCategoryClassErr := writeBuffer.WriteSerializable(ctx, m.GetSystemCategoryClass())
-	if popErr := writeBuffer.PopContext("systemCategoryClass"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for systemCategoryClass")
-	}
-	if _systemCategoryClassErr != nil {
-		return errors.Wrap(_systemCategoryClassErr, "Error serializing 'systemCategoryClass' field")
+	if err := WriteSimpleEnumField[ErrorReportingSystemCategoryClass](ctx, "systemCategoryClass", "ErrorReportingSystemCategoryClass", m.GetSystemCategoryClass(), WriteEnum[ErrorReportingSystemCategoryClass, uint8](ErrorReportingSystemCategoryClass.GetValue, ErrorReportingSystemCategoryClass.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
+		return errors.Wrap(err, "Error serializing 'systemCategoryClass' field")
 	}
 
-	// Simple Field (systemCategoryType)
-	if pushErr := writeBuffer.PushContext("systemCategoryType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for systemCategoryType")
-	}
-	_systemCategoryTypeErr := writeBuffer.WriteSerializable(ctx, m.GetSystemCategoryType())
-	if popErr := writeBuffer.PopContext("systemCategoryType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for systemCategoryType")
-	}
-	if _systemCategoryTypeErr != nil {
-		return errors.Wrap(_systemCategoryTypeErr, "Error serializing 'systemCategoryType' field")
+	if err := WriteSimpleField[ErrorReportingSystemCategoryType](ctx, "systemCategoryType", m.GetSystemCategoryType(), WriteComplex[ErrorReportingSystemCategoryType](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'systemCategoryType' field")
 	}
 
-	// Simple Field (systemCategoryVariant)
-	if pushErr := writeBuffer.PushContext("systemCategoryVariant"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for systemCategoryVariant")
-	}
-	_systemCategoryVariantErr := writeBuffer.WriteSerializable(ctx, m.GetSystemCategoryVariant())
-	if popErr := writeBuffer.PopContext("systemCategoryVariant"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for systemCategoryVariant")
-	}
-	if _systemCategoryVariantErr != nil {
-		return errors.Wrap(_systemCategoryVariantErr, "Error serializing 'systemCategoryVariant' field")
+	if err := WriteSimpleEnumField[ErrorReportingSystemCategoryVariant](ctx, "systemCategoryVariant", "ErrorReportingSystemCategoryVariant", m.GetSystemCategoryVariant(), WriteEnum[ErrorReportingSystemCategoryVariant, uint8](ErrorReportingSystemCategoryVariant.GetValue, ErrorReportingSystemCategoryVariant.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'systemCategoryVariant' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ErrorReportingSystemCategory"); popErr != nil {

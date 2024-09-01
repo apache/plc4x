@@ -188,40 +188,16 @@ func (m *_BACnetAddressEnclosed) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for BACnetAddressEnclosed")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (address)
-	if pushErr := writeBuffer.PushContext("address"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for address")
-	}
-	_addressErr := writeBuffer.WriteSerializable(ctx, m.GetAddress())
-	if popErr := writeBuffer.PopContext("address"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for address")
-	}
-	if _addressErr != nil {
-		return errors.Wrap(_addressErr, "Error serializing 'address' field")
+	if err := WriteSimpleField[BACnetAddress](ctx, "address", m.GetAddress(), WriteComplex[BACnetAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'address' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAddressEnclosed"); popErr != nil {

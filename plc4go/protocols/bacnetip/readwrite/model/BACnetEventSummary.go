@@ -248,88 +248,32 @@ func (m *_BACnetEventSummary) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(pushErr, "Error pushing for BACnetEventSummary")
 	}
 
-	// Simple Field (objectIdentifier)
-	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-	}
-	_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
-	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for objectIdentifier")
-	}
-	if _objectIdentifierErr != nil {
-		return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
+	if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", m.GetObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 	}
 
-	// Simple Field (eventState)
-	if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for eventState")
-	}
-	_eventStateErr := writeBuffer.WriteSerializable(ctx, m.GetEventState())
-	if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for eventState")
-	}
-	if _eventStateErr != nil {
-		return errors.Wrap(_eventStateErr, "Error serializing 'eventState' field")
+	if err := WriteSimpleField[BACnetEventStateTagged](ctx, "eventState", m.GetEventState(), WriteComplex[BACnetEventStateTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventState' field")
 	}
 
-	// Simple Field (acknowledgedTransitions)
-	if pushErr := writeBuffer.PushContext("acknowledgedTransitions"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for acknowledgedTransitions")
-	}
-	_acknowledgedTransitionsErr := writeBuffer.WriteSerializable(ctx, m.GetAcknowledgedTransitions())
-	if popErr := writeBuffer.PopContext("acknowledgedTransitions"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for acknowledgedTransitions")
-	}
-	if _acknowledgedTransitionsErr != nil {
-		return errors.Wrap(_acknowledgedTransitionsErr, "Error serializing 'acknowledgedTransitions' field")
+	if err := WriteSimpleField[BACnetEventTransitionBitsTagged](ctx, "acknowledgedTransitions", m.GetAcknowledgedTransitions(), WriteComplex[BACnetEventTransitionBitsTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'acknowledgedTransitions' field")
 	}
 
-	// Simple Field (eventTimestamps)
-	if pushErr := writeBuffer.PushContext("eventTimestamps"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for eventTimestamps")
-	}
-	_eventTimestampsErr := writeBuffer.WriteSerializable(ctx, m.GetEventTimestamps())
-	if popErr := writeBuffer.PopContext("eventTimestamps"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for eventTimestamps")
-	}
-	if _eventTimestampsErr != nil {
-		return errors.Wrap(_eventTimestampsErr, "Error serializing 'eventTimestamps' field")
+	if err := WriteSimpleField[BACnetEventTimestampsEnclosed](ctx, "eventTimestamps", m.GetEventTimestamps(), WriteComplex[BACnetEventTimestampsEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventTimestamps' field")
 	}
 
-	// Simple Field (notifyType)
-	if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for notifyType")
-	}
-	_notifyTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNotifyType())
-	if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for notifyType")
-	}
-	if _notifyTypeErr != nil {
-		return errors.Wrap(_notifyTypeErr, "Error serializing 'notifyType' field")
+	if err := WriteSimpleField[BACnetNotifyTypeTagged](ctx, "notifyType", m.GetNotifyType(), WriteComplex[BACnetNotifyTypeTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'notifyType' field")
 	}
 
-	// Simple Field (eventEnable)
-	if pushErr := writeBuffer.PushContext("eventEnable"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for eventEnable")
-	}
-	_eventEnableErr := writeBuffer.WriteSerializable(ctx, m.GetEventEnable())
-	if popErr := writeBuffer.PopContext("eventEnable"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for eventEnable")
-	}
-	if _eventEnableErr != nil {
-		return errors.Wrap(_eventEnableErr, "Error serializing 'eventEnable' field")
+	if err := WriteSimpleField[BACnetEventTransitionBitsTagged](ctx, "eventEnable", m.GetEventEnable(), WriteComplex[BACnetEventTransitionBitsTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventEnable' field")
 	}
 
-	// Simple Field (eventPriorities)
-	if pushErr := writeBuffer.PushContext("eventPriorities"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for eventPriorities")
-	}
-	_eventPrioritiesErr := writeBuffer.WriteSerializable(ctx, m.GetEventPriorities())
-	if popErr := writeBuffer.PopContext("eventPriorities"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for eventPriorities")
-	}
-	if _eventPrioritiesErr != nil {
-		return errors.Wrap(_eventPrioritiesErr, "Error serializing 'eventPriorities' field")
+	if err := WriteSimpleField[BACnetEventPriorities](ctx, "eventPriorities", m.GetEventPriorities(), WriteComplex[BACnetEventPriorities](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventPriorities' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventSummary"); popErr != nil {

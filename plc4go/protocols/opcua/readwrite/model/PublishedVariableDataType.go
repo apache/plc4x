@@ -326,75 +326,36 @@ func (m *_PublishedVariableDataType) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for PublishedVariableDataType")
 		}
 
-		// Simple Field (publishedVariable)
-		if pushErr := writeBuffer.PushContext("publishedVariable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for publishedVariable")
-		}
-		_publishedVariableErr := writeBuffer.WriteSerializable(ctx, m.GetPublishedVariable())
-		if popErr := writeBuffer.PopContext("publishedVariable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for publishedVariable")
-		}
-		if _publishedVariableErr != nil {
-			return errors.Wrap(_publishedVariableErr, "Error serializing 'publishedVariable' field")
+		if err := WriteSimpleField[NodeId](ctx, "publishedVariable", m.GetPublishedVariable(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'publishedVariable' field")
 		}
 
-		// Simple Field (attributeId)
-		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
-		if _attributeIdErr != nil {
-			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
+		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'attributeId' field")
 		}
 
-		// Simple Field (samplingIntervalHint)
-		samplingIntervalHint := float64(m.GetSamplingIntervalHint())
-		_samplingIntervalHintErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("samplingIntervalHint", 64, (samplingIntervalHint))
-		if _samplingIntervalHintErr != nil {
-			return errors.Wrap(_samplingIntervalHintErr, "Error serializing 'samplingIntervalHint' field")
+		if err := WriteSimpleField[float64](ctx, "samplingIntervalHint", m.GetSamplingIntervalHint(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'samplingIntervalHint' field")
 		}
 
-		// Simple Field (deadbandType)
-		deadbandType := uint32(m.GetDeadbandType())
-		_deadbandTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("deadbandType", 32, uint32((deadbandType)))
-		if _deadbandTypeErr != nil {
-			return errors.Wrap(_deadbandTypeErr, "Error serializing 'deadbandType' field")
+		if err := WriteSimpleField[uint32](ctx, "deadbandType", m.GetDeadbandType(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deadbandType' field")
 		}
 
-		// Simple Field (deadbandValue)
-		deadbandValue := float64(m.GetDeadbandValue())
-		_deadbandValueErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("deadbandValue", 64, (deadbandValue))
-		if _deadbandValueErr != nil {
-			return errors.Wrap(_deadbandValueErr, "Error serializing 'deadbandValue' field")
+		if err := WriteSimpleField[float64](ctx, "deadbandValue", m.GetDeadbandValue(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deadbandValue' field")
 		}
 
-		// Simple Field (indexRange)
-		if pushErr := writeBuffer.PushContext("indexRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for indexRange")
-		}
-		_indexRangeErr := writeBuffer.WriteSerializable(ctx, m.GetIndexRange())
-		if popErr := writeBuffer.PopContext("indexRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for indexRange")
-		}
-		if _indexRangeErr != nil {
-			return errors.Wrap(_indexRangeErr, "Error serializing 'indexRange' field")
+		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexRange' field")
 		}
 
-		// Simple Field (substituteValue)
-		if pushErr := writeBuffer.PushContext("substituteValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for substituteValue")
-		}
-		_substituteValueErr := writeBuffer.WriteSerializable(ctx, m.GetSubstituteValue())
-		if popErr := writeBuffer.PopContext("substituteValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for substituteValue")
-		}
-		if _substituteValueErr != nil {
-			return errors.Wrap(_substituteValueErr, "Error serializing 'substituteValue' field")
+		if err := WriteSimpleField[Variant](ctx, "substituteValue", m.GetSubstituteValue(), WriteComplex[Variant](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'substituteValue' field")
 		}
 
-		// Simple Field (noOfMetaDataProperties)
-		noOfMetaDataProperties := int32(m.GetNoOfMetaDataProperties())
-		_noOfMetaDataPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfMetaDataProperties", 32, int32((noOfMetaDataProperties)))
-		if _noOfMetaDataPropertiesErr != nil {
-			return errors.Wrap(_noOfMetaDataPropertiesErr, "Error serializing 'noOfMetaDataProperties' field")
+		if err := WriteSimpleField[int32](ctx, "noOfMetaDataProperties", m.GetNoOfMetaDataProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfMetaDataProperties' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "metaDataProperties", m.GetMetaDataProperties(), writeBuffer); err != nil {

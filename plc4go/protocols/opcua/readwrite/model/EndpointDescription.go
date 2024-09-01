@@ -326,94 +326,40 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for EndpointDescription")
 		}
 
-		// Simple Field (endpointUrl)
-		if pushErr := writeBuffer.PushContext("endpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrl")
-		}
-		_endpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetEndpointUrl())
-		if popErr := writeBuffer.PopContext("endpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrl")
-		}
-		if _endpointUrlErr != nil {
-			return errors.Wrap(_endpointUrlErr, "Error serializing 'endpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		// Simple Field (server)
-		if pushErr := writeBuffer.PushContext("server"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for server")
-		}
-		_serverErr := writeBuffer.WriteSerializable(ctx, m.GetServer())
-		if popErr := writeBuffer.PopContext("server"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for server")
-		}
-		if _serverErr != nil {
-			return errors.Wrap(_serverErr, "Error serializing 'server' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "server", m.GetServer(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'server' field")
 		}
 
-		// Simple Field (serverCertificate)
-		if pushErr := writeBuffer.PushContext("serverCertificate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverCertificate")
-		}
-		_serverCertificateErr := writeBuffer.WriteSerializable(ctx, m.GetServerCertificate())
-		if popErr := writeBuffer.PopContext("serverCertificate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverCertificate")
-		}
-		if _serverCertificateErr != nil {
-			return errors.Wrap(_serverCertificateErr, "Error serializing 'serverCertificate' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "serverCertificate", m.GetServerCertificate(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverCertificate' field")
 		}
 
-		// Simple Field (securityMode)
-		if pushErr := writeBuffer.PushContext("securityMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityMode")
-		}
-		_securityModeErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityMode())
-		if popErr := writeBuffer.PopContext("securityMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityMode")
-		}
-		if _securityModeErr != nil {
-			return errors.Wrap(_securityModeErr, "Error serializing 'securityMode' field")
+		if err := WriteSimpleEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", m.GetSecurityMode(), WriteEnum[MessageSecurityMode, uint32](MessageSecurityMode.GetValue, MessageSecurityMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityMode' field")
 		}
 
-		// Simple Field (securityPolicyUri)
-		if pushErr := writeBuffer.PushContext("securityPolicyUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityPolicyUri")
-		}
-		_securityPolicyUriErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityPolicyUri())
-		if popErr := writeBuffer.PopContext("securityPolicyUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityPolicyUri")
-		}
-		if _securityPolicyUriErr != nil {
-			return errors.Wrap(_securityPolicyUriErr, "Error serializing 'securityPolicyUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 
-		// Simple Field (noOfUserIdentityTokens)
-		noOfUserIdentityTokens := int32(m.GetNoOfUserIdentityTokens())
-		_noOfUserIdentityTokensErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfUserIdentityTokens", 32, int32((noOfUserIdentityTokens)))
-		if _noOfUserIdentityTokensErr != nil {
-			return errors.Wrap(_noOfUserIdentityTokensErr, "Error serializing 'noOfUserIdentityTokens' field")
+		if err := WriteSimpleField[int32](ctx, "noOfUserIdentityTokens", m.GetNoOfUserIdentityTokens(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfUserIdentityTokens' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "userIdentityTokens", m.GetUserIdentityTokens(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'userIdentityTokens' field")
 		}
 
-		// Simple Field (transportProfileUri)
-		if pushErr := writeBuffer.PushContext("transportProfileUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transportProfileUri")
-		}
-		_transportProfileUriErr := writeBuffer.WriteSerializable(ctx, m.GetTransportProfileUri())
-		if popErr := writeBuffer.PopContext("transportProfileUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportProfileUri")
-		}
-		if _transportProfileUriErr != nil {
-			return errors.Wrap(_transportProfileUriErr, "Error serializing 'transportProfileUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "transportProfileUri", m.GetTransportProfileUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transportProfileUri' field")
 		}
 
-		// Simple Field (securityLevel)
-		securityLevel := uint8(m.GetSecurityLevel())
-		_securityLevelErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("securityLevel", 8, uint8((securityLevel)))
-		if _securityLevelErr != nil {
-			return errors.Wrap(_securityLevelErr, "Error serializing 'securityLevel' field")
+		if err := WriteSimpleField[uint8](ctx, "securityLevel", m.GetSecurityLevel(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EndpointDescription"); popErr != nil {

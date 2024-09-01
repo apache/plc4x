@@ -384,112 +384,52 @@ func (m *_CreateSessionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for CreateSessionResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (sessionId)
-		if pushErr := writeBuffer.PushContext("sessionId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sessionId")
-		}
-		_sessionIdErr := writeBuffer.WriteSerializable(ctx, m.GetSessionId())
-		if popErr := writeBuffer.PopContext("sessionId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sessionId")
-		}
-		if _sessionIdErr != nil {
-			return errors.Wrap(_sessionIdErr, "Error serializing 'sessionId' field")
+		if err := WriteSimpleField[NodeId](ctx, "sessionId", m.GetSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sessionId' field")
 		}
 
-		// Simple Field (authenticationToken)
-		if pushErr := writeBuffer.PushContext("authenticationToken"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for authenticationToken")
-		}
-		_authenticationTokenErr := writeBuffer.WriteSerializable(ctx, m.GetAuthenticationToken())
-		if popErr := writeBuffer.PopContext("authenticationToken"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for authenticationToken")
-		}
-		if _authenticationTokenErr != nil {
-			return errors.Wrap(_authenticationTokenErr, "Error serializing 'authenticationToken' field")
+		if err := WriteSimpleField[NodeId](ctx, "authenticationToken", m.GetAuthenticationToken(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'authenticationToken' field")
 		}
 
-		// Simple Field (revisedSessionTimeout)
-		revisedSessionTimeout := float64(m.GetRevisedSessionTimeout())
-		_revisedSessionTimeoutErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("revisedSessionTimeout", 64, (revisedSessionTimeout))
-		if _revisedSessionTimeoutErr != nil {
-			return errors.Wrap(_revisedSessionTimeoutErr, "Error serializing 'revisedSessionTimeout' field")
+		if err := WriteSimpleField[float64](ctx, "revisedSessionTimeout", m.GetRevisedSessionTimeout(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedSessionTimeout' field")
 		}
 
-		// Simple Field (serverNonce)
-		if pushErr := writeBuffer.PushContext("serverNonce"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverNonce")
-		}
-		_serverNonceErr := writeBuffer.WriteSerializable(ctx, m.GetServerNonce())
-		if popErr := writeBuffer.PopContext("serverNonce"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverNonce")
-		}
-		if _serverNonceErr != nil {
-			return errors.Wrap(_serverNonceErr, "Error serializing 'serverNonce' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "serverNonce", m.GetServerNonce(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverNonce' field")
 		}
 
-		// Simple Field (serverCertificate)
-		if pushErr := writeBuffer.PushContext("serverCertificate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverCertificate")
-		}
-		_serverCertificateErr := writeBuffer.WriteSerializable(ctx, m.GetServerCertificate())
-		if popErr := writeBuffer.PopContext("serverCertificate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverCertificate")
-		}
-		if _serverCertificateErr != nil {
-			return errors.Wrap(_serverCertificateErr, "Error serializing 'serverCertificate' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "serverCertificate", m.GetServerCertificate(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverCertificate' field")
 		}
 
-		// Simple Field (noOfServerEndpoints)
-		noOfServerEndpoints := int32(m.GetNoOfServerEndpoints())
-		_noOfServerEndpointsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerEndpoints", 32, int32((noOfServerEndpoints)))
-		if _noOfServerEndpointsErr != nil {
-			return errors.Wrap(_noOfServerEndpointsErr, "Error serializing 'noOfServerEndpoints' field")
+		if err := WriteSimpleField[int32](ctx, "noOfServerEndpoints", m.GetNoOfServerEndpoints(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServerEndpoints' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "serverEndpoints", m.GetServerEndpoints(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverEndpoints' field")
 		}
 
-		// Simple Field (noOfServerSoftwareCertificates)
-		noOfServerSoftwareCertificates := int32(m.GetNoOfServerSoftwareCertificates())
-		_noOfServerSoftwareCertificatesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerSoftwareCertificates", 32, int32((noOfServerSoftwareCertificates)))
-		if _noOfServerSoftwareCertificatesErr != nil {
-			return errors.Wrap(_noOfServerSoftwareCertificatesErr, "Error serializing 'noOfServerSoftwareCertificates' field")
+		if err := WriteSimpleField[int32](ctx, "noOfServerSoftwareCertificates", m.GetNoOfServerSoftwareCertificates(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServerSoftwareCertificates' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "serverSoftwareCertificates", m.GetServerSoftwareCertificates(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverSoftwareCertificates' field")
 		}
 
-		// Simple Field (serverSignature)
-		if pushErr := writeBuffer.PushContext("serverSignature"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverSignature")
-		}
-		_serverSignatureErr := writeBuffer.WriteSerializable(ctx, m.GetServerSignature())
-		if popErr := writeBuffer.PopContext("serverSignature"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverSignature")
-		}
-		if _serverSignatureErr != nil {
-			return errors.Wrap(_serverSignatureErr, "Error serializing 'serverSignature' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "serverSignature", m.GetServerSignature(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverSignature' field")
 		}
 
-		// Simple Field (maxRequestMessageSize)
-		maxRequestMessageSize := uint32(m.GetMaxRequestMessageSize())
-		_maxRequestMessageSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxRequestMessageSize", 32, uint32((maxRequestMessageSize)))
-		if _maxRequestMessageSizeErr != nil {
-			return errors.Wrap(_maxRequestMessageSizeErr, "Error serializing 'maxRequestMessageSize' field")
+		if err := WriteSimpleField[uint32](ctx, "maxRequestMessageSize", m.GetMaxRequestMessageSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxRequestMessageSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CreateSessionResponse"); popErr != nil {

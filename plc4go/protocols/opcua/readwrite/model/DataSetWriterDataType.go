@@ -354,100 +354,48 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for DataSetWriterDataType")
 		}
 
-		// Simple Field (name)
-		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for name")
-		}
-		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for name")
-		}
-		if _nameErr != nil {
-			return errors.Wrap(_nameErr, "Error serializing 'name' field")
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (enabled)
-		enabled := bool(m.GetEnabled())
-		_enabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enabled", (enabled))
-		if _enabledErr != nil {
-			return errors.Wrap(_enabledErr, "Error serializing 'enabled' field")
+		if err := WriteSimpleField[bool](ctx, "enabled", m.GetEnabled(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enabled' field")
 		}
 
-		// Simple Field (dataSetWriterId)
-		dataSetWriterId := uint16(m.GetDataSetWriterId())
-		_dataSetWriterIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataSetWriterId", 16, uint16((dataSetWriterId)))
-		if _dataSetWriterIdErr != nil {
-			return errors.Wrap(_dataSetWriterIdErr, "Error serializing 'dataSetWriterId' field")
+		if err := WriteSimpleField[uint16](ctx, "dataSetWriterId", m.GetDataSetWriterId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataSetWriterId' field")
 		}
 
-		// Simple Field (dataSetFieldContentMask)
-		if pushErr := writeBuffer.PushContext("dataSetFieldContentMask"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataSetFieldContentMask")
-		}
-		_dataSetFieldContentMaskErr := writeBuffer.WriteSerializable(ctx, m.GetDataSetFieldContentMask())
-		if popErr := writeBuffer.PopContext("dataSetFieldContentMask"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataSetFieldContentMask")
-		}
-		if _dataSetFieldContentMaskErr != nil {
-			return errors.Wrap(_dataSetFieldContentMaskErr, "Error serializing 'dataSetFieldContentMask' field")
+		if err := WriteSimpleEnumField[DataSetFieldContentMask](ctx, "dataSetFieldContentMask", "DataSetFieldContentMask", m.GetDataSetFieldContentMask(), WriteEnum[DataSetFieldContentMask, uint32](DataSetFieldContentMask.GetValue, DataSetFieldContentMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataSetFieldContentMask' field")
 		}
 
-		// Simple Field (keyFrameCount)
-		keyFrameCount := uint32(m.GetKeyFrameCount())
-		_keyFrameCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("keyFrameCount", 32, uint32((keyFrameCount)))
-		if _keyFrameCountErr != nil {
-			return errors.Wrap(_keyFrameCountErr, "Error serializing 'keyFrameCount' field")
+		if err := WriteSimpleField[uint32](ctx, "keyFrameCount", m.GetKeyFrameCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'keyFrameCount' field")
 		}
 
-		// Simple Field (dataSetName)
-		if pushErr := writeBuffer.PushContext("dataSetName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataSetName")
-		}
-		_dataSetNameErr := writeBuffer.WriteSerializable(ctx, m.GetDataSetName())
-		if popErr := writeBuffer.PopContext("dataSetName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataSetName")
-		}
-		if _dataSetNameErr != nil {
-			return errors.Wrap(_dataSetNameErr, "Error serializing 'dataSetName' field")
+		if err := WriteSimpleField[PascalString](ctx, "dataSetName", m.GetDataSetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataSetName' field")
 		}
 
-		// Simple Field (noOfDataSetWriterProperties)
-		noOfDataSetWriterProperties := int32(m.GetNoOfDataSetWriterProperties())
-		_noOfDataSetWriterPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDataSetWriterProperties", 32, int32((noOfDataSetWriterProperties)))
-		if _noOfDataSetWriterPropertiesErr != nil {
-			return errors.Wrap(_noOfDataSetWriterPropertiesErr, "Error serializing 'noOfDataSetWriterProperties' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDataSetWriterProperties", m.GetNoOfDataSetWriterProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDataSetWriterProperties' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "dataSetWriterProperties", m.GetDataSetWriterProperties(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetWriterProperties' field")
 		}
 
-		// Simple Field (transportSettings)
-		if pushErr := writeBuffer.PushContext("transportSettings"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transportSettings")
-		}
-		_transportSettingsErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSettings())
-		if popErr := writeBuffer.PopContext("transportSettings"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportSettings")
-		}
-		if _transportSettingsErr != nil {
-			return errors.Wrap(_transportSettingsErr, "Error serializing 'transportSettings' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "transportSettings", m.GetTransportSettings(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transportSettings' field")
 		}
 
-		// Simple Field (messageSettings)
-		if pushErr := writeBuffer.PushContext("messageSettings"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for messageSettings")
-		}
-		_messageSettingsErr := writeBuffer.WriteSerializable(ctx, m.GetMessageSettings())
-		if popErr := writeBuffer.PopContext("messageSettings"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for messageSettings")
-		}
-		if _messageSettingsErr != nil {
-			return errors.Wrap(_messageSettingsErr, "Error serializing 'messageSettings' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "messageSettings", m.GetMessageSettings(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'messageSettings' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DataSetWriterDataType"); popErr != nil {

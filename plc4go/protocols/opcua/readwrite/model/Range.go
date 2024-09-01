@@ -200,18 +200,12 @@ func (m *_Range) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			return errors.Wrap(pushErr, "Error pushing for Range")
 		}
 
-		// Simple Field (low)
-		low := float64(m.GetLow())
-		_lowErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("low", 64, (low))
-		if _lowErr != nil {
-			return errors.Wrap(_lowErr, "Error serializing 'low' field")
+		if err := WriteSimpleField[float64](ctx, "low", m.GetLow(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'low' field")
 		}
 
-		// Simple Field (high)
-		high := float64(m.GetHigh())
-		_highErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("high", 64, (high))
-		if _highErr != nil {
-			return errors.Wrap(_highErr, "Error serializing 'high' field")
+		if err := WriteSimpleField[float64](ctx, "high", m.GetHigh(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'high' field")
 		}
 
 		if popErr := writeBuffer.PopContext("Range"); popErr != nil {

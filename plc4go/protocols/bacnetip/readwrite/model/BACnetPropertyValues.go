@@ -194,32 +194,16 @@ func (m *_BACnetPropertyValues) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for BACnetPropertyValues")
 	}
 
-	// Simple Field (innerOpeningTag)
-	if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
-	}
-	_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
-	if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for innerOpeningTag")
-	}
-	if _innerOpeningTagErr != nil {
-		return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "innerOpeningTag", m.GetInnerOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'innerOpeningTag' field")
 	}
 
 	if err := WriteComplexTypeArrayField(ctx, "data", m.GetData(), writeBuffer); err != nil {
 		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
-	// Simple Field (innerClosingTag)
-	if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
-	}
-	_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
-	if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for innerClosingTag")
-	}
-	if _innerClosingTagErr != nil {
-		return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "innerClosingTag", m.GetInnerClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'innerClosingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPropertyValues"); popErr != nil {

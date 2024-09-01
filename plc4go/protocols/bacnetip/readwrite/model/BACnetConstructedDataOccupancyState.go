@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataOccupancyState) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOccupancyState")
 		}
 
-		// Simple Field (occupancyState)
-		if pushErr := writeBuffer.PushContext("occupancyState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for occupancyState")
-		}
-		_occupancyStateErr := writeBuffer.WriteSerializable(ctx, m.GetOccupancyState())
-		if popErr := writeBuffer.PopContext("occupancyState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for occupancyState")
-		}
-		if _occupancyStateErr != nil {
-			return errors.Wrap(_occupancyStateErr, "Error serializing 'occupancyState' field")
+		if err := WriteSimpleField[BACnetAccessZoneOccupancyStateTagged](ctx, "occupancyState", m.GetOccupancyState(), WriteComplex[BACnetAccessZoneOccupancyStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'occupancyState' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

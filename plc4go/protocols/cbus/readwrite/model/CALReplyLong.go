@@ -354,16 +354,8 @@ func (m *_CALReplyLong) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(err, "Error serializing 'bridgeAddress' field")
 		}
 
-		// Simple Field (serialInterfaceAddress)
-		if pushErr := writeBuffer.PushContext("serialInterfaceAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serialInterfaceAddress")
-		}
-		_serialInterfaceAddressErr := writeBuffer.WriteSerializable(ctx, m.GetSerialInterfaceAddress())
-		if popErr := writeBuffer.PopContext("serialInterfaceAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serialInterfaceAddress")
-		}
-		if _serialInterfaceAddressErr != nil {
-			return errors.Wrap(_serialInterfaceAddressErr, "Error serializing 'serialInterfaceAddress' field")
+		if err := WriteSimpleField[SerialInterfaceAddress](ctx, "serialInterfaceAddress", m.GetSerialInterfaceAddress(), WriteComplex[SerialInterfaceAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serialInterfaceAddress' field")
 		}
 
 		if err := WriteOptionalField[byte](ctx, "reservedByte", m.GetReservedByte(), WriteByte(writeBuffer, 8), true); err != nil {

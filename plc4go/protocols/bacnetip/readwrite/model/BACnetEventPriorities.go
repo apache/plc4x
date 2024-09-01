@@ -220,64 +220,24 @@ func (m *_BACnetEventPriorities) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for BACnetEventPriorities")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (toOffnormal)
-	if pushErr := writeBuffer.PushContext("toOffnormal"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toOffnormal")
-	}
-	_toOffnormalErr := writeBuffer.WriteSerializable(ctx, m.GetToOffnormal())
-	if popErr := writeBuffer.PopContext("toOffnormal"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toOffnormal")
-	}
-	if _toOffnormalErr != nil {
-		return errors.Wrap(_toOffnormalErr, "Error serializing 'toOffnormal' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toOffnormal", m.GetToOffnormal(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toOffnormal' field")
 	}
 
-	// Simple Field (toFault)
-	if pushErr := writeBuffer.PushContext("toFault"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toFault")
-	}
-	_toFaultErr := writeBuffer.WriteSerializable(ctx, m.GetToFault())
-	if popErr := writeBuffer.PopContext("toFault"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toFault")
-	}
-	if _toFaultErr != nil {
-		return errors.Wrap(_toFaultErr, "Error serializing 'toFault' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toFault", m.GetToFault(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toFault' field")
 	}
 
-	// Simple Field (toNormal)
-	if pushErr := writeBuffer.PushContext("toNormal"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toNormal")
-	}
-	_toNormalErr := writeBuffer.WriteSerializable(ctx, m.GetToNormal())
-	if popErr := writeBuffer.PopContext("toNormal"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toNormal")
-	}
-	if _toNormalErr != nil {
-		return errors.Wrap(_toNormalErr, "Error serializing 'toNormal' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toNormal", m.GetToNormal(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toNormal' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetEventPriorities"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataValueBeforeChange) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValueBeforeChange")
 		}
 
-		// Simple Field (valuesBeforeChange)
-		if pushErr := writeBuffer.PushContext("valuesBeforeChange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for valuesBeforeChange")
-		}
-		_valuesBeforeChangeErr := writeBuffer.WriteSerializable(ctx, m.GetValuesBeforeChange())
-		if popErr := writeBuffer.PopContext("valuesBeforeChange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for valuesBeforeChange")
-		}
-		if _valuesBeforeChangeErr != nil {
-			return errors.Wrap(_valuesBeforeChangeErr, "Error serializing 'valuesBeforeChange' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "valuesBeforeChange", m.GetValuesBeforeChange(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'valuesBeforeChange' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

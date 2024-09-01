@@ -183,16 +183,8 @@ func (m *_AdsDiscoveryBlockRouteName) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockRouteName")
 		}
 
-		// Simple Field (routeName)
-		if pushErr := writeBuffer.PushContext("routeName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for routeName")
-		}
-		_routeNameErr := writeBuffer.WriteSerializable(ctx, m.GetRouteName())
-		if popErr := writeBuffer.PopContext("routeName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for routeName")
-		}
-		if _routeNameErr != nil {
-			return errors.Wrap(_routeNameErr, "Error serializing 'routeName' field")
+		if err := WriteSimpleField[AmsString](ctx, "routeName", m.GetRouteName(), WriteComplex[AmsString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'routeName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDiscoveryBlockRouteName"); popErr != nil {

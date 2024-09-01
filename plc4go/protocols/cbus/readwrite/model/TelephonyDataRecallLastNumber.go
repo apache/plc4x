@@ -240,11 +240,8 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for TelephonyDataRecallLastNumber")
 		}
 
-		// Simple Field (recallLastNumberType)
-		recallLastNumberType := byte(m.GetRecallLastNumberType())
-		_recallLastNumberTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("recallLastNumberType", (recallLastNumberType))
-		if _recallLastNumberTypeErr != nil {
-			return errors.Wrap(_recallLastNumberTypeErr, "Error serializing 'recallLastNumberType' field")
+		if err := WriteSimpleField[byte](ctx, "recallLastNumberType", m.GetRecallLastNumberType(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'recallLastNumberType' field")
 		}
 		// Virtual field
 		isNumberOfLastOutgoingCall := m.GetIsNumberOfLastOutgoingCall()
@@ -259,11 +256,8 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(_isNumberOfLastIncomingCallErr, "Error serializing 'isNumberOfLastIncomingCall' field")
 		}
 
-		// Simple Field (number)
-		number := string(m.GetNumber())
-		_numberErr := /*TODO: migrate me*/ writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(2))*(8)), (number), utils.WithEncoding("UTF-8)"))
-		if _numberErr != nil {
-			return errors.Wrap(_numberErr, "Error serializing 'number' field")
+		if err := WriteSimpleField[string](ctx, "number", m.GetNumber(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(2))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'number' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TelephonyDataRecallLastNumber"); popErr != nil {

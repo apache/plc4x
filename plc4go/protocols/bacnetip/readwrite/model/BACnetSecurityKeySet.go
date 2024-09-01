@@ -200,52 +200,20 @@ func (m *_BACnetSecurityKeySet) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for BACnetSecurityKeySet")
 	}
 
-	// Simple Field (keyRevision)
-	if pushErr := writeBuffer.PushContext("keyRevision"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for keyRevision")
-	}
-	_keyRevisionErr := writeBuffer.WriteSerializable(ctx, m.GetKeyRevision())
-	if popErr := writeBuffer.PopContext("keyRevision"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for keyRevision")
-	}
-	if _keyRevisionErr != nil {
-		return errors.Wrap(_keyRevisionErr, "Error serializing 'keyRevision' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "keyRevision", m.GetKeyRevision(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'keyRevision' field")
 	}
 
-	// Simple Field (activationTime)
-	if pushErr := writeBuffer.PushContext("activationTime"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for activationTime")
-	}
-	_activationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetActivationTime())
-	if popErr := writeBuffer.PopContext("activationTime"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for activationTime")
-	}
-	if _activationTimeErr != nil {
-		return errors.Wrap(_activationTimeErr, "Error serializing 'activationTime' field")
+	if err := WriteSimpleField[BACnetDateTimeEnclosed](ctx, "activationTime", m.GetActivationTime(), WriteComplex[BACnetDateTimeEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'activationTime' field")
 	}
 
-	// Simple Field (expirationTime)
-	if pushErr := writeBuffer.PushContext("expirationTime"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for expirationTime")
-	}
-	_expirationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetExpirationTime())
-	if popErr := writeBuffer.PopContext("expirationTime"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for expirationTime")
-	}
-	if _expirationTimeErr != nil {
-		return errors.Wrap(_expirationTimeErr, "Error serializing 'expirationTime' field")
+	if err := WriteSimpleField[BACnetDateTimeEnclosed](ctx, "expirationTime", m.GetExpirationTime(), WriteComplex[BACnetDateTimeEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'expirationTime' field")
 	}
 
-	// Simple Field (keyIds)
-	if pushErr := writeBuffer.PushContext("keyIds"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for keyIds")
-	}
-	_keyIdsErr := writeBuffer.WriteSerializable(ctx, m.GetKeyIds())
-	if popErr := writeBuffer.PopContext("keyIds"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for keyIds")
-	}
-	if _keyIdsErr != nil {
-		return errors.Wrap(_keyIdsErr, "Error serializing 'keyIds' field")
+	if err := WriteSimpleField[BACnetSecurityKeySetKeyIds](ctx, "keyIds", m.GetKeyIds(), WriteComplex[BACnetSecurityKeySetKeyIds](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'keyIds' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetSecurityKeySet"); popErr != nil {

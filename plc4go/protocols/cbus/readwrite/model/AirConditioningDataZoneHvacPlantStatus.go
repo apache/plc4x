@@ -249,59 +249,24 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataZoneHvacPlantStatus")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
-		// Simple Field (zoneList)
-		if pushErr := writeBuffer.PushContext("zoneList"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneList")
-		}
-		_zoneListErr := writeBuffer.WriteSerializable(ctx, m.GetZoneList())
-		if popErr := writeBuffer.PopContext("zoneList"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneList")
-		}
-		if _zoneListErr != nil {
-			return errors.Wrap(_zoneListErr, "Error serializing 'zoneList' field")
+		if err := WriteSimpleField[HVACZoneList](ctx, "zoneList", m.GetZoneList(), WriteComplex[HVACZoneList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneList' field")
 		}
 
-		// Simple Field (hvacType)
-		if pushErr := writeBuffer.PushContext("hvacType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hvacType")
-		}
-		_hvacTypeErr := writeBuffer.WriteSerializable(ctx, m.GetHvacType())
-		if popErr := writeBuffer.PopContext("hvacType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hvacType")
-		}
-		if _hvacTypeErr != nil {
-			return errors.Wrap(_hvacTypeErr, "Error serializing 'hvacType' field")
+		if err := WriteSimpleEnumField[HVACType](ctx, "hvacType", "HVACType", m.GetHvacType(), WriteEnum[HVACType, uint8](HVACType.GetValue, HVACType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'hvacType' field")
 		}
 
-		// Simple Field (hvacStatus)
-		if pushErr := writeBuffer.PushContext("hvacStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hvacStatus")
-		}
-		_hvacStatusErr := writeBuffer.WriteSerializable(ctx, m.GetHvacStatus())
-		if popErr := writeBuffer.PopContext("hvacStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hvacStatus")
-		}
-		if _hvacStatusErr != nil {
-			return errors.Wrap(_hvacStatusErr, "Error serializing 'hvacStatus' field")
+		if err := WriteSimpleField[HVACStatusFlags](ctx, "hvacStatus", m.GetHvacStatus(), WriteComplex[HVACStatusFlags](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hvacStatus' field")
 		}
 
-		// Simple Field (hvacErrorCode)
-		if pushErr := writeBuffer.PushContext("hvacErrorCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hvacErrorCode")
-		}
-		_hvacErrorCodeErr := writeBuffer.WriteSerializable(ctx, m.GetHvacErrorCode())
-		if popErr := writeBuffer.PopContext("hvacErrorCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hvacErrorCode")
-		}
-		if _hvacErrorCodeErr != nil {
-			return errors.Wrap(_hvacErrorCodeErr, "Error serializing 'hvacErrorCode' field")
+		if err := WriteSimpleEnumField[HVACError](ctx, "hvacErrorCode", "HVACError", m.GetHvacErrorCode(), WriteEnum[HVACError, uint8](HVACError.GetValue, HVACError.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'hvacErrorCode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataZoneHvacPlantStatus"); popErr != nil {

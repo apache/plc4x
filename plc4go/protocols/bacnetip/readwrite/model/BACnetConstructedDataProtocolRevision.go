@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataProtocolRevision) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProtocolRevision")
 		}
 
-		// Simple Field (protocolRevision)
-		if pushErr := writeBuffer.PushContext("protocolRevision"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolRevision")
-		}
-		_protocolRevisionErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolRevision())
-		if popErr := writeBuffer.PopContext("protocolRevision"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolRevision")
-		}
-		if _protocolRevisionErr != nil {
-			return errors.Wrap(_protocolRevisionErr, "Error serializing 'protocolRevision' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "protocolRevision", m.GetProtocolRevision(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolRevision' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

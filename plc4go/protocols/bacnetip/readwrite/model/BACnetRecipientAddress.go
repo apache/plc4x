@@ -181,16 +181,8 @@ func (m *_BACnetRecipientAddress) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for BACnetRecipientAddress")
 		}
 
-		// Simple Field (addressValue)
-		if pushErr := writeBuffer.PushContext("addressValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addressValue")
-		}
-		_addressValueErr := writeBuffer.WriteSerializable(ctx, m.GetAddressValue())
-		if popErr := writeBuffer.PopContext("addressValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addressValue")
-		}
-		if _addressValueErr != nil {
-			return errors.Wrap(_addressValueErr, "Error serializing 'addressValue' field")
+		if err := WriteSimpleField[BACnetAddressEnclosed](ctx, "addressValue", m.GetAddressValue(), WriteComplex[BACnetAddressEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'addressValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetRecipientAddress"); popErr != nil {

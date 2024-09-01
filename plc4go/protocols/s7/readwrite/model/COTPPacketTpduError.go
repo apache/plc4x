@@ -205,18 +205,12 @@ func (m *_COTPPacketTpduError) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for COTPPacketTpduError")
 		}
 
-		// Simple Field (destinationReference)
-		destinationReference := uint16(m.GetDestinationReference())
-		_destinationReferenceErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationReference", 16, uint16((destinationReference)))
-		if _destinationReferenceErr != nil {
-			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationReference", m.GetDestinationReference(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationReference' field")
 		}
 
-		// Simple Field (rejectCause)
-		rejectCause := uint8(m.GetRejectCause())
-		_rejectCauseErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("rejectCause", 8, uint8((rejectCause)))
-		if _rejectCauseErr != nil {
-			return errors.Wrap(_rejectCauseErr, "Error serializing 'rejectCause' field")
+		if err := WriteSimpleField[uint8](ctx, "rejectCause", m.GetRejectCause(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'rejectCause' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPPacketTpduError"); popErr != nil {

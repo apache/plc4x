@@ -279,65 +279,32 @@ func (m *_BrowseDescription) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for BrowseDescription")
 		}
 
-		// Simple Field (nodeId)
-		if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeId")
-		}
-		_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-		if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeId")
-		}
-		if _nodeIdErr != nil {
-			return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
-		// Simple Field (browseDirection)
-		if pushErr := writeBuffer.PushContext("browseDirection"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for browseDirection")
-		}
-		_browseDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetBrowseDirection())
-		if popErr := writeBuffer.PopContext("browseDirection"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for browseDirection")
-		}
-		if _browseDirectionErr != nil {
-			return errors.Wrap(_browseDirectionErr, "Error serializing 'browseDirection' field")
+		if err := WriteSimpleEnumField[BrowseDirection](ctx, "browseDirection", "BrowseDirection", m.GetBrowseDirection(), WriteEnum[BrowseDirection, uint32](BrowseDirection.GetValue, BrowseDirection.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'browseDirection' field")
 		}
 
-		// Simple Field (referenceTypeId)
-		if pushErr := writeBuffer.PushContext("referenceTypeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceTypeId")
-		}
-		_referenceTypeIdErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceTypeId())
-		if popErr := writeBuffer.PopContext("referenceTypeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceTypeId")
-		}
-		if _referenceTypeIdErr != nil {
-			return errors.Wrap(_referenceTypeIdErr, "Error serializing 'referenceTypeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "referenceTypeId", m.GetReferenceTypeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceTypeId' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (includeSubtypes)
-		includeSubtypes := bool(m.GetIncludeSubtypes())
-		_includeSubtypesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("includeSubtypes", (includeSubtypes))
-		if _includeSubtypesErr != nil {
-			return errors.Wrap(_includeSubtypesErr, "Error serializing 'includeSubtypes' field")
+		if err := WriteSimpleField[bool](ctx, "includeSubtypes", m.GetIncludeSubtypes(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'includeSubtypes' field")
 		}
 
-		// Simple Field (nodeClassMask)
-		nodeClassMask := uint32(m.GetNodeClassMask())
-		_nodeClassMaskErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("nodeClassMask", 32, uint32((nodeClassMask)))
-		if _nodeClassMaskErr != nil {
-			return errors.Wrap(_nodeClassMaskErr, "Error serializing 'nodeClassMask' field")
+		if err := WriteSimpleField[uint32](ctx, "nodeClassMask", m.GetNodeClassMask(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeClassMask' field")
 		}
 
-		// Simple Field (resultMask)
-		resultMask := uint32(m.GetResultMask())
-		_resultMaskErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("resultMask", 32, uint32((resultMask)))
-		if _resultMaskErr != nil {
-			return errors.Wrap(_resultMaskErr, "Error serializing 'resultMask' field")
+		if err := WriteSimpleField[uint32](ctx, "resultMask", m.GetResultMask(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'resultMask' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BrowseDescription"); popErr != nil {

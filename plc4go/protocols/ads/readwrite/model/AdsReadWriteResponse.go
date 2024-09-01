@@ -222,16 +222,8 @@ func (m *_AdsReadWriteResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for AdsReadWriteResponse")
 		}
 
-		// Simple Field (result)
-		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for result")
-		}
-		_resultErr := writeBuffer.WriteSerializable(ctx, m.GetResult())
-		if popErr := writeBuffer.PopContext("result"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for result")
-		}
-		if _resultErr != nil {
-			return errors.Wrap(_resultErr, "Error serializing 'result' field")
+		if err := WriteSimpleEnumField[ReturnCode](ctx, "result", "ReturnCode", m.GetResult(), WriteEnum[ReturnCode, uint32](ReturnCode.GetValue, ReturnCode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'result' field")
 		}
 		length := uint32(uint32(len(m.GetData())))
 		if err := WriteImplicitField(ctx, "length", length, WriteUnsignedInt(writeBuffer, 32)); err != nil {

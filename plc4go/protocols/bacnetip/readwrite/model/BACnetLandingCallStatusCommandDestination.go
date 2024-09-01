@@ -181,16 +181,8 @@ func (m *_BACnetLandingCallStatusCommandDestination) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetLandingCallStatusCommandDestination")
 		}
 
-		// Simple Field (destination)
-		if pushErr := writeBuffer.PushContext("destination"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for destination")
-		}
-		_destinationErr := writeBuffer.WriteSerializable(ctx, m.GetDestination())
-		if popErr := writeBuffer.PopContext("destination"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for destination")
-		}
-		if _destinationErr != nil {
-			return errors.Wrap(_destinationErr, "Error serializing 'destination' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "destination", m.GetDestination(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destination' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLandingCallStatusCommandDestination"); popErr != nil {

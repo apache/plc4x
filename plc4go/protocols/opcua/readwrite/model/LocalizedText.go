@@ -227,18 +227,12 @@ func (m *_LocalizedText) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (textSpecified)
-	textSpecified := bool(m.GetTextSpecified())
-	_textSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("textSpecified", (textSpecified))
-	if _textSpecifiedErr != nil {
-		return errors.Wrap(_textSpecifiedErr, "Error serializing 'textSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "textSpecified", m.GetTextSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'textSpecified' field")
 	}
 
-	// Simple Field (localeSpecified)
-	localeSpecified := bool(m.GetLocaleSpecified())
-	_localeSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("localeSpecified", (localeSpecified))
-	if _localeSpecifiedErr != nil {
-		return errors.Wrap(_localeSpecifiedErr, "Error serializing 'localeSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "localeSpecified", m.GetLocaleSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'localeSpecified' field")
 	}
 
 	if err := WriteOptionalField[PascalString](ctx, "locale", GetRef(m.GetLocale()), WriteComplex[PascalString](writeBuffer), true); err != nil {

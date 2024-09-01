@@ -185,11 +185,8 @@ func (m *_NLMDisconnectConnectionToNetwork) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for NLMDisconnectConnectionToNetwork")
 		}
 
-		// Simple Field (destinationNetworkAddress)
-		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
-		if _destinationNetworkAddressErr != nil {
-			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMDisconnectConnectionToNetwork"); popErr != nil {

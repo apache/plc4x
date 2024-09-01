@@ -204,11 +204,8 @@ func (m *_ApduDataDeviceDescriptorResponse) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for ApduDataDeviceDescriptorResponse")
 		}
 
-		// Simple Field (descriptorType)
-		descriptorType := uint8(m.GetDescriptorType())
-		_descriptorTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("descriptorType", 6, uint8((descriptorType)))
-		if _descriptorTypeErr != nil {
-			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
+		if err := WriteSimpleField[uint8](ctx, "descriptorType", m.GetDescriptorType(), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+			return errors.Wrap(err, "Error serializing 'descriptorType' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

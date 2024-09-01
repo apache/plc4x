@@ -297,58 +297,32 @@ func (m *_S7PayloadDiagnosticMessage) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadDiagnosticMessage")
 		}
 
-		// Simple Field (eventId)
-		eventId := uint16(m.GetEventId())
-		_eventIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("eventId", 16, uint16((eventId)))
-		if _eventIdErr != nil {
-			return errors.Wrap(_eventIdErr, "Error serializing 'eventId' field")
+		if err := WriteSimpleField[uint16](ctx, "eventId", m.GetEventId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventId' field")
 		}
 
-		// Simple Field (priorityClass)
-		priorityClass := uint8(m.GetPriorityClass())
-		_priorityClassErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("priorityClass", 8, uint8((priorityClass)))
-		if _priorityClassErr != nil {
-			return errors.Wrap(_priorityClassErr, "Error serializing 'priorityClass' field")
+		if err := WriteSimpleField[uint8](ctx, "priorityClass", m.GetPriorityClass(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priorityClass' field")
 		}
 
-		// Simple Field (obNumber)
-		obNumber := uint8(m.GetObNumber())
-		_obNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("obNumber", 8, uint8((obNumber)))
-		if _obNumberErr != nil {
-			return errors.Wrap(_obNumberErr, "Error serializing 'obNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "obNumber", m.GetObNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'obNumber' field")
 		}
 
-		// Simple Field (datId)
-		datId := uint16(m.GetDatId())
-		_datIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("datId", 16, uint16((datId)))
-		if _datIdErr != nil {
-			return errors.Wrap(_datIdErr, "Error serializing 'datId' field")
+		if err := WriteSimpleField[uint16](ctx, "datId", m.GetDatId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'datId' field")
 		}
 
-		// Simple Field (info1)
-		info1 := uint16(m.GetInfo1())
-		_info1Err := /*TODO: migrate me*/ writeBuffer.WriteUint16("info1", 16, uint16((info1)))
-		if _info1Err != nil {
-			return errors.Wrap(_info1Err, "Error serializing 'info1' field")
+		if err := WriteSimpleField[uint16](ctx, "info1", m.GetInfo1(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'info1' field")
 		}
 
-		// Simple Field (info2)
-		info2 := uint32(m.GetInfo2())
-		_info2Err := /*TODO: migrate me*/ writeBuffer.WriteUint32("info2", 32, uint32((info2)))
-		if _info2Err != nil {
-			return errors.Wrap(_info2Err, "Error serializing 'info2' field")
+		if err := WriteSimpleField[uint32](ctx, "info2", m.GetInfo2(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'info2' field")
 		}
 
-		// Simple Field (timeStamp)
-		if pushErr := writeBuffer.PushContext("timeStamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeStamp")
-		}
-		_timeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
-		if popErr := writeBuffer.PopContext("timeStamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeStamp")
-		}
-		if _timeStampErr != nil {
-			return errors.Wrap(_timeStampErr, "Error serializing 'timeStamp' field")
+		if err := WriteSimpleField[DateAndTime](ctx, "timeStamp", m.GetTimeStamp(), WriteComplex[DateAndTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeStamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadDiagnosticMessage"); popErr != nil {

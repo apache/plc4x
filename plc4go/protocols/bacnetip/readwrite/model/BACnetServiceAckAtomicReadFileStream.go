@@ -200,28 +200,12 @@ func (m *_BACnetServiceAckAtomicReadFileStream) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckAtomicReadFileStream")
 		}
 
-		// Simple Field (fileStartPosition)
-		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
-		}
-		_fileStartPositionErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartPosition())
-		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileStartPosition")
-		}
-		if _fileStartPositionErr != nil {
-			return errors.Wrap(_fileStartPositionErr, "Error serializing 'fileStartPosition' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartPosition", m.GetFileStartPosition(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileStartPosition' field")
 		}
 
-		// Simple Field (fileData)
-		if pushErr := writeBuffer.PushContext("fileData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileData")
-		}
-		_fileDataErr := writeBuffer.WriteSerializable(ctx, m.GetFileData())
-		if popErr := writeBuffer.PopContext("fileData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileData")
-		}
-		if _fileDataErr != nil {
-			return errors.Wrap(_fileDataErr, "Error serializing 'fileData' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "fileData", m.GetFileData(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAtomicReadFileStream"); popErr != nil {

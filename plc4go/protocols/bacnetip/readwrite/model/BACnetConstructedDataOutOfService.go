@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataOutOfService) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOutOfService")
 		}
 
-		// Simple Field (outOfService)
-		if pushErr := writeBuffer.PushContext("outOfService"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for outOfService")
-		}
-		_outOfServiceErr := writeBuffer.WriteSerializable(ctx, m.GetOutOfService())
-		if popErr := writeBuffer.PopContext("outOfService"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for outOfService")
-		}
-		if _outOfServiceErr != nil {
-			return errors.Wrap(_outOfServiceErr, "Error serializing 'outOfService' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "outOfService", m.GetOutOfService(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'outOfService' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

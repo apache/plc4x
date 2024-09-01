@@ -201,23 +201,12 @@ func (m *_CALDataGetStatus) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for CALDataGetStatus")
 		}
 
-		// Simple Field (paramNo)
-		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for paramNo")
-		}
-		_paramNoErr := writeBuffer.WriteSerializable(ctx, m.GetParamNo())
-		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for paramNo")
-		}
-		if _paramNoErr != nil {
-			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
+		if err := WriteSimpleEnumField[Parameter](ctx, "paramNo", "Parameter", m.GetParamNo(), WriteEnum[Parameter, uint8](Parameter.GetValue, Parameter.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'paramNo' field")
 		}
 
-		// Simple Field (count)
-		count := uint8(m.GetCount())
-		_countErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("count", 8, uint8((count)))
-		if _countErr != nil {
-			return errors.Wrap(_countErr, "Error serializing 'count' field")
+		if err := WriteSimpleField[uint8](ctx, "count", m.GetCount(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'count' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataGetStatus"); popErr != nil {

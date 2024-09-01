@@ -152,11 +152,8 @@ func (m *_BACnetTagPayloadDouble) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadDouble")
 	}
 
-	// Simple Field (value)
-	value := float64(m.GetValue())
-	_valueErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("value", 64, (value))
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteSimpleField[float64](ctx, "value", m.GetValue(), WriteDouble(writeBuffer, 64)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadDouble"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAccessEventCredential) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessEventCredential")
 		}
 
-		// Simple Field (accessEventCredential)
-		if pushErr := writeBuffer.PushContext("accessEventCredential"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessEventCredential")
-		}
-		_accessEventCredentialErr := writeBuffer.WriteSerializable(ctx, m.GetAccessEventCredential())
-		if popErr := writeBuffer.PopContext("accessEventCredential"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessEventCredential")
-		}
-		if _accessEventCredentialErr != nil {
-			return errors.Wrap(_accessEventCredentialErr, "Error serializing 'accessEventCredential' field")
+		if err := WriteSimpleField[BACnetDeviceObjectReference](ctx, "accessEventCredential", m.GetAccessEventCredential(), WriteComplex[BACnetDeviceObjectReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessEventCredential' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

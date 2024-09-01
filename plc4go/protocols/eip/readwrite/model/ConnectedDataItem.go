@@ -213,23 +213,12 @@ func (m *_ConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(err, "Error serializing 'packetSize' field")
 		}
 
-		// Simple Field (sequenceCount)
-		sequenceCount := uint16(m.GetSequenceCount())
-		_sequenceCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sequenceCount", 16, uint16((sequenceCount)))
-		if _sequenceCountErr != nil {
-			return errors.Wrap(_sequenceCountErr, "Error serializing 'sequenceCount' field")
+		if err := WriteSimpleField[uint16](ctx, "sequenceCount", m.GetSequenceCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceCount' field")
 		}
 
-		// Simple Field (service)
-		if pushErr := writeBuffer.PushContext("service"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for service")
-		}
-		_serviceErr := writeBuffer.WriteSerializable(ctx, m.GetService())
-		if popErr := writeBuffer.PopContext("service"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for service")
-		}
-		if _serviceErr != nil {
-			return errors.Wrap(_serviceErr, "Error serializing 'service' field")
+		if err := WriteSimpleField[CipService](ctx, "service", m.GetService(), WriteComplex[CipService](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'service' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectedDataItem"); popErr != nil {

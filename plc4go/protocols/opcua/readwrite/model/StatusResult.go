@@ -200,28 +200,12 @@ func (m *_StatusResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for StatusResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (diagnosticInfo)
-		if pushErr := writeBuffer.PushContext("diagnosticInfo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for diagnosticInfo")
-		}
-		_diagnosticInfoErr := writeBuffer.WriteSerializable(ctx, m.GetDiagnosticInfo())
-		if popErr := writeBuffer.PopContext("diagnosticInfo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for diagnosticInfo")
-		}
-		if _diagnosticInfoErr != nil {
-			return errors.Wrap(_diagnosticInfoErr, "Error serializing 'diagnosticInfo' field")
+		if err := WriteSimpleField[DiagnosticInfo](ctx, "diagnosticInfo", m.GetDiagnosticInfo(), WriteComplex[DiagnosticInfo](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'diagnosticInfo' field")
 		}
 
 		if popErr := writeBuffer.PopContext("StatusResult"); popErr != nil {

@@ -185,16 +185,8 @@ func (m *_SALDataAccessControl) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SALDataAccessControl")
 		}
 
-		// Simple Field (accessControlData)
-		if pushErr := writeBuffer.PushContext("accessControlData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessControlData")
-		}
-		_accessControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetAccessControlData())
-		if popErr := writeBuffer.PopContext("accessControlData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessControlData")
-		}
-		if _accessControlDataErr != nil {
-			return errors.Wrap(_accessControlDataErr, "Error serializing 'accessControlData' field")
+		if err := WriteSimpleField[AccessControlData](ctx, "accessControlData", m.GetAccessControlData(), WriteComplex[AccessControlData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessControlData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataAccessControl"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMusterPoint) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMusterPoint")
 		}
 
-		// Simple Field (musterPoint)
-		if pushErr := writeBuffer.PushContext("musterPoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for musterPoint")
-		}
-		_musterPointErr := writeBuffer.WriteSerializable(ctx, m.GetMusterPoint())
-		if popErr := writeBuffer.PopContext("musterPoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for musterPoint")
-		}
-		if _musterPointErr != nil {
-			return errors.Wrap(_musterPointErr, "Error serializing 'musterPoint' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "musterPoint", m.GetMusterPoint(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'musterPoint' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

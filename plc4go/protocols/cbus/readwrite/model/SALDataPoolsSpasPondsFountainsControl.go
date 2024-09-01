@@ -185,16 +185,8 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for SALDataPoolsSpasPondsFountainsControl")
 		}
 
-		// Simple Field (poolsSpaPondsFountainsData)
-		if pushErr := writeBuffer.PushContext("poolsSpaPondsFountainsData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for poolsSpaPondsFountainsData")
-		}
-		_poolsSpaPondsFountainsDataErr := writeBuffer.WriteSerializable(ctx, m.GetPoolsSpaPondsFountainsData())
-		if popErr := writeBuffer.PopContext("poolsSpaPondsFountainsData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for poolsSpaPondsFountainsData")
-		}
-		if _poolsSpaPondsFountainsDataErr != nil {
-			return errors.Wrap(_poolsSpaPondsFountainsDataErr, "Error serializing 'poolsSpaPondsFountainsData' field")
+		if err := WriteSimpleField[LightingData](ctx, "poolsSpaPondsFountainsData", m.GetPoolsSpaPondsFountainsData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'poolsSpaPondsFountainsData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataPoolsSpasPondsFountainsControl"); popErr != nil {

@@ -177,11 +177,8 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(err, "Error serializing 'strLen' field")
 	}
 
-	// Simple Field (text)
-	text := string(m.GetText())
-	_textErr := /*TODO: migrate me*/ writeBuffer.WriteString("text", uint32((8)*((uint16(uint16(len(m.GetText())))+uint16(uint16(1)))-(1))), (text), utils.WithEncoding("UTF-8)"))
-	if _textErr != nil {
-		return errors.Wrap(_textErr, "Error serializing 'text' field")
+	if err := WriteSimpleField[string](ctx, "text", m.GetText(), WriteString(writeBuffer, int32(int32(int32(8))*int32((int32(uint16(uint16(len(m.GetText())))+uint16(uint16(1)))-int32(int32(1)))))), codegen.WithEncoding("UTF-8")); err != nil {
+		return errors.Wrap(err, "Error serializing 'text' field")
 	}
 
 	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {

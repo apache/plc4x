@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBBMDAcceptFDRegistrations")
 		}
 
-		// Simple Field (bbmdAcceptFDRegistrations)
-		if pushErr := writeBuffer.PushContext("bbmdAcceptFDRegistrations"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bbmdAcceptFDRegistrations")
-		}
-		_bbmdAcceptFDRegistrationsErr := writeBuffer.WriteSerializable(ctx, m.GetBbmdAcceptFDRegistrations())
-		if popErr := writeBuffer.PopContext("bbmdAcceptFDRegistrations"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bbmdAcceptFDRegistrations")
-		}
-		if _bbmdAcceptFDRegistrationsErr != nil {
-			return errors.Wrap(_bbmdAcceptFDRegistrationsErr, "Error serializing 'bbmdAcceptFDRegistrations' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "bbmdAcceptFDRegistrations", m.GetBbmdAcceptFDRegistrations(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bbmdAcceptFDRegistrations' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

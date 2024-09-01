@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEnable) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEnable")
 		}
 
-		// Simple Field (enable)
-		if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enable")
-		}
-		_enableErr := writeBuffer.WriteSerializable(ctx, m.GetEnable())
-		if popErr := writeBuffer.PopContext("enable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enable")
-		}
-		if _enableErr != nil {
-			return errors.Wrap(_enableErr, "Error serializing 'enable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "enable", m.GetEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

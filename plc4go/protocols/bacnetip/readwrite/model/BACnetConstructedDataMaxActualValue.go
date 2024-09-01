@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMaxActualValue) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaxActualValue")
 		}
 
-		// Simple Field (maxActualValue)
-		if pushErr := writeBuffer.PushContext("maxActualValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxActualValue")
-		}
-		_maxActualValueErr := writeBuffer.WriteSerializable(ctx, m.GetMaxActualValue())
-		if popErr := writeBuffer.PopContext("maxActualValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxActualValue")
-		}
-		if _maxActualValueErr != nil {
-			return errors.Wrap(_maxActualValueErr, "Error serializing 'maxActualValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "maxActualValue", m.GetMaxActualValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxActualValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

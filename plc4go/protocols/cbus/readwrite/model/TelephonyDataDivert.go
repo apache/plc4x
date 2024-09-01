@@ -182,11 +182,8 @@ func (m *_TelephonyDataDivert) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for TelephonyDataDivert")
 		}
 
-		// Simple Field (number)
-		number := string(m.GetNumber())
-		_numberErr := /*TODO: migrate me*/ writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (number), utils.WithEncoding("UTF-8)"))
-		if _numberErr != nil {
-			return errors.Wrap(_numberErr, "Error serializing 'number' field")
+		if err := WriteSimpleField[string](ctx, "number", m.GetNumber(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'number' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TelephonyDataDivert"); popErr != nil {

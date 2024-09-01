@@ -185,16 +185,8 @@ func (m *_SALDataClockAndTimekeeping) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for SALDataClockAndTimekeeping")
 		}
 
-		// Simple Field (clockAndTimekeepingData)
-		if pushErr := writeBuffer.PushContext("clockAndTimekeepingData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clockAndTimekeepingData")
-		}
-		_clockAndTimekeepingDataErr := writeBuffer.WriteSerializable(ctx, m.GetClockAndTimekeepingData())
-		if popErr := writeBuffer.PopContext("clockAndTimekeepingData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clockAndTimekeepingData")
-		}
-		if _clockAndTimekeepingDataErr != nil {
-			return errors.Wrap(_clockAndTimekeepingDataErr, "Error serializing 'clockAndTimekeepingData' field")
+		if err := WriteSimpleField[ClockAndTimekeepingData](ctx, "clockAndTimekeepingData", m.GetClockAndTimekeepingData(), WriteComplex[ClockAndTimekeepingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clockAndTimekeepingData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataClockAndTimekeeping"); popErr != nil {

@@ -181,16 +181,8 @@ func (m *_BACnetCalendarEntryWeekNDay) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetCalendarEntryWeekNDay")
 		}
 
-		// Simple Field (weekNDay)
-		if pushErr := writeBuffer.PushContext("weekNDay"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for weekNDay")
-		}
-		_weekNDayErr := writeBuffer.WriteSerializable(ctx, m.GetWeekNDay())
-		if popErr := writeBuffer.PopContext("weekNDay"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for weekNDay")
-		}
-		if _weekNDayErr != nil {
-			return errors.Wrap(_weekNDayErr, "Error serializing 'weekNDay' field")
+		if err := WriteSimpleField[BACnetWeekNDayTagged](ctx, "weekNDay", m.GetWeekNDay(), WriteComplex[BACnetWeekNDayTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'weekNDay' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetCalendarEntryWeekNDay"); popErr != nil {

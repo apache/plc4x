@@ -223,11 +223,8 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for TelephonyDataIsolateSecondaryOutlet")
 		}
 
-		// Simple Field (isolateStatus)
-		isolateStatus := byte(m.GetIsolateStatus())
-		_isolateStatusErr := /*TODO: migrate me*/ writeBuffer.WriteByte("isolateStatus", (isolateStatus))
-		if _isolateStatusErr != nil {
-			return errors.Wrap(_isolateStatusErr, "Error serializing 'isolateStatus' field")
+		if err := WriteSimpleField[byte](ctx, "isolateStatus", m.GetIsolateStatus(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isolateStatus' field")
 		}
 		// Virtual field
 		isBehaveNormal := m.GetIsBehaveNormal()

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReliabilityEvaluationInhibit")
 		}
 
-		// Simple Field (reliabilityEvaluationInhibit)
-		if pushErr := writeBuffer.PushContext("reliabilityEvaluationInhibit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reliabilityEvaluationInhibit")
-		}
-		_reliabilityEvaluationInhibitErr := writeBuffer.WriteSerializable(ctx, m.GetReliabilityEvaluationInhibit())
-		if popErr := writeBuffer.PopContext("reliabilityEvaluationInhibit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reliabilityEvaluationInhibit")
-		}
-		if _reliabilityEvaluationInhibitErr != nil {
-			return errors.Wrap(_reliabilityEvaluationInhibitErr, "Error serializing 'reliabilityEvaluationInhibit' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "reliabilityEvaluationInhibit", m.GetReliabilityEvaluationInhibit(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reliabilityEvaluationInhibit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

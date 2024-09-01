@@ -215,22 +215,16 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for FirmataMessageSubscribeAnalogPinValue")
 		}
 
-		// Simple Field (pin)
-		pin := uint8(m.GetPin())
-		_pinErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pin", 4, uint8((pin)))
-		if _pinErr != nil {
-			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
+		if err := WriteSimpleField[uint8](ctx, "pin", m.GetPin(), WriteUnsignedByte(writeBuffer, 4), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pin' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (enable)
-		enable := bool(m.GetEnable())
-		_enableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enable", (enable))
-		if _enableErr != nil {
-			return errors.Wrap(_enableErr, "Error serializing 'enable' field")
+		if err := WriteSimpleField[bool](ctx, "enable", m.GetEnable(), WriteBoolean(writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataMessageSubscribeAnalogPinValue"); popErr != nil {

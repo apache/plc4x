@@ -205,18 +205,12 @@ func (m *_COTPPacketDisconnectResponse) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for COTPPacketDisconnectResponse")
 		}
 
-		// Simple Field (destinationReference)
-		destinationReference := uint16(m.GetDestinationReference())
-		_destinationReferenceErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationReference", 16, uint16((destinationReference)))
-		if _destinationReferenceErr != nil {
-			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationReference", m.GetDestinationReference(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationReference' field")
 		}
 
-		// Simple Field (sourceReference)
-		sourceReference := uint16(m.GetSourceReference())
-		_sourceReferenceErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sourceReference", 16, uint16((sourceReference)))
-		if _sourceReferenceErr != nil {
-			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
+		if err := WriteSimpleField[uint16](ctx, "sourceReference", m.GetSourceReference(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceReference' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPPacketDisconnectResponse"); popErr != nil {

@@ -233,32 +233,20 @@ func (m *_MediaTransportControlDataSetTrack) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataSetTrack")
 		}
 
-		// Simple Field (trackMSB)
-		trackMSB := byte(m.GetTrackMSB())
-		_trackMSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("trackMSB", (trackMSB))
-		if _trackMSBErr != nil {
-			return errors.Wrap(_trackMSBErr, "Error serializing 'trackMSB' field")
+		if err := WriteSimpleField[byte](ctx, "trackMSB", m.GetTrackMSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackMSB' field")
 		}
 
-		// Simple Field (trackMMSB)
-		trackMMSB := byte(m.GetTrackMMSB())
-		_trackMMSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("trackMMSB", (trackMMSB))
-		if _trackMMSBErr != nil {
-			return errors.Wrap(_trackMMSBErr, "Error serializing 'trackMMSB' field")
+		if err := WriteSimpleField[byte](ctx, "trackMMSB", m.GetTrackMMSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackMMSB' field")
 		}
 
-		// Simple Field (trackMLSB)
-		trackMLSB := byte(m.GetTrackMLSB())
-		_trackMLSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("trackMLSB", (trackMLSB))
-		if _trackMLSBErr != nil {
-			return errors.Wrap(_trackMLSBErr, "Error serializing 'trackMLSB' field")
+		if err := WriteSimpleField[byte](ctx, "trackMLSB", m.GetTrackMLSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackMLSB' field")
 		}
 
-		// Simple Field (trackLSB)
-		trackLSB := byte(m.GetTrackLSB())
-		_trackLSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("trackLSB", (trackLSB))
-		if _trackLSBErr != nil {
-			return errors.Wrap(_trackLSBErr, "Error serializing 'trackLSB' field")
+		if err := WriteSimpleField[byte](ctx, "trackLSB", m.GetTrackLSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trackLSB' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataSetTrack"); popErr != nil {

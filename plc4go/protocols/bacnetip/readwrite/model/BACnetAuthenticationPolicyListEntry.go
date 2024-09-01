@@ -168,28 +168,12 @@ func (m *_BACnetAuthenticationPolicyListEntry) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationPolicyListEntry")
 	}
 
-	// Simple Field (credentialDataInput)
-	if pushErr := writeBuffer.PushContext("credentialDataInput"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for credentialDataInput")
-	}
-	_credentialDataInputErr := writeBuffer.WriteSerializable(ctx, m.GetCredentialDataInput())
-	if popErr := writeBuffer.PopContext("credentialDataInput"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for credentialDataInput")
-	}
-	if _credentialDataInputErr != nil {
-		return errors.Wrap(_credentialDataInputErr, "Error serializing 'credentialDataInput' field")
+	if err := WriteSimpleField[BACnetDeviceObjectReferenceEnclosed](ctx, "credentialDataInput", m.GetCredentialDataInput(), WriteComplex[BACnetDeviceObjectReferenceEnclosed](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'credentialDataInput' field")
 	}
 
-	// Simple Field (index)
-	if pushErr := writeBuffer.PushContext("index"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for index")
-	}
-	_indexErr := writeBuffer.WriteSerializable(ctx, m.GetIndex())
-	if popErr := writeBuffer.PopContext("index"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for index")
-	}
-	if _indexErr != nil {
-		return errors.Wrap(_indexErr, "Error serializing 'index' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "index", m.GetIndex(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'index' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAuthenticationPolicyListEntry"); popErr != nil {

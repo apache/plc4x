@@ -184,25 +184,16 @@ func (m *_SubItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for SubItem")
 	}
 
-	// Simple Field (bytesToRead)
-	bytesToRead := uint8(m.GetBytesToRead())
-	_bytesToReadErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("bytesToRead", 8, uint8((bytesToRead)))
-	if _bytesToReadErr != nil {
-		return errors.Wrap(_bytesToReadErr, "Error serializing 'bytesToRead' field")
+	if err := WriteSimpleField[uint8](ctx, "bytesToRead", m.GetBytesToRead(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'bytesToRead' field")
 	}
 
-	// Simple Field (dbNumber)
-	dbNumber := uint16(m.GetDbNumber())
-	_dbNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dbNumber", 16, uint16((dbNumber)))
-	if _dbNumberErr != nil {
-		return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
+	if err := WriteSimpleField[uint16](ctx, "dbNumber", m.GetDbNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dbNumber' field")
 	}
 
-	// Simple Field (startAddress)
-	startAddress := uint16(m.GetStartAddress())
-	_startAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("startAddress", 16, uint16((startAddress)))
-	if _startAddressErr != nil {
-		return errors.Wrap(_startAddressErr, "Error serializing 'startAddress' field")
+	if err := WriteSimpleField[uint16](ctx, "startAddress", m.GetStartAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'startAddress' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SubItem"); popErr != nil {

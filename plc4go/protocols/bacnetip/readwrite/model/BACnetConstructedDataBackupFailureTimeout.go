@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBackupFailureTimeout")
 		}
 
-		// Simple Field (backupFailureTimeout)
-		if pushErr := writeBuffer.PushContext("backupFailureTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for backupFailureTimeout")
-		}
-		_backupFailureTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetBackupFailureTimeout())
-		if popErr := writeBuffer.PopContext("backupFailureTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for backupFailureTimeout")
-		}
-		if _backupFailureTimeoutErr != nil {
-			return errors.Wrap(_backupFailureTimeoutErr, "Error serializing 'backupFailureTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "backupFailureTimeout", m.GetBackupFailureTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'backupFailureTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

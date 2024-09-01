@@ -200,28 +200,12 @@ func (m *_AddNodesResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for AddNodesResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (addedNodeId)
-		if pushErr := writeBuffer.PushContext("addedNodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addedNodeId")
-		}
-		_addedNodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetAddedNodeId())
-		if popErr := writeBuffer.PopContext("addedNodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addedNodeId")
-		}
-		if _addedNodeIdErr != nil {
-			return errors.Wrap(_addedNodeIdErr, "Error serializing 'addedNodeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "addedNodeId", m.GetAddedNodeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'addedNodeId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AddNodesResult"); popErr != nil {

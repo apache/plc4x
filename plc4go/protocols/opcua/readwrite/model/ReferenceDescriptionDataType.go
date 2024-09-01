@@ -245,51 +245,24 @@ func (m *_ReferenceDescriptionDataType) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for ReferenceDescriptionDataType")
 		}
 
-		// Simple Field (sourceNode)
-		if pushErr := writeBuffer.PushContext("sourceNode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sourceNode")
-		}
-		_sourceNodeErr := writeBuffer.WriteSerializable(ctx, m.GetSourceNode())
-		if popErr := writeBuffer.PopContext("sourceNode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sourceNode")
-		}
-		if _sourceNodeErr != nil {
-			return errors.Wrap(_sourceNodeErr, "Error serializing 'sourceNode' field")
+		if err := WriteSimpleField[NodeId](ctx, "sourceNode", m.GetSourceNode(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceNode' field")
 		}
 
-		// Simple Field (referenceType)
-		if pushErr := writeBuffer.PushContext("referenceType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceType")
-		}
-		_referenceTypeErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceType())
-		if popErr := writeBuffer.PopContext("referenceType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceType")
-		}
-		if _referenceTypeErr != nil {
-			return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
+		if err := WriteSimpleField[NodeId](ctx, "referenceType", m.GetReferenceType(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceType' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (isForward)
-		isForward := bool(m.GetIsForward())
-		_isForwardErr := /*TODO: migrate me*/ writeBuffer.WriteBit("isForward", (isForward))
-		if _isForwardErr != nil {
-			return errors.Wrap(_isForwardErr, "Error serializing 'isForward' field")
+		if err := WriteSimpleField[bool](ctx, "isForward", m.GetIsForward(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isForward' field")
 		}
 
-		// Simple Field (targetNode)
-		if pushErr := writeBuffer.PushContext("targetNode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetNode")
-		}
-		_targetNodeErr := writeBuffer.WriteSerializable(ctx, m.GetTargetNode())
-		if popErr := writeBuffer.PopContext("targetNode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetNode")
-		}
-		if _targetNodeErr != nil {
-			return errors.Wrap(_targetNodeErr, "Error serializing 'targetNode' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "targetNode", m.GetTargetNode(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetNode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ReferenceDescriptionDataType"); popErr != nil {

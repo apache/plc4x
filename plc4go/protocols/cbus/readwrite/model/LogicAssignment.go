@@ -253,18 +253,12 @@ func (m *_LogicAssignment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for LogicAssignment")
 	}
 
-	// Simple Field (greaterOfOrLogic)
-	greaterOfOrLogic := bool(m.GetGreaterOfOrLogic())
-	_greaterOfOrLogicErr := /*TODO: migrate me*/ writeBuffer.WriteBit("greaterOfOrLogic", (greaterOfOrLogic))
-	if _greaterOfOrLogicErr != nil {
-		return errors.Wrap(_greaterOfOrLogicErr, "Error serializing 'greaterOfOrLogic' field")
+	if err := WriteSimpleField[bool](ctx, "greaterOfOrLogic", m.GetGreaterOfOrLogic(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'greaterOfOrLogic' field")
 	}
 
-	// Simple Field (reStrikeDelay)
-	reStrikeDelay := bool(m.GetReStrikeDelay())
-	_reStrikeDelayErr := /*TODO: migrate me*/ writeBuffer.WriteBit("reStrikeDelay", (reStrikeDelay))
-	if _reStrikeDelayErr != nil {
-		return errors.Wrap(_reStrikeDelayErr, "Error serializing 'reStrikeDelay' field")
+	if err := WriteSimpleField[bool](ctx, "reStrikeDelay", m.GetReStrikeDelay(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reStrikeDelay' field")
 	}
 
 	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
@@ -275,32 +269,20 @@ func (m *_LogicAssignment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 
-	// Simple Field (assignedToGav16)
-	assignedToGav16 := bool(m.GetAssignedToGav16())
-	_assignedToGav16Err := /*TODO: migrate me*/ writeBuffer.WriteBit("assignedToGav16", (assignedToGav16))
-	if _assignedToGav16Err != nil {
-		return errors.Wrap(_assignedToGav16Err, "Error serializing 'assignedToGav16' field")
+	if err := WriteSimpleField[bool](ctx, "assignedToGav16", m.GetAssignedToGav16(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assignedToGav16' field")
 	}
 
-	// Simple Field (assignedToGav15)
-	assignedToGav15 := bool(m.GetAssignedToGav15())
-	_assignedToGav15Err := /*TODO: migrate me*/ writeBuffer.WriteBit("assignedToGav15", (assignedToGav15))
-	if _assignedToGav15Err != nil {
-		return errors.Wrap(_assignedToGav15Err, "Error serializing 'assignedToGav15' field")
+	if err := WriteSimpleField[bool](ctx, "assignedToGav15", m.GetAssignedToGav15(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assignedToGav15' field")
 	}
 
-	// Simple Field (assignedToGav14)
-	assignedToGav14 := bool(m.GetAssignedToGav14())
-	_assignedToGav14Err := /*TODO: migrate me*/ writeBuffer.WriteBit("assignedToGav14", (assignedToGav14))
-	if _assignedToGav14Err != nil {
-		return errors.Wrap(_assignedToGav14Err, "Error serializing 'assignedToGav14' field")
+	if err := WriteSimpleField[bool](ctx, "assignedToGav14", m.GetAssignedToGav14(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assignedToGav14' field")
 	}
 
-	// Simple Field (assignedToGav13)
-	assignedToGav13 := bool(m.GetAssignedToGav13())
-	_assignedToGav13Err := /*TODO: migrate me*/ writeBuffer.WriteBit("assignedToGav13", (assignedToGav13))
-	if _assignedToGav13Err != nil {
-		return errors.Wrap(_assignedToGav13Err, "Error serializing 'assignedToGav13' field")
+	if err := WriteSimpleField[bool](ctx, "assignedToGav13", m.GetAssignedToGav13(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'assignedToGav13' field")
 	}
 
 	if popErr := writeBuffer.PopContext("LogicAssignment"); popErr != nil {

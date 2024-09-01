@@ -233,32 +233,20 @@ func (m *_MediaTransportControlDataTotalTracks) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataTotalTracks")
 		}
 
-		// Simple Field (totalTracksMSB)
-		totalTracksMSB := byte(m.GetTotalTracksMSB())
-		_totalTracksMSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("totalTracksMSB", (totalTracksMSB))
-		if _totalTracksMSBErr != nil {
-			return errors.Wrap(_totalTracksMSBErr, "Error serializing 'totalTracksMSB' field")
+		if err := WriteSimpleField[byte](ctx, "totalTracksMSB", m.GetTotalTracksMSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalTracksMSB' field")
 		}
 
-		// Simple Field (totalTracksMMSB)
-		totalTracksMMSB := byte(m.GetTotalTracksMMSB())
-		_totalTracksMMSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("totalTracksMMSB", (totalTracksMMSB))
-		if _totalTracksMMSBErr != nil {
-			return errors.Wrap(_totalTracksMMSBErr, "Error serializing 'totalTracksMMSB' field")
+		if err := WriteSimpleField[byte](ctx, "totalTracksMMSB", m.GetTotalTracksMMSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalTracksMMSB' field")
 		}
 
-		// Simple Field (totalTracksMLSB)
-		totalTracksMLSB := byte(m.GetTotalTracksMLSB())
-		_totalTracksMLSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("totalTracksMLSB", (totalTracksMLSB))
-		if _totalTracksMLSBErr != nil {
-			return errors.Wrap(_totalTracksMLSBErr, "Error serializing 'totalTracksMLSB' field")
+		if err := WriteSimpleField[byte](ctx, "totalTracksMLSB", m.GetTotalTracksMLSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalTracksMLSB' field")
 		}
 
-		// Simple Field (totalTracksLSB)
-		totalTracksLSB := byte(m.GetTotalTracksLSB())
-		_totalTracksLSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("totalTracksLSB", (totalTracksLSB))
-		if _totalTracksLSBErr != nil {
-			return errors.Wrap(_totalTracksLSBErr, "Error serializing 'totalTracksLSB' field")
+		if err := WriteSimpleField[byte](ctx, "totalTracksLSB", m.GetTotalTracksLSB(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalTracksLSB' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataTotalTracks"); popErr != nil {

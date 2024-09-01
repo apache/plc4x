@@ -186,16 +186,8 @@ func (m *_CBusMessageToServer) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for CBusMessageToServer")
 		}
 
-		// Simple Field (request)
-		if pushErr := writeBuffer.PushContext("request"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for request")
-		}
-		_requestErr := writeBuffer.WriteSerializable(ctx, m.GetRequest())
-		if popErr := writeBuffer.PopContext("request"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for request")
-		}
-		if _requestErr != nil {
-			return errors.Wrap(_requestErr, "Error serializing 'request' field")
+		if err := WriteSimpleField[Request](ctx, "request", m.GetRequest(), WriteComplex[Request](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'request' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusMessageToServer"); popErr != nil {

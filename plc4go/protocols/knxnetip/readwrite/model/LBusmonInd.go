@@ -242,27 +242,16 @@ func (m *_LBusmonInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(pushErr, "Error pushing for LBusmonInd")
 		}
 
-		// Simple Field (additionalInformationLength)
-		additionalInformationLength := uint8(m.GetAdditionalInformationLength())
-		_additionalInformationLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("additionalInformationLength", 8, uint8((additionalInformationLength)))
-		if _additionalInformationLengthErr != nil {
-			return errors.Wrap(_additionalInformationLengthErr, "Error serializing 'additionalInformationLength' field")
+		if err := WriteSimpleField[uint8](ctx, "additionalInformationLength", m.GetAdditionalInformationLength(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'additionalInformationLength' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "additionalInformation", m.GetAdditionalInformation(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'additionalInformation' field")
 		}
 
-		// Simple Field (dataFrame)
-		if pushErr := writeBuffer.PushContext("dataFrame"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataFrame")
-		}
-		_dataFrameErr := writeBuffer.WriteSerializable(ctx, m.GetDataFrame())
-		if popErr := writeBuffer.PopContext("dataFrame"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataFrame")
-		}
-		if _dataFrameErr != nil {
-			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
+		if err := WriteSimpleField[LDataFrame](ctx, "dataFrame", m.GetDataFrame(), WriteComplex[LDataFrame](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataFrame' field")
 		}
 
 		if err := WriteOptionalField[uint8](ctx, "crc", m.GetCrc(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {

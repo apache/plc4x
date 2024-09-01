@@ -168,28 +168,12 @@ func (m *_BACnetPrescale) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for BACnetPrescale")
 	}
 
-	// Simple Field (multiplier)
-	if pushErr := writeBuffer.PushContext("multiplier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for multiplier")
-	}
-	_multiplierErr := writeBuffer.WriteSerializable(ctx, m.GetMultiplier())
-	if popErr := writeBuffer.PopContext("multiplier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for multiplier")
-	}
-	if _multiplierErr != nil {
-		return errors.Wrap(_multiplierErr, "Error serializing 'multiplier' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "multiplier", m.GetMultiplier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'multiplier' field")
 	}
 
-	// Simple Field (moduloDivide)
-	if pushErr := writeBuffer.PushContext("moduloDivide"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for moduloDivide")
-	}
-	_moduloDivideErr := writeBuffer.WriteSerializable(ctx, m.GetModuloDivide())
-	if popErr := writeBuffer.PopContext("moduloDivide"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for moduloDivide")
-	}
-	if _moduloDivideErr != nil {
-		return errors.Wrap(_moduloDivideErr, "Error serializing 'moduloDivide' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "moduloDivide", m.GetModuloDivide(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'moduloDivide' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPrescale"); popErr != nil {

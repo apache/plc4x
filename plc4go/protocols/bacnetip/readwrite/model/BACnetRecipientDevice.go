@@ -181,16 +181,8 @@ func (m *_BACnetRecipientDevice) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for BACnetRecipientDevice")
 		}
 
-		// Simple Field (deviceValue)
-		if pushErr := writeBuffer.PushContext("deviceValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceValue")
-		}
-		_deviceValueErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceValue())
-		if popErr := writeBuffer.PopContext("deviceValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceValue")
-		}
-		if _deviceValueErr != nil {
-			return errors.Wrap(_deviceValueErr, "Error serializing 'deviceValue' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "deviceValue", m.GetDeviceValue(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetRecipientDevice"); popErr != nil {

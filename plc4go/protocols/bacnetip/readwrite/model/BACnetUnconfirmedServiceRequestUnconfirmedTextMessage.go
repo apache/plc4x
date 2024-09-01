@@ -243,44 +243,20 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) SerializeWithWr
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 		}
 
-		// Simple Field (textMessageSourceDevice)
-		if pushErr := writeBuffer.PushContext("textMessageSourceDevice"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for textMessageSourceDevice")
-		}
-		_textMessageSourceDeviceErr := writeBuffer.WriteSerializable(ctx, m.GetTextMessageSourceDevice())
-		if popErr := writeBuffer.PopContext("textMessageSourceDevice"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for textMessageSourceDevice")
-		}
-		if _textMessageSourceDeviceErr != nil {
-			return errors.Wrap(_textMessageSourceDeviceErr, "Error serializing 'textMessageSourceDevice' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "textMessageSourceDevice", m.GetTextMessageSourceDevice(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'textMessageSourceDevice' field")
 		}
 
 		if err := WriteOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", GetRef(m.GetMessageClass()), WriteComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'messageClass' field")
 		}
 
-		// Simple Field (messagePriority)
-		if pushErr := writeBuffer.PushContext("messagePriority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for messagePriority")
-		}
-		_messagePriorityErr := writeBuffer.WriteSerializable(ctx, m.GetMessagePriority())
-		if popErr := writeBuffer.PopContext("messagePriority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for messagePriority")
-		}
-		if _messagePriorityErr != nil {
-			return errors.Wrap(_messagePriorityErr, "Error serializing 'messagePriority' field")
+		if err := WriteSimpleField[BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged](ctx, "messagePriority", m.GetMessagePriority(), WriteComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'messagePriority' field")
 		}
 
-		// Simple Field (message)
-		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for message")
-		}
-		_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
-		if popErr := writeBuffer.PopContext("message"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for message")
-		}
-		if _messageErr != nil {
-			return errors.Wrap(_messageErr, "Error serializing 'message' field")
+		if err := WriteSimpleField[BACnetContextTagCharacterString](ctx, "message", m.GetMessage(), WriteComplex[BACnetContextTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); popErr != nil {

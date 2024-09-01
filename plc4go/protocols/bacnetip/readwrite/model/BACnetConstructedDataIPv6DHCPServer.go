@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6DHCPServer")
 		}
 
-		// Simple Field (dhcpServer)
-		if pushErr := writeBuffer.PushContext("dhcpServer"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dhcpServer")
-		}
-		_dhcpServerErr := writeBuffer.WriteSerializable(ctx, m.GetDhcpServer())
-		if popErr := writeBuffer.PopContext("dhcpServer"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dhcpServer")
-		}
-		if _dhcpServerErr != nil {
-			return errors.Wrap(_dhcpServerErr, "Error serializing 'dhcpServer' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "dhcpServer", m.GetDhcpServer(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dhcpServer' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

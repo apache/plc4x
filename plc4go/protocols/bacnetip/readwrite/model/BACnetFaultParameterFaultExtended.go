@@ -249,64 +249,24 @@ func (m *_BACnetFaultParameterFaultExtended) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtended")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (vendorId)
-		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorId")
-		}
-		_vendorIdErr := writeBuffer.WriteSerializable(ctx, m.GetVendorId())
-		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorId")
-		}
-		if _vendorIdErr != nil {
-			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
+		if err := WriteSimpleField[BACnetVendorIdTagged](ctx, "vendorId", m.GetVendorId(), WriteComplex[BACnetVendorIdTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vendorId' field")
 		}
 
-		// Simple Field (extendedFaultType)
-		if pushErr := writeBuffer.PushContext("extendedFaultType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for extendedFaultType")
-		}
-		_extendedFaultTypeErr := writeBuffer.WriteSerializable(ctx, m.GetExtendedFaultType())
-		if popErr := writeBuffer.PopContext("extendedFaultType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for extendedFaultType")
-		}
-		if _extendedFaultTypeErr != nil {
-			return errors.Wrap(_extendedFaultTypeErr, "Error serializing 'extendedFaultType' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedFaultType", m.GetExtendedFaultType(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'extendedFaultType' field")
 		}
 
-		// Simple Field (parameters)
-		if pushErr := writeBuffer.PushContext("parameters"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameters")
-		}
-		_parametersErr := writeBuffer.WriteSerializable(ctx, m.GetParameters())
-		if popErr := writeBuffer.PopContext("parameters"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameters")
-		}
-		if _parametersErr != nil {
-			return errors.Wrap(_parametersErr, "Error serializing 'parameters' field")
+		if err := WriteSimpleField[BACnetFaultParameterFaultExtendedParameters](ctx, "parameters", m.GetParameters(), WriteComplex[BACnetFaultParameterFaultExtendedParameters](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'parameters' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtended"); popErr != nil {

@@ -218,40 +218,16 @@ func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for CBusPointToPointCommandIndirect")
 		}
 
-		// Simple Field (bridgeAddress)
-		if pushErr := writeBuffer.PushContext("bridgeAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
-		}
-		_bridgeAddressErr := writeBuffer.WriteSerializable(ctx, m.GetBridgeAddress())
-		if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bridgeAddress")
-		}
-		if _bridgeAddressErr != nil {
-			return errors.Wrap(_bridgeAddressErr, "Error serializing 'bridgeAddress' field")
+		if err := WriteSimpleField[BridgeAddress](ctx, "bridgeAddress", m.GetBridgeAddress(), WriteComplex[BridgeAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bridgeAddress' field")
 		}
 
-		// Simple Field (networkRoute)
-		if pushErr := writeBuffer.PushContext("networkRoute"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for networkRoute")
-		}
-		_networkRouteErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkRoute())
-		if popErr := writeBuffer.PopContext("networkRoute"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for networkRoute")
-		}
-		if _networkRouteErr != nil {
-			return errors.Wrap(_networkRouteErr, "Error serializing 'networkRoute' field")
+		if err := WriteSimpleField[NetworkRoute](ctx, "networkRoute", m.GetNetworkRoute(), WriteComplex[NetworkRoute](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkRoute' field")
 		}
 
-		// Simple Field (unitAddress)
-		if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unitAddress")
-		}
-		_unitAddressErr := writeBuffer.WriteSerializable(ctx, m.GetUnitAddress())
-		if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unitAddress")
-		}
-		if _unitAddressErr != nil {
-			return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
+		if err := WriteSimpleField[UnitAddress](ctx, "unitAddress", m.GetUnitAddress(), WriteComplex[UnitAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusPointToPointCommandIndirect"); popErr != nil {

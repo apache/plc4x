@@ -217,40 +217,16 @@ func (m *_AnnotationDataType) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for AnnotationDataType")
 		}
 
-		// Simple Field (annotation)
-		if pushErr := writeBuffer.PushContext("annotation"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for annotation")
-		}
-		_annotationErr := writeBuffer.WriteSerializable(ctx, m.GetAnnotation())
-		if popErr := writeBuffer.PopContext("annotation"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for annotation")
-		}
-		if _annotationErr != nil {
-			return errors.Wrap(_annotationErr, "Error serializing 'annotation' field")
+		if err := WriteSimpleField[PascalString](ctx, "annotation", m.GetAnnotation(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'annotation' field")
 		}
 
-		// Simple Field (discipline)
-		if pushErr := writeBuffer.PushContext("discipline"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for discipline")
-		}
-		_disciplineErr := writeBuffer.WriteSerializable(ctx, m.GetDiscipline())
-		if popErr := writeBuffer.PopContext("discipline"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for discipline")
-		}
-		if _disciplineErr != nil {
-			return errors.Wrap(_disciplineErr, "Error serializing 'discipline' field")
+		if err := WriteSimpleField[PascalString](ctx, "discipline", m.GetDiscipline(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'discipline' field")
 		}
 
-		// Simple Field (uri)
-		if pushErr := writeBuffer.PushContext("uri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for uri")
-		}
-		_uriErr := writeBuffer.WriteSerializable(ctx, m.GetUri())
-		if popErr := writeBuffer.PopContext("uri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for uri")
-		}
-		if _uriErr != nil {
-			return errors.Wrap(_uriErr, "Error serializing 'uri' field")
+		if err := WriteSimpleField[PascalString](ctx, "uri", m.GetUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'uri' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AnnotationDataType"); popErr != nil {

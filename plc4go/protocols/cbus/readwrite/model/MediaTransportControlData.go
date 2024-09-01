@@ -277,16 +277,8 @@ func (pm *_MediaTransportControlData) SerializeParent(ctx context.Context, write
 		return errors.Wrap(pushErr, "Error pushing for MediaTransportControlData")
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
+	if err := WriteSimpleEnumField[MediaTransportControlCommandTypeContainer](ctx, "commandTypeContainer", "MediaTransportControlCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[MediaTransportControlCommandTypeContainer, uint8](MediaTransportControlCommandTypeContainer.GetValue, MediaTransportControlCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
@@ -295,11 +287,8 @@ func (pm *_MediaTransportControlData) SerializeParent(ctx context.Context, write
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
-	// Simple Field (mediaLinkGroup)
-	mediaLinkGroup := byte(m.GetMediaLinkGroup())
-	_mediaLinkGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("mediaLinkGroup", (mediaLinkGroup))
-	if _mediaLinkGroupErr != nil {
-		return errors.Wrap(_mediaLinkGroupErr, "Error serializing 'mediaLinkGroup' field")
+	if err := WriteSimpleField[byte](ctx, "mediaLinkGroup", m.GetMediaLinkGroup(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'mediaLinkGroup' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

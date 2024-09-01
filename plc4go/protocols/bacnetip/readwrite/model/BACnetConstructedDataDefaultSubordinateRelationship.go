@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) SerializeWithWrit
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultSubordinateRelationship")
 		}
 
-		// Simple Field (defaultSubordinateRelationship)
-		if pushErr := writeBuffer.PushContext("defaultSubordinateRelationship"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for defaultSubordinateRelationship")
-		}
-		_defaultSubordinateRelationshipErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultSubordinateRelationship())
-		if popErr := writeBuffer.PopContext("defaultSubordinateRelationship"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for defaultSubordinateRelationship")
-		}
-		if _defaultSubordinateRelationshipErr != nil {
-			return errors.Wrap(_defaultSubordinateRelationshipErr, "Error serializing 'defaultSubordinateRelationship' field")
+		if err := WriteSimpleField[BACnetRelationshipTagged](ctx, "defaultSubordinateRelationship", m.GetDefaultSubordinateRelationship(), WriteComplex[BACnetRelationshipTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'defaultSubordinateRelationship' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

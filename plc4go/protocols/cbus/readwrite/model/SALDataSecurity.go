@@ -185,16 +185,8 @@ func (m *_SALDataSecurity) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for SALDataSecurity")
 		}
 
-		// Simple Field (securityData)
-		if pushErr := writeBuffer.PushContext("securityData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityData")
-		}
-		_securityDataErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityData())
-		if popErr := writeBuffer.PopContext("securityData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityData")
-		}
-		if _securityDataErr != nil {
-			return errors.Wrap(_securityDataErr, "Error serializing 'securityData' field")
+		if err := WriteSimpleField[SecurityData](ctx, "securityData", m.GetSecurityData(), WriteComplex[SecurityData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataSecurity"); popErr != nil {

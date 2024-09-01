@@ -202,23 +202,12 @@ func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for FirmataCommandSetPinMode")
 		}
 
-		// Simple Field (pin)
-		pin := uint8(m.GetPin())
-		_pinErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pin", 8, uint8((pin)))
-		if _pinErr != nil {
-			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
+		if err := WriteSimpleField[uint8](ctx, "pin", m.GetPin(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pin' field")
 		}
 
-		// Simple Field (mode)
-		if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for mode")
-		}
-		_modeErr := writeBuffer.WriteSerializable(ctx, m.GetMode())
-		if popErr := writeBuffer.PopContext("mode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for mode")
-		}
-		if _modeErr != nil {
-			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
+		if err := WriteSimpleEnumField[PinMode](ctx, "mode", "PinMode", m.GetMode(), WriteEnum[PinMode, uint8](PinMode.GetValue, PinMode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'mode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandSetPinMode"); popErr != nil {

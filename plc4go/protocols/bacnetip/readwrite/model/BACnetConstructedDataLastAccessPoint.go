@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastAccessPoint) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastAccessPoint")
 		}
 
-		// Simple Field (lastAccessPoint)
-		if pushErr := writeBuffer.PushContext("lastAccessPoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastAccessPoint")
-		}
-		_lastAccessPointErr := writeBuffer.WriteSerializable(ctx, m.GetLastAccessPoint())
-		if popErr := writeBuffer.PopContext("lastAccessPoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastAccessPoint")
-		}
-		if _lastAccessPointErr != nil {
-			return errors.Wrap(_lastAccessPointErr, "Error serializing 'lastAccessPoint' field")
+		if err := WriteSimpleField[BACnetDeviceObjectReference](ctx, "lastAccessPoint", m.GetLastAccessPoint(), WriteComplex[BACnetDeviceObjectReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastAccessPoint' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

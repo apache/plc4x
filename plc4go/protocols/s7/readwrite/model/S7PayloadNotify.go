@@ -195,16 +195,8 @@ func (m *_S7PayloadNotify) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadNotify")
 		}
 
-		// Simple Field (alarmMessage)
-		if pushErr := writeBuffer.PushContext("alarmMessage"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alarmMessage")
-		}
-		_alarmMessageErr := writeBuffer.WriteSerializable(ctx, m.GetAlarmMessage())
-		if popErr := writeBuffer.PopContext("alarmMessage"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alarmMessage")
-		}
-		if _alarmMessageErr != nil {
-			return errors.Wrap(_alarmMessageErr, "Error serializing 'alarmMessage' field")
+		if err := WriteSimpleField[AlarmMessagePushType](ctx, "alarmMessage", m.GetAlarmMessage(), WriteComplex[AlarmMessagePushType](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'alarmMessage' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadNotify"); popErr != nil {

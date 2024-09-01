@@ -258,42 +258,20 @@ func (m *_CreateMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for CreateMonitoredItemsRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (subscriptionId)
-		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
-		if _subscriptionIdErr != nil {
-			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		// Simple Field (timestampsToReturn)
-		if pushErr := writeBuffer.PushContext("timestampsToReturn"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timestampsToReturn")
-		}
-		_timestampsToReturnErr := writeBuffer.WriteSerializable(ctx, m.GetTimestampsToReturn())
-		if popErr := writeBuffer.PopContext("timestampsToReturn"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timestampsToReturn")
-		}
-		if _timestampsToReturnErr != nil {
-			return errors.Wrap(_timestampsToReturnErr, "Error serializing 'timestampsToReturn' field")
+		if err := WriteSimpleEnumField[TimestampsToReturn](ctx, "timestampsToReturn", "TimestampsToReturn", m.GetTimestampsToReturn(), WriteEnum[TimestampsToReturn, uint32](TimestampsToReturn.GetValue, TimestampsToReturn.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'timestampsToReturn' field")
 		}
 
-		// Simple Field (noOfItemsToCreate)
-		noOfItemsToCreate := int32(m.GetNoOfItemsToCreate())
-		_noOfItemsToCreateErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfItemsToCreate", 32, int32((noOfItemsToCreate)))
-		if _noOfItemsToCreateErr != nil {
-			return errors.Wrap(_noOfItemsToCreateErr, "Error serializing 'noOfItemsToCreate' field")
+		if err := WriteSimpleField[int32](ctx, "noOfItemsToCreate", m.GetNoOfItemsToCreate(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfItemsToCreate' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "itemsToCreate", m.GetItemsToCreate(), writeBuffer); err != nil {

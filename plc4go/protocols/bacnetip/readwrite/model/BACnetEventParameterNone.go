@@ -181,16 +181,8 @@ func (m *_BACnetEventParameterNone) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterNone")
 		}
 
-		// Simple Field (none)
-		if pushErr := writeBuffer.PushContext("none"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for none")
-		}
-		_noneErr := writeBuffer.WriteSerializable(ctx, m.GetNone())
-		if popErr := writeBuffer.PopContext("none"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for none")
-		}
-		if _noneErr != nil {
-			return errors.Wrap(_noneErr, "Error serializing 'none' field")
+		if err := WriteSimpleField[BACnetContextTagNull](ctx, "none", m.GetNone(), WriteComplex[BACnetContextTagNull](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'none' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterNone"); popErr != nil {

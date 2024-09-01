@@ -202,23 +202,12 @@ func (m *_NLMRejectMessageToNetwork) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for NLMRejectMessageToNetwork")
 		}
 
-		// Simple Field (rejectReason)
-		if pushErr := writeBuffer.PushContext("rejectReason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for rejectReason")
-		}
-		_rejectReasonErr := writeBuffer.WriteSerializable(ctx, m.GetRejectReason())
-		if popErr := writeBuffer.PopContext("rejectReason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for rejectReason")
-		}
-		if _rejectReasonErr != nil {
-			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
+		if err := WriteSimpleEnumField[NLMRejectMessageToNetworkRejectReason](ctx, "rejectReason", "NLMRejectMessageToNetworkRejectReason", m.GetRejectReason(), WriteEnum[NLMRejectMessageToNetworkRejectReason, uint8](NLMRejectMessageToNetworkRejectReason.GetValue, NLMRejectMessageToNetworkRejectReason.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'rejectReason' field")
 		}
 
-		// Simple Field (destinationNetworkAddress)
-		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
-		if _destinationNetworkAddressErr != nil {
-			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMRejectMessageToNetwork"); popErr != nil {

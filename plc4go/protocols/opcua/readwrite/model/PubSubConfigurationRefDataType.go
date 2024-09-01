@@ -234,37 +234,20 @@ func (m *_PubSubConfigurationRefDataType) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for PubSubConfigurationRefDataType")
 		}
 
-		// Simple Field (configurationMask)
-		if pushErr := writeBuffer.PushContext("configurationMask"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for configurationMask")
-		}
-		_configurationMaskErr := writeBuffer.WriteSerializable(ctx, m.GetConfigurationMask())
-		if popErr := writeBuffer.PopContext("configurationMask"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for configurationMask")
-		}
-		if _configurationMaskErr != nil {
-			return errors.Wrap(_configurationMaskErr, "Error serializing 'configurationMask' field")
+		if err := WriteSimpleEnumField[PubSubConfigurationRefMask](ctx, "configurationMask", "PubSubConfigurationRefMask", m.GetConfigurationMask(), WriteEnum[PubSubConfigurationRefMask, uint32](PubSubConfigurationRefMask.GetValue, PubSubConfigurationRefMask.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'configurationMask' field")
 		}
 
-		// Simple Field (elementIndex)
-		elementIndex := uint16(m.GetElementIndex())
-		_elementIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("elementIndex", 16, uint16((elementIndex)))
-		if _elementIndexErr != nil {
-			return errors.Wrap(_elementIndexErr, "Error serializing 'elementIndex' field")
+		if err := WriteSimpleField[uint16](ctx, "elementIndex", m.GetElementIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'elementIndex' field")
 		}
 
-		// Simple Field (connectionIndex)
-		connectionIndex := uint16(m.GetConnectionIndex())
-		_connectionIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("connectionIndex", 16, uint16((connectionIndex)))
-		if _connectionIndexErr != nil {
-			return errors.Wrap(_connectionIndexErr, "Error serializing 'connectionIndex' field")
+		if err := WriteSimpleField[uint16](ctx, "connectionIndex", m.GetConnectionIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionIndex' field")
 		}
 
-		// Simple Field (groupIndex)
-		groupIndex := uint16(m.GetGroupIndex())
-		_groupIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("groupIndex", 16, uint16((groupIndex)))
-		if _groupIndexErr != nil {
-			return errors.Wrap(_groupIndexErr, "Error serializing 'groupIndex' field")
+		if err := WriteSimpleField[uint16](ctx, "groupIndex", m.GetGroupIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'groupIndex' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PubSubConfigurationRefDataType"); popErr != nil {

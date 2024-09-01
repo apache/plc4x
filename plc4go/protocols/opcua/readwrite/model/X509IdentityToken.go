@@ -183,16 +183,8 @@ func (m *_X509IdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for X509IdentityToken")
 		}
 
-		// Simple Field (certificateData)
-		if pushErr := writeBuffer.PushContext("certificateData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for certificateData")
-		}
-		_certificateDataErr := writeBuffer.WriteSerializable(ctx, m.GetCertificateData())
-		if popErr := writeBuffer.PopContext("certificateData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for certificateData")
-		}
-		if _certificateDataErr != nil {
-			return errors.Wrap(_certificateDataErr, "Error serializing 'certificateData' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "certificateData", m.GetCertificateData(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'certificateData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("X509IdentityToken"); popErr != nil {

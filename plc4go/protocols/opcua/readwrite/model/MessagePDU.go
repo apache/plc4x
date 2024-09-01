@@ -231,16 +231,8 @@ func (pm *_MessagePDU) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(err, "Error serializing 'messageType' field")
 	}
 
-	// Simple Field (chunk)
-	if pushErr := writeBuffer.PushContext("chunk"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for chunk")
-	}
-	_chunkErr := writeBuffer.WriteSerializable(ctx, m.GetChunk())
-	if popErr := writeBuffer.PopContext("chunk"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for chunk")
-	}
-	if _chunkErr != nil {
-		return errors.Wrap(_chunkErr, "Error serializing 'chunk' field")
+	if err := WriteSimpleEnumField[ChunkType](ctx, "chunk", "ChunkType", m.GetChunk(), WriteEnum[ChunkType, string](ChunkType.GetValue, ChunkType.PLC4XEnumName, WriteString(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'chunk' field")
 	}
 	totalLength := uint32(uint32(m.GetLengthInBytes(ctx)))
 	if err := WriteImplicitField(ctx, "totalLength", totalLength, WriteUnsignedInt(writeBuffer, 32)); err != nil {

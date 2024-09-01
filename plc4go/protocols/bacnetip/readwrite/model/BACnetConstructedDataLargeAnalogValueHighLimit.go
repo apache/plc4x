@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLargeAnalogValueHighLimit")
 		}
 
-		// Simple Field (highLimit)
-		if pushErr := writeBuffer.PushContext("highLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for highLimit")
-		}
-		_highLimitErr := writeBuffer.WriteSerializable(ctx, m.GetHighLimit())
-		if popErr := writeBuffer.PopContext("highLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for highLimit")
-		}
-		if _highLimitErr != nil {
-			return errors.Wrap(_highLimitErr, "Error serializing 'highLimit' field")
+		if err := WriteSimpleField[BACnetApplicationTagDouble](ctx, "highLimit", m.GetHighLimit(), WriteComplex[BACnetApplicationTagDouble](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'highLimit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

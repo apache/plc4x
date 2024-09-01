@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaxSegmentsAccepted")
 		}
 
-		// Simple Field (maxSegmentsAccepted)
-		if pushErr := writeBuffer.PushContext("maxSegmentsAccepted"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxSegmentsAccepted")
-		}
-		_maxSegmentsAcceptedErr := writeBuffer.WriteSerializable(ctx, m.GetMaxSegmentsAccepted())
-		if popErr := writeBuffer.PopContext("maxSegmentsAccepted"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxSegmentsAccepted")
-		}
-		if _maxSegmentsAcceptedErr != nil {
-			return errors.Wrap(_maxSegmentsAcceptedErr, "Error serializing 'maxSegmentsAccepted' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxSegmentsAccepted", m.GetMaxSegmentsAccepted(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxSegmentsAccepted' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

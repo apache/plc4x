@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesLiftFault) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftFault")
 		}
 
-		// Simple Field (liftFault)
-		if pushErr := writeBuffer.PushContext("liftFault"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for liftFault")
-		}
-		_liftFaultErr := writeBuffer.WriteSerializable(ctx, m.GetLiftFault())
-		if popErr := writeBuffer.PopContext("liftFault"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for liftFault")
-		}
-		if _liftFaultErr != nil {
-			return errors.Wrap(_liftFaultErr, "Error serializing 'liftFault' field")
+		if err := WriteSimpleField[BACnetLiftFaultTagged](ctx, "liftFault", m.GetLiftFault(), WriteComplex[BACnetLiftFaultTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'liftFault' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftFault"); popErr != nil {

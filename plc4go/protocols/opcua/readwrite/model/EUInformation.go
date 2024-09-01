@@ -234,47 +234,20 @@ func (m *_EUInformation) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for EUInformation")
 		}
 
-		// Simple Field (namespaceUri)
-		if pushErr := writeBuffer.PushContext("namespaceUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for namespaceUri")
-		}
-		_namespaceUriErr := writeBuffer.WriteSerializable(ctx, m.GetNamespaceUri())
-		if popErr := writeBuffer.PopContext("namespaceUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for namespaceUri")
-		}
-		if _namespaceUriErr != nil {
-			return errors.Wrap(_namespaceUriErr, "Error serializing 'namespaceUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "namespaceUri", m.GetNamespaceUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'namespaceUri' field")
 		}
 
-		// Simple Field (unitId)
-		unitId := int32(m.GetUnitId())
-		_unitIdErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("unitId", 32, int32((unitId)))
-		if _unitIdErr != nil {
-			return errors.Wrap(_unitIdErr, "Error serializing 'unitId' field")
+		if err := WriteSimpleField[int32](ctx, "unitId", m.GetUnitId(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitId' field")
 		}
 
-		// Simple Field (displayName)
-		if pushErr := writeBuffer.PushContext("displayName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for displayName")
-		}
-		_displayNameErr := writeBuffer.WriteSerializable(ctx, m.GetDisplayName())
-		if popErr := writeBuffer.PopContext("displayName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for displayName")
-		}
-		if _displayNameErr != nil {
-			return errors.Wrap(_displayNameErr, "Error serializing 'displayName' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "displayName", m.GetDisplayName(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'displayName' field")
 		}
 
-		// Simple Field (description)
-		if pushErr := writeBuffer.PushContext("description"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for description")
-		}
-		_descriptionErr := writeBuffer.WriteSerializable(ctx, m.GetDescription())
-		if popErr := writeBuffer.PopContext("description"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for description")
-		}
-		if _descriptionErr != nil {
-			return errors.Wrap(_descriptionErr, "Error serializing 'description' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "description", m.GetDescription(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'description' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EUInformation"); popErr != nil {

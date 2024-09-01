@@ -237,52 +237,32 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for NPDUControl")
 	}
 
-	// Simple Field (messageTypeFieldPresent)
-	messageTypeFieldPresent := bool(m.GetMessageTypeFieldPresent())
-	_messageTypeFieldPresentErr := /*TODO: migrate me*/ writeBuffer.WriteBit("messageTypeFieldPresent", (messageTypeFieldPresent))
-	if _messageTypeFieldPresentErr != nil {
-		return errors.Wrap(_messageTypeFieldPresentErr, "Error serializing 'messageTypeFieldPresent' field")
+	if err := WriteSimpleField[bool](ctx, "messageTypeFieldPresent", m.GetMessageTypeFieldPresent(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageTypeFieldPresent' field")
 	}
 
 	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (destinationSpecified)
-	destinationSpecified := bool(m.GetDestinationSpecified())
-	_destinationSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("destinationSpecified", (destinationSpecified))
-	if _destinationSpecifiedErr != nil {
-		return errors.Wrap(_destinationSpecifiedErr, "Error serializing 'destinationSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "destinationSpecified", m.GetDestinationSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'destinationSpecified' field")
 	}
 
 	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 
-	// Simple Field (sourceSpecified)
-	sourceSpecified := bool(m.GetSourceSpecified())
-	_sourceSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("sourceSpecified", (sourceSpecified))
-	if _sourceSpecifiedErr != nil {
-		return errors.Wrap(_sourceSpecifiedErr, "Error serializing 'sourceSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "sourceSpecified", m.GetSourceSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceSpecified' field")
 	}
 
-	// Simple Field (expectingReply)
-	expectingReply := bool(m.GetExpectingReply())
-	_expectingReplyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("expectingReply", (expectingReply))
-	if _expectingReplyErr != nil {
-		return errors.Wrap(_expectingReplyErr, "Error serializing 'expectingReply' field")
+	if err := WriteSimpleField[bool](ctx, "expectingReply", m.GetExpectingReply(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'expectingReply' field")
 	}
 
-	// Simple Field (networkPriority)
-	if pushErr := writeBuffer.PushContext("networkPriority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for networkPriority")
-	}
-	_networkPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkPriority())
-	if popErr := writeBuffer.PopContext("networkPriority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for networkPriority")
-	}
-	if _networkPriorityErr != nil {
-		return errors.Wrap(_networkPriorityErr, "Error serializing 'networkPriority' field")
+	if err := WriteSimpleEnumField[NPDUNetworkPriority](ctx, "networkPriority", "NPDUNetworkPriority", m.GetNetworkPriority(), WriteEnum[NPDUNetworkPriority, uint8](NPDUNetworkPriority.GetValue, NPDUNetworkPriority.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkPriority' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NPDUControl"); popErr != nil {

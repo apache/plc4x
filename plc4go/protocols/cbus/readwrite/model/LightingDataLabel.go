@@ -236,23 +236,12 @@ func (m *_LightingDataLabel) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for LightingDataLabel")
 		}
 
-		// Simple Field (group)
-		group := byte(m.GetGroup())
-		_groupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("group", (group))
-		if _groupErr != nil {
-			return errors.Wrap(_groupErr, "Error serializing 'group' field")
+		if err := WriteSimpleField[byte](ctx, "group", m.GetGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'group' field")
 		}
 
-		// Simple Field (labelOptions)
-		if pushErr := writeBuffer.PushContext("labelOptions"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for labelOptions")
-		}
-		_labelOptionsErr := writeBuffer.WriteSerializable(ctx, m.GetLabelOptions())
-		if popErr := writeBuffer.PopContext("labelOptions"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for labelOptions")
-		}
-		if _labelOptionsErr != nil {
-			return errors.Wrap(_labelOptionsErr, "Error serializing 'labelOptions' field")
+		if err := WriteSimpleField[LightingLabelOptions](ctx, "labelOptions", m.GetLabelOptions(), WriteComplex[LightingLabelOptions](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'labelOptions' field")
 		}
 
 		if err := WriteOptionalEnumField[Language](ctx, "language", "Language", m.GetLanguage(), WriteEnum[Language, uint8](Language.GetValue, Language.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetLabelOptions().GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON))); err != nil {

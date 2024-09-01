@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastKeyServer) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastKeyServer")
 		}
 
-		// Simple Field (lastKeyServer)
-		if pushErr := writeBuffer.PushContext("lastKeyServer"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastKeyServer")
-		}
-		_lastKeyServerErr := writeBuffer.WriteSerializable(ctx, m.GetLastKeyServer())
-		if popErr := writeBuffer.PopContext("lastKeyServer"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastKeyServer")
-		}
-		if _lastKeyServerErr != nil {
-			return errors.Wrap(_lastKeyServerErr, "Error serializing 'lastKeyServer' field")
+		if err := WriteSimpleField[BACnetAddressBinding](ctx, "lastKeyServer", m.GetLastKeyServer(), WriteComplex[BACnetAddressBinding](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastKeyServer' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

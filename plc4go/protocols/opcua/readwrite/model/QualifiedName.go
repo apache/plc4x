@@ -168,23 +168,12 @@ func (m *_QualifiedName) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for QualifiedName")
 	}
 
-	// Simple Field (namespaceIndex)
-	namespaceIndex := uint16(m.GetNamespaceIndex())
-	_namespaceIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
-	if _namespaceIndexErr != nil {
-		return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
+	if err := WriteSimpleField[uint16](ctx, "namespaceIndex", m.GetNamespaceIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'namespaceIndex' field")
 	}
 
-	// Simple Field (name)
-	if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for name")
-	}
-	_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-	if popErr := writeBuffer.PopContext("name"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for name")
-	}
-	if _nameErr != nil {
-		return errors.Wrap(_nameErr, "Error serializing 'name' field")
+	if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'name' field")
 	}
 
 	if popErr := writeBuffer.PopContext("QualifiedName"); popErr != nil {

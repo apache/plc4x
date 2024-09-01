@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataNotificationThreshold) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNotificationThreshold")
 		}
 
-		// Simple Field (notificationThreshold)
-		if pushErr := writeBuffer.PushContext("notificationThreshold"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notificationThreshold")
-		}
-		_notificationThresholdErr := writeBuffer.WriteSerializable(ctx, m.GetNotificationThreshold())
-		if popErr := writeBuffer.PopContext("notificationThreshold"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notificationThreshold")
-		}
-		if _notificationThresholdErr != nil {
-			return errors.Wrap(_notificationThresholdErr, "Error serializing 'notificationThreshold' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "notificationThreshold", m.GetNotificationThreshold(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationThreshold' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

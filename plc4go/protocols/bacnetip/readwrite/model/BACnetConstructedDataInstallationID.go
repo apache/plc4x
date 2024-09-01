@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataInstallationID) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInstallationID")
 		}
 
-		// Simple Field (installationId)
-		if pushErr := writeBuffer.PushContext("installationId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for installationId")
-		}
-		_installationIdErr := writeBuffer.WriteSerializable(ctx, m.GetInstallationId())
-		if popErr := writeBuffer.PopContext("installationId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for installationId")
-		}
-		if _installationIdErr != nil {
-			return errors.Wrap(_installationIdErr, "Error serializing 'installationId' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "installationId", m.GetInstallationId(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'installationId' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

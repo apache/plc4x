@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesNotifyType) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesNotifyType")
 		}
 
-		// Simple Field (notifyType)
-		if pushErr := writeBuffer.PushContext("notifyType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notifyType")
-		}
-		_notifyTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNotifyType())
-		if popErr := writeBuffer.PopContext("notifyType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notifyType")
-		}
-		if _notifyTypeErr != nil {
-			return errors.Wrap(_notifyTypeErr, "Error serializing 'notifyType' field")
+		if err := WriteSimpleField[BACnetNotifyTypeTagged](ctx, "notifyType", m.GetNotifyType(), WriteComplex[BACnetNotifyTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notifyType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesNotifyType"); popErr != nil {

@@ -183,16 +183,8 @@ func (m *_BACnetTimerStateChangeValueBoolean) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueBoolean")
 		}
 
-		// Simple Field (booleanValue)
-		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for booleanValue")
-		}
-		_booleanValueErr := writeBuffer.WriteSerializable(ctx, m.GetBooleanValue())
-		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for booleanValue")
-		}
-		if _booleanValueErr != nil {
-			return errors.Wrap(_booleanValueErr, "Error serializing 'booleanValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "booleanValue", m.GetBooleanValue(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'booleanValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueBoolean"); popErr != nil {

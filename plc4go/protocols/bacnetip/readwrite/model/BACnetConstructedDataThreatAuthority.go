@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataThreatAuthority) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataThreatAuthority")
 		}
 
-		// Simple Field (threatAuthority)
-		if pushErr := writeBuffer.PushContext("threatAuthority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for threatAuthority")
-		}
-		_threatAuthorityErr := writeBuffer.WriteSerializable(ctx, m.GetThreatAuthority())
-		if popErr := writeBuffer.PopContext("threatAuthority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for threatAuthority")
-		}
-		if _threatAuthorityErr != nil {
-			return errors.Wrap(_threatAuthorityErr, "Error serializing 'threatAuthority' field")
+		if err := WriteSimpleField[BACnetAccessThreatLevel](ctx, "threatAuthority", m.GetThreatAuthority(), WriteComplex[BACnetAccessThreatLevel](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'threatAuthority' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

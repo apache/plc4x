@@ -243,40 +243,16 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestWriteGroup")
 		}
 
-		// Simple Field (groupNumber)
-		if pushErr := writeBuffer.PushContext("groupNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for groupNumber")
-		}
-		_groupNumberErr := writeBuffer.WriteSerializable(ctx, m.GetGroupNumber())
-		if popErr := writeBuffer.PopContext("groupNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for groupNumber")
-		}
-		if _groupNumberErr != nil {
-			return errors.Wrap(_groupNumberErr, "Error serializing 'groupNumber' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "groupNumber", m.GetGroupNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'groupNumber' field")
 		}
 
-		// Simple Field (writePriority)
-		if pushErr := writeBuffer.PushContext("writePriority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for writePriority")
-		}
-		_writePriorityErr := writeBuffer.WriteSerializable(ctx, m.GetWritePriority())
-		if popErr := writeBuffer.PopContext("writePriority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for writePriority")
-		}
-		if _writePriorityErr != nil {
-			return errors.Wrap(_writePriorityErr, "Error serializing 'writePriority' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "writePriority", m.GetWritePriority(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writePriority' field")
 		}
 
-		// Simple Field (changeList)
-		if pushErr := writeBuffer.PushContext("changeList"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for changeList")
-		}
-		_changeListErr := writeBuffer.WriteSerializable(ctx, m.GetChangeList())
-		if popErr := writeBuffer.PopContext("changeList"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for changeList")
-		}
-		if _changeListErr != nil {
-			return errors.Wrap(_changeListErr, "Error serializing 'changeList' field")
+		if err := WriteSimpleField[BACnetGroupChannelValueList](ctx, "changeList", m.GetChangeList(), WriteComplex[BACnetGroupChannelValueList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'changeList' field")
 		}
 
 		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", GetRef(m.GetInhibitDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {

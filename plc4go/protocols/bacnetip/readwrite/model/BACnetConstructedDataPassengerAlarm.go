@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPassengerAlarm) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPassengerAlarm")
 		}
 
-		// Simple Field (passengerAlarm)
-		if pushErr := writeBuffer.PushContext("passengerAlarm"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for passengerAlarm")
-		}
-		_passengerAlarmErr := writeBuffer.WriteSerializable(ctx, m.GetPassengerAlarm())
-		if popErr := writeBuffer.PopContext("passengerAlarm"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for passengerAlarm")
-		}
-		if _passengerAlarmErr != nil {
-			return errors.Wrap(_passengerAlarmErr, "Error serializing 'passengerAlarm' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "passengerAlarm", m.GetPassengerAlarm(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'passengerAlarm' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

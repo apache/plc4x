@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFDSubscriptionLifetime")
 		}
 
-		// Simple Field (fdSubscriptionLifetime)
-		if pushErr := writeBuffer.PushContext("fdSubscriptionLifetime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fdSubscriptionLifetime")
-		}
-		_fdSubscriptionLifetimeErr := writeBuffer.WriteSerializable(ctx, m.GetFdSubscriptionLifetime())
-		if popErr := writeBuffer.PopContext("fdSubscriptionLifetime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fdSubscriptionLifetime")
-		}
-		if _fdSubscriptionLifetimeErr != nil {
-			return errors.Wrap(_fdSubscriptionLifetimeErr, "Error serializing 'fdSubscriptionLifetime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "fdSubscriptionLifetime", m.GetFdSubscriptionLifetime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fdSubscriptionLifetime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

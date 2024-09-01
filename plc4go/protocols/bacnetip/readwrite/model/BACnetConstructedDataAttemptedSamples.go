@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAttemptedSamples) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAttemptedSamples")
 		}
 
-		// Simple Field (attemptedSamples)
-		if pushErr := writeBuffer.PushContext("attemptedSamples"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for attemptedSamples")
-		}
-		_attemptedSamplesErr := writeBuffer.WriteSerializable(ctx, m.GetAttemptedSamples())
-		if popErr := writeBuffer.PopContext("attemptedSamples"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for attemptedSamples")
-		}
-		if _attemptedSamplesErr != nil {
-			return errors.Wrap(_attemptedSamplesErr, "Error serializing 'attemptedSamples' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "attemptedSamples", m.GetAttemptedSamples(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'attemptedSamples' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -200,28 +200,12 @@ func (m *_SignedSoftwareCertificate) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for SignedSoftwareCertificate")
 		}
 
-		// Simple Field (certificateData)
-		if pushErr := writeBuffer.PushContext("certificateData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for certificateData")
-		}
-		_certificateDataErr := writeBuffer.WriteSerializable(ctx, m.GetCertificateData())
-		if popErr := writeBuffer.PopContext("certificateData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for certificateData")
-		}
-		if _certificateDataErr != nil {
-			return errors.Wrap(_certificateDataErr, "Error serializing 'certificateData' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "certificateData", m.GetCertificateData(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'certificateData' field")
 		}
 
-		// Simple Field (signature)
-		if pushErr := writeBuffer.PushContext("signature"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for signature")
-		}
-		_signatureErr := writeBuffer.WriteSerializable(ctx, m.GetSignature())
-		if popErr := writeBuffer.PopContext("signature"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for signature")
-		}
-		if _signatureErr != nil {
-			return errors.Wrap(_signatureErr, "Error serializing 'signature' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "signature", m.GetSignature(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'signature' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SignedSoftwareCertificate"); popErr != nil {

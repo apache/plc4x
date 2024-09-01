@@ -217,30 +217,16 @@ func (m *_ViewDescription) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for ViewDescription")
 		}
 
-		// Simple Field (viewId)
-		if pushErr := writeBuffer.PushContext("viewId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for viewId")
-		}
-		_viewIdErr := writeBuffer.WriteSerializable(ctx, m.GetViewId())
-		if popErr := writeBuffer.PopContext("viewId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for viewId")
-		}
-		if _viewIdErr != nil {
-			return errors.Wrap(_viewIdErr, "Error serializing 'viewId' field")
+		if err := WriteSimpleField[NodeId](ctx, "viewId", m.GetViewId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'viewId' field")
 		}
 
-		// Simple Field (timestamp)
-		timestamp := int64(m.GetTimestamp())
-		_timestampErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("timestamp", 64, int64((timestamp)))
-		if _timestampErr != nil {
-			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
+		if err := WriteSimpleField[int64](ctx, "timestamp", m.GetTimestamp(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		// Simple Field (viewVersion)
-		viewVersion := uint32(m.GetViewVersion())
-		_viewVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("viewVersion", 32, uint32((viewVersion)))
-		if _viewVersionErr != nil {
-			return errors.Wrap(_viewVersionErr, "Error serializing 'viewVersion' field")
+		if err := WriteSimpleField[uint32](ctx, "viewVersion", m.GetViewVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'viewVersion' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ViewDescription"); popErr != nil {

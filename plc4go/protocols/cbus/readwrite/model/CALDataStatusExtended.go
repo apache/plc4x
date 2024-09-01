@@ -311,35 +311,16 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for CALDataStatusExtended")
 		}
 
-		// Simple Field (coding)
-		if pushErr := writeBuffer.PushContext("coding"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for coding")
-		}
-		_codingErr := writeBuffer.WriteSerializable(ctx, m.GetCoding())
-		if popErr := writeBuffer.PopContext("coding"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for coding")
-		}
-		if _codingErr != nil {
-			return errors.Wrap(_codingErr, "Error serializing 'coding' field")
+		if err := WriteSimpleEnumField[StatusCoding](ctx, "coding", "StatusCoding", m.GetCoding(), WriteEnum[StatusCoding, byte](StatusCoding.GetValue, StatusCoding.PLC4XEnumName, WriteByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'coding' field")
 		}
 
-		// Simple Field (application)
-		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for application")
-		}
-		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
-		if popErr := writeBuffer.PopContext("application"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for application")
-		}
-		if _applicationErr != nil {
-			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		// Simple Field (blockStart)
-		blockStart := uint8(m.GetBlockStart())
-		_blockStartErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("blockStart", 8, uint8((blockStart)))
-		if _blockStartErr != nil {
-			return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
+		if err := WriteSimpleField[uint8](ctx, "blockStart", m.GetBlockStart(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'blockStart' field")
 		}
 		// Virtual field
 		numberOfStatusBytes := m.GetNumberOfStatusBytes()

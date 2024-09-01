@@ -183,16 +183,8 @@ func (m *_BACnetTimerStateChangeValueNoValue) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueNoValue")
 		}
 
-		// Simple Field (noValue)
-		if pushErr := writeBuffer.PushContext("noValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for noValue")
-		}
-		_noValueErr := writeBuffer.WriteSerializable(ctx, m.GetNoValue())
-		if popErr := writeBuffer.PopContext("noValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for noValue")
-		}
-		if _noValueErr != nil {
-			return errors.Wrap(_noValueErr, "Error serializing 'noValue' field")
+		if err := WriteSimpleField[BACnetContextTagNull](ctx, "noValue", m.GetNoValue(), WriteComplex[BACnetContextTagNull](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueNoValue"); popErr != nil {

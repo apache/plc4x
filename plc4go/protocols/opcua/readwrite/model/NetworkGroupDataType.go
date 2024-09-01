@@ -224,23 +224,12 @@ func (m *_NetworkGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for NetworkGroupDataType")
 		}
 
-		// Simple Field (serverUri)
-		if pushErr := writeBuffer.PushContext("serverUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverUri")
-		}
-		_serverUriErr := writeBuffer.WriteSerializable(ctx, m.GetServerUri())
-		if popErr := writeBuffer.PopContext("serverUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverUri")
-		}
-		if _serverUriErr != nil {
-			return errors.Wrap(_serverUriErr, "Error serializing 'serverUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverUri' field")
 		}
 
-		// Simple Field (noOfNetworkPaths)
-		noOfNetworkPaths := int32(m.GetNoOfNetworkPaths())
-		_noOfNetworkPathsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNetworkPaths", 32, int32((noOfNetworkPaths)))
-		if _noOfNetworkPathsErr != nil {
-			return errors.Wrap(_noOfNetworkPathsErr, "Error serializing 'noOfNetworkPaths' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNetworkPaths", m.GetNoOfNetworkPaths(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNetworkPaths' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "networkPaths", m.GetNetworkPaths(), writeBuffer); err != nil {

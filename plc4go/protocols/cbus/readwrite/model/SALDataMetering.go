@@ -185,16 +185,8 @@ func (m *_SALDataMetering) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for SALDataMetering")
 		}
 
-		// Simple Field (meteringData)
-		if pushErr := writeBuffer.PushContext("meteringData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for meteringData")
-		}
-		_meteringDataErr := writeBuffer.WriteSerializable(ctx, m.GetMeteringData())
-		if popErr := writeBuffer.PopContext("meteringData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for meteringData")
-		}
-		if _meteringDataErr != nil {
-			return errors.Wrap(_meteringDataErr, "Error serializing 'meteringData' field")
+		if err := WriteSimpleField[MeteringData](ctx, "meteringData", m.GetMeteringData(), WriteComplex[MeteringData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'meteringData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataMetering"); popErr != nil {

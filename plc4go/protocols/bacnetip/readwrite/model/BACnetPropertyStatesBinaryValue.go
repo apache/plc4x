@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesBinaryValue) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesBinaryValue")
 		}
 
-		// Simple Field (binaryValue)
-		if pushErr := writeBuffer.PushContext("binaryValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for binaryValue")
-		}
-		_binaryValueErr := writeBuffer.WriteSerializable(ctx, m.GetBinaryValue())
-		if popErr := writeBuffer.PopContext("binaryValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for binaryValue")
-		}
-		if _binaryValueErr != nil {
-			return errors.Wrap(_binaryValueErr, "Error serializing 'binaryValue' field")
+		if err := WriteSimpleField[BACnetBinaryPVTagged](ctx, "binaryValue", m.GetBinaryValue(), WriteComplex[BACnetBinaryPVTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'binaryValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesBinaryValue"); popErr != nil {

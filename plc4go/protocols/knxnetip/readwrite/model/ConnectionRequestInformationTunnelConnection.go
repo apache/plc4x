@@ -195,16 +195,8 @@ func (m *_ConnectionRequestInformationTunnelConnection) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for ConnectionRequestInformationTunnelConnection")
 		}
 
-		// Simple Field (knxLayer)
-		if pushErr := writeBuffer.PushContext("knxLayer"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for knxLayer")
-		}
-		_knxLayerErr := writeBuffer.WriteSerializable(ctx, m.GetKnxLayer())
-		if popErr := writeBuffer.PopContext("knxLayer"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for knxLayer")
-		}
-		if _knxLayerErr != nil {
-			return errors.Wrap(_knxLayerErr, "Error serializing 'knxLayer' field")
+		if err := WriteSimpleEnumField[KnxLayer](ctx, "knxLayer", "KnxLayer", m.GetKnxLayer(), WriteEnum[KnxLayer, uint8](KnxLayer.GetValue, KnxLayer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'knxLayer' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {

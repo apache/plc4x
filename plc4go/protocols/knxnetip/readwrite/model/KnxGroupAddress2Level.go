@@ -200,18 +200,12 @@ func (m *_KnxGroupAddress2Level) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for KnxGroupAddress2Level")
 		}
 
-		// Simple Field (mainGroup)
-		mainGroup := uint8(m.GetMainGroup())
-		_mainGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("mainGroup", 5, uint8((mainGroup)))
-		if _mainGroupErr != nil {
-			return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
+		if err := WriteSimpleField[uint8](ctx, "mainGroup", m.GetMainGroup(), WriteUnsignedByte(writeBuffer, 5)); err != nil {
+			return errors.Wrap(err, "Error serializing 'mainGroup' field")
 		}
 
-		// Simple Field (subGroup)
-		subGroup := uint16(m.GetSubGroup())
-		_subGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("subGroup", 11, uint16((subGroup)))
-		if _subGroupErr != nil {
-			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
+		if err := WriteSimpleField[uint16](ctx, "subGroup", m.GetSubGroup(), WriteUnsignedShort(writeBuffer, 11)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subGroup' field")
 		}
 
 		if popErr := writeBuffer.PopContext("KnxGroupAddress2Level"); popErr != nil {

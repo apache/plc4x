@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAverageValue) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAverageValue")
 		}
 
-		// Simple Field (averageValue)
-		if pushErr := writeBuffer.PushContext("averageValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for averageValue")
-		}
-		_averageValueErr := writeBuffer.WriteSerializable(ctx, m.GetAverageValue())
-		if popErr := writeBuffer.PopContext("averageValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for averageValue")
-		}
-		if _averageValueErr != nil {
-			return errors.Wrap(_averageValueErr, "Error serializing 'averageValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "averageValue", m.GetAverageValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'averageValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

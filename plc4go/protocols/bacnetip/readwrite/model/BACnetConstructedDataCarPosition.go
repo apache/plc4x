@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataCarPosition) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarPosition")
 		}
 
-		// Simple Field (carPosition)
-		if pushErr := writeBuffer.PushContext("carPosition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for carPosition")
-		}
-		_carPositionErr := writeBuffer.WriteSerializable(ctx, m.GetCarPosition())
-		if popErr := writeBuffer.PopContext("carPosition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for carPosition")
-		}
-		if _carPositionErr != nil {
-			return errors.Wrap(_carPositionErr, "Error serializing 'carPosition' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "carPosition", m.GetCarPosition(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'carPosition' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

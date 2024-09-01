@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEffectivePeriod) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEffectivePeriod")
 		}
 
-		// Simple Field (dateRange)
-		if pushErr := writeBuffer.PushContext("dateRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dateRange")
-		}
-		_dateRangeErr := writeBuffer.WriteSerializable(ctx, m.GetDateRange())
-		if popErr := writeBuffer.PopContext("dateRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dateRange")
-		}
-		if _dateRangeErr != nil {
-			return errors.Wrap(_dateRangeErr, "Error serializing 'dateRange' field")
+		if err := WriteSimpleField[BACnetDateRange](ctx, "dateRange", m.GetDateRange(), WriteComplex[BACnetDateRange](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dateRange' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

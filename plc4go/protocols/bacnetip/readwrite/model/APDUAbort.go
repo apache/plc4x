@@ -234,30 +234,16 @@ func (m *_APDUAbort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (server)
-		server := bool(m.GetServer())
-		_serverErr := /*TODO: migrate me*/ writeBuffer.WriteBit("server", (server))
-		if _serverErr != nil {
-			return errors.Wrap(_serverErr, "Error serializing 'server' field")
+		if err := WriteSimpleField[bool](ctx, "server", m.GetServer(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'server' field")
 		}
 
-		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
-		if _originalInvokeIdErr != nil {
-			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
+		if err := WriteSimpleField[uint8](ctx, "originalInvokeId", m.GetOriginalInvokeId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalInvokeId' field")
 		}
 
-		// Simple Field (abortReason)
-		if pushErr := writeBuffer.PushContext("abortReason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for abortReason")
-		}
-		_abortReasonErr := writeBuffer.WriteSerializable(ctx, m.GetAbortReason())
-		if popErr := writeBuffer.PopContext("abortReason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for abortReason")
-		}
-		if _abortReasonErr != nil {
-			return errors.Wrap(_abortReasonErr, "Error serializing 'abortReason' field")
+		if err := WriteSimpleField[BACnetAbortReasonTagged](ctx, "abortReason", m.GetAbortReason(), WriteComplex[BACnetAbortReasonTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'abortReason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUAbort"); popErr != nil {

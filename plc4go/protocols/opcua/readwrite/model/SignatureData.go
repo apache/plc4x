@@ -200,28 +200,12 @@ func (m *_SignatureData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for SignatureData")
 		}
 
-		// Simple Field (algorithm)
-		if pushErr := writeBuffer.PushContext("algorithm"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for algorithm")
-		}
-		_algorithmErr := writeBuffer.WriteSerializable(ctx, m.GetAlgorithm())
-		if popErr := writeBuffer.PopContext("algorithm"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for algorithm")
-		}
-		if _algorithmErr != nil {
-			return errors.Wrap(_algorithmErr, "Error serializing 'algorithm' field")
+		if err := WriteSimpleField[PascalString](ctx, "algorithm", m.GetAlgorithm(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'algorithm' field")
 		}
 
-		// Simple Field (signature)
-		if pushErr := writeBuffer.PushContext("signature"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for signature")
-		}
-		_signatureErr := writeBuffer.WriteSerializable(ctx, m.GetSignature())
-		if popErr := writeBuffer.PopContext("signature"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for signature")
-		}
-		if _signatureErr != nil {
-			return errors.Wrap(_signatureErr, "Error serializing 'signature' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "signature", m.GetSignature(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'signature' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SignatureData"); popErr != nil {

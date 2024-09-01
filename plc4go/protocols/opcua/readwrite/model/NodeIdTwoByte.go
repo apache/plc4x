@@ -208,11 +208,8 @@ func (m *_NodeIdTwoByte) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for NodeIdTwoByte")
 		}
 
-		// Simple Field (id)
-		id := uint8(m.GetId())
-		_idErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("id", 8, uint8((id)))
-		if _idErr != nil {
-			return errors.Wrap(_idErr, "Error serializing 'id' field")
+		if err := WriteSimpleField[uint8](ctx, "id", m.GetId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'id' field")
 		}
 		// Virtual field
 		identifier := m.GetIdentifier()

@@ -184,16 +184,8 @@ func (m *_MonitoredSALReply) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for MonitoredSALReply")
 		}
 
-		// Simple Field (monitoredSAL)
-		if pushErr := writeBuffer.PushContext("monitoredSAL"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for monitoredSAL")
-		}
-		_monitoredSALErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredSAL())
-		if popErr := writeBuffer.PopContext("monitoredSAL"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for monitoredSAL")
-		}
-		if _monitoredSALErr != nil {
-			return errors.Wrap(_monitoredSALErr, "Error serializing 'monitoredSAL' field")
+		if err := WriteSimpleField[MonitoredSAL](ctx, "monitoredSAL", m.GetMonitoredSAL(), WriteComplex[MonitoredSAL](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoredSAL' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredSALReply"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataCarDriveStatus) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarDriveStatus")
 		}
 
-		// Simple Field (carDriveStatus)
-		if pushErr := writeBuffer.PushContext("carDriveStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for carDriveStatus")
-		}
-		_carDriveStatusErr := writeBuffer.WriteSerializable(ctx, m.GetCarDriveStatus())
-		if popErr := writeBuffer.PopContext("carDriveStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for carDriveStatus")
-		}
-		if _carDriveStatusErr != nil {
-			return errors.Wrap(_carDriveStatusErr, "Error serializing 'carDriveStatus' field")
+		if err := WriteSimpleField[BACnetLiftCarDriveStatusTagged](ctx, "carDriveStatus", m.GetCarDriveStatus(), WriteComplex[BACnetLiftCarDriveStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'carDriveStatus' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

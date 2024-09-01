@@ -268,61 +268,28 @@ func (m *_ServerStatusDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ServerStatusDataType")
 		}
 
-		// Simple Field (startTime)
-		startTime := int64(m.GetStartTime())
-		_startTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("startTime", 64, int64((startTime)))
-		if _startTimeErr != nil {
-			return errors.Wrap(_startTimeErr, "Error serializing 'startTime' field")
+		if err := WriteSimpleField[int64](ctx, "startTime", m.GetStartTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startTime' field")
 		}
 
-		// Simple Field (currentTime)
-		currentTime := int64(m.GetCurrentTime())
-		_currentTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("currentTime", 64, int64((currentTime)))
-		if _currentTimeErr != nil {
-			return errors.Wrap(_currentTimeErr, "Error serializing 'currentTime' field")
+		if err := WriteSimpleField[int64](ctx, "currentTime", m.GetCurrentTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentTime' field")
 		}
 
-		// Simple Field (state)
-		if pushErr := writeBuffer.PushContext("state"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for state")
-		}
-		_stateErr := writeBuffer.WriteSerializable(ctx, m.GetState())
-		if popErr := writeBuffer.PopContext("state"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for state")
-		}
-		if _stateErr != nil {
-			return errors.Wrap(_stateErr, "Error serializing 'state' field")
+		if err := WriteSimpleEnumField[ServerState](ctx, "state", "ServerState", m.GetState(), WriteEnum[ServerState, uint32](ServerState.GetValue, ServerState.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'state' field")
 		}
 
-		// Simple Field (buildInfo)
-		if pushErr := writeBuffer.PushContext("buildInfo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for buildInfo")
-		}
-		_buildInfoErr := writeBuffer.WriteSerializable(ctx, m.GetBuildInfo())
-		if popErr := writeBuffer.PopContext("buildInfo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for buildInfo")
-		}
-		if _buildInfoErr != nil {
-			return errors.Wrap(_buildInfoErr, "Error serializing 'buildInfo' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "buildInfo", m.GetBuildInfo(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'buildInfo' field")
 		}
 
-		// Simple Field (secondsTillShutdown)
-		secondsTillShutdown := uint32(m.GetSecondsTillShutdown())
-		_secondsTillShutdownErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("secondsTillShutdown", 32, uint32((secondsTillShutdown)))
-		if _secondsTillShutdownErr != nil {
-			return errors.Wrap(_secondsTillShutdownErr, "Error serializing 'secondsTillShutdown' field")
+		if err := WriteSimpleField[uint32](ctx, "secondsTillShutdown", m.GetSecondsTillShutdown(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'secondsTillShutdown' field")
 		}
 
-		// Simple Field (shutdownReason)
-		if pushErr := writeBuffer.PushContext("shutdownReason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for shutdownReason")
-		}
-		_shutdownReasonErr := writeBuffer.WriteSerializable(ctx, m.GetShutdownReason())
-		if popErr := writeBuffer.PopContext("shutdownReason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for shutdownReason")
-		}
-		if _shutdownReasonErr != nil {
-			return errors.Wrap(_shutdownReasonErr, "Error serializing 'shutdownReason' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "shutdownReason", m.GetShutdownReason(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'shutdownReason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ServerStatusDataType"); popErr != nil {

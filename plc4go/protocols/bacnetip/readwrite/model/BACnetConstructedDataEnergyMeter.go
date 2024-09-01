@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEnergyMeter) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEnergyMeter")
 		}
 
-		// Simple Field (energyMeter)
-		if pushErr := writeBuffer.PushContext("energyMeter"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for energyMeter")
-		}
-		_energyMeterErr := writeBuffer.WriteSerializable(ctx, m.GetEnergyMeter())
-		if popErr := writeBuffer.PopContext("energyMeter"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for energyMeter")
-		}
-		if _energyMeterErr != nil {
-			return errors.Wrap(_energyMeterErr, "Error serializing 'energyMeter' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "energyMeter", m.GetEnergyMeter(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'energyMeter' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

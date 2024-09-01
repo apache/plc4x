@@ -251,49 +251,24 @@ func (m *_NodeAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for NodeAttributes")
 		}
 
-		// Simple Field (specifiedAttributes)
-		specifiedAttributes := uint32(m.GetSpecifiedAttributes())
-		_specifiedAttributesErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("specifiedAttributes", 32, uint32((specifiedAttributes)))
-		if _specifiedAttributesErr != nil {
-			return errors.Wrap(_specifiedAttributesErr, "Error serializing 'specifiedAttributes' field")
+		if err := WriteSimpleField[uint32](ctx, "specifiedAttributes", m.GetSpecifiedAttributes(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'specifiedAttributes' field")
 		}
 
-		// Simple Field (displayName)
-		if pushErr := writeBuffer.PushContext("displayName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for displayName")
-		}
-		_displayNameErr := writeBuffer.WriteSerializable(ctx, m.GetDisplayName())
-		if popErr := writeBuffer.PopContext("displayName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for displayName")
-		}
-		if _displayNameErr != nil {
-			return errors.Wrap(_displayNameErr, "Error serializing 'displayName' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "displayName", m.GetDisplayName(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'displayName' field")
 		}
 
-		// Simple Field (description)
-		if pushErr := writeBuffer.PushContext("description"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for description")
-		}
-		_descriptionErr := writeBuffer.WriteSerializable(ctx, m.GetDescription())
-		if popErr := writeBuffer.PopContext("description"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for description")
-		}
-		if _descriptionErr != nil {
-			return errors.Wrap(_descriptionErr, "Error serializing 'description' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "description", m.GetDescription(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'description' field")
 		}
 
-		// Simple Field (writeMask)
-		writeMask := uint32(m.GetWriteMask())
-		_writeMaskErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("writeMask", 32, uint32((writeMask)))
-		if _writeMaskErr != nil {
-			return errors.Wrap(_writeMaskErr, "Error serializing 'writeMask' field")
+		if err := WriteSimpleField[uint32](ctx, "writeMask", m.GetWriteMask(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeMask' field")
 		}
 
-		// Simple Field (userWriteMask)
-		userWriteMask := uint32(m.GetUserWriteMask())
-		_userWriteMaskErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("userWriteMask", 32, uint32((userWriteMask)))
-		if _userWriteMaskErr != nil {
-			return errors.Wrap(_userWriteMaskErr, "Error serializing 'userWriteMask' field")
+		if err := WriteSimpleField[uint32](ctx, "userWriteMask", m.GetUserWriteMask(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userWriteMask' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NodeAttributes"); popErr != nil {

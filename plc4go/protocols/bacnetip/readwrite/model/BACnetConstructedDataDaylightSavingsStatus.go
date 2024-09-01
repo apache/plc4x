@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDaylightSavingsStatus")
 		}
 
-		// Simple Field (daylightSavingsStatus)
-		if pushErr := writeBuffer.PushContext("daylightSavingsStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for daylightSavingsStatus")
-		}
-		_daylightSavingsStatusErr := writeBuffer.WriteSerializable(ctx, m.GetDaylightSavingsStatus())
-		if popErr := writeBuffer.PopContext("daylightSavingsStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for daylightSavingsStatus")
-		}
-		if _daylightSavingsStatusErr != nil {
-			return errors.Wrap(_daylightSavingsStatusErr, "Error serializing 'daylightSavingsStatus' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "daylightSavingsStatus", m.GetDaylightSavingsStatus(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'daylightSavingsStatus' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -257,32 +257,20 @@ func (m *_InterfaceOptions3) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(err, "Error serializing 'reserved' field number 4")
 	}
 
-	// Simple Field (exstat)
-	exstat := bool(m.GetExstat())
-	_exstatErr := /*TODO: migrate me*/ writeBuffer.WriteBit("exstat", (exstat))
-	if _exstatErr != nil {
-		return errors.Wrap(_exstatErr, "Error serializing 'exstat' field")
+	if err := WriteSimpleField[bool](ctx, "exstat", m.GetExstat(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'exstat' field")
 	}
 
-	// Simple Field (pun)
-	pun := bool(m.GetPun())
-	_punErr := /*TODO: migrate me*/ writeBuffer.WriteBit("pun", (pun))
-	if _punErr != nil {
-		return errors.Wrap(_punErr, "Error serializing 'pun' field")
+	if err := WriteSimpleField[bool](ctx, "pun", m.GetPun(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'pun' field")
 	}
 
-	// Simple Field (localSal)
-	localSal := bool(m.GetLocalSal())
-	_localSalErr := /*TODO: migrate me*/ writeBuffer.WriteBit("localSal", (localSal))
-	if _localSalErr != nil {
-		return errors.Wrap(_localSalErr, "Error serializing 'localSal' field")
+	if err := WriteSimpleField[bool](ctx, "localSal", m.GetLocalSal(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'localSal' field")
 	}
 
-	// Simple Field (pcn)
-	pcn := bool(m.GetPcn())
-	_pcnErr := /*TODO: migrate me*/ writeBuffer.WriteBit("pcn", (pcn))
-	if _pcnErr != nil {
-		return errors.Wrap(_pcnErr, "Error serializing 'pcn' field")
+	if err := WriteSimpleField[bool](ctx, "pcn", m.GetPcn(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'pcn' field")
 	}
 
 	if popErr := writeBuffer.PopContext("InterfaceOptions3"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6DHCPLeaseTime")
 		}
 
-		// Simple Field (ipv6DhcpLeaseTime)
-		if pushErr := writeBuffer.PushContext("ipv6DhcpLeaseTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipv6DhcpLeaseTime")
-		}
-		_ipv6DhcpLeaseTimeErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6DhcpLeaseTime())
-		if popErr := writeBuffer.PopContext("ipv6DhcpLeaseTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipv6DhcpLeaseTime")
-		}
-		if _ipv6DhcpLeaseTimeErr != nil {
-			return errors.Wrap(_ipv6DhcpLeaseTimeErr, "Error serializing 'ipv6DhcpLeaseTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6DhcpLeaseTime", m.GetIpv6DhcpLeaseTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipv6DhcpLeaseTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

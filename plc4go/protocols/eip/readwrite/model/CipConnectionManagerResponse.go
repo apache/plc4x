@@ -329,53 +329,32 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (otConnectionId)
-		otConnectionId := uint32(m.GetOtConnectionId())
-		_otConnectionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("otConnectionId", 32, uint32((otConnectionId)))
-		if _otConnectionIdErr != nil {
-			return errors.Wrap(_otConnectionIdErr, "Error serializing 'otConnectionId' field")
+		if err := WriteSimpleField[uint32](ctx, "otConnectionId", m.GetOtConnectionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'otConnectionId' field")
 		}
 
-		// Simple Field (toConnectionId)
-		toConnectionId := uint32(m.GetToConnectionId())
-		_toConnectionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("toConnectionId", 32, uint32((toConnectionId)))
-		if _toConnectionIdErr != nil {
-			return errors.Wrap(_toConnectionIdErr, "Error serializing 'toConnectionId' field")
+		if err := WriteSimpleField[uint32](ctx, "toConnectionId", m.GetToConnectionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'toConnectionId' field")
 		}
 
-		// Simple Field (connectionSerialNumber)
-		connectionSerialNumber := uint16(m.GetConnectionSerialNumber())
-		_connectionSerialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("connectionSerialNumber", 16, uint16((connectionSerialNumber)))
-		if _connectionSerialNumberErr != nil {
-			return errors.Wrap(_connectionSerialNumberErr, "Error serializing 'connectionSerialNumber' field")
+		if err := WriteSimpleField[uint16](ctx, "connectionSerialNumber", m.GetConnectionSerialNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionSerialNumber' field")
 		}
 
-		// Simple Field (originatorVendorId)
-		originatorVendorId := uint16(m.GetOriginatorVendorId())
-		_originatorVendorIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("originatorVendorId", 16, uint16((originatorVendorId)))
-		if _originatorVendorIdErr != nil {
-			return errors.Wrap(_originatorVendorIdErr, "Error serializing 'originatorVendorId' field")
+		if err := WriteSimpleField[uint16](ctx, "originatorVendorId", m.GetOriginatorVendorId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originatorVendorId' field")
 		}
 
-		// Simple Field (originatorSerialNumber)
-		originatorSerialNumber := uint32(m.GetOriginatorSerialNumber())
-		_originatorSerialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("originatorSerialNumber", 32, uint32((originatorSerialNumber)))
-		if _originatorSerialNumberErr != nil {
-			return errors.Wrap(_originatorSerialNumberErr, "Error serializing 'originatorSerialNumber' field")
+		if err := WriteSimpleField[uint32](ctx, "originatorSerialNumber", m.GetOriginatorSerialNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originatorSerialNumber' field")
 		}
 
-		// Simple Field (otApi)
-		otApi := uint32(m.GetOtApi())
-		_otApiErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("otApi", 32, uint32((otApi)))
-		if _otApiErr != nil {
-			return errors.Wrap(_otApiErr, "Error serializing 'otApi' field")
+		if err := WriteSimpleField[uint32](ctx, "otApi", m.GetOtApi(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'otApi' field")
 		}
 
-		// Simple Field (toApi)
-		toApi := uint32(m.GetToApi())
-		_toApiErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("toApi", 32, uint32((toApi)))
-		if _toApiErr != nil {
-			return errors.Wrap(_toApiErr, "Error serializing 'toApi' field")
+		if err := WriteSimpleField[uint32](ctx, "toApi", m.GetToApi(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'toApi' field")
 		}
 		replySize := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(30)))
 		if err := WriteImplicitField(ctx, "replySize", replySize, WriteUnsignedByte(writeBuffer, 8)); err != nil {

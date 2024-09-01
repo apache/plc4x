@@ -181,16 +181,8 @@ func (m *_BACnetScaleIntegerScale) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BACnetScaleIntegerScale")
 		}
 
-		// Simple Field (integerScale)
-		if pushErr := writeBuffer.PushContext("integerScale"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for integerScale")
-		}
-		_integerScaleErr := writeBuffer.WriteSerializable(ctx, m.GetIntegerScale())
-		if popErr := writeBuffer.PopContext("integerScale"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for integerScale")
-		}
-		if _integerScaleErr != nil {
-			return errors.Wrap(_integerScaleErr, "Error serializing 'integerScale' field")
+		if err := WriteSimpleField[BACnetContextTagSignedInteger](ctx, "integerScale", m.GetIntegerScale(), WriteComplex[BACnetContextTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'integerScale' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetScaleIntegerScale"); popErr != nil {

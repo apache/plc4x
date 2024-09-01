@@ -152,11 +152,8 @@ func (m *_UnitAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for UnitAddress")
 	}
 
-	// Simple Field (address)
-	address := byte(m.GetAddress())
-	_addressErr := /*TODO: migrate me*/ writeBuffer.WriteByte("address", (address))
-	if _addressErr != nil {
-		return errors.Wrap(_addressErr, "Error serializing 'address' field")
+	if err := WriteSimpleField[byte](ctx, "address", m.GetAddress(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'address' field")
 	}
 
 	if popErr := writeBuffer.PopContext("UnitAddress"); popErr != nil {

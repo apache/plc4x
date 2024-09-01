@@ -240,16 +240,8 @@ func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(pushErr, "Error pushing for LPollData")
 		}
 
-		// Simple Field (sourceAddress)
-		if pushErr := writeBuffer.PushContext("sourceAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sourceAddress")
-		}
-		_sourceAddressErr := writeBuffer.WriteSerializable(ctx, m.GetSourceAddress())
-		if popErr := writeBuffer.PopContext("sourceAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sourceAddress")
-		}
-		if _sourceAddressErr != nil {
-			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
+		if err := WriteSimpleField[KnxAddress](ctx, "sourceAddress", m.GetSourceAddress(), WriteComplex[KnxAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceAddress' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "targetAddress", m.GetTargetAddress(), WriteByteArray(writeBuffer, 8)); err != nil {
@@ -260,11 +252,8 @@ func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (numberExpectedPollData)
-		numberExpectedPollData := uint8(m.GetNumberExpectedPollData())
-		_numberExpectedPollDataErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberExpectedPollData", 6, uint8((numberExpectedPollData)))
-		if _numberExpectedPollDataErr != nil {
-			return errors.Wrap(_numberExpectedPollDataErr, "Error serializing 'numberExpectedPollData' field")
+		if err := WriteSimpleField[uint8](ctx, "numberExpectedPollData", m.GetNumberExpectedPollData(), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberExpectedPollData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LPollData"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTotalRecordCount) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTotalRecordCount")
 		}
 
-		// Simple Field (totalRecordCount)
-		if pushErr := writeBuffer.PushContext("totalRecordCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for totalRecordCount")
-		}
-		_totalRecordCountErr := writeBuffer.WriteSerializable(ctx, m.GetTotalRecordCount())
-		if popErr := writeBuffer.PopContext("totalRecordCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for totalRecordCount")
-		}
-		if _totalRecordCountErr != nil {
-			return errors.Wrap(_totalRecordCountErr, "Error serializing 'totalRecordCount' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "totalRecordCount", m.GetTotalRecordCount(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalRecordCount' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

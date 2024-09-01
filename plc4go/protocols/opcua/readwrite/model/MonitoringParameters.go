@@ -262,48 +262,28 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for MonitoringParameters")
 		}
 
-		// Simple Field (clientHandle)
-		clientHandle := uint32(m.GetClientHandle())
-		_clientHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("clientHandle", 32, uint32((clientHandle)))
-		if _clientHandleErr != nil {
-			return errors.Wrap(_clientHandleErr, "Error serializing 'clientHandle' field")
+		if err := WriteSimpleField[uint32](ctx, "clientHandle", m.GetClientHandle(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientHandle' field")
 		}
 
-		// Simple Field (samplingInterval)
-		samplingInterval := float64(m.GetSamplingInterval())
-		_samplingIntervalErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("samplingInterval", 64, (samplingInterval))
-		if _samplingIntervalErr != nil {
-			return errors.Wrap(_samplingIntervalErr, "Error serializing 'samplingInterval' field")
+		if err := WriteSimpleField[float64](ctx, "samplingInterval", m.GetSamplingInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'samplingInterval' field")
 		}
 
-		// Simple Field (filter)
-		if pushErr := writeBuffer.PushContext("filter"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filter")
-		}
-		_filterErr := writeBuffer.WriteSerializable(ctx, m.GetFilter())
-		if popErr := writeBuffer.PopContext("filter"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filter")
-		}
-		if _filterErr != nil {
-			return errors.Wrap(_filterErr, "Error serializing 'filter' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "filter", m.GetFilter(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'filter' field")
 		}
 
-		// Simple Field (queueSize)
-		queueSize := uint32(m.GetQueueSize())
-		_queueSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("queueSize", 32, uint32((queueSize)))
-		if _queueSizeErr != nil {
-			return errors.Wrap(_queueSizeErr, "Error serializing 'queueSize' field")
+		if err := WriteSimpleField[uint32](ctx, "queueSize", m.GetQueueSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'queueSize' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (discardOldest)
-		discardOldest := bool(m.GetDiscardOldest())
-		_discardOldestErr := /*TODO: migrate me*/ writeBuffer.WriteBit("discardOldest", (discardOldest))
-		if _discardOldestErr != nil {
-			return errors.Wrap(_discardOldestErr, "Error serializing 'discardOldest' field")
+		if err := WriteSimpleField[bool](ctx, "discardOldest", m.GetDiscardOldest(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'discardOldest' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoringParameters"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUserExternalIdentifier")
 		}
 
-		// Simple Field (userExternalIdentifier)
-		if pushErr := writeBuffer.PushContext("userExternalIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userExternalIdentifier")
-		}
-		_userExternalIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetUserExternalIdentifier())
-		if popErr := writeBuffer.PopContext("userExternalIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userExternalIdentifier")
-		}
-		if _userExternalIdentifierErr != nil {
-			return errors.Wrap(_userExternalIdentifierErr, "Error serializing 'userExternalIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "userExternalIdentifier", m.GetUserExternalIdentifier(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userExternalIdentifier' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

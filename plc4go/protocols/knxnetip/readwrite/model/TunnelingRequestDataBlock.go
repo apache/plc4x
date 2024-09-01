@@ -192,18 +192,12 @@ func (m *_TunnelingRequestDataBlock) SerializeWithWriteBuffer(ctx context.Contex
 		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Simple Field (communicationChannelId)
-	communicationChannelId := uint8(m.GetCommunicationChannelId())
-	_communicationChannelIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
-	if _communicationChannelIdErr != nil {
-		return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
+	if err := WriteSimpleField[uint8](ctx, "communicationChannelId", m.GetCommunicationChannelId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'communicationChannelId' field")
 	}
 
-	// Simple Field (sequenceCounter)
-	sequenceCounter := uint8(m.GetSequenceCounter())
-	_sequenceCounterErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceCounter", 8, uint8((sequenceCounter)))
-	if _sequenceCounterErr != nil {
-		return errors.Wrap(_sequenceCounterErr, "Error serializing 'sequenceCounter' field")
+	if err := WriteSimpleField[uint8](ctx, "sequenceCounter", m.GetSequenceCounter(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sequenceCounter' field")
 	}
 
 	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {

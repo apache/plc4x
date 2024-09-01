@@ -181,16 +181,8 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) SerializeW
 			return errors.Wrap(pushErr, "Error pushing for BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
 		}
 
-		// Simple Field (enumeratedValue)
-		if pushErr := writeBuffer.PushContext("enumeratedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enumeratedValue")
-		}
-		_enumeratedValueErr := writeBuffer.WriteSerializable(ctx, m.GetEnumeratedValue())
-		if popErr := writeBuffer.PopContext("enumeratedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enumeratedValue")
-		}
-		if _enumeratedValueErr != nil {
-			return errors.Wrap(_enumeratedValueErr, "Error serializing 'enumeratedValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", m.GetEnumeratedValue(), WriteComplex[BACnetApplicationTagEnumerated](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enumeratedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); popErr != nil {

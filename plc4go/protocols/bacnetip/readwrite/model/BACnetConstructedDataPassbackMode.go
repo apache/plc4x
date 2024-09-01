@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPassbackMode) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPassbackMode")
 		}
 
-		// Simple Field (passbackMode)
-		if pushErr := writeBuffer.PushContext("passbackMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for passbackMode")
-		}
-		_passbackModeErr := writeBuffer.WriteSerializable(ctx, m.GetPassbackMode())
-		if popErr := writeBuffer.PopContext("passbackMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for passbackMode")
-		}
-		if _passbackModeErr != nil {
-			return errors.Wrap(_passbackModeErr, "Error serializing 'passbackMode' field")
+		if err := WriteSimpleField[BACnetAccessPassbackModeTagged](ctx, "passbackMode", m.GetPassbackMode(), WriteComplex[BACnetAccessPassbackModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'passbackMode' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

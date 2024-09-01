@@ -223,11 +223,8 @@ func (m *_MediaTransportControlDataNextPreviousTrack) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataNextPreviousTrack")
 		}
 
-		// Simple Field (operation)
-		operation := byte(m.GetOperation())
-		_operationErr := /*TODO: migrate me*/ writeBuffer.WriteByte("operation", (operation))
-		if _operationErr != nil {
-			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
+		if err := WriteSimpleField[byte](ctx, "operation", m.GetOperation(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'operation' field")
 		}
 		// Virtual field
 		isSetThePreviousTrack := m.GetIsSetThePreviousTrack()

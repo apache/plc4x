@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataValidSamples) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataValidSamples")
 		}
 
-		// Simple Field (validSamples)
-		if pushErr := writeBuffer.PushContext("validSamples"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for validSamples")
-		}
-		_validSamplesErr := writeBuffer.WriteSerializable(ctx, m.GetValidSamples())
-		if popErr := writeBuffer.PopContext("validSamples"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for validSamples")
-		}
-		if _validSamplesErr != nil {
-			return errors.Wrap(_validSamplesErr, "Error serializing 'validSamples' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "validSamples", m.GetValidSamples(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'validSamples' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

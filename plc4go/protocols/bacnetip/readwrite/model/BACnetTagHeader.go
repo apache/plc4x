@@ -393,30 +393,16 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagHeader")
 	}
 
-	// Simple Field (tagNumber)
-	tagNumber := uint8(m.GetTagNumber())
-	_tagNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("tagNumber", 4, uint8((tagNumber)))
-	if _tagNumberErr != nil {
-		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
+	if err := WriteSimpleField[uint8](ctx, "tagNumber", m.GetTagNumber(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		return errors.Wrap(err, "Error serializing 'tagNumber' field")
 	}
 
-	// Simple Field (tagClass)
-	if pushErr := writeBuffer.PushContext("tagClass"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for tagClass")
-	}
-	_tagClassErr := writeBuffer.WriteSerializable(ctx, m.GetTagClass())
-	if popErr := writeBuffer.PopContext("tagClass"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for tagClass")
-	}
-	if _tagClassErr != nil {
-		return errors.Wrap(_tagClassErr, "Error serializing 'tagClass' field")
+	if err := WriteSimpleEnumField[TagClass](ctx, "tagClass", "TagClass", m.GetTagClass(), WriteEnum[TagClass, uint8](TagClass.GetValue, TagClass.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 1))); err != nil {
+		return errors.Wrap(err, "Error serializing 'tagClass' field")
 	}
 
-	// Simple Field (lengthValueType)
-	lengthValueType := uint8(m.GetLengthValueType())
-	_lengthValueTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("lengthValueType", 3, uint8((lengthValueType)))
-	if _lengthValueTypeErr != nil {
-		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
+	if err := WriteSimpleField[uint8](ctx, "lengthValueType", m.GetLengthValueType(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'lengthValueType' field")
 	}
 
 	if err := WriteOptionalField[uint8](ctx, "extTagNumber", m.GetExtTagNumber(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {

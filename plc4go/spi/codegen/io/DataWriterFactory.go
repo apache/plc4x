@@ -88,7 +88,7 @@ func WriteDouble(writeBuffer utils.WriteBuffer, bitLength uint8) DataWriter[floa
 	return NewDataWriterSimpleDouble(writeBuffer, bitLength)
 }
 
-func WriteString(writeBuffer utils.WriteBuffer, bitLength uint32) DataWriter[string] {
+func WriteString(writeBuffer utils.WriteBuffer, bitLength int32) DataWriter[string] {
 	return NewDataWriterSimpleString(writeBuffer, bitLength)
 }
 

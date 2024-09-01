@@ -325,83 +325,44 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for ApduDataExtPropertyDescriptionResponse")
 		}
 
-		// Simple Field (objectIndex)
-		objectIndex := uint8(m.GetObjectIndex())
-		_objectIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectIndex", 8, uint8((objectIndex)))
-		if _objectIndexErr != nil {
-			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
+		if err := WriteSimpleField[uint8](ctx, "objectIndex", m.GetObjectIndex(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIndex' field")
 		}
 
-		// Simple Field (propertyId)
-		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
-		if _propertyIdErr != nil {
-			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
+		if err := WriteSimpleField[uint8](ctx, "propertyId", m.GetPropertyId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyId' field")
 		}
 
-		// Simple Field (index)
-		index := uint8(m.GetIndex())
-		_indexErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("index", 8, uint8((index)))
-		if _indexErr != nil {
-			return errors.Wrap(_indexErr, "Error serializing 'index' field")
+		if err := WriteSimpleField[uint8](ctx, "index", m.GetIndex(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'index' field")
 		}
 
-		// Simple Field (writeEnabled)
-		writeEnabled := bool(m.GetWriteEnabled())
-		_writeEnabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("writeEnabled", (writeEnabled))
-		if _writeEnabledErr != nil {
-			return errors.Wrap(_writeEnabledErr, "Error serializing 'writeEnabled' field")
+		if err := WriteSimpleField[bool](ctx, "writeEnabled", m.GetWriteEnabled(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeEnabled' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (propertyDataType)
-		if pushErr := writeBuffer.PushContext("propertyDataType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyDataType")
-		}
-		_propertyDataTypeErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyDataType())
-		if popErr := writeBuffer.PopContext("propertyDataType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyDataType")
-		}
-		if _propertyDataTypeErr != nil {
-			return errors.Wrap(_propertyDataTypeErr, "Error serializing 'propertyDataType' field")
+		if err := WriteSimpleEnumField[KnxPropertyDataType](ctx, "propertyDataType", "KnxPropertyDataType", m.GetPropertyDataType(), WriteEnum[KnxPropertyDataType, uint8](KnxPropertyDataType.GetValue, KnxPropertyDataType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyDataType' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 4)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (maxNrOfElements)
-		maxNrOfElements := uint16(m.GetMaxNrOfElements())
-		_maxNrOfElementsErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("maxNrOfElements", 12, uint16((maxNrOfElements)))
-		if _maxNrOfElementsErr != nil {
-			return errors.Wrap(_maxNrOfElementsErr, "Error serializing 'maxNrOfElements' field")
+		if err := WriteSimpleField[uint16](ctx, "maxNrOfElements", m.GetMaxNrOfElements(), WriteUnsignedShort(writeBuffer, 12)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxNrOfElements' field")
 		}
 
-		// Simple Field (readLevel)
-		if pushErr := writeBuffer.PushContext("readLevel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for readLevel")
-		}
-		_readLevelErr := writeBuffer.WriteSerializable(ctx, m.GetReadLevel())
-		if popErr := writeBuffer.PopContext("readLevel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for readLevel")
-		}
-		if _readLevelErr != nil {
-			return errors.Wrap(_readLevelErr, "Error serializing 'readLevel' field")
+		if err := WriteSimpleEnumField[AccessLevel](ctx, "readLevel", "AccessLevel", m.GetReadLevel(), WriteEnum[AccessLevel, uint8](AccessLevel.GetValue, AccessLevel.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
+			return errors.Wrap(err, "Error serializing 'readLevel' field")
 		}
 
-		// Simple Field (writeLevel)
-		if pushErr := writeBuffer.PushContext("writeLevel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for writeLevel")
-		}
-		_writeLevelErr := writeBuffer.WriteSerializable(ctx, m.GetWriteLevel())
-		if popErr := writeBuffer.PopContext("writeLevel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for writeLevel")
-		}
-		if _writeLevelErr != nil {
-			return errors.Wrap(_writeLevelErr, "Error serializing 'writeLevel' field")
+		if err := WriteSimpleEnumField[AccessLevel](ctx, "writeLevel", "AccessLevel", m.GetWriteLevel(), WriteEnum[AccessLevel, uint8](AccessLevel.GetValue, AccessLevel.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataExtPropertyDescriptionResponse"); popErr != nil {

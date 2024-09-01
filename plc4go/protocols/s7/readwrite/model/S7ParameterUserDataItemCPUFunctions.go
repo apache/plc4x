@@ -321,39 +321,24 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(err, "Error serializing 'itemLength' field")
 		}
 
-		// Simple Field (method)
-		method := uint8(m.GetMethod())
-		_methodErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("method", 8, uint8((method)))
-		if _methodErr != nil {
-			return errors.Wrap(_methodErr, "Error serializing 'method' field")
+		if err := WriteSimpleField[uint8](ctx, "method", m.GetMethod(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'method' field")
 		}
 
-		// Simple Field (cpuFunctionType)
-		cpuFunctionType := uint8(m.GetCpuFunctionType())
-		_cpuFunctionTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("cpuFunctionType", 4, uint8((cpuFunctionType)))
-		if _cpuFunctionTypeErr != nil {
-			return errors.Wrap(_cpuFunctionTypeErr, "Error serializing 'cpuFunctionType' field")
+		if err := WriteSimpleField[uint8](ctx, "cpuFunctionType", m.GetCpuFunctionType(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cpuFunctionType' field")
 		}
 
-		// Simple Field (cpuFunctionGroup)
-		cpuFunctionGroup := uint8(m.GetCpuFunctionGroup())
-		_cpuFunctionGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("cpuFunctionGroup", 4, uint8((cpuFunctionGroup)))
-		if _cpuFunctionGroupErr != nil {
-			return errors.Wrap(_cpuFunctionGroupErr, "Error serializing 'cpuFunctionGroup' field")
+		if err := WriteSimpleField[uint8](ctx, "cpuFunctionGroup", m.GetCpuFunctionGroup(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cpuFunctionGroup' field")
 		}
 
-		// Simple Field (cpuSubfunction)
-		cpuSubfunction := uint8(m.GetCpuSubfunction())
-		_cpuSubfunctionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("cpuSubfunction", 8, uint8((cpuSubfunction)))
-		if _cpuSubfunctionErr != nil {
-			return errors.Wrap(_cpuSubfunctionErr, "Error serializing 'cpuSubfunction' field")
+		if err := WriteSimpleField[uint8](ctx, "cpuSubfunction", m.GetCpuSubfunction(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cpuSubfunction' field")
 		}
 
-		// Simple Field (sequenceNumber)
-		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
 		if err := WriteOptionalField[uint8](ctx, "dataUnitReferenceNumber", m.GetDataUnitReferenceNumber(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {

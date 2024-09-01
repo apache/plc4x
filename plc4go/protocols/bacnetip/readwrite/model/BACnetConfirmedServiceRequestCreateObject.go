@@ -209,16 +209,8 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestCreateObject")
 		}
 
-		// Simple Field (objectSpecifier)
-		if pushErr := writeBuffer.PushContext("objectSpecifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectSpecifier")
-		}
-		_objectSpecifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectSpecifier())
-		if popErr := writeBuffer.PopContext("objectSpecifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectSpecifier")
-		}
-		if _objectSpecifierErr != nil {
-			return errors.Wrap(_objectSpecifierErr, "Error serializing 'objectSpecifier' field")
+		if err := WriteSimpleField[BACnetConfirmedServiceRequestCreateObjectObjectSpecifier](ctx, "objectSpecifier", m.GetObjectSpecifier(), WriteComplex[BACnetConfirmedServiceRequestCreateObjectObjectSpecifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectSpecifier' field")
 		}
 
 		if err := WriteOptionalField[BACnetPropertyValues](ctx, "listOfValues", GetRef(m.GetListOfValues()), WriteComplex[BACnetPropertyValues](writeBuffer), true); err != nil {

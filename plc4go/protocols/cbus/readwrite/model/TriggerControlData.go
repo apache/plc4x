@@ -261,16 +261,8 @@ func (pm *_TriggerControlData) SerializeParent(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for TriggerControlData")
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
+	if err := WriteSimpleEnumField[TriggerControlCommandTypeContainer](ctx, "commandTypeContainer", "TriggerControlCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[TriggerControlCommandTypeContainer, uint8](TriggerControlCommandTypeContainer.GetValue, TriggerControlCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
@@ -279,11 +271,8 @@ func (pm *_TriggerControlData) SerializeParent(ctx context.Context, writeBuffer 
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
-	// Simple Field (triggerGroup)
-	triggerGroup := byte(m.GetTriggerGroup())
-	_triggerGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("triggerGroup", (triggerGroup))
-	if _triggerGroupErr != nil {
-		return errors.Wrap(_triggerGroupErr, "Error serializing 'triggerGroup' field")
+	if err := WriteSimpleField[byte](ctx, "triggerGroup", m.GetTriggerGroup(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'triggerGroup' field")
 	}
 	// Virtual field
 	isUnused := m.GetIsUnused()

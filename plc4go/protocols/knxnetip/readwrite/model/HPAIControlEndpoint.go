@@ -197,35 +197,16 @@ func (m *_HPAIControlEndpoint) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Simple Field (hostProtocolCode)
-	if pushErr := writeBuffer.PushContext("hostProtocolCode"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for hostProtocolCode")
-	}
-	_hostProtocolCodeErr := writeBuffer.WriteSerializable(ctx, m.GetHostProtocolCode())
-	if popErr := writeBuffer.PopContext("hostProtocolCode"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for hostProtocolCode")
-	}
-	if _hostProtocolCodeErr != nil {
-		return errors.Wrap(_hostProtocolCodeErr, "Error serializing 'hostProtocolCode' field")
+	if err := WriteSimpleEnumField[HostProtocolCode](ctx, "hostProtocolCode", "HostProtocolCode", m.GetHostProtocolCode(), WriteEnum[HostProtocolCode, uint8](HostProtocolCode.GetValue, HostProtocolCode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'hostProtocolCode' field")
 	}
 
-	// Simple Field (ipAddress)
-	if pushErr := writeBuffer.PushContext("ipAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ipAddress")
-	}
-	_ipAddressErr := writeBuffer.WriteSerializable(ctx, m.GetIpAddress())
-	if popErr := writeBuffer.PopContext("ipAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ipAddress")
-	}
-	if _ipAddressErr != nil {
-		return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
+	if err := WriteSimpleField[IPAddress](ctx, "ipAddress", m.GetIpAddress(), WriteComplex[IPAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ipAddress' field")
 	}
 
-	// Simple Field (ipPort)
-	ipPort := uint16(m.GetIpPort())
-	_ipPortErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("ipPort", 16, uint16((ipPort)))
-	if _ipPortErr != nil {
-		return errors.Wrap(_ipPortErr, "Error serializing 'ipPort' field")
+	if err := WriteSimpleField[uint16](ctx, "ipPort", m.GetIpPort(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ipPort' field")
 	}
 
 	if popErr := writeBuffer.PopContext("HPAIControlEndpoint"); popErr != nil {

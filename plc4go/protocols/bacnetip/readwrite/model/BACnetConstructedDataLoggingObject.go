@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLoggingObject) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLoggingObject")
 		}
 
-		// Simple Field (loggingObject)
-		if pushErr := writeBuffer.PushContext("loggingObject"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for loggingObject")
-		}
-		_loggingObjectErr := writeBuffer.WriteSerializable(ctx, m.GetLoggingObject())
-		if popErr := writeBuffer.PopContext("loggingObject"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for loggingObject")
-		}
-		if _loggingObjectErr != nil {
-			return errors.Wrap(_loggingObjectErr, "Error serializing 'loggingObject' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "loggingObject", m.GetLoggingObject(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'loggingObject' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

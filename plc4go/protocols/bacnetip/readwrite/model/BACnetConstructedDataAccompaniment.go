@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAccompaniment) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccompaniment")
 		}
 
-		// Simple Field (accompaniment)
-		if pushErr := writeBuffer.PushContext("accompaniment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accompaniment")
-		}
-		_accompanimentErr := writeBuffer.WriteSerializable(ctx, m.GetAccompaniment())
-		if popErr := writeBuffer.PopContext("accompaniment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accompaniment")
-		}
-		if _accompanimentErr != nil {
-			return errors.Wrap(_accompanimentErr, "Error serializing 'accompaniment' field")
+		if err := WriteSimpleField[BACnetDeviceObjectReference](ctx, "accompaniment", m.GetAccompaniment(), WriteComplex[BACnetDeviceObjectReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accompaniment' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -266,76 +266,28 @@ func (m *_BACnetEventParameterChangeOfLifeSavety) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfLifeSavety")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (timeDelay)
-		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeDelay")
-		}
-		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
-		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeDelay")
-		}
-		if _timeDelayErr != nil {
-			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", m.GetTimeDelay(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeDelay' field")
 		}
 
-		// Simple Field (listOfLifeSavetyAlarmValues)
-		if pushErr := writeBuffer.PushContext("listOfLifeSavetyAlarmValues"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfLifeSavetyAlarmValues")
-		}
-		_listOfLifeSavetyAlarmValuesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfLifeSavetyAlarmValues())
-		if popErr := writeBuffer.PopContext("listOfLifeSavetyAlarmValues"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfLifeSavetyAlarmValues")
-		}
-		if _listOfLifeSavetyAlarmValuesErr != nil {
-			return errors.Wrap(_listOfLifeSavetyAlarmValuesErr, "Error serializing 'listOfLifeSavetyAlarmValues' field")
+		if err := WriteSimpleField[BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues](ctx, "listOfLifeSavetyAlarmValues", m.GetListOfLifeSavetyAlarmValues(), WriteComplex[BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfLifeSavetyAlarmValues' field")
 		}
 
-		// Simple Field (listOfAlarmValues)
-		if pushErr := writeBuffer.PushContext("listOfAlarmValues"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfAlarmValues")
-		}
-		_listOfAlarmValuesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfAlarmValues())
-		if popErr := writeBuffer.PopContext("listOfAlarmValues"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfAlarmValues")
-		}
-		if _listOfAlarmValuesErr != nil {
-			return errors.Wrap(_listOfAlarmValuesErr, "Error serializing 'listOfAlarmValues' field")
+		if err := WriteSimpleField[BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues](ctx, "listOfAlarmValues", m.GetListOfAlarmValues(), WriteComplex[BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfAlarmValues' field")
 		}
 
-		// Simple Field (modePropertyReference)
-		if pushErr := writeBuffer.PushContext("modePropertyReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for modePropertyReference")
-		}
-		_modePropertyReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetModePropertyReference())
-		if popErr := writeBuffer.PopContext("modePropertyReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for modePropertyReference")
-		}
-		if _modePropertyReferenceErr != nil {
-			return errors.Wrap(_modePropertyReferenceErr, "Error serializing 'modePropertyReference' field")
+		if err := WriteSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "modePropertyReference", m.GetModePropertyReference(), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'modePropertyReference' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfLifeSavety"); popErr != nil {

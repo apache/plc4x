@@ -266,44 +266,20 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAtomicWriteFile")
 		}
 
-		// Simple Field (deviceIdentifier)
-		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
-		}
-		_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceIdentifier())
-		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
-		}
-		if _deviceIdentifierErr != nil {
-			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", m.GetDeviceIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 		}
 
 		if err := WriteOptionalField[BACnetOpeningTag](ctx, "openingTag", GetRef(m.GetOpeningTag()), WriteComplex[BACnetOpeningTag](writeBuffer), true); err != nil {
 			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (fileStartPosition)
-		if pushErr := writeBuffer.PushContext("fileStartPosition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileStartPosition")
-		}
-		_fileStartPositionErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartPosition())
-		if popErr := writeBuffer.PopContext("fileStartPosition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileStartPosition")
-		}
-		if _fileStartPositionErr != nil {
-			return errors.Wrap(_fileStartPositionErr, "Error serializing 'fileStartPosition' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartPosition", m.GetFileStartPosition(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileStartPosition' field")
 		}
 
-		// Simple Field (fileData)
-		if pushErr := writeBuffer.PushContext("fileData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileData")
-		}
-		_fileDataErr := writeBuffer.WriteSerializable(ctx, m.GetFileData())
-		if popErr := writeBuffer.PopContext("fileData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileData")
-		}
-		if _fileDataErr != nil {
-			return errors.Wrap(_fileDataErr, "Error serializing 'fileData' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "fileData", m.GetFileData(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileData' field")
 		}
 
 		if err := WriteOptionalField[BACnetClosingTag](ctx, "closingTag", GetRef(m.GetClosingTag()), WriteComplex[BACnetClosingTag](writeBuffer), true); err != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastRestoreTime) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastRestoreTime")
 		}
 
-		// Simple Field (lastRestoreTime)
-		if pushErr := writeBuffer.PushContext("lastRestoreTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastRestoreTime")
-		}
-		_lastRestoreTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLastRestoreTime())
-		if popErr := writeBuffer.PopContext("lastRestoreTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastRestoreTime")
-		}
-		if _lastRestoreTimeErr != nil {
-			return errors.Wrap(_lastRestoreTimeErr, "Error serializing 'lastRestoreTime' field")
+		if err := WriteSimpleField[BACnetTimeStamp](ctx, "lastRestoreTime", m.GetLastRestoreTime(), WriteComplex[BACnetTimeStamp](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastRestoreTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

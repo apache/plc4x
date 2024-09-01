@@ -185,16 +185,8 @@ func (m *_NLMSetMasterKey) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for NLMSetMasterKey")
 		}
 
-		// Simple Field (key)
-		if pushErr := writeBuffer.PushContext("key"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for key")
-		}
-		_keyErr := writeBuffer.WriteSerializable(ctx, m.GetKey())
-		if popErr := writeBuffer.PopContext("key"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for key")
-		}
-		if _keyErr != nil {
-			return errors.Wrap(_keyErr, "Error serializing 'key' field")
+		if err := WriteSimpleField[NLMUpdateKeyUpdateKeyEntry](ctx, "key", m.GetKey(), WriteComplex[NLMUpdateKeyUpdateKeyEntry](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'key' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMSetMasterKey"); popErr != nil {

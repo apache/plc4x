@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPassbackTimeout) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPassbackTimeout")
 		}
 
-		// Simple Field (passbackTimeout)
-		if pushErr := writeBuffer.PushContext("passbackTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for passbackTimeout")
-		}
-		_passbackTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetPassbackTimeout())
-		if popErr := writeBuffer.PopContext("passbackTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for passbackTimeout")
-		}
-		if _passbackTimeoutErr != nil {
-			return errors.Wrap(_passbackTimeoutErr, "Error serializing 'passbackTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "passbackTimeout", m.GetPassbackTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'passbackTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

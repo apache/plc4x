@@ -270,58 +270,28 @@ func (m *_Argument) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 			return errors.Wrap(pushErr, "Error pushing for Argument")
 		}
 
-		// Simple Field (name)
-		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for name")
-		}
-		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for name")
-		}
-		if _nameErr != nil {
-			return errors.Wrap(_nameErr, "Error serializing 'name' field")
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
-		// Simple Field (dataType)
-		if pushErr := writeBuffer.PushContext("dataType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataType")
-		}
-		_dataTypeErr := writeBuffer.WriteSerializable(ctx, m.GetDataType())
-		if popErr := writeBuffer.PopContext("dataType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataType")
-		}
-		if _dataTypeErr != nil {
-			return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
+		if err := WriteSimpleField[NodeId](ctx, "dataType", m.GetDataType(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataType' field")
 		}
 
-		// Simple Field (valueRank)
-		valueRank := int32(m.GetValueRank())
-		_valueRankErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("valueRank", 32, int32((valueRank)))
-		if _valueRankErr != nil {
-			return errors.Wrap(_valueRankErr, "Error serializing 'valueRank' field")
+		if err := WriteSimpleField[int32](ctx, "valueRank", m.GetValueRank(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'valueRank' field")
 		}
 
-		// Simple Field (noOfArrayDimensions)
-		noOfArrayDimensions := int32(m.GetNoOfArrayDimensions())
-		_noOfArrayDimensionsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfArrayDimensions", 32, int32((noOfArrayDimensions)))
-		if _noOfArrayDimensionsErr != nil {
-			return errors.Wrap(_noOfArrayDimensionsErr, "Error serializing 'noOfArrayDimensions' field")
+		if err := WriteSimpleField[int32](ctx, "noOfArrayDimensions", m.GetNoOfArrayDimensions(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfArrayDimensions' field")
 		}
 
 		if err := WriteSimpleTypeArrayField(ctx, "arrayDimensions", m.GetArrayDimensions(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'arrayDimensions' field")
 		}
 
-		// Simple Field (description)
-		if pushErr := writeBuffer.PushContext("description"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for description")
-		}
-		_descriptionErr := writeBuffer.WriteSerializable(ctx, m.GetDescription())
-		if popErr := writeBuffer.PopContext("description"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for description")
-		}
-		if _descriptionErr != nil {
-			return errors.Wrap(_descriptionErr, "Error serializing 'description' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "description", m.GetDescription(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'description' field")
 		}
 
 		if popErr := writeBuffer.PopContext("Argument"); popErr != nil {

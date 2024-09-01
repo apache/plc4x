@@ -265,34 +265,20 @@ func (m *_ContentFilterElementResult) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for ContentFilterElementResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (noOfOperandStatusCodes)
-		noOfOperandStatusCodes := int32(m.GetNoOfOperandStatusCodes())
-		_noOfOperandStatusCodesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfOperandStatusCodes", 32, int32((noOfOperandStatusCodes)))
-		if _noOfOperandStatusCodesErr != nil {
-			return errors.Wrap(_noOfOperandStatusCodesErr, "Error serializing 'noOfOperandStatusCodes' field")
+		if err := WriteSimpleField[int32](ctx, "noOfOperandStatusCodes", m.GetNoOfOperandStatusCodes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfOperandStatusCodes' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "operandStatusCodes", m.GetOperandStatusCodes(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'operandStatusCodes' field")
 		}
 
-		// Simple Field (noOfOperandDiagnosticInfos)
-		noOfOperandDiagnosticInfos := int32(m.GetNoOfOperandDiagnosticInfos())
-		_noOfOperandDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfOperandDiagnosticInfos", 32, int32((noOfOperandDiagnosticInfos)))
-		if _noOfOperandDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfOperandDiagnosticInfosErr, "Error serializing 'noOfOperandDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfOperandDiagnosticInfos", m.GetNoOfOperandDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfOperandDiagnosticInfos' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "operandDiagnosticInfos", m.GetOperandDiagnosticInfos(), writeBuffer); err != nil {

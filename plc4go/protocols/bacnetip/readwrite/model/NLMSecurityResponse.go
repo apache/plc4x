@@ -238,30 +238,16 @@ func (m *_NLMSecurityResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for NLMSecurityResponse")
 		}
 
-		// Simple Field (responseCode)
-		if pushErr := writeBuffer.PushContext("responseCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseCode")
-		}
-		_responseCodeErr := writeBuffer.WriteSerializable(ctx, m.GetResponseCode())
-		if popErr := writeBuffer.PopContext("responseCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseCode")
-		}
-		if _responseCodeErr != nil {
-			return errors.Wrap(_responseCodeErr, "Error serializing 'responseCode' field")
+		if err := WriteSimpleEnumField[SecurityResponseCode](ctx, "responseCode", "SecurityResponseCode", m.GetResponseCode(), WriteEnum[SecurityResponseCode, uint8](SecurityResponseCode.GetValue, SecurityResponseCode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseCode' field")
 		}
 
-		// Simple Field (originalMessageId)
-		originalMessageId := uint32(m.GetOriginalMessageId())
-		_originalMessageIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("originalMessageId", 32, uint32((originalMessageId)))
-		if _originalMessageIdErr != nil {
-			return errors.Wrap(_originalMessageIdErr, "Error serializing 'originalMessageId' field")
+		if err := WriteSimpleField[uint32](ctx, "originalMessageId", m.GetOriginalMessageId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalMessageId' field")
 		}
 
-		// Simple Field (originalTimestamp)
-		originalTimestamp := uint32(m.GetOriginalTimestamp())
-		_originalTimestampErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("originalTimestamp", 32, uint32((originalTimestamp)))
-		if _originalTimestampErr != nil {
-			return errors.Wrap(_originalTimestampErr, "Error serializing 'originalTimestamp' field")
+		if err := WriteSimpleField[uint32](ctx, "originalTimestamp", m.GetOriginalTimestamp(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalTimestamp' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "variableParameters", m.GetVariableParameters(), WriteByteArray(writeBuffer, 8)); err != nil {

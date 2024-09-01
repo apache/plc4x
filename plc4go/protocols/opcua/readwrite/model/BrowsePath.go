@@ -200,28 +200,12 @@ func (m *_BrowsePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(pushErr, "Error pushing for BrowsePath")
 		}
 
-		// Simple Field (startingNode)
-		if pushErr := writeBuffer.PushContext("startingNode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for startingNode")
-		}
-		_startingNodeErr := writeBuffer.WriteSerializable(ctx, m.GetStartingNode())
-		if popErr := writeBuffer.PopContext("startingNode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for startingNode")
-		}
-		if _startingNodeErr != nil {
-			return errors.Wrap(_startingNodeErr, "Error serializing 'startingNode' field")
+		if err := WriteSimpleField[NodeId](ctx, "startingNode", m.GetStartingNode(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startingNode' field")
 		}
 
-		// Simple Field (relativePath)
-		if pushErr := writeBuffer.PushContext("relativePath"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for relativePath")
-		}
-		_relativePathErr := writeBuffer.WriteSerializable(ctx, m.GetRelativePath())
-		if popErr := writeBuffer.PopContext("relativePath"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for relativePath")
-		}
-		if _relativePathErr != nil {
-			return errors.Wrap(_relativePathErr, "Error serializing 'relativePath' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "relativePath", m.GetRelativePath(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'relativePath' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BrowsePath"); popErr != nil {

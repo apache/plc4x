@@ -239,28 +239,12 @@ func (m *_LevelInformationNormal) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for LevelInformationNormal")
 		}
 
-		// Simple Field (pair1)
-		if pushErr := writeBuffer.PushContext("pair1"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pair1")
-		}
-		_pair1Err := writeBuffer.WriteSerializable(ctx, m.GetPair1())
-		if popErr := writeBuffer.PopContext("pair1"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pair1")
-		}
-		if _pair1Err != nil {
-			return errors.Wrap(_pair1Err, "Error serializing 'pair1' field")
+		if err := WriteSimpleEnumField[LevelInformationNibblePair](ctx, "pair1", "LevelInformationNibblePair", m.GetPair1(), WriteEnum[LevelInformationNibblePair, uint8](LevelInformationNibblePair.GetValue, LevelInformationNibblePair.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'pair1' field")
 		}
 
-		// Simple Field (pair2)
-		if pushErr := writeBuffer.PushContext("pair2"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pair2")
-		}
-		_pair2Err := writeBuffer.WriteSerializable(ctx, m.GetPair2())
-		if popErr := writeBuffer.PopContext("pair2"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pair2")
-		}
-		if _pair2Err != nil {
-			return errors.Wrap(_pair2Err, "Error serializing 'pair2' field")
+		if err := WriteSimpleEnumField[LevelInformationNibblePair](ctx, "pair2", "LevelInformationNibblePair", m.GetPair2(), WriteEnum[LevelInformationNibblePair, uint8](LevelInformationNibblePair.GetValue, LevelInformationNibblePair.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'pair2' field")
 		}
 		// Virtual field
 		actualLevel := m.GetActualLevel()

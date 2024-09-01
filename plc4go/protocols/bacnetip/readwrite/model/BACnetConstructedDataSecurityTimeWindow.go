@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSecurityTimeWindow")
 		}
 
-		// Simple Field (securityTimeWindow)
-		if pushErr := writeBuffer.PushContext("securityTimeWindow"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityTimeWindow")
-		}
-		_securityTimeWindowErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityTimeWindow())
-		if popErr := writeBuffer.PopContext("securityTimeWindow"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityTimeWindow")
-		}
-		if _securityTimeWindowErr != nil {
-			return errors.Wrap(_securityTimeWindowErr, "Error serializing 'securityTimeWindow' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "securityTimeWindow", m.GetSecurityTimeWindow(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityTimeWindow' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

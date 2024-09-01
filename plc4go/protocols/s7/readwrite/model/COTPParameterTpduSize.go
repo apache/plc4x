@@ -185,16 +185,8 @@ func (m *_COTPParameterTpduSize) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for COTPParameterTpduSize")
 		}
 
-		// Simple Field (tpduSize)
-		if pushErr := writeBuffer.PushContext("tpduSize"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for tpduSize")
-		}
-		_tpduSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTpduSize())
-		if popErr := writeBuffer.PopContext("tpduSize"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for tpduSize")
-		}
-		if _tpduSizeErr != nil {
-			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
+		if err := WriteSimpleEnumField[COTPTpduSize](ctx, "tpduSize", "COTPTpduSize", m.GetTpduSize(), WriteEnum[COTPTpduSize, uint8](COTPTpduSize.GetValue, COTPTpduSize.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'tpduSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterTpduSize"); popErr != nil {

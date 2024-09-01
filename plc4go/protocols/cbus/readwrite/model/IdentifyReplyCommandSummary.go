@@ -219,25 +219,16 @@ func (m *_IdentifyReplyCommandSummary) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandSummary")
 		}
 
-		// Simple Field (partName)
-		partName := string(m.GetPartName())
-		_partNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("partName", uint32(48), (partName), utils.WithEncoding("UTF-8)"))
-		if _partNameErr != nil {
-			return errors.Wrap(_partNameErr, "Error serializing 'partName' field")
+		if err := WriteSimpleField[string](ctx, "partName", m.GetPartName(), WriteString(writeBuffer, 48)); err != nil {
+			return errors.Wrap(err, "Error serializing 'partName' field")
 		}
 
-		// Simple Field (unitServiceType)
-		unitServiceType := byte(m.GetUnitServiceType())
-		_unitServiceTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("unitServiceType", (unitServiceType))
-		if _unitServiceTypeErr != nil {
-			return errors.Wrap(_unitServiceTypeErr, "Error serializing 'unitServiceType' field")
+		if err := WriteSimpleField[byte](ctx, "unitServiceType", m.GetUnitServiceType(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitServiceType' field")
 		}
 
-		// Simple Field (version)
-		version := string(m.GetVersion())
-		_versionErr := /*TODO: migrate me*/ writeBuffer.WriteString("version", uint32(32), (version), utils.WithEncoding("UTF-8)"))
-		if _versionErr != nil {
-			return errors.Wrap(_versionErr, "Error serializing 'version' field")
+		if err := WriteSimpleField[string](ctx, "version", m.GetVersion(), WriteString(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'version' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandSummary"); popErr != nil {

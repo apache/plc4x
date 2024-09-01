@@ -204,11 +204,8 @@ func (m *_ApduDataGroupValueWrite) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for ApduDataGroupValueWrite")
 		}
 
-		// Simple Field (dataFirstByte)
-		dataFirstByte := int8(m.GetDataFirstByte())
-		_dataFirstByteErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("dataFirstByte", 6, int8((dataFirstByte)))
-		if _dataFirstByteErr != nil {
-			return errors.Wrap(_dataFirstByteErr, "Error serializing 'dataFirstByte' field")
+		if err := WriteSimpleField[int8](ctx, "dataFirstByte", m.GetDataFirstByte(), WriteSignedByte(writeBuffer, 6)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataFirstByte' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

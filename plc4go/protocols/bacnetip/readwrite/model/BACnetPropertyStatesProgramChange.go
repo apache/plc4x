@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesProgramChange) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesProgramChange")
 		}
 
-		// Simple Field (programState)
-		if pushErr := writeBuffer.PushContext("programState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for programState")
-		}
-		_programStateErr := writeBuffer.WriteSerializable(ctx, m.GetProgramState())
-		if popErr := writeBuffer.PopContext("programState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for programState")
-		}
-		if _programStateErr != nil {
-			return errors.Wrap(_programStateErr, "Error serializing 'programState' field")
+		if err := WriteSimpleField[BACnetProgramStateTagged](ctx, "programState", m.GetProgramState(), WriteComplex[BACnetProgramStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'programState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesProgramChange"); popErr != nil {

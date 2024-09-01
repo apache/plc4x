@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataExtendedTimeEnable")
 		}
 
-		// Simple Field (extendedTimeEnable)
-		if pushErr := writeBuffer.PushContext("extendedTimeEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for extendedTimeEnable")
-		}
-		_extendedTimeEnableErr := writeBuffer.WriteSerializable(ctx, m.GetExtendedTimeEnable())
-		if popErr := writeBuffer.PopContext("extendedTimeEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for extendedTimeEnable")
-		}
-		if _extendedTimeEnableErr != nil {
-			return errors.Wrap(_extendedTimeEnableErr, "Error serializing 'extendedTimeEnable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "extendedTimeEnable", m.GetExtendedTimeEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'extendedTimeEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

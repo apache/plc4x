@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDirectReading) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDirectReading")
 		}
 
-		// Simple Field (directReading)
-		if pushErr := writeBuffer.PushContext("directReading"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for directReading")
-		}
-		_directReadingErr := writeBuffer.WriteSerializable(ctx, m.GetDirectReading())
-		if popErr := writeBuffer.PopContext("directReading"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for directReading")
-		}
-		if _directReadingErr != nil {
-			return errors.Wrap(_directReadingErr, "Error serializing 'directReading' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "directReading", m.GetDirectReading(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'directReading' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

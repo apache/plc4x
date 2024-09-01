@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLockout) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLockout")
 		}
 
-		// Simple Field (lockout)
-		if pushErr := writeBuffer.PushContext("lockout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lockout")
-		}
-		_lockoutErr := writeBuffer.WriteSerializable(ctx, m.GetLockout())
-		if popErr := writeBuffer.PopContext("lockout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lockout")
-		}
-		if _lockoutErr != nil {
-			return errors.Wrap(_lockoutErr, "Error serializing 'lockout' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "lockout", m.GetLockout(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lockout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

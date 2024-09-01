@@ -302,60 +302,36 @@ func (m *_QuantityDimension) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for QuantityDimension")
 		}
 
-		// Simple Field (massExponent)
-		massExponent := int8(m.GetMassExponent())
-		_massExponentErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("massExponent", 8, int8((massExponent)))
-		if _massExponentErr != nil {
-			return errors.Wrap(_massExponentErr, "Error serializing 'massExponent' field")
+		if err := WriteSimpleField[int8](ctx, "massExponent", m.GetMassExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'massExponent' field")
 		}
 
-		// Simple Field (lengthExponent)
-		lengthExponent := int8(m.GetLengthExponent())
-		_lengthExponentErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("lengthExponent", 8, int8((lengthExponent)))
-		if _lengthExponentErr != nil {
-			return errors.Wrap(_lengthExponentErr, "Error serializing 'lengthExponent' field")
+		if err := WriteSimpleField[int8](ctx, "lengthExponent", m.GetLengthExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lengthExponent' field")
 		}
 
-		// Simple Field (timeExponent)
-		timeExponent := int8(m.GetTimeExponent())
-		_timeExponentErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("timeExponent", 8, int8((timeExponent)))
-		if _timeExponentErr != nil {
-			return errors.Wrap(_timeExponentErr, "Error serializing 'timeExponent' field")
+		if err := WriteSimpleField[int8](ctx, "timeExponent", m.GetTimeExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeExponent' field")
 		}
 
-		// Simple Field (electricCurrentExponent)
-		electricCurrentExponent := int8(m.GetElectricCurrentExponent())
-		_electricCurrentExponentErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("electricCurrentExponent", 8, int8((electricCurrentExponent)))
-		if _electricCurrentExponentErr != nil {
-			return errors.Wrap(_electricCurrentExponentErr, "Error serializing 'electricCurrentExponent' field")
+		if err := WriteSimpleField[int8](ctx, "electricCurrentExponent", m.GetElectricCurrentExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'electricCurrentExponent' field")
 		}
 
-		// Simple Field (amountOfSubstanceExponent)
-		amountOfSubstanceExponent := int8(m.GetAmountOfSubstanceExponent())
-		_amountOfSubstanceExponentErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("amountOfSubstanceExponent", 8, int8((amountOfSubstanceExponent)))
-		if _amountOfSubstanceExponentErr != nil {
-			return errors.Wrap(_amountOfSubstanceExponentErr, "Error serializing 'amountOfSubstanceExponent' field")
+		if err := WriteSimpleField[int8](ctx, "amountOfSubstanceExponent", m.GetAmountOfSubstanceExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'amountOfSubstanceExponent' field")
 		}
 
-		// Simple Field (luminousIntensityExponent)
-		luminousIntensityExponent := int8(m.GetLuminousIntensityExponent())
-		_luminousIntensityExponentErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("luminousIntensityExponent", 8, int8((luminousIntensityExponent)))
-		if _luminousIntensityExponentErr != nil {
-			return errors.Wrap(_luminousIntensityExponentErr, "Error serializing 'luminousIntensityExponent' field")
+		if err := WriteSimpleField[int8](ctx, "luminousIntensityExponent", m.GetLuminousIntensityExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'luminousIntensityExponent' field")
 		}
 
-		// Simple Field (absoluteTemperatureExponent)
-		absoluteTemperatureExponent := int8(m.GetAbsoluteTemperatureExponent())
-		_absoluteTemperatureExponentErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("absoluteTemperatureExponent", 8, int8((absoluteTemperatureExponent)))
-		if _absoluteTemperatureExponentErr != nil {
-			return errors.Wrap(_absoluteTemperatureExponentErr, "Error serializing 'absoluteTemperatureExponent' field")
+		if err := WriteSimpleField[int8](ctx, "absoluteTemperatureExponent", m.GetAbsoluteTemperatureExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'absoluteTemperatureExponent' field")
 		}
 
-		// Simple Field (dimensionlessExponent)
-		dimensionlessExponent := int8(m.GetDimensionlessExponent())
-		_dimensionlessExponentErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("dimensionlessExponent", 8, int8((dimensionlessExponent)))
-		if _dimensionlessExponentErr != nil {
-			return errors.Wrap(_dimensionlessExponentErr, "Error serializing 'dimensionlessExponent' field")
+		if err := WriteSimpleField[int8](ctx, "dimensionlessExponent", m.GetDimensionlessExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dimensionlessExponent' field")
 		}
 
 		if popErr := writeBuffer.PopContext("QuantityDimension"); popErr != nil {

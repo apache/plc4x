@@ -264,60 +264,36 @@ func (m *_State) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return errors.Wrap(pushErr, "Error pushing for State")
 	}
 
-	// Simple Field (SIG_8)
-	SIG_8 := bool(m.GetSIG_8())
-	_SIG_8Err := /*TODO: migrate me*/ writeBuffer.WriteBit("SIG_8", (SIG_8))
-	if _SIG_8Err != nil {
-		return errors.Wrap(_SIG_8Err, "Error serializing 'SIG_8' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_8", m.GetSIG_8(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_8' field")
 	}
 
-	// Simple Field (SIG_7)
-	SIG_7 := bool(m.GetSIG_7())
-	_SIG_7Err := /*TODO: migrate me*/ writeBuffer.WriteBit("SIG_7", (SIG_7))
-	if _SIG_7Err != nil {
-		return errors.Wrap(_SIG_7Err, "Error serializing 'SIG_7' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_7", m.GetSIG_7(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_7' field")
 	}
 
-	// Simple Field (SIG_6)
-	SIG_6 := bool(m.GetSIG_6())
-	_SIG_6Err := /*TODO: migrate me*/ writeBuffer.WriteBit("SIG_6", (SIG_6))
-	if _SIG_6Err != nil {
-		return errors.Wrap(_SIG_6Err, "Error serializing 'SIG_6' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_6", m.GetSIG_6(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_6' field")
 	}
 
-	// Simple Field (SIG_5)
-	SIG_5 := bool(m.GetSIG_5())
-	_SIG_5Err := /*TODO: migrate me*/ writeBuffer.WriteBit("SIG_5", (SIG_5))
-	if _SIG_5Err != nil {
-		return errors.Wrap(_SIG_5Err, "Error serializing 'SIG_5' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_5", m.GetSIG_5(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_5' field")
 	}
 
-	// Simple Field (SIG_4)
-	SIG_4 := bool(m.GetSIG_4())
-	_SIG_4Err := /*TODO: migrate me*/ writeBuffer.WriteBit("SIG_4", (SIG_4))
-	if _SIG_4Err != nil {
-		return errors.Wrap(_SIG_4Err, "Error serializing 'SIG_4' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_4", m.GetSIG_4(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_4' field")
 	}
 
-	// Simple Field (SIG_3)
-	SIG_3 := bool(m.GetSIG_3())
-	_SIG_3Err := /*TODO: migrate me*/ writeBuffer.WriteBit("SIG_3", (SIG_3))
-	if _SIG_3Err != nil {
-		return errors.Wrap(_SIG_3Err, "Error serializing 'SIG_3' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_3", m.GetSIG_3(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_3' field")
 	}
 
-	// Simple Field (SIG_2)
-	SIG_2 := bool(m.GetSIG_2())
-	_SIG_2Err := /*TODO: migrate me*/ writeBuffer.WriteBit("SIG_2", (SIG_2))
-	if _SIG_2Err != nil {
-		return errors.Wrap(_SIG_2Err, "Error serializing 'SIG_2' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_2", m.GetSIG_2(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_2' field")
 	}
 
-	// Simple Field (SIG_1)
-	SIG_1 := bool(m.GetSIG_1())
-	_SIG_1Err := /*TODO: migrate me*/ writeBuffer.WriteBit("SIG_1", (SIG_1))
-	if _SIG_1Err != nil {
-		return errors.Wrap(_SIG_1Err, "Error serializing 'SIG_1' field")
+	if err := WriteSimpleField[bool](ctx, "SIG_1", m.GetSIG_1(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'SIG_1' field")
 	}
 
 	if popErr := writeBuffer.PopContext("State"); popErr != nil {

@@ -333,48 +333,24 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 			return errors.Wrap(err, "Error serializing 'length' field")
 		}
 
-		// Simple Field (syntaxId)
-		if pushErr := writeBuffer.PushContext("syntaxId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for syntaxId")
-		}
-		_syntaxIdErr := writeBuffer.WriteSerializable(ctx, m.GetSyntaxId())
-		if popErr := writeBuffer.PopContext("syntaxId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for syntaxId")
-		}
-		if _syntaxIdErr != nil {
-			return errors.Wrap(_syntaxIdErr, "Error serializing 'syntaxId' field")
+		if err := WriteSimpleEnumField[SyntaxIdType](ctx, "syntaxId", "SyntaxIdType", m.GetSyntaxId(), WriteEnum[SyntaxIdType, uint8](SyntaxIdType.GetValue, SyntaxIdType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'syntaxId' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (queryType)
-		if pushErr := writeBuffer.PushContext("queryType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for queryType")
-		}
-		_queryTypeErr := writeBuffer.WriteSerializable(ctx, m.GetQueryType())
-		if popErr := writeBuffer.PopContext("queryType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for queryType")
-		}
-		if _queryTypeErr != nil {
-			return errors.Wrap(_queryTypeErr, "Error serializing 'queryType' field")
+		if err := WriteSimpleEnumField[QueryType](ctx, "queryType", "QueryType", m.GetQueryType(), WriteEnum[QueryType, uint8](QueryType.GetValue, QueryType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'queryType' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x34), WriteUnsignedByte(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (alarmType)
-		if pushErr := writeBuffer.PushContext("alarmType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alarmType")
-		}
-		_alarmTypeErr := writeBuffer.WriteSerializable(ctx, m.GetAlarmType())
-		if popErr := writeBuffer.PopContext("alarmType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alarmType")
-		}
-		if _alarmTypeErr != nil {
-			return errors.Wrap(_alarmTypeErr, "Error serializing 'alarmType' field")
+		if err := WriteSimpleEnumField[AlarmType](ctx, "alarmType", "AlarmType", m.GetAlarmType(), WriteEnum[AlarmType, uint8](AlarmType.GetValue, AlarmType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'alarmType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionAlarmQueryRequest"); popErr != nil {

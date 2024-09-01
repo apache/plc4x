@@ -257,25 +257,16 @@ func (m *_ModbusPDUGetComEventLogResponse) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(err, "Error serializing 'byteCount' field")
 		}
 
-		// Simple Field (status)
-		status := uint16(m.GetStatus())
-		_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("status", 16, uint16((status)))
-		if _statusErr != nil {
-			return errors.Wrap(_statusErr, "Error serializing 'status' field")
+		if err := WriteSimpleField[uint16](ctx, "status", m.GetStatus(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'status' field")
 		}
 
-		// Simple Field (eventCount)
-		eventCount := uint16(m.GetEventCount())
-		_eventCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("eventCount", 16, uint16((eventCount)))
-		if _eventCountErr != nil {
-			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
+		if err := WriteSimpleField[uint16](ctx, "eventCount", m.GetEventCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventCount' field")
 		}
 
-		// Simple Field (messageCount)
-		messageCount := uint16(m.GetMessageCount())
-		_messageCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("messageCount", 16, uint16((messageCount)))
-		if _messageCountErr != nil {
-			return errors.Wrap(_messageCountErr, "Error serializing 'messageCount' field")
+		if err := WriteSimpleField[uint16](ctx, "messageCount", m.GetMessageCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'messageCount' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "events", m.GetEvents(), WriteByteArray(writeBuffer, 8)); err != nil {

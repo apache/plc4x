@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesBacnetIpMode) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesBacnetIpMode")
 		}
 
-		// Simple Field (bacnetIpMode)
-		if pushErr := writeBuffer.PushContext("bacnetIpMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bacnetIpMode")
-		}
-		_bacnetIpModeErr := writeBuffer.WriteSerializable(ctx, m.GetBacnetIpMode())
-		if popErr := writeBuffer.PopContext("bacnetIpMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bacnetIpMode")
-		}
-		if _bacnetIpModeErr != nil {
-			return errors.Wrap(_bacnetIpModeErr, "Error serializing 'bacnetIpMode' field")
+		if err := WriteSimpleField[BACnetIPModeTagged](ctx, "bacnetIpMode", m.GetBacnetIpMode(), WriteComplex[BACnetIPModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bacnetIpMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesBacnetIpMode"); popErr != nil {

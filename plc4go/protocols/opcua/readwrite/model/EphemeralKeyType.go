@@ -200,28 +200,12 @@ func (m *_EphemeralKeyType) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for EphemeralKeyType")
 		}
 
-		// Simple Field (publicKey)
-		if pushErr := writeBuffer.PushContext("publicKey"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for publicKey")
-		}
-		_publicKeyErr := writeBuffer.WriteSerializable(ctx, m.GetPublicKey())
-		if popErr := writeBuffer.PopContext("publicKey"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for publicKey")
-		}
-		if _publicKeyErr != nil {
-			return errors.Wrap(_publicKeyErr, "Error serializing 'publicKey' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "publicKey", m.GetPublicKey(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'publicKey' field")
 		}
 
-		// Simple Field (signature)
-		if pushErr := writeBuffer.PushContext("signature"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for signature")
-		}
-		_signatureErr := writeBuffer.WriteSerializable(ctx, m.GetSignature())
-		if popErr := writeBuffer.PopContext("signature"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for signature")
-		}
-		if _signatureErr != nil {
-			return errors.Wrap(_signatureErr, "Error serializing 'signature' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "signature", m.GetSignature(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'signature' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EphemeralKeyType"); popErr != nil {

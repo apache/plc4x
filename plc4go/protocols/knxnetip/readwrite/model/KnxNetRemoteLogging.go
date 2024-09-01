@@ -183,11 +183,8 @@ func (m *_KnxNetRemoteLogging) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for KnxNetRemoteLogging")
 		}
 
-		// Simple Field (version)
-		version := uint8(m.GetVersion())
-		_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("version", 8, uint8((version)))
-		if _versionErr != nil {
-			return errors.Wrap(_versionErr, "Error serializing 'version' field")
+		if err := WriteSimpleField[uint8](ctx, "version", m.GetVersion(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'version' field")
 		}
 
 		if popErr := writeBuffer.PopContext("KnxNetRemoteLogging"); popErr != nil {

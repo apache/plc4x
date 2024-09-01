@@ -183,16 +183,8 @@ func (m *_NetworkAddressDataType) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for NetworkAddressDataType")
 		}
 
-		// Simple Field (networkInterface)
-		if pushErr := writeBuffer.PushContext("networkInterface"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for networkInterface")
-		}
-		_networkInterfaceErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkInterface())
-		if popErr := writeBuffer.PopContext("networkInterface"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for networkInterface")
-		}
-		if _networkInterfaceErr != nil {
-			return errors.Wrap(_networkInterfaceErr, "Error serializing 'networkInterface' field")
+		if err := WriteSimpleField[PascalString](ctx, "networkInterface", m.GetNetworkInterface(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkInterface' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NetworkAddressDataType"); popErr != nil {

@@ -212,16 +212,8 @@ func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(err, "Error serializing 'amsNetIdLength' field")
 		}
 
-		// Simple Field (amsNetId)
-		if pushErr := writeBuffer.PushContext("amsNetId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for amsNetId")
-		}
-		_amsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetAmsNetId())
-		if popErr := writeBuffer.PopContext("amsNetId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for amsNetId")
-		}
-		if _amsNetIdErr != nil {
-			return errors.Wrap(_amsNetIdErr, "Error serializing 'amsNetId' field")
+		if err := WriteSimpleField[AmsNetId](ctx, "amsNetId", m.GetAmsNetId(), WriteComplex[AmsNetId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'amsNetId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDiscoveryBlockAmsNetId"); popErr != nil {

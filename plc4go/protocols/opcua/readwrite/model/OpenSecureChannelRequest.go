@@ -268,66 +268,28 @@ func (m *_OpenSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for OpenSecureChannelRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (clientProtocolVersion)
-		clientProtocolVersion := uint32(m.GetClientProtocolVersion())
-		_clientProtocolVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("clientProtocolVersion", 32, uint32((clientProtocolVersion)))
-		if _clientProtocolVersionErr != nil {
-			return errors.Wrap(_clientProtocolVersionErr, "Error serializing 'clientProtocolVersion' field")
+		if err := WriteSimpleField[uint32](ctx, "clientProtocolVersion", m.GetClientProtocolVersion(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientProtocolVersion' field")
 		}
 
-		// Simple Field (requestType)
-		if pushErr := writeBuffer.PushContext("requestType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestType")
-		}
-		_requestTypeErr := writeBuffer.WriteSerializable(ctx, m.GetRequestType())
-		if popErr := writeBuffer.PopContext("requestType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestType")
-		}
-		if _requestTypeErr != nil {
-			return errors.Wrap(_requestTypeErr, "Error serializing 'requestType' field")
+		if err := WriteSimpleEnumField[SecurityTokenRequestType](ctx, "requestType", "SecurityTokenRequestType", m.GetRequestType(), WriteEnum[SecurityTokenRequestType, uint32](SecurityTokenRequestType.GetValue, SecurityTokenRequestType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestType' field")
 		}
 
-		// Simple Field (securityMode)
-		if pushErr := writeBuffer.PushContext("securityMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityMode")
-		}
-		_securityModeErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityMode())
-		if popErr := writeBuffer.PopContext("securityMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityMode")
-		}
-		if _securityModeErr != nil {
-			return errors.Wrap(_securityModeErr, "Error serializing 'securityMode' field")
+		if err := WriteSimpleEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", m.GetSecurityMode(), WriteEnum[MessageSecurityMode, uint32](MessageSecurityMode.GetValue, MessageSecurityMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityMode' field")
 		}
 
-		// Simple Field (clientNonce)
-		if pushErr := writeBuffer.PushContext("clientNonce"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clientNonce")
-		}
-		_clientNonceErr := writeBuffer.WriteSerializable(ctx, m.GetClientNonce())
-		if popErr := writeBuffer.PopContext("clientNonce"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clientNonce")
-		}
-		if _clientNonceErr != nil {
-			return errors.Wrap(_clientNonceErr, "Error serializing 'clientNonce' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "clientNonce", m.GetClientNonce(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientNonce' field")
 		}
 
-		// Simple Field (requestedLifetime)
-		requestedLifetime := uint32(m.GetRequestedLifetime())
-		_requestedLifetimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestedLifetime", 32, uint32((requestedLifetime)))
-		if _requestedLifetimeErr != nil {
-			return errors.Wrap(_requestedLifetimeErr, "Error serializing 'requestedLifetime' field")
+		if err := WriteSimpleField[uint32](ctx, "requestedLifetime", m.GetRequestedLifetime(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestedLifetime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpenSecureChannelRequest"); popErr != nil {

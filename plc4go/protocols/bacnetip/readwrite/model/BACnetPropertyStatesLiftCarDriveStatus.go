@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesLiftCarDriveStatus) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftCarDriveStatus")
 		}
 
-		// Simple Field (liftCarDriveStatus)
-		if pushErr := writeBuffer.PushContext("liftCarDriveStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for liftCarDriveStatus")
-		}
-		_liftCarDriveStatusErr := writeBuffer.WriteSerializable(ctx, m.GetLiftCarDriveStatus())
-		if popErr := writeBuffer.PopContext("liftCarDriveStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for liftCarDriveStatus")
-		}
-		if _liftCarDriveStatusErr != nil {
-			return errors.Wrap(_liftCarDriveStatusErr, "Error serializing 'liftCarDriveStatus' field")
+		if err := WriteSimpleField[BACnetLiftCarDriveStatusTagged](ctx, "liftCarDriveStatus", m.GetLiftCarDriveStatus(), WriteComplex[BACnetLiftCarDriveStatusTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'liftCarDriveStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftCarDriveStatus"); popErr != nil {

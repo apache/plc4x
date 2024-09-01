@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPriorityArray) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPriorityArray")
 		}
 
-		// Simple Field (priorityArray)
-		if pushErr := writeBuffer.PushContext("priorityArray"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for priorityArray")
-		}
-		_priorityArrayErr := writeBuffer.WriteSerializable(ctx, m.GetPriorityArray())
-		if popErr := writeBuffer.PopContext("priorityArray"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for priorityArray")
-		}
-		if _priorityArrayErr != nil {
-			return errors.Wrap(_priorityArrayErr, "Error serializing 'priorityArray' field")
+		if err := WriteSimpleField[BACnetPriorityArray](ctx, "priorityArray", m.GetPriorityArray(), WriteComplex[BACnetPriorityArray](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'priorityArray' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

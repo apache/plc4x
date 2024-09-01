@@ -444,60 +444,32 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for APDUConfirmedRequest")
 		}
 
-		// Simple Field (segmentedMessage)
-		segmentedMessage := bool(m.GetSegmentedMessage())
-		_segmentedMessageErr := /*TODO: migrate me*/ writeBuffer.WriteBit("segmentedMessage", (segmentedMessage))
-		if _segmentedMessageErr != nil {
-			return errors.Wrap(_segmentedMessageErr, "Error serializing 'segmentedMessage' field")
+		if err := WriteSimpleField[bool](ctx, "segmentedMessage", m.GetSegmentedMessage(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentedMessage' field")
 		}
 
-		// Simple Field (moreFollows)
-		moreFollows := bool(m.GetMoreFollows())
-		_moreFollowsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("moreFollows", (moreFollows))
-		if _moreFollowsErr != nil {
-			return errors.Wrap(_moreFollowsErr, "Error serializing 'moreFollows' field")
+		if err := WriteSimpleField[bool](ctx, "moreFollows", m.GetMoreFollows(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'moreFollows' field")
 		}
 
-		// Simple Field (segmentedResponseAccepted)
-		segmentedResponseAccepted := bool(m.GetSegmentedResponseAccepted())
-		_segmentedResponseAcceptedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("segmentedResponseAccepted", (segmentedResponseAccepted))
-		if _segmentedResponseAcceptedErr != nil {
-			return errors.Wrap(_segmentedResponseAcceptedErr, "Error serializing 'segmentedResponseAccepted' field")
+		if err := WriteSimpleField[bool](ctx, "segmentedResponseAccepted", m.GetSegmentedResponseAccepted(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentedResponseAccepted' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0), WriteUnsignedByte(writeBuffer, 2)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (maxSegmentsAccepted)
-		if pushErr := writeBuffer.PushContext("maxSegmentsAccepted"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxSegmentsAccepted")
-		}
-		_maxSegmentsAcceptedErr := writeBuffer.WriteSerializable(ctx, m.GetMaxSegmentsAccepted())
-		if popErr := writeBuffer.PopContext("maxSegmentsAccepted"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxSegmentsAccepted")
-		}
-		if _maxSegmentsAcceptedErr != nil {
-			return errors.Wrap(_maxSegmentsAcceptedErr, "Error serializing 'maxSegmentsAccepted' field")
+		if err := WriteSimpleEnumField[MaxSegmentsAccepted](ctx, "maxSegmentsAccepted", "MaxSegmentsAccepted", m.GetMaxSegmentsAccepted(), WriteEnum[MaxSegmentsAccepted, uint8](MaxSegmentsAccepted.GetValue, MaxSegmentsAccepted.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 3))); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxSegmentsAccepted' field")
 		}
 
-		// Simple Field (maxApduLengthAccepted)
-		if pushErr := writeBuffer.PushContext("maxApduLengthAccepted"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxApduLengthAccepted")
-		}
-		_maxApduLengthAcceptedErr := writeBuffer.WriteSerializable(ctx, m.GetMaxApduLengthAccepted())
-		if popErr := writeBuffer.PopContext("maxApduLengthAccepted"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxApduLengthAccepted")
-		}
-		if _maxApduLengthAcceptedErr != nil {
-			return errors.Wrap(_maxApduLengthAcceptedErr, "Error serializing 'maxApduLengthAccepted' field")
+		if err := WriteSimpleEnumField[MaxApduLengthAccepted](ctx, "maxApduLengthAccepted", "MaxApduLengthAccepted", m.GetMaxApduLengthAccepted(), WriteEnum[MaxApduLengthAccepted, uint8](MaxApduLengthAccepted.GetValue, MaxApduLengthAccepted.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxApduLengthAccepted' field")
 		}
 
-		// Simple Field (invokeId)
-		invokeId := uint8(m.GetInvokeId())
-		_invokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("invokeId", 8, uint8((invokeId)))
-		if _invokeIdErr != nil {
-			return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
+		if err := WriteSimpleField[uint8](ctx, "invokeId", m.GetInvokeId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'invokeId' field")
 		}
 
 		if err := WriteOptionalField[uint8](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {

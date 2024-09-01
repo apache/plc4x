@@ -152,16 +152,8 @@ func (m *_ZoneStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for ZoneStatus")
 	}
 
-	// Simple Field (value)
-	if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for value")
-	}
-	_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-	if popErr := writeBuffer.PopContext("value"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for value")
-	}
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteSimpleEnumField[ZoneStatusTemp](ctx, "value", "ZoneStatusTemp", m.GetValue(), WriteEnum[ZoneStatusTemp, uint8](ZoneStatusTemp.GetValue, ZoneStatusTemp.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ZoneStatus"); popErr != nil {

@@ -232,52 +232,20 @@ func (m *_BACnetEventParameterBufferReady) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterBufferReady")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (notificationThreshold)
-		if pushErr := writeBuffer.PushContext("notificationThreshold"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notificationThreshold")
-		}
-		_notificationThresholdErr := writeBuffer.WriteSerializable(ctx, m.GetNotificationThreshold())
-		if popErr := writeBuffer.PopContext("notificationThreshold"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notificationThreshold")
-		}
-		if _notificationThresholdErr != nil {
-			return errors.Wrap(_notificationThresholdErr, "Error serializing 'notificationThreshold' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "notificationThreshold", m.GetNotificationThreshold(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationThreshold' field")
 		}
 
-		// Simple Field (previousNotificationCount)
-		if pushErr := writeBuffer.PushContext("previousNotificationCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for previousNotificationCount")
-		}
-		_previousNotificationCountErr := writeBuffer.WriteSerializable(ctx, m.GetPreviousNotificationCount())
-		if popErr := writeBuffer.PopContext("previousNotificationCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for previousNotificationCount")
-		}
-		if _previousNotificationCountErr != nil {
-			return errors.Wrap(_previousNotificationCountErr, "Error serializing 'previousNotificationCount' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "previousNotificationCount", m.GetPreviousNotificationCount(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'previousNotificationCount' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterBufferReady"); popErr != nil {

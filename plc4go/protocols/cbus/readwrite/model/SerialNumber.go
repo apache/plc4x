@@ -200,32 +200,20 @@ func (m *_SerialNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for SerialNumber")
 	}
 
-	// Simple Field (octet1)
-	octet1 := byte(m.GetOctet1())
-	_octet1Err := /*TODO: migrate me*/ writeBuffer.WriteByte("octet1", (octet1))
-	if _octet1Err != nil {
-		return errors.Wrap(_octet1Err, "Error serializing 'octet1' field")
+	if err := WriteSimpleField[byte](ctx, "octet1", m.GetOctet1(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'octet1' field")
 	}
 
-	// Simple Field (octet2)
-	octet2 := byte(m.GetOctet2())
-	_octet2Err := /*TODO: migrate me*/ writeBuffer.WriteByte("octet2", (octet2))
-	if _octet2Err != nil {
-		return errors.Wrap(_octet2Err, "Error serializing 'octet2' field")
+	if err := WriteSimpleField[byte](ctx, "octet2", m.GetOctet2(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'octet2' field")
 	}
 
-	// Simple Field (octet3)
-	octet3 := byte(m.GetOctet3())
-	_octet3Err := /*TODO: migrate me*/ writeBuffer.WriteByte("octet3", (octet3))
-	if _octet3Err != nil {
-		return errors.Wrap(_octet3Err, "Error serializing 'octet3' field")
+	if err := WriteSimpleField[byte](ctx, "octet3", m.GetOctet3(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'octet3' field")
 	}
 
-	// Simple Field (octet4)
-	octet4 := byte(m.GetOctet4())
-	_octet4Err := /*TODO: migrate me*/ writeBuffer.WriteByte("octet4", (octet4))
-	if _octet4Err != nil {
-		return errors.Wrap(_octet4Err, "Error serializing 'octet4' field")
+	if err := WriteSimpleField[byte](ctx, "octet4", m.GetOctet4(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'octet4' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SerialNumber"); popErr != nil {

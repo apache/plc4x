@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSlaveProxyEnable")
 		}
 
-		// Simple Field (slaveProxyEnable)
-		if pushErr := writeBuffer.PushContext("slaveProxyEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for slaveProxyEnable")
-		}
-		_slaveProxyEnableErr := writeBuffer.WriteSerializable(ctx, m.GetSlaveProxyEnable())
-		if popErr := writeBuffer.PopContext("slaveProxyEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for slaveProxyEnable")
-		}
-		if _slaveProxyEnableErr != nil {
-			return errors.Wrap(_slaveProxyEnableErr, "Error serializing 'slaveProxyEnable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "slaveProxyEnable", m.GetSlaveProxyEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'slaveProxyEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

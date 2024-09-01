@@ -182,16 +182,8 @@ func (m *_SecurityDataSystemArmedDisarmed) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataSystemArmedDisarmed")
 		}
 
-		// Simple Field (armCodeType)
-		if pushErr := writeBuffer.PushContext("armCodeType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for armCodeType")
-		}
-		_armCodeTypeErr := writeBuffer.WriteSerializable(ctx, m.GetArmCodeType())
-		if popErr := writeBuffer.PopContext("armCodeType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for armCodeType")
-		}
-		if _armCodeTypeErr != nil {
-			return errors.Wrap(_armCodeTypeErr, "Error serializing 'armCodeType' field")
+		if err := WriteSimpleField[SecurityArmCode](ctx, "armCodeType", m.GetArmCodeType(), WriteComplex[SecurityArmCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'armCodeType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SecurityDataSystemArmedDisarmed"); popErr != nil {

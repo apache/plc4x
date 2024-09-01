@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDoorAlarmState) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoorAlarmState")
 		}
 
-		// Simple Field (doorAlarmState)
-		if pushErr := writeBuffer.PushContext("doorAlarmState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doorAlarmState")
-		}
-		_doorAlarmStateErr := writeBuffer.WriteSerializable(ctx, m.GetDoorAlarmState())
-		if popErr := writeBuffer.PopContext("doorAlarmState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doorAlarmState")
-		}
-		if _doorAlarmStateErr != nil {
-			return errors.Wrap(_doorAlarmStateErr, "Error serializing 'doorAlarmState' field")
+		if err := WriteSimpleField[BACnetDoorAlarmStateTagged](ctx, "doorAlarmState", m.GetDoorAlarmState(), WriteComplex[BACnetDoorAlarmStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doorAlarmState' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

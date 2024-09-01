@@ -258,42 +258,20 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for ServerOnNetwork")
 		}
 
-		// Simple Field (recordId)
-		recordId := uint32(m.GetRecordId())
-		_recordIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("recordId", 32, uint32((recordId)))
-		if _recordIdErr != nil {
-			return errors.Wrap(_recordIdErr, "Error serializing 'recordId' field")
+		if err := WriteSimpleField[uint32](ctx, "recordId", m.GetRecordId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'recordId' field")
 		}
 
-		// Simple Field (serverName)
-		if pushErr := writeBuffer.PushContext("serverName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverName")
-		}
-		_serverNameErr := writeBuffer.WriteSerializable(ctx, m.GetServerName())
-		if popErr := writeBuffer.PopContext("serverName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverName")
-		}
-		if _serverNameErr != nil {
-			return errors.Wrap(_serverNameErr, "Error serializing 'serverName' field")
+		if err := WriteSimpleField[PascalString](ctx, "serverName", m.GetServerName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverName' field")
 		}
 
-		// Simple Field (discoveryUrl)
-		if pushErr := writeBuffer.PushContext("discoveryUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for discoveryUrl")
-		}
-		_discoveryUrlErr := writeBuffer.WriteSerializable(ctx, m.GetDiscoveryUrl())
-		if popErr := writeBuffer.PopContext("discoveryUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for discoveryUrl")
-		}
-		if _discoveryUrlErr != nil {
-			return errors.Wrap(_discoveryUrlErr, "Error serializing 'discoveryUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "discoveryUrl", m.GetDiscoveryUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'discoveryUrl' field")
 		}
 
-		// Simple Field (noOfServerCapabilities)
-		noOfServerCapabilities := int32(m.GetNoOfServerCapabilities())
-		_noOfServerCapabilitiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerCapabilities", 32, int32((noOfServerCapabilities)))
-		if _noOfServerCapabilitiesErr != nil {
-			return errors.Wrap(_noOfServerCapabilitiesErr, "Error serializing 'noOfServerCapabilities' field")
+		if err := WriteSimpleField[int32](ctx, "noOfServerCapabilities", m.GetNoOfServerCapabilities(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfServerCapabilities' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "serverCapabilities", m.GetServerCapabilities(), writeBuffer); err != nil {

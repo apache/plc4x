@@ -219,25 +219,16 @@ func (m *_ApduDataExtPropertyDescriptionRead) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for ApduDataExtPropertyDescriptionRead")
 		}
 
-		// Simple Field (objectIndex)
-		objectIndex := uint8(m.GetObjectIndex())
-		_objectIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectIndex", 8, uint8((objectIndex)))
-		if _objectIndexErr != nil {
-			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
+		if err := WriteSimpleField[uint8](ctx, "objectIndex", m.GetObjectIndex(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIndex' field")
 		}
 
-		// Simple Field (propertyId)
-		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
-		if _propertyIdErr != nil {
-			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
+		if err := WriteSimpleField[uint8](ctx, "propertyId", m.GetPropertyId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyId' field")
 		}
 
-		// Simple Field (index)
-		index := uint8(m.GetIndex())
-		_indexErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("index", 8, uint8((index)))
-		if _indexErr != nil {
-			return errors.Wrap(_indexErr, "Error serializing 'index' field")
+		if err := WriteSimpleField[uint8](ctx, "index", m.GetIndex(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'index' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduDataExtPropertyDescriptionRead"); popErr != nil {

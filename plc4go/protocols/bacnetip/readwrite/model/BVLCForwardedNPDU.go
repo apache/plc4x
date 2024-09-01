@@ -228,23 +228,12 @@ func (m *_BVLCForwardedNPDU) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(err, "Error serializing 'ip' field")
 		}
 
-		// Simple Field (port)
-		port := uint16(m.GetPort())
-		_portErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("port", 16, uint16((port)))
-		if _portErr != nil {
-			return errors.Wrap(_portErr, "Error serializing 'port' field")
+		if err := WriteSimpleField[uint16](ctx, "port", m.GetPort(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'port' field")
 		}
 
-		// Simple Field (npdu)
-		if pushErr := writeBuffer.PushContext("npdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for npdu")
-		}
-		_npduErr := writeBuffer.WriteSerializable(ctx, m.GetNpdu())
-		if popErr := writeBuffer.PopContext("npdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for npdu")
-		}
-		if _npduErr != nil {
-			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
+		if err := WriteSimpleField[NPDU](ctx, "npdu", m.GetNpdu(), WriteComplex[NPDU](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'npdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCForwardedNPDU"); popErr != nil {

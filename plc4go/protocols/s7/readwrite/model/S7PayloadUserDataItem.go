@@ -297,35 +297,16 @@ func (pm *_S7PayloadUserDataItem) SerializeParent(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItem")
 	}
 
-	// Simple Field (returnCode)
-	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for returnCode")
-	}
-	_returnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetReturnCode())
-	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for returnCode")
-	}
-	if _returnCodeErr != nil {
-		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
+	if err := WriteSimpleEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", m.GetReturnCode(), WriteEnum[DataTransportErrorCode, uint8](DataTransportErrorCode.GetValue, DataTransportErrorCode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'returnCode' field")
 	}
 
-	// Simple Field (transportSize)
-	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for transportSize")
-	}
-	_transportSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSize())
-	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for transportSize")
-	}
-	if _transportSizeErr != nil {
-		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
+	if err := WriteSimpleEnumField[DataTransportSize](ctx, "transportSize", "DataTransportSize", m.GetTransportSize(), WriteEnum[DataTransportSize, uint8](DataTransportSize.GetValue, DataTransportSize.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'transportSize' field")
 	}
 
-	// Simple Field (dataLength)
-	dataLength := uint16(m.GetDataLength())
-	_dataLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataLength", 16, uint16((dataLength)))
-	if _dataLengthErr != nil {
-		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
+	if err := WriteSimpleField[uint16](ctx, "dataLength", m.GetDataLength(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

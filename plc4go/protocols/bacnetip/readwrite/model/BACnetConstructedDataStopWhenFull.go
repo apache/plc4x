@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataStopWhenFull) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStopWhenFull")
 		}
 
-		// Simple Field (stopWhenFull)
-		if pushErr := writeBuffer.PushContext("stopWhenFull"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for stopWhenFull")
-		}
-		_stopWhenFullErr := writeBuffer.WriteSerializable(ctx, m.GetStopWhenFull())
-		if popErr := writeBuffer.PopContext("stopWhenFull"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for stopWhenFull")
-		}
-		if _stopWhenFullErr != nil {
-			return errors.Wrap(_stopWhenFullErr, "Error serializing 'stopWhenFull' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "stopWhenFull", m.GetStopWhenFull(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'stopWhenFull' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

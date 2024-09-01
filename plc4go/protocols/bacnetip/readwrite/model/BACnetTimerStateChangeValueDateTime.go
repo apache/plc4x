@@ -183,16 +183,8 @@ func (m *_BACnetTimerStateChangeValueDateTime) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueDateTime")
 		}
 
-		// Simple Field (dateTimeValue)
-		if pushErr := writeBuffer.PushContext("dateTimeValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dateTimeValue")
-		}
-		_dateTimeValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateTimeValue())
-		if popErr := writeBuffer.PopContext("dateTimeValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dateTimeValue")
-		}
-		if _dateTimeValueErr != nil {
-			return errors.Wrap(_dateTimeValueErr, "Error serializing 'dateTimeValue' field")
+		if err := WriteSimpleField[BACnetDateTimeEnclosed](ctx, "dateTimeValue", m.GetDateTimeValue(), WriteComplex[BACnetDateTimeEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dateTimeValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueDateTime"); popErr != nil {

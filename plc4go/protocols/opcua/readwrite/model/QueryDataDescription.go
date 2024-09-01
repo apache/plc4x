@@ -217,35 +217,16 @@ func (m *_QueryDataDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for QueryDataDescription")
 		}
 
-		// Simple Field (relativePath)
-		if pushErr := writeBuffer.PushContext("relativePath"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for relativePath")
-		}
-		_relativePathErr := writeBuffer.WriteSerializable(ctx, m.GetRelativePath())
-		if popErr := writeBuffer.PopContext("relativePath"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for relativePath")
-		}
-		if _relativePathErr != nil {
-			return errors.Wrap(_relativePathErr, "Error serializing 'relativePath' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "relativePath", m.GetRelativePath(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'relativePath' field")
 		}
 
-		// Simple Field (attributeId)
-		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
-		if _attributeIdErr != nil {
-			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
+		if err := WriteSimpleField[uint32](ctx, "attributeId", m.GetAttributeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'attributeId' field")
 		}
 
-		// Simple Field (indexRange)
-		if pushErr := writeBuffer.PushContext("indexRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for indexRange")
-		}
-		_indexRangeErr := writeBuffer.WriteSerializable(ctx, m.GetIndexRange())
-		if popErr := writeBuffer.PopContext("indexRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for indexRange")
-		}
-		if _indexRangeErr != nil {
-			return errors.Wrap(_indexRangeErr, "Error serializing 'indexRange' field")
+		if err := WriteSimpleField[PascalString](ctx, "indexRange", m.GetIndexRange(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexRange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("QueryDataDescription"); popErr != nil {

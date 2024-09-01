@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6PrefixLength")
 		}
 
-		// Simple Field (ipv6PrefixLength)
-		if pushErr := writeBuffer.PushContext("ipv6PrefixLength"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipv6PrefixLength")
-		}
-		_ipv6PrefixLengthErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6PrefixLength())
-		if popErr := writeBuffer.PopContext("ipv6PrefixLength"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipv6PrefixLength")
-		}
-		if _ipv6PrefixLengthErr != nil {
-			return errors.Wrap(_ipv6PrefixLengthErr, "Error serializing 'ipv6PrefixLength' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6PrefixLength", m.GetIpv6PrefixLength(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipv6PrefixLength' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

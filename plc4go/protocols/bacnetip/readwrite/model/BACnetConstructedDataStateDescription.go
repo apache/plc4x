@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataStateDescription) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataStateDescription")
 		}
 
-		// Simple Field (stateDescription)
-		if pushErr := writeBuffer.PushContext("stateDescription"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for stateDescription")
-		}
-		_stateDescriptionErr := writeBuffer.WriteSerializable(ctx, m.GetStateDescription())
-		if popErr := writeBuffer.PopContext("stateDescription"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for stateDescription")
-		}
-		if _stateDescriptionErr != nil {
-			return errors.Wrap(_stateDescriptionErr, "Error serializing 'stateDescription' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "stateDescription", m.GetStateDescription(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'stateDescription' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -195,16 +195,8 @@ func (m *_CBusPointToPointCommandDirect) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for CBusPointToPointCommandDirect")
 		}
 
-		// Simple Field (unitAddress)
-		if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unitAddress")
-		}
-		_unitAddressErr := writeBuffer.WriteSerializable(ctx, m.GetUnitAddress())
-		if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unitAddress")
-		}
-		if _unitAddressErr != nil {
-			return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
+		if err := WriteSimpleField[UnitAddress](ctx, "unitAddress", m.GetUnitAddress(), WriteComplex[UnitAddress](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitAddress' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {

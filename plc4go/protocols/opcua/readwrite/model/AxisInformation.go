@@ -270,59 +270,24 @@ func (m *_AxisInformation) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for AxisInformation")
 		}
 
-		// Simple Field (engineeringUnits)
-		if pushErr := writeBuffer.PushContext("engineeringUnits"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for engineeringUnits")
-		}
-		_engineeringUnitsErr := writeBuffer.WriteSerializable(ctx, m.GetEngineeringUnits())
-		if popErr := writeBuffer.PopContext("engineeringUnits"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for engineeringUnits")
-		}
-		if _engineeringUnitsErr != nil {
-			return errors.Wrap(_engineeringUnitsErr, "Error serializing 'engineeringUnits' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "engineeringUnits", m.GetEngineeringUnits(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'engineeringUnits' field")
 		}
 
-		// Simple Field (eURange)
-		if pushErr := writeBuffer.PushContext("eURange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eURange")
-		}
-		_eURangeErr := writeBuffer.WriteSerializable(ctx, m.GetEURange())
-		if popErr := writeBuffer.PopContext("eURange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eURange")
-		}
-		if _eURangeErr != nil {
-			return errors.Wrap(_eURangeErr, "Error serializing 'eURange' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "eURange", m.GetEURange(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eURange' field")
 		}
 
-		// Simple Field (title)
-		if pushErr := writeBuffer.PushContext("title"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for title")
-		}
-		_titleErr := writeBuffer.WriteSerializable(ctx, m.GetTitle())
-		if popErr := writeBuffer.PopContext("title"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for title")
-		}
-		if _titleErr != nil {
-			return errors.Wrap(_titleErr, "Error serializing 'title' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "title", m.GetTitle(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'title' field")
 		}
 
-		// Simple Field (axisScaleType)
-		if pushErr := writeBuffer.PushContext("axisScaleType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for axisScaleType")
-		}
-		_axisScaleTypeErr := writeBuffer.WriteSerializable(ctx, m.GetAxisScaleType())
-		if popErr := writeBuffer.PopContext("axisScaleType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for axisScaleType")
-		}
-		if _axisScaleTypeErr != nil {
-			return errors.Wrap(_axisScaleTypeErr, "Error serializing 'axisScaleType' field")
+		if err := WriteSimpleEnumField[AxisScaleEnumeration](ctx, "axisScaleType", "AxisScaleEnumeration", m.GetAxisScaleType(), WriteEnum[AxisScaleEnumeration, uint32](AxisScaleEnumeration.GetValue, AxisScaleEnumeration.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'axisScaleType' field")
 		}
 
-		// Simple Field (noOfAxisSteps)
-		noOfAxisSteps := int32(m.GetNoOfAxisSteps())
-		_noOfAxisStepsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfAxisSteps", 32, int32((noOfAxisSteps)))
-		if _noOfAxisStepsErr != nil {
-			return errors.Wrap(_noOfAxisStepsErr, "Error serializing 'noOfAxisSteps' field")
+		if err := WriteSimpleField[int32](ctx, "noOfAxisSteps", m.GetNoOfAxisSteps(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfAxisSteps' field")
 		}
 
 		if err := WriteSimpleTypeArrayField(ctx, "axisSteps", m.GetAxisSteps(), WriteDouble(writeBuffer, 64)); err != nil {

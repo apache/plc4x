@@ -185,11 +185,8 @@ func (m *_IdentifyReplyCommandFirmwareVersion) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandFirmwareVersion")
 		}
 
-		// Simple Field (firmwareVersion)
-		firmwareVersion := string(m.GetFirmwareVersion())
-		_firmwareVersionErr := /*TODO: migrate me*/ writeBuffer.WriteString("firmwareVersion", uint32(64), (firmwareVersion), utils.WithEncoding("UTF-8)"))
-		if _firmwareVersionErr != nil {
-			return errors.Wrap(_firmwareVersionErr, "Error serializing 'firmwareVersion' field")
+		if err := WriteSimpleField[string](ctx, "firmwareVersion", m.GetFirmwareVersion(), WriteString(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'firmwareVersion' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandFirmwareVersion"); popErr != nil {

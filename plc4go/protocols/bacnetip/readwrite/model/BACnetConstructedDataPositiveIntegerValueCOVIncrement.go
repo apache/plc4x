@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) SerializeWithWr
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPositiveIntegerValueCOVIncrement")
 		}
 
-		// Simple Field (covIncrement)
-		if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for covIncrement")
-		}
-		_covIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetCovIncrement())
-		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for covIncrement")
-		}
-		if _covIncrementErr != nil {
-			return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "covIncrement", m.GetCovIncrement(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'covIncrement' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

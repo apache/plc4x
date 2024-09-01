@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataInitialTimeout) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInitialTimeout")
 		}
 
-		// Simple Field (initialTimeout)
-		if pushErr := writeBuffer.PushContext("initialTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for initialTimeout")
-		}
-		_initialTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetInitialTimeout())
-		if popErr := writeBuffer.PopContext("initialTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for initialTimeout")
-		}
-		if _initialTimeoutErr != nil {
-			return errors.Wrap(_initialTimeoutErr, "Error serializing 'initialTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "initialTimeout", m.GetInitialTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'initialTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

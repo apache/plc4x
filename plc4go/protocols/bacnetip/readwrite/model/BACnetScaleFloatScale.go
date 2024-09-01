@@ -181,16 +181,8 @@ func (m *_BACnetScaleFloatScale) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for BACnetScaleFloatScale")
 		}
 
-		// Simple Field (floatScale)
-		if pushErr := writeBuffer.PushContext("floatScale"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for floatScale")
-		}
-		_floatScaleErr := writeBuffer.WriteSerializable(ctx, m.GetFloatScale())
-		if popErr := writeBuffer.PopContext("floatScale"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for floatScale")
-		}
-		if _floatScaleErr != nil {
-			return errors.Wrap(_floatScaleErr, "Error serializing 'floatScale' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "floatScale", m.GetFloatScale(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'floatScale' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetScaleFloatScale"); popErr != nil {

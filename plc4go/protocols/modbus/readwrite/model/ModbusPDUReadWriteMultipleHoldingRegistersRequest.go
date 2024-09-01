@@ -270,32 +270,20 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadWriteMultipleHoldingRegistersRequest")
 		}
 
-		// Simple Field (readStartingAddress)
-		readStartingAddress := uint16(m.GetReadStartingAddress())
-		_readStartingAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("readStartingAddress", 16, uint16((readStartingAddress)))
-		if _readStartingAddressErr != nil {
-			return errors.Wrap(_readStartingAddressErr, "Error serializing 'readStartingAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "readStartingAddress", m.GetReadStartingAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'readStartingAddress' field")
 		}
 
-		// Simple Field (readQuantity)
-		readQuantity := uint16(m.GetReadQuantity())
-		_readQuantityErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("readQuantity", 16, uint16((readQuantity)))
-		if _readQuantityErr != nil {
-			return errors.Wrap(_readQuantityErr, "Error serializing 'readQuantity' field")
+		if err := WriteSimpleField[uint16](ctx, "readQuantity", m.GetReadQuantity(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'readQuantity' field")
 		}
 
-		// Simple Field (writeStartingAddress)
-		writeStartingAddress := uint16(m.GetWriteStartingAddress())
-		_writeStartingAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("writeStartingAddress", 16, uint16((writeStartingAddress)))
-		if _writeStartingAddressErr != nil {
-			return errors.Wrap(_writeStartingAddressErr, "Error serializing 'writeStartingAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "writeStartingAddress", m.GetWriteStartingAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeStartingAddress' field")
 		}
 
-		// Simple Field (writeQuantity)
-		writeQuantity := uint16(m.GetWriteQuantity())
-		_writeQuantityErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("writeQuantity", 16, uint16((writeQuantity)))
-		if _writeQuantityErr != nil {
-			return errors.Wrap(_writeQuantityErr, "Error serializing 'writeQuantity' field")
+		if err := WriteSimpleField[uint16](ctx, "writeQuantity", m.GetWriteQuantity(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeQuantity' field")
 		}
 		byteCount := uint8(uint8(len(m.GetValue())))
 		if err := WriteImplicitField(ctx, "byteCount", byteCount, WriteUnsignedByte(writeBuffer, 8)); err != nil {

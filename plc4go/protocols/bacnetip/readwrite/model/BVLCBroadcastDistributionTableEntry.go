@@ -192,11 +192,8 @@ func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(err, "Error serializing 'ip' field")
 	}
 
-	// Simple Field (port)
-	port := uint16(m.GetPort())
-	_portErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("port", 16, uint16((port)))
-	if _portErr != nil {
-		return errors.Wrap(_portErr, "Error serializing 'port' field")
+	if err := WriteSimpleField[uint16](ctx, "port", m.GetPort(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'port' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "broadcastDistributionMap", m.GetBroadcastDistributionMap(), WriteUnsignedByte(writeBuffer, 8)); err != nil {

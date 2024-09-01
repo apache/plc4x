@@ -197,30 +197,16 @@ func (m *_TunnelingResponseDataBlock) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(err, "Error serializing 'structureLength' field")
 	}
 
-	// Simple Field (communicationChannelId)
-	communicationChannelId := uint8(m.GetCommunicationChannelId())
-	_communicationChannelIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
-	if _communicationChannelIdErr != nil {
-		return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
+	if err := WriteSimpleField[uint8](ctx, "communicationChannelId", m.GetCommunicationChannelId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'communicationChannelId' field")
 	}
 
-	// Simple Field (sequenceCounter)
-	sequenceCounter := uint8(m.GetSequenceCounter())
-	_sequenceCounterErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceCounter", 8, uint8((sequenceCounter)))
-	if _sequenceCounterErr != nil {
-		return errors.Wrap(_sequenceCounterErr, "Error serializing 'sequenceCounter' field")
+	if err := WriteSimpleField[uint8](ctx, "sequenceCounter", m.GetSequenceCounter(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sequenceCounter' field")
 	}
 
-	// Simple Field (status)
-	if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for status")
-	}
-	_statusErr := writeBuffer.WriteSerializable(ctx, m.GetStatus())
-	if popErr := writeBuffer.PopContext("status"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for status")
-	}
-	if _statusErr != nil {
-		return errors.Wrap(_statusErr, "Error serializing 'status' field")
+	if err := WriteSimpleEnumField[Status](ctx, "status", "Status", m.GetStatus(), WriteEnum[Status, uint8](Status.GetValue, Status.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
 	if popErr := writeBuffer.PopContext("TunnelingResponseDataBlock"); popErr != nil {

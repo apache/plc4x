@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataScale) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataScale")
 		}
 
-		// Simple Field (scale)
-		if pushErr := writeBuffer.PushContext("scale"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for scale")
-		}
-		_scaleErr := writeBuffer.WriteSerializable(ctx, m.GetScale())
-		if popErr := writeBuffer.PopContext("scale"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for scale")
-		}
-		if _scaleErr != nil {
-			return errors.Wrap(_scaleErr, "Error serializing 'scale' field")
+		if err := WriteSimpleField[BACnetScale](ctx, "scale", m.GetScale(), WriteComplex[BACnetScale](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'scale' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

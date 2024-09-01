@@ -182,16 +182,8 @@ func (m *_AmsTCPPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(err, "Error serializing 'length' field")
 	}
 
-	// Simple Field (userdata)
-	if pushErr := writeBuffer.PushContext("userdata"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for userdata")
-	}
-	_userdataErr := writeBuffer.WriteSerializable(ctx, m.GetUserdata())
-	if popErr := writeBuffer.PopContext("userdata"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for userdata")
-	}
-	if _userdataErr != nil {
-		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
+	if err := WriteSimpleField[AmsPacket](ctx, "userdata", m.GetUserdata(), WriteComplex[AmsPacket](writeBuffer), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'userdata' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AmsTCPPacket"); popErr != nil {

@@ -224,23 +224,12 @@ func (m *_BrowsePathResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for BrowsePathResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (noOfTargets)
-		noOfTargets := int32(m.GetNoOfTargets())
-		_noOfTargetsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfTargets", 32, int32((noOfTargets)))
-		if _noOfTargetsErr != nil {
-			return errors.Wrap(_noOfTargetsErr, "Error serializing 'noOfTargets' field")
+		if err := WriteSimpleField[int32](ctx, "noOfTargets", m.GetNoOfTargets(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfTargets' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "targets", m.GetTargets(), writeBuffer); err != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) SerializeWithWri
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessEventAuthenticationFactor")
 		}
 
-		// Simple Field (accessEventAuthenticationFactor)
-		if pushErr := writeBuffer.PushContext("accessEventAuthenticationFactor"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessEventAuthenticationFactor")
-		}
-		_accessEventAuthenticationFactorErr := writeBuffer.WriteSerializable(ctx, m.GetAccessEventAuthenticationFactor())
-		if popErr := writeBuffer.PopContext("accessEventAuthenticationFactor"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessEventAuthenticationFactor")
-		}
-		if _accessEventAuthenticationFactorErr != nil {
-			return errors.Wrap(_accessEventAuthenticationFactorErr, "Error serializing 'accessEventAuthenticationFactor' field")
+		if err := WriteSimpleField[BACnetAuthenticationFactor](ctx, "accessEventAuthenticationFactor", m.GetAccessEventAuthenticationFactor(), WriteComplex[BACnetAuthenticationFactor](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessEventAuthenticationFactor' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

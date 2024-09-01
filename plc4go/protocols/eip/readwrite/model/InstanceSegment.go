@@ -200,32 +200,20 @@ func (m *_InstanceSegment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for InstanceSegment")
 	}
 
-	// Simple Field (pathSegmentType)
-	pathSegmentType := uint8(m.GetPathSegmentType())
-	_pathSegmentTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pathSegmentType", 3, uint8((pathSegmentType)))
-	if _pathSegmentTypeErr != nil {
-		return errors.Wrap(_pathSegmentTypeErr, "Error serializing 'pathSegmentType' field")
+	if err := WriteSimpleField[uint8](ctx, "pathSegmentType", m.GetPathSegmentType(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'pathSegmentType' field")
 	}
 
-	// Simple Field (logicalSegmentType)
-	logicalSegmentType := uint8(m.GetLogicalSegmentType())
-	_logicalSegmentTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("logicalSegmentType", 3, uint8((logicalSegmentType)))
-	if _logicalSegmentTypeErr != nil {
-		return errors.Wrap(_logicalSegmentTypeErr, "Error serializing 'logicalSegmentType' field")
+	if err := WriteSimpleField[uint8](ctx, "logicalSegmentType", m.GetLogicalSegmentType(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'logicalSegmentType' field")
 	}
 
-	// Simple Field (logicalSegmentFormat)
-	logicalSegmentFormat := uint8(m.GetLogicalSegmentFormat())
-	_logicalSegmentFormatErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("logicalSegmentFormat", 2, uint8((logicalSegmentFormat)))
-	if _logicalSegmentFormatErr != nil {
-		return errors.Wrap(_logicalSegmentFormatErr, "Error serializing 'logicalSegmentFormat' field")
+	if err := WriteSimpleField[uint8](ctx, "logicalSegmentFormat", m.GetLogicalSegmentFormat(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+		return errors.Wrap(err, "Error serializing 'logicalSegmentFormat' field")
 	}
 
-	// Simple Field (instance)
-	instance := uint8(m.GetInstance())
-	_instanceErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("instance", 8, uint8((instance)))
-	if _instanceErr != nil {
-		return errors.Wrap(_instanceErr, "Error serializing 'instance' field")
+	if err := WriteSimpleField[uint8](ctx, "instance", m.GetInstance(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'instance' field")
 	}
 
 	if popErr := writeBuffer.PopContext("InstanceSegment"); popErr != nil {

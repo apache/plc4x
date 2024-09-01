@@ -200,18 +200,12 @@ func (m *_ServiceCounterDataType) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for ServiceCounterDataType")
 		}
 
-		// Simple Field (totalCount)
-		totalCount := uint32(m.GetTotalCount())
-		_totalCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("totalCount", 32, uint32((totalCount)))
-		if _totalCountErr != nil {
-			return errors.Wrap(_totalCountErr, "Error serializing 'totalCount' field")
+		if err := WriteSimpleField[uint32](ctx, "totalCount", m.GetTotalCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'totalCount' field")
 		}
 
-		// Simple Field (errorCount)
-		errorCount := uint32(m.GetErrorCount())
-		_errorCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("errorCount", 32, uint32((errorCount)))
-		if _errorCountErr != nil {
-			return errors.Wrap(_errorCountErr, "Error serializing 'errorCount' field")
+		if err := WriteSimpleField[uint32](ctx, "errorCount", m.GetErrorCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ServiceCounterDataType"); popErr != nil {

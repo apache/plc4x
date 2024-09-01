@@ -200,28 +200,12 @@ func (m *_WritePropertyMultipleError) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for WritePropertyMultipleError")
 		}
 
-		// Simple Field (errorType)
-		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorType")
-		}
-		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
-		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorType")
-		}
-		if _errorTypeErr != nil {
-			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
+		if err := WriteSimpleField[ErrorEnclosed](ctx, "errorType", m.GetErrorType(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorType' field")
 		}
 
-		// Simple Field (firstFailedWriteAttempt)
-		if pushErr := writeBuffer.PushContext("firstFailedWriteAttempt"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for firstFailedWriteAttempt")
-		}
-		_firstFailedWriteAttemptErr := writeBuffer.WriteSerializable(ctx, m.GetFirstFailedWriteAttempt())
-		if popErr := writeBuffer.PopContext("firstFailedWriteAttempt"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for firstFailedWriteAttempt")
-		}
-		if _firstFailedWriteAttemptErr != nil {
-			return errors.Wrap(_firstFailedWriteAttemptErr, "Error serializing 'firstFailedWriteAttempt' field")
+		if err := WriteSimpleField[BACnetObjectPropertyReferenceEnclosed](ctx, "firstFailedWriteAttempt", m.GetFirstFailedWriteAttempt(), WriteComplex[BACnetObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'firstFailedWriteAttempt' field")
 		}
 
 		if popErr := writeBuffer.PopContext("WritePropertyMultipleError"); popErr != nil {

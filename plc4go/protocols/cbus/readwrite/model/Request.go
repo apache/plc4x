@@ -313,16 +313,8 @@ func (pm *_Request) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Simple Field (termination)
-	if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for termination")
-	}
-	_terminationErr := writeBuffer.WriteSerializable(ctx, m.GetTermination())
-	if popErr := writeBuffer.PopContext("termination"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for termination")
-	}
-	if _terminationErr != nil {
-		return errors.Wrap(_terminationErr, "Error serializing 'termination' field")
+	if err := WriteSimpleField[RequestTermination](ctx, "termination", m.GetTermination(), WriteComplex[RequestTermination](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'termination' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Request"); popErr != nil {

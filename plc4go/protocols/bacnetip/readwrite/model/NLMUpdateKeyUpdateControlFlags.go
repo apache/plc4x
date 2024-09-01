@@ -264,60 +264,36 @@ func (m *_NLMUpdateKeyUpdateControlFlags) SerializeWithWriteBuffer(ctx context.C
 		return errors.Wrap(pushErr, "Error pushing for NLMUpdateKeyUpdateControlFlags")
 	}
 
-	// Simple Field (set1KeyRevisionActivationTimeExpirationTimePresent)
-	set1KeyRevisionActivationTimeExpirationTimePresent := bool(m.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
-	_set1KeyRevisionActivationTimeExpirationTimePresentErr := /*TODO: migrate me*/ writeBuffer.WriteBit("set1KeyRevisionActivationTimeExpirationTimePresent", (set1KeyRevisionActivationTimeExpirationTimePresent))
-	if _set1KeyRevisionActivationTimeExpirationTimePresentErr != nil {
-		return errors.Wrap(_set1KeyRevisionActivationTimeExpirationTimePresentErr, "Error serializing 'set1KeyRevisionActivationTimeExpirationTimePresent' field")
+	if err := WriteSimpleField[bool](ctx, "set1KeyRevisionActivationTimeExpirationTimePresent", m.GetSet1KeyRevisionActivationTimeExpirationTimePresent(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'set1KeyRevisionActivationTimeExpirationTimePresent' field")
 	}
 
-	// Simple Field (set1KeyCountKeyParametersPresent)
-	set1KeyCountKeyParametersPresent := bool(m.GetSet1KeyCountKeyParametersPresent())
-	_set1KeyCountKeyParametersPresentErr := /*TODO: migrate me*/ writeBuffer.WriteBit("set1KeyCountKeyParametersPresent", (set1KeyCountKeyParametersPresent))
-	if _set1KeyCountKeyParametersPresentErr != nil {
-		return errors.Wrap(_set1KeyCountKeyParametersPresentErr, "Error serializing 'set1KeyCountKeyParametersPresent' field")
+	if err := WriteSimpleField[bool](ctx, "set1KeyCountKeyParametersPresent", m.GetSet1KeyCountKeyParametersPresent(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'set1KeyCountKeyParametersPresent' field")
 	}
 
-	// Simple Field (set1ShouldBeCleared)
-	set1ShouldBeCleared := bool(m.GetSet1ShouldBeCleared())
-	_set1ShouldBeClearedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("set1ShouldBeCleared", (set1ShouldBeCleared))
-	if _set1ShouldBeClearedErr != nil {
-		return errors.Wrap(_set1ShouldBeClearedErr, "Error serializing 'set1ShouldBeCleared' field")
+	if err := WriteSimpleField[bool](ctx, "set1ShouldBeCleared", m.GetSet1ShouldBeCleared(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'set1ShouldBeCleared' field")
 	}
 
-	// Simple Field (set2KeyRevisionActivationTimeExpirationTimePresent)
-	set2KeyRevisionActivationTimeExpirationTimePresent := bool(m.GetSet2KeyRevisionActivationTimeExpirationTimePresent())
-	_set2KeyRevisionActivationTimeExpirationTimePresentErr := /*TODO: migrate me*/ writeBuffer.WriteBit("set2KeyRevisionActivationTimeExpirationTimePresent", (set2KeyRevisionActivationTimeExpirationTimePresent))
-	if _set2KeyRevisionActivationTimeExpirationTimePresentErr != nil {
-		return errors.Wrap(_set2KeyRevisionActivationTimeExpirationTimePresentErr, "Error serializing 'set2KeyRevisionActivationTimeExpirationTimePresent' field")
+	if err := WriteSimpleField[bool](ctx, "set2KeyRevisionActivationTimeExpirationTimePresent", m.GetSet2KeyRevisionActivationTimeExpirationTimePresent(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'set2KeyRevisionActivationTimeExpirationTimePresent' field")
 	}
 
-	// Simple Field (set2KeyCountKeyParametersPresent)
-	set2KeyCountKeyParametersPresent := bool(m.GetSet2KeyCountKeyParametersPresent())
-	_set2KeyCountKeyParametersPresentErr := /*TODO: migrate me*/ writeBuffer.WriteBit("set2KeyCountKeyParametersPresent", (set2KeyCountKeyParametersPresent))
-	if _set2KeyCountKeyParametersPresentErr != nil {
-		return errors.Wrap(_set2KeyCountKeyParametersPresentErr, "Error serializing 'set2KeyCountKeyParametersPresent' field")
+	if err := WriteSimpleField[bool](ctx, "set2KeyCountKeyParametersPresent", m.GetSet2KeyCountKeyParametersPresent(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'set2KeyCountKeyParametersPresent' field")
 	}
 
-	// Simple Field (set2ShouldBeCleared)
-	set2ShouldBeCleared := bool(m.GetSet2ShouldBeCleared())
-	_set2ShouldBeClearedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("set2ShouldBeCleared", (set2ShouldBeCleared))
-	if _set2ShouldBeClearedErr != nil {
-		return errors.Wrap(_set2ShouldBeClearedErr, "Error serializing 'set2ShouldBeCleared' field")
+	if err := WriteSimpleField[bool](ctx, "set2ShouldBeCleared", m.GetSet2ShouldBeCleared(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'set2ShouldBeCleared' field")
 	}
 
-	// Simple Field (moreMessagesToBeExpected)
-	moreMessagesToBeExpected := bool(m.GetMoreMessagesToBeExpected())
-	_moreMessagesToBeExpectedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("moreMessagesToBeExpected", (moreMessagesToBeExpected))
-	if _moreMessagesToBeExpectedErr != nil {
-		return errors.Wrap(_moreMessagesToBeExpectedErr, "Error serializing 'moreMessagesToBeExpected' field")
+	if err := WriteSimpleField[bool](ctx, "moreMessagesToBeExpected", m.GetMoreMessagesToBeExpected(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'moreMessagesToBeExpected' field")
 	}
 
-	// Simple Field (removeAllKeys)
-	removeAllKeys := bool(m.GetRemoveAllKeys())
-	_removeAllKeysErr := /*TODO: migrate me*/ writeBuffer.WriteBit("removeAllKeys", (removeAllKeys))
-	if _removeAllKeysErr != nil {
-		return errors.Wrap(_removeAllKeysErr, "Error serializing 'removeAllKeys' field")
+	if err := WriteSimpleField[bool](ctx, "removeAllKeys", m.GetRemoveAllKeys(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'removeAllKeys' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NLMUpdateKeyUpdateControlFlags"); popErr != nil {

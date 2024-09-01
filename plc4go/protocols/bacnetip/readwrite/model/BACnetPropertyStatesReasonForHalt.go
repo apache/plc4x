@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesReasonForHalt) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesReasonForHalt")
 		}
 
-		// Simple Field (reasonForHalt)
-		if pushErr := writeBuffer.PushContext("reasonForHalt"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reasonForHalt")
-		}
-		_reasonForHaltErr := writeBuffer.WriteSerializable(ctx, m.GetReasonForHalt())
-		if popErr := writeBuffer.PopContext("reasonForHalt"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reasonForHalt")
-		}
-		if _reasonForHaltErr != nil {
-			return errors.Wrap(_reasonForHaltErr, "Error serializing 'reasonForHalt' field")
+		if err := WriteSimpleField[BACnetProgramErrorTagged](ctx, "reasonForHalt", m.GetReasonForHalt(), WriteComplex[BACnetProgramErrorTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reasonForHalt' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesReasonForHalt"); popErr != nil {

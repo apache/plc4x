@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaximumValueTimestamp")
 		}
 
-		// Simple Field (maximumValueTimestamp)
-		if pushErr := writeBuffer.PushContext("maximumValueTimestamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maximumValueTimestamp")
-		}
-		_maximumValueTimestampErr := writeBuffer.WriteSerializable(ctx, m.GetMaximumValueTimestamp())
-		if popErr := writeBuffer.PopContext("maximumValueTimestamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maximumValueTimestamp")
-		}
-		if _maximumValueTimestampErr != nil {
-			return errors.Wrap(_maximumValueTimestampErr, "Error serializing 'maximumValueTimestamp' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "maximumValueTimestamp", m.GetMaximumValueTimestamp(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maximumValueTimestamp' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

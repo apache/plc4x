@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDescriptionOfHalt")
 		}
 
-		// Simple Field (descriptionForHalt)
-		if pushErr := writeBuffer.PushContext("descriptionForHalt"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for descriptionForHalt")
-		}
-		_descriptionForHaltErr := writeBuffer.WriteSerializable(ctx, m.GetDescriptionForHalt())
-		if popErr := writeBuffer.PopContext("descriptionForHalt"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for descriptionForHalt")
-		}
-		if _descriptionForHaltErr != nil {
-			return errors.Wrap(_descriptionForHaltErr, "Error serializing 'descriptionForHalt' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "descriptionForHalt", m.GetDescriptionForHalt(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'descriptionForHalt' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -170,11 +170,8 @@ func (m *_XmlElement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for XmlElement")
 	}
 
-	// Simple Field (length)
-	length := int32(m.GetLength())
-	_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("length", 32, int32((length)))
-	if _lengthErr != nil {
-		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
+	if err := WriteSimpleField[int32](ctx, "length", m.GetLength(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'length' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteString(writeBuffer, 8)); err != nil {

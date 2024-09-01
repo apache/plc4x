@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPulseRate) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPulseRate")
 		}
 
-		// Simple Field (pulseRate)
-		if pushErr := writeBuffer.PushContext("pulseRate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pulseRate")
-		}
-		_pulseRateErr := writeBuffer.WriteSerializable(ctx, m.GetPulseRate())
-		if popErr := writeBuffer.PopContext("pulseRate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pulseRate")
-		}
-		if _pulseRateErr != nil {
-			return errors.Wrap(_pulseRateErr, "Error serializing 'pulseRate' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "pulseRate", m.GetPulseRate(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pulseRate' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

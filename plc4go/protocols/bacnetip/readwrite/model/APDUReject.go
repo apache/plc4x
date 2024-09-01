@@ -217,23 +217,12 @@ func (m *_APDUReject) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
-		if _originalInvokeIdErr != nil {
-			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
+		if err := WriteSimpleField[uint8](ctx, "originalInvokeId", m.GetOriginalInvokeId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalInvokeId' field")
 		}
 
-		// Simple Field (rejectReason)
-		if pushErr := writeBuffer.PushContext("rejectReason"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for rejectReason")
-		}
-		_rejectReasonErr := writeBuffer.WriteSerializable(ctx, m.GetRejectReason())
-		if popErr := writeBuffer.PopContext("rejectReason"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for rejectReason")
-		}
-		if _rejectReasonErr != nil {
-			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
+		if err := WriteSimpleField[BACnetRejectReasonTagged](ctx, "rejectReason", m.GetRejectReason(), WriteComplex[BACnetRejectReasonTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'rejectReason' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUReject"); popErr != nil {

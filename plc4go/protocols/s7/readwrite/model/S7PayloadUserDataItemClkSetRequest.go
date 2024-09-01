@@ -224,16 +224,8 @@ func (m *_S7PayloadUserDataItemClkSetRequest) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (timeStamp)
-		if pushErr := writeBuffer.PushContext("timeStamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeStamp")
-		}
-		_timeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
-		if popErr := writeBuffer.PopContext("timeStamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeStamp")
-		}
-		if _timeStampErr != nil {
-			return errors.Wrap(_timeStampErr, "Error serializing 'timeStamp' field")
+		if err := WriteSimpleField[DateAndTime](ctx, "timeStamp", m.GetTimeStamp(), WriteComplex[DateAndTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeStamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemClkSetRequest"); popErr != nil {

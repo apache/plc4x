@@ -338,119 +338,44 @@ func (m *_IdentifyReplyCommandDSIStatus) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandDSIStatus")
 		}
 
-		// Simple Field (channelStatus1)
-		if pushErr := writeBuffer.PushContext("channelStatus1"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for channelStatus1")
-		}
-		_channelStatus1Err := writeBuffer.WriteSerializable(ctx, m.GetChannelStatus1())
-		if popErr := writeBuffer.PopContext("channelStatus1"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for channelStatus1")
-		}
-		if _channelStatus1Err != nil {
-			return errors.Wrap(_channelStatus1Err, "Error serializing 'channelStatus1' field")
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus1", "ChannelStatus", m.GetChannelStatus1(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'channelStatus1' field")
 		}
 
-		// Simple Field (channelStatus2)
-		if pushErr := writeBuffer.PushContext("channelStatus2"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for channelStatus2")
-		}
-		_channelStatus2Err := writeBuffer.WriteSerializable(ctx, m.GetChannelStatus2())
-		if popErr := writeBuffer.PopContext("channelStatus2"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for channelStatus2")
-		}
-		if _channelStatus2Err != nil {
-			return errors.Wrap(_channelStatus2Err, "Error serializing 'channelStatus2' field")
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus2", "ChannelStatus", m.GetChannelStatus2(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'channelStatus2' field")
 		}
 
-		// Simple Field (channelStatus3)
-		if pushErr := writeBuffer.PushContext("channelStatus3"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for channelStatus3")
-		}
-		_channelStatus3Err := writeBuffer.WriteSerializable(ctx, m.GetChannelStatus3())
-		if popErr := writeBuffer.PopContext("channelStatus3"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for channelStatus3")
-		}
-		if _channelStatus3Err != nil {
-			return errors.Wrap(_channelStatus3Err, "Error serializing 'channelStatus3' field")
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus3", "ChannelStatus", m.GetChannelStatus3(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'channelStatus3' field")
 		}
 
-		// Simple Field (channelStatus4)
-		if pushErr := writeBuffer.PushContext("channelStatus4"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for channelStatus4")
-		}
-		_channelStatus4Err := writeBuffer.WriteSerializable(ctx, m.GetChannelStatus4())
-		if popErr := writeBuffer.PopContext("channelStatus4"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for channelStatus4")
-		}
-		if _channelStatus4Err != nil {
-			return errors.Wrap(_channelStatus4Err, "Error serializing 'channelStatus4' field")
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus4", "ChannelStatus", m.GetChannelStatus4(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'channelStatus4' field")
 		}
 
-		// Simple Field (channelStatus5)
-		if pushErr := writeBuffer.PushContext("channelStatus5"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for channelStatus5")
-		}
-		_channelStatus5Err := writeBuffer.WriteSerializable(ctx, m.GetChannelStatus5())
-		if popErr := writeBuffer.PopContext("channelStatus5"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for channelStatus5")
-		}
-		if _channelStatus5Err != nil {
-			return errors.Wrap(_channelStatus5Err, "Error serializing 'channelStatus5' field")
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus5", "ChannelStatus", m.GetChannelStatus5(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'channelStatus5' field")
 		}
 
-		// Simple Field (channelStatus6)
-		if pushErr := writeBuffer.PushContext("channelStatus6"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for channelStatus6")
-		}
-		_channelStatus6Err := writeBuffer.WriteSerializable(ctx, m.GetChannelStatus6())
-		if popErr := writeBuffer.PopContext("channelStatus6"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for channelStatus6")
-		}
-		if _channelStatus6Err != nil {
-			return errors.Wrap(_channelStatus6Err, "Error serializing 'channelStatus6' field")
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus6", "ChannelStatus", m.GetChannelStatus6(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'channelStatus6' field")
 		}
 
-		// Simple Field (channelStatus7)
-		if pushErr := writeBuffer.PushContext("channelStatus7"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for channelStatus7")
-		}
-		_channelStatus7Err := writeBuffer.WriteSerializable(ctx, m.GetChannelStatus7())
-		if popErr := writeBuffer.PopContext("channelStatus7"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for channelStatus7")
-		}
-		if _channelStatus7Err != nil {
-			return errors.Wrap(_channelStatus7Err, "Error serializing 'channelStatus7' field")
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus7", "ChannelStatus", m.GetChannelStatus7(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'channelStatus7' field")
 		}
 
-		// Simple Field (channelStatus8)
-		if pushErr := writeBuffer.PushContext("channelStatus8"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for channelStatus8")
-		}
-		_channelStatus8Err := writeBuffer.WriteSerializable(ctx, m.GetChannelStatus8())
-		if popErr := writeBuffer.PopContext("channelStatus8"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for channelStatus8")
-		}
-		if _channelStatus8Err != nil {
-			return errors.Wrap(_channelStatus8Err, "Error serializing 'channelStatus8' field")
+		if err := WriteSimpleEnumField[ChannelStatus](ctx, "channelStatus8", "ChannelStatus", m.GetChannelStatus8(), WriteEnum[ChannelStatus, uint8](ChannelStatus.GetValue, ChannelStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'channelStatus8' field")
 		}
 
-		// Simple Field (unitStatus)
-		if pushErr := writeBuffer.PushContext("unitStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unitStatus")
-		}
-		_unitStatusErr := writeBuffer.WriteSerializable(ctx, m.GetUnitStatus())
-		if popErr := writeBuffer.PopContext("unitStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unitStatus")
-		}
-		if _unitStatusErr != nil {
-			return errors.Wrap(_unitStatusErr, "Error serializing 'unitStatus' field")
+		if err := WriteSimpleEnumField[UnitStatus](ctx, "unitStatus", "UnitStatus", m.GetUnitStatus(), WriteEnum[UnitStatus, uint8](UnitStatus.GetValue, UnitStatus.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitStatus' field")
 		}
 
-		// Simple Field (dimmingUCRevisionNumber)
-		dimmingUCRevisionNumber := byte(m.GetDimmingUCRevisionNumber())
-		_dimmingUCRevisionNumberErr := /*TODO: migrate me*/ writeBuffer.WriteByte("dimmingUCRevisionNumber", (dimmingUCRevisionNumber))
-		if _dimmingUCRevisionNumberErr != nil {
-			return errors.Wrap(_dimmingUCRevisionNumberErr, "Error serializing 'dimmingUCRevisionNumber' field")
+		if err := WriteSimpleField[byte](ctx, "dimmingUCRevisionNumber", m.GetDimmingUCRevisionNumber(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dimmingUCRevisionNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandDSIStatus"); popErr != nil {

@@ -200,23 +200,12 @@ func (m *_MonitoredItemModifyRequest) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for MonitoredItemModifyRequest")
 		}
 
-		// Simple Field (monitoredItemId)
-		monitoredItemId := uint32(m.GetMonitoredItemId())
-		_monitoredItemIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("monitoredItemId", 32, uint32((monitoredItemId)))
-		if _monitoredItemIdErr != nil {
-			return errors.Wrap(_monitoredItemIdErr, "Error serializing 'monitoredItemId' field")
+		if err := WriteSimpleField[uint32](ctx, "monitoredItemId", m.GetMonitoredItemId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoredItemId' field")
 		}
 
-		// Simple Field (requestedParameters)
-		if pushErr := writeBuffer.PushContext("requestedParameters"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestedParameters")
-		}
-		_requestedParametersErr := writeBuffer.WriteSerializable(ctx, m.GetRequestedParameters())
-		if popErr := writeBuffer.PopContext("requestedParameters"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestedParameters")
-		}
-		if _requestedParametersErr != nil {
-			return errors.Wrap(_requestedParametersErr, "Error serializing 'requestedParameters' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestedParameters", m.GetRequestedParameters(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestedParameters' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredItemModifyRequest"); popErr != nil {

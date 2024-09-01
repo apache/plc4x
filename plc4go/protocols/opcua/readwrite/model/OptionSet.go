@@ -200,28 +200,12 @@ func (m *_OptionSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(pushErr, "Error pushing for OptionSet")
 		}
 
-		// Simple Field (value)
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
-		}
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "value", m.GetValue(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
-		// Simple Field (validBits)
-		if pushErr := writeBuffer.PushContext("validBits"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for validBits")
-		}
-		_validBitsErr := writeBuffer.WriteSerializable(ctx, m.GetValidBits())
-		if popErr := writeBuffer.PopContext("validBits"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for validBits")
-		}
-		if _validBitsErr != nil {
-			return errors.Wrap(_validBitsErr, "Error serializing 'validBits' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "validBits", m.GetValidBits(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'validBits' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OptionSet"); popErr != nil {

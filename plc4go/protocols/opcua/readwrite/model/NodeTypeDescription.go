@@ -252,34 +252,20 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for NodeTypeDescription")
 		}
 
-		// Simple Field (typeDefinitionNode)
-		if pushErr := writeBuffer.PushContext("typeDefinitionNode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for typeDefinitionNode")
-		}
-		_typeDefinitionNodeErr := writeBuffer.WriteSerializable(ctx, m.GetTypeDefinitionNode())
-		if popErr := writeBuffer.PopContext("typeDefinitionNode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for typeDefinitionNode")
-		}
-		if _typeDefinitionNodeErr != nil {
-			return errors.Wrap(_typeDefinitionNodeErr, "Error serializing 'typeDefinitionNode' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", m.GetTypeDefinitionNode(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'typeDefinitionNode' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (includeSubTypes)
-		includeSubTypes := bool(m.GetIncludeSubTypes())
-		_includeSubTypesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("includeSubTypes", (includeSubTypes))
-		if _includeSubTypesErr != nil {
-			return errors.Wrap(_includeSubTypesErr, "Error serializing 'includeSubTypes' field")
+		if err := WriteSimpleField[bool](ctx, "includeSubTypes", m.GetIncludeSubTypes(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'includeSubTypes' field")
 		}
 
-		// Simple Field (noOfDataToReturn)
-		noOfDataToReturn := int32(m.GetNoOfDataToReturn())
-		_noOfDataToReturnErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDataToReturn", 32, int32((noOfDataToReturn)))
-		if _noOfDataToReturnErr != nil {
-			return errors.Wrap(_noOfDataToReturnErr, "Error serializing 'noOfDataToReturn' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDataToReturn", m.GetNoOfDataToReturn(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDataToReturn' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "dataToReturn", m.GetDataToReturn(), writeBuffer); err != nil {

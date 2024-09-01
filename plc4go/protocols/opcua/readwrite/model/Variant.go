@@ -301,18 +301,12 @@ func (pm *_Variant) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(pushErr, "Error pushing for Variant")
 	}
 
-	// Simple Field (arrayLengthSpecified)
-	arrayLengthSpecified := bool(m.GetArrayLengthSpecified())
-	_arrayLengthSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("arrayLengthSpecified", (arrayLengthSpecified))
-	if _arrayLengthSpecifiedErr != nil {
-		return errors.Wrap(_arrayLengthSpecifiedErr, "Error serializing 'arrayLengthSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "arrayLengthSpecified", m.GetArrayLengthSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'arrayLengthSpecified' field")
 	}
 
-	// Simple Field (arrayDimensionsSpecified)
-	arrayDimensionsSpecified := bool(m.GetArrayDimensionsSpecified())
-	_arrayDimensionsSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("arrayDimensionsSpecified", (arrayDimensionsSpecified))
-	if _arrayDimensionsSpecifiedErr != nil {
-		return errors.Wrap(_arrayDimensionsSpecifiedErr, "Error serializing 'arrayDimensionsSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "arrayDimensionsSpecified", m.GetArrayDimensionsSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'arrayDimensionsSpecified' field")
 	}
 
 	if err := WriteDiscriminatorField(ctx, "VariantType", m.GetVariantType(), WriteUnsignedByte(writeBuffer, 6)); err != nil {

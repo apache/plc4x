@@ -271,76 +271,28 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAcknowledgeAlarm")
 		}
 
-		// Simple Field (acknowledgingProcessIdentifier)
-		if pushErr := writeBuffer.PushContext("acknowledgingProcessIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for acknowledgingProcessIdentifier")
-		}
-		_acknowledgingProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetAcknowledgingProcessIdentifier())
-		if popErr := writeBuffer.PopContext("acknowledgingProcessIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for acknowledgingProcessIdentifier")
-		}
-		if _acknowledgingProcessIdentifierErr != nil {
-			return errors.Wrap(_acknowledgingProcessIdentifierErr, "Error serializing 'acknowledgingProcessIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "acknowledgingProcessIdentifier", m.GetAcknowledgingProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'acknowledgingProcessIdentifier' field")
 		}
 
-		// Simple Field (eventObjectIdentifier)
-		if pushErr := writeBuffer.PushContext("eventObjectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventObjectIdentifier")
-		}
-		_eventObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetEventObjectIdentifier())
-		if popErr := writeBuffer.PopContext("eventObjectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventObjectIdentifier")
-		}
-		if _eventObjectIdentifierErr != nil {
-			return errors.Wrap(_eventObjectIdentifierErr, "Error serializing 'eventObjectIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "eventObjectIdentifier", m.GetEventObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventObjectIdentifier' field")
 		}
 
-		// Simple Field (eventStateAcknowledged)
-		if pushErr := writeBuffer.PushContext("eventStateAcknowledged"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventStateAcknowledged")
-		}
-		_eventStateAcknowledgedErr := writeBuffer.WriteSerializable(ctx, m.GetEventStateAcknowledged())
-		if popErr := writeBuffer.PopContext("eventStateAcknowledged"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventStateAcknowledged")
-		}
-		if _eventStateAcknowledgedErr != nil {
-			return errors.Wrap(_eventStateAcknowledgedErr, "Error serializing 'eventStateAcknowledged' field")
+		if err := WriteSimpleField[BACnetEventStateTagged](ctx, "eventStateAcknowledged", m.GetEventStateAcknowledged(), WriteComplex[BACnetEventStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventStateAcknowledged' field")
 		}
 
-		// Simple Field (timestamp)
-		if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timestamp")
-		}
-		_timestampErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamp())
-		if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timestamp")
-		}
-		if _timestampErr != nil {
-			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
+		if err := WriteSimpleField[BACnetTimeStampEnclosed](ctx, "timestamp", m.GetTimestamp(), WriteComplex[BACnetTimeStampEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
-		// Simple Field (acknowledgmentSource)
-		if pushErr := writeBuffer.PushContext("acknowledgmentSource"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for acknowledgmentSource")
-		}
-		_acknowledgmentSourceErr := writeBuffer.WriteSerializable(ctx, m.GetAcknowledgmentSource())
-		if popErr := writeBuffer.PopContext("acknowledgmentSource"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for acknowledgmentSource")
-		}
-		if _acknowledgmentSourceErr != nil {
-			return errors.Wrap(_acknowledgmentSourceErr, "Error serializing 'acknowledgmentSource' field")
+		if err := WriteSimpleField[BACnetContextTagCharacterString](ctx, "acknowledgmentSource", m.GetAcknowledgmentSource(), WriteComplex[BACnetContextTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'acknowledgmentSource' field")
 		}
 
-		// Simple Field (timeOfAcknowledgment)
-		if pushErr := writeBuffer.PushContext("timeOfAcknowledgment"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeOfAcknowledgment")
-		}
-		_timeOfAcknowledgmentErr := writeBuffer.WriteSerializable(ctx, m.GetTimeOfAcknowledgment())
-		if popErr := writeBuffer.PopContext("timeOfAcknowledgment"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeOfAcknowledgment")
-		}
-		if _timeOfAcknowledgmentErr != nil {
-			return errors.Wrap(_timeOfAcknowledgmentErr, "Error serializing 'timeOfAcknowledgment' field")
+		if err := WriteSimpleField[BACnetTimeStampEnclosed](ctx, "timeOfAcknowledgment", m.GetTimeOfAcknowledgment(), WriteComplex[BACnetTimeStampEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeOfAcknowledgment' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); popErr != nil {

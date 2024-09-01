@@ -224,23 +224,12 @@ func (m *_AddNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for AddNodesRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (noOfNodesToAdd)
-		noOfNodesToAdd := int32(m.GetNoOfNodesToAdd())
-		_noOfNodesToAddErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToAdd", 32, int32((noOfNodesToAdd)))
-		if _noOfNodesToAddErr != nil {
-			return errors.Wrap(_noOfNodesToAddErr, "Error serializing 'noOfNodesToAdd' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNodesToAdd", m.GetNoOfNodesToAdd(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNodesToAdd' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "nodesToAdd", m.GetNodesToAdd(), writeBuffer); err != nil {

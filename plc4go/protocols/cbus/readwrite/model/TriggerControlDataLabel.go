@@ -237,23 +237,12 @@ func (m *_TriggerControlDataLabel) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for TriggerControlDataLabel")
 		}
 
-		// Simple Field (triggerControlOptions)
-		if pushErr := writeBuffer.PushContext("triggerControlOptions"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for triggerControlOptions")
-		}
-		_triggerControlOptionsErr := writeBuffer.WriteSerializable(ctx, m.GetTriggerControlOptions())
-		if popErr := writeBuffer.PopContext("triggerControlOptions"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for triggerControlOptions")
-		}
-		if _triggerControlOptionsErr != nil {
-			return errors.Wrap(_triggerControlOptionsErr, "Error serializing 'triggerControlOptions' field")
+		if err := WriteSimpleField[TriggerControlLabelOptions](ctx, "triggerControlOptions", m.GetTriggerControlOptions(), WriteComplex[TriggerControlLabelOptions](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'triggerControlOptions' field")
 		}
 
-		// Simple Field (actionSelector)
-		actionSelector := byte(m.GetActionSelector())
-		_actionSelectorErr := /*TODO: migrate me*/ writeBuffer.WriteByte("actionSelector", (actionSelector))
-		if _actionSelectorErr != nil {
-			return errors.Wrap(_actionSelectorErr, "Error serializing 'actionSelector' field")
+		if err := WriteSimpleField[byte](ctx, "actionSelector", m.GetActionSelector(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'actionSelector' field")
 		}
 
 		if err := WriteOptionalEnumField[Language](ctx, "language", "Language", m.GetLanguage(), WriteEnum[Language, uint8](Language.GetValue, Language.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetTriggerControlOptions().GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON))); err != nil {

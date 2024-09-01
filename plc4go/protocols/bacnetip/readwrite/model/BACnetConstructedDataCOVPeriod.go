@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataCOVPeriod) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCOVPeriod")
 		}
 
-		// Simple Field (covPeriod)
-		if pushErr := writeBuffer.PushContext("covPeriod"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for covPeriod")
-		}
-		_covPeriodErr := writeBuffer.WriteSerializable(ctx, m.GetCovPeriod())
-		if popErr := writeBuffer.PopContext("covPeriod"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for covPeriod")
-		}
-		if _covPeriodErr != nil {
-			return errors.Wrap(_covPeriodErr, "Error serializing 'covPeriod' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "covPeriod", m.GetCovPeriod(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'covPeriod' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

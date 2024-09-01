@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeOfDeviceRestart")
 		}
 
-		// Simple Field (timeOfDeviceRestart)
-		if pushErr := writeBuffer.PushContext("timeOfDeviceRestart"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeOfDeviceRestart")
-		}
-		_timeOfDeviceRestartErr := writeBuffer.WriteSerializable(ctx, m.GetTimeOfDeviceRestart())
-		if popErr := writeBuffer.PopContext("timeOfDeviceRestart"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeOfDeviceRestart")
-		}
-		if _timeOfDeviceRestartErr != nil {
-			return errors.Wrap(_timeOfDeviceRestartErr, "Error serializing 'timeOfDeviceRestart' field")
+		if err := WriteSimpleField[BACnetTimeStamp](ctx, "timeOfDeviceRestart", m.GetTimeOfDeviceRestart(), WriteComplex[BACnetTimeStamp](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeOfDeviceRestart' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

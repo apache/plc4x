@@ -188,16 +188,8 @@ func (m *_BVLCOriginalUnicastNPDU) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BVLCOriginalUnicastNPDU")
 		}
 
-		// Simple Field (npdu)
-		if pushErr := writeBuffer.PushContext("npdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for npdu")
-		}
-		_npduErr := writeBuffer.WriteSerializable(ctx, m.GetNpdu())
-		if popErr := writeBuffer.PopContext("npdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for npdu")
-		}
-		if _npduErr != nil {
-			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
+		if err := WriteSimpleField[NPDU](ctx, "npdu", m.GetNpdu(), WriteComplex[NPDU](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'npdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCOriginalUnicastNPDU"); popErr != nil {

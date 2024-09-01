@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataVerificationTime) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVerificationTime")
 		}
 
-		// Simple Field (verificationTime)
-		if pushErr := writeBuffer.PushContext("verificationTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for verificationTime")
-		}
-		_verificationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetVerificationTime())
-		if popErr := writeBuffer.PopContext("verificationTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for verificationTime")
-		}
-		if _verificationTimeErr != nil {
-			return errors.Wrap(_verificationTimeErr, "Error serializing 'verificationTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "verificationTime", m.GetVerificationTime(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'verificationTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

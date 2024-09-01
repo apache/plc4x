@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAccessEventTag) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessEventTag")
 		}
 
-		// Simple Field (accessEventTag)
-		if pushErr := writeBuffer.PushContext("accessEventTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessEventTag")
-		}
-		_accessEventTagErr := writeBuffer.WriteSerializable(ctx, m.GetAccessEventTag())
-		if popErr := writeBuffer.PopContext("accessEventTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessEventTag")
-		}
-		if _accessEventTagErr != nil {
-			return errors.Wrap(_accessEventTagErr, "Error serializing 'accessEventTag' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accessEventTag", m.GetAccessEventTag(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessEventTag' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -152,16 +152,8 @@ func (m *_S7VarPayloadStatusItem) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(pushErr, "Error pushing for S7VarPayloadStatusItem")
 	}
 
-	// Simple Field (returnCode)
-	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for returnCode")
-	}
-	_returnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetReturnCode())
-	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for returnCode")
-	}
-	if _returnCodeErr != nil {
-		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
+	if err := WriteSimpleEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", m.GetReturnCode(), WriteEnum[DataTransportErrorCode, uint8](DataTransportErrorCode.GetValue, DataTransportErrorCode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'returnCode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("S7VarPayloadStatusItem"); popErr != nil {

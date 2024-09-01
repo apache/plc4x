@@ -174,16 +174,8 @@ func (m *_BACnetPortPermission) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for BACnetPortPermission")
 	}
 
-	// Simple Field (port)
-	if pushErr := writeBuffer.PushContext("port"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for port")
-	}
-	_portErr := writeBuffer.WriteSerializable(ctx, m.GetPort())
-	if popErr := writeBuffer.PopContext("port"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for port")
-	}
-	if _portErr != nil {
-		return errors.Wrap(_portErr, "Error serializing 'port' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "port", m.GetPort(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'port' field")
 	}
 
 	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "enable", GetRef(m.GetEnable()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {

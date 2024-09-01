@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataFDBBMDAddress) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFDBBMDAddress")
 		}
 
-		// Simple Field (fDBBMDAddress)
-		if pushErr := writeBuffer.PushContext("fDBBMDAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fDBBMDAddress")
-		}
-		_fDBBMDAddressErr := writeBuffer.WriteSerializable(ctx, m.GetFDBBMDAddress())
-		if popErr := writeBuffer.PopContext("fDBBMDAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fDBBMDAddress")
-		}
-		if _fDBBMDAddressErr != nil {
-			return errors.Wrap(_fDBBMDAddressErr, "Error serializing 'fDBBMDAddress' field")
+		if err := WriteSimpleField[BACnetHostNPort](ctx, "fDBBMDAddress", m.GetFDBBMDAddress(), WriteComplex[BACnetHostNPort](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fDBBMDAddress' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -200,28 +200,12 @@ func (m *_SemanticChangeStructureDataType) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for SemanticChangeStructureDataType")
 		}
 
-		// Simple Field (affected)
-		if pushErr := writeBuffer.PushContext("affected"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for affected")
-		}
-		_affectedErr := writeBuffer.WriteSerializable(ctx, m.GetAffected())
-		if popErr := writeBuffer.PopContext("affected"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for affected")
-		}
-		if _affectedErr != nil {
-			return errors.Wrap(_affectedErr, "Error serializing 'affected' field")
+		if err := WriteSimpleField[NodeId](ctx, "affected", m.GetAffected(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'affected' field")
 		}
 
-		// Simple Field (affectedType)
-		if pushErr := writeBuffer.PushContext("affectedType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for affectedType")
-		}
-		_affectedTypeErr := writeBuffer.WriteSerializable(ctx, m.GetAffectedType())
-		if popErr := writeBuffer.PopContext("affectedType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for affectedType")
-		}
-		if _affectedTypeErr != nil {
-			return errors.Wrap(_affectedTypeErr, "Error serializing 'affectedType' field")
+		if err := WriteSimpleField[NodeId](ctx, "affectedType", m.GetAffectedType(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'affectedType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SemanticChangeStructureDataType"); popErr != nil {

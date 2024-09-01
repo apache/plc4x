@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataFirmwareRevision) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFirmwareRevision")
 		}
 
-		// Simple Field (firmwareRevision)
-		if pushErr := writeBuffer.PushContext("firmwareRevision"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for firmwareRevision")
-		}
-		_firmwareRevisionErr := writeBuffer.WriteSerializable(ctx, m.GetFirmwareRevision())
-		if popErr := writeBuffer.PopContext("firmwareRevision"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for firmwareRevision")
-		}
-		if _firmwareRevisionErr != nil {
-			return errors.Wrap(_firmwareRevisionErr, "Error serializing 'firmwareRevision' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "firmwareRevision", m.GetFirmwareRevision(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'firmwareRevision' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

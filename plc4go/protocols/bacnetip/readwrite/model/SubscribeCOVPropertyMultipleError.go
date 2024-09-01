@@ -200,28 +200,12 @@ func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for SubscribeCOVPropertyMultipleError")
 		}
 
-		// Simple Field (errorType)
-		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorType")
-		}
-		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
-		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorType")
-		}
-		if _errorTypeErr != nil {
-			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
+		if err := WriteSimpleField[ErrorEnclosed](ctx, "errorType", m.GetErrorType(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorType' field")
 		}
 
-		// Simple Field (firstFailedSubscription)
-		if pushErr := writeBuffer.PushContext("firstFailedSubscription"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for firstFailedSubscription")
-		}
-		_firstFailedSubscriptionErr := writeBuffer.WriteSerializable(ctx, m.GetFirstFailedSubscription())
-		if popErr := writeBuffer.PopContext("firstFailedSubscription"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for firstFailedSubscription")
-		}
-		if _firstFailedSubscriptionErr != nil {
-			return errors.Wrap(_firstFailedSubscriptionErr, "Error serializing 'firstFailedSubscription' field")
+		if err := WriteSimpleField[SubscribeCOVPropertyMultipleErrorFirstFailedSubscription](ctx, "firstFailedSubscription", m.GetFirstFailedSubscription(), WriteComplex[SubscribeCOVPropertyMultipleErrorFirstFailedSubscription](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'firstFailedSubscription' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SubscribeCOVPropertyMultipleError"); popErr != nil {

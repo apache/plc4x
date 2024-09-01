@@ -315,11 +315,8 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (tpduReference)
-	tpduReference := uint16(m.GetTpduReference())
-	_tpduReferenceErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("tpduReference", 16, uint16((tpduReference)))
-	if _tpduReferenceErr != nil {
-		return errors.Wrap(_tpduReferenceErr, "Error serializing 'tpduReference' field")
+	if err := WriteSimpleField[uint16](ctx, "tpduReference", m.GetTpduReference(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'tpduReference' field")
 	}
 	parameterLength := uint16(utils.InlineIf(bool((m.GetParameter()) != (nil)), func() any { return uint16((m.GetParameter()).GetLengthInBytes(ctx)) }, func() any { return uint16(uint16(0)) }).(uint16))
 	if err := WriteImplicitField(ctx, "parameterLength", parameterLength, WriteUnsignedShort(writeBuffer, 16)); err != nil {

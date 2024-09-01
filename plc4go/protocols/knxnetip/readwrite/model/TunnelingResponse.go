@@ -185,16 +185,8 @@ func (m *_TunnelingResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for TunnelingResponse")
 		}
 
-		// Simple Field (tunnelingResponseDataBlock)
-		if pushErr := writeBuffer.PushContext("tunnelingResponseDataBlock"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for tunnelingResponseDataBlock")
-		}
-		_tunnelingResponseDataBlockErr := writeBuffer.WriteSerializable(ctx, m.GetTunnelingResponseDataBlock())
-		if popErr := writeBuffer.PopContext("tunnelingResponseDataBlock"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for tunnelingResponseDataBlock")
-		}
-		if _tunnelingResponseDataBlockErr != nil {
-			return errors.Wrap(_tunnelingResponseDataBlockErr, "Error serializing 'tunnelingResponseDataBlock' field")
+		if err := WriteSimpleField[TunnelingResponseDataBlock](ctx, "tunnelingResponseDataBlock", m.GetTunnelingResponseDataBlock(), WriteComplex[TunnelingResponseDataBlock](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tunnelingResponseDataBlock' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TunnelingResponse"); popErr != nil {

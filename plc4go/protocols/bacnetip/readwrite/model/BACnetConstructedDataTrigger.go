@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTrigger) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTrigger")
 		}
 
-		// Simple Field (trigger)
-		if pushErr := writeBuffer.PushContext("trigger"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for trigger")
-		}
-		_triggerErr := writeBuffer.WriteSerializable(ctx, m.GetTrigger())
-		if popErr := writeBuffer.PopContext("trigger"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for trigger")
-		}
-		if _triggerErr != nil {
-			return errors.Wrap(_triggerErr, "Error serializing 'trigger' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "trigger", m.GetTrigger(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'trigger' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -309,83 +309,32 @@ func (m *_ApplicationDescription) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for ApplicationDescription")
 		}
 
-		// Simple Field (applicationUri)
-		if pushErr := writeBuffer.PushContext("applicationUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for applicationUri")
-		}
-		_applicationUriErr := writeBuffer.WriteSerializable(ctx, m.GetApplicationUri())
-		if popErr := writeBuffer.PopContext("applicationUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for applicationUri")
-		}
-		if _applicationUriErr != nil {
-			return errors.Wrap(_applicationUriErr, "Error serializing 'applicationUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "applicationUri", m.GetApplicationUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'applicationUri' field")
 		}
 
-		// Simple Field (productUri)
-		if pushErr := writeBuffer.PushContext("productUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for productUri")
-		}
-		_productUriErr := writeBuffer.WriteSerializable(ctx, m.GetProductUri())
-		if popErr := writeBuffer.PopContext("productUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for productUri")
-		}
-		if _productUriErr != nil {
-			return errors.Wrap(_productUriErr, "Error serializing 'productUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "productUri", m.GetProductUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'productUri' field")
 		}
 
-		// Simple Field (applicationName)
-		if pushErr := writeBuffer.PushContext("applicationName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for applicationName")
-		}
-		_applicationNameErr := writeBuffer.WriteSerializable(ctx, m.GetApplicationName())
-		if popErr := writeBuffer.PopContext("applicationName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for applicationName")
-		}
-		if _applicationNameErr != nil {
-			return errors.Wrap(_applicationNameErr, "Error serializing 'applicationName' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "applicationName", m.GetApplicationName(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'applicationName' field")
 		}
 
-		// Simple Field (applicationType)
-		if pushErr := writeBuffer.PushContext("applicationType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for applicationType")
-		}
-		_applicationTypeErr := writeBuffer.WriteSerializable(ctx, m.GetApplicationType())
-		if popErr := writeBuffer.PopContext("applicationType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for applicationType")
-		}
-		if _applicationTypeErr != nil {
-			return errors.Wrap(_applicationTypeErr, "Error serializing 'applicationType' field")
+		if err := WriteSimpleEnumField[ApplicationType](ctx, "applicationType", "ApplicationType", m.GetApplicationType(), WriteEnum[ApplicationType, uint32](ApplicationType.GetValue, ApplicationType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'applicationType' field")
 		}
 
-		// Simple Field (gatewayServerUri)
-		if pushErr := writeBuffer.PushContext("gatewayServerUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for gatewayServerUri")
-		}
-		_gatewayServerUriErr := writeBuffer.WriteSerializable(ctx, m.GetGatewayServerUri())
-		if popErr := writeBuffer.PopContext("gatewayServerUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for gatewayServerUri")
-		}
-		if _gatewayServerUriErr != nil {
-			return errors.Wrap(_gatewayServerUriErr, "Error serializing 'gatewayServerUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "gatewayServerUri", m.GetGatewayServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'gatewayServerUri' field")
 		}
 
-		// Simple Field (discoveryProfileUri)
-		if pushErr := writeBuffer.PushContext("discoveryProfileUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for discoveryProfileUri")
-		}
-		_discoveryProfileUriErr := writeBuffer.WriteSerializable(ctx, m.GetDiscoveryProfileUri())
-		if popErr := writeBuffer.PopContext("discoveryProfileUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for discoveryProfileUri")
-		}
-		if _discoveryProfileUriErr != nil {
-			return errors.Wrap(_discoveryProfileUriErr, "Error serializing 'discoveryProfileUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "discoveryProfileUri", m.GetDiscoveryProfileUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'discoveryProfileUri' field")
 		}
 
-		// Simple Field (noOfDiscoveryUrls)
-		noOfDiscoveryUrls := int32(m.GetNoOfDiscoveryUrls())
-		_noOfDiscoveryUrlsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiscoveryUrls", 32, int32((noOfDiscoveryUrls)))
-		if _noOfDiscoveryUrlsErr != nil {
-			return errors.Wrap(_noOfDiscoveryUrlsErr, "Error serializing 'noOfDiscoveryUrls' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDiscoveryUrls", m.GetNoOfDiscoveryUrls(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDiscoveryUrls' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "discoveryUrls", m.GetDiscoveryUrls(), writeBuffer); err != nil {

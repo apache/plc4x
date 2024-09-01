@@ -183,16 +183,8 @@ func (m *_LogicalSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for LogicalSegment")
 		}
 
-		// Simple Field (segmentType)
-		if pushErr := writeBuffer.PushContext("segmentType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for segmentType")
-		}
-		_segmentTypeErr := writeBuffer.WriteSerializable(ctx, m.GetSegmentType())
-		if popErr := writeBuffer.PopContext("segmentType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for segmentType")
-		}
-		if _segmentTypeErr != nil {
-			return errors.Wrap(_segmentTypeErr, "Error serializing 'segmentType' field")
+		if err := WriteSimpleField[LogicalSegmentType](ctx, "segmentType", m.GetSegmentType(), WriteComplex[LogicalSegmentType](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LogicalSegment"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataCountChangeTime) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCountChangeTime")
 		}
 
-		// Simple Field (countChangeTime)
-		if pushErr := writeBuffer.PushContext("countChangeTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for countChangeTime")
-		}
-		_countChangeTimeErr := writeBuffer.WriteSerializable(ctx, m.GetCountChangeTime())
-		if popErr := writeBuffer.PopContext("countChangeTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for countChangeTime")
-		}
-		if _countChangeTimeErr != nil {
-			return errors.Wrap(_countChangeTimeErr, "Error serializing 'countChangeTime' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "countChangeTime", m.GetCountChangeTime(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'countChangeTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

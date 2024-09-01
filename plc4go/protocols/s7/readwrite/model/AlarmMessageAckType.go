@@ -191,18 +191,12 @@ func (m *_AlarmMessageAckType) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for AlarmMessageAckType")
 	}
 
-	// Simple Field (functionId)
-	functionId := uint8(m.GetFunctionId())
-	_functionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
-	if _functionIdErr != nil {
-		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+	if err := WriteSimpleField[uint8](ctx, "functionId", m.GetFunctionId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'functionId' field")
 	}
 
-	// Simple Field (numberOfObjects)
-	numberOfObjects := uint8(m.GetNumberOfObjects())
-	_numberOfObjectsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
-	if _numberOfObjectsErr != nil {
-		return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
+	if err := WriteSimpleField[uint8](ctx, "numberOfObjects", m.GetNumberOfObjects(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberOfObjects' field")
 	}
 
 	if err := WriteComplexTypeArrayField(ctx, "messageObjects", m.GetMessageObjects(), writeBuffer); err != nil {

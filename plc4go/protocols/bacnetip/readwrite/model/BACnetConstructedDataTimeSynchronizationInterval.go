@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeSynchronizationInterval")
 		}
 
-		// Simple Field (timeSynchronization)
-		if pushErr := writeBuffer.PushContext("timeSynchronization"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeSynchronization")
-		}
-		_timeSynchronizationErr := writeBuffer.WriteSerializable(ctx, m.GetTimeSynchronization())
-		if popErr := writeBuffer.PopContext("timeSynchronization"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeSynchronization")
-		}
-		if _timeSynchronizationErr != nil {
-			return errors.Wrap(_timeSynchronizationErr, "Error serializing 'timeSynchronization' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeSynchronization", m.GetTimeSynchronization(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeSynchronization' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataRequestedUpdateInterval) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRequestedUpdateInterval")
 		}
 
-		// Simple Field (requestedUpdateInterval)
-		if pushErr := writeBuffer.PushContext("requestedUpdateInterval"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestedUpdateInterval")
-		}
-		_requestedUpdateIntervalErr := writeBuffer.WriteSerializable(ctx, m.GetRequestedUpdateInterval())
-		if popErr := writeBuffer.PopContext("requestedUpdateInterval"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestedUpdateInterval")
-		}
-		if _requestedUpdateIntervalErr != nil {
-			return errors.Wrap(_requestedUpdateIntervalErr, "Error serializing 'requestedUpdateInterval' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "requestedUpdateInterval", m.GetRequestedUpdateInterval(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestedUpdateInterval' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

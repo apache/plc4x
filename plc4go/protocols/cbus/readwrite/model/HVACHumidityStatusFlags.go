@@ -300,36 +300,24 @@ func (m *_HVACHumidityStatusFlags) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for HVACHumidityStatusFlags")
 	}
 
-	// Simple Field (expansion)
-	expansion := bool(m.GetExpansion())
-	_expansionErr := /*TODO: migrate me*/ writeBuffer.WriteBit("expansion", (expansion))
-	if _expansionErr != nil {
-		return errors.Wrap(_expansionErr, "Error serializing 'expansion' field")
+	if err := WriteSimpleField[bool](ctx, "expansion", m.GetExpansion(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'expansion' field")
 	}
 
-	// Simple Field (error)
-	error := bool(m.GetError())
-	_errorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("error", (error))
-	if _errorErr != nil {
-		return errors.Wrap(_errorErr, "Error serializing 'error' field")
+	if err := WriteSimpleField[bool](ctx, "error", m.GetError(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'error' field")
 	}
 
-	// Simple Field (busy)
-	busy := bool(m.GetBusy())
-	_busyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("busy", (busy))
-	if _busyErr != nil {
-		return errors.Wrap(_busyErr, "Error serializing 'busy' field")
+	if err := WriteSimpleField[bool](ctx, "busy", m.GetBusy(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'busy' field")
 	}
 
 	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (damperState)
-	damperState := bool(m.GetDamperState())
-	_damperStateErr := /*TODO: migrate me*/ writeBuffer.WriteBit("damperState", (damperState))
-	if _damperStateErr != nil {
-		return errors.Wrap(_damperStateErr, "Error serializing 'damperState' field")
+	if err := WriteSimpleField[bool](ctx, "damperState", m.GetDamperState(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'damperState' field")
 	}
 	// Virtual field
 	isDamperStateClosed := m.GetIsDamperStateClosed()
@@ -344,25 +332,16 @@ func (m *_HVACHumidityStatusFlags) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(_isDamperStateOpenErr, "Error serializing 'isDamperStateOpen' field")
 	}
 
-	// Simple Field (fanActive)
-	fanActive := bool(m.GetFanActive())
-	_fanActiveErr := /*TODO: migrate me*/ writeBuffer.WriteBit("fanActive", (fanActive))
-	if _fanActiveErr != nil {
-		return errors.Wrap(_fanActiveErr, "Error serializing 'fanActive' field")
+	if err := WriteSimpleField[bool](ctx, "fanActive", m.GetFanActive(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'fanActive' field")
 	}
 
-	// Simple Field (dehumidifyingPlant)
-	dehumidifyingPlant := bool(m.GetDehumidifyingPlant())
-	_dehumidifyingPlantErr := /*TODO: migrate me*/ writeBuffer.WriteBit("dehumidifyingPlant", (dehumidifyingPlant))
-	if _dehumidifyingPlantErr != nil {
-		return errors.Wrap(_dehumidifyingPlantErr, "Error serializing 'dehumidifyingPlant' field")
+	if err := WriteSimpleField[bool](ctx, "dehumidifyingPlant", m.GetDehumidifyingPlant(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dehumidifyingPlant' field")
 	}
 
-	// Simple Field (humidifyingPlant)
-	humidifyingPlant := bool(m.GetHumidifyingPlant())
-	_humidifyingPlantErr := /*TODO: migrate me*/ writeBuffer.WriteBit("humidifyingPlant", (humidifyingPlant))
-	if _humidifyingPlantErr != nil {
-		return errors.Wrap(_humidifyingPlantErr, "Error serializing 'humidifyingPlant' field")
+	if err := WriteSimpleField[bool](ctx, "humidifyingPlant", m.GetHumidifyingPlant(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'humidifyingPlant' field")
 	}
 
 	if popErr := writeBuffer.PopContext("HVACHumidityStatusFlags"); popErr != nil {

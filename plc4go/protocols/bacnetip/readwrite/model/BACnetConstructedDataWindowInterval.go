@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataWindowInterval) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataWindowInterval")
 		}
 
-		// Simple Field (windowInterval)
-		if pushErr := writeBuffer.PushContext("windowInterval"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for windowInterval")
-		}
-		_windowIntervalErr := writeBuffer.WriteSerializable(ctx, m.GetWindowInterval())
-		if popErr := writeBuffer.PopContext("windowInterval"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for windowInterval")
-		}
-		if _windowIntervalErr != nil {
-			return errors.Wrap(_windowIntervalErr, "Error serializing 'windowInterval' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "windowInterval", m.GetWindowInterval(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'windowInterval' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

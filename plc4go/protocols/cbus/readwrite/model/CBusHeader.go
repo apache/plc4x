@@ -200,42 +200,20 @@ func (m *_CBusHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for CBusHeader")
 	}
 
-	// Simple Field (priorityClass)
-	if pushErr := writeBuffer.PushContext("priorityClass"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for priorityClass")
-	}
-	_priorityClassErr := writeBuffer.WriteSerializable(ctx, m.GetPriorityClass())
-	if popErr := writeBuffer.PopContext("priorityClass"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for priorityClass")
-	}
-	if _priorityClassErr != nil {
-		return errors.Wrap(_priorityClassErr, "Error serializing 'priorityClass' field")
+	if err := WriteSimpleEnumField[PriorityClass](ctx, "priorityClass", "PriorityClass", m.GetPriorityClass(), WriteEnum[PriorityClass, uint8](PriorityClass.GetValue, PriorityClass.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 2))); err != nil {
+		return errors.Wrap(err, "Error serializing 'priorityClass' field")
 	}
 
-	// Simple Field (dp)
-	dp := bool(m.GetDp())
-	_dpErr := /*TODO: migrate me*/ writeBuffer.WriteBit("dp", (dp))
-	if _dpErr != nil {
-		return errors.Wrap(_dpErr, "Error serializing 'dp' field")
+	if err := WriteSimpleField[bool](ctx, "dp", m.GetDp(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dp' field")
 	}
 
-	// Simple Field (rc)
-	rc := uint8(m.GetRc())
-	_rcErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("rc", 2, uint8((rc)))
-	if _rcErr != nil {
-		return errors.Wrap(_rcErr, "Error serializing 'rc' field")
+	if err := WriteSimpleField[uint8](ctx, "rc", m.GetRc(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+		return errors.Wrap(err, "Error serializing 'rc' field")
 	}
 
-	// Simple Field (destinationAddressType)
-	if pushErr := writeBuffer.PushContext("destinationAddressType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for destinationAddressType")
-	}
-	_destinationAddressTypeErr := writeBuffer.WriteSerializable(ctx, m.GetDestinationAddressType())
-	if popErr := writeBuffer.PopContext("destinationAddressType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for destinationAddressType")
-	}
-	if _destinationAddressTypeErr != nil {
-		return errors.Wrap(_destinationAddressTypeErr, "Error serializing 'destinationAddressType' field")
+	if err := WriteSimpleEnumField[DestinationAddressType](ctx, "destinationAddressType", "DestinationAddressType", m.GetDestinationAddressType(), WriteEnum[DestinationAddressType, uint8](DestinationAddressType.GetValue, DestinationAddressType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 3))); err != nil {
+		return errors.Wrap(err, "Error serializing 'destinationAddressType' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CBusHeader"); popErr != nil {

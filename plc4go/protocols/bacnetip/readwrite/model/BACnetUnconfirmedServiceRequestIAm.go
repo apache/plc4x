@@ -237,52 +237,20 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestIAm")
 		}
 
-		// Simple Field (deviceIdentifier)
-		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
-		}
-		_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceIdentifier())
-		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
-		}
-		if _deviceIdentifierErr != nil {
-			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", m.GetDeviceIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 		}
 
-		// Simple Field (maximumApduLengthAcceptedLength)
-		if pushErr := writeBuffer.PushContext("maximumApduLengthAcceptedLength"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maximumApduLengthAcceptedLength")
-		}
-		_maximumApduLengthAcceptedLengthErr := writeBuffer.WriteSerializable(ctx, m.GetMaximumApduLengthAcceptedLength())
-		if popErr := writeBuffer.PopContext("maximumApduLengthAcceptedLength"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maximumApduLengthAcceptedLength")
-		}
-		if _maximumApduLengthAcceptedLengthErr != nil {
-			return errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error serializing 'maximumApduLengthAcceptedLength' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maximumApduLengthAcceptedLength", m.GetMaximumApduLengthAcceptedLength(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maximumApduLengthAcceptedLength' field")
 		}
 
-		// Simple Field (segmentationSupported)
-		if pushErr := writeBuffer.PushContext("segmentationSupported"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for segmentationSupported")
-		}
-		_segmentationSupportedErr := writeBuffer.WriteSerializable(ctx, m.GetSegmentationSupported())
-		if popErr := writeBuffer.PopContext("segmentationSupported"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for segmentationSupported")
-		}
-		if _segmentationSupportedErr != nil {
-			return errors.Wrap(_segmentationSupportedErr, "Error serializing 'segmentationSupported' field")
+		if err := WriteSimpleField[BACnetSegmentationTagged](ctx, "segmentationSupported", m.GetSegmentationSupported(), WriteComplex[BACnetSegmentationTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentationSupported' field")
 		}
 
-		// Simple Field (vendorId)
-		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorId")
-		}
-		_vendorIdErr := writeBuffer.WriteSerializable(ctx, m.GetVendorId())
-		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorId")
-		}
-		if _vendorIdErr != nil {
-			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
+		if err := WriteSimpleField[BACnetVendorIdTagged](ctx, "vendorId", m.GetVendorId(), WriteComplex[BACnetVendorIdTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vendorId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestIAm"); popErr != nil {

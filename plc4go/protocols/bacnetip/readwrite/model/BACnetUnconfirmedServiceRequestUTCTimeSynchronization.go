@@ -203,28 +203,12 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) SerializeWithWr
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
 		}
 
-		// Simple Field (synchronizedDate)
-		if pushErr := writeBuffer.PushContext("synchronizedDate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for synchronizedDate")
-		}
-		_synchronizedDateErr := writeBuffer.WriteSerializable(ctx, m.GetSynchronizedDate())
-		if popErr := writeBuffer.PopContext("synchronizedDate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for synchronizedDate")
-		}
-		if _synchronizedDateErr != nil {
-			return errors.Wrap(_synchronizedDateErr, "Error serializing 'synchronizedDate' field")
+		if err := WriteSimpleField[BACnetApplicationTagDate](ctx, "synchronizedDate", m.GetSynchronizedDate(), WriteComplex[BACnetApplicationTagDate](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'synchronizedDate' field")
 		}
 
-		// Simple Field (synchronizedTime)
-		if pushErr := writeBuffer.PushContext("synchronizedTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for synchronizedTime")
-		}
-		_synchronizedTimeErr := writeBuffer.WriteSerializable(ctx, m.GetSynchronizedTime())
-		if popErr := writeBuffer.PopContext("synchronizedTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for synchronizedTime")
-		}
-		if _synchronizedTimeErr != nil {
-			return errors.Wrap(_synchronizedTimeErr, "Error serializing 'synchronizedTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagTime](ctx, "synchronizedTime", m.GetSynchronizedTime(), WriteComplex[BACnetApplicationTagTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'synchronizedTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); popErr != nil {

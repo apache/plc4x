@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventAlgorithmInhibitRef")
 		}
 
-		// Simple Field (eventAlgorithmInhibitRef)
-		if pushErr := writeBuffer.PushContext("eventAlgorithmInhibitRef"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventAlgorithmInhibitRef")
-		}
-		_eventAlgorithmInhibitRefErr := writeBuffer.WriteSerializable(ctx, m.GetEventAlgorithmInhibitRef())
-		if popErr := writeBuffer.PopContext("eventAlgorithmInhibitRef"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventAlgorithmInhibitRef")
-		}
-		if _eventAlgorithmInhibitRefErr != nil {
-			return errors.Wrap(_eventAlgorithmInhibitRefErr, "Error serializing 'eventAlgorithmInhibitRef' field")
+		if err := WriteSimpleField[BACnetObjectPropertyReference](ctx, "eventAlgorithmInhibitRef", m.GetEventAlgorithmInhibitRef(), WriteComplex[BACnetObjectPropertyReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventAlgorithmInhibitRef' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

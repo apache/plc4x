@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesLiftCarDirection) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftCarDirection")
 		}
 
-		// Simple Field (liftCarDirection)
-		if pushErr := writeBuffer.PushContext("liftCarDirection"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for liftCarDirection")
-		}
-		_liftCarDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetLiftCarDirection())
-		if popErr := writeBuffer.PopContext("liftCarDirection"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for liftCarDirection")
-		}
-		if _liftCarDirectionErr != nil {
-			return errors.Wrap(_liftCarDirectionErr, "Error serializing 'liftCarDirection' field")
+		if err := WriteSimpleField[BACnetLiftCarDirectionTagged](ctx, "liftCarDirection", m.GetLiftCarDirection(), WriteComplex[BACnetLiftCarDirectionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'liftCarDirection' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftCarDirection"); popErr != nil {

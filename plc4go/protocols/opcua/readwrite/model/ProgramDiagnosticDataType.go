@@ -384,107 +384,52 @@ func (m *_ProgramDiagnosticDataType) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for ProgramDiagnosticDataType")
 		}
 
-		// Simple Field (createSessionId)
-		if pushErr := writeBuffer.PushContext("createSessionId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for createSessionId")
-		}
-		_createSessionIdErr := writeBuffer.WriteSerializable(ctx, m.GetCreateSessionId())
-		if popErr := writeBuffer.PopContext("createSessionId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for createSessionId")
-		}
-		if _createSessionIdErr != nil {
-			return errors.Wrap(_createSessionIdErr, "Error serializing 'createSessionId' field")
+		if err := WriteSimpleField[NodeId](ctx, "createSessionId", m.GetCreateSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'createSessionId' field")
 		}
 
-		// Simple Field (createClientName)
-		if pushErr := writeBuffer.PushContext("createClientName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for createClientName")
-		}
-		_createClientNameErr := writeBuffer.WriteSerializable(ctx, m.GetCreateClientName())
-		if popErr := writeBuffer.PopContext("createClientName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for createClientName")
-		}
-		if _createClientNameErr != nil {
-			return errors.Wrap(_createClientNameErr, "Error serializing 'createClientName' field")
+		if err := WriteSimpleField[PascalString](ctx, "createClientName", m.GetCreateClientName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'createClientName' field")
 		}
 
-		// Simple Field (invocationCreationTime)
-		invocationCreationTime := int64(m.GetInvocationCreationTime())
-		_invocationCreationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("invocationCreationTime", 64, int64((invocationCreationTime)))
-		if _invocationCreationTimeErr != nil {
-			return errors.Wrap(_invocationCreationTimeErr, "Error serializing 'invocationCreationTime' field")
+		if err := WriteSimpleField[int64](ctx, "invocationCreationTime", m.GetInvocationCreationTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'invocationCreationTime' field")
 		}
 
-		// Simple Field (lastTransitionTime)
-		lastTransitionTime := int64(m.GetLastTransitionTime())
-		_lastTransitionTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("lastTransitionTime", 64, int64((lastTransitionTime)))
-		if _lastTransitionTimeErr != nil {
-			return errors.Wrap(_lastTransitionTimeErr, "Error serializing 'lastTransitionTime' field")
+		if err := WriteSimpleField[int64](ctx, "lastTransitionTime", m.GetLastTransitionTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastTransitionTime' field")
 		}
 
-		// Simple Field (lastMethodCall)
-		if pushErr := writeBuffer.PushContext("lastMethodCall"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastMethodCall")
-		}
-		_lastMethodCallErr := writeBuffer.WriteSerializable(ctx, m.GetLastMethodCall())
-		if popErr := writeBuffer.PopContext("lastMethodCall"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastMethodCall")
-		}
-		if _lastMethodCallErr != nil {
-			return errors.Wrap(_lastMethodCallErr, "Error serializing 'lastMethodCall' field")
+		if err := WriteSimpleField[PascalString](ctx, "lastMethodCall", m.GetLastMethodCall(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastMethodCall' field")
 		}
 
-		// Simple Field (lastMethodSessionId)
-		if pushErr := writeBuffer.PushContext("lastMethodSessionId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastMethodSessionId")
-		}
-		_lastMethodSessionIdErr := writeBuffer.WriteSerializable(ctx, m.GetLastMethodSessionId())
-		if popErr := writeBuffer.PopContext("lastMethodSessionId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastMethodSessionId")
-		}
-		if _lastMethodSessionIdErr != nil {
-			return errors.Wrap(_lastMethodSessionIdErr, "Error serializing 'lastMethodSessionId' field")
+		if err := WriteSimpleField[NodeId](ctx, "lastMethodSessionId", m.GetLastMethodSessionId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastMethodSessionId' field")
 		}
 
-		// Simple Field (noOfLastMethodInputArguments)
-		noOfLastMethodInputArguments := int32(m.GetNoOfLastMethodInputArguments())
-		_noOfLastMethodInputArgumentsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLastMethodInputArguments", 32, int32((noOfLastMethodInputArguments)))
-		if _noOfLastMethodInputArgumentsErr != nil {
-			return errors.Wrap(_noOfLastMethodInputArgumentsErr, "Error serializing 'noOfLastMethodInputArguments' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLastMethodInputArguments", m.GetNoOfLastMethodInputArguments(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLastMethodInputArguments' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "lastMethodInputArguments", m.GetLastMethodInputArguments(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodInputArguments' field")
 		}
 
-		// Simple Field (noOfLastMethodOutputArguments)
-		noOfLastMethodOutputArguments := int32(m.GetNoOfLastMethodOutputArguments())
-		_noOfLastMethodOutputArgumentsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLastMethodOutputArguments", 32, int32((noOfLastMethodOutputArguments)))
-		if _noOfLastMethodOutputArgumentsErr != nil {
-			return errors.Wrap(_noOfLastMethodOutputArgumentsErr, "Error serializing 'noOfLastMethodOutputArguments' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLastMethodOutputArguments", m.GetNoOfLastMethodOutputArguments(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLastMethodOutputArguments' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "lastMethodOutputArguments", m.GetLastMethodOutputArguments(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastMethodOutputArguments' field")
 		}
 
-		// Simple Field (lastMethodCallTime)
-		lastMethodCallTime := int64(m.GetLastMethodCallTime())
-		_lastMethodCallTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("lastMethodCallTime", 64, int64((lastMethodCallTime)))
-		if _lastMethodCallTimeErr != nil {
-			return errors.Wrap(_lastMethodCallTimeErr, "Error serializing 'lastMethodCallTime' field")
+		if err := WriteSimpleField[int64](ctx, "lastMethodCallTime", m.GetLastMethodCallTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastMethodCallTime' field")
 		}
 
-		// Simple Field (lastMethodReturnStatus)
-		if pushErr := writeBuffer.PushContext("lastMethodReturnStatus"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastMethodReturnStatus")
-		}
-		_lastMethodReturnStatusErr := writeBuffer.WriteSerializable(ctx, m.GetLastMethodReturnStatus())
-		if popErr := writeBuffer.PopContext("lastMethodReturnStatus"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastMethodReturnStatus")
-		}
-		if _lastMethodReturnStatusErr != nil {
-			return errors.Wrap(_lastMethodReturnStatusErr, "Error serializing 'lastMethodReturnStatus' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "lastMethodReturnStatus", m.GetLastMethodReturnStatus(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastMethodReturnStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ProgramDiagnosticDataType"); popErr != nil {

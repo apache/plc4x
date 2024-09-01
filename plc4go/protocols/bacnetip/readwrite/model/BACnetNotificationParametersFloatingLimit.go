@@ -271,76 +271,28 @@ func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetNotificationParametersFloatingLimit")
 		}
 
-		// Simple Field (innerOpeningTag)
-		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
-		}
-		_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
-		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
-		}
-		if _innerOpeningTagErr != nil {
-			return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "innerOpeningTag", m.GetInnerOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'innerOpeningTag' field")
 		}
 
-		// Simple Field (referenceValue)
-		if pushErr := writeBuffer.PushContext("referenceValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceValue")
-		}
-		_referenceValueErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceValue())
-		if popErr := writeBuffer.PopContext("referenceValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceValue")
-		}
-		if _referenceValueErr != nil {
-			return errors.Wrap(_referenceValueErr, "Error serializing 'referenceValue' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "referenceValue", m.GetReferenceValue(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceValue' field")
 		}
 
-		// Simple Field (statusFlags)
-		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusFlags")
-		}
-		_statusFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetStatusFlags())
-		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusFlags")
-		}
-		if _statusFlagsErr != nil {
-			return errors.Wrap(_statusFlagsErr, "Error serializing 'statusFlags' field")
+		if err := WriteSimpleField[BACnetStatusFlagsTagged](ctx, "statusFlags", m.GetStatusFlags(), WriteComplex[BACnetStatusFlagsTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusFlags' field")
 		}
 
-		// Simple Field (setPointValue)
-		if pushErr := writeBuffer.PushContext("setPointValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setPointValue")
-		}
-		_setPointValueErr := writeBuffer.WriteSerializable(ctx, m.GetSetPointValue())
-		if popErr := writeBuffer.PopContext("setPointValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setPointValue")
-		}
-		if _setPointValueErr != nil {
-			return errors.Wrap(_setPointValueErr, "Error serializing 'setPointValue' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "setPointValue", m.GetSetPointValue(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setPointValue' field")
 		}
 
-		// Simple Field (errorLimit)
-		if pushErr := writeBuffer.PushContext("errorLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorLimit")
-		}
-		_errorLimitErr := writeBuffer.WriteSerializable(ctx, m.GetErrorLimit())
-		if popErr := writeBuffer.PopContext("errorLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorLimit")
-		}
-		if _errorLimitErr != nil {
-			return errors.Wrap(_errorLimitErr, "Error serializing 'errorLimit' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "errorLimit", m.GetErrorLimit(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorLimit' field")
 		}
 
-		// Simple Field (innerClosingTag)
-		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
-		}
-		_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
-		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for innerClosingTag")
-		}
-		if _innerClosingTagErr != nil {
-			return errors.Wrap(_innerClosingTagErr, "Error serializing 'innerClosingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "innerClosingTag", m.GetInnerClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'innerClosingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetNotificationParametersFloatingLimit"); popErr != nil {

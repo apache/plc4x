@@ -168,28 +168,12 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) SerializeWithWriteBuf
 		return errors.Wrap(pushErr, "Error pushing for BACnetAssignedLandingCallsLandingCallsListEntry")
 	}
 
-	// Simple Field (floorNumber)
-	if pushErr := writeBuffer.PushContext("floorNumber"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for floorNumber")
-	}
-	_floorNumberErr := writeBuffer.WriteSerializable(ctx, m.GetFloorNumber())
-	if popErr := writeBuffer.PopContext("floorNumber"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for floorNumber")
-	}
-	if _floorNumberErr != nil {
-		return errors.Wrap(_floorNumberErr, "Error serializing 'floorNumber' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "floorNumber", m.GetFloorNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'floorNumber' field")
 	}
 
-	// Simple Field (direction)
-	if pushErr := writeBuffer.PushContext("direction"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for direction")
-	}
-	_directionErr := writeBuffer.WriteSerializable(ctx, m.GetDirection())
-	if popErr := writeBuffer.PopContext("direction"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for direction")
-	}
-	if _directionErr != nil {
-		return errors.Wrap(_directionErr, "Error serializing 'direction' field")
+	if err := WriteSimpleField[BACnetLiftCarDirectionTagged](ctx, "direction", m.GetDirection(), WriteComplex[BACnetLiftCarDirectionTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'direction' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAssignedLandingCallsLandingCallsListEntry"); popErr != nil {

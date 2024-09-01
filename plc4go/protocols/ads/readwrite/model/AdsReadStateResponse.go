@@ -228,30 +228,16 @@ func (m *_AdsReadStateResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for AdsReadStateResponse")
 		}
 
-		// Simple Field (result)
-		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for result")
-		}
-		_resultErr := writeBuffer.WriteSerializable(ctx, m.GetResult())
-		if popErr := writeBuffer.PopContext("result"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for result")
-		}
-		if _resultErr != nil {
-			return errors.Wrap(_resultErr, "Error serializing 'result' field")
+		if err := WriteSimpleEnumField[ReturnCode](ctx, "result", "ReturnCode", m.GetResult(), WriteEnum[ReturnCode, uint32](ReturnCode.GetValue, ReturnCode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'result' field")
 		}
 
-		// Simple Field (adsState)
-		adsState := uint16(m.GetAdsState())
-		_adsStateErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("adsState", 16, uint16((adsState)))
-		if _adsStateErr != nil {
-			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
+		if err := WriteSimpleField[uint16](ctx, "adsState", m.GetAdsState(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'adsState' field")
 		}
 
-		// Simple Field (deviceState)
-		deviceState := uint16(m.GetDeviceState())
-		_deviceStateErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("deviceState", 16, uint16((deviceState)))
-		if _deviceStateErr != nil {
-			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
+		if err := WriteSimpleField[uint16](ctx, "deviceState", m.GetDeviceState(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsReadStateResponse"); popErr != nil {

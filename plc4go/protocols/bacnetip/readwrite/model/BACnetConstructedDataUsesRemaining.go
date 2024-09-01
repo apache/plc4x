@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataUsesRemaining) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUsesRemaining")
 		}
 
-		// Simple Field (usesRemaining)
-		if pushErr := writeBuffer.PushContext("usesRemaining"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for usesRemaining")
-		}
-		_usesRemainingErr := writeBuffer.WriteSerializable(ctx, m.GetUsesRemaining())
-		if popErr := writeBuffer.PopContext("usesRemaining"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for usesRemaining")
-		}
-		if _usesRemainingErr != nil {
-			return errors.Wrap(_usesRemainingErr, "Error serializing 'usesRemaining' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "usesRemaining", m.GetUsesRemaining(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'usesRemaining' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

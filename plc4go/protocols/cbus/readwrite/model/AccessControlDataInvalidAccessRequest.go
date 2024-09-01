@@ -202,16 +202,8 @@ func (m *_AccessControlDataInvalidAccessRequest) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for AccessControlDataInvalidAccessRequest")
 		}
 
-		// Simple Field (accessControlDirection)
-		if pushErr := writeBuffer.PushContext("accessControlDirection"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessControlDirection")
-		}
-		_accessControlDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetAccessControlDirection())
-		if popErr := writeBuffer.PopContext("accessControlDirection"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessControlDirection")
-		}
-		if _accessControlDirectionErr != nil {
-			return errors.Wrap(_accessControlDirectionErr, "Error serializing 'accessControlDirection' field")
+		if err := WriteSimpleEnumField[AccessControlDirection](ctx, "accessControlDirection", "AccessControlDirection", m.GetAccessControlDirection(), WriteEnum[AccessControlDirection, uint8](AccessControlDirection.GetValue, AccessControlDirection.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessControlDirection' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

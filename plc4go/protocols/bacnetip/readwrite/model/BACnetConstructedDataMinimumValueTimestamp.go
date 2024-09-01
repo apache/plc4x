@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinimumValueTimestamp")
 		}
 
-		// Simple Field (minimumValueTimestamp)
-		if pushErr := writeBuffer.PushContext("minimumValueTimestamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for minimumValueTimestamp")
-		}
-		_minimumValueTimestampErr := writeBuffer.WriteSerializable(ctx, m.GetMinimumValueTimestamp())
-		if popErr := writeBuffer.PopContext("minimumValueTimestamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for minimumValueTimestamp")
-		}
-		if _minimumValueTimestampErr != nil {
-			return errors.Wrap(_minimumValueTimestampErr, "Error serializing 'minimumValueTimestamp' field")
+		if err := WriteSimpleField[BACnetDateTime](ctx, "minimumValueTimestamp", m.GetMinimumValueTimestamp(), WriteComplex[BACnetDateTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minimumValueTimestamp' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataOccupancyUpperLimit) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOccupancyUpperLimit")
 		}
 
-		// Simple Field (occupancyUpperLimit)
-		if pushErr := writeBuffer.PushContext("occupancyUpperLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for occupancyUpperLimit")
-		}
-		_occupancyUpperLimitErr := writeBuffer.WriteSerializable(ctx, m.GetOccupancyUpperLimit())
-		if popErr := writeBuffer.PopContext("occupancyUpperLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for occupancyUpperLimit")
-		}
-		if _occupancyUpperLimitErr != nil {
-			return errors.Wrap(_occupancyUpperLimitErr, "Error serializing 'occupancyUpperLimit' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "occupancyUpperLimit", m.GetOccupancyUpperLimit(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'occupancyUpperLimit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

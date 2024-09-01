@@ -185,16 +185,8 @@ func (m *_SALDataTelephonyStatusAndControl) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for SALDataTelephonyStatusAndControl")
 		}
 
-		// Simple Field (telephonyData)
-		if pushErr := writeBuffer.PushContext("telephonyData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for telephonyData")
-		}
-		_telephonyDataErr := writeBuffer.WriteSerializable(ctx, m.GetTelephonyData())
-		if popErr := writeBuffer.PopContext("telephonyData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for telephonyData")
-		}
-		if _telephonyDataErr != nil {
-			return errors.Wrap(_telephonyDataErr, "Error serializing 'telephonyData' field")
+		if err := WriteSimpleField[TelephonyData](ctx, "telephonyData", m.GetTelephonyData(), WriteComplex[TelephonyData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'telephonyData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataTelephonyStatusAndControl"); popErr != nil {

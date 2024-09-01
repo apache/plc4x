@@ -239,49 +239,24 @@ func (m *_Alarm8MessageQueryType) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(pushErr, "Error pushing for Alarm8MessageQueryType")
 	}
 
-	// Simple Field (functionId)
-	functionId := uint8(m.GetFunctionId())
-	_functionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
-	if _functionIdErr != nil {
-		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+	if err := WriteSimpleField[uint8](ctx, "functionId", m.GetFunctionId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'functionId' field")
 	}
 
-	// Simple Field (numberOfObjects)
-	numberOfObjects := uint8(m.GetNumberOfObjects())
-	_numberOfObjectsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
-	if _numberOfObjectsErr != nil {
-		return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
+	if err := WriteSimpleField[uint8](ctx, "numberOfObjects", m.GetNumberOfObjects(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberOfObjects' field")
 	}
 
-	// Simple Field (returnCode)
-	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for returnCode")
-	}
-	_returnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetReturnCode())
-	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for returnCode")
-	}
-	if _returnCodeErr != nil {
-		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
+	if err := WriteSimpleEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", m.GetReturnCode(), WriteEnum[DataTransportErrorCode, uint8](DataTransportErrorCode.GetValue, DataTransportErrorCode.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'returnCode' field")
 	}
 
-	// Simple Field (transportSize)
-	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for transportSize")
-	}
-	_transportSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSize())
-	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for transportSize")
-	}
-	if _transportSizeErr != nil {
-		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
+	if err := WriteSimpleEnumField[DataTransportSize](ctx, "transportSize", "DataTransportSize", m.GetTransportSize(), WriteEnum[DataTransportSize, uint8](DataTransportSize.GetValue, DataTransportSize.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'transportSize' field")
 	}
 
-	// Simple Field (byteCount)
-	byteCount := uint16(m.GetByteCount())
-	_byteCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("byteCount", 16, uint16((byteCount)))
-	if _byteCountErr != nil {
-		return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
+	if err := WriteSimpleField[uint16](ctx, "byteCount", m.GetByteCount(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'byteCount' field")
 	}
 
 	if err := WriteComplexTypeArrayField(ctx, "messageObjects", m.GetMessageObjects(), writeBuffer); err != nil {

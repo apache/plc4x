@@ -303,46 +303,28 @@ func (m *_CipConnectionManagerCloseResponse) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (status)
-		status := uint8(m.GetStatus())
-		_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("status", 8, uint8((status)))
-		if _statusErr != nil {
-			return errors.Wrap(_statusErr, "Error serializing 'status' field")
+		if err := WriteSimpleField[uint8](ctx, "status", m.GetStatus(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'status' field")
 		}
 
-		// Simple Field (additionalStatusWords)
-		additionalStatusWords := uint8(m.GetAdditionalStatusWords())
-		_additionalStatusWordsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("additionalStatusWords", 8, uint8((additionalStatusWords)))
-		if _additionalStatusWordsErr != nil {
-			return errors.Wrap(_additionalStatusWordsErr, "Error serializing 'additionalStatusWords' field")
+		if err := WriteSimpleField[uint8](ctx, "additionalStatusWords", m.GetAdditionalStatusWords(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'additionalStatusWords' field")
 		}
 
-		// Simple Field (connectionSerialNumber)
-		connectionSerialNumber := uint16(m.GetConnectionSerialNumber())
-		_connectionSerialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("connectionSerialNumber", 16, uint16((connectionSerialNumber)))
-		if _connectionSerialNumberErr != nil {
-			return errors.Wrap(_connectionSerialNumberErr, "Error serializing 'connectionSerialNumber' field")
+		if err := WriteSimpleField[uint16](ctx, "connectionSerialNumber", m.GetConnectionSerialNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionSerialNumber' field")
 		}
 
-		// Simple Field (originatorVendorId)
-		originatorVendorId := uint16(m.GetOriginatorVendorId())
-		_originatorVendorIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("originatorVendorId", 16, uint16((originatorVendorId)))
-		if _originatorVendorIdErr != nil {
-			return errors.Wrap(_originatorVendorIdErr, "Error serializing 'originatorVendorId' field")
+		if err := WriteSimpleField[uint16](ctx, "originatorVendorId", m.GetOriginatorVendorId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originatorVendorId' field")
 		}
 
-		// Simple Field (originatorSerialNumber)
-		originatorSerialNumber := uint32(m.GetOriginatorSerialNumber())
-		_originatorSerialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("originatorSerialNumber", 32, uint32((originatorSerialNumber)))
-		if _originatorSerialNumberErr != nil {
-			return errors.Wrap(_originatorSerialNumberErr, "Error serializing 'originatorSerialNumber' field")
+		if err := WriteSimpleField[uint32](ctx, "originatorSerialNumber", m.GetOriginatorSerialNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originatorSerialNumber' field")
 		}
 
-		// Simple Field (applicationReplySize)
-		applicationReplySize := uint8(m.GetApplicationReplySize())
-		_applicationReplySizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("applicationReplySize", 8, uint8((applicationReplySize)))
-		if _applicationReplySizeErr != nil {
-			return errors.Wrap(_applicationReplySizeErr, "Error serializing 'applicationReplySize' field")
+		if err := WriteSimpleField[uint8](ctx, "applicationReplySize", m.GetApplicationReplySize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'applicationReplySize' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {

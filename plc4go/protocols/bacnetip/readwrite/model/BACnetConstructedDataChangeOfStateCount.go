@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataChangeOfStateCount) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataChangeOfStateCount")
 		}
 
-		// Simple Field (changeIfStateCount)
-		if pushErr := writeBuffer.PushContext("changeIfStateCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for changeIfStateCount")
-		}
-		_changeIfStateCountErr := writeBuffer.WriteSerializable(ctx, m.GetChangeIfStateCount())
-		if popErr := writeBuffer.PopContext("changeIfStateCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for changeIfStateCount")
-		}
-		if _changeIfStateCountErr != nil {
-			return errors.Wrap(_changeIfStateCountErr, "Error serializing 'changeIfStateCount' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "changeIfStateCount", m.GetChangeIfStateCount(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'changeIfStateCount' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

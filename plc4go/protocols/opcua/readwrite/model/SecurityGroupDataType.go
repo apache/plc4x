@@ -391,90 +391,48 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for SecurityGroupDataType")
 		}
 
-		// Simple Field (name)
-		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for name")
-		}
-		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for name")
-		}
-		if _nameErr != nil {
-			return errors.Wrap(_nameErr, "Error serializing 'name' field")
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
-		// Simple Field (noOfSecurityGroupFolder)
-		noOfSecurityGroupFolder := int32(m.GetNoOfSecurityGroupFolder())
-		_noOfSecurityGroupFolderErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSecurityGroupFolder", 32, int32((noOfSecurityGroupFolder)))
-		if _noOfSecurityGroupFolderErr != nil {
-			return errors.Wrap(_noOfSecurityGroupFolderErr, "Error serializing 'noOfSecurityGroupFolder' field")
+		if err := WriteSimpleField[int32](ctx, "noOfSecurityGroupFolder", m.GetNoOfSecurityGroupFolder(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfSecurityGroupFolder' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "securityGroupFolder", m.GetSecurityGroupFolder(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityGroupFolder' field")
 		}
 
-		// Simple Field (keyLifetime)
-		keyLifetime := float64(m.GetKeyLifetime())
-		_keyLifetimeErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("keyLifetime", 64, (keyLifetime))
-		if _keyLifetimeErr != nil {
-			return errors.Wrap(_keyLifetimeErr, "Error serializing 'keyLifetime' field")
+		if err := WriteSimpleField[float64](ctx, "keyLifetime", m.GetKeyLifetime(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'keyLifetime' field")
 		}
 
-		// Simple Field (securityPolicyUri)
-		if pushErr := writeBuffer.PushContext("securityPolicyUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityPolicyUri")
-		}
-		_securityPolicyUriErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityPolicyUri())
-		if popErr := writeBuffer.PopContext("securityPolicyUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityPolicyUri")
-		}
-		if _securityPolicyUriErr != nil {
-			return errors.Wrap(_securityPolicyUriErr, "Error serializing 'securityPolicyUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
 
-		// Simple Field (maxFutureKeyCount)
-		maxFutureKeyCount := uint32(m.GetMaxFutureKeyCount())
-		_maxFutureKeyCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxFutureKeyCount", 32, uint32((maxFutureKeyCount)))
-		if _maxFutureKeyCountErr != nil {
-			return errors.Wrap(_maxFutureKeyCountErr, "Error serializing 'maxFutureKeyCount' field")
+		if err := WriteSimpleField[uint32](ctx, "maxFutureKeyCount", m.GetMaxFutureKeyCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxFutureKeyCount' field")
 		}
 
-		// Simple Field (maxPastKeyCount)
-		maxPastKeyCount := uint32(m.GetMaxPastKeyCount())
-		_maxPastKeyCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxPastKeyCount", 32, uint32((maxPastKeyCount)))
-		if _maxPastKeyCountErr != nil {
-			return errors.Wrap(_maxPastKeyCountErr, "Error serializing 'maxPastKeyCount' field")
+		if err := WriteSimpleField[uint32](ctx, "maxPastKeyCount", m.GetMaxPastKeyCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxPastKeyCount' field")
 		}
 
-		// Simple Field (securityGroupId)
-		if pushErr := writeBuffer.PushContext("securityGroupId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityGroupId")
-		}
-		_securityGroupIdErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityGroupId())
-		if popErr := writeBuffer.PopContext("securityGroupId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityGroupId")
-		}
-		if _securityGroupIdErr != nil {
-			return errors.Wrap(_securityGroupIdErr, "Error serializing 'securityGroupId' field")
+		if err := WriteSimpleField[PascalString](ctx, "securityGroupId", m.GetSecurityGroupId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityGroupId' field")
 		}
 
-		// Simple Field (noOfRolePermissions)
-		noOfRolePermissions := int32(m.GetNoOfRolePermissions())
-		_noOfRolePermissionsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfRolePermissions", 32, int32((noOfRolePermissions)))
-		if _noOfRolePermissionsErr != nil {
-			return errors.Wrap(_noOfRolePermissionsErr, "Error serializing 'noOfRolePermissions' field")
+		if err := WriteSimpleField[int32](ctx, "noOfRolePermissions", m.GetNoOfRolePermissions(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfRolePermissions' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "rolePermissions", m.GetRolePermissions(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'rolePermissions' field")
 		}
 
-		// Simple Field (noOfGroupProperties)
-		noOfGroupProperties := int32(m.GetNoOfGroupProperties())
-		_noOfGroupPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfGroupProperties", 32, int32((noOfGroupProperties)))
-		if _noOfGroupPropertiesErr != nil {
-			return errors.Wrap(_noOfGroupPropertiesErr, "Error serializing 'noOfGroupProperties' field")
+		if err := WriteSimpleField[int32](ctx, "noOfGroupProperties", m.GetNoOfGroupProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfGroupProperties' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "groupProperties", m.GetGroupProperties(), writeBuffer); err != nil {

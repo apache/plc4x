@@ -316,74 +316,36 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for ActivateSessionRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (clientSignature)
-		if pushErr := writeBuffer.PushContext("clientSignature"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clientSignature")
-		}
-		_clientSignatureErr := writeBuffer.WriteSerializable(ctx, m.GetClientSignature())
-		if popErr := writeBuffer.PopContext("clientSignature"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clientSignature")
-		}
-		if _clientSignatureErr != nil {
-			return errors.Wrap(_clientSignatureErr, "Error serializing 'clientSignature' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "clientSignature", m.GetClientSignature(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientSignature' field")
 		}
 
-		// Simple Field (noOfClientSoftwareCertificates)
-		noOfClientSoftwareCertificates := int32(m.GetNoOfClientSoftwareCertificates())
-		_noOfClientSoftwareCertificatesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfClientSoftwareCertificates", 32, int32((noOfClientSoftwareCertificates)))
-		if _noOfClientSoftwareCertificatesErr != nil {
-			return errors.Wrap(_noOfClientSoftwareCertificatesErr, "Error serializing 'noOfClientSoftwareCertificates' field")
+		if err := WriteSimpleField[int32](ctx, "noOfClientSoftwareCertificates", m.GetNoOfClientSoftwareCertificates(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfClientSoftwareCertificates' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "clientSoftwareCertificates", m.GetClientSoftwareCertificates(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientSoftwareCertificates' field")
 		}
 
-		// Simple Field (noOfLocaleIds)
-		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
-		if _noOfLocaleIdsErr != nil {
-			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
+		if err := WriteSimpleField[int32](ctx, "noOfLocaleIds", m.GetNoOfLocaleIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'localeIds' field")
 		}
 
-		// Simple Field (userIdentityToken)
-		if pushErr := writeBuffer.PushContext("userIdentityToken"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userIdentityToken")
-		}
-		_userIdentityTokenErr := writeBuffer.WriteSerializable(ctx, m.GetUserIdentityToken())
-		if popErr := writeBuffer.PopContext("userIdentityToken"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userIdentityToken")
-		}
-		if _userIdentityTokenErr != nil {
-			return errors.Wrap(_userIdentityTokenErr, "Error serializing 'userIdentityToken' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "userIdentityToken", m.GetUserIdentityToken(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userIdentityToken' field")
 		}
 
-		// Simple Field (userTokenSignature)
-		if pushErr := writeBuffer.PushContext("userTokenSignature"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userTokenSignature")
-		}
-		_userTokenSignatureErr := writeBuffer.WriteSerializable(ctx, m.GetUserTokenSignature())
-		if popErr := writeBuffer.PopContext("userTokenSignature"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userTokenSignature")
-		}
-		if _userTokenSignatureErr != nil {
-			return errors.Wrap(_userTokenSignatureErr, "Error serializing 'userTokenSignature' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "userTokenSignature", m.GetUserTokenSignature(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userTokenSignature' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ActivateSessionRequest"); popErr != nil {

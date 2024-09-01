@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataOccupancyCountEnable) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOccupancyCountEnable")
 		}
 
-		// Simple Field (occupancyCountEnable)
-		if pushErr := writeBuffer.PushContext("occupancyCountEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for occupancyCountEnable")
-		}
-		_occupancyCountEnableErr := writeBuffer.WriteSerializable(ctx, m.GetOccupancyCountEnable())
-		if popErr := writeBuffer.PopContext("occupancyCountEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for occupancyCountEnable")
-		}
-		if _occupancyCountEnableErr != nil {
-			return errors.Wrap(_occupancyCountEnableErr, "Error serializing 'occupancyCountEnable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "occupancyCountEnable", m.GetOccupancyCountEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'occupancyCountEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

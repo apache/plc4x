@@ -203,28 +203,12 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestAtomicReadFile")
 		}
 
-		// Simple Field (fileIdentifier)
-		if pushErr := writeBuffer.PushContext("fileIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileIdentifier")
-		}
-		_fileIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetFileIdentifier())
-		if popErr := writeBuffer.PopContext("fileIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileIdentifier")
-		}
-		if _fileIdentifierErr != nil {
-			return errors.Wrap(_fileIdentifierErr, "Error serializing 'fileIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "fileIdentifier", m.GetFileIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileIdentifier' field")
 		}
 
-		// Simple Field (accessMethod)
-		if pushErr := writeBuffer.PushContext("accessMethod"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessMethod")
-		}
-		_accessMethodErr := writeBuffer.WriteSerializable(ctx, m.GetAccessMethod())
-		if popErr := writeBuffer.PopContext("accessMethod"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessMethod")
-		}
-		if _accessMethodErr != nil {
-			return errors.Wrap(_accessMethodErr, "Error serializing 'accessMethod' field")
+		if err := WriteSimpleField[BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](ctx, "accessMethod", m.GetAccessMethod(), WriteComplex[BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessMethod' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAtomicReadFile"); popErr != nil {

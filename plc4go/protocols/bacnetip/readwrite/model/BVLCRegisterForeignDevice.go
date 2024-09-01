@@ -185,11 +185,8 @@ func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BVLCRegisterForeignDevice")
 		}
 
-		// Simple Field (ttl)
-		ttl := uint16(m.GetTtl())
-		_ttlErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("ttl", 16, uint16((ttl)))
-		if _ttlErr != nil {
-			return errors.Wrap(_ttlErr, "Error serializing 'ttl' field")
+		if err := WriteSimpleField[uint16](ctx, "ttl", m.GetTtl(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ttl' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCRegisterForeignDevice"); popErr != nil {

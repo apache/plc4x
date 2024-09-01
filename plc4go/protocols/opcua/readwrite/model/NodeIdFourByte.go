@@ -225,18 +225,12 @@ func (m *_NodeIdFourByte) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for NodeIdFourByte")
 		}
 
-		// Simple Field (namespaceIndex)
-		namespaceIndex := uint8(m.GetNamespaceIndex())
-		_namespaceIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("namespaceIndex", 8, uint8((namespaceIndex)))
-		if _namespaceIndexErr != nil {
-			return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
+		if err := WriteSimpleField[uint8](ctx, "namespaceIndex", m.GetNamespaceIndex(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'namespaceIndex' field")
 		}
 
-		// Simple Field (id)
-		id := uint16(m.GetId())
-		_idErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("id", 16, uint16((id)))
-		if _idErr != nil {
-			return errors.Wrap(_idErr, "Error serializing 'id' field")
+		if err := WriteSimpleField[uint16](ctx, "id", m.GetId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'id' field")
 		}
 		// Virtual field
 		identifier := m.GetIdentifier()

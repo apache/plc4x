@@ -185,16 +185,8 @@ func (m *_SearchRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for SearchRequest")
 		}
 
-		// Simple Field (hpaiIDiscoveryEndpoint)
-		if pushErr := writeBuffer.PushContext("hpaiIDiscoveryEndpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hpaiIDiscoveryEndpoint")
-		}
-		_hpaiIDiscoveryEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiIDiscoveryEndpoint())
-		if popErr := writeBuffer.PopContext("hpaiIDiscoveryEndpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hpaiIDiscoveryEndpoint")
-		}
-		if _hpaiIDiscoveryEndpointErr != nil {
-			return errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error serializing 'hpaiIDiscoveryEndpoint' field")
+		if err := WriteSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiIDiscoveryEndpoint", m.GetHpaiIDiscoveryEndpoint(), WriteComplex[HPAIDiscoveryEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hpaiIDiscoveryEndpoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SearchRequest"); popErr != nil {

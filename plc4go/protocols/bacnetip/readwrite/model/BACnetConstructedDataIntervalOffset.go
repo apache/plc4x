@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIntervalOffset) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIntervalOffset")
 		}
 
-		// Simple Field (intervalOffset)
-		if pushErr := writeBuffer.PushContext("intervalOffset"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for intervalOffset")
-		}
-		_intervalOffsetErr := writeBuffer.WriteSerializable(ctx, m.GetIntervalOffset())
-		if popErr := writeBuffer.PopContext("intervalOffset"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for intervalOffset")
-		}
-		if _intervalOffsetErr != nil {
-			return errors.Wrap(_intervalOffsetErr, "Error serializing 'intervalOffset' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "intervalOffset", m.GetIntervalOffset(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'intervalOffset' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

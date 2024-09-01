@@ -183,16 +183,8 @@ func (m *_DataSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for DataSegment")
 		}
 
-		// Simple Field (segmentType)
-		if pushErr := writeBuffer.PushContext("segmentType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for segmentType")
-		}
-		_segmentTypeErr := writeBuffer.WriteSerializable(ctx, m.GetSegmentType())
-		if popErr := writeBuffer.PopContext("segmentType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for segmentType")
-		}
-		if _segmentTypeErr != nil {
-			return errors.Wrap(_segmentTypeErr, "Error serializing 'segmentType' field")
+		if err := WriteSimpleField[DataSegmentType](ctx, "segmentType", m.GetSegmentType(), WriteComplex[DataSegmentType](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DataSegment"); popErr != nil {

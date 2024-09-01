@@ -200,32 +200,20 @@ func (m *_ModbusPDUReadFileRecordRequestItem) SerializeWithWriteBuffer(ctx conte
 		return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadFileRecordRequestItem")
 	}
 
-	// Simple Field (referenceType)
-	referenceType := uint8(m.GetReferenceType())
-	_referenceTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("referenceType", 8, uint8((referenceType)))
-	if _referenceTypeErr != nil {
-		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
+	if err := WriteSimpleField[uint8](ctx, "referenceType", m.GetReferenceType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'referenceType' field")
 	}
 
-	// Simple Field (fileNumber)
-	fileNumber := uint16(m.GetFileNumber())
-	_fileNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("fileNumber", 16, uint16((fileNumber)))
-	if _fileNumberErr != nil {
-		return errors.Wrap(_fileNumberErr, "Error serializing 'fileNumber' field")
+	if err := WriteSimpleField[uint16](ctx, "fileNumber", m.GetFileNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'fileNumber' field")
 	}
 
-	// Simple Field (recordNumber)
-	recordNumber := uint16(m.GetRecordNumber())
-	_recordNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("recordNumber", 16, uint16((recordNumber)))
-	if _recordNumberErr != nil {
-		return errors.Wrap(_recordNumberErr, "Error serializing 'recordNumber' field")
+	if err := WriteSimpleField[uint16](ctx, "recordNumber", m.GetRecordNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'recordNumber' field")
 	}
 
-	// Simple Field (recordLength)
-	recordLength := uint16(m.GetRecordLength())
-	_recordLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("recordLength", 16, uint16((recordLength)))
-	if _recordLengthErr != nil {
-		return errors.Wrap(_recordLengthErr, "Error serializing 'recordLength' field")
+	if err := WriteSimpleField[uint16](ctx, "recordLength", m.GetRecordLength(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'recordLength' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ModbusPDUReadFileRecordRequestItem"); popErr != nil {

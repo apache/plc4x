@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataApplicationSoftwareVersion")
 		}
 
-		// Simple Field (applicationSoftwareVersion)
-		if pushErr := writeBuffer.PushContext("applicationSoftwareVersion"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for applicationSoftwareVersion")
-		}
-		_applicationSoftwareVersionErr := writeBuffer.WriteSerializable(ctx, m.GetApplicationSoftwareVersion())
-		if popErr := writeBuffer.PopContext("applicationSoftwareVersion"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for applicationSoftwareVersion")
-		}
-		if _applicationSoftwareVersionErr != nil {
-			return errors.Wrap(_applicationSoftwareVersionErr, "Error serializing 'applicationSoftwareVersion' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "applicationSoftwareVersion", m.GetApplicationSoftwareVersion(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'applicationSoftwareVersion' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -319,102 +319,40 @@ func (m *_CreateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for CreateSessionRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (clientDescription)
-		if pushErr := writeBuffer.PushContext("clientDescription"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clientDescription")
-		}
-		_clientDescriptionErr := writeBuffer.WriteSerializable(ctx, m.GetClientDescription())
-		if popErr := writeBuffer.PopContext("clientDescription"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clientDescription")
-		}
-		if _clientDescriptionErr != nil {
-			return errors.Wrap(_clientDescriptionErr, "Error serializing 'clientDescription' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "clientDescription", m.GetClientDescription(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientDescription' field")
 		}
 
-		// Simple Field (serverUri)
-		if pushErr := writeBuffer.PushContext("serverUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverUri")
-		}
-		_serverUriErr := writeBuffer.WriteSerializable(ctx, m.GetServerUri())
-		if popErr := writeBuffer.PopContext("serverUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverUri")
-		}
-		if _serverUriErr != nil {
-			return errors.Wrap(_serverUriErr, "Error serializing 'serverUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "serverUri", m.GetServerUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverUri' field")
 		}
 
-		// Simple Field (endpointUrl)
-		if pushErr := writeBuffer.PushContext("endpointUrl"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrl")
-		}
-		_endpointUrlErr := writeBuffer.WriteSerializable(ctx, m.GetEndpointUrl())
-		if popErr := writeBuffer.PopContext("endpointUrl"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrl")
-		}
-		if _endpointUrlErr != nil {
-			return errors.Wrap(_endpointUrlErr, "Error serializing 'endpointUrl' field")
+		if err := WriteSimpleField[PascalString](ctx, "endpointUrl", m.GetEndpointUrl(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		// Simple Field (sessionName)
-		if pushErr := writeBuffer.PushContext("sessionName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for sessionName")
-		}
-		_sessionNameErr := writeBuffer.WriteSerializable(ctx, m.GetSessionName())
-		if popErr := writeBuffer.PopContext("sessionName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for sessionName")
-		}
-		if _sessionNameErr != nil {
-			return errors.Wrap(_sessionNameErr, "Error serializing 'sessionName' field")
+		if err := WriteSimpleField[PascalString](ctx, "sessionName", m.GetSessionName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sessionName' field")
 		}
 
-		// Simple Field (clientNonce)
-		if pushErr := writeBuffer.PushContext("clientNonce"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clientNonce")
-		}
-		_clientNonceErr := writeBuffer.WriteSerializable(ctx, m.GetClientNonce())
-		if popErr := writeBuffer.PopContext("clientNonce"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clientNonce")
-		}
-		if _clientNonceErr != nil {
-			return errors.Wrap(_clientNonceErr, "Error serializing 'clientNonce' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "clientNonce", m.GetClientNonce(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientNonce' field")
 		}
 
-		// Simple Field (clientCertificate)
-		if pushErr := writeBuffer.PushContext("clientCertificate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clientCertificate")
-		}
-		_clientCertificateErr := writeBuffer.WriteSerializable(ctx, m.GetClientCertificate())
-		if popErr := writeBuffer.PopContext("clientCertificate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clientCertificate")
-		}
-		if _clientCertificateErr != nil {
-			return errors.Wrap(_clientCertificateErr, "Error serializing 'clientCertificate' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "clientCertificate", m.GetClientCertificate(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientCertificate' field")
 		}
 
-		// Simple Field (requestedSessionTimeout)
-		requestedSessionTimeout := float64(m.GetRequestedSessionTimeout())
-		_requestedSessionTimeoutErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("requestedSessionTimeout", 64, (requestedSessionTimeout))
-		if _requestedSessionTimeoutErr != nil {
-			return errors.Wrap(_requestedSessionTimeoutErr, "Error serializing 'requestedSessionTimeout' field")
+		if err := WriteSimpleField[float64](ctx, "requestedSessionTimeout", m.GetRequestedSessionTimeout(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestedSessionTimeout' field")
 		}
 
-		// Simple Field (maxResponseMessageSize)
-		maxResponseMessageSize := uint32(m.GetMaxResponseMessageSize())
-		_maxResponseMessageSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxResponseMessageSize", 32, uint32((maxResponseMessageSize)))
-		if _maxResponseMessageSizeErr != nil {
-			return errors.Wrap(_maxResponseMessageSizeErr, "Error serializing 'maxResponseMessageSize' field")
+		if err := WriteSimpleField[uint32](ctx, "maxResponseMessageSize", m.GetMaxResponseMessageSize(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxResponseMessageSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CreateSessionRequest"); popErr != nil {

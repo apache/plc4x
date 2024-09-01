@@ -183,16 +183,8 @@ func (m *_PortSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for PortSegment")
 		}
 
-		// Simple Field (segmentType)
-		if pushErr := writeBuffer.PushContext("segmentType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for segmentType")
-		}
-		_segmentTypeErr := writeBuffer.WriteSerializable(ctx, m.GetSegmentType())
-		if popErr := writeBuffer.PopContext("segmentType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for segmentType")
-		}
-		if _segmentTypeErr != nil {
-			return errors.Wrap(_segmentTypeErr, "Error serializing 'segmentType' field")
+		if err := WriteSimpleField[PortSegmentType](ctx, "segmentType", m.GetSegmentType(), WriteComplex[PortSegmentType](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PortSegment"); popErr != nil {

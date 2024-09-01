@@ -224,28 +224,12 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckAtomicReadFileRecord")
 		}
 
-		// Simple Field (fileStartRecord)
-		if pushErr := writeBuffer.PushContext("fileStartRecord"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileStartRecord")
-		}
-		_fileStartRecordErr := writeBuffer.WriteSerializable(ctx, m.GetFileStartRecord())
-		if popErr := writeBuffer.PopContext("fileStartRecord"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileStartRecord")
-		}
-		if _fileStartRecordErr != nil {
-			return errors.Wrap(_fileStartRecordErr, "Error serializing 'fileStartRecord' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartRecord", m.GetFileStartRecord(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileStartRecord' field")
 		}
 
-		// Simple Field (returnedRecordCount)
-		if pushErr := writeBuffer.PushContext("returnedRecordCount"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for returnedRecordCount")
-		}
-		_returnedRecordCountErr := writeBuffer.WriteSerializable(ctx, m.GetReturnedRecordCount())
-		if popErr := writeBuffer.PopContext("returnedRecordCount"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for returnedRecordCount")
-		}
-		if _returnedRecordCountErr != nil {
-			return errors.Wrap(_returnedRecordCountErr, "Error serializing 'returnedRecordCount' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "returnedRecordCount", m.GetReturnedRecordCount(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'returnedRecordCount' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "fileRecordData", m.GetFileRecordData(), writeBuffer); err != nil {

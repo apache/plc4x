@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataSetting) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSetting")
 		}
 
-		// Simple Field (setting)
-		if pushErr := writeBuffer.PushContext("setting"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setting")
-		}
-		_settingErr := writeBuffer.WriteSerializable(ctx, m.GetSetting())
-		if popErr := writeBuffer.PopContext("setting"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setting")
-		}
-		if _settingErr != nil {
-			return errors.Wrap(_settingErr, "Error serializing 'setting' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "setting", m.GetSetting(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'setting' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

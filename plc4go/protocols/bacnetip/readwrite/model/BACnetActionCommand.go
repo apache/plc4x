@@ -314,28 +314,12 @@ func (m *_BACnetActionCommand) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 	}
 
-	// Simple Field (objectIdentifier)
-	if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-	}
-	_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
-	if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for objectIdentifier")
-	}
-	if _objectIdentifierErr != nil {
-		return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
+	if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", m.GetObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 	}
 
-	// Simple Field (propertyIdentifier)
-	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
-	}
-	_propertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyIdentifier())
-	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
-	}
-	if _propertyIdentifierErr != nil {
-		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
+	if err := WriteSimpleField[BACnetPropertyIdentifierTagged](ctx, "propertyIdentifier", m.GetPropertyIdentifier(), WriteComplex[BACnetPropertyIdentifierTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'propertyIdentifier' field")
 	}
 
 	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
@@ -354,28 +338,12 @@ func (m *_BACnetActionCommand) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(err, "Error serializing 'postDelay' field")
 	}
 
-	// Simple Field (quitOnFailure)
-	if pushErr := writeBuffer.PushContext("quitOnFailure"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for quitOnFailure")
-	}
-	_quitOnFailureErr := writeBuffer.WriteSerializable(ctx, m.GetQuitOnFailure())
-	if popErr := writeBuffer.PopContext("quitOnFailure"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for quitOnFailure")
-	}
-	if _quitOnFailureErr != nil {
-		return errors.Wrap(_quitOnFailureErr, "Error serializing 'quitOnFailure' field")
+	if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "quitOnFailure", m.GetQuitOnFailure(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'quitOnFailure' field")
 	}
 
-	// Simple Field (writeSuccessful)
-	if pushErr := writeBuffer.PushContext("writeSuccessful"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for writeSuccessful")
-	}
-	_writeSuccessfulErr := writeBuffer.WriteSerializable(ctx, m.GetWriteSuccessful())
-	if popErr := writeBuffer.PopContext("writeSuccessful"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for writeSuccessful")
-	}
-	if _writeSuccessfulErr != nil {
-		return errors.Wrap(_writeSuccessfulErr, "Error serializing 'writeSuccessful' field")
+	if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "writeSuccessful", m.GetWriteSuccessful(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'writeSuccessful' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetActionCommand"); popErr != nil {

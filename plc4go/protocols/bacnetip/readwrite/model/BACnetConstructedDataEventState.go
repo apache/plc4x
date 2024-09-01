@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEventState) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventState")
 		}
 
-		// Simple Field (eventState)
-		if pushErr := writeBuffer.PushContext("eventState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventState")
-		}
-		_eventStateErr := writeBuffer.WriteSerializable(ctx, m.GetEventState())
-		if popErr := writeBuffer.PopContext("eventState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventState")
-		}
-		if _eventStateErr != nil {
-			return errors.Wrap(_eventStateErr, "Error serializing 'eventState' field")
+		if err := WriteSimpleField[BACnetEventStateTagged](ctx, "eventState", m.GetEventState(), WriteComplex[BACnetEventStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventState' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

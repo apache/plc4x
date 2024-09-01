@@ -402,104 +402,52 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for PubSubConnectionDataType")
 		}
 
-		// Simple Field (name)
-		if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for name")
-		}
-		_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
-		if popErr := writeBuffer.PopContext("name"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for name")
-		}
-		if _nameErr != nil {
-			return errors.Wrap(_nameErr, "Error serializing 'name' field")
+		if err := WriteSimpleField[PascalString](ctx, "name", m.GetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'name' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (enabled)
-		enabled := bool(m.GetEnabled())
-		_enabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enabled", (enabled))
-		if _enabledErr != nil {
-			return errors.Wrap(_enabledErr, "Error serializing 'enabled' field")
+		if err := WriteSimpleField[bool](ctx, "enabled", m.GetEnabled(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enabled' field")
 		}
 
-		// Simple Field (publisherId)
-		if pushErr := writeBuffer.PushContext("publisherId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for publisherId")
-		}
-		_publisherIdErr := writeBuffer.WriteSerializable(ctx, m.GetPublisherId())
-		if popErr := writeBuffer.PopContext("publisherId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for publisherId")
-		}
-		if _publisherIdErr != nil {
-			return errors.Wrap(_publisherIdErr, "Error serializing 'publisherId' field")
+		if err := WriteSimpleField[Variant](ctx, "publisherId", m.GetPublisherId(), WriteComplex[Variant](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'publisherId' field")
 		}
 
-		// Simple Field (transportProfileUri)
-		if pushErr := writeBuffer.PushContext("transportProfileUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transportProfileUri")
-		}
-		_transportProfileUriErr := writeBuffer.WriteSerializable(ctx, m.GetTransportProfileUri())
-		if popErr := writeBuffer.PopContext("transportProfileUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportProfileUri")
-		}
-		if _transportProfileUriErr != nil {
-			return errors.Wrap(_transportProfileUriErr, "Error serializing 'transportProfileUri' field")
+		if err := WriteSimpleField[PascalString](ctx, "transportProfileUri", m.GetTransportProfileUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transportProfileUri' field")
 		}
 
-		// Simple Field (address)
-		if pushErr := writeBuffer.PushContext("address"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for address")
-		}
-		_addressErr := writeBuffer.WriteSerializable(ctx, m.GetAddress())
-		if popErr := writeBuffer.PopContext("address"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for address")
-		}
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "address", m.GetAddress(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
-		// Simple Field (noOfConnectionProperties)
-		noOfConnectionProperties := int32(m.GetNoOfConnectionProperties())
-		_noOfConnectionPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfConnectionProperties", 32, int32((noOfConnectionProperties)))
-		if _noOfConnectionPropertiesErr != nil {
-			return errors.Wrap(_noOfConnectionPropertiesErr, "Error serializing 'noOfConnectionProperties' field")
+		if err := WriteSimpleField[int32](ctx, "noOfConnectionProperties", m.GetNoOfConnectionProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfConnectionProperties' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "connectionProperties", m.GetConnectionProperties(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'connectionProperties' field")
 		}
 
-		// Simple Field (transportSettings)
-		if pushErr := writeBuffer.PushContext("transportSettings"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transportSettings")
-		}
-		_transportSettingsErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSettings())
-		if popErr := writeBuffer.PopContext("transportSettings"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportSettings")
-		}
-		if _transportSettingsErr != nil {
-			return errors.Wrap(_transportSettingsErr, "Error serializing 'transportSettings' field")
+		if err := WriteSimpleField[ExtensionObject](ctx, "transportSettings", m.GetTransportSettings(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transportSettings' field")
 		}
 
-		// Simple Field (noOfWriterGroups)
-		noOfWriterGroups := int32(m.GetNoOfWriterGroups())
-		_noOfWriterGroupsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfWriterGroups", 32, int32((noOfWriterGroups)))
-		if _noOfWriterGroupsErr != nil {
-			return errors.Wrap(_noOfWriterGroupsErr, "Error serializing 'noOfWriterGroups' field")
+		if err := WriteSimpleField[int32](ctx, "noOfWriterGroups", m.GetNoOfWriterGroups(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfWriterGroups' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "writerGroups", m.GetWriterGroups(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'writerGroups' field")
 		}
 
-		// Simple Field (noOfReaderGroups)
-		noOfReaderGroups := int32(m.GetNoOfReaderGroups())
-		_noOfReaderGroupsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfReaderGroups", 32, int32((noOfReaderGroups)))
-		if _noOfReaderGroupsErr != nil {
-			return errors.Wrap(_noOfReaderGroupsErr, "Error serializing 'noOfReaderGroups' field")
+		if err := WriteSimpleField[int32](ctx, "noOfReaderGroups", m.GetNoOfReaderGroups(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfReaderGroups' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "readerGroups", m.GetReaderGroups(), writeBuffer); err != nil {

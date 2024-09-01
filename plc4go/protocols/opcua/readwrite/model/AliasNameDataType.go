@@ -224,23 +224,12 @@ func (m *_AliasNameDataType) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for AliasNameDataType")
 		}
 
-		// Simple Field (aliasName)
-		if pushErr := writeBuffer.PushContext("aliasName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for aliasName")
-		}
-		_aliasNameErr := writeBuffer.WriteSerializable(ctx, m.GetAliasName())
-		if popErr := writeBuffer.PopContext("aliasName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for aliasName")
-		}
-		if _aliasNameErr != nil {
-			return errors.Wrap(_aliasNameErr, "Error serializing 'aliasName' field")
+		if err := WriteSimpleField[QualifiedName](ctx, "aliasName", m.GetAliasName(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'aliasName' field")
 		}
 
-		// Simple Field (noOfReferencedNodes)
-		noOfReferencedNodes := int32(m.GetNoOfReferencedNodes())
-		_noOfReferencedNodesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfReferencedNodes", 32, int32((noOfReferencedNodes)))
-		if _noOfReferencedNodesErr != nil {
-			return errors.Wrap(_noOfReferencedNodesErr, "Error serializing 'noOfReferencedNodes' field")
+		if err := WriteSimpleField[int32](ctx, "noOfReferencedNodes", m.GetNoOfReferencedNodes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfReferencedNodes' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "referencedNodes", m.GetReferencedNodes(), writeBuffer); err != nil {

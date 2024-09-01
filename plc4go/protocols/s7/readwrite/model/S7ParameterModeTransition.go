@@ -283,39 +283,24 @@ func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(err, "Error serializing 'itemLength' field")
 		}
 
-		// Simple Field (method)
-		method := uint8(m.GetMethod())
-		_methodErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("method", 8, uint8((method)))
-		if _methodErr != nil {
-			return errors.Wrap(_methodErr, "Error serializing 'method' field")
+		if err := WriteSimpleField[uint8](ctx, "method", m.GetMethod(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'method' field")
 		}
 
-		// Simple Field (cpuFunctionType)
-		cpuFunctionType := uint8(m.GetCpuFunctionType())
-		_cpuFunctionTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("cpuFunctionType", 4, uint8((cpuFunctionType)))
-		if _cpuFunctionTypeErr != nil {
-			return errors.Wrap(_cpuFunctionTypeErr, "Error serializing 'cpuFunctionType' field")
+		if err := WriteSimpleField[uint8](ctx, "cpuFunctionType", m.GetCpuFunctionType(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cpuFunctionType' field")
 		}
 
-		// Simple Field (cpuFunctionGroup)
-		cpuFunctionGroup := uint8(m.GetCpuFunctionGroup())
-		_cpuFunctionGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("cpuFunctionGroup", 4, uint8((cpuFunctionGroup)))
-		if _cpuFunctionGroupErr != nil {
-			return errors.Wrap(_cpuFunctionGroupErr, "Error serializing 'cpuFunctionGroup' field")
+		if err := WriteSimpleField[uint8](ctx, "cpuFunctionGroup", m.GetCpuFunctionGroup(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cpuFunctionGroup' field")
 		}
 
-		// Simple Field (currentMode)
-		currentMode := uint8(m.GetCurrentMode())
-		_currentModeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("currentMode", 8, uint8((currentMode)))
-		if _currentModeErr != nil {
-			return errors.Wrap(_currentModeErr, "Error serializing 'currentMode' field")
+		if err := WriteSimpleField[uint8](ctx, "currentMode", m.GetCurrentMode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentMode' field")
 		}
 
-		// Simple Field (sequenceNumber)
-		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterModeTransition"); popErr != nil {

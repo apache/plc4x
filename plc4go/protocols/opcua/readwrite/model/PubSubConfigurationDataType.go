@@ -276,22 +276,16 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for PubSubConfigurationDataType")
 		}
 
-		// Simple Field (noOfPublishedDataSets)
-		noOfPublishedDataSets := int32(m.GetNoOfPublishedDataSets())
-		_noOfPublishedDataSetsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfPublishedDataSets", 32, int32((noOfPublishedDataSets)))
-		if _noOfPublishedDataSetsErr != nil {
-			return errors.Wrap(_noOfPublishedDataSetsErr, "Error serializing 'noOfPublishedDataSets' field")
+		if err := WriteSimpleField[int32](ctx, "noOfPublishedDataSets", m.GetNoOfPublishedDataSets(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfPublishedDataSets' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "publishedDataSets", m.GetPublishedDataSets(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishedDataSets' field")
 		}
 
-		// Simple Field (noOfConnections)
-		noOfConnections := int32(m.GetNoOfConnections())
-		_noOfConnectionsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfConnections", 32, int32((noOfConnections)))
-		if _noOfConnectionsErr != nil {
-			return errors.Wrap(_noOfConnectionsErr, "Error serializing 'noOfConnections' field")
+		if err := WriteSimpleField[int32](ctx, "noOfConnections", m.GetNoOfConnections(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfConnections' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "connections", m.GetConnections(), writeBuffer); err != nil {
@@ -302,11 +296,8 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (enabled)
-		enabled := bool(m.GetEnabled())
-		_enabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enabled", (enabled))
-		if _enabledErr != nil {
-			return errors.Wrap(_enabledErr, "Error serializing 'enabled' field")
+		if err := WriteSimpleField[bool](ctx, "enabled", m.GetEnabled(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enabled' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PubSubConfigurationDataType"); popErr != nil {

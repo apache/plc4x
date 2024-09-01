@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastPriority) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastPriority")
 		}
 
-		// Simple Field (lastPriority)
-		if pushErr := writeBuffer.PushContext("lastPriority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastPriority")
-		}
-		_lastPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetLastPriority())
-		if popErr := writeBuffer.PopContext("lastPriority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastPriority")
-		}
-		if _lastPriorityErr != nil {
-			return errors.Wrap(_lastPriorityErr, "Error serializing 'lastPriority' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lastPriority", m.GetLastPriority(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastPriority' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

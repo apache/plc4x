@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataInstanceOf) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInstanceOf")
 		}
 
-		// Simple Field (instanceOf)
-		if pushErr := writeBuffer.PushContext("instanceOf"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for instanceOf")
-		}
-		_instanceOfErr := writeBuffer.WriteSerializable(ctx, m.GetInstanceOf())
-		if popErr := writeBuffer.PopContext("instanceOf"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for instanceOf")
-		}
-		if _instanceOfErr != nil {
-			return errors.Wrap(_instanceOfErr, "Error serializing 'instanceOf' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "instanceOf", m.GetInstanceOf(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'instanceOf' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

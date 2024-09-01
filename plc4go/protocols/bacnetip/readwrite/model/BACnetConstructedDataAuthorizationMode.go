@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAuthorizationMode) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAuthorizationMode")
 		}
 
-		// Simple Field (authorizationMode)
-		if pushErr := writeBuffer.PushContext("authorizationMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for authorizationMode")
-		}
-		_authorizationModeErr := writeBuffer.WriteSerializable(ctx, m.GetAuthorizationMode())
-		if popErr := writeBuffer.PopContext("authorizationMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for authorizationMode")
-		}
-		if _authorizationModeErr != nil {
-			return errors.Wrap(_authorizationModeErr, "Error serializing 'authorizationMode' field")
+		if err := WriteSimpleField[BACnetAuthorizationModeTagged](ctx, "authorizationMode", m.GetAuthorizationMode(), WriteComplex[BACnetAuthorizationModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'authorizationMode' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

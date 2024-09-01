@@ -224,23 +224,12 @@ func (m *_ContentFilterElement) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ContentFilterElement")
 		}
 
-		// Simple Field (filterOperator)
-		if pushErr := writeBuffer.PushContext("filterOperator"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filterOperator")
-		}
-		_filterOperatorErr := writeBuffer.WriteSerializable(ctx, m.GetFilterOperator())
-		if popErr := writeBuffer.PopContext("filterOperator"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filterOperator")
-		}
-		if _filterOperatorErr != nil {
-			return errors.Wrap(_filterOperatorErr, "Error serializing 'filterOperator' field")
+		if err := WriteSimpleEnumField[FilterOperator](ctx, "filterOperator", "FilterOperator", m.GetFilterOperator(), WriteEnum[FilterOperator, uint32](FilterOperator.GetValue, FilterOperator.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'filterOperator' field")
 		}
 
-		// Simple Field (noOfFilterOperands)
-		noOfFilterOperands := int32(m.GetNoOfFilterOperands())
-		_noOfFilterOperandsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfFilterOperands", 32, int32((noOfFilterOperands)))
-		if _noOfFilterOperandsErr != nil {
-			return errors.Wrap(_noOfFilterOperandsErr, "Error serializing 'noOfFilterOperands' field")
+		if err := WriteSimpleField[int32](ctx, "noOfFilterOperands", m.GetNoOfFilterOperands(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfFilterOperands' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "filterOperands", m.GetFilterOperands(), writeBuffer); err != nil {

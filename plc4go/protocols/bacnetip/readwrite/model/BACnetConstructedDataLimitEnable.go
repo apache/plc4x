@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLimitEnable) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLimitEnable")
 		}
 
-		// Simple Field (limitEnable)
-		if pushErr := writeBuffer.PushContext("limitEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for limitEnable")
-		}
-		_limitEnableErr := writeBuffer.WriteSerializable(ctx, m.GetLimitEnable())
-		if popErr := writeBuffer.PopContext("limitEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for limitEnable")
-		}
-		if _limitEnableErr != nil {
-			return errors.Wrap(_limitEnableErr, "Error serializing 'limitEnable' field")
+		if err := WriteSimpleField[BACnetLimitEnableTagged](ctx, "limitEnable", m.GetLimitEnable(), WriteComplex[BACnetLimitEnableTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'limitEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

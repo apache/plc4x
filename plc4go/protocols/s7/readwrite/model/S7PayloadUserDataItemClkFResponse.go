@@ -229,30 +229,16 @@ func (m *_S7PayloadUserDataItemClkFResponse) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemClkFResponse")
 		}
 
-		// Simple Field (res)
-		res := uint8(m.GetRes())
-		_resErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("res", 8, uint8((res)))
-		if _resErr != nil {
-			return errors.Wrap(_resErr, "Error serializing 'res' field")
+		if err := WriteSimpleField[uint8](ctx, "res", m.GetRes(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'res' field")
 		}
 
-		// Simple Field (year1)
-		year1 := uint8(m.GetYear1())
-		_year1Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("year1", 8, uint8((year1)))
-		if _year1Err != nil {
-			return errors.Wrap(_year1Err, "Error serializing 'year1' field")
+		if err := WriteSimpleField[uint8](ctx, "year1", m.GetYear1(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'year1' field")
 		}
 
-		// Simple Field (timeStamp)
-		if pushErr := writeBuffer.PushContext("timeStamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeStamp")
-		}
-		_timeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
-		if popErr := writeBuffer.PopContext("timeStamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeStamp")
-		}
-		if _timeStampErr != nil {
-			return errors.Wrap(_timeStampErr, "Error serializing 'timeStamp' field")
+		if err := WriteSimpleField[DateAndTime](ctx, "timeStamp", m.GetTimeStamp(), WriteComplex[DateAndTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeStamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemClkFResponse"); popErr != nil {

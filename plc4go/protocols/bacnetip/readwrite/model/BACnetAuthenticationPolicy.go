@@ -184,40 +184,16 @@ func (m *_BACnetAuthenticationPolicy) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for BACnetAuthenticationPolicy")
 	}
 
-	// Simple Field (policy)
-	if pushErr := writeBuffer.PushContext("policy"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for policy")
-	}
-	_policyErr := writeBuffer.WriteSerializable(ctx, m.GetPolicy())
-	if popErr := writeBuffer.PopContext("policy"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for policy")
-	}
-	if _policyErr != nil {
-		return errors.Wrap(_policyErr, "Error serializing 'policy' field")
+	if err := WriteSimpleField[BACnetAuthenticationPolicyList](ctx, "policy", m.GetPolicy(), WriteComplex[BACnetAuthenticationPolicyList](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'policy' field")
 	}
 
-	// Simple Field (orderEnforced)
-	if pushErr := writeBuffer.PushContext("orderEnforced"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for orderEnforced")
-	}
-	_orderEnforcedErr := writeBuffer.WriteSerializable(ctx, m.GetOrderEnforced())
-	if popErr := writeBuffer.PopContext("orderEnforced"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for orderEnforced")
-	}
-	if _orderEnforcedErr != nil {
-		return errors.Wrap(_orderEnforcedErr, "Error serializing 'orderEnforced' field")
+	if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "orderEnforced", m.GetOrderEnforced(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'orderEnforced' field")
 	}
 
-	// Simple Field (timeout)
-	if pushErr := writeBuffer.PushContext("timeout"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timeout")
-	}
-	_timeoutErr := writeBuffer.WriteSerializable(ctx, m.GetTimeout())
-	if popErr := writeBuffer.PopContext("timeout"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timeout")
-	}
-	if _timeoutErr != nil {
-		return errors.Wrap(_timeoutErr, "Error serializing 'timeout' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeout", m.GetTimeout(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeout' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAuthenticationPolicy"); popErr != nil {

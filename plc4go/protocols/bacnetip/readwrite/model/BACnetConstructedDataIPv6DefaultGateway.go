@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6DefaultGateway")
 		}
 
-		// Simple Field (ipv6DefaultGateway)
-		if pushErr := writeBuffer.PushContext("ipv6DefaultGateway"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipv6DefaultGateway")
-		}
-		_ipv6DefaultGatewayErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6DefaultGateway())
-		if popErr := writeBuffer.PopContext("ipv6DefaultGateway"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipv6DefaultGateway")
-		}
-		if _ipv6DefaultGatewayErr != nil {
-			return errors.Wrap(_ipv6DefaultGatewayErr, "Error serializing 'ipv6DefaultGateway' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "ipv6DefaultGateway", m.GetIpv6DefaultGateway(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipv6DefaultGateway' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

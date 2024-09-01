@@ -247,47 +247,32 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for NetworkConnectionParameters")
 	}
 
-	// Simple Field (connectionSize)
-	connectionSize := uint16(m.GetConnectionSize())
-	_connectionSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("connectionSize", 16, uint16((connectionSize)))
-	if _connectionSizeErr != nil {
-		return errors.Wrap(_connectionSizeErr, "Error serializing 'connectionSize' field")
+	if err := WriteSimpleField[uint16](ctx, "connectionSize", m.GetConnectionSize(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'connectionSize' field")
 	}
 
 	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (owner)
-	owner := bool(m.GetOwner())
-	_ownerErr := /*TODO: migrate me*/ writeBuffer.WriteBit("owner", (owner))
-	if _ownerErr != nil {
-		return errors.Wrap(_ownerErr, "Error serializing 'owner' field")
+	if err := WriteSimpleField[bool](ctx, "owner", m.GetOwner(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'owner' field")
 	}
 
-	// Simple Field (connectionType)
-	connectionType := uint8(m.GetConnectionType())
-	_connectionTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("connectionType", 2, uint8((connectionType)))
-	if _connectionTypeErr != nil {
-		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")
+	if err := WriteSimpleField[uint8](ctx, "connectionType", m.GetConnectionType(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+		return errors.Wrap(err, "Error serializing 'connectionType' field")
 	}
 
 	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 
-	// Simple Field (priority)
-	priority := uint8(m.GetPriority())
-	_priorityErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("priority", 2, uint8((priority)))
-	if _priorityErr != nil {
-		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
+	if err := WriteSimpleField[uint8](ctx, "priority", m.GetPriority(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+		return errors.Wrap(err, "Error serializing 'priority' field")
 	}
 
-	// Simple Field (connectionSizeType)
-	connectionSizeType := bool(m.GetConnectionSizeType())
-	_connectionSizeTypeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("connectionSizeType", (connectionSizeType))
-	if _connectionSizeTypeErr != nil {
-		return errors.Wrap(_connectionSizeTypeErr, "Error serializing 'connectionSizeType' field")
+	if err := WriteSimpleField[bool](ctx, "connectionSizeType", m.GetConnectionSizeType(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'connectionSizeType' field")
 	}
 
 	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {

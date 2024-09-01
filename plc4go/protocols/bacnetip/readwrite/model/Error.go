@@ -168,28 +168,12 @@ func (m *_Error) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return errors.Wrap(pushErr, "Error pushing for Error")
 	}
 
-	// Simple Field (errorClass)
-	if pushErr := writeBuffer.PushContext("errorClass"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for errorClass")
-	}
-	_errorClassErr := writeBuffer.WriteSerializable(ctx, m.GetErrorClass())
-	if popErr := writeBuffer.PopContext("errorClass"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for errorClass")
-	}
-	if _errorClassErr != nil {
-		return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
+	if err := WriteSimpleField[ErrorClassTagged](ctx, "errorClass", m.GetErrorClass(), WriteComplex[ErrorClassTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'errorClass' field")
 	}
 
-	// Simple Field (errorCode)
-	if pushErr := writeBuffer.PushContext("errorCode"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for errorCode")
-	}
-	_errorCodeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorCode())
-	if popErr := writeBuffer.PopContext("errorCode"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for errorCode")
-	}
-	if _errorCodeErr != nil {
-		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
+	if err := WriteSimpleField[ErrorCodeTagged](ctx, "errorCode", m.GetErrorCode(), WriteComplex[ErrorCodeTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'errorCode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Error"); popErr != nil {

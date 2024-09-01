@@ -186,18 +186,12 @@ func (m *_NLMUpdateKeyUpdateKeyEntry) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for NLMUpdateKeyUpdateKeyEntry")
 	}
 
-	// Simple Field (keyIdentifier)
-	keyIdentifier := uint16(m.GetKeyIdentifier())
-	_keyIdentifierErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("keyIdentifier", 16, uint16((keyIdentifier)))
-	if _keyIdentifierErr != nil {
-		return errors.Wrap(_keyIdentifierErr, "Error serializing 'keyIdentifier' field")
+	if err := WriteSimpleField[uint16](ctx, "keyIdentifier", m.GetKeyIdentifier(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'keyIdentifier' field")
 	}
 
-	// Simple Field (keySize)
-	keySize := uint8(m.GetKeySize())
-	_keySizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("keySize", 8, uint8((keySize)))
-	if _keySizeErr != nil {
-		return errors.Wrap(_keySizeErr, "Error serializing 'keySize' field")
+	if err := WriteSimpleField[uint8](ctx, "keySize", m.GetKeySize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'keySize' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "key", m.GetKey(), WriteByteArray(writeBuffer, 8)); err != nil {

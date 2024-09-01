@@ -185,16 +185,8 @@ func (m *_SALDataTriggerControl) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for SALDataTriggerControl")
 		}
 
-		// Simple Field (triggerControlData)
-		if pushErr := writeBuffer.PushContext("triggerControlData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for triggerControlData")
-		}
-		_triggerControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetTriggerControlData())
-		if popErr := writeBuffer.PopContext("triggerControlData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for triggerControlData")
-		}
-		if _triggerControlDataErr != nil {
-			return errors.Wrap(_triggerControlDataErr, "Error serializing 'triggerControlData' field")
+		if err := WriteSimpleField[TriggerControlData](ctx, "triggerControlData", m.GetTriggerControlData(), WriteComplex[TriggerControlData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'triggerControlData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataTriggerControl"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataErrorLimit) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataErrorLimit")
 		}
 
-		// Simple Field (errorLimit)
-		if pushErr := writeBuffer.PushContext("errorLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorLimit")
-		}
-		_errorLimitErr := writeBuffer.WriteSerializable(ctx, m.GetErrorLimit())
-		if popErr := writeBuffer.PopContext("errorLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorLimit")
-		}
-		if _errorLimitErr != nil {
-			return errors.Wrap(_errorLimitErr, "Error serializing 'errorLimit' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "errorLimit", m.GetErrorLimit(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorLimit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

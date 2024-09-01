@@ -214,16 +214,8 @@ func (m *_EnableControlData) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(pushErr, "Error pushing for EnableControlData")
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
-	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
-	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
-	}
-	if _commandTypeContainerErr != nil {
-		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
+	if err := WriteSimpleEnumField[EnableControlCommandTypeContainer](ctx, "commandTypeContainer", "EnableControlCommandTypeContainer", m.GetCommandTypeContainer(), WriteEnum[EnableControlCommandTypeContainer, uint8](EnableControlCommandTypeContainer.GetValue, EnableControlCommandTypeContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
 	commandType := m.GetCommandType()
@@ -232,18 +224,12 @@ func (m *_EnableControlData) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
-	// Simple Field (enableNetworkVariable)
-	enableNetworkVariable := byte(m.GetEnableNetworkVariable())
-	_enableNetworkVariableErr := /*TODO: migrate me*/ writeBuffer.WriteByte("enableNetworkVariable", (enableNetworkVariable))
-	if _enableNetworkVariableErr != nil {
-		return errors.Wrap(_enableNetworkVariableErr, "Error serializing 'enableNetworkVariable' field")
+	if err := WriteSimpleField[byte](ctx, "enableNetworkVariable", m.GetEnableNetworkVariable(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'enableNetworkVariable' field")
 	}
 
-	// Simple Field (value)
-	value := byte(m.GetValue())
-	_valueErr := /*TODO: migrate me*/ writeBuffer.WriteByte("value", (value))
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteSimpleField[byte](ctx, "value", m.GetValue(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("EnableControlData"); popErr != nil {

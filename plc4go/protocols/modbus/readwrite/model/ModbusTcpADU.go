@@ -255,11 +255,8 @@ func (m *_ModbusTcpADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for ModbusTcpADU")
 		}
 
-		// Simple Field (transactionIdentifier)
-		transactionIdentifier := uint16(m.GetTransactionIdentifier())
-		_transactionIdentifierErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("transactionIdentifier", 16, uint16((transactionIdentifier)))
-		if _transactionIdentifierErr != nil {
-			return errors.Wrap(_transactionIdentifierErr, "Error serializing 'transactionIdentifier' field")
+		if err := WriteSimpleField[uint16](ctx, "transactionIdentifier", m.GetTransactionIdentifier(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'transactionIdentifier' field")
 		}
 
 		if err := WriteConstField(ctx, "protocolIdentifier", ModbusTcpADU_PROTOCOLIDENTIFIER, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
@@ -270,23 +267,12 @@ func (m *_ModbusTcpADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(err, "Error serializing 'length' field")
 		}
 
-		// Simple Field (unitIdentifier)
-		unitIdentifier := uint8(m.GetUnitIdentifier())
-		_unitIdentifierErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("unitIdentifier", 8, uint8((unitIdentifier)))
-		if _unitIdentifierErr != nil {
-			return errors.Wrap(_unitIdentifierErr, "Error serializing 'unitIdentifier' field")
+		if err := WriteSimpleField[uint8](ctx, "unitIdentifier", m.GetUnitIdentifier(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitIdentifier' field")
 		}
 
-		// Simple Field (pdu)
-		if pushErr := writeBuffer.PushContext("pdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pdu")
-		}
-		_pduErr := writeBuffer.WriteSerializable(ctx, m.GetPdu())
-		if popErr := writeBuffer.PopContext("pdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pdu")
-		}
-		if _pduErr != nil {
-			return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
+		if err := WriteSimpleField[ModbusPDU](ctx, "pdu", m.GetPdu(), WriteComplex[ModbusPDU](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusTcpADU"); popErr != nil {

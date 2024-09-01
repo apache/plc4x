@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesLiftCarMode) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLiftCarMode")
 		}
 
-		// Simple Field (liftCarMode)
-		if pushErr := writeBuffer.PushContext("liftCarMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for liftCarMode")
-		}
-		_liftCarModeErr := writeBuffer.WriteSerializable(ctx, m.GetLiftCarMode())
-		if popErr := writeBuffer.PopContext("liftCarMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for liftCarMode")
-		}
-		if _liftCarModeErr != nil {
-			return errors.Wrap(_liftCarModeErr, "Error serializing 'liftCarMode' field")
+		if err := WriteSimpleField[BACnetLiftCarModeTagged](ctx, "liftCarMode", m.GetLiftCarMode(), WriteComplex[BACnetLiftCarModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'liftCarMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLiftCarMode"); popErr != nil {

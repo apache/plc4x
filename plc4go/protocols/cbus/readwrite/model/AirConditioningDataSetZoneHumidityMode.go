@@ -301,47 +301,20 @@ func (m *_AirConditioningDataSetZoneHumidityMode) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataSetZoneHumidityMode")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
-		// Simple Field (zoneList)
-		if pushErr := writeBuffer.PushContext("zoneList"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneList")
-		}
-		_zoneListErr := writeBuffer.WriteSerializable(ctx, m.GetZoneList())
-		if popErr := writeBuffer.PopContext("zoneList"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneList")
-		}
-		if _zoneListErr != nil {
-			return errors.Wrap(_zoneListErr, "Error serializing 'zoneList' field")
+		if err := WriteSimpleField[HVACZoneList](ctx, "zoneList", m.GetZoneList(), WriteComplex[HVACZoneList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneList' field")
 		}
 
-		// Simple Field (humidityModeAndFlags)
-		if pushErr := writeBuffer.PushContext("humidityModeAndFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for humidityModeAndFlags")
-		}
-		_humidityModeAndFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetHumidityModeAndFlags())
-		if popErr := writeBuffer.PopContext("humidityModeAndFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for humidityModeAndFlags")
-		}
-		if _humidityModeAndFlagsErr != nil {
-			return errors.Wrap(_humidityModeAndFlagsErr, "Error serializing 'humidityModeAndFlags' field")
+		if err := WriteSimpleField[HVACHumidityModeAndFlags](ctx, "humidityModeAndFlags", m.GetHumidityModeAndFlags(), WriteComplex[HVACHumidityModeAndFlags](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'humidityModeAndFlags' field")
 		}
 
-		// Simple Field (humidityType)
-		if pushErr := writeBuffer.PushContext("humidityType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for humidityType")
-		}
-		_humidityTypeErr := writeBuffer.WriteSerializable(ctx, m.GetHumidityType())
-		if popErr := writeBuffer.PopContext("humidityType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for humidityType")
-		}
-		if _humidityTypeErr != nil {
-			return errors.Wrap(_humidityTypeErr, "Error serializing 'humidityType' field")
+		if err := WriteSimpleEnumField[HVACHumidityType](ctx, "humidityType", "HVACHumidityType", m.GetHumidityType(), WriteEnum[HVACHumidityType, uint8](HVACHumidityType.GetValue, HVACHumidityType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'humidityType' field")
 		}
 
 		if err := WriteOptionalField[HVACHumidity](ctx, "level", GetRef(m.GetLevel()), WriteComplex[HVACHumidity](writeBuffer), true); err != nil {

@@ -225,18 +225,12 @@ func (pm *_Apdu) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 		return errors.Wrap(err, "Error serializing 'control' field")
 	}
 
-	// Simple Field (numbered)
-	numbered := bool(m.GetNumbered())
-	_numberedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("numbered", (numbered))
-	if _numberedErr != nil {
-		return errors.Wrap(_numberedErr, "Error serializing 'numbered' field")
+	if err := WriteSimpleField[bool](ctx, "numbered", m.GetNumbered(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numbered' field")
 	}
 
-	// Simple Field (counter)
-	counter := uint8(m.GetCounter())
-	_counterErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("counter", 4, uint8((counter)))
-	if _counterErr != nil {
-		return errors.Wrap(_counterErr, "Error serializing 'counter' field")
+	if err := WriteSimpleField[uint8](ctx, "counter", m.GetCounter(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		return errors.Wrap(err, "Error serializing 'counter' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

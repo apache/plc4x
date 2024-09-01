@@ -492,60 +492,36 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for AdsDataTypeTableChildEntry")
 	}
 
-	// Simple Field (entryLength)
-	entryLength := uint32(m.GetEntryLength())
-	_entryLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("entryLength", 32, uint32((entryLength)))
-	if _entryLengthErr != nil {
-		return errors.Wrap(_entryLengthErr, "Error serializing 'entryLength' field")
+	if err := WriteSimpleField[uint32](ctx, "entryLength", m.GetEntryLength(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'entryLength' field")
 	}
 
-	// Simple Field (version)
-	version := uint32(m.GetVersion())
-	_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("version", 32, uint32((version)))
-	if _versionErr != nil {
-		return errors.Wrap(_versionErr, "Error serializing 'version' field")
+	if err := WriteSimpleField[uint32](ctx, "version", m.GetVersion(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'version' field")
 	}
 
-	// Simple Field (hashValue)
-	hashValue := uint32(m.GetHashValue())
-	_hashValueErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("hashValue", 32, uint32((hashValue)))
-	if _hashValueErr != nil {
-		return errors.Wrap(_hashValueErr, "Error serializing 'hashValue' field")
+	if err := WriteSimpleField[uint32](ctx, "hashValue", m.GetHashValue(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'hashValue' field")
 	}
 
-	// Simple Field (typeHashValue)
-	typeHashValue := uint32(m.GetTypeHashValue())
-	_typeHashValueErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("typeHashValue", 32, uint32((typeHashValue)))
-	if _typeHashValueErr != nil {
-		return errors.Wrap(_typeHashValueErr, "Error serializing 'typeHashValue' field")
+	if err := WriteSimpleField[uint32](ctx, "typeHashValue", m.GetTypeHashValue(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'typeHashValue' field")
 	}
 
-	// Simple Field (size)
-	size := uint32(m.GetSize())
-	_sizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("size", 32, uint32((size)))
-	if _sizeErr != nil {
-		return errors.Wrap(_sizeErr, "Error serializing 'size' field")
+	if err := WriteSimpleField[uint32](ctx, "size", m.GetSize(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'size' field")
 	}
 
-	// Simple Field (offset)
-	offset := uint32(m.GetOffset())
-	_offsetErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("offset", 32, uint32((offset)))
-	if _offsetErr != nil {
-		return errors.Wrap(_offsetErr, "Error serializing 'offset' field")
+	if err := WriteSimpleField[uint32](ctx, "offset", m.GetOffset(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'offset' field")
 	}
 
-	// Simple Field (dataType)
-	dataType := uint32(m.GetDataType())
-	_dataTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("dataType", 32, uint32((dataType)))
-	if _dataTypeErr != nil {
-		return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
+	if err := WriteSimpleField[uint32](ctx, "dataType", m.GetDataType(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataType' field")
 	}
 
-	// Simple Field (flags)
-	flags := uint32(m.GetFlags())
-	_flagsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("flags", 32, uint32((flags)))
-	if _flagsErr != nil {
-		return errors.Wrap(_flagsErr, "Error serializing 'flags' field")
+	if err := WriteSimpleField[uint32](ctx, "flags", m.GetFlags(), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'flags' field")
 	}
 	propertyNameLength := uint16(uint16(len(m.GetPropertyName())))
 	if err := WriteImplicitField(ctx, "propertyNameLength", propertyNameLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
@@ -560,47 +536,32 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(err, "Error serializing 'commentLength' field")
 	}
 
-	// Simple Field (arrayDimensions)
-	arrayDimensions := uint16(m.GetArrayDimensions())
-	_arrayDimensionsErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("arrayDimensions", 16, uint16((arrayDimensions)))
-	if _arrayDimensionsErr != nil {
-		return errors.Wrap(_arrayDimensionsErr, "Error serializing 'arrayDimensions' field")
+	if err := WriteSimpleField[uint16](ctx, "arrayDimensions", m.GetArrayDimensions(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'arrayDimensions' field")
 	}
 
-	// Simple Field (numChildren)
-	numChildren := uint16(m.GetNumChildren())
-	_numChildrenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("numChildren", 16, uint16((numChildren)))
-	if _numChildrenErr != nil {
-		return errors.Wrap(_numChildrenErr, "Error serializing 'numChildren' field")
+	if err := WriteSimpleField[uint16](ctx, "numChildren", m.GetNumChildren(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numChildren' field")
 	}
 
-	// Simple Field (propertyName)
-	propertyName := string(m.GetPropertyName())
-	_propertyNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("propertyName", uint32((uint16(len(m.GetPropertyName())))*(8)), (propertyName), utils.WithEncoding("UTF-8)"))
-	if _propertyNameErr != nil {
-		return errors.Wrap(_propertyNameErr, "Error serializing 'propertyName' field")
+	if err := WriteSimpleField[string](ctx, "propertyName", m.GetPropertyName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetPropertyName())))*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'propertyName' field")
 	}
 
 	if err := WriteConstField(ctx, "propertyNameTerminator", AdsDataTypeTableChildEntry_PROPERTYNAMETERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'propertyNameTerminator' field")
 	}
 
-	// Simple Field (dataTypeName)
-	dataTypeName := string(m.GetDataTypeName())
-	_dataTypeNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("dataTypeName", uint32((uint16(len(m.GetDataTypeName())))*(8)), (dataTypeName), utils.WithEncoding("UTF-8)"))
-	if _dataTypeNameErr != nil {
-		return errors.Wrap(_dataTypeNameErr, "Error serializing 'dataTypeName' field")
+	if err := WriteSimpleField[string](ctx, "dataTypeName", m.GetDataTypeName(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetDataTypeName())))*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataTypeName' field")
 	}
 
 	if err := WriteConstField(ctx, "dataTypeNameTerminator", AdsDataTypeTableChildEntry_DATATYPENAMETERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'dataTypeNameTerminator' field")
 	}
 
-	// Simple Field (comment)
-	comment := string(m.GetComment())
-	_commentErr := /*TODO: migrate me*/ writeBuffer.WriteString("comment", uint32((uint16(len(m.GetComment())))*(8)), (comment), utils.WithEncoding("UTF-8)"))
-	if _commentErr != nil {
-		return errors.Wrap(_commentErr, "Error serializing 'comment' field")
+	if err := WriteSimpleField[string](ctx, "comment", m.GetComment(), WriteString(writeBuffer, int32(int32(uint16(len(m.GetComment())))*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'comment' field")
 	}
 
 	if err := WriteConstField(ctx, "commentTerminator", AdsDataTypeTableChildEntry_COMMENTTERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {

@@ -183,11 +183,8 @@ func (m *_KnxGroupAddressFreeLevel) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for KnxGroupAddressFreeLevel")
 		}
 
-		// Simple Field (subGroup)
-		subGroup := uint16(m.GetSubGroup())
-		_subGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("subGroup", 16, uint16((subGroup)))
-		if _subGroupErr != nil {
-			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
+		if err := WriteSimpleField[uint16](ctx, "subGroup", m.GetSubGroup(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subGroup' field")
 		}
 
 		if popErr := writeBuffer.PopContext("KnxGroupAddressFreeLevel"); popErr != nil {

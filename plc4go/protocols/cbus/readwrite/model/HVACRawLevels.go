@@ -177,11 +177,8 @@ func (m *_HVACRawLevels) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(pushErr, "Error pushing for HVACRawLevels")
 	}
 
-	// Simple Field (rawValue)
-	rawValue := int16(m.GetRawValue())
-	_rawValueErr := /*TODO: migrate me*/ writeBuffer.WriteInt16("rawValue", 16, int16((rawValue)))
-	if _rawValueErr != nil {
-		return errors.Wrap(_rawValueErr, "Error serializing 'rawValue' field")
+	if err := WriteSimpleField[int16](ctx, "rawValue", m.GetRawValue(), WriteSignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'rawValue' field")
 	}
 	// Virtual field
 	valueInPercent := m.GetValueInPercent()

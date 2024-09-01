@@ -200,28 +200,12 @@ func (m *_CreateObjectError) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for CreateObjectError")
 		}
 
-		// Simple Field (errorType)
-		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorType")
-		}
-		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
-		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorType")
-		}
-		if _errorTypeErr != nil {
-			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
+		if err := WriteSimpleField[ErrorEnclosed](ctx, "errorType", m.GetErrorType(), WriteComplex[ErrorEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorType' field")
 		}
 
-		// Simple Field (firstFailedElementNumber)
-		if pushErr := writeBuffer.PushContext("firstFailedElementNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for firstFailedElementNumber")
-		}
-		_firstFailedElementNumberErr := writeBuffer.WriteSerializable(ctx, m.GetFirstFailedElementNumber())
-		if popErr := writeBuffer.PopContext("firstFailedElementNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for firstFailedElementNumber")
-		}
-		if _firstFailedElementNumberErr != nil {
-			return errors.Wrap(_firstFailedElementNumberErr, "Error serializing 'firstFailedElementNumber' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "firstFailedElementNumber", m.GetFirstFailedElementNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'firstFailedElementNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CreateObjectError"); popErr != nil {

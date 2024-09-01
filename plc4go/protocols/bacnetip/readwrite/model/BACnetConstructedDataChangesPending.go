@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataChangesPending")
 		}
 
-		// Simple Field (changesPending)
-		if pushErr := writeBuffer.PushContext("changesPending"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for changesPending")
-		}
-		_changesPendingErr := writeBuffer.WriteSerializable(ctx, m.GetChangesPending())
-		if popErr := writeBuffer.PopContext("changesPending"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for changesPending")
-		}
-		if _changesPendingErr != nil {
-			return errors.Wrap(_changesPendingErr, "Error serializing 'changesPending' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "changesPending", m.GetChangesPending(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'changesPending' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

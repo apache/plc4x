@@ -200,28 +200,12 @@ func (m *_IdentityMappingRuleType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for IdentityMappingRuleType")
 		}
 
-		// Simple Field (criteriaType)
-		if pushErr := writeBuffer.PushContext("criteriaType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for criteriaType")
-		}
-		_criteriaTypeErr := writeBuffer.WriteSerializable(ctx, m.GetCriteriaType())
-		if popErr := writeBuffer.PopContext("criteriaType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for criteriaType")
-		}
-		if _criteriaTypeErr != nil {
-			return errors.Wrap(_criteriaTypeErr, "Error serializing 'criteriaType' field")
+		if err := WriteSimpleEnumField[IdentityCriteriaType](ctx, "criteriaType", "IdentityCriteriaType", m.GetCriteriaType(), WriteEnum[IdentityCriteriaType, uint32](IdentityCriteriaType.GetValue, IdentityCriteriaType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'criteriaType' field")
 		}
 
-		// Simple Field (criteria)
-		if pushErr := writeBuffer.PushContext("criteria"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for criteria")
-		}
-		_criteriaErr := writeBuffer.WriteSerializable(ctx, m.GetCriteria())
-		if popErr := writeBuffer.PopContext("criteria"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for criteria")
-		}
-		if _criteriaErr != nil {
-			return errors.Wrap(_criteriaErr, "Error serializing 'criteria' field")
+		if err := WriteSimpleField[PascalString](ctx, "criteria", m.GetCriteria(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'criteria' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentityMappingRuleType"); popErr != nil {

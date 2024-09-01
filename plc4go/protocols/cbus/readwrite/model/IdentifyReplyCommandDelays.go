@@ -208,11 +208,8 @@ func (m *_IdentifyReplyCommandDelays) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(err, "Error serializing 'terminalLevels' field")
 		}
 
-		// Simple Field (reStrikeDelay)
-		reStrikeDelay := byte(m.GetReStrikeDelay())
-		_reStrikeDelayErr := /*TODO: migrate me*/ writeBuffer.WriteByte("reStrikeDelay", (reStrikeDelay))
-		if _reStrikeDelayErr != nil {
-			return errors.Wrap(_reStrikeDelayErr, "Error serializing 'reStrikeDelay' field")
+		if err := WriteSimpleField[byte](ctx, "reStrikeDelay", m.GetReStrikeDelay(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reStrikeDelay' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandDelays"); popErr != nil {

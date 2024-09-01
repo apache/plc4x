@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesProtocolLevel) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesProtocolLevel")
 		}
 
-		// Simple Field (protocolLevel)
-		if pushErr := writeBuffer.PushContext("protocolLevel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolLevel")
-		}
-		_protocolLevelErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolLevel())
-		if popErr := writeBuffer.PopContext("protocolLevel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolLevel")
-		}
-		if _protocolLevelErr != nil {
-			return errors.Wrap(_protocolLevelErr, "Error serializing 'protocolLevel' field")
+		if err := WriteSimpleField[BACnetProtocolLevelTagged](ctx, "protocolLevel", m.GetProtocolLevel(), WriteComplex[BACnetProtocolLevelTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesProtocolLevel"); popErr != nil {

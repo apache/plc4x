@@ -183,16 +183,8 @@ func (m *_BACnetPriorityValueDouble) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPriorityValueDouble")
 		}
 
-		// Simple Field (doubleValue)
-		if pushErr := writeBuffer.PushContext("doubleValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doubleValue")
-		}
-		_doubleValueErr := writeBuffer.WriteSerializable(ctx, m.GetDoubleValue())
-		if popErr := writeBuffer.PopContext("doubleValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doubleValue")
-		}
-		if _doubleValueErr != nil {
-			return errors.Wrap(_doubleValueErr, "Error serializing 'doubleValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagDouble](ctx, "doubleValue", m.GetDoubleValue(), WriteComplex[BACnetApplicationTagDouble](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doubleValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPriorityValueDouble"); popErr != nil {

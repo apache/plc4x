@@ -263,44 +263,24 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serializ
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
 		}
 
-		// Simple Field (result)
-		result := uint8(m.GetResult())
-		_resultErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("result", 8, uint8((result)))
-		if _resultErr != nil {
-			return errors.Wrap(_resultErr, "Error serializing 'result' field")
+		if err := WriteSimpleField[uint8](ctx, "result", m.GetResult(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'result' field")
 		}
 
-		// Simple Field (reserved01)
-		reserved01 := uint8(m.GetReserved01())
-		_reserved01Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved01", 8, uint8((reserved01)))
-		if _reserved01Err != nil {
-			return errors.Wrap(_reserved01Err, "Error serializing 'reserved01' field")
+		if err := WriteSimpleField[uint8](ctx, "reserved01", m.GetReserved01(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved01' field")
 		}
 
-		// Simple Field (alarmType)
-		if pushErr := writeBuffer.PushContext("alarmType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alarmType")
-		}
-		_alarmTypeErr := writeBuffer.WriteSerializable(ctx, m.GetAlarmType())
-		if popErr := writeBuffer.PopContext("alarmType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alarmType")
-		}
-		if _alarmTypeErr != nil {
-			return errors.Wrap(_alarmTypeErr, "Error serializing 'alarmType' field")
+		if err := WriteSimpleEnumField[AlarmType](ctx, "alarmType", "AlarmType", m.GetAlarmType(), WriteEnum[AlarmType, uint8](AlarmType.GetValue, AlarmType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'alarmType' field")
 		}
 
-		// Simple Field (reserved02)
-		reserved02 := uint8(m.GetReserved02())
-		_reserved02Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved02", 8, uint8((reserved02)))
-		if _reserved02Err != nil {
-			return errors.Wrap(_reserved02Err, "Error serializing 'reserved02' field")
+		if err := WriteSimpleField[uint8](ctx, "reserved02", m.GetReserved02(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved02' field")
 		}
 
-		// Simple Field (reserved03)
-		reserved03 := uint8(m.GetReserved03())
-		_reserved03Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved03", 8, uint8((reserved03)))
-		if _reserved03Err != nil {
-			return errors.Wrap(_reserved03Err, "Error serializing 'reserved03' field")
+		if err := WriteSimpleField[uint8](ctx, "reserved03", m.GetReserved03(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved03' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse"); popErr != nil {

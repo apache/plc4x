@@ -168,28 +168,12 @@ func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for BACnetAddressBinding")
 	}
 
-	// Simple Field (deviceIdentifier)
-	if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
-	}
-	_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceIdentifier())
-	if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for deviceIdentifier")
-	}
-	if _deviceIdentifierErr != nil {
-		return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
+	if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", m.GetDeviceIdentifier(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 	}
 
-	// Simple Field (deviceAddress)
-	if pushErr := writeBuffer.PushContext("deviceAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for deviceAddress")
-	}
-	_deviceAddressErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceAddress())
-	if popErr := writeBuffer.PopContext("deviceAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for deviceAddress")
-	}
-	if _deviceAddressErr != nil {
-		return errors.Wrap(_deviceAddressErr, "Error serializing 'deviceAddress' field")
+	if err := WriteSimpleField[BACnetAddress](ctx, "deviceAddress", m.GetDeviceAddress(), WriteComplex[BACnetAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceAddress' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAddressBinding"); popErr != nil {

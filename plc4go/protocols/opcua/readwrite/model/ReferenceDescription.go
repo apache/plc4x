@@ -296,87 +296,36 @@ func (m *_ReferenceDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ReferenceDescription")
 		}
 
-		// Simple Field (referenceTypeId)
-		if pushErr := writeBuffer.PushContext("referenceTypeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referenceTypeId")
-		}
-		_referenceTypeIdErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceTypeId())
-		if popErr := writeBuffer.PopContext("referenceTypeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referenceTypeId")
-		}
-		if _referenceTypeIdErr != nil {
-			return errors.Wrap(_referenceTypeIdErr, "Error serializing 'referenceTypeId' field")
+		if err := WriteSimpleField[NodeId](ctx, "referenceTypeId", m.GetReferenceTypeId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referenceTypeId' field")
 		}
 
 		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 7)); err != nil {
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (isForward)
-		isForward := bool(m.GetIsForward())
-		_isForwardErr := /*TODO: migrate me*/ writeBuffer.WriteBit("isForward", (isForward))
-		if _isForwardErr != nil {
-			return errors.Wrap(_isForwardErr, "Error serializing 'isForward' field")
+		if err := WriteSimpleField[bool](ctx, "isForward", m.GetIsForward(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'isForward' field")
 		}
 
-		// Simple Field (nodeId)
-		if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeId")
-		}
-		_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-		if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeId")
-		}
-		if _nodeIdErr != nil {
-			return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "nodeId", m.GetNodeId(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeId' field")
 		}
 
-		// Simple Field (browseName)
-		if pushErr := writeBuffer.PushContext("browseName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for browseName")
-		}
-		_browseNameErr := writeBuffer.WriteSerializable(ctx, m.GetBrowseName())
-		if popErr := writeBuffer.PopContext("browseName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for browseName")
-		}
-		if _browseNameErr != nil {
-			return errors.Wrap(_browseNameErr, "Error serializing 'browseName' field")
+		if err := WriteSimpleField[QualifiedName](ctx, "browseName", m.GetBrowseName(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'browseName' field")
 		}
 
-		// Simple Field (displayName)
-		if pushErr := writeBuffer.PushContext("displayName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for displayName")
-		}
-		_displayNameErr := writeBuffer.WriteSerializable(ctx, m.GetDisplayName())
-		if popErr := writeBuffer.PopContext("displayName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for displayName")
-		}
-		if _displayNameErr != nil {
-			return errors.Wrap(_displayNameErr, "Error serializing 'displayName' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "displayName", m.GetDisplayName(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'displayName' field")
 		}
 
-		// Simple Field (nodeClass)
-		if pushErr := writeBuffer.PushContext("nodeClass"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeClass")
-		}
-		_nodeClassErr := writeBuffer.WriteSerializable(ctx, m.GetNodeClass())
-		if popErr := writeBuffer.PopContext("nodeClass"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeClass")
-		}
-		if _nodeClassErr != nil {
-			return errors.Wrap(_nodeClassErr, "Error serializing 'nodeClass' field")
+		if err := WriteSimpleEnumField[NodeClass](ctx, "nodeClass", "NodeClass", m.GetNodeClass(), WriteEnum[NodeClass, uint32](NodeClass.GetValue, NodeClass.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeClass' field")
 		}
 
-		// Simple Field (typeDefinition)
-		if pushErr := writeBuffer.PushContext("typeDefinition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for typeDefinition")
-		}
-		_typeDefinitionErr := writeBuffer.WriteSerializable(ctx, m.GetTypeDefinition())
-		if popErr := writeBuffer.PopContext("typeDefinition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for typeDefinition")
-		}
-		if _typeDefinitionErr != nil {
-			return errors.Wrap(_typeDefinitionErr, "Error serializing 'typeDefinition' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "typeDefinition", m.GetTypeDefinition(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'typeDefinition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ReferenceDescription"); popErr != nil {

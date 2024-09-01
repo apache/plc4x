@@ -306,45 +306,28 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for CallMethodResult")
 		}
 
-		// Simple Field (statusCode)
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, m.GetStatusCode())
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
+		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
 
-		// Simple Field (noOfInputArgumentResults)
-		noOfInputArgumentResults := int32(m.GetNoOfInputArgumentResults())
-		_noOfInputArgumentResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfInputArgumentResults", 32, int32((noOfInputArgumentResults)))
-		if _noOfInputArgumentResultsErr != nil {
-			return errors.Wrap(_noOfInputArgumentResultsErr, "Error serializing 'noOfInputArgumentResults' field")
+		if err := WriteSimpleField[int32](ctx, "noOfInputArgumentResults", m.GetNoOfInputArgumentResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfInputArgumentResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "inputArgumentResults", m.GetInputArgumentResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'inputArgumentResults' field")
 		}
 
-		// Simple Field (noOfInputArgumentDiagnosticInfos)
-		noOfInputArgumentDiagnosticInfos := int32(m.GetNoOfInputArgumentDiagnosticInfos())
-		_noOfInputArgumentDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfInputArgumentDiagnosticInfos", 32, int32((noOfInputArgumentDiagnosticInfos)))
-		if _noOfInputArgumentDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfInputArgumentDiagnosticInfosErr, "Error serializing 'noOfInputArgumentDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfInputArgumentDiagnosticInfos", m.GetNoOfInputArgumentDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfInputArgumentDiagnosticInfos' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "inputArgumentDiagnosticInfos", m.GetInputArgumentDiagnosticInfos(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'inputArgumentDiagnosticInfos' field")
 		}
 
-		// Simple Field (noOfOutputArguments)
-		noOfOutputArguments := int32(m.GetNoOfOutputArguments())
-		_noOfOutputArgumentsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfOutputArguments", 32, int32((noOfOutputArguments)))
-		if _noOfOutputArgumentsErr != nil {
-			return errors.Wrap(_noOfOutputArgumentsErr, "Error serializing 'noOfOutputArguments' field")
+		if err := WriteSimpleField[int32](ctx, "noOfOutputArguments", m.GetNoOfOutputArguments(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfOutputArguments' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "outputArguments", m.GetOutputArguments(), writeBuffer); err != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataSegmentationSupported) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSegmentationSupported")
 		}
 
-		// Simple Field (segmentationSupported)
-		if pushErr := writeBuffer.PushContext("segmentationSupported"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for segmentationSupported")
-		}
-		_segmentationSupportedErr := writeBuffer.WriteSerializable(ctx, m.GetSegmentationSupported())
-		if popErr := writeBuffer.PopContext("segmentationSupported"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for segmentationSupported")
-		}
-		if _segmentationSupportedErr != nil {
-			return errors.Wrap(_segmentationSupportedErr, "Error serializing 'segmentationSupported' field")
+		if err := WriteSimpleField[BACnetSegmentationTagged](ctx, "segmentationSupported", m.GetSegmentationSupported(), WriteComplex[BACnetSegmentationTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentationSupported' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

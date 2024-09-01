@@ -200,23 +200,12 @@ func (m *_BrowsePathTarget) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for BrowsePathTarget")
 		}
 
-		// Simple Field (targetId)
-		if pushErr := writeBuffer.PushContext("targetId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetId")
-		}
-		_targetIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetId())
-		if popErr := writeBuffer.PopContext("targetId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetId")
-		}
-		if _targetIdErr != nil {
-			return errors.Wrap(_targetIdErr, "Error serializing 'targetId' field")
+		if err := WriteSimpleField[ExpandedNodeId](ctx, "targetId", m.GetTargetId(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'targetId' field")
 		}
 
-		// Simple Field (remainingPathIndex)
-		remainingPathIndex := uint32(m.GetRemainingPathIndex())
-		_remainingPathIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("remainingPathIndex", 32, uint32((remainingPathIndex)))
-		if _remainingPathIndexErr != nil {
-			return errors.Wrap(_remainingPathIndexErr, "Error serializing 'remainingPathIndex' field")
+		if err := WriteSimpleField[uint32](ctx, "remainingPathIndex", m.GetRemainingPathIndex(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'remainingPathIndex' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BrowsePathTarget"); popErr != nil {

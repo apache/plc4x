@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaxFailedAttempts")
 		}
 
-		// Simple Field (maxFailedAttempts)
-		if pushErr := writeBuffer.PushContext("maxFailedAttempts"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxFailedAttempts")
-		}
-		_maxFailedAttemptsErr := writeBuffer.WriteSerializable(ctx, m.GetMaxFailedAttempts())
-		if popErr := writeBuffer.PopContext("maxFailedAttempts"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxFailedAttempts")
-		}
-		if _maxFailedAttemptsErr != nil {
-			return errors.Wrap(_maxFailedAttemptsErr, "Error serializing 'maxFailedAttempts' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxFailedAttempts", m.GetMaxFailedAttempts(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxFailedAttempts' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIPDHCPEnable) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPDHCPEnable")
 		}
 
-		// Simple Field (ipDhcpEnable)
-		if pushErr := writeBuffer.PushContext("ipDhcpEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipDhcpEnable")
-		}
-		_ipDhcpEnableErr := writeBuffer.WriteSerializable(ctx, m.GetIpDhcpEnable())
-		if popErr := writeBuffer.PopContext("ipDhcpEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipDhcpEnable")
-		}
-		if _ipDhcpEnableErr != nil {
-			return errors.Wrap(_ipDhcpEnableErr, "Error serializing 'ipDhcpEnable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "ipDhcpEnable", m.GetIpDhcpEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipDhcpEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

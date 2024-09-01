@@ -234,35 +234,16 @@ func (m *_APDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
-		if _originalInvokeIdErr != nil {
-			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
+		if err := WriteSimpleField[uint8](ctx, "originalInvokeId", m.GetOriginalInvokeId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalInvokeId' field")
 		}
 
-		// Simple Field (errorChoice)
-		if pushErr := writeBuffer.PushContext("errorChoice"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorChoice")
-		}
-		_errorChoiceErr := writeBuffer.WriteSerializable(ctx, m.GetErrorChoice())
-		if popErr := writeBuffer.PopContext("errorChoice"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorChoice")
-		}
-		if _errorChoiceErr != nil {
-			return errors.Wrap(_errorChoiceErr, "Error serializing 'errorChoice' field")
+		if err := WriteSimpleEnumField[BACnetConfirmedServiceChoice](ctx, "errorChoice", "BACnetConfirmedServiceChoice", m.GetErrorChoice(), WriteEnum[BACnetConfirmedServiceChoice, uint8](BACnetConfirmedServiceChoice.GetValue, BACnetConfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorChoice' field")
 		}
 
-		// Simple Field (error)
-		if pushErr := writeBuffer.PushContext("error"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for error")
-		}
-		_errorErr := writeBuffer.WriteSerializable(ctx, m.GetError())
-		if popErr := writeBuffer.PopContext("error"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for error")
-		}
-		if _errorErr != nil {
-			return errors.Wrap(_errorErr, "Error serializing 'error' field")
+		if err := WriteSimpleField[BACnetError](ctx, "error", m.GetError(), WriteComplex[BACnetError](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'error' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUError"); popErr != nil {

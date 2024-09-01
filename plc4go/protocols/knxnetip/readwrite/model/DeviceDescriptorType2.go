@@ -296,94 +296,44 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for DeviceDescriptorType2")
 	}
 
-	// Simple Field (manufacturerId)
-	manufacturerId := uint16(m.GetManufacturerId())
-	_manufacturerIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("manufacturerId", 16, uint16((manufacturerId)))
-	if _manufacturerIdErr != nil {
-		return errors.Wrap(_manufacturerIdErr, "Error serializing 'manufacturerId' field")
+	if err := WriteSimpleField[uint16](ctx, "manufacturerId", m.GetManufacturerId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'manufacturerId' field")
 	}
 
-	// Simple Field (deviceType)
-	deviceType := uint16(m.GetDeviceType())
-	_deviceTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("deviceType", 16, uint16((deviceType)))
-	if _deviceTypeErr != nil {
-		return errors.Wrap(_deviceTypeErr, "Error serializing 'deviceType' field")
+	if err := WriteSimpleField[uint16](ctx, "deviceType", m.GetDeviceType(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceType' field")
 	}
 
-	// Simple Field (version)
-	version := uint8(m.GetVersion())
-	_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("version", 8, uint8((version)))
-	if _versionErr != nil {
-		return errors.Wrap(_versionErr, "Error serializing 'version' field")
+	if err := WriteSimpleField[uint8](ctx, "version", m.GetVersion(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'version' field")
 	}
 
-	// Simple Field (readSupported)
-	readSupported := bool(m.GetReadSupported())
-	_readSupportedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("readSupported", (readSupported))
-	if _readSupportedErr != nil {
-		return errors.Wrap(_readSupportedErr, "Error serializing 'readSupported' field")
+	if err := WriteSimpleField[bool](ctx, "readSupported", m.GetReadSupported(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'readSupported' field")
 	}
 
-	// Simple Field (writeSupported)
-	writeSupported := bool(m.GetWriteSupported())
-	_writeSupportedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("writeSupported", (writeSupported))
-	if _writeSupportedErr != nil {
-		return errors.Wrap(_writeSupportedErr, "Error serializing 'writeSupported' field")
+	if err := WriteSimpleField[bool](ctx, "writeSupported", m.GetWriteSupported(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'writeSupported' field")
 	}
 
-	// Simple Field (logicalTagBase)
-	logicalTagBase := uint8(m.GetLogicalTagBase())
-	_logicalTagBaseErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("logicalTagBase", 6, uint8((logicalTagBase)))
-	if _logicalTagBaseErr != nil {
-		return errors.Wrap(_logicalTagBaseErr, "Error serializing 'logicalTagBase' field")
+	if err := WriteSimpleField[uint8](ctx, "logicalTagBase", m.GetLogicalTagBase(), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+		return errors.Wrap(err, "Error serializing 'logicalTagBase' field")
 	}
 
-	// Simple Field (channelInfo1)
-	if pushErr := writeBuffer.PushContext("channelInfo1"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for channelInfo1")
-	}
-	_channelInfo1Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo1())
-	if popErr := writeBuffer.PopContext("channelInfo1"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for channelInfo1")
-	}
-	if _channelInfo1Err != nil {
-		return errors.Wrap(_channelInfo1Err, "Error serializing 'channelInfo1' field")
+	if err := WriteSimpleField[ChannelInformation](ctx, "channelInfo1", m.GetChannelInfo1(), WriteComplex[ChannelInformation](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'channelInfo1' field")
 	}
 
-	// Simple Field (channelInfo2)
-	if pushErr := writeBuffer.PushContext("channelInfo2"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for channelInfo2")
-	}
-	_channelInfo2Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo2())
-	if popErr := writeBuffer.PopContext("channelInfo2"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for channelInfo2")
-	}
-	if _channelInfo2Err != nil {
-		return errors.Wrap(_channelInfo2Err, "Error serializing 'channelInfo2' field")
+	if err := WriteSimpleField[ChannelInformation](ctx, "channelInfo2", m.GetChannelInfo2(), WriteComplex[ChannelInformation](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'channelInfo2' field")
 	}
 
-	// Simple Field (channelInfo3)
-	if pushErr := writeBuffer.PushContext("channelInfo3"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for channelInfo3")
-	}
-	_channelInfo3Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo3())
-	if popErr := writeBuffer.PopContext("channelInfo3"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for channelInfo3")
-	}
-	if _channelInfo3Err != nil {
-		return errors.Wrap(_channelInfo3Err, "Error serializing 'channelInfo3' field")
+	if err := WriteSimpleField[ChannelInformation](ctx, "channelInfo3", m.GetChannelInfo3(), WriteComplex[ChannelInformation](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'channelInfo3' field")
 	}
 
-	// Simple Field (channelInfo4)
-	if pushErr := writeBuffer.PushContext("channelInfo4"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for channelInfo4")
-	}
-	_channelInfo4Err := writeBuffer.WriteSerializable(ctx, m.GetChannelInfo4())
-	if popErr := writeBuffer.PopContext("channelInfo4"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for channelInfo4")
-	}
-	if _channelInfo4Err != nil {
-		return errors.Wrap(_channelInfo4Err, "Error serializing 'channelInfo4' field")
+	if err := WriteSimpleField[ChannelInformation](ctx, "channelInfo4", m.GetChannelInfo4(), WriteComplex[ChannelInformation](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'channelInfo4' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DeviceDescriptorType2"); popErr != nil {

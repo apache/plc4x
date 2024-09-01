@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataVarianceValue) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVarianceValue")
 		}
 
-		// Simple Field (varianceValue)
-		if pushErr := writeBuffer.PushContext("varianceValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for varianceValue")
-		}
-		_varianceValueErr := writeBuffer.WriteSerializable(ctx, m.GetVarianceValue())
-		if popErr := writeBuffer.PopContext("varianceValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for varianceValue")
-		}
-		if _varianceValueErr != nil {
-			return errors.Wrap(_varianceValueErr, "Error serializing 'varianceValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "varianceValue", m.GetVarianceValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'varianceValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

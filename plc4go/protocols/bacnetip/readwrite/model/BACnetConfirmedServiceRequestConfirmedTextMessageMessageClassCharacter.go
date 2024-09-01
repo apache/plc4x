@@ -185,16 +185,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
 		}
 
-		// Simple Field (characterValue)
-		if pushErr := writeBuffer.PushContext("characterValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for characterValue")
-		}
-		_characterValueErr := writeBuffer.WriteSerializable(ctx, m.GetCharacterValue())
-		if popErr := writeBuffer.PopContext("characterValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for characterValue")
-		}
-		if _characterValueErr != nil {
-			return errors.Wrap(_characterValueErr, "Error serializing 'characterValue' field")
+		if err := WriteSimpleField[BACnetContextTagCharacterString](ctx, "characterValue", m.GetCharacterValue(), WriteComplex[BACnetContextTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'characterValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"); popErr != nil {

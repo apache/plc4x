@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataUTCOffset) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUTCOffset")
 		}
 
-		// Simple Field (utcOffset)
-		if pushErr := writeBuffer.PushContext("utcOffset"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for utcOffset")
-		}
-		_utcOffsetErr := writeBuffer.WriteSerializable(ctx, m.GetUtcOffset())
-		if popErr := writeBuffer.PopContext("utcOffset"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for utcOffset")
-		}
-		if _utcOffsetErr != nil {
-			return errors.Wrap(_utcOffsetErr, "Error serializing 'utcOffset' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "utcOffset", m.GetUtcOffset(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'utcOffset' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

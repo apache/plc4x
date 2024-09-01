@@ -198,11 +198,8 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (connectionId)
-		connectionId := uint32(m.GetConnectionId())
-		_connectionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("connectionId", 32, uint32((connectionId)))
-		if _connectionIdErr != nil {
-			return errors.Wrap(_connectionIdErr, "Error serializing 'connectionId' field")
+		if err := WriteSimpleField[uint32](ctx, "connectionId", m.GetConnectionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectedAddressItem"); popErr != nil {

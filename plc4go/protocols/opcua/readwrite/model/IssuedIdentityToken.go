@@ -200,28 +200,12 @@ func (m *_IssuedIdentityToken) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for IssuedIdentityToken")
 		}
 
-		// Simple Field (tokenData)
-		if pushErr := writeBuffer.PushContext("tokenData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for tokenData")
-		}
-		_tokenDataErr := writeBuffer.WriteSerializable(ctx, m.GetTokenData())
-		if popErr := writeBuffer.PopContext("tokenData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for tokenData")
-		}
-		if _tokenDataErr != nil {
-			return errors.Wrap(_tokenDataErr, "Error serializing 'tokenData' field")
+		if err := WriteSimpleField[PascalByteString](ctx, "tokenData", m.GetTokenData(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tokenData' field")
 		}
 
-		// Simple Field (encryptionAlgorithm)
-		if pushErr := writeBuffer.PushContext("encryptionAlgorithm"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for encryptionAlgorithm")
-		}
-		_encryptionAlgorithmErr := writeBuffer.WriteSerializable(ctx, m.GetEncryptionAlgorithm())
-		if popErr := writeBuffer.PopContext("encryptionAlgorithm"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for encryptionAlgorithm")
-		}
-		if _encryptionAlgorithmErr != nil {
-			return errors.Wrap(_encryptionAlgorithmErr, "Error serializing 'encryptionAlgorithm' field")
+		if err := WriteSimpleField[PascalString](ctx, "encryptionAlgorithm", m.GetEncryptionAlgorithm(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'encryptionAlgorithm' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IssuedIdentityToken"); popErr != nil {

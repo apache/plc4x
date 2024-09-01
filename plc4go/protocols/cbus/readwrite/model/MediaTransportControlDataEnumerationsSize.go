@@ -289,11 +289,8 @@ func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataEnumerationsSize")
 		}
 
-		// Simple Field (sizeType)
-		sizeType := byte(m.GetSizeType())
-		_sizeTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("sizeType", (sizeType))
-		if _sizeTypeErr != nil {
-			return errors.Wrap(_sizeTypeErr, "Error serializing 'sizeType' field")
+		if err := WriteSimpleField[byte](ctx, "sizeType", m.GetSizeType(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sizeType' field")
 		}
 		// Virtual field
 		isListCategories := m.GetIsListCategories()
@@ -320,18 +317,12 @@ func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 
-		// Simple Field (start)
-		start := uint8(m.GetStart())
-		_startErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("start", 8, uint8((start)))
-		if _startErr != nil {
-			return errors.Wrap(_startErr, "Error serializing 'start' field")
+		if err := WriteSimpleField[uint8](ctx, "start", m.GetStart(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'start' field")
 		}
 
-		// Simple Field (size)
-		size := uint8(m.GetSize())
-		_sizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("size", 8, uint8((size)))
-		if _sizeErr != nil {
-			return errors.Wrap(_sizeErr, "Error serializing 'size' field")
+		if err := WriteSimpleField[uint8](ctx, "size", m.GetSize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'size' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataEnumerationsSize"); popErr != nil {

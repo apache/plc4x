@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesZoneOccupanyState")
 		}
 
-		// Simple Field (zoneOccupanyState)
-		if pushErr := writeBuffer.PushContext("zoneOccupanyState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneOccupanyState")
-		}
-		_zoneOccupanyStateErr := writeBuffer.WriteSerializable(ctx, m.GetZoneOccupanyState())
-		if popErr := writeBuffer.PopContext("zoneOccupanyState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneOccupanyState")
-		}
-		if _zoneOccupanyStateErr != nil {
-			return errors.Wrap(_zoneOccupanyStateErr, "Error serializing 'zoneOccupanyState' field")
+		if err := WriteSimpleField[BACnetAccessZoneOccupancyStateTagged](ctx, "zoneOccupanyState", m.GetZoneOccupanyState(), WriteComplex[BACnetAccessZoneOccupancyStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneOccupanyState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesZoneOccupanyState"); popErr != nil {

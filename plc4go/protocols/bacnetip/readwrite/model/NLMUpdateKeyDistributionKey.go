@@ -202,23 +202,12 @@ func (m *_NLMUpdateKeyDistributionKey) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for NLMUpdateKeyDistributionKey")
 		}
 
-		// Simple Field (keyRevision)
-		keyRevision := byte(m.GetKeyRevision())
-		_keyRevisionErr := /*TODO: migrate me*/ writeBuffer.WriteByte("keyRevision", (keyRevision))
-		if _keyRevisionErr != nil {
-			return errors.Wrap(_keyRevisionErr, "Error serializing 'keyRevision' field")
+		if err := WriteSimpleField[byte](ctx, "keyRevision", m.GetKeyRevision(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'keyRevision' field")
 		}
 
-		// Simple Field (key)
-		if pushErr := writeBuffer.PushContext("key"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for key")
-		}
-		_keyErr := writeBuffer.WriteSerializable(ctx, m.GetKey())
-		if popErr := writeBuffer.PopContext("key"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for key")
-		}
-		if _keyErr != nil {
-			return errors.Wrap(_keyErr, "Error serializing 'key' field")
+		if err := WriteSimpleField[NLMUpdateKeyUpdateKeyEntry](ctx, "key", m.GetKey(), WriteComplex[NLMUpdateKeyUpdateKeyEntry](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'key' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMUpdateKeyDistributionKey"); popErr != nil {

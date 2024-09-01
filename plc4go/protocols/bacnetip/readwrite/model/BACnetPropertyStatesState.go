@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesState) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesState")
 		}
 
-		// Simple Field (state)
-		if pushErr := writeBuffer.PushContext("state"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for state")
-		}
-		_stateErr := writeBuffer.WriteSerializable(ctx, m.GetState())
-		if popErr := writeBuffer.PopContext("state"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for state")
-		}
-		if _stateErr != nil {
-			return errors.Wrap(_stateErr, "Error serializing 'state' field")
+		if err := WriteSimpleField[BACnetEventStateTagged](ctx, "state", m.GetState(), WriteComplex[BACnetEventStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'state' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesState"); popErr != nil {

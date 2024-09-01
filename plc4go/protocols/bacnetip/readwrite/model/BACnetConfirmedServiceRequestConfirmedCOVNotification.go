@@ -254,64 +254,24 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) SerializeWithWr
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedCOVNotification")
 		}
 
-		// Simple Field (subscriberProcessIdentifier)
-		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
-		}
-		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetSubscriberProcessIdentifier())
-		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
-		}
-		if _subscriberProcessIdentifierErr != nil {
-			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "subscriberProcessIdentifier", m.GetSubscriberProcessIdentifier(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
-		// Simple Field (initiatingDeviceIdentifier)
-		if pushErr := writeBuffer.PushContext("initiatingDeviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for initiatingDeviceIdentifier")
-		}
-		_initiatingDeviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetInitiatingDeviceIdentifier())
-		if popErr := writeBuffer.PopContext("initiatingDeviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for initiatingDeviceIdentifier")
-		}
-		if _initiatingDeviceIdentifierErr != nil {
-			return errors.Wrap(_initiatingDeviceIdentifierErr, "Error serializing 'initiatingDeviceIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "initiatingDeviceIdentifier", m.GetInitiatingDeviceIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'initiatingDeviceIdentifier' field")
 		}
 
-		// Simple Field (monitoredObjectIdentifier)
-		if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
-		}
-		_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredObjectIdentifier())
-		if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
-		}
-		if _monitoredObjectIdentifierErr != nil {
-			return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
+		if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "monitoredObjectIdentifier", m.GetMonitoredObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoredObjectIdentifier' field")
 		}
 
-		// Simple Field (lifetimeInSeconds)
-		if pushErr := writeBuffer.PushContext("lifetimeInSeconds"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lifetimeInSeconds")
-		}
-		_lifetimeInSecondsErr := writeBuffer.WriteSerializable(ctx, m.GetLifetimeInSeconds())
-		if popErr := writeBuffer.PopContext("lifetimeInSeconds"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lifetimeInSeconds")
-		}
-		if _lifetimeInSecondsErr != nil {
-			return errors.Wrap(_lifetimeInSecondsErr, "Error serializing 'lifetimeInSeconds' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "lifetimeInSeconds", m.GetLifetimeInSeconds(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lifetimeInSeconds' field")
 		}
 
-		// Simple Field (listOfValues)
-		if pushErr := writeBuffer.PushContext("listOfValues"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfValues")
-		}
-		_listOfValuesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfValues())
-		if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfValues")
-		}
-		if _listOfValuesErr != nil {
-			return errors.Wrap(_listOfValuesErr, "Error serializing 'listOfValues' field")
+		if err := WriteSimpleField[BACnetPropertyValues](ctx, "listOfValues", m.GetListOfValues(), WriteComplex[BACnetPropertyValues](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); popErr != nil {

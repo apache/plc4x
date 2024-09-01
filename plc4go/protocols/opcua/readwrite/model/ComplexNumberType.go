@@ -200,18 +200,12 @@ func (m *_ComplexNumberType) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ComplexNumberType")
 		}
 
-		// Simple Field (real)
-		real := float32(m.GetReal())
-		_realErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("real", 32, (real))
-		if _realErr != nil {
-			return errors.Wrap(_realErr, "Error serializing 'real' field")
+		if err := WriteSimpleField[float32](ctx, "real", m.GetReal(), WriteFloat(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'real' field")
 		}
 
-		// Simple Field (imaginary)
-		imaginary := float32(m.GetImaginary())
-		_imaginaryErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("imaginary", 32, (imaginary))
-		if _imaginaryErr != nil {
-			return errors.Wrap(_imaginaryErr, "Error serializing 'imaginary' field")
+		if err := WriteSimpleField[float32](ctx, "imaginary", m.GetImaginary(), WriteFloat(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'imaginary' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ComplexNumberType"); popErr != nil {

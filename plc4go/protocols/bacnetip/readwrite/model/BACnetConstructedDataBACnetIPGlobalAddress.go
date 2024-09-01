@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBACnetIPGlobalAddress")
 		}
 
-		// Simple Field (bacnetIpGlobalAddress)
-		if pushErr := writeBuffer.PushContext("bacnetIpGlobalAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bacnetIpGlobalAddress")
-		}
-		_bacnetIpGlobalAddressErr := writeBuffer.WriteSerializable(ctx, m.GetBacnetIpGlobalAddress())
-		if popErr := writeBuffer.PopContext("bacnetIpGlobalAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bacnetIpGlobalAddress")
-		}
-		if _bacnetIpGlobalAddressErr != nil {
-			return errors.Wrap(_bacnetIpGlobalAddressErr, "Error serializing 'bacnetIpGlobalAddress' field")
+		if err := WriteSimpleField[BACnetHostNPort](ctx, "bacnetIpGlobalAddress", m.GetBacnetIpGlobalAddress(), WriteComplex[BACnetHostNPort](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bacnetIpGlobalAddress' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

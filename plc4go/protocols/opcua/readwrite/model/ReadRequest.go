@@ -258,42 +258,20 @@ func (m *_ReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for ReadRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (maxAge)
-		maxAge := float64(m.GetMaxAge())
-		_maxAgeErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("maxAge", 64, (maxAge))
-		if _maxAgeErr != nil {
-			return errors.Wrap(_maxAgeErr, "Error serializing 'maxAge' field")
+		if err := WriteSimpleField[float64](ctx, "maxAge", m.GetMaxAge(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxAge' field")
 		}
 
-		// Simple Field (timestampsToReturn)
-		if pushErr := writeBuffer.PushContext("timestampsToReturn"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timestampsToReturn")
-		}
-		_timestampsToReturnErr := writeBuffer.WriteSerializable(ctx, m.GetTimestampsToReturn())
-		if popErr := writeBuffer.PopContext("timestampsToReturn"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timestampsToReturn")
-		}
-		if _timestampsToReturnErr != nil {
-			return errors.Wrap(_timestampsToReturnErr, "Error serializing 'timestampsToReturn' field")
+		if err := WriteSimpleEnumField[TimestampsToReturn](ctx, "timestampsToReturn", "TimestampsToReturn", m.GetTimestampsToReturn(), WriteEnum[TimestampsToReturn, uint32](TimestampsToReturn.GetValue, TimestampsToReturn.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'timestampsToReturn' field")
 		}
 
-		// Simple Field (noOfNodesToRead)
-		noOfNodesToRead := int32(m.GetNoOfNodesToRead())
-		_noOfNodesToReadErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToRead", 32, int32((noOfNodesToRead)))
-		if _noOfNodesToReadErr != nil {
-			return errors.Wrap(_noOfNodesToReadErr, "Error serializing 'noOfNodesToRead' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNodesToRead", m.GetNoOfNodesToRead(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNodesToRead' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "nodesToRead", m.GetNodesToRead(), writeBuffer); err != nil {

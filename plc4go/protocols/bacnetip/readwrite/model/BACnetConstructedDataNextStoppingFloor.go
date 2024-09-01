@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNextStoppingFloor")
 		}
 
-		// Simple Field (nextStoppingFloor)
-		if pushErr := writeBuffer.PushContext("nextStoppingFloor"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nextStoppingFloor")
-		}
-		_nextStoppingFloorErr := writeBuffer.WriteSerializable(ctx, m.GetNextStoppingFloor())
-		if popErr := writeBuffer.PopContext("nextStoppingFloor"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nextStoppingFloor")
-		}
-		if _nextStoppingFloorErr != nil {
-			return errors.Wrap(_nextStoppingFloorErr, "Error serializing 'nextStoppingFloor' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "nextStoppingFloor", m.GetNextStoppingFloor(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nextStoppingFloor' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

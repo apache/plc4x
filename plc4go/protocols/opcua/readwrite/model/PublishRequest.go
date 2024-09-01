@@ -224,23 +224,12 @@ func (m *_PublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for PublishRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (noOfSubscriptionAcknowledgements)
-		noOfSubscriptionAcknowledgements := int32(m.GetNoOfSubscriptionAcknowledgements())
-		_noOfSubscriptionAcknowledgementsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSubscriptionAcknowledgements", 32, int32((noOfSubscriptionAcknowledgements)))
-		if _noOfSubscriptionAcknowledgementsErr != nil {
-			return errors.Wrap(_noOfSubscriptionAcknowledgementsErr, "Error serializing 'noOfSubscriptionAcknowledgements' field")
+		if err := WriteSimpleField[int32](ctx, "noOfSubscriptionAcknowledgements", m.GetNoOfSubscriptionAcknowledgements(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfSubscriptionAcknowledgements' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "subscriptionAcknowledgements", m.GetSubscriptionAcknowledgements(), writeBuffer); err != nil {

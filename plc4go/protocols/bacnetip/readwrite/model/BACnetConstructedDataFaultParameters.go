@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataFaultParameters) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFaultParameters")
 		}
 
-		// Simple Field (faultParameters)
-		if pushErr := writeBuffer.PushContext("faultParameters"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for faultParameters")
-		}
-		_faultParametersErr := writeBuffer.WriteSerializable(ctx, m.GetFaultParameters())
-		if popErr := writeBuffer.PopContext("faultParameters"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for faultParameters")
-		}
-		if _faultParametersErr != nil {
-			return errors.Wrap(_faultParametersErr, "Error serializing 'faultParameters' field")
+		if err := WriteSimpleField[BACnetFaultParameter](ctx, "faultParameters", m.GetFaultParameters(), WriteComplex[BACnetFaultParameter](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'faultParameters' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

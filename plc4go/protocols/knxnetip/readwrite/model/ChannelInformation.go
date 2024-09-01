@@ -168,18 +168,12 @@ func (m *_ChannelInformation) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(pushErr, "Error pushing for ChannelInformation")
 	}
 
-	// Simple Field (numChannels)
-	numChannels := uint8(m.GetNumChannels())
-	_numChannelsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numChannels", 3, uint8((numChannels)))
-	if _numChannelsErr != nil {
-		return errors.Wrap(_numChannelsErr, "Error serializing 'numChannels' field")
+	if err := WriteSimpleField[uint8](ctx, "numChannels", m.GetNumChannels(), WriteUnsignedByte(writeBuffer, 3)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numChannels' field")
 	}
 
-	// Simple Field (channelCode)
-	channelCode := uint16(m.GetChannelCode())
-	_channelCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("channelCode", 13, uint16((channelCode)))
-	if _channelCodeErr != nil {
-		return errors.Wrap(_channelCodeErr, "Error serializing 'channelCode' field")
+	if err := WriteSimpleField[uint16](ctx, "channelCode", m.GetChannelCode(), WriteUnsignedShort(writeBuffer, 13)); err != nil {
+		return errors.Wrap(err, "Error serializing 'channelCode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ChannelInformation"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataEscalatorMode) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEscalatorMode")
 		}
 
-		// Simple Field (escalatorMode)
-		if pushErr := writeBuffer.PushContext("escalatorMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for escalatorMode")
-		}
-		_escalatorModeErr := writeBuffer.WriteSerializable(ctx, m.GetEscalatorMode())
-		if popErr := writeBuffer.PopContext("escalatorMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for escalatorMode")
-		}
-		if _escalatorModeErr != nil {
-			return errors.Wrap(_escalatorModeErr, "Error serializing 'escalatorMode' field")
+		if err := WriteSimpleField[BACnetEscalatorModeTagged](ctx, "escalatorMode", m.GetEscalatorMode(), WriteComplex[BACnetEscalatorModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'escalatorMode' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

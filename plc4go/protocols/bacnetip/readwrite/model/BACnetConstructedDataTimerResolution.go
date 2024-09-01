@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTimerResolution) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimerResolution")
 		}
 
-		// Simple Field (resolution)
-		if pushErr := writeBuffer.PushContext("resolution"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for resolution")
-		}
-		_resolutionErr := writeBuffer.WriteSerializable(ctx, m.GetResolution())
-		if popErr := writeBuffer.PopContext("resolution"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for resolution")
-		}
-		if _resolutionErr != nil {
-			return errors.Wrap(_resolutionErr, "Error serializing 'resolution' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "resolution", m.GetResolution(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'resolution' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

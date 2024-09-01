@@ -232,23 +232,12 @@ func (m *_StatusRequestLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
-		// Simple Field (application)
-		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for application")
-		}
-		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
-		if popErr := writeBuffer.PopContext("application"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for application")
-		}
-		if _applicationErr != nil {
-			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
+		if err := WriteSimpleEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", m.GetApplication(), WriteEnum[ApplicationIdContainer, uint8](ApplicationIdContainer.GetValue, ApplicationIdContainer.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'application' field")
 		}
 
-		// Simple Field (startingGroupAddressLabel)
-		startingGroupAddressLabel := byte(m.GetStartingGroupAddressLabel())
-		_startingGroupAddressLabelErr := /*TODO: migrate me*/ writeBuffer.WriteByte("startingGroupAddressLabel", (startingGroupAddressLabel))
-		if _startingGroupAddressLabelErr != nil {
-			return errors.Wrap(_startingGroupAddressLabelErr, "Error serializing 'startingGroupAddressLabel' field")
+		if err := WriteSimpleField[byte](ctx, "startingGroupAddressLabel", m.GetStartingGroupAddressLabel(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startingGroupAddressLabel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("StatusRequestLevel"); popErr != nil {

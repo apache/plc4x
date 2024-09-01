@@ -385,16 +385,8 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for NLMUpdateKeyUpdate")
 		}
 
-		// Simple Field (controlFlags)
-		if pushErr := writeBuffer.PushContext("controlFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for controlFlags")
-		}
-		_controlFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetControlFlags())
-		if popErr := writeBuffer.PopContext("controlFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for controlFlags")
-		}
-		if _controlFlagsErr != nil {
-			return errors.Wrap(_controlFlagsErr, "Error serializing 'controlFlags' field")
+		if err := WriteSimpleField[NLMUpdateKeyUpdateControlFlags](ctx, "controlFlags", m.GetControlFlags(), WriteComplex[NLMUpdateKeyUpdateControlFlags](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'controlFlags' field")
 		}
 
 		if err := WriteOptionalField[byte](ctx, "set1KeyRevision", m.GetSet1KeyRevision(), WriteByte(writeBuffer, 8), true); err != nil {

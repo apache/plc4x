@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAllWritesSuccessful")
 		}
 
-		// Simple Field (allWritesSuccessful)
-		if pushErr := writeBuffer.PushContext("allWritesSuccessful"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for allWritesSuccessful")
-		}
-		_allWritesSuccessfulErr := writeBuffer.WriteSerializable(ctx, m.GetAllWritesSuccessful())
-		if popErr := writeBuffer.PopContext("allWritesSuccessful"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for allWritesSuccessful")
-		}
-		if _allWritesSuccessfulErr != nil {
-			return errors.Wrap(_allWritesSuccessfulErr, "Error serializing 'allWritesSuccessful' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "allWritesSuccessful", m.GetAllWritesSuccessful(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'allWritesSuccessful' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

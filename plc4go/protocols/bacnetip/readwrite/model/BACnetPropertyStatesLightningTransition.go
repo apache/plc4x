@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesLightningTransition) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLightningTransition")
 		}
 
-		// Simple Field (lightningTransition)
-		if pushErr := writeBuffer.PushContext("lightningTransition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lightningTransition")
-		}
-		_lightningTransitionErr := writeBuffer.WriteSerializable(ctx, m.GetLightningTransition())
-		if popErr := writeBuffer.PopContext("lightningTransition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lightningTransition")
-		}
-		if _lightningTransitionErr != nil {
-			return errors.Wrap(_lightningTransitionErr, "Error serializing 'lightningTransition' field")
+		if err := WriteSimpleField[BACnetLightingTransitionTagged](ctx, "lightningTransition", m.GetLightningTransition(), WriteComplex[BACnetLightingTransitionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lightningTransition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLightningTransition"); popErr != nil {

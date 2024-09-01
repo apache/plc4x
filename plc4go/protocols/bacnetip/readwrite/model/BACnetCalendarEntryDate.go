@@ -181,16 +181,8 @@ func (m *_BACnetCalendarEntryDate) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BACnetCalendarEntryDate")
 		}
 
-		// Simple Field (dateValue)
-		if pushErr := writeBuffer.PushContext("dateValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dateValue")
-		}
-		_dateValueErr := writeBuffer.WriteSerializable(ctx, m.GetDateValue())
-		if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dateValue")
-		}
-		if _dateValueErr != nil {
-			return errors.Wrap(_dateValueErr, "Error serializing 'dateValue' field")
+		if err := WriteSimpleField[BACnetContextTagDate](ctx, "dateValue", m.GetDateValue(), WriteComplex[BACnetContextTagDate](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dateValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetCalendarEntryDate"); popErr != nil {

@@ -223,11 +223,8 @@ func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataShuffleOnOff")
 		}
 
-		// Simple Field (state)
-		state := byte(m.GetState())
-		_stateErr := /*TODO: migrate me*/ writeBuffer.WriteByte("state", (state))
-		if _stateErr != nil {
-			return errors.Wrap(_stateErr, "Error serializing 'state' field")
+		if err := WriteSimpleField[byte](ctx, "state", m.GetState(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'state' field")
 		}
 		// Virtual field
 		isOff := m.GetIsOff()

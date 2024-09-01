@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDaysRemaining) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDaysRemaining")
 		}
 
-		// Simple Field (daysRemaining)
-		if pushErr := writeBuffer.PushContext("daysRemaining"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for daysRemaining")
-		}
-		_daysRemainingErr := writeBuffer.WriteSerializable(ctx, m.GetDaysRemaining())
-		if popErr := writeBuffer.PopContext("daysRemaining"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for daysRemaining")
-		}
-		if _daysRemainingErr != nil {
-			return errors.Wrap(_daysRemainingErr, "Error serializing 'daysRemaining' field")
+		if err := WriteSimpleField[BACnetApplicationTagSignedInteger](ctx, "daysRemaining", m.GetDaysRemaining(), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'daysRemaining' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -225,27 +225,16 @@ func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for CBusCommandDeviceManagement")
 		}
 
-		// Simple Field (paramNo)
-		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for paramNo")
-		}
-		_paramNoErr := writeBuffer.WriteSerializable(ctx, m.GetParamNo())
-		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for paramNo")
-		}
-		if _paramNoErr != nil {
-			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
+		if err := WriteSimpleEnumField[Parameter](ctx, "paramNo", "Parameter", m.GetParamNo(), WriteEnum[Parameter, uint8](Parameter.GetValue, Parameter.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'paramNo' field")
 		}
 
 		if err := WriteConstField(ctx, "delimiter", CBusCommandDeviceManagement_DELIMITER, WriteByte(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'delimiter' field")
 		}
 
-		// Simple Field (parameterValue)
-		parameterValue := byte(m.GetParameterValue())
-		_parameterValueErr := /*TODO: migrate me*/ writeBuffer.WriteByte("parameterValue", (parameterValue))
-		if _parameterValueErr != nil {
-			return errors.Wrap(_parameterValueErr, "Error serializing 'parameterValue' field")
+		if err := WriteSimpleField[byte](ctx, "parameterValue", m.GetParameterValue(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'parameterValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CBusCommandDeviceManagement"); popErr != nil {

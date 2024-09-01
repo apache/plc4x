@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAbsenteeLimit) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAbsenteeLimit")
 		}
 
-		// Simple Field (absenteeLimit)
-		if pushErr := writeBuffer.PushContext("absenteeLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for absenteeLimit")
-		}
-		_absenteeLimitErr := writeBuffer.WriteSerializable(ctx, m.GetAbsenteeLimit())
-		if popErr := writeBuffer.PopContext("absenteeLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for absenteeLimit")
-		}
-		if _absenteeLimitErr != nil {
-			return errors.Wrap(_absenteeLimitErr, "Error serializing 'absenteeLimit' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "absenteeLimit", m.GetAbsenteeLimit(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'absenteeLimit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

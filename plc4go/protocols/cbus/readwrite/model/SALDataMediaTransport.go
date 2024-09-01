@@ -185,16 +185,8 @@ func (m *_SALDataMediaTransport) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for SALDataMediaTransport")
 		}
 
-		// Simple Field (mediaTransportControlData)
-		if pushErr := writeBuffer.PushContext("mediaTransportControlData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for mediaTransportControlData")
-		}
-		_mediaTransportControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetMediaTransportControlData())
-		if popErr := writeBuffer.PopContext("mediaTransportControlData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for mediaTransportControlData")
-		}
-		if _mediaTransportControlDataErr != nil {
-			return errors.Wrap(_mediaTransportControlDataErr, "Error serializing 'mediaTransportControlData' field")
+		if err := WriteSimpleField[MediaTransportControlData](ctx, "mediaTransportControlData", m.GetMediaTransportControlData(), WriteComplex[MediaTransportControlData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'mediaTransportControlData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataMediaTransport"); popErr != nil {

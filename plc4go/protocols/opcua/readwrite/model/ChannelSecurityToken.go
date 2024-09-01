@@ -234,32 +234,20 @@ func (m *_ChannelSecurityToken) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ChannelSecurityToken")
 		}
 
-		// Simple Field (channelId)
-		channelId := uint32(m.GetChannelId())
-		_channelIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("channelId", 32, uint32((channelId)))
-		if _channelIdErr != nil {
-			return errors.Wrap(_channelIdErr, "Error serializing 'channelId' field")
+		if err := WriteSimpleField[uint32](ctx, "channelId", m.GetChannelId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'channelId' field")
 		}
 
-		// Simple Field (tokenId)
-		tokenId := uint32(m.GetTokenId())
-		_tokenIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("tokenId", 32, uint32((tokenId)))
-		if _tokenIdErr != nil {
-			return errors.Wrap(_tokenIdErr, "Error serializing 'tokenId' field")
+		if err := WriteSimpleField[uint32](ctx, "tokenId", m.GetTokenId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tokenId' field")
 		}
 
-		// Simple Field (createdAt)
-		createdAt := int64(m.GetCreatedAt())
-		_createdAtErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("createdAt", 64, int64((createdAt)))
-		if _createdAtErr != nil {
-			return errors.Wrap(_createdAtErr, "Error serializing 'createdAt' field")
+		if err := WriteSimpleField[int64](ctx, "createdAt", m.GetCreatedAt(), WriteSignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'createdAt' field")
 		}
 
-		// Simple Field (revisedLifetime)
-		revisedLifetime := uint32(m.GetRevisedLifetime())
-		_revisedLifetimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("revisedLifetime", 32, uint32((revisedLifetime)))
-		if _revisedLifetimeErr != nil {
-			return errors.Wrap(_revisedLifetimeErr, "Error serializing 'revisedLifetime' field")
+		if err := WriteSimpleField[uint32](ctx, "revisedLifetime", m.GetRevisedLifetime(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedLifetime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ChannelSecurityToken"); popErr != nil {

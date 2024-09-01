@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesLightningOperation) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLightningOperation")
 		}
 
-		// Simple Field (lightningOperation)
-		if pushErr := writeBuffer.PushContext("lightningOperation"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lightningOperation")
-		}
-		_lightningOperationErr := writeBuffer.WriteSerializable(ctx, m.GetLightningOperation())
-		if popErr := writeBuffer.PopContext("lightningOperation"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lightningOperation")
-		}
-		if _lightningOperationErr != nil {
-			return errors.Wrap(_lightningOperationErr, "Error serializing 'lightningOperation' field")
+		if err := WriteSimpleField[BACnetLightingOperationTagged](ctx, "lightningOperation", m.GetLightningOperation(), WriteComplex[BACnetLightingOperationTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lightningOperation' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLightningOperation"); popErr != nil {

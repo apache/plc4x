@@ -199,16 +199,8 @@ func (pm *_Payload) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(pushErr, "Error pushing for Payload")
 	}
 
-	// Simple Field (sequenceHeader)
-	if pushErr := writeBuffer.PushContext("sequenceHeader"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for sequenceHeader")
-	}
-	_sequenceHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetSequenceHeader())
-	if popErr := writeBuffer.PopContext("sequenceHeader"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for sequenceHeader")
-	}
-	if _sequenceHeaderErr != nil {
-		return errors.Wrap(_sequenceHeaderErr, "Error serializing 'sequenceHeader' field")
+	if err := WriteSimpleField[SequenceHeader](ctx, "sequenceHeader", m.GetSequenceHeader(), WriteComplex[SequenceHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sequenceHeader' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

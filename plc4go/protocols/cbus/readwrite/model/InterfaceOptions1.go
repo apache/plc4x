@@ -257,50 +257,32 @@ func (m *_InterfaceOptions1) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (idmon)
-	idmon := bool(m.GetIdmon())
-	_idmonErr := /*TODO: migrate me*/ writeBuffer.WriteBit("idmon", (idmon))
-	if _idmonErr != nil {
-		return errors.Wrap(_idmonErr, "Error serializing 'idmon' field")
+	if err := WriteSimpleField[bool](ctx, "idmon", m.GetIdmon(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'idmon' field")
 	}
 
-	// Simple Field (monitor)
-	monitor := bool(m.GetMonitor())
-	_monitorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("monitor", (monitor))
-	if _monitorErr != nil {
-		return errors.Wrap(_monitorErr, "Error serializing 'monitor' field")
+	if err := WriteSimpleField[bool](ctx, "monitor", m.GetMonitor(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monitor' field")
 	}
 
-	// Simple Field (smart)
-	smart := bool(m.GetSmart())
-	_smartErr := /*TODO: migrate me*/ writeBuffer.WriteBit("smart", (smart))
-	if _smartErr != nil {
-		return errors.Wrap(_smartErr, "Error serializing 'smart' field")
+	if err := WriteSimpleField[bool](ctx, "smart", m.GetSmart(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'smart' field")
 	}
 
-	// Simple Field (srchk)
-	srchk := bool(m.GetSrchk())
-	_srchkErr := /*TODO: migrate me*/ writeBuffer.WriteBit("srchk", (srchk))
-	if _srchkErr != nil {
-		return errors.Wrap(_srchkErr, "Error serializing 'srchk' field")
+	if err := WriteSimpleField[bool](ctx, "srchk", m.GetSrchk(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'srchk' field")
 	}
 
-	// Simple Field (xonXoff)
-	xonXoff := bool(m.GetXonXoff())
-	_xonXoffErr := /*TODO: migrate me*/ writeBuffer.WriteBit("xonXoff", (xonXoff))
-	if _xonXoffErr != nil {
-		return errors.Wrap(_xonXoffErr, "Error serializing 'xonXoff' field")
+	if err := WriteSimpleField[bool](ctx, "xonXoff", m.GetXonXoff(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'xonXoff' field")
 	}
 
 	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
 		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 
-	// Simple Field (connect)
-	connect := bool(m.GetConnect())
-	_connectErr := /*TODO: migrate me*/ writeBuffer.WriteBit("connect", (connect))
-	if _connectErr != nil {
-		return errors.Wrap(_connectErr, "Error serializing 'connect' field")
+	if err := WriteSimpleField[bool](ctx, "connect", m.GetConnect(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'connect' field")
 	}
 
 	if popErr := writeBuffer.PopContext("InterfaceOptions1"); popErr != nil {

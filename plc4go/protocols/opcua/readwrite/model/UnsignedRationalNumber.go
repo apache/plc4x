@@ -200,18 +200,12 @@ func (m *_UnsignedRationalNumber) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for UnsignedRationalNumber")
 		}
 
-		// Simple Field (numerator)
-		numerator := uint32(m.GetNumerator())
-		_numeratorErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("numerator", 32, uint32((numerator)))
-		if _numeratorErr != nil {
-			return errors.Wrap(_numeratorErr, "Error serializing 'numerator' field")
+		if err := WriteSimpleField[uint32](ctx, "numerator", m.GetNumerator(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numerator' field")
 		}
 
-		// Simple Field (denominator)
-		denominator := uint32(m.GetDenominator())
-		_denominatorErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("denominator", 32, uint32((denominator)))
-		if _denominatorErr != nil {
-			return errors.Wrap(_denominatorErr, "Error serializing 'denominator' field")
+		if err := WriteSimpleField[uint32](ctx, "denominator", m.GetDenominator(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'denominator' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UnsignedRationalNumber"); popErr != nil {

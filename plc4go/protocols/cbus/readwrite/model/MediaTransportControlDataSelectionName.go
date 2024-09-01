@@ -182,11 +182,8 @@ func (m *_MediaTransportControlDataSelectionName) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataSelectionName")
 		}
 
-		// Simple Field (selectionName)
-		selectionName := string(m.GetSelectionName())
-		_selectionNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("selectionName", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (selectionName), utils.WithEncoding("UTF-8)"))
-		if _selectionNameErr != nil {
-			return errors.Wrap(_selectionNameErr, "Error serializing 'selectionName' field")
+		if err := WriteSimpleField[string](ctx, "selectionName", m.GetSelectionName(), WriteString(writeBuffer, int32(int32((int32(m.GetCommandTypeContainer().NumBytes())-int32(int32(1))))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'selectionName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataSelectionName"); popErr != nil {

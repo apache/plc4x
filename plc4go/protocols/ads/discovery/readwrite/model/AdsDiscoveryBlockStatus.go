@@ -212,16 +212,8 @@ func (m *_AdsDiscoveryBlockStatus) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(err, "Error serializing 'statusLength' field")
 		}
 
-		// Simple Field (status)
-		if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for status")
-		}
-		_statusErr := writeBuffer.WriteSerializable(ctx, m.GetStatus())
-		if popErr := writeBuffer.PopContext("status"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for status")
-		}
-		if _statusErr != nil {
-			return errors.Wrap(_statusErr, "Error serializing 'status' field")
+		if err := WriteSimpleEnumField[Status](ctx, "status", "Status", m.GetStatus(), WriteEnum[Status, uint32](Status.GetValue, Status.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'status' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDiscoveryBlockStatus"); popErr != nil {

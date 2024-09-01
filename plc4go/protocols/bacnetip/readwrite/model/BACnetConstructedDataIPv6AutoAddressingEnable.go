@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6AutoAddressingEnable")
 		}
 
-		// Simple Field (autoAddressingEnable)
-		if pushErr := writeBuffer.PushContext("autoAddressingEnable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for autoAddressingEnable")
-		}
-		_autoAddressingEnableErr := writeBuffer.WriteSerializable(ctx, m.GetAutoAddressingEnable())
-		if popErr := writeBuffer.PopContext("autoAddressingEnable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for autoAddressingEnable")
-		}
-		if _autoAddressingEnableErr != nil {
-			return errors.Wrap(_autoAddressingEnableErr, "Error serializing 'autoAddressingEnable' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "autoAddressingEnable", m.GetAutoAddressingEnable(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'autoAddressingEnable' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

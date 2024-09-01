@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataNumberOfAPDURetries")
 		}
 
-		// Simple Field (numberOfApduRetries)
-		if pushErr := writeBuffer.PushContext("numberOfApduRetries"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for numberOfApduRetries")
-		}
-		_numberOfApduRetriesErr := writeBuffer.WriteSerializable(ctx, m.GetNumberOfApduRetries())
-		if popErr := writeBuffer.PopContext("numberOfApduRetries"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for numberOfApduRetries")
-		}
-		if _numberOfApduRetriesErr != nil {
-			return errors.Wrap(_numberOfApduRetriesErr, "Error serializing 'numberOfApduRetries' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfApduRetries", m.GetNumberOfApduRetries(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfApduRetries' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

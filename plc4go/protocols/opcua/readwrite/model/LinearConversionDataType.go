@@ -234,32 +234,20 @@ func (m *_LinearConversionDataType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for LinearConversionDataType")
 		}
 
-		// Simple Field (initialAddend)
-		initialAddend := float32(m.GetInitialAddend())
-		_initialAddendErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("initialAddend", 32, (initialAddend))
-		if _initialAddendErr != nil {
-			return errors.Wrap(_initialAddendErr, "Error serializing 'initialAddend' field")
+		if err := WriteSimpleField[float32](ctx, "initialAddend", m.GetInitialAddend(), WriteFloat(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'initialAddend' field")
 		}
 
-		// Simple Field (multiplicand)
-		multiplicand := float32(m.GetMultiplicand())
-		_multiplicandErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("multiplicand", 32, (multiplicand))
-		if _multiplicandErr != nil {
-			return errors.Wrap(_multiplicandErr, "Error serializing 'multiplicand' field")
+		if err := WriteSimpleField[float32](ctx, "multiplicand", m.GetMultiplicand(), WriteFloat(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'multiplicand' field")
 		}
 
-		// Simple Field (divisor)
-		divisor := float32(m.GetDivisor())
-		_divisorErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("divisor", 32, (divisor))
-		if _divisorErr != nil {
-			return errors.Wrap(_divisorErr, "Error serializing 'divisor' field")
+		if err := WriteSimpleField[float32](ctx, "divisor", m.GetDivisor(), WriteFloat(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'divisor' field")
 		}
 
-		// Simple Field (finalAddend)
-		finalAddend := float32(m.GetFinalAddend())
-		_finalAddendErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("finalAddend", 32, (finalAddend))
-		if _finalAddendErr != nil {
-			return errors.Wrap(_finalAddendErr, "Error serializing 'finalAddend' field")
+		if err := WriteSimpleField[float32](ctx, "finalAddend", m.GetFinalAddend(), WriteFloat(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'finalAddend' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LinearConversionDataType"); popErr != nil {

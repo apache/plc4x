@@ -234,42 +234,20 @@ func (m *_CurrencyUnitType) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for CurrencyUnitType")
 		}
 
-		// Simple Field (numericCode)
-		numericCode := int16(m.GetNumericCode())
-		_numericCodeErr := /*TODO: migrate me*/ writeBuffer.WriteInt16("numericCode", 16, int16((numericCode)))
-		if _numericCodeErr != nil {
-			return errors.Wrap(_numericCodeErr, "Error serializing 'numericCode' field")
+		if err := WriteSimpleField[int16](ctx, "numericCode", m.GetNumericCode(), WriteSignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numericCode' field")
 		}
 
-		// Simple Field (exponent)
-		exponent := int8(m.GetExponent())
-		_exponentErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("exponent", 8, int8((exponent)))
-		if _exponentErr != nil {
-			return errors.Wrap(_exponentErr, "Error serializing 'exponent' field")
+		if err := WriteSimpleField[int8](ctx, "exponent", m.GetExponent(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'exponent' field")
 		}
 
-		// Simple Field (alphabeticCode)
-		if pushErr := writeBuffer.PushContext("alphabeticCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alphabeticCode")
-		}
-		_alphabeticCodeErr := writeBuffer.WriteSerializable(ctx, m.GetAlphabeticCode())
-		if popErr := writeBuffer.PopContext("alphabeticCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alphabeticCode")
-		}
-		if _alphabeticCodeErr != nil {
-			return errors.Wrap(_alphabeticCodeErr, "Error serializing 'alphabeticCode' field")
+		if err := WriteSimpleField[PascalString](ctx, "alphabeticCode", m.GetAlphabeticCode(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'alphabeticCode' field")
 		}
 
-		// Simple Field (currency)
-		if pushErr := writeBuffer.PushContext("currency"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for currency")
-		}
-		_currencyErr := writeBuffer.WriteSerializable(ctx, m.GetCurrency())
-		if popErr := writeBuffer.PopContext("currency"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for currency")
-		}
-		if _currencyErr != nil {
-			return errors.Wrap(_currencyErr, "Error serializing 'currency' field")
+		if err := WriteSimpleField[LocalizedText](ctx, "currency", m.GetCurrency(), WriteComplex[LocalizedText](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currency' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CurrencyUnitType"); popErr != nil {

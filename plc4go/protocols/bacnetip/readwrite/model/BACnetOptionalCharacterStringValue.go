@@ -181,16 +181,8 @@ func (m *_BACnetOptionalCharacterStringValue) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetOptionalCharacterStringValue")
 		}
 
-		// Simple Field (characterstring)
-		if pushErr := writeBuffer.PushContext("characterstring"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for characterstring")
-		}
-		_characterstringErr := writeBuffer.WriteSerializable(ctx, m.GetCharacterstring())
-		if popErr := writeBuffer.PopContext("characterstring"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for characterstring")
-		}
-		if _characterstringErr != nil {
-			return errors.Wrap(_characterstringErr, "Error serializing 'characterstring' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "characterstring", m.GetCharacterstring(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'characterstring' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetOptionalCharacterStringValue"); popErr != nil {

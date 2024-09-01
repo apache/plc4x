@@ -454,23 +454,12 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for BACnetWeekNDayTagged")
 	}
 
-	// Simple Field (header)
-	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for header")
-	}
-	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
-	if popErr := writeBuffer.PopContext("header"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for header")
-	}
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteSimpleField[BACnetTagHeader](ctx, "header", m.GetHeader(), WriteComplex[BACnetTagHeader](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
-	// Simple Field (month)
-	month := uint8(m.GetMonth())
-	_monthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 8, uint8((month)))
-	if _monthErr != nil {
-		return errors.Wrap(_monthErr, "Error serializing 'month' field")
+	if err := WriteSimpleField[uint8](ctx, "month", m.GetMonth(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'month' field")
 	}
 	// Virtual field
 	oddMonths := m.GetOddMonths()
@@ -491,11 +480,8 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_anyMonthErr, "Error serializing 'anyMonth' field")
 	}
 
-	// Simple Field (weekOfMonth)
-	weekOfMonth := uint8(m.GetWeekOfMonth())
-	_weekOfMonthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("weekOfMonth", 8, uint8((weekOfMonth)))
-	if _weekOfMonthErr != nil {
-		return errors.Wrap(_weekOfMonthErr, "Error serializing 'weekOfMonth' field")
+	if err := WriteSimpleField[uint8](ctx, "weekOfMonth", m.GetWeekOfMonth(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'weekOfMonth' field")
 	}
 	// Virtual field
 	days1to7 := m.GetDays1to7()
@@ -558,11 +544,8 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_anyWeekOfthisMonthErr, "Error serializing 'anyWeekOfthisMonth' field")
 	}
 
-	// Simple Field (dayOfWeek)
-	dayOfWeek := uint8(m.GetDayOfWeek())
-	_dayOfWeekErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
-	if _dayOfWeekErr != nil {
-		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
+	if err := WriteSimpleField[uint8](ctx, "dayOfWeek", m.GetDayOfWeek(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dayOfWeek' field")
 	}
 	// Virtual field
 	anyDayOfWeek := m.GetAnyDayOfWeek()

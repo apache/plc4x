@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLinkSpeedAutonegotiate")
 		}
 
-		// Simple Field (linkSpeedAutonegotiate)
-		if pushErr := writeBuffer.PushContext("linkSpeedAutonegotiate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for linkSpeedAutonegotiate")
-		}
-		_linkSpeedAutonegotiateErr := writeBuffer.WriteSerializable(ctx, m.GetLinkSpeedAutonegotiate())
-		if popErr := writeBuffer.PopContext("linkSpeedAutonegotiate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for linkSpeedAutonegotiate")
-		}
-		if _linkSpeedAutonegotiateErr != nil {
-			return errors.Wrap(_linkSpeedAutonegotiateErr, "Error serializing 'linkSpeedAutonegotiate' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "linkSpeedAutonegotiate", m.GetLinkSpeedAutonegotiate(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'linkSpeedAutonegotiate' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDoNotHide) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDoNotHide")
 		}
 
-		// Simple Field (doNotHide)
-		if pushErr := writeBuffer.PushContext("doNotHide"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doNotHide")
-		}
-		_doNotHideErr := writeBuffer.WriteSerializable(ctx, m.GetDoNotHide())
-		if popErr := writeBuffer.PopContext("doNotHide"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doNotHide")
-		}
-		if _doNotHideErr != nil {
-			return errors.Wrap(_doNotHideErr, "Error serializing 'doNotHide' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "doNotHide", m.GetDoNotHide(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'doNotHide' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

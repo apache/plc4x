@@ -184,35 +184,16 @@ func (m *_SzlId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return errors.Wrap(pushErr, "Error pushing for SzlId")
 	}
 
-	// Simple Field (typeClass)
-	if pushErr := writeBuffer.PushContext("typeClass"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for typeClass")
-	}
-	_typeClassErr := writeBuffer.WriteSerializable(ctx, m.GetTypeClass())
-	if popErr := writeBuffer.PopContext("typeClass"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for typeClass")
-	}
-	if _typeClassErr != nil {
-		return errors.Wrap(_typeClassErr, "Error serializing 'typeClass' field")
+	if err := WriteSimpleEnumField[SzlModuleTypeClass](ctx, "typeClass", "SzlModuleTypeClass", m.GetTypeClass(), WriteEnum[SzlModuleTypeClass, uint8](SzlModuleTypeClass.GetValue, SzlModuleTypeClass.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
+		return errors.Wrap(err, "Error serializing 'typeClass' field")
 	}
 
-	// Simple Field (sublistExtract)
-	sublistExtract := uint8(m.GetSublistExtract())
-	_sublistExtractErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sublistExtract", 4, uint8((sublistExtract)))
-	if _sublistExtractErr != nil {
-		return errors.Wrap(_sublistExtractErr, "Error serializing 'sublistExtract' field")
+	if err := WriteSimpleField[uint8](ctx, "sublistExtract", m.GetSublistExtract(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sublistExtract' field")
 	}
 
-	// Simple Field (sublistList)
-	if pushErr := writeBuffer.PushContext("sublistList"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for sublistList")
-	}
-	_sublistListErr := writeBuffer.WriteSerializable(ctx, m.GetSublistList())
-	if popErr := writeBuffer.PopContext("sublistList"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for sublistList")
-	}
-	if _sublistListErr != nil {
-		return errors.Wrap(_sublistListErr, "Error serializing 'sublistList' field")
+	if err := WriteSimpleEnumField[SzlSublist](ctx, "sublistList", "SzlSublist", m.GetSublistList(), WriteEnum[SzlSublist, uint8](SzlSublist.GetValue, SzlSublist.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'sublistList' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SzlId"); popErr != nil {

@@ -181,16 +181,8 @@ func (m *_BACnetClientCOVObject) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for BACnetClientCOVObject")
 		}
 
-		// Simple Field (realIncrement)
-		if pushErr := writeBuffer.PushContext("realIncrement"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for realIncrement")
-		}
-		_realIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetRealIncrement())
-		if popErr := writeBuffer.PopContext("realIncrement"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for realIncrement")
-		}
-		if _realIncrementErr != nil {
-			return errors.Wrap(_realIncrementErr, "Error serializing 'realIncrement' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "realIncrement", m.GetRealIncrement(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'realIncrement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetClientCOVObject"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDerivativeConstant) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDerivativeConstant")
 		}
 
-		// Simple Field (derivativeConstant)
-		if pushErr := writeBuffer.PushContext("derivativeConstant"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for derivativeConstant")
-		}
-		_derivativeConstantErr := writeBuffer.WriteSerializable(ctx, m.GetDerivativeConstant())
-		if popErr := writeBuffer.PopContext("derivativeConstant"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for derivativeConstant")
-		}
-		if _derivativeConstantErr != nil {
-			return errors.Wrap(_derivativeConstantErr, "Error serializing 'derivativeConstant' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "derivativeConstant", m.GetDerivativeConstant(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'derivativeConstant' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

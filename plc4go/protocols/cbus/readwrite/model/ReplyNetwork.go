@@ -168,28 +168,12 @@ func (m *_ReplyNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for ReplyNetwork")
 	}
 
-	// Simple Field (networkRoute)
-	if pushErr := writeBuffer.PushContext("networkRoute"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for networkRoute")
-	}
-	_networkRouteErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkRoute())
-	if popErr := writeBuffer.PopContext("networkRoute"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for networkRoute")
-	}
-	if _networkRouteErr != nil {
-		return errors.Wrap(_networkRouteErr, "Error serializing 'networkRoute' field")
+	if err := WriteSimpleField[NetworkRoute](ctx, "networkRoute", m.GetNetworkRoute(), WriteComplex[NetworkRoute](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkRoute' field")
 	}
 
-	// Simple Field (unitAddress)
-	if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for unitAddress")
-	}
-	_unitAddressErr := writeBuffer.WriteSerializable(ctx, m.GetUnitAddress())
-	if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for unitAddress")
-	}
-	if _unitAddressErr != nil {
-		return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
+	if err := WriteSimpleField[UnitAddress](ctx, "unitAddress", m.GetUnitAddress(), WriteComplex[UnitAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'unitAddress' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ReplyNetwork"); popErr != nil {

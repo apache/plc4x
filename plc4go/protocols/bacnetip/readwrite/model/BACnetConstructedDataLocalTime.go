@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLocalTime) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLocalTime")
 		}
 
-		// Simple Field (localTime)
-		if pushErr := writeBuffer.PushContext("localTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localTime")
-		}
-		_localTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLocalTime())
-		if popErr := writeBuffer.PopContext("localTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localTime")
-		}
-		if _localTimeErr != nil {
-			return errors.Wrap(_localTimeErr, "Error serializing 'localTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagTime](ctx, "localTime", m.GetLocalTime(), WriteComplex[BACnetApplicationTagTime](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'localTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -190,32 +190,16 @@ func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetGroupChannelValue")
 	}
 
-	// Simple Field (channel)
-	if pushErr := writeBuffer.PushContext("channel"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for channel")
-	}
-	_channelErr := writeBuffer.WriteSerializable(ctx, m.GetChannel())
-	if popErr := writeBuffer.PopContext("channel"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for channel")
-	}
-	if _channelErr != nil {
-		return errors.Wrap(_channelErr, "Error serializing 'channel' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "channel", m.GetChannel(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'channel' field")
 	}
 
 	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "overridingPriority", GetRef(m.GetOverridingPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
 		return errors.Wrap(err, "Error serializing 'overridingPriority' field")
 	}
 
-	// Simple Field (value)
-	if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for value")
-	}
-	_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
-	if popErr := writeBuffer.PopContext("value"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for value")
-	}
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteSimpleField[BACnetChannelValue](ctx, "value", m.GetValue(), WriteComplex[BACnetChannelValue](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetGroupChannelValue"); popErr != nil {

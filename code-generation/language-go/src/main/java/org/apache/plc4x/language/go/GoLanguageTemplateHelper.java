@@ -575,7 +575,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "WriteString(writeBuffer, " + sizeInBits + ")";
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                return "WriteString(writeBuffer, " + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + ")";
+                return "WriteString(writeBuffer, int32(" + toSerializationExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + "))";
             case TIME:
                 return "WriteTime(writeBuffer)";
             case DATE:

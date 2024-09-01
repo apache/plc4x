@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataVendorName) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVendorName")
 		}
 
-		// Simple Field (vendorName)
-		if pushErr := writeBuffer.PushContext("vendorName"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorName")
-		}
-		_vendorNameErr := writeBuffer.WriteSerializable(ctx, m.GetVendorName())
-		if popErr := writeBuffer.PopContext("vendorName"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorName")
-		}
-		if _vendorNameErr != nil {
-			return errors.Wrap(_vendorNameErr, "Error serializing 'vendorName' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "vendorName", m.GetVendorName(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vendorName' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

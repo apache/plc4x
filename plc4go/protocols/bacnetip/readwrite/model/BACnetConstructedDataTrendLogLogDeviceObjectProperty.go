@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) SerializeWithWri
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTrendLogLogDeviceObjectProperty")
 		}
 
-		// Simple Field (logDeviceObjectProperty)
-		if pushErr := writeBuffer.PushContext("logDeviceObjectProperty"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for logDeviceObjectProperty")
-		}
-		_logDeviceObjectPropertyErr := writeBuffer.WriteSerializable(ctx, m.GetLogDeviceObjectProperty())
-		if popErr := writeBuffer.PopContext("logDeviceObjectProperty"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for logDeviceObjectProperty")
-		}
-		if _logDeviceObjectPropertyErr != nil {
-			return errors.Wrap(_logDeviceObjectPropertyErr, "Error serializing 'logDeviceObjectProperty' field")
+		if err := WriteSimpleField[BACnetDeviceObjectPropertyReference](ctx, "logDeviceObjectProperty", m.GetLogDeviceObjectProperty(), WriteComplex[BACnetDeviceObjectPropertyReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'logDeviceObjectProperty' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -191,18 +191,12 @@ func (m *_AdsStampHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for AdsStampHeader")
 	}
 
-	// Simple Field (timestamp)
-	timestamp := uint64(m.GetTimestamp())
-	_timestampErr := /*TODO: migrate me*/ writeBuffer.WriteUint64("timestamp", 64, uint64((timestamp)))
-	if _timestampErr != nil {
-		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
+	if err := WriteSimpleField[uint64](ctx, "timestamp", m.GetTimestamp(), WriteUnsignedLong(writeBuffer, 64)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timestamp' field")
 	}
 
-	// Simple Field (samples)
-	samples := uint32(m.GetSamples())
-	_samplesErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("samples", 32, uint32((samples)))
-	if _samplesErr != nil {
-		return errors.Wrap(_samplesErr, "Error serializing 'samples' field")
+	if err := WriteSimpleField[uint32](ctx, "samples", m.GetSamples(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'samples' field")
 	}
 
 	if err := WriteComplexTypeArrayField(ctx, "adsNotificationSamples", m.GetAdsNotificationSamples(), writeBuffer); err != nil {

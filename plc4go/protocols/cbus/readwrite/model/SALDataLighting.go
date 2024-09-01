@@ -185,16 +185,8 @@ func (m *_SALDataLighting) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for SALDataLighting")
 		}
 
-		// Simple Field (lightingData)
-		if pushErr := writeBuffer.PushContext("lightingData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lightingData")
-		}
-		_lightingDataErr := writeBuffer.WriteSerializable(ctx, m.GetLightingData())
-		if popErr := writeBuffer.PopContext("lightingData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lightingData")
-		}
-		if _lightingDataErr != nil {
-			return errors.Wrap(_lightingDataErr, "Error serializing 'lightingData' field")
+		if err := WriteSimpleField[LightingData](ctx, "lightingData", m.GetLightingData(), WriteComplex[LightingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lightingData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataLighting"); popErr != nil {

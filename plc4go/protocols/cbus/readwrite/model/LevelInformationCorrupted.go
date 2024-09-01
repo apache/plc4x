@@ -232,32 +232,20 @@ func (m *_LevelInformationCorrupted) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for LevelInformationCorrupted")
 		}
 
-		// Simple Field (corruptedNibble1)
-		corruptedNibble1 := uint8(m.GetCorruptedNibble1())
-		_corruptedNibble1Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("corruptedNibble1", 4, uint8((corruptedNibble1)))
-		if _corruptedNibble1Err != nil {
-			return errors.Wrap(_corruptedNibble1Err, "Error serializing 'corruptedNibble1' field")
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble1", m.GetCorruptedNibble1(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'corruptedNibble1' field")
 		}
 
-		// Simple Field (corruptedNibble2)
-		corruptedNibble2 := uint8(m.GetCorruptedNibble2())
-		_corruptedNibble2Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("corruptedNibble2", 4, uint8((corruptedNibble2)))
-		if _corruptedNibble2Err != nil {
-			return errors.Wrap(_corruptedNibble2Err, "Error serializing 'corruptedNibble2' field")
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble2", m.GetCorruptedNibble2(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'corruptedNibble2' field")
 		}
 
-		// Simple Field (corruptedNibble3)
-		corruptedNibble3 := uint8(m.GetCorruptedNibble3())
-		_corruptedNibble3Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("corruptedNibble3", 4, uint8((corruptedNibble3)))
-		if _corruptedNibble3Err != nil {
-			return errors.Wrap(_corruptedNibble3Err, "Error serializing 'corruptedNibble3' field")
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble3", m.GetCorruptedNibble3(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'corruptedNibble3' field")
 		}
 
-		// Simple Field (corruptedNibble4)
-		corruptedNibble4 := uint8(m.GetCorruptedNibble4())
-		_corruptedNibble4Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("corruptedNibble4", 4, uint8((corruptedNibble4)))
-		if _corruptedNibble4Err != nil {
-			return errors.Wrap(_corruptedNibble4Err, "Error serializing 'corruptedNibble4' field")
+		if err := WriteSimpleField[uint8](ctx, "corruptedNibble4", m.GetCorruptedNibble4(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'corruptedNibble4' field")
 		}
 
 		if popErr := writeBuffer.PopContext("LevelInformationCorrupted"); popErr != nil {

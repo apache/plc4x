@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLocalDate) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLocalDate")
 		}
 
-		// Simple Field (localDate)
-		if pushErr := writeBuffer.PushContext("localDate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localDate")
-		}
-		_localDateErr := writeBuffer.WriteSerializable(ctx, m.GetLocalDate())
-		if popErr := writeBuffer.PopContext("localDate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localDate")
-		}
-		if _localDateErr != nil {
-			return errors.Wrap(_localDateErr, "Error serializing 'localDate' field")
+		if err := WriteSimpleField[BACnetApplicationTagDate](ctx, "localDate", m.GetLocalDate(), WriteComplex[BACnetApplicationTagDate](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'localDate' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

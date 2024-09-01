@@ -204,52 +204,20 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) Seria
 		return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter")
 	}
 
-	// Simple Field (openingTag)
-	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for openingTag")
-	}
-	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for openingTag")
-	}
-	if _openingTagErr != nil {
-		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+	if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'openingTag' field")
 	}
 
-	// Simple Field (minPriority)
-	if pushErr := writeBuffer.PushContext("minPriority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for minPriority")
-	}
-	_minPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetMinPriority())
-	if popErr := writeBuffer.PopContext("minPriority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for minPriority")
-	}
-	if _minPriorityErr != nil {
-		return errors.Wrap(_minPriorityErr, "Error serializing 'minPriority' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "minPriority", m.GetMinPriority(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'minPriority' field")
 	}
 
-	// Simple Field (maxPriority)
-	if pushErr := writeBuffer.PushContext("maxPriority"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for maxPriority")
-	}
-	_maxPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetMaxPriority())
-	if popErr := writeBuffer.PopContext("maxPriority"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for maxPriority")
-	}
-	if _maxPriorityErr != nil {
-		return errors.Wrap(_maxPriorityErr, "Error serializing 'maxPriority' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "maxPriority", m.GetMaxPriority(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'maxPriority' field")
 	}
 
-	// Simple Field (closingTag)
-	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for closingTag")
-	}
-	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for closingTag")
-	}
-	if _closingTagErr != nil {
-		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+	if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'closingTag' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter"); popErr != nil {

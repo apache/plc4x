@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCurrentCommandPriority")
 		}
 
-		// Simple Field (currentCommandPriority)
-		if pushErr := writeBuffer.PushContext("currentCommandPriority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for currentCommandPriority")
-		}
-		_currentCommandPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetCurrentCommandPriority())
-		if popErr := writeBuffer.PopContext("currentCommandPriority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for currentCommandPriority")
-		}
-		if _currentCommandPriorityErr != nil {
-			return errors.Wrap(_currentCommandPriorityErr, "Error serializing 'currentCommandPriority' field")
+		if err := WriteSimpleField[BACnetOptionalUnsigned](ctx, "currentCommandPriority", m.GetCurrentCommandPriority(), WriteComplex[BACnetOptionalUnsigned](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentCommandPriority' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

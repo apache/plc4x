@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBaseDeviceSecurityPolicy")
 		}
 
-		// Simple Field (baseDeviceSecurityPolicy)
-		if pushErr := writeBuffer.PushContext("baseDeviceSecurityPolicy"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for baseDeviceSecurityPolicy")
-		}
-		_baseDeviceSecurityPolicyErr := writeBuffer.WriteSerializable(ctx, m.GetBaseDeviceSecurityPolicy())
-		if popErr := writeBuffer.PopContext("baseDeviceSecurityPolicy"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for baseDeviceSecurityPolicy")
-		}
-		if _baseDeviceSecurityPolicyErr != nil {
-			return errors.Wrap(_baseDeviceSecurityPolicyErr, "Error serializing 'baseDeviceSecurityPolicy' field")
+		if err := WriteSimpleField[BACnetSecurityLevelTagged](ctx, "baseDeviceSecurityPolicy", m.GetBaseDeviceSecurityPolicy(), WriteComplex[BACnetSecurityLevelTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'baseDeviceSecurityPolicy' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

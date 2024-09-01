@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataReasonForHalt) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReasonForHalt")
 		}
 
-		// Simple Field (programError)
-		if pushErr := writeBuffer.PushContext("programError"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for programError")
-		}
-		_programErrorErr := writeBuffer.WriteSerializable(ctx, m.GetProgramError())
-		if popErr := writeBuffer.PopContext("programError"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for programError")
-		}
-		if _programErrorErr != nil {
-			return errors.Wrap(_programErrorErr, "Error serializing 'programError' field")
+		if err := WriteSimpleField[BACnetProgramErrorTagged](ctx, "programError", m.GetProgramError(), WriteComplex[BACnetProgramErrorTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'programError' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

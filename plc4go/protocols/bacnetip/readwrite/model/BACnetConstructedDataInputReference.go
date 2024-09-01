@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataInputReference) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataInputReference")
 		}
 
-		// Simple Field (inputReference)
-		if pushErr := writeBuffer.PushContext("inputReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for inputReference")
-		}
-		_inputReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetInputReference())
-		if popErr := writeBuffer.PopContext("inputReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for inputReference")
-		}
-		if _inputReferenceErr != nil {
-			return errors.Wrap(_inputReferenceErr, "Error serializing 'inputReference' field")
+		if err := WriteSimpleField[BACnetObjectPropertyReference](ctx, "inputReference", m.GetInputReference(), WriteComplex[BACnetObjectPropertyReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'inputReference' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -188,16 +188,8 @@ func (m *_ApduControlContainer) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for ApduControlContainer")
 		}
 
-		// Simple Field (controlApdu)
-		if pushErr := writeBuffer.PushContext("controlApdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for controlApdu")
-		}
-		_controlApduErr := writeBuffer.WriteSerializable(ctx, m.GetControlApdu())
-		if popErr := writeBuffer.PopContext("controlApdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for controlApdu")
-		}
-		if _controlApduErr != nil {
-			return errors.Wrap(_controlApduErr, "Error serializing 'controlApdu' field")
+		if err := WriteSimpleField[ApduControl](ctx, "controlApdu", m.GetControlApdu(), WriteComplex[ApduControl](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'controlApdu' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApduControlContainer"); popErr != nil {

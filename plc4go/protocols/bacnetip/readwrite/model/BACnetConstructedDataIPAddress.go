@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIPAddress) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPAddress")
 		}
 
-		// Simple Field (ipAddress)
-		if pushErr := writeBuffer.PushContext("ipAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipAddress")
-		}
-		_ipAddressErr := writeBuffer.WriteSerializable(ctx, m.GetIpAddress())
-		if popErr := writeBuffer.PopContext("ipAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipAddress")
-		}
-		if _ipAddressErr != nil {
-			return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "ipAddress", m.GetIpAddress(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipAddress' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -184,16 +184,8 @@ func (m *_PowerUpReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for PowerUpReply")
 		}
 
-		// Simple Field (powerUpIndicator)
-		if pushErr := writeBuffer.PushContext("powerUpIndicator"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for powerUpIndicator")
-		}
-		_powerUpIndicatorErr := writeBuffer.WriteSerializable(ctx, m.GetPowerUpIndicator())
-		if popErr := writeBuffer.PopContext("powerUpIndicator"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for powerUpIndicator")
-		}
-		if _powerUpIndicatorErr != nil {
-			return errors.Wrap(_powerUpIndicatorErr, "Error serializing 'powerUpIndicator' field")
+		if err := WriteSimpleField[PowerUp](ctx, "powerUpIndicator", m.GetPowerUpIndicator(), WriteComplex[PowerUp](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'powerUpIndicator' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PowerUpReply"); popErr != nil {

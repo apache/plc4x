@@ -168,18 +168,12 @@ func (m *_ProjectInstallationIdentifier) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(pushErr, "Error pushing for ProjectInstallationIdentifier")
 	}
 
-	// Simple Field (projectNumber)
-	projectNumber := uint8(m.GetProjectNumber())
-	_projectNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("projectNumber", 8, uint8((projectNumber)))
-	if _projectNumberErr != nil {
-		return errors.Wrap(_projectNumberErr, "Error serializing 'projectNumber' field")
+	if err := WriteSimpleField[uint8](ctx, "projectNumber", m.GetProjectNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'projectNumber' field")
 	}
 
-	// Simple Field (installationNumber)
-	installationNumber := uint8(m.GetInstallationNumber())
-	_installationNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("installationNumber", 8, uint8((installationNumber)))
-	if _installationNumberErr != nil {
-		return errors.Wrap(_installationNumberErr, "Error serializing 'installationNumber' field")
+	if err := WriteSimpleField[uint8](ctx, "installationNumber", m.GetInstallationNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'installationNumber' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ProjectInstallationIdentifier"); popErr != nil {

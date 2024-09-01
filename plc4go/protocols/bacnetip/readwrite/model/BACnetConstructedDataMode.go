@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMode) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMode")
 		}
 
-		// Simple Field (mode)
-		if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for mode")
-		}
-		_modeErr := writeBuffer.WriteSerializable(ctx, m.GetMode())
-		if popErr := writeBuffer.PopContext("mode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for mode")
-		}
-		if _modeErr != nil {
-			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
+		if err := WriteSimpleField[BACnetLifeSafetyModeTagged](ctx, "mode", m.GetMode(), WriteComplex[BACnetLifeSafetyModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'mode' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

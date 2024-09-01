@@ -185,16 +185,8 @@ func (m *_DescriptionRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for DescriptionRequest")
 		}
 
-		// Simple Field (hpaiControlEndpoint)
-		if pushErr := writeBuffer.PushContext("hpaiControlEndpoint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hpaiControlEndpoint")
-		}
-		_hpaiControlEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiControlEndpoint())
-		if popErr := writeBuffer.PopContext("hpaiControlEndpoint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hpaiControlEndpoint")
-		}
-		if _hpaiControlEndpointErr != nil {
-			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
+		if err := WriteSimpleField[HPAIControlEndpoint](ctx, "hpaiControlEndpoint", m.GetHpaiControlEndpoint(), WriteComplex[HPAIControlEndpoint](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DescriptionRequest"); popErr != nil {

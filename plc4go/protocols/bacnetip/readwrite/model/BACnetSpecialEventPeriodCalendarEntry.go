@@ -181,16 +181,8 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BACnetSpecialEventPeriodCalendarEntry")
 		}
 
-		// Simple Field (calendarEntry)
-		if pushErr := writeBuffer.PushContext("calendarEntry"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for calendarEntry")
-		}
-		_calendarEntryErr := writeBuffer.WriteSerializable(ctx, m.GetCalendarEntry())
-		if popErr := writeBuffer.PopContext("calendarEntry"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for calendarEntry")
-		}
-		if _calendarEntryErr != nil {
-			return errors.Wrap(_calendarEntryErr, "Error serializing 'calendarEntry' field")
+		if err := WriteSimpleField[BACnetCalendarEntryEnclosed](ctx, "calendarEntry", m.GetCalendarEntry(), WriteComplex[BACnetCalendarEntryEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'calendarEntry' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetSpecialEventPeriodCalendarEntry"); popErr != nil {

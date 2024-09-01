@@ -218,35 +218,16 @@ func (m *_CALDataWrite) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for CALDataWrite")
 		}
 
-		// Simple Field (paramNo)
-		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for paramNo")
-		}
-		_paramNoErr := writeBuffer.WriteSerializable(ctx, m.GetParamNo())
-		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for paramNo")
-		}
-		if _paramNoErr != nil {
-			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
+		if err := WriteSimpleEnumField[Parameter](ctx, "paramNo", "Parameter", m.GetParamNo(), WriteEnum[Parameter, uint8](Parameter.GetValue, Parameter.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'paramNo' field")
 		}
 
-		// Simple Field (code)
-		code := byte(m.GetCode())
-		_codeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("code", (code))
-		if _codeErr != nil {
-			return errors.Wrap(_codeErr, "Error serializing 'code' field")
+		if err := WriteSimpleField[byte](ctx, "code", m.GetCode(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'code' field")
 		}
 
-		// Simple Field (parameterValue)
-		if pushErr := writeBuffer.PushContext("parameterValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameterValue")
-		}
-		_parameterValueErr := writeBuffer.WriteSerializable(ctx, m.GetParameterValue())
-		if popErr := writeBuffer.PopContext("parameterValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameterValue")
-		}
-		if _parameterValueErr != nil {
-			return errors.Wrap(_parameterValueErr, "Error serializing 'parameterValue' field")
+		if err := WriteSimpleField[ParameterValue](ctx, "parameterValue", m.GetParameterValue(), WriteComplex[ParameterValue](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'parameterValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataWrite"); popErr != nil {

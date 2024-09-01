@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLowDiffLimit) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLowDiffLimit")
 		}
 
-		// Simple Field (lowDiffLimit)
-		if pushErr := writeBuffer.PushContext("lowDiffLimit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lowDiffLimit")
-		}
-		_lowDiffLimitErr := writeBuffer.WriteSerializable(ctx, m.GetLowDiffLimit())
-		if popErr := writeBuffer.PopContext("lowDiffLimit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lowDiffLimit")
-		}
-		if _lowDiffLimitErr != nil {
-			return errors.Wrap(_lowDiffLimitErr, "Error serializing 'lowDiffLimit' field")
+		if err := WriteSimpleField[BACnetOptionalREAL](ctx, "lowDiffLimit", m.GetLowDiffLimit(), WriteComplex[BACnetOptionalREAL](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lowDiffLimit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -248,88 +248,32 @@ func (m *_BACnetDestination) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(pushErr, "Error pushing for BACnetDestination")
 	}
 
-	// Simple Field (validDays)
-	if pushErr := writeBuffer.PushContext("validDays"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for validDays")
-	}
-	_validDaysErr := writeBuffer.WriteSerializable(ctx, m.GetValidDays())
-	if popErr := writeBuffer.PopContext("validDays"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for validDays")
-	}
-	if _validDaysErr != nil {
-		return errors.Wrap(_validDaysErr, "Error serializing 'validDays' field")
+	if err := WriteSimpleField[BACnetDaysOfWeekTagged](ctx, "validDays", m.GetValidDays(), WriteComplex[BACnetDaysOfWeekTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'validDays' field")
 	}
 
-	// Simple Field (fromTime)
-	if pushErr := writeBuffer.PushContext("fromTime"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for fromTime")
-	}
-	_fromTimeErr := writeBuffer.WriteSerializable(ctx, m.GetFromTime())
-	if popErr := writeBuffer.PopContext("fromTime"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for fromTime")
-	}
-	if _fromTimeErr != nil {
-		return errors.Wrap(_fromTimeErr, "Error serializing 'fromTime' field")
+	if err := WriteSimpleField[BACnetApplicationTagTime](ctx, "fromTime", m.GetFromTime(), WriteComplex[BACnetApplicationTagTime](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'fromTime' field")
 	}
 
-	// Simple Field (toTime)
-	if pushErr := writeBuffer.PushContext("toTime"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for toTime")
-	}
-	_toTimeErr := writeBuffer.WriteSerializable(ctx, m.GetToTime())
-	if popErr := writeBuffer.PopContext("toTime"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for toTime")
-	}
-	if _toTimeErr != nil {
-		return errors.Wrap(_toTimeErr, "Error serializing 'toTime' field")
+	if err := WriteSimpleField[BACnetApplicationTagTime](ctx, "toTime", m.GetToTime(), WriteComplex[BACnetApplicationTagTime](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'toTime' field")
 	}
 
-	// Simple Field (recipient)
-	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for recipient")
-	}
-	_recipientErr := writeBuffer.WriteSerializable(ctx, m.GetRecipient())
-	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for recipient")
-	}
-	if _recipientErr != nil {
-		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
+	if err := WriteSimpleField[BACnetRecipient](ctx, "recipient", m.GetRecipient(), WriteComplex[BACnetRecipient](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'recipient' field")
 	}
 
-	// Simple Field (processIdentifier)
-	if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for processIdentifier")
-	}
-	_processIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetProcessIdentifier())
-	if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for processIdentifier")
-	}
-	if _processIdentifierErr != nil {
-		return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "processIdentifier", m.GetProcessIdentifier(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'processIdentifier' field")
 	}
 
-	// Simple Field (issueConfirmedNotifications)
-	if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
-	}
-	_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(ctx, m.GetIssueConfirmedNotifications())
-	if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
-	}
-	if _issueConfirmedNotificationsErr != nil {
-		return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
+	if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "issueConfirmedNotifications", m.GetIssueConfirmedNotifications(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 	}
 
-	// Simple Field (transitions)
-	if pushErr := writeBuffer.PushContext("transitions"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for transitions")
-	}
-	_transitionsErr := writeBuffer.WriteSerializable(ctx, m.GetTransitions())
-	if popErr := writeBuffer.PopContext("transitions"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for transitions")
-	}
-	if _transitionsErr != nil {
-		return errors.Wrap(_transitionsErr, "Error serializing 'transitions' field")
+	if err := WriteSimpleField[BACnetEventTransitionBitsTagged](ctx, "transitions", m.GetTransitions(), WriteComplex[BACnetEventTransitionBitsTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'transitions' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDestination"); popErr != nil {

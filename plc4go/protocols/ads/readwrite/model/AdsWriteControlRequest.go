@@ -239,18 +239,12 @@ func (m *_AdsWriteControlRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for AdsWriteControlRequest")
 		}
 
-		// Simple Field (adsState)
-		adsState := uint16(m.GetAdsState())
-		_adsStateErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("adsState", 16, uint16((adsState)))
-		if _adsStateErr != nil {
-			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
+		if err := WriteSimpleField[uint16](ctx, "adsState", m.GetAdsState(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'adsState' field")
 		}
 
-		// Simple Field (deviceState)
-		deviceState := uint16(m.GetDeviceState())
-		_deviceStateErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("deviceState", 16, uint16((deviceState)))
-		if _deviceStateErr != nil {
-			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
+		if err := WriteSimpleField[uint16](ctx, "deviceState", m.GetDeviceState(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceState' field")
 		}
 		length := uint32(uint32(len(m.GetData())))
 		if err := WriteImplicitField(ctx, "length", length, WriteUnsignedInt(writeBuffer, 32)); err != nil {

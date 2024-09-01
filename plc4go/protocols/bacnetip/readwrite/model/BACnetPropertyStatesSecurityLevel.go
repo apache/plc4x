@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesSecurityLevel) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesSecurityLevel")
 		}
 
-		// Simple Field (securityLevel)
-		if pushErr := writeBuffer.PushContext("securityLevel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityLevel")
-		}
-		_securityLevelErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityLevel())
-		if popErr := writeBuffer.PopContext("securityLevel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityLevel")
-		}
-		if _securityLevelErr != nil {
-			return errors.Wrap(_securityLevelErr, "Error serializing 'securityLevel' field")
+		if err := WriteSimpleField[BACnetSecurityLevelTagged](ctx, "securityLevel", m.GetSecurityLevel(), WriteComplex[BACnetSecurityLevelTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesSecurityLevel"); popErr != nil {

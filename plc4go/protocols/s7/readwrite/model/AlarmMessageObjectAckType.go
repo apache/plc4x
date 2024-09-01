@@ -263,54 +263,24 @@ func (m *_AlarmMessageObjectAckType) SerializeWithWriteBuffer(ctx context.Contex
 		return errors.Wrap(err, "Error serializing 'length' field")
 	}
 
-	// Simple Field (syntaxId)
-	if pushErr := writeBuffer.PushContext("syntaxId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for syntaxId")
-	}
-	_syntaxIdErr := writeBuffer.WriteSerializable(ctx, m.GetSyntaxId())
-	if popErr := writeBuffer.PopContext("syntaxId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for syntaxId")
-	}
-	if _syntaxIdErr != nil {
-		return errors.Wrap(_syntaxIdErr, "Error serializing 'syntaxId' field")
+	if err := WriteSimpleEnumField[SyntaxIdType](ctx, "syntaxId", "SyntaxIdType", m.GetSyntaxId(), WriteEnum[SyntaxIdType, uint8](SyntaxIdType.GetValue, SyntaxIdType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'syntaxId' field")
 	}
 
-	// Simple Field (numberOfValues)
-	numberOfValues := uint8(m.GetNumberOfValues())
-	_numberOfValuesErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfValues", 8, uint8((numberOfValues)))
-	if _numberOfValuesErr != nil {
-		return errors.Wrap(_numberOfValuesErr, "Error serializing 'numberOfValues' field")
+	if err := WriteSimpleField[uint8](ctx, "numberOfValues", m.GetNumberOfValues(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberOfValues' field")
 	}
 
-	// Simple Field (eventId)
-	eventId := uint32(m.GetEventId())
-	_eventIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("eventId", 32, uint32((eventId)))
-	if _eventIdErr != nil {
-		return errors.Wrap(_eventIdErr, "Error serializing 'eventId' field")
+	if err := WriteSimpleField[uint32](ctx, "eventId", m.GetEventId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eventId' field")
 	}
 
-	// Simple Field (ackStateGoing)
-	if pushErr := writeBuffer.PushContext("ackStateGoing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ackStateGoing")
-	}
-	_ackStateGoingErr := writeBuffer.WriteSerializable(ctx, m.GetAckStateGoing())
-	if popErr := writeBuffer.PopContext("ackStateGoing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ackStateGoing")
-	}
-	if _ackStateGoingErr != nil {
-		return errors.Wrap(_ackStateGoingErr, "Error serializing 'ackStateGoing' field")
+	if err := WriteSimpleField[State](ctx, "ackStateGoing", m.GetAckStateGoing(), WriteComplex[State](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ackStateGoing' field")
 	}
 
-	// Simple Field (ackStateComing)
-	if pushErr := writeBuffer.PushContext("ackStateComing"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ackStateComing")
-	}
-	_ackStateComingErr := writeBuffer.WriteSerializable(ctx, m.GetAckStateComing())
-	if popErr := writeBuffer.PopContext("ackStateComing"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ackStateComing")
-	}
-	if _ackStateComingErr != nil {
-		return errors.Wrap(_ackStateComingErr, "Error serializing 'ackStateComing' field")
+	if err := WriteSimpleField[State](ctx, "ackStateComing", m.GetAckStateComing(), WriteComplex[State](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ackStateComing' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageObjectAckType"); popErr != nil {

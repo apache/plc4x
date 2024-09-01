@@ -181,16 +181,8 @@ func (m *_BACnetClientCOVNone) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for BACnetClientCOVNone")
 		}
 
-		// Simple Field (defaultIncrement)
-		if pushErr := writeBuffer.PushContext("defaultIncrement"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for defaultIncrement")
-		}
-		_defaultIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultIncrement())
-		if popErr := writeBuffer.PopContext("defaultIncrement"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for defaultIncrement")
-		}
-		if _defaultIncrementErr != nil {
-			return errors.Wrap(_defaultIncrementErr, "Error serializing 'defaultIncrement' field")
+		if err := WriteSimpleField[BACnetApplicationTagNull](ctx, "defaultIncrement", m.GetDefaultIncrement(), WriteComplex[BACnetApplicationTagNull](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'defaultIncrement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetClientCOVNone"); popErr != nil {

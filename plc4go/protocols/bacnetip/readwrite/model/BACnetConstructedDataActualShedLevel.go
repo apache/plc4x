@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataActualShedLevel) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataActualShedLevel")
 		}
 
-		// Simple Field (actualShedLevel)
-		if pushErr := writeBuffer.PushContext("actualShedLevel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for actualShedLevel")
-		}
-		_actualShedLevelErr := writeBuffer.WriteSerializable(ctx, m.GetActualShedLevel())
-		if popErr := writeBuffer.PopContext("actualShedLevel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for actualShedLevel")
-		}
-		if _actualShedLevelErr != nil {
-			return errors.Wrap(_actualShedLevelErr, "Error serializing 'actualShedLevel' field")
+		if err := WriteSimpleField[BACnetShedLevel](ctx, "actualShedLevel", m.GetActualShedLevel(), WriteComplex[BACnetShedLevel](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'actualShedLevel' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

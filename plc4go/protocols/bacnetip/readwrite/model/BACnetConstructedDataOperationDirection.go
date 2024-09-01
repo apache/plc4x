@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataOperationDirection) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataOperationDirection")
 		}
 
-		// Simple Field (operationDirection)
-		if pushErr := writeBuffer.PushContext("operationDirection"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for operationDirection")
-		}
-		_operationDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetOperationDirection())
-		if popErr := writeBuffer.PopContext("operationDirection"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for operationDirection")
-		}
-		if _operationDirectionErr != nil {
-			return errors.Wrap(_operationDirectionErr, "Error serializing 'operationDirection' field")
+		if err := WriteSimpleField[BACnetEscalatorOperationDirectionTagged](ctx, "operationDirection", m.GetOperationDirection(), WriteComplex[BACnetEscalatorOperationDirectionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'operationDirection' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

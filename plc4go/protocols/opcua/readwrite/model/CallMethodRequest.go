@@ -241,35 +241,16 @@ func (m *_CallMethodRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for CallMethodRequest")
 		}
 
-		// Simple Field (objectId)
-		if pushErr := writeBuffer.PushContext("objectId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectId")
-		}
-		_objectIdErr := writeBuffer.WriteSerializable(ctx, m.GetObjectId())
-		if popErr := writeBuffer.PopContext("objectId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectId")
-		}
-		if _objectIdErr != nil {
-			return errors.Wrap(_objectIdErr, "Error serializing 'objectId' field")
+		if err := WriteSimpleField[NodeId](ctx, "objectId", m.GetObjectId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectId' field")
 		}
 
-		// Simple Field (methodId)
-		if pushErr := writeBuffer.PushContext("methodId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for methodId")
-		}
-		_methodIdErr := writeBuffer.WriteSerializable(ctx, m.GetMethodId())
-		if popErr := writeBuffer.PopContext("methodId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for methodId")
-		}
-		if _methodIdErr != nil {
-			return errors.Wrap(_methodIdErr, "Error serializing 'methodId' field")
+		if err := WriteSimpleField[NodeId](ctx, "methodId", m.GetMethodId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'methodId' field")
 		}
 
-		// Simple Field (noOfInputArguments)
-		noOfInputArguments := int32(m.GetNoOfInputArguments())
-		_noOfInputArgumentsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfInputArguments", 32, int32((noOfInputArguments)))
-		if _noOfInputArgumentsErr != nil {
-			return errors.Wrap(_noOfInputArgumentsErr, "Error serializing 'noOfInputArguments' field")
+		if err := WriteSimpleField[int32](ctx, "noOfInputArguments", m.GetNoOfInputArguments(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfInputArguments' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "inputArguments", m.GetInputArguments(), writeBuffer); err != nil {

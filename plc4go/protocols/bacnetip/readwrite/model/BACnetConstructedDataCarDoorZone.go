@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataCarDoorZone) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarDoorZone")
 		}
 
-		// Simple Field (carDoorZone)
-		if pushErr := writeBuffer.PushContext("carDoorZone"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for carDoorZone")
-		}
-		_carDoorZoneErr := writeBuffer.WriteSerializable(ctx, m.GetCarDoorZone())
-		if popErr := writeBuffer.PopContext("carDoorZone"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for carDoorZone")
-		}
-		if _carDoorZoneErr != nil {
-			return errors.Wrap(_carDoorZoneErr, "Error serializing 'carDoorZone' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "carDoorZone", m.GetCarDoorZone(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'carDoorZone' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

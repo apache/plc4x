@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesEscalatorOperationDirection")
 		}
 
-		// Simple Field (escalatorOperationDirection)
-		if pushErr := writeBuffer.PushContext("escalatorOperationDirection"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for escalatorOperationDirection")
-		}
-		_escalatorOperationDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetEscalatorOperationDirection())
-		if popErr := writeBuffer.PopContext("escalatorOperationDirection"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for escalatorOperationDirection")
-		}
-		if _escalatorOperationDirectionErr != nil {
-			return errors.Wrap(_escalatorOperationDirectionErr, "Error serializing 'escalatorOperationDirection' field")
+		if err := WriteSimpleField[BACnetEscalatorOperationDirectionTagged](ctx, "escalatorOperationDirection", m.GetEscalatorOperationDirection(), WriteComplex[BACnetEscalatorOperationDirectionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'escalatorOperationDirection' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesEscalatorOperationDirection"); popErr != nil {

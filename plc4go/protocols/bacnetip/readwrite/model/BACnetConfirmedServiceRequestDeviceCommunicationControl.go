@@ -236,16 +236,8 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 			return errors.Wrap(err, "Error serializing 'timeDuration' field")
 		}
 
-		// Simple Field (enableDisable)
-		if pushErr := writeBuffer.PushContext("enableDisable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enableDisable")
-		}
-		_enableDisableErr := writeBuffer.WriteSerializable(ctx, m.GetEnableDisable())
-		if popErr := writeBuffer.PopContext("enableDisable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enableDisable")
-		}
-		if _enableDisableErr != nil {
-			return errors.Wrap(_enableDisableErr, "Error serializing 'enableDisable' field")
+		if err := WriteSimpleField[BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged](ctx, "enableDisable", m.GetEnableDisable(), WriteComplex[BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enableDisable' field")
 		}
 
 		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", GetRef(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {

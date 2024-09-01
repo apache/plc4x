@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesSilencedState) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesSilencedState")
 		}
 
-		// Simple Field (silencedState)
-		if pushErr := writeBuffer.PushContext("silencedState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for silencedState")
-		}
-		_silencedStateErr := writeBuffer.WriteSerializable(ctx, m.GetSilencedState())
-		if popErr := writeBuffer.PopContext("silencedState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for silencedState")
-		}
-		if _silencedStateErr != nil {
-			return errors.Wrap(_silencedStateErr, "Error serializing 'silencedState' field")
+		if err := WriteSimpleField[BACnetSilencedStateTagged](ctx, "silencedState", m.GetSilencedState(), WriteComplex[BACnetSilencedStateTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'silencedState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesSilencedState"); popErr != nil {

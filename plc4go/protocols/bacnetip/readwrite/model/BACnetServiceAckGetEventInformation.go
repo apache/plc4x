@@ -202,28 +202,12 @@ func (m *_BACnetServiceAckGetEventInformation) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckGetEventInformation")
 		}
 
-		// Simple Field (listOfEventSummaries)
-		if pushErr := writeBuffer.PushContext("listOfEventSummaries"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfEventSummaries")
-		}
-		_listOfEventSummariesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfEventSummaries())
-		if popErr := writeBuffer.PopContext("listOfEventSummaries"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfEventSummaries")
-		}
-		if _listOfEventSummariesErr != nil {
-			return errors.Wrap(_listOfEventSummariesErr, "Error serializing 'listOfEventSummaries' field")
+		if err := WriteSimpleField[BACnetEventSummariesList](ctx, "listOfEventSummaries", m.GetListOfEventSummaries(), WriteComplex[BACnetEventSummariesList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfEventSummaries' field")
 		}
 
-		// Simple Field (moreEvents)
-		if pushErr := writeBuffer.PushContext("moreEvents"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for moreEvents")
-		}
-		_moreEventsErr := writeBuffer.WriteSerializable(ctx, m.GetMoreEvents())
-		if popErr := writeBuffer.PopContext("moreEvents"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for moreEvents")
-		}
-		if _moreEventsErr != nil {
-			return errors.Wrap(_moreEventsErr, "Error serializing 'moreEvents' field")
+		if err := WriteSimpleField[BACnetContextTagBoolean](ctx, "moreEvents", m.GetMoreEvents(), WriteComplex[BACnetContextTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'moreEvents' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckGetEventInformation"); popErr != nil {

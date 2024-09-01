@@ -200,28 +200,12 @@ func (m *_RolePermissionType) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for RolePermissionType")
 		}
 
-		// Simple Field (roleId)
-		if pushErr := writeBuffer.PushContext("roleId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for roleId")
-		}
-		_roleIdErr := writeBuffer.WriteSerializable(ctx, m.GetRoleId())
-		if popErr := writeBuffer.PopContext("roleId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for roleId")
-		}
-		if _roleIdErr != nil {
-			return errors.Wrap(_roleIdErr, "Error serializing 'roleId' field")
+		if err := WriteSimpleField[NodeId](ctx, "roleId", m.GetRoleId(), WriteComplex[NodeId](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'roleId' field")
 		}
 
-		// Simple Field (permissions)
-		if pushErr := writeBuffer.PushContext("permissions"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for permissions")
-		}
-		_permissionsErr := writeBuffer.WriteSerializable(ctx, m.GetPermissions())
-		if popErr := writeBuffer.PopContext("permissions"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for permissions")
-		}
-		if _permissionsErr != nil {
-			return errors.Wrap(_permissionsErr, "Error serializing 'permissions' field")
+		if err := WriteSimpleEnumField[PermissionType](ctx, "permissions", "PermissionType", m.GetPermissions(), WriteEnum[PermissionType, uint32](PermissionType.GetValue, PermissionType.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'permissions' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RolePermissionType"); popErr != nil {

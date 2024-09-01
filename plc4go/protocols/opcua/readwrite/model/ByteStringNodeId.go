@@ -168,23 +168,12 @@ func (m *_ByteStringNodeId) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(pushErr, "Error pushing for ByteStringNodeId")
 	}
 
-	// Simple Field (namespaceIndex)
-	namespaceIndex := uint16(m.GetNamespaceIndex())
-	_namespaceIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
-	if _namespaceIndexErr != nil {
-		return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
+	if err := WriteSimpleField[uint16](ctx, "namespaceIndex", m.GetNamespaceIndex(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'namespaceIndex' field")
 	}
 
-	// Simple Field (identifier)
-	if pushErr := writeBuffer.PushContext("identifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for identifier")
-	}
-	_identifierErr := writeBuffer.WriteSerializable(ctx, m.GetIdentifier())
-	if popErr := writeBuffer.PopContext("identifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for identifier")
-	}
-	if _identifierErr != nil {
-		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
+	if err := WriteSimpleField[PascalByteString](ctx, "identifier", m.GetIdentifier(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'identifier' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ByteStringNodeId"); popErr != nil {

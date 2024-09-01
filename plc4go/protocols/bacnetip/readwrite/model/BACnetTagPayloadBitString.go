@@ -192,11 +192,8 @@ func (m *_BACnetTagPayloadBitString) SerializeWithWriteBuffer(ctx context.Contex
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadBitString")
 	}
 
-	// Simple Field (unusedBits)
-	unusedBits := uint8(m.GetUnusedBits())
-	_unusedBitsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("unusedBits", 8, uint8((unusedBits)))
-	if _unusedBitsErr != nil {
-		return errors.Wrap(_unusedBitsErr, "Error serializing 'unusedBits' field")
+	if err := WriteSimpleField[uint8](ctx, "unusedBits", m.GetUnusedBits(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'unusedBits' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteBoolean(writeBuffer)); err != nil {

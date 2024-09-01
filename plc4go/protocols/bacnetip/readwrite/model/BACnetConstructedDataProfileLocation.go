@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataProfileLocation) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataProfileLocation")
 		}
 
-		// Simple Field (profileLocation)
-		if pushErr := writeBuffer.PushContext("profileLocation"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for profileLocation")
-		}
-		_profileLocationErr := writeBuffer.WriteSerializable(ctx, m.GetProfileLocation())
-		if popErr := writeBuffer.PopContext("profileLocation"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for profileLocation")
-		}
-		if _profileLocationErr != nil {
-			return errors.Wrap(_profileLocationErr, "Error serializing 'profileLocation' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "profileLocation", m.GetProfileLocation(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'profileLocation' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

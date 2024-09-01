@@ -168,18 +168,12 @@ func (m *_CIPDataConnected) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(pushErr, "Error pushing for CIPDataConnected")
 	}
 
-	// Simple Field (value)
-	value := uint32(m.GetValue())
-	_valueErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("value", 32, uint32((value)))
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteSimpleField[uint32](ctx, "value", m.GetValue(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
-	// Simple Field (tagStatus)
-	tagStatus := uint16(m.GetTagStatus())
-	_tagStatusErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("tagStatus", 16, uint16((tagStatus)))
-	if _tagStatusErr != nil {
-		return errors.Wrap(_tagStatusErr, "Error serializing 'tagStatus' field")
+	if err := WriteSimpleField[uint16](ctx, "tagStatus", m.GetTagStatus(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'tagStatus' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CIPDataConnected"); popErr != nil {

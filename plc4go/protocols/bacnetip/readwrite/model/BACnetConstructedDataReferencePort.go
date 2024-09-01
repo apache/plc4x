@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataReferencePort) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataReferencePort")
 		}
 
-		// Simple Field (referencePort)
-		if pushErr := writeBuffer.PushContext("referencePort"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referencePort")
-		}
-		_referencePortErr := writeBuffer.WriteSerializable(ctx, m.GetReferencePort())
-		if popErr := writeBuffer.PopContext("referencePort"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referencePort")
-		}
-		if _referencePortErr != nil {
-			return errors.Wrap(_referencePortErr, "Error serializing 'referencePort' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referencePort", m.GetReferencePort(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'referencePort' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

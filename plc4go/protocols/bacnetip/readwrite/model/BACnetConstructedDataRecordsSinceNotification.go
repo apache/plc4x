@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRecordsSinceNotification")
 		}
 
-		// Simple Field (recordsSinceNotifications)
-		if pushErr := writeBuffer.PushContext("recordsSinceNotifications"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for recordsSinceNotifications")
-		}
-		_recordsSinceNotificationsErr := writeBuffer.WriteSerializable(ctx, m.GetRecordsSinceNotifications())
-		if popErr := writeBuffer.PopContext("recordsSinceNotifications"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for recordsSinceNotifications")
-		}
-		if _recordsSinceNotificationsErr != nil {
-			return errors.Wrap(_recordsSinceNotificationsErr, "Error serializing 'recordsSinceNotifications' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "recordsSinceNotifications", m.GetRecordsSinceNotifications(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'recordsSinceNotifications' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

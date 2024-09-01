@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMACAddress) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMACAddress")
 		}
 
-		// Simple Field (macAddress)
-		if pushErr := writeBuffer.PushContext("macAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for macAddress")
-		}
-		_macAddressErr := writeBuffer.WriteSerializable(ctx, m.GetMacAddress())
-		if popErr := writeBuffer.PopContext("macAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for macAddress")
-		}
-		if _macAddressErr != nil {
-			return errors.Wrap(_macAddressErr, "Error serializing 'macAddress' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "macAddress", m.GetMacAddress(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'macAddress' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -217,35 +217,16 @@ func (m *_RedundantServerDataType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for RedundantServerDataType")
 		}
 
-		// Simple Field (serverId)
-		if pushErr := writeBuffer.PushContext("serverId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverId")
-		}
-		_serverIdErr := writeBuffer.WriteSerializable(ctx, m.GetServerId())
-		if popErr := writeBuffer.PopContext("serverId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverId")
-		}
-		if _serverIdErr != nil {
-			return errors.Wrap(_serverIdErr, "Error serializing 'serverId' field")
+		if err := WriteSimpleField[PascalString](ctx, "serverId", m.GetServerId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverId' field")
 		}
 
-		// Simple Field (serviceLevel)
-		serviceLevel := uint8(m.GetServiceLevel())
-		_serviceLevelErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("serviceLevel", 8, uint8((serviceLevel)))
-		if _serviceLevelErr != nil {
-			return errors.Wrap(_serviceLevelErr, "Error serializing 'serviceLevel' field")
+		if err := WriteSimpleField[uint8](ctx, "serviceLevel", m.GetServiceLevel(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceLevel' field")
 		}
 
-		// Simple Field (serverState)
-		if pushErr := writeBuffer.PushContext("serverState"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverState")
-		}
-		_serverStateErr := writeBuffer.WriteSerializable(ctx, m.GetServerState())
-		if popErr := writeBuffer.PopContext("serverState"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverState")
-		}
-		if _serverStateErr != nil {
-			return errors.Wrap(_serverStateErr, "Error serializing 'serverState' field")
+		if err := WriteSimpleEnumField[ServerState](ctx, "serverState", "ServerState", m.GetServerState(), WriteEnum[ServerState, uint32](ServerState.GetValue, ServerState.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverState' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RedundantServerDataType"); popErr != nil {

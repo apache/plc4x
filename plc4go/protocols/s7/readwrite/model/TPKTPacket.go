@@ -211,16 +211,8 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(err, "Error serializing 'len' field")
 	}
 
-	// Simple Field (payload)
-	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for payload")
-	}
-	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
-	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for payload")
-	}
-	if _payloadErr != nil {
-		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
+	if err := WriteSimpleField[COTPPacket](ctx, "payload", m.GetPayload(), WriteComplex[COTPPacket](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'payload' field")
 	}
 
 	if popErr := writeBuffer.PopContext("TPKTPacket"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBitMask) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBitMask")
 		}
 
-		// Simple Field (bitString)
-		if pushErr := writeBuffer.PushContext("bitString"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bitString")
-		}
-		_bitStringErr := writeBuffer.WriteSerializable(ctx, m.GetBitString())
-		if popErr := writeBuffer.PopContext("bitString"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bitString")
-		}
-		if _bitStringErr != nil {
-			return errors.Wrap(_bitStringErr, "Error serializing 'bitString' field")
+		if err := WriteSimpleField[BACnetApplicationTagBitString](ctx, "bitString", m.GetBitString(), WriteComplex[BACnetApplicationTagBitString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitString' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

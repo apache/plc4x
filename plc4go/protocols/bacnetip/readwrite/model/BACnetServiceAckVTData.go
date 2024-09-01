@@ -219,40 +219,16 @@ func (m *_BACnetServiceAckVTData) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckVTData")
 		}
 
-		// Simple Field (vtSessionIdentifier)
-		if pushErr := writeBuffer.PushContext("vtSessionIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vtSessionIdentifier")
-		}
-		_vtSessionIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetVtSessionIdentifier())
-		if popErr := writeBuffer.PopContext("vtSessionIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vtSessionIdentifier")
-		}
-		if _vtSessionIdentifierErr != nil {
-			return errors.Wrap(_vtSessionIdentifierErr, "Error serializing 'vtSessionIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "vtSessionIdentifier", m.GetVtSessionIdentifier(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vtSessionIdentifier' field")
 		}
 
-		// Simple Field (vtNewData)
-		if pushErr := writeBuffer.PushContext("vtNewData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vtNewData")
-		}
-		_vtNewDataErr := writeBuffer.WriteSerializable(ctx, m.GetVtNewData())
-		if popErr := writeBuffer.PopContext("vtNewData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vtNewData")
-		}
-		if _vtNewDataErr != nil {
-			return errors.Wrap(_vtNewDataErr, "Error serializing 'vtNewData' field")
+		if err := WriteSimpleField[BACnetApplicationTagOctetString](ctx, "vtNewData", m.GetVtNewData(), WriteComplex[BACnetApplicationTagOctetString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vtNewData' field")
 		}
 
-		// Simple Field (vtDataFlag)
-		if pushErr := writeBuffer.PushContext("vtDataFlag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vtDataFlag")
-		}
-		_vtDataFlagErr := writeBuffer.WriteSerializable(ctx, m.GetVtDataFlag())
-		if popErr := writeBuffer.PopContext("vtDataFlag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vtDataFlag")
-		}
-		if _vtDataFlagErr != nil {
-			return errors.Wrap(_vtDataFlagErr, "Error serializing 'vtDataFlag' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "vtDataFlag", m.GetVtDataFlag(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vtDataFlag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckVTData"); popErr != nil {

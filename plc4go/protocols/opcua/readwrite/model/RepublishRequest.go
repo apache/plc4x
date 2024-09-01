@@ -217,30 +217,16 @@ func (m *_RepublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for RepublishRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (subscriptionId)
-		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
-		if _subscriptionIdErr != nil {
-			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		// Simple Field (retransmitSequenceNumber)
-		retransmitSequenceNumber := uint32(m.GetRetransmitSequenceNumber())
-		_retransmitSequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("retransmitSequenceNumber", 32, uint32((retransmitSequenceNumber)))
-		if _retransmitSequenceNumberErr != nil {
-			return errors.Wrap(_retransmitSequenceNumberErr, "Error serializing 'retransmitSequenceNumber' field")
+		if err := WriteSimpleField[uint32](ctx, "retransmitSequenceNumber", m.GetRetransmitSequenceNumber(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'retransmitSequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RepublishRequest"); popErr != nil {

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataControlledVariableValue) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataControlledVariableValue")
 		}
 
-		// Simple Field (controlledVariableValue)
-		if pushErr := writeBuffer.PushContext("controlledVariableValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for controlledVariableValue")
-		}
-		_controlledVariableValueErr := writeBuffer.WriteSerializable(ctx, m.GetControlledVariableValue())
-		if popErr := writeBuffer.PopContext("controlledVariableValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for controlledVariableValue")
-		}
-		if _controlledVariableValueErr != nil {
-			return errors.Wrap(_controlledVariableValueErr, "Error serializing 'controlledVariableValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "controlledVariableValue", m.GetControlledVariableValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'controlledVariableValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

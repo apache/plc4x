@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataRestorePreparationTime) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataRestorePreparationTime")
 		}
 
-		// Simple Field (restorePreparationTime)
-		if pushErr := writeBuffer.PushContext("restorePreparationTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for restorePreparationTime")
-		}
-		_restorePreparationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetRestorePreparationTime())
-		if popErr := writeBuffer.PopContext("restorePreparationTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for restorePreparationTime")
-		}
-		if _restorePreparationTimeErr != nil {
-			return errors.Wrap(_restorePreparationTimeErr, "Error serializing 'restorePreparationTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "restorePreparationTime", m.GetRestorePreparationTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'restorePreparationTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

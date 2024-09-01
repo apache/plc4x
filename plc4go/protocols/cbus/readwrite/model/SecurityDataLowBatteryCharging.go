@@ -223,11 +223,8 @@ func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataLowBatteryCharging")
 		}
 
-		// Simple Field (startStop)
-		startStop := byte(m.GetStartStop())
-		_startStopErr := /*TODO: migrate me*/ writeBuffer.WriteByte("startStop", (startStop))
-		if _startStopErr != nil {
-			return errors.Wrap(_startStopErr, "Error serializing 'startStop' field")
+		if err := WriteSimpleField[byte](ctx, "startStop", m.GetStartStop(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'startStop' field")
 		}
 		// Virtual field
 		chargeStopped := m.GetChargeStopped()

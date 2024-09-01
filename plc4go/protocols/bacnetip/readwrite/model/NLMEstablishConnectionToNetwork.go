@@ -202,18 +202,12 @@ func (m *_NLMEstablishConnectionToNetwork) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for NLMEstablishConnectionToNetwork")
 		}
 
-		// Simple Field (destinationNetworkAddress)
-		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
-		if _destinationNetworkAddressErr != nil {
-			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 		}
 
-		// Simple Field (terminationTime)
-		terminationTime := uint8(m.GetTerminationTime())
-		_terminationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("terminationTime", 8, uint8((terminationTime)))
-		if _terminationTimeErr != nil {
-			return errors.Wrap(_terminationTimeErr, "Error serializing 'terminationTime' field")
+		if err := WriteSimpleField[uint8](ctx, "terminationTime", m.GetTerminationTime(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'terminationTime' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMEstablishConnectionToNetwork"); popErr != nil {

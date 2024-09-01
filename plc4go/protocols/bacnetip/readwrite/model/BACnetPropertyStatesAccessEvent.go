@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesAccessEvent) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesAccessEvent")
 		}
 
-		// Simple Field (accessEvent)
-		if pushErr := writeBuffer.PushContext("accessEvent"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessEvent")
-		}
-		_accessEventErr := writeBuffer.WriteSerializable(ctx, m.GetAccessEvent())
-		if popErr := writeBuffer.PopContext("accessEvent"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessEvent")
-		}
-		if _accessEventErr != nil {
-			return errors.Wrap(_accessEventErr, "Error serializing 'accessEvent' field")
+		if err := WriteSimpleField[BACnetAccessEventTagged](ctx, "accessEvent", m.GetAccessEvent(), WriteComplex[BACnetAccessEventTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessEvent' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesAccessEvent"); popErr != nil {

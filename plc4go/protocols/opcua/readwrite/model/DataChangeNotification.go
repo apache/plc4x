@@ -261,22 +261,16 @@ func (m *_DataChangeNotification) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(err, "Error serializing 'notificationLength' field")
 		}
 
-		// Simple Field (noOfMonitoredItems)
-		noOfMonitoredItems := int32(m.GetNoOfMonitoredItems())
-		_noOfMonitoredItemsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfMonitoredItems", 32, int32((noOfMonitoredItems)))
-		if _noOfMonitoredItemsErr != nil {
-			return errors.Wrap(_noOfMonitoredItemsErr, "Error serializing 'noOfMonitoredItems' field")
+		if err := WriteSimpleField[int32](ctx, "noOfMonitoredItems", m.GetNoOfMonitoredItems(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfMonitoredItems' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "monitoredItems", m.GetMonitoredItems(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'monitoredItems' field")
 		}
 
-		// Simple Field (noOfDiagnosticInfos)
-		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
-		if _noOfDiagnosticInfosErr != nil {
-			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
+		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "diagnosticInfos", m.GetDiagnosticInfos(), writeBuffer); err != nil {

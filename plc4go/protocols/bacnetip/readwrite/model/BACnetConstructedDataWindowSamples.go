@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataWindowSamples) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataWindowSamples")
 		}
 
-		// Simple Field (windowSamples)
-		if pushErr := writeBuffer.PushContext("windowSamples"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for windowSamples")
-		}
-		_windowSamplesErr := writeBuffer.WriteSerializable(ctx, m.GetWindowSamples())
-		if popErr := writeBuffer.PopContext("windowSamples"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for windowSamples")
-		}
-		if _windowSamplesErr != nil {
-			return errors.Wrap(_windowSamplesErr, "Error serializing 'windowSamples' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "windowSamples", m.GetWindowSamples(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'windowSamples' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

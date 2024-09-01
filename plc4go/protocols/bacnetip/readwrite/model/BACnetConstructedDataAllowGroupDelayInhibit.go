@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAllowGroupDelayInhibit")
 		}
 
-		// Simple Field (allowGroupDelayInhibit)
-		if pushErr := writeBuffer.PushContext("allowGroupDelayInhibit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for allowGroupDelayInhibit")
-		}
-		_allowGroupDelayInhibitErr := writeBuffer.WriteSerializable(ctx, m.GetAllowGroupDelayInhibit())
-		if popErr := writeBuffer.PopContext("allowGroupDelayInhibit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for allowGroupDelayInhibit")
-		}
-		if _allowGroupDelayInhibitErr != nil {
-			return errors.Wrap(_allowGroupDelayInhibitErr, "Error serializing 'allowGroupDelayInhibit' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "allowGroupDelayInhibit", m.GetAllowGroupDelayInhibit(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'allowGroupDelayInhibit' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

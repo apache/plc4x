@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLinkSpeed) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLinkSpeed")
 		}
 
-		// Simple Field (linkSpeed)
-		if pushErr := writeBuffer.PushContext("linkSpeed"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for linkSpeed")
-		}
-		_linkSpeedErr := writeBuffer.WriteSerializable(ctx, m.GetLinkSpeed())
-		if popErr := writeBuffer.PopContext("linkSpeed"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for linkSpeed")
-		}
-		if _linkSpeedErr != nil {
-			return errors.Wrap(_linkSpeedErr, "Error serializing 'linkSpeed' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "linkSpeed", m.GetLinkSpeed(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'linkSpeed' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

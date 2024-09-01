@@ -221,16 +221,8 @@ func (m *_ExtensionObject) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for ExtensionObject")
 	}
 
-	// Simple Field (typeId)
-	if pushErr := writeBuffer.PushContext("typeId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for typeId")
-	}
-	_typeIdErr := writeBuffer.WriteSerializable(ctx, m.GetTypeId())
-	if popErr := writeBuffer.PopContext("typeId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for typeId")
-	}
-	if _typeIdErr != nil {
-		return errors.Wrap(_typeIdErr, "Error serializing 'typeId' field")
+	if err := WriteSimpleField[ExpandedNodeId](ctx, "typeId", m.GetTypeId(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'typeId' field")
 	}
 
 	if err := WriteOptionalField[ExtensionObjectEncodingMask](ctx, "encodingMask", GetRef(m.GetEncodingMask()), WriteComplex[ExtensionObjectEncodingMask](writeBuffer), true); err != nil {
@@ -243,16 +235,8 @@ func (m *_ExtensionObject) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
 	}
 
-	// Simple Field (body)
-	if pushErr := writeBuffer.PushContext("body"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for body")
-	}
-	_bodyErr := writeBuffer.WriteSerializable(ctx, m.GetBody())
-	if popErr := writeBuffer.PopContext("body"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for body")
-	}
-	if _bodyErr != nil {
-		return errors.Wrap(_bodyErr, "Error serializing 'body' field")
+	if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "body", m.GetBody(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'body' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ExtensionObject"); popErr != nil {

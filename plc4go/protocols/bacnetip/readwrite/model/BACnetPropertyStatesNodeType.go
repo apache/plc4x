@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesNodeType) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesNodeType")
 		}
 
-		// Simple Field (nodeType)
-		if pushErr := writeBuffer.PushContext("nodeType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeType")
-		}
-		_nodeTypeErr := writeBuffer.WriteSerializable(ctx, m.GetNodeType())
-		if popErr := writeBuffer.PopContext("nodeType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeType")
-		}
-		if _nodeTypeErr != nil {
-			return errors.Wrap(_nodeTypeErr, "Error serializing 'nodeType' field")
+		if err := WriteSimpleField[BACnetNodeTypeTagged](ctx, "nodeType", m.GetNodeType(), WriteComplex[BACnetNodeTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeType' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesNodeType"); popErr != nil {

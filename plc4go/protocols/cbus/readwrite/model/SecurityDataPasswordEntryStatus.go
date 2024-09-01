@@ -271,11 +271,8 @@ func (m *_SecurityDataPasswordEntryStatus) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataPasswordEntryStatus")
 		}
 
-		// Simple Field (code)
-		code := byte(m.GetCode())
-		_codeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("code", (code))
-		if _codeErr != nil {
-			return errors.Wrap(_codeErr, "Error serializing 'code' field")
+		if err := WriteSimpleField[byte](ctx, "code", m.GetCode(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'code' field")
 		}
 		// Virtual field
 		isPasswordEntrySucceeded := m.GetIsPasswordEntrySucceeded()

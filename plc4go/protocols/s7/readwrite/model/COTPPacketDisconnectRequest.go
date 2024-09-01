@@ -222,30 +222,16 @@ func (m *_COTPPacketDisconnectRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for COTPPacketDisconnectRequest")
 		}
 
-		// Simple Field (destinationReference)
-		destinationReference := uint16(m.GetDestinationReference())
-		_destinationReferenceErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationReference", 16, uint16((destinationReference)))
-		if _destinationReferenceErr != nil {
-			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
+		if err := WriteSimpleField[uint16](ctx, "destinationReference", m.GetDestinationReference(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationReference' field")
 		}
 
-		// Simple Field (sourceReference)
-		sourceReference := uint16(m.GetSourceReference())
-		_sourceReferenceErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sourceReference", 16, uint16((sourceReference)))
-		if _sourceReferenceErr != nil {
-			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
+		if err := WriteSimpleField[uint16](ctx, "sourceReference", m.GetSourceReference(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceReference' field")
 		}
 
-		// Simple Field (protocolClass)
-		if pushErr := writeBuffer.PushContext("protocolClass"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for protocolClass")
-		}
-		_protocolClassErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolClass())
-		if popErr := writeBuffer.PopContext("protocolClass"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for protocolClass")
-		}
-		if _protocolClassErr != nil {
-			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
+		if err := WriteSimpleEnumField[COTPProtocolClass](ctx, "protocolClass", "COTPProtocolClass", m.GetProtocolClass(), WriteEnum[COTPProtocolClass, uint8](COTPProtocolClass.GetValue, COTPProtocolClass.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPPacketDisconnectRequest"); popErr != nil {

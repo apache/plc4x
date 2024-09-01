@@ -157,11 +157,8 @@ func (m *_Alpha) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return errors.Wrap(pushErr, "Error pushing for Alpha")
 	}
 
-	// Simple Field (character)
-	character := byte(m.GetCharacter())
-	_characterErr := /*TODO: migrate me*/ writeBuffer.WriteByte("character", (character))
-	if _characterErr != nil {
-		return errors.Wrap(_characterErr, "Error serializing 'character' field")
+	if err := WriteSimpleField[byte](ctx, "character", m.GetCharacter(), WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'character' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Alpha"); popErr != nil {

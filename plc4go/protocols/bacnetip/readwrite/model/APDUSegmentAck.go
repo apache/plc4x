@@ -268,39 +268,24 @@ func (m *_APDUSegmentAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Simple Field (negativeAck)
-		negativeAck := bool(m.GetNegativeAck())
-		_negativeAckErr := /*TODO: migrate me*/ writeBuffer.WriteBit("negativeAck", (negativeAck))
-		if _negativeAckErr != nil {
-			return errors.Wrap(_negativeAckErr, "Error serializing 'negativeAck' field")
+		if err := WriteSimpleField[bool](ctx, "negativeAck", m.GetNegativeAck(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'negativeAck' field")
 		}
 
-		// Simple Field (server)
-		server := bool(m.GetServer())
-		_serverErr := /*TODO: migrate me*/ writeBuffer.WriteBit("server", (server))
-		if _serverErr != nil {
-			return errors.Wrap(_serverErr, "Error serializing 'server' field")
+		if err := WriteSimpleField[bool](ctx, "server", m.GetServer(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'server' field")
 		}
 
-		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
-		if _originalInvokeIdErr != nil {
-			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
+		if err := WriteSimpleField[uint8](ctx, "originalInvokeId", m.GetOriginalInvokeId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalInvokeId' field")
 		}
 
-		// Simple Field (sequenceNumber)
-		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
-		// Simple Field (actualWindowSize)
-		actualWindowSize := uint8(m.GetActualWindowSize())
-		_actualWindowSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("actualWindowSize", 8, uint8((actualWindowSize)))
-		if _actualWindowSizeErr != nil {
-			return errors.Wrap(_actualWindowSizeErr, "Error serializing 'actualWindowSize' field")
+		if err := WriteSimpleField[uint8](ctx, "actualWindowSize", m.GetActualWindowSize(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'actualWindowSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("APDUSegmentAck"); popErr != nil {

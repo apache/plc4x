@@ -470,42 +470,20 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(pushErr, "Error pushing for AmsPacket")
 	}
 
-	// Simple Field (targetAmsNetId)
-	if pushErr := writeBuffer.PushContext("targetAmsNetId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for targetAmsNetId")
-	}
-	_targetAmsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetAmsNetId())
-	if popErr := writeBuffer.PopContext("targetAmsNetId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for targetAmsNetId")
-	}
-	if _targetAmsNetIdErr != nil {
-		return errors.Wrap(_targetAmsNetIdErr, "Error serializing 'targetAmsNetId' field")
+	if err := WriteSimpleField[AmsNetId](ctx, "targetAmsNetId", m.GetTargetAmsNetId(), WriteComplex[AmsNetId](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'targetAmsNetId' field")
 	}
 
-	// Simple Field (targetAmsPort)
-	targetAmsPort := uint16(m.GetTargetAmsPort())
-	_targetAmsPortErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("targetAmsPort", 16, uint16((targetAmsPort)))
-	if _targetAmsPortErr != nil {
-		return errors.Wrap(_targetAmsPortErr, "Error serializing 'targetAmsPort' field")
+	if err := WriteSimpleField[uint16](ctx, "targetAmsPort", m.GetTargetAmsPort(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'targetAmsPort' field")
 	}
 
-	// Simple Field (sourceAmsNetId)
-	if pushErr := writeBuffer.PushContext("sourceAmsNetId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for sourceAmsNetId")
-	}
-	_sourceAmsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetSourceAmsNetId())
-	if popErr := writeBuffer.PopContext("sourceAmsNetId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for sourceAmsNetId")
-	}
-	if _sourceAmsNetIdErr != nil {
-		return errors.Wrap(_sourceAmsNetIdErr, "Error serializing 'sourceAmsNetId' field")
+	if err := WriteSimpleField[AmsNetId](ctx, "sourceAmsNetId", m.GetSourceAmsNetId(), WriteComplex[AmsNetId](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceAmsNetId' field")
 	}
 
-	// Simple Field (sourceAmsPort)
-	sourceAmsPort := uint16(m.GetSourceAmsPort())
-	_sourceAmsPortErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sourceAmsPort", 16, uint16((sourceAmsPort)))
-	if _sourceAmsPortErr != nil {
-		return errors.Wrap(_sourceAmsPortErr, "Error serializing 'sourceAmsPort' field")
+	if err := WriteSimpleField[uint16](ctx, "sourceAmsPort", m.GetSourceAmsPort(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceAmsPort' field")
 	}
 
 	if err := WriteDiscriminatorEnumField(ctx, "commandId", "CommandId", m.GetCommandId(), WriteEnum[CommandId, uint16](CommandId.GetValue, CommandId.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
@@ -556,18 +534,12 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(err, "Error serializing 'length' field")
 	}
 
-	// Simple Field (errorCode)
-	errorCode := uint32(m.GetErrorCode())
-	_errorCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("errorCode", 32, uint32((errorCode)))
-	if _errorCodeErr != nil {
-		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
+	if err := WriteSimpleField[uint32](ctx, "errorCode", m.GetErrorCode(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'errorCode' field")
 	}
 
-	// Simple Field (invokeId)
-	invokeId := uint32(m.GetInvokeId())
-	_invokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("invokeId", 32, uint32((invokeId)))
-	if _invokeIdErr != nil {
-		return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
+	if err := WriteSimpleField[uint32](ctx, "invokeId", m.GetInvokeId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'invokeId' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

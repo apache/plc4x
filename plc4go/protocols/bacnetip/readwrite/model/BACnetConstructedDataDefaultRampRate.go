@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataDefaultRampRate) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataDefaultRampRate")
 		}
 
-		// Simple Field (defaultRampRate)
-		if pushErr := writeBuffer.PushContext("defaultRampRate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for defaultRampRate")
-		}
-		_defaultRampRateErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultRampRate())
-		if popErr := writeBuffer.PopContext("defaultRampRate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for defaultRampRate")
-		}
-		if _defaultRampRateErr != nil {
-			return errors.Wrap(_defaultRampRateErr, "Error serializing 'defaultRampRate' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "defaultRampRate", m.GetDefaultRampRate(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'defaultRampRate' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

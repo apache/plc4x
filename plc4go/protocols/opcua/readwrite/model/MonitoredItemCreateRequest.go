@@ -217,40 +217,16 @@ func (m *_MonitoredItemCreateRequest) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for MonitoredItemCreateRequest")
 		}
 
-		// Simple Field (itemToMonitor)
-		if pushErr := writeBuffer.PushContext("itemToMonitor"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for itemToMonitor")
-		}
-		_itemToMonitorErr := writeBuffer.WriteSerializable(ctx, m.GetItemToMonitor())
-		if popErr := writeBuffer.PopContext("itemToMonitor"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for itemToMonitor")
-		}
-		if _itemToMonitorErr != nil {
-			return errors.Wrap(_itemToMonitorErr, "Error serializing 'itemToMonitor' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "itemToMonitor", m.GetItemToMonitor(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemToMonitor' field")
 		}
 
-		// Simple Field (monitoringMode)
-		if pushErr := writeBuffer.PushContext("monitoringMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for monitoringMode")
-		}
-		_monitoringModeErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoringMode())
-		if popErr := writeBuffer.PopContext("monitoringMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for monitoringMode")
-		}
-		if _monitoringModeErr != nil {
-			return errors.Wrap(_monitoringModeErr, "Error serializing 'monitoringMode' field")
+		if err := WriteSimpleEnumField[MonitoringMode](ctx, "monitoringMode", "MonitoringMode", m.GetMonitoringMode(), WriteEnum[MonitoringMode, uint32](MonitoringMode.GetValue, MonitoringMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoringMode' field")
 		}
 
-		// Simple Field (requestedParameters)
-		if pushErr := writeBuffer.PushContext("requestedParameters"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestedParameters")
-		}
-		_requestedParametersErr := writeBuffer.WriteSerializable(ctx, m.GetRequestedParameters())
-		if popErr := writeBuffer.PopContext("requestedParameters"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestedParameters")
-		}
-		if _requestedParametersErr != nil {
-			return errors.Wrap(_requestedParametersErr, "Error serializing 'requestedParameters' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestedParameters", m.GetRequestedParameters(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestedParameters' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredItemCreateRequest"); popErr != nil {

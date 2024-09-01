@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLimitMonitoringInterval")
 		}
 
-		// Simple Field (limitMonitoringInterval)
-		if pushErr := writeBuffer.PushContext("limitMonitoringInterval"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for limitMonitoringInterval")
-		}
-		_limitMonitoringIntervalErr := writeBuffer.WriteSerializable(ctx, m.GetLimitMonitoringInterval())
-		if popErr := writeBuffer.PopContext("limitMonitoringInterval"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for limitMonitoringInterval")
-		}
-		if _limitMonitoringIntervalErr != nil {
-			return errors.Wrap(_limitMonitoringIntervalErr, "Error serializing 'limitMonitoringInterval' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "limitMonitoringInterval", m.GetLimitMonitoringInterval(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'limitMonitoringInterval' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

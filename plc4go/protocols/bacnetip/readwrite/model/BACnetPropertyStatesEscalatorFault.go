@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesEscalatorFault) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesEscalatorFault")
 		}
 
-		// Simple Field (escalatorFault)
-		if pushErr := writeBuffer.PushContext("escalatorFault"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for escalatorFault")
-		}
-		_escalatorFaultErr := writeBuffer.WriteSerializable(ctx, m.GetEscalatorFault())
-		if popErr := writeBuffer.PopContext("escalatorFault"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for escalatorFault")
-		}
-		if _escalatorFaultErr != nil {
-			return errors.Wrap(_escalatorFaultErr, "Error serializing 'escalatorFault' field")
+		if err := WriteSimpleField[BACnetEscalatorFaultTagged](ctx, "escalatorFault", m.GetEscalatorFault(), WriteComplex[BACnetEscalatorFaultTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'escalatorFault' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesEscalatorFault"); popErr != nil {

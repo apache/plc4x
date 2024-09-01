@@ -446,23 +446,12 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(pushErr, "Error pushing for NPDU")
 	}
 
-	// Simple Field (protocolVersionNumber)
-	protocolVersionNumber := uint8(m.GetProtocolVersionNumber())
-	_protocolVersionNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("protocolVersionNumber", 8, uint8((protocolVersionNumber)))
-	if _protocolVersionNumberErr != nil {
-		return errors.Wrap(_protocolVersionNumberErr, "Error serializing 'protocolVersionNumber' field")
+	if err := WriteSimpleField[uint8](ctx, "protocolVersionNumber", m.GetProtocolVersionNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'protocolVersionNumber' field")
 	}
 
-	// Simple Field (control)
-	if pushErr := writeBuffer.PushContext("control"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for control")
-	}
-	_controlErr := writeBuffer.WriteSerializable(ctx, m.GetControl())
-	if popErr := writeBuffer.PopContext("control"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for control")
-	}
-	if _controlErr != nil {
-		return errors.Wrap(_controlErr, "Error serializing 'control' field")
+	if err := WriteSimpleField[NPDUControl](ctx, "control", m.GetControl(), WriteComplex[NPDUControl](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'control' field")
 	}
 
 	if err := WriteOptionalField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {

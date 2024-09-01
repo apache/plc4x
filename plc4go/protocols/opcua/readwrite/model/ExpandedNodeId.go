@@ -253,30 +253,16 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for ExpandedNodeId")
 	}
 
-	// Simple Field (namespaceURISpecified)
-	namespaceURISpecified := bool(m.GetNamespaceURISpecified())
-	_namespaceURISpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("namespaceURISpecified", (namespaceURISpecified))
-	if _namespaceURISpecifiedErr != nil {
-		return errors.Wrap(_namespaceURISpecifiedErr, "Error serializing 'namespaceURISpecified' field")
+	if err := WriteSimpleField[bool](ctx, "namespaceURISpecified", m.GetNamespaceURISpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'namespaceURISpecified' field")
 	}
 
-	// Simple Field (serverIndexSpecified)
-	serverIndexSpecified := bool(m.GetServerIndexSpecified())
-	_serverIndexSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("serverIndexSpecified", (serverIndexSpecified))
-	if _serverIndexSpecifiedErr != nil {
-		return errors.Wrap(_serverIndexSpecifiedErr, "Error serializing 'serverIndexSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "serverIndexSpecified", m.GetServerIndexSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'serverIndexSpecified' field")
 	}
 
-	// Simple Field (nodeId)
-	if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for nodeId")
-	}
-	_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-	if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for nodeId")
-	}
-	if _nodeIdErr != nil {
-		return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
+	if err := WriteSimpleField[NodeIdTypeDefinition](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeIdTypeDefinition](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'nodeId' field")
 	}
 	// Virtual field
 	identifier := m.GetIdentifier()

@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataSecurityPDUTimeout) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSecurityPDUTimeout")
 		}
 
-		// Simple Field (securityPduTimeout)
-		if pushErr := writeBuffer.PushContext("securityPduTimeout"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityPduTimeout")
-		}
-		_securityPduTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityPduTimeout())
-		if popErr := writeBuffer.PopContext("securityPduTimeout"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityPduTimeout")
-		}
-		if _securityPduTimeoutErr != nil {
-			return errors.Wrap(_securityPduTimeoutErr, "Error serializing 'securityPduTimeout' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "securityPduTimeout", m.GetSecurityPduTimeout(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityPduTimeout' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

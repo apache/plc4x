@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesTimerTransition) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesTimerTransition")
 		}
 
-		// Simple Field (timerTransition)
-		if pushErr := writeBuffer.PushContext("timerTransition"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timerTransition")
-		}
-		_timerTransitionErr := writeBuffer.WriteSerializable(ctx, m.GetTimerTransition())
-		if popErr := writeBuffer.PopContext("timerTransition"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timerTransition")
-		}
-		if _timerTransitionErr != nil {
-			return errors.Wrap(_timerTransitionErr, "Error serializing 'timerTransition' field")
+		if err := WriteSimpleField[BACnetTimerTransitionTagged](ctx, "timerTransition", m.GetTimerTransition(), WriteComplex[BACnetTimerTransitionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timerTransition' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesTimerTransition"); popErr != nil {

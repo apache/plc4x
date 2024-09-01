@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMinimumOutput) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinimumOutput")
 		}
 
-		// Simple Field (minimumOutput)
-		if pushErr := writeBuffer.PushContext("minimumOutput"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for minimumOutput")
-		}
-		_minimumOutputErr := writeBuffer.WriteSerializable(ctx, m.GetMinimumOutput())
-		if popErr := writeBuffer.PopContext("minimumOutput"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for minimumOutput")
-		}
-		if _minimumOutputErr != nil {
-			return errors.Wrap(_minimumOutputErr, "Error serializing 'minimumOutput' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "minimumOutput", m.GetMinimumOutput(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minimumOutput' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -254,37 +254,20 @@ func (m *_CycServiceItemAnyType) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(err, "Error serializing 'transportSize' field")
 		}
 
-		// Simple Field (length)
-		length := uint16(m.GetLength())
-		_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("length", 16, uint16((length)))
-		if _lengthErr != nil {
-			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
+		if err := WriteSimpleField[uint16](ctx, "length", m.GetLength(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'length' field")
 		}
 
-		// Simple Field (dbNumber)
-		dbNumber := uint16(m.GetDbNumber())
-		_dbNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dbNumber", 16, uint16((dbNumber)))
-		if _dbNumberErr != nil {
-			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
+		if err := WriteSimpleField[uint16](ctx, "dbNumber", m.GetDbNumber(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dbNumber' field")
 		}
 
-		// Simple Field (memoryArea)
-		if pushErr := writeBuffer.PushContext("memoryArea"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for memoryArea")
-		}
-		_memoryAreaErr := writeBuffer.WriteSerializable(ctx, m.GetMemoryArea())
-		if popErr := writeBuffer.PopContext("memoryArea"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for memoryArea")
-		}
-		if _memoryAreaErr != nil {
-			return errors.Wrap(_memoryAreaErr, "Error serializing 'memoryArea' field")
+		if err := WriteSimpleEnumField[MemoryArea](ctx, "memoryArea", "MemoryArea", m.GetMemoryArea(), WriteEnum[MemoryArea, uint8](MemoryArea.GetValue, MemoryArea.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'memoryArea' field")
 		}
 
-		// Simple Field (address)
-		address := uint32(m.GetAddress())
-		_addressErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("address", 24, uint32((address)))
-		if _addressErr != nil {
-			return errors.Wrap(_addressErr, "Error serializing 'address' field")
+		if err := WriteSimpleField[uint32](ctx, "address", m.GetAddress(), WriteUnsignedInt(writeBuffer, 24)); err != nil {
+			return errors.Wrap(err, "Error serializing 'address' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CycServiceItemAnyType"); popErr != nil {

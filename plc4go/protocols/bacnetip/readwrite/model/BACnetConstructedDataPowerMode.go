@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataPowerMode) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataPowerMode")
 		}
 
-		// Simple Field (powerMode)
-		if pushErr := writeBuffer.PushContext("powerMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for powerMode")
-		}
-		_powerModeErr := writeBuffer.WriteSerializable(ctx, m.GetPowerMode())
-		if popErr := writeBuffer.PopContext("powerMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for powerMode")
-		}
-		if _powerModeErr != nil {
-			return errors.Wrap(_powerModeErr, "Error serializing 'powerMode' field")
+		if err := WriteSimpleField[BACnetApplicationTagBoolean](ctx, "powerMode", m.GetPowerMode(), WriteComplex[BACnetApplicationTagBoolean](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'powerMode' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

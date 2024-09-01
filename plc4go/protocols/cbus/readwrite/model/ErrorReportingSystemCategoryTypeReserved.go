@@ -184,11 +184,8 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for ErrorReportingSystemCategoryTypeReserved")
 		}
 
-		// Simple Field (reservedValue)
-		reservedValue := uint8(m.GetReservedValue())
-		_reservedValueErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("reservedValue", 4, uint8((reservedValue)))
-		if _reservedValueErr != nil {
-			return errors.Wrap(_reservedValueErr, "Error serializing 'reservedValue' field")
+		if err := WriteSimpleField[uint8](ctx, "reservedValue", m.GetReservedValue(), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reservedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ErrorReportingSystemCategoryTypeReserved"); popErr != nil {

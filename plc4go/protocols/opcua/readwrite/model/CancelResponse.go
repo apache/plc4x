@@ -200,23 +200,12 @@ func (m *_CancelResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for CancelResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (cancelCount)
-		cancelCount := uint32(m.GetCancelCount())
-		_cancelCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("cancelCount", 32, uint32((cancelCount)))
-		if _cancelCountErr != nil {
-			return errors.Wrap(_cancelCountErr, "Error serializing 'cancelCount' field")
+		if err := WriteSimpleField[uint32](ctx, "cancelCount", m.GetCancelCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cancelCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CancelResponse"); popErr != nil {

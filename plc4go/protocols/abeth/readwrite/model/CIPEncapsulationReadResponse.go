@@ -193,16 +193,8 @@ func (m *_CIPEncapsulationReadResponse) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for CIPEncapsulationReadResponse")
 		}
 
-		// Simple Field (response)
-		if pushErr := writeBuffer.PushContext("response"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for response")
-		}
-		_responseErr := writeBuffer.WriteSerializable(ctx, m.GetResponse())
-		if popErr := writeBuffer.PopContext("response"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for response")
-		}
-		if _responseErr != nil {
-			return errors.Wrap(_responseErr, "Error serializing 'response' field")
+		if err := WriteSimpleField[DF1ResponseMessage](ctx, "response", m.GetResponse(), WriteComplex[DF1ResponseMessage](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'response' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CIPEncapsulationReadResponse"); popErr != nil {

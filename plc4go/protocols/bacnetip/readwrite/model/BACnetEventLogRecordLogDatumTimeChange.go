@@ -185,16 +185,8 @@ func (m *_BACnetEventLogRecordLogDatumTimeChange) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventLogRecordLogDatumTimeChange")
 		}
 
-		// Simple Field (timeChange)
-		if pushErr := writeBuffer.PushContext("timeChange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeChange")
-		}
-		_timeChangeErr := writeBuffer.WriteSerializable(ctx, m.GetTimeChange())
-		if popErr := writeBuffer.PopContext("timeChange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeChange")
-		}
-		if _timeChangeErr != nil {
-			return errors.Wrap(_timeChangeErr, "Error serializing 'timeChange' field")
+		if err := WriteSimpleField[BACnetContextTagReal](ctx, "timeChange", m.GetTimeChange(), WriteComplex[BACnetContextTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeChange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventLogRecordLogDatumTimeChange"); popErr != nil {

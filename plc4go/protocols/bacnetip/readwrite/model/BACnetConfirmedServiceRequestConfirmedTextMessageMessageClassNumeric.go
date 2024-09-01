@@ -185,16 +185,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
 		}
 
-		// Simple Field (numericValue)
-		if pushErr := writeBuffer.PushContext("numericValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for numericValue")
-		}
-		_numericValueErr := writeBuffer.WriteSerializable(ctx, m.GetNumericValue())
-		if popErr := writeBuffer.PopContext("numericValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for numericValue")
-		}
-		if _numericValueErr != nil {
-			return errors.Wrap(_numericValueErr, "Error serializing 'numericValue' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "numericValue", m.GetNumericValue(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numericValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); popErr != nil {

@@ -199,18 +199,12 @@ func (m *_SecurityDataZoneName) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for SecurityDataZoneName")
 		}
 
-		// Simple Field (zoneNumber)
-		zoneNumber := uint8(m.GetZoneNumber())
-		_zoneNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("zoneNumber", 8, uint8((zoneNumber)))
-		if _zoneNumberErr != nil {
-			return errors.Wrap(_zoneNumberErr, "Error serializing 'zoneNumber' field")
+		if err := WriteSimpleField[uint8](ctx, "zoneNumber", m.GetZoneNumber(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneNumber' field")
 		}
 
-		// Simple Field (zoneName)
-		zoneName := string(m.GetZoneName())
-		_zoneNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("zoneName", uint32(88), (zoneName), utils.WithEncoding("UTF-8)"))
-		if _zoneNameErr != nil {
-			return errors.Wrap(_zoneNameErr, "Error serializing 'zoneName' field")
+		if err := WriteSimpleField[string](ctx, "zoneName", m.GetZoneName(), WriteString(writeBuffer, 88)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SecurityDataZoneName"); popErr != nil {

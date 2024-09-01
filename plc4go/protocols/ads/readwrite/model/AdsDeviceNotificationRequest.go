@@ -235,18 +235,12 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for AdsDeviceNotificationRequest")
 		}
 
-		// Simple Field (length)
-		length := uint32(m.GetLength())
-		_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("length", 32, uint32((length)))
-		if _lengthErr != nil {
-			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
+		if err := WriteSimpleField[uint32](ctx, "length", m.GetLength(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'length' field")
 		}
 
-		// Simple Field (stamps)
-		stamps := uint32(m.GetStamps())
-		_stampsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("stamps", 32, uint32((stamps)))
-		if _stampsErr != nil {
-			return errors.Wrap(_stampsErr, "Error serializing 'stamps' field")
+		if err := WriteSimpleField[uint32](ctx, "stamps", m.GetStamps(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'stamps' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "adsStampHeaders", m.GetAdsStampHeaders(), writeBuffer); err != nil {

@@ -249,64 +249,24 @@ func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfTimer")
 		}
 
-		// Simple Field (openingTag)
-		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for openingTag")
-		}
-		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
-		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for openingTag")
-		}
-		if _openingTagErr != nil {
-			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
+		if err := WriteSimpleField[BACnetOpeningTag](ctx, "openingTag", m.GetOpeningTag(), WriteComplex[BACnetOpeningTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
-		// Simple Field (timeDelay)
-		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeDelay")
-		}
-		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
-		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeDelay")
-		}
-		if _timeDelayErr != nil {
-			return errors.Wrap(_timeDelayErr, "Error serializing 'timeDelay' field")
+		if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", m.GetTimeDelay(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeDelay' field")
 		}
 
-		// Simple Field (alarmValues)
-		if pushErr := writeBuffer.PushContext("alarmValues"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for alarmValues")
-		}
-		_alarmValuesErr := writeBuffer.WriteSerializable(ctx, m.GetAlarmValues())
-		if popErr := writeBuffer.PopContext("alarmValues"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for alarmValues")
-		}
-		if _alarmValuesErr != nil {
-			return errors.Wrap(_alarmValuesErr, "Error serializing 'alarmValues' field")
+		if err := WriteSimpleField[BACnetEventParameterChangeOfTimerAlarmValue](ctx, "alarmValues", m.GetAlarmValues(), WriteComplex[BACnetEventParameterChangeOfTimerAlarmValue](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'alarmValues' field")
 		}
 
-		// Simple Field (updateTimeReference)
-		if pushErr := writeBuffer.PushContext("updateTimeReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for updateTimeReference")
-		}
-		_updateTimeReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetUpdateTimeReference())
-		if popErr := writeBuffer.PopContext("updateTimeReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for updateTimeReference")
-		}
-		if _updateTimeReferenceErr != nil {
-			return errors.Wrap(_updateTimeReferenceErr, "Error serializing 'updateTimeReference' field")
+		if err := WriteSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "updateTimeReference", m.GetUpdateTimeReference(), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'updateTimeReference' field")
 		}
 
-		// Simple Field (closingTag)
-		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for closingTag")
-		}
-		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
-		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for closingTag")
-		}
-		if _closingTagErr != nil {
-			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
+		if err := WriteSimpleField[BACnetClosingTag](ctx, "closingTag", m.GetClosingTag(), WriteComplex[BACnetClosingTag](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfTimer"); popErr != nil {

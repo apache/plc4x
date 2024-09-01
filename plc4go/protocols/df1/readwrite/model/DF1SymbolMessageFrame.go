@@ -267,30 +267,16 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for DF1SymbolMessageFrame")
 		}
 
-		// Simple Field (destinationAddress)
-		destinationAddress := uint8(m.GetDestinationAddress())
-		_destinationAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("destinationAddress", 8, uint8((destinationAddress)))
-		if _destinationAddressErr != nil {
-			return errors.Wrap(_destinationAddressErr, "Error serializing 'destinationAddress' field")
+		if err := WriteSimpleField[uint8](ctx, "destinationAddress", m.GetDestinationAddress(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationAddress' field")
 		}
 
-		// Simple Field (sourceAddress)
-		sourceAddress := uint8(m.GetSourceAddress())
-		_sourceAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sourceAddress", 8, uint8((sourceAddress)))
-		if _sourceAddressErr != nil {
-			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
+		if err := WriteSimpleField[uint8](ctx, "sourceAddress", m.GetSourceAddress(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sourceAddress' field")
 		}
 
-		// Simple Field (command)
-		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for command")
-		}
-		_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
-		if popErr := writeBuffer.PopContext("command"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for command")
-		}
-		if _commandErr != nil {
-			return errors.Wrap(_commandErr, "Error serializing 'command' field")
+		if err := WriteSimpleField[DF1Command](ctx, "command", m.GetCommand(), WriteComplex[DF1Command](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'command' field")
 		}
 
 		if err := WriteConstField(ctx, "messageEnd", DF1SymbolMessageFrame_MESSAGEEND, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {

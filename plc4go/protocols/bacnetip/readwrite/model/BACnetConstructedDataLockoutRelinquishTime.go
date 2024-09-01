@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLockoutRelinquishTime")
 		}
 
-		// Simple Field (lockoutRelinquishTime)
-		if pushErr := writeBuffer.PushContext("lockoutRelinquishTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lockoutRelinquishTime")
-		}
-		_lockoutRelinquishTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLockoutRelinquishTime())
-		if popErr := writeBuffer.PopContext("lockoutRelinquishTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lockoutRelinquishTime")
-		}
-		if _lockoutRelinquishTimeErr != nil {
-			return errors.Wrap(_lockoutRelinquishTimeErr, "Error serializing 'lockoutRelinquishTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lockoutRelinquishTime", m.GetLockoutRelinquishTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lockoutRelinquishTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

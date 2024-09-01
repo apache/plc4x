@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesNetworkPortCommand")
 		}
 
-		// Simple Field (networkPortCommand)
-		if pushErr := writeBuffer.PushContext("networkPortCommand"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for networkPortCommand")
-		}
-		_networkPortCommandErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkPortCommand())
-		if popErr := writeBuffer.PopContext("networkPortCommand"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for networkPortCommand")
-		}
-		if _networkPortCommandErr != nil {
-			return errors.Wrap(_networkPortCommandErr, "Error serializing 'networkPortCommand' field")
+		if err := WriteSimpleField[BACnetNetworkPortCommandTagged](ctx, "networkPortCommand", m.GetNetworkPortCommand(), WriteComplex[BACnetNetworkPortCommandTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkPortCommand' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesNetworkPortCommand"); popErr != nil {

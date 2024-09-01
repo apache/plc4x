@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataSerialNumber) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSerialNumber")
 		}
 
-		// Simple Field (serialNumber)
-		if pushErr := writeBuffer.PushContext("serialNumber"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serialNumber")
-		}
-		_serialNumberErr := writeBuffer.WriteSerializable(ctx, m.GetSerialNumber())
-		if popErr := writeBuffer.PopContext("serialNumber"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serialNumber")
-		}
-		if _serialNumberErr != nil {
-			return errors.Wrap(_serialNumberErr, "Error serializing 'serialNumber' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "serialNumber", m.GetSerialNumber(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serialNumber' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -185,16 +185,8 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) SerializeWithWrit
 			return errors.Wrap(pushErr, "Error pushing for BACnetEventParameterChangeOfValueCivCriteriaBitmask")
 		}
 
-		// Simple Field (bitmask)
-		if pushErr := writeBuffer.PushContext("bitmask"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bitmask")
-		}
-		_bitmaskErr := writeBuffer.WriteSerializable(ctx, m.GetBitmask())
-		if popErr := writeBuffer.PopContext("bitmask"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bitmask")
-		}
-		if _bitmaskErr != nil {
-			return errors.Wrap(_bitmaskErr, "Error serializing 'bitmask' field")
+		if err := WriteSimpleField[BACnetContextTagBitString](ctx, "bitmask", m.GetBitmask(), WriteComplex[BACnetContextTagBitString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'bitmask' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); popErr != nil {

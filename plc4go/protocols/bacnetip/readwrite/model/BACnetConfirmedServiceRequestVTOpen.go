@@ -203,28 +203,12 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestVTOpen")
 		}
 
-		// Simple Field (vtClass)
-		if pushErr := writeBuffer.PushContext("vtClass"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vtClass")
-		}
-		_vtClassErr := writeBuffer.WriteSerializable(ctx, m.GetVtClass())
-		if popErr := writeBuffer.PopContext("vtClass"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vtClass")
-		}
-		if _vtClassErr != nil {
-			return errors.Wrap(_vtClassErr, "Error serializing 'vtClass' field")
+		if err := WriteSimpleField[BACnetVTClassTagged](ctx, "vtClass", m.GetVtClass(), WriteComplex[BACnetVTClassTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'vtClass' field")
 		}
 
-		// Simple Field (localVtSessionIdentifier)
-		if pushErr := writeBuffer.PushContext("localVtSessionIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localVtSessionIdentifier")
-		}
-		_localVtSessionIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetLocalVtSessionIdentifier())
-		if popErr := writeBuffer.PopContext("localVtSessionIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localVtSessionIdentifier")
-		}
-		if _localVtSessionIdentifierErr != nil {
-			return errors.Wrap(_localVtSessionIdentifierErr, "Error serializing 'localVtSessionIdentifier' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "localVtSessionIdentifier", m.GetLocalVtSessionIdentifier(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'localVtSessionIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestVTOpen"); popErr != nil {

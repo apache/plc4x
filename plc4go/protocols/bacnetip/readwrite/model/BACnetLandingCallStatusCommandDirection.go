@@ -181,16 +181,8 @@ func (m *_BACnetLandingCallStatusCommandDirection) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetLandingCallStatusCommandDirection")
 		}
 
-		// Simple Field (direction)
-		if pushErr := writeBuffer.PushContext("direction"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for direction")
-		}
-		_directionErr := writeBuffer.WriteSerializable(ctx, m.GetDirection())
-		if popErr := writeBuffer.PopContext("direction"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for direction")
-		}
-		if _directionErr != nil {
-			return errors.Wrap(_directionErr, "Error serializing 'direction' field")
+		if err := WriteSimpleField[BACnetLiftCarDirectionTagged](ctx, "direction", m.GetDirection(), WriteComplex[BACnetLiftCarDirectionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'direction' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLandingCallStatusCommandDirection"); popErr != nil {

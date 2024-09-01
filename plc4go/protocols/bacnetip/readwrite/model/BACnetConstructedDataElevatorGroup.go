@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataElevatorGroup) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataElevatorGroup")
 		}
 
-		// Simple Field (elevatorGroup)
-		if pushErr := writeBuffer.PushContext("elevatorGroup"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for elevatorGroup")
-		}
-		_elevatorGroupErr := writeBuffer.WriteSerializable(ctx, m.GetElevatorGroup())
-		if popErr := writeBuffer.PopContext("elevatorGroup"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for elevatorGroup")
-		}
-		if _elevatorGroupErr != nil {
-			return errors.Wrap(_elevatorGroupErr, "Error serializing 'elevatorGroup' field")
+		if err := WriteSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "elevatorGroup", m.GetElevatorGroup(), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'elevatorGroup' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

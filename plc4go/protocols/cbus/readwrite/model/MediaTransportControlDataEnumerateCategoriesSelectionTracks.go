@@ -272,11 +272,8 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataEnumerateCategoriesSelectionTracks")
 		}
 
-		// Simple Field (enumerateType)
-		enumerateType := byte(m.GetEnumerateType())
-		_enumerateTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("enumerateType", (enumerateType))
-		if _enumerateTypeErr != nil {
-			return errors.Wrap(_enumerateTypeErr, "Error serializing 'enumerateType' field")
+		if err := WriteSimpleField[byte](ctx, "enumerateType", m.GetEnumerateType(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'enumerateType' field")
 		}
 		// Virtual field
 		isListCategories := m.GetIsListCategories()
@@ -303,11 +300,8 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 
-		// Simple Field (start)
-		start := uint8(m.GetStart())
-		_startErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("start", 8, uint8((start)))
-		if _startErr != nil {
-			return errors.Wrap(_startErr, "Error serializing 'start' field")
+		if err := WriteSimpleField[uint8](ctx, "start", m.GetStart(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'start' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks"); popErr != nil {

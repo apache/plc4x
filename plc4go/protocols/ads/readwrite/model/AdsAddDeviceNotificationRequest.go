@@ -300,51 +300,28 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for AdsAddDeviceNotificationRequest")
 		}
 
-		// Simple Field (indexGroup)
-		indexGroup := uint32(m.GetIndexGroup())
-		_indexGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
-		if _indexGroupErr != nil {
-			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
+		if err := WriteSimpleField[uint32](ctx, "indexGroup", m.GetIndexGroup(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexGroup' field")
 		}
 
-		// Simple Field (indexOffset)
-		indexOffset := uint32(m.GetIndexOffset())
-		_indexOffsetErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
-		if _indexOffsetErr != nil {
-			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
+		if err := WriteSimpleField[uint32](ctx, "indexOffset", m.GetIndexOffset(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'indexOffset' field")
 		}
 
-		// Simple Field (length)
-		length := uint32(m.GetLength())
-		_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("length", 32, uint32((length)))
-		if _lengthErr != nil {
-			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
+		if err := WriteSimpleField[uint32](ctx, "length", m.GetLength(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'length' field")
 		}
 
-		// Simple Field (transmissionMode)
-		if pushErr := writeBuffer.PushContext("transmissionMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transmissionMode")
-		}
-		_transmissionModeErr := writeBuffer.WriteSerializable(ctx, m.GetTransmissionMode())
-		if popErr := writeBuffer.PopContext("transmissionMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transmissionMode")
-		}
-		if _transmissionModeErr != nil {
-			return errors.Wrap(_transmissionModeErr, "Error serializing 'transmissionMode' field")
+		if err := WriteSimpleEnumField[AdsTransMode](ctx, "transmissionMode", "AdsTransMode", m.GetTransmissionMode(), WriteEnum[AdsTransMode, uint32](AdsTransMode.GetValue, AdsTransMode.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
+			return errors.Wrap(err, "Error serializing 'transmissionMode' field")
 		}
 
-		// Simple Field (maxDelayInMs)
-		maxDelayInMs := uint32(m.GetMaxDelayInMs())
-		_maxDelayInMsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxDelayInMs", 32, uint32((maxDelayInMs)))
-		if _maxDelayInMsErr != nil {
-			return errors.Wrap(_maxDelayInMsErr, "Error serializing 'maxDelayInMs' field")
+		if err := WriteSimpleField[uint32](ctx, "maxDelayInMs", m.GetMaxDelayInMs(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxDelayInMs' field")
 		}
 
-		// Simple Field (cycleTimeInMs)
-		cycleTimeInMs := uint32(m.GetCycleTimeInMs())
-		_cycleTimeInMsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("cycleTimeInMs", 32, uint32((cycleTimeInMs)))
-		if _cycleTimeInMsErr != nil {
-			return errors.Wrap(_cycleTimeInMsErr, "Error serializing 'cycleTimeInMs' field")
+		if err := WriteSimpleField[uint32](ctx, "cycleTimeInMs", m.GetCycleTimeInMs(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cycleTimeInMs' field")
 		}
 
 		if err := WriteReservedField[uint64](ctx, "reserved", uint64(0x0000), WriteUnsignedLong(writeBuffer, 64)); err != nil {

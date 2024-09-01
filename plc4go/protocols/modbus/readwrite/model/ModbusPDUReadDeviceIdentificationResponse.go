@@ -321,54 +321,24 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(ct
 			return errors.Wrap(err, "Error serializing 'meiType' field")
 		}
 
-		// Simple Field (level)
-		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for level")
-		}
-		_levelErr := writeBuffer.WriteSerializable(ctx, m.GetLevel())
-		if popErr := writeBuffer.PopContext("level"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for level")
-		}
-		if _levelErr != nil {
-			return errors.Wrap(_levelErr, "Error serializing 'level' field")
+		if err := WriteSimpleEnumField[ModbusDeviceInformationLevel](ctx, "level", "ModbusDeviceInformationLevel", m.GetLevel(), WriteEnum[ModbusDeviceInformationLevel, uint8](ModbusDeviceInformationLevel.GetValue, ModbusDeviceInformationLevel.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
-		// Simple Field (individualAccess)
-		individualAccess := bool(m.GetIndividualAccess())
-		_individualAccessErr := /*TODO: migrate me*/ writeBuffer.WriteBit("individualAccess", (individualAccess))
-		if _individualAccessErr != nil {
-			return errors.Wrap(_individualAccessErr, "Error serializing 'individualAccess' field")
+		if err := WriteSimpleField[bool](ctx, "individualAccess", m.GetIndividualAccess(), WriteBoolean(writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'individualAccess' field")
 		}
 
-		// Simple Field (conformityLevel)
-		if pushErr := writeBuffer.PushContext("conformityLevel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for conformityLevel")
-		}
-		_conformityLevelErr := writeBuffer.WriteSerializable(ctx, m.GetConformityLevel())
-		if popErr := writeBuffer.PopContext("conformityLevel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for conformityLevel")
-		}
-		if _conformityLevelErr != nil {
-			return errors.Wrap(_conformityLevelErr, "Error serializing 'conformityLevel' field")
+		if err := WriteSimpleEnumField[ModbusDeviceInformationConformityLevel](ctx, "conformityLevel", "ModbusDeviceInformationConformityLevel", m.GetConformityLevel(), WriteEnum[ModbusDeviceInformationConformityLevel, uint8](ModbusDeviceInformationConformityLevel.GetValue, ModbusDeviceInformationConformityLevel.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 7))); err != nil {
+			return errors.Wrap(err, "Error serializing 'conformityLevel' field")
 		}
 
-		// Simple Field (moreFollows)
-		if pushErr := writeBuffer.PushContext("moreFollows"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for moreFollows")
-		}
-		_moreFollowsErr := writeBuffer.WriteSerializable(ctx, m.GetMoreFollows())
-		if popErr := writeBuffer.PopContext("moreFollows"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for moreFollows")
-		}
-		if _moreFollowsErr != nil {
-			return errors.Wrap(_moreFollowsErr, "Error serializing 'moreFollows' field")
+		if err := WriteSimpleEnumField[ModbusDeviceInformationMoreFollows](ctx, "moreFollows", "ModbusDeviceInformationMoreFollows", m.GetMoreFollows(), WriteEnum[ModbusDeviceInformationMoreFollows, uint8](ModbusDeviceInformationMoreFollows.GetValue, ModbusDeviceInformationMoreFollows.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'moreFollows' field")
 		}
 
-		// Simple Field (nextObjectId)
-		nextObjectId := uint8(m.GetNextObjectId())
-		_nextObjectIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("nextObjectId", 8, uint8((nextObjectId)))
-		if _nextObjectIdErr != nil {
-			return errors.Wrap(_nextObjectIdErr, "Error serializing 'nextObjectId' field")
+		if err := WriteSimpleField[uint8](ctx, "nextObjectId", m.GetNextObjectId(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nextObjectId' field")
 		}
 		numberOfObjects := uint8(uint8(len(m.GetObjects())))
 		if err := WriteImplicitField(ctx, "numberOfObjects", numberOfObjects, WriteUnsignedByte(writeBuffer, 8)); err != nil {

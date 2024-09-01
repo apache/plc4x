@@ -183,16 +183,8 @@ func (m *_BACnetTimerStateChangeValueConstructedValue) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetTimerStateChangeValueConstructedValue")
 		}
 
-		// Simple Field (constructedValue)
-		if pushErr := writeBuffer.PushContext("constructedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for constructedValue")
-		}
-		_constructedValueErr := writeBuffer.WriteSerializable(ctx, m.GetConstructedValue())
-		if popErr := writeBuffer.PopContext("constructedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for constructedValue")
-		}
-		if _constructedValueErr != nil {
-			return errors.Wrap(_constructedValueErr, "Error serializing 'constructedValue' field")
+		if err := WriteSimpleField[BACnetConstructedData](ctx, "constructedValue", m.GetConstructedValue(), WriteComplex[BACnetConstructedData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'constructedValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetTimerStateChangeValueConstructedValue"); popErr != nil {

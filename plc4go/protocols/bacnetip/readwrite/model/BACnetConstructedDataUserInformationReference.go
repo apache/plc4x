@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataUserInformationReference) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataUserInformationReference")
 		}
 
-		// Simple Field (userInformationReference)
-		if pushErr := writeBuffer.PushContext("userInformationReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for userInformationReference")
-		}
-		_userInformationReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetUserInformationReference())
-		if popErr := writeBuffer.PopContext("userInformationReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for userInformationReference")
-		}
-		if _userInformationReferenceErr != nil {
-			return errors.Wrap(_userInformationReferenceErr, "Error serializing 'userInformationReference' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "userInformationReference", m.GetUserInformationReference(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'userInformationReference' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

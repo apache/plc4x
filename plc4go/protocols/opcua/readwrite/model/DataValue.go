@@ -363,46 +363,28 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (serverPicosecondsSpecified)
-	serverPicosecondsSpecified := bool(m.GetServerPicosecondsSpecified())
-	_serverPicosecondsSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("serverPicosecondsSpecified", (serverPicosecondsSpecified))
-	if _serverPicosecondsSpecifiedErr != nil {
-		return errors.Wrap(_serverPicosecondsSpecifiedErr, "Error serializing 'serverPicosecondsSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "serverPicosecondsSpecified", m.GetServerPicosecondsSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'serverPicosecondsSpecified' field")
 	}
 
-	// Simple Field (sourcePicosecondsSpecified)
-	sourcePicosecondsSpecified := bool(m.GetSourcePicosecondsSpecified())
-	_sourcePicosecondsSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("sourcePicosecondsSpecified", (sourcePicosecondsSpecified))
-	if _sourcePicosecondsSpecifiedErr != nil {
-		return errors.Wrap(_sourcePicosecondsSpecifiedErr, "Error serializing 'sourcePicosecondsSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "sourcePicosecondsSpecified", m.GetSourcePicosecondsSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourcePicosecondsSpecified' field")
 	}
 
-	// Simple Field (serverTimestampSpecified)
-	serverTimestampSpecified := bool(m.GetServerTimestampSpecified())
-	_serverTimestampSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("serverTimestampSpecified", (serverTimestampSpecified))
-	if _serverTimestampSpecifiedErr != nil {
-		return errors.Wrap(_serverTimestampSpecifiedErr, "Error serializing 'serverTimestampSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "serverTimestampSpecified", m.GetServerTimestampSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'serverTimestampSpecified' field")
 	}
 
-	// Simple Field (sourceTimestampSpecified)
-	sourceTimestampSpecified := bool(m.GetSourceTimestampSpecified())
-	_sourceTimestampSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("sourceTimestampSpecified", (sourceTimestampSpecified))
-	if _sourceTimestampSpecifiedErr != nil {
-		return errors.Wrap(_sourceTimestampSpecifiedErr, "Error serializing 'sourceTimestampSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "sourceTimestampSpecified", m.GetSourceTimestampSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceTimestampSpecified' field")
 	}
 
-	// Simple Field (statusCodeSpecified)
-	statusCodeSpecified := bool(m.GetStatusCodeSpecified())
-	_statusCodeSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("statusCodeSpecified", (statusCodeSpecified))
-	if _statusCodeSpecifiedErr != nil {
-		return errors.Wrap(_statusCodeSpecifiedErr, "Error serializing 'statusCodeSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "statusCodeSpecified", m.GetStatusCodeSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'statusCodeSpecified' field")
 	}
 
-	// Simple Field (valueSpecified)
-	valueSpecified := bool(m.GetValueSpecified())
-	_valueSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("valueSpecified", (valueSpecified))
-	if _valueSpecifiedErr != nil {
-		return errors.Wrap(_valueSpecifiedErr, "Error serializing 'valueSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "valueSpecified", m.GetValueSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueSpecified' field")
 	}
 
 	if err := WriteOptionalField[Variant](ctx, "value", GetRef(m.GetValue()), WriteComplex[Variant](writeBuffer), true); err != nil {

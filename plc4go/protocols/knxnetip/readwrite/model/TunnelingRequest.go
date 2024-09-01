@@ -205,28 +205,12 @@ func (m *_TunnelingRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for TunnelingRequest")
 		}
 
-		// Simple Field (tunnelingRequestDataBlock)
-		if pushErr := writeBuffer.PushContext("tunnelingRequestDataBlock"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for tunnelingRequestDataBlock")
-		}
-		_tunnelingRequestDataBlockErr := writeBuffer.WriteSerializable(ctx, m.GetTunnelingRequestDataBlock())
-		if popErr := writeBuffer.PopContext("tunnelingRequestDataBlock"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for tunnelingRequestDataBlock")
-		}
-		if _tunnelingRequestDataBlockErr != nil {
-			return errors.Wrap(_tunnelingRequestDataBlockErr, "Error serializing 'tunnelingRequestDataBlock' field")
+		if err := WriteSimpleField[TunnelingRequestDataBlock](ctx, "tunnelingRequestDataBlock", m.GetTunnelingRequestDataBlock(), WriteComplex[TunnelingRequestDataBlock](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'tunnelingRequestDataBlock' field")
 		}
 
-		// Simple Field (cemi)
-		if pushErr := writeBuffer.PushContext("cemi"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for cemi")
-		}
-		_cemiErr := writeBuffer.WriteSerializable(ctx, m.GetCemi())
-		if popErr := writeBuffer.PopContext("cemi"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for cemi")
-		}
-		if _cemiErr != nil {
-			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
+		if err := WriteSimpleField[CEMI](ctx, "cemi", m.GetCemi(), WriteComplex[CEMI](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cemi' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TunnelingRequest"); popErr != nil {

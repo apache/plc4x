@@ -174,16 +174,8 @@ func (m *_CIPData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for CIPData")
 	}
 
-	// Simple Field (dataType)
-	if pushErr := writeBuffer.PushContext("dataType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for dataType")
-	}
-	_dataTypeErr := writeBuffer.WriteSerializable(ctx, m.GetDataType())
-	if popErr := writeBuffer.PopContext("dataType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for dataType")
-	}
-	if _dataTypeErr != nil {
-		return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
+	if err := WriteSimpleEnumField[CIPDataTypeCode](ctx, "dataType", "CIPDataTypeCode", m.GetDataType(), WriteEnum[CIPDataTypeCode, uint16](CIPDataTypeCode.GetValue, CIPDataTypeCode.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataType' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

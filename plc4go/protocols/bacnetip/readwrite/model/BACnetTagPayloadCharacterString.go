@@ -198,16 +198,8 @@ func (m *_BACnetTagPayloadCharacterString) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadCharacterString")
 	}
 
-	// Simple Field (encoding)
-	if pushErr := writeBuffer.PushContext("encoding"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for encoding")
-	}
-	_encodingErr := writeBuffer.WriteSerializable(ctx, m.GetEncoding())
-	if popErr := writeBuffer.PopContext("encoding"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for encoding")
-	}
-	if _encodingErr != nil {
-		return errors.Wrap(_encodingErr, "Error serializing 'encoding' field")
+	if err := WriteSimpleEnumField[BACnetCharacterEncoding](ctx, "encoding", "BACnetCharacterEncoding", m.GetEncoding(), WriteEnum[BACnetCharacterEncoding, byte](BACnetCharacterEncoding.GetValue, BACnetCharacterEncoding.PLC4XEnumName, WriteByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'encoding' field")
 	}
 	// Virtual field
 	actualLengthInBit := m.GetActualLengthInBit()
@@ -216,11 +208,8 @@ func (m *_BACnetTagPayloadCharacterString) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
 	}
 
-	// Simple Field (value)
-	value := string(m.GetValue())
-	_valueErr := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(m.GetActualLengthInBit()), (value), utils.WithEncoding("UTF-8)"))
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteSimpleField[string](ctx, "value", m.GetValue(), WriteString(writeBuffer, int32(m.GetActualLengthInBit())), codegen.WithEncoding("UTF-8")); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadCharacterString"); popErr != nil {

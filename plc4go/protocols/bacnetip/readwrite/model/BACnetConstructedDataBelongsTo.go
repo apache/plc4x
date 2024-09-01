@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataBelongsTo) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataBelongsTo")
 		}
 
-		// Simple Field (belongsTo)
-		if pushErr := writeBuffer.PushContext("belongsTo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for belongsTo")
-		}
-		_belongsToErr := writeBuffer.WriteSerializable(ctx, m.GetBelongsTo())
-		if popErr := writeBuffer.PopContext("belongsTo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for belongsTo")
-		}
-		if _belongsToErr != nil {
-			return errors.Wrap(_belongsToErr, "Error serializing 'belongsTo' field")
+		if err := WriteSimpleField[BACnetDeviceObjectReference](ctx, "belongsTo", m.GetBelongsTo(), WriteComplex[BACnetDeviceObjectReference](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'belongsTo' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

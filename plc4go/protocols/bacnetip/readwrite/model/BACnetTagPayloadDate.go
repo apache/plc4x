@@ -391,11 +391,8 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
 	}
 
-	// Simple Field (yearMinus1900)
-	yearMinus1900 := uint8(m.GetYearMinus1900())
-	_yearMinus1900Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("yearMinus1900", 8, uint8((yearMinus1900)))
-	if _yearMinus1900Err != nil {
-		return errors.Wrap(_yearMinus1900Err, "Error serializing 'yearMinus1900' field")
+	if err := WriteSimpleField[uint8](ctx, "yearMinus1900", m.GetYearMinus1900(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'yearMinus1900' field")
 	}
 	// Virtual field
 	yearIsWildcard := m.GetYearIsWildcard()
@@ -410,11 +407,8 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_yearErr, "Error serializing 'year' field")
 	}
 
-	// Simple Field (month)
-	month := uint8(m.GetMonth())
-	_monthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 8, uint8((month)))
-	if _monthErr != nil {
-		return errors.Wrap(_monthErr, "Error serializing 'month' field")
+	if err := WriteSimpleField[uint8](ctx, "month", m.GetMonth(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'month' field")
 	}
 	// Virtual field
 	monthIsWildcard := m.GetMonthIsWildcard()
@@ -435,11 +429,8 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_evenMonthWildcardErr, "Error serializing 'evenMonthWildcard' field")
 	}
 
-	// Simple Field (dayOfMonth)
-	dayOfMonth := uint8(m.GetDayOfMonth())
-	_dayOfMonthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfMonth", 8, uint8((dayOfMonth)))
-	if _dayOfMonthErr != nil {
-		return errors.Wrap(_dayOfMonthErr, "Error serializing 'dayOfMonth' field")
+	if err := WriteSimpleField[uint8](ctx, "dayOfMonth", m.GetDayOfMonth(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dayOfMonth' field")
 	}
 	// Virtual field
 	dayOfMonthIsWildcard := m.GetDayOfMonthIsWildcard()
@@ -466,11 +457,8 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_evenDayOfMonthWildcardErr, "Error serializing 'evenDayOfMonthWildcard' field")
 	}
 
-	// Simple Field (dayOfWeek)
-	dayOfWeek := uint8(m.GetDayOfWeek())
-	_dayOfWeekErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
-	if _dayOfWeekErr != nil {
-		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
+	if err := WriteSimpleField[uint8](ctx, "dayOfWeek", m.GetDayOfWeek(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dayOfWeek' field")
 	}
 	// Virtual field
 	dayOfWeekIsWildcard := m.GetDayOfWeekIsWildcard()

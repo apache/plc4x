@@ -207,11 +207,8 @@ func (m *_HistoryEvent) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for HistoryEvent")
 		}
 
-		// Simple Field (noOfEvents)
-		noOfEvents := int32(m.GetNoOfEvents())
-		_noOfEventsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfEvents", 32, int32((noOfEvents)))
-		if _noOfEventsErr != nil {
-			return errors.Wrap(_noOfEventsErr, "Error serializing 'noOfEvents' field")
+		if err := WriteSimpleField[int32](ctx, "noOfEvents", m.GetNoOfEvents(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfEvents' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "events", m.GetEvents(), writeBuffer); err != nil {

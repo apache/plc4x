@@ -168,28 +168,12 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) 
 		return errors.Wrap(pushErr, "Error pushing for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
 	}
 
-	// Simple Field (monitoredObjectIdentifier)
-	if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
-	}
-	_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredObjectIdentifier())
-	if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
-	}
-	if _monitoredObjectIdentifierErr != nil {
-		return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
+	if err := WriteSimpleField[BACnetContextTagObjectIdentifier](ctx, "monitoredObjectIdentifier", m.GetMonitoredObjectIdentifier(), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'monitoredObjectIdentifier' field")
 	}
 
-	// Simple Field (listOfCovReferences)
-	if pushErr := writeBuffer.PushContext("listOfCovReferences"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfCovReferences")
-	}
-	_listOfCovReferencesErr := writeBuffer.WriteSerializable(ctx, m.GetListOfCovReferences())
-	if popErr := writeBuffer.PopContext("listOfCovReferences"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfCovReferences")
-	}
-	if _listOfCovReferencesErr != nil {
-		return errors.Wrap(_listOfCovReferencesErr, "Error serializing 'listOfCovReferences' field")
+	if err := WriteSimpleField[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences](ctx, "listOfCovReferences", m.GetListOfCovReferences(), WriteComplex[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfCovReferences' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry"); popErr != nil {

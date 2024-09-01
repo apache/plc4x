@@ -181,16 +181,8 @@ func (m *_BACnetPropertyStatesLifeSafetyMode) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetPropertyStatesLifeSafetyMode")
 		}
 
-		// Simple Field (lifeSafetyMode)
-		if pushErr := writeBuffer.PushContext("lifeSafetyMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lifeSafetyMode")
-		}
-		_lifeSafetyModeErr := writeBuffer.WriteSerializable(ctx, m.GetLifeSafetyMode())
-		if popErr := writeBuffer.PopContext("lifeSafetyMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lifeSafetyMode")
-		}
-		if _lifeSafetyModeErr != nil {
-			return errors.Wrap(_lifeSafetyModeErr, "Error serializing 'lifeSafetyMode' field")
+		if err := WriteSimpleField[BACnetLifeSafetyModeTagged](ctx, "lifeSafetyMode", m.GetLifeSafetyMode(), WriteComplex[BACnetLifeSafetyModeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lifeSafetyMode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetPropertyStatesLifeSafetyMode"); popErr != nil {

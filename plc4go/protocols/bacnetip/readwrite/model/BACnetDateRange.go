@@ -168,28 +168,12 @@ func (m *_BACnetDateRange) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for BACnetDateRange")
 	}
 
-	// Simple Field (startDate)
-	if pushErr := writeBuffer.PushContext("startDate"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for startDate")
-	}
-	_startDateErr := writeBuffer.WriteSerializable(ctx, m.GetStartDate())
-	if popErr := writeBuffer.PopContext("startDate"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for startDate")
-	}
-	if _startDateErr != nil {
-		return errors.Wrap(_startDateErr, "Error serializing 'startDate' field")
+	if err := WriteSimpleField[BACnetApplicationTagDate](ctx, "startDate", m.GetStartDate(), WriteComplex[BACnetApplicationTagDate](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'startDate' field")
 	}
 
-	// Simple Field (endDate)
-	if pushErr := writeBuffer.PushContext("endDate"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for endDate")
-	}
-	_endDateErr := writeBuffer.WriteSerializable(ctx, m.GetEndDate())
-	if popErr := writeBuffer.PopContext("endDate"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for endDate")
-	}
-	if _endDateErr != nil {
-		return errors.Wrap(_endDateErr, "Error serializing 'endDate' field")
+	if err := WriteSimpleField[BACnetApplicationTagDate](ctx, "endDate", m.GetEndDate(), WriteComplex[BACnetApplicationTagDate](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'endDate' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDateRange"); popErr != nil {

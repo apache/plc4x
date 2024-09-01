@@ -152,16 +152,8 @@ func (m *_BACnetLiftCarCallList) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for BACnetLiftCarCallList")
 	}
 
-	// Simple Field (floorNumbers)
-	if pushErr := writeBuffer.PushContext("floorNumbers"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for floorNumbers")
-	}
-	_floorNumbersErr := writeBuffer.WriteSerializable(ctx, m.GetFloorNumbers())
-	if popErr := writeBuffer.PopContext("floorNumbers"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for floorNumbers")
-	}
-	if _floorNumbersErr != nil {
-		return errors.Wrap(_floorNumbersErr, "Error serializing 'floorNumbers' field")
+	if err := WriteSimpleField[BACnetLiftCarCallListFloorList](ctx, "floorNumbers", m.GetFloorNumbers(), WriteComplex[BACnetLiftCarCallListFloorList](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'floorNumbers' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLiftCarCallList"); popErr != nil {

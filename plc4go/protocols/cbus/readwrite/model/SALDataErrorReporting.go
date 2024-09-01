@@ -185,16 +185,8 @@ func (m *_SALDataErrorReporting) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for SALDataErrorReporting")
 		}
 
-		// Simple Field (errorReportingData)
-		if pushErr := writeBuffer.PushContext("errorReportingData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for errorReportingData")
-		}
-		_errorReportingDataErr := writeBuffer.WriteSerializable(ctx, m.GetErrorReportingData())
-		if popErr := writeBuffer.PopContext("errorReportingData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for errorReportingData")
-		}
-		if _errorReportingDataErr != nil {
-			return errors.Wrap(_errorReportingDataErr, "Error serializing 'errorReportingData' field")
+		if err := WriteSimpleField[ErrorReportingData](ctx, "errorReportingData", m.GetErrorReportingData(), WriteComplex[ErrorReportingData](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorReportingData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SALDataErrorReporting"); popErr != nil {

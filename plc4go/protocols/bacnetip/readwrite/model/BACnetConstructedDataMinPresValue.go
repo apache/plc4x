@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataMinPresValue) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMinPresValue")
 		}
 
-		// Simple Field (minPresValue)
-		if pushErr := writeBuffer.PushContext("minPresValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for minPresValue")
-		}
-		_minPresValueErr := writeBuffer.WriteSerializable(ctx, m.GetMinPresValue())
-		if popErr := writeBuffer.PopContext("minPresValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for minPresValue")
-		}
-		if _minPresValueErr != nil {
-			return errors.Wrap(_minPresValueErr, "Error serializing 'minPresValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagReal](ctx, "minPresValue", m.GetMinPresValue(), WriteComplex[BACnetApplicationTagReal](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minPresValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

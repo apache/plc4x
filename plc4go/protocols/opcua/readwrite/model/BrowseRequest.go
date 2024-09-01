@@ -258,42 +258,20 @@ func (m *_BrowseRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for BrowseRequest")
 		}
 
-		// Simple Field (requestHeader)
-		if pushErr := writeBuffer.PushContext("requestHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for requestHeader")
-		}
-		_requestHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetRequestHeader())
-		if popErr := writeBuffer.PopContext("requestHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for requestHeader")
-		}
-		if _requestHeaderErr != nil {
-			return errors.Wrap(_requestHeaderErr, "Error serializing 'requestHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		// Simple Field (view)
-		if pushErr := writeBuffer.PushContext("view"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for view")
-		}
-		_viewErr := writeBuffer.WriteSerializable(ctx, m.GetView())
-		if popErr := writeBuffer.PopContext("view"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for view")
-		}
-		if _viewErr != nil {
-			return errors.Wrap(_viewErr, "Error serializing 'view' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "view", m.GetView(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'view' field")
 		}
 
-		// Simple Field (requestedMaxReferencesPerNode)
-		requestedMaxReferencesPerNode := uint32(m.GetRequestedMaxReferencesPerNode())
-		_requestedMaxReferencesPerNodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestedMaxReferencesPerNode", 32, uint32((requestedMaxReferencesPerNode)))
-		if _requestedMaxReferencesPerNodeErr != nil {
-			return errors.Wrap(_requestedMaxReferencesPerNodeErr, "Error serializing 'requestedMaxReferencesPerNode' field")
+		if err := WriteSimpleField[uint32](ctx, "requestedMaxReferencesPerNode", m.GetRequestedMaxReferencesPerNode(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestedMaxReferencesPerNode' field")
 		}
 
-		// Simple Field (noOfNodesToBrowse)
-		noOfNodesToBrowse := int32(m.GetNoOfNodesToBrowse())
-		_noOfNodesToBrowseErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToBrowse", 32, int32((noOfNodesToBrowse)))
-		if _noOfNodesToBrowseErr != nil {
-			return errors.Wrap(_noOfNodesToBrowseErr, "Error serializing 'noOfNodesToBrowse' field")
+		if err := WriteSimpleField[int32](ctx, "noOfNodesToBrowse", m.GetNoOfNodesToBrowse(), WriteSignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'noOfNodesToBrowse' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "nodesToBrowse", m.GetNodesToBrowse(), writeBuffer); err != nil {

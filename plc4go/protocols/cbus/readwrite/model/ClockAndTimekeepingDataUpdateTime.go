@@ -306,32 +306,20 @@ func (m *_ClockAndTimekeepingDataUpdateTime) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for ClockAndTimekeepingDataUpdateTime")
 		}
 
-		// Simple Field (hours)
-		hours := uint8(m.GetHours())
-		_hoursErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("hours", 8, uint8((hours)))
-		if _hoursErr != nil {
-			return errors.Wrap(_hoursErr, "Error serializing 'hours' field")
+		if err := WriteSimpleField[uint8](ctx, "hours", m.GetHours(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hours' field")
 		}
 
-		// Simple Field (minute)
-		minute := uint8(m.GetMinute())
-		_minuteErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("minute", 8, uint8((minute)))
-		if _minuteErr != nil {
-			return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
+		if err := WriteSimpleField[uint8](ctx, "minute", m.GetMinute(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'minute' field")
 		}
 
-		// Simple Field (second)
-		second := uint8(m.GetSecond())
-		_secondErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("second", 8, uint8((second)))
-		if _secondErr != nil {
-			return errors.Wrap(_secondErr, "Error serializing 'second' field")
+		if err := WriteSimpleField[uint8](ctx, "second", m.GetSecond(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'second' field")
 		}
 
-		// Simple Field (daylightSaving)
-		daylightSaving := byte(m.GetDaylightSaving())
-		_daylightSavingErr := /*TODO: migrate me*/ writeBuffer.WriteByte("daylightSaving", (daylightSaving))
-		if _daylightSavingErr != nil {
-			return errors.Wrap(_daylightSavingErr, "Error serializing 'daylightSaving' field")
+		if err := WriteSimpleField[byte](ctx, "daylightSaving", m.GetDaylightSaving(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'daylightSaving' field")
 		}
 		// Virtual field
 		isNoDaylightSavings := m.GetIsNoDaylightSavings()

@@ -183,16 +183,8 @@ func (m *_ComObjectTableRealisationType6) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for ComObjectTableRealisationType6")
 		}
 
-		// Simple Field (comObjectDescriptors)
-		if pushErr := writeBuffer.PushContext("comObjectDescriptors"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
-		}
-		_comObjectDescriptorsErr := writeBuffer.WriteSerializable(ctx, m.GetComObjectDescriptors())
-		if popErr := writeBuffer.PopContext("comObjectDescriptors"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for comObjectDescriptors")
-		}
-		if _comObjectDescriptorsErr != nil {
-			return errors.Wrap(_comObjectDescriptorsErr, "Error serializing 'comObjectDescriptors' field")
+		if err := WriteSimpleField[GroupObjectDescriptorRealisationType6](ctx, "comObjectDescriptors", m.GetComObjectDescriptors(), WriteComplex[GroupObjectDescriptorRealisationType6](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'comObjectDescriptors' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ComObjectTableRealisationType6"); popErr != nil {

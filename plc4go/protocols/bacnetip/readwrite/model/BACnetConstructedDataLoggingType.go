@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLoggingType) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLoggingType")
 		}
 
-		// Simple Field (loggingType)
-		if pushErr := writeBuffer.PushContext("loggingType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for loggingType")
-		}
-		_loggingTypeErr := writeBuffer.WriteSerializable(ctx, m.GetLoggingType())
-		if popErr := writeBuffer.PopContext("loggingType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for loggingType")
-		}
-		if _loggingTypeErr != nil {
-			return errors.Wrap(_loggingTypeErr, "Error serializing 'loggingType' field")
+		if err := WriteSimpleField[BACnetLoggingTypeTagged](ctx, "loggingType", m.GetLoggingType(), WriteComplex[BACnetLoggingTypeTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'loggingType' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

@@ -168,28 +168,12 @@ func (m *_BACnetNetworkSecurityPolicy) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for BACnetNetworkSecurityPolicy")
 	}
 
-	// Simple Field (portId)
-	if pushErr := writeBuffer.PushContext("portId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for portId")
-	}
-	_portIdErr := writeBuffer.WriteSerializable(ctx, m.GetPortId())
-	if popErr := writeBuffer.PopContext("portId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for portId")
-	}
-	if _portIdErr != nil {
-		return errors.Wrap(_portIdErr, "Error serializing 'portId' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "portId", m.GetPortId(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'portId' field")
 	}
 
-	// Simple Field (securityLevel)
-	if pushErr := writeBuffer.PushContext("securityLevel"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for securityLevel")
-	}
-	_securityLevelErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityLevel())
-	if popErr := writeBuffer.PopContext("securityLevel"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for securityLevel")
-	}
-	if _securityLevelErr != nil {
-		return errors.Wrap(_securityLevelErr, "Error serializing 'securityLevel' field")
+	if err := WriteSimpleField[BACnetSecurityPolicyTagged](ctx, "securityLevel", m.GetSecurityLevel(), WriteComplex[BACnetSecurityPolicyTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'securityLevel' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetNetworkSecurityPolicy"); popErr != nil {

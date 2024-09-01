@@ -370,88 +370,52 @@ func (m *_ServerDiagnosticsSummaryDataType) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for ServerDiagnosticsSummaryDataType")
 		}
 
-		// Simple Field (serverViewCount)
-		serverViewCount := uint32(m.GetServerViewCount())
-		_serverViewCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("serverViewCount", 32, uint32((serverViewCount)))
-		if _serverViewCountErr != nil {
-			return errors.Wrap(_serverViewCountErr, "Error serializing 'serverViewCount' field")
+		if err := WriteSimpleField[uint32](ctx, "serverViewCount", m.GetServerViewCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverViewCount' field")
 		}
 
-		// Simple Field (currentSessionCount)
-		currentSessionCount := uint32(m.GetCurrentSessionCount())
-		_currentSessionCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("currentSessionCount", 32, uint32((currentSessionCount)))
-		if _currentSessionCountErr != nil {
-			return errors.Wrap(_currentSessionCountErr, "Error serializing 'currentSessionCount' field")
+		if err := WriteSimpleField[uint32](ctx, "currentSessionCount", m.GetCurrentSessionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentSessionCount' field")
 		}
 
-		// Simple Field (cumulatedSessionCount)
-		cumulatedSessionCount := uint32(m.GetCumulatedSessionCount())
-		_cumulatedSessionCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("cumulatedSessionCount", 32, uint32((cumulatedSessionCount)))
-		if _cumulatedSessionCountErr != nil {
-			return errors.Wrap(_cumulatedSessionCountErr, "Error serializing 'cumulatedSessionCount' field")
+		if err := WriteSimpleField[uint32](ctx, "cumulatedSessionCount", m.GetCumulatedSessionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cumulatedSessionCount' field")
 		}
 
-		// Simple Field (securityRejectedSessionCount)
-		securityRejectedSessionCount := uint32(m.GetSecurityRejectedSessionCount())
-		_securityRejectedSessionCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("securityRejectedSessionCount", 32, uint32((securityRejectedSessionCount)))
-		if _securityRejectedSessionCountErr != nil {
-			return errors.Wrap(_securityRejectedSessionCountErr, "Error serializing 'securityRejectedSessionCount' field")
+		if err := WriteSimpleField[uint32](ctx, "securityRejectedSessionCount", m.GetSecurityRejectedSessionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityRejectedSessionCount' field")
 		}
 
-		// Simple Field (rejectedSessionCount)
-		rejectedSessionCount := uint32(m.GetRejectedSessionCount())
-		_rejectedSessionCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("rejectedSessionCount", 32, uint32((rejectedSessionCount)))
-		if _rejectedSessionCountErr != nil {
-			return errors.Wrap(_rejectedSessionCountErr, "Error serializing 'rejectedSessionCount' field")
+		if err := WriteSimpleField[uint32](ctx, "rejectedSessionCount", m.GetRejectedSessionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'rejectedSessionCount' field")
 		}
 
-		// Simple Field (sessionTimeoutCount)
-		sessionTimeoutCount := uint32(m.GetSessionTimeoutCount())
-		_sessionTimeoutCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sessionTimeoutCount", 32, uint32((sessionTimeoutCount)))
-		if _sessionTimeoutCountErr != nil {
-			return errors.Wrap(_sessionTimeoutCountErr, "Error serializing 'sessionTimeoutCount' field")
+		if err := WriteSimpleField[uint32](ctx, "sessionTimeoutCount", m.GetSessionTimeoutCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sessionTimeoutCount' field")
 		}
 
-		// Simple Field (sessionAbortCount)
-		sessionAbortCount := uint32(m.GetSessionAbortCount())
-		_sessionAbortCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sessionAbortCount", 32, uint32((sessionAbortCount)))
-		if _sessionAbortCountErr != nil {
-			return errors.Wrap(_sessionAbortCountErr, "Error serializing 'sessionAbortCount' field")
+		if err := WriteSimpleField[uint32](ctx, "sessionAbortCount", m.GetSessionAbortCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'sessionAbortCount' field")
 		}
 
-		// Simple Field (currentSubscriptionCount)
-		currentSubscriptionCount := uint32(m.GetCurrentSubscriptionCount())
-		_currentSubscriptionCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("currentSubscriptionCount", 32, uint32((currentSubscriptionCount)))
-		if _currentSubscriptionCountErr != nil {
-			return errors.Wrap(_currentSubscriptionCountErr, "Error serializing 'currentSubscriptionCount' field")
+		if err := WriteSimpleField[uint32](ctx, "currentSubscriptionCount", m.GetCurrentSubscriptionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'currentSubscriptionCount' field")
 		}
 
-		// Simple Field (cumulatedSubscriptionCount)
-		cumulatedSubscriptionCount := uint32(m.GetCumulatedSubscriptionCount())
-		_cumulatedSubscriptionCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("cumulatedSubscriptionCount", 32, uint32((cumulatedSubscriptionCount)))
-		if _cumulatedSubscriptionCountErr != nil {
-			return errors.Wrap(_cumulatedSubscriptionCountErr, "Error serializing 'cumulatedSubscriptionCount' field")
+		if err := WriteSimpleField[uint32](ctx, "cumulatedSubscriptionCount", m.GetCumulatedSubscriptionCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'cumulatedSubscriptionCount' field")
 		}
 
-		// Simple Field (publishingIntervalCount)
-		publishingIntervalCount := uint32(m.GetPublishingIntervalCount())
-		_publishingIntervalCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("publishingIntervalCount", 32, uint32((publishingIntervalCount)))
-		if _publishingIntervalCountErr != nil {
-			return errors.Wrap(_publishingIntervalCountErr, "Error serializing 'publishingIntervalCount' field")
+		if err := WriteSimpleField[uint32](ctx, "publishingIntervalCount", m.GetPublishingIntervalCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'publishingIntervalCount' field")
 		}
 
-		// Simple Field (securityRejectedRequestsCount)
-		securityRejectedRequestsCount := uint32(m.GetSecurityRejectedRequestsCount())
-		_securityRejectedRequestsCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("securityRejectedRequestsCount", 32, uint32((securityRejectedRequestsCount)))
-		if _securityRejectedRequestsCountErr != nil {
-			return errors.Wrap(_securityRejectedRequestsCountErr, "Error serializing 'securityRejectedRequestsCount' field")
+		if err := WriteSimpleField[uint32](ctx, "securityRejectedRequestsCount", m.GetSecurityRejectedRequestsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityRejectedRequestsCount' field")
 		}
 
-		// Simple Field (rejectedRequestsCount)
-		rejectedRequestsCount := uint32(m.GetRejectedRequestsCount())
-		_rejectedRequestsCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("rejectedRequestsCount", 32, uint32((rejectedRequestsCount)))
-		if _rejectedRequestsCountErr != nil {
-			return errors.Wrap(_rejectedRequestsCountErr, "Error serializing 'rejectedRequestsCount' field")
+		if err := WriteSimpleField[uint32](ctx, "rejectedRequestsCount", m.GetRejectedRequestsCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'rejectedRequestsCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ServerDiagnosticsSummaryDataType"); popErr != nil {

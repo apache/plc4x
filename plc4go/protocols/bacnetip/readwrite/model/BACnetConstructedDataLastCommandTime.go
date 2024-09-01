@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLastCommandTime) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLastCommandTime")
 		}
 
-		// Simple Field (lastCommandTime)
-		if pushErr := writeBuffer.PushContext("lastCommandTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastCommandTime")
-		}
-		_lastCommandTimeErr := writeBuffer.WriteSerializable(ctx, m.GetLastCommandTime())
-		if popErr := writeBuffer.PopContext("lastCommandTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastCommandTime")
-		}
-		if _lastCommandTimeErr != nil {
-			return errors.Wrap(_lastCommandTimeErr, "Error serializing 'lastCommandTime' field")
+		if err := WriteSimpleField[BACnetTimeStamp](ctx, "lastCommandTime", m.GetLastCommandTime(), WriteComplex[BACnetTimeStamp](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastCommandTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

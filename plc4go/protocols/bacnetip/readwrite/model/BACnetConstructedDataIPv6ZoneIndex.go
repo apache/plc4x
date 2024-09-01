@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataIPv6ZoneIndex")
 		}
 
-		// Simple Field (ipv6ZoneIndex)
-		if pushErr := writeBuffer.PushContext("ipv6ZoneIndex"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipv6ZoneIndex")
-		}
-		_ipv6ZoneIndexErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6ZoneIndex())
-		if popErr := writeBuffer.PopContext("ipv6ZoneIndex"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipv6ZoneIndex")
-		}
-		if _ipv6ZoneIndexErr != nil {
-			return errors.Wrap(_ipv6ZoneIndexErr, "Error serializing 'ipv6ZoneIndex' field")
+		if err := WriteSimpleField[BACnetApplicationTagCharacterString](ctx, "ipv6ZoneIndex", m.GetIpv6ZoneIndex(), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipv6ZoneIndex' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

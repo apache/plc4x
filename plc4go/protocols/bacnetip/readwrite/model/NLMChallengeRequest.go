@@ -219,25 +219,16 @@ func (m *_NLMChallengeRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for NLMChallengeRequest")
 		}
 
-		// Simple Field (messageChallenge)
-		messageChallenge := byte(m.GetMessageChallenge())
-		_messageChallengeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("messageChallenge", (messageChallenge))
-		if _messageChallengeErr != nil {
-			return errors.Wrap(_messageChallengeErr, "Error serializing 'messageChallenge' field")
+		if err := WriteSimpleField[byte](ctx, "messageChallenge", m.GetMessageChallenge(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'messageChallenge' field")
 		}
 
-		// Simple Field (originalMessageId)
-		originalMessageId := uint32(m.GetOriginalMessageId())
-		_originalMessageIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("originalMessageId", 32, uint32((originalMessageId)))
-		if _originalMessageIdErr != nil {
-			return errors.Wrap(_originalMessageIdErr, "Error serializing 'originalMessageId' field")
+		if err := WriteSimpleField[uint32](ctx, "originalMessageId", m.GetOriginalMessageId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalMessageId' field")
 		}
 
-		// Simple Field (originalTimestamp)
-		originalTimestamp := uint32(m.GetOriginalTimestamp())
-		_originalTimestampErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("originalTimestamp", 32, uint32((originalTimestamp)))
-		if _originalTimestampErr != nil {
-			return errors.Wrap(_originalTimestampErr, "Error serializing 'originalTimestamp' field")
+		if err := WriteSimpleField[uint32](ctx, "originalTimestamp", m.GetOriginalTimestamp(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'originalTimestamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMChallengeRequest"); popErr != nil {

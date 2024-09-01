@@ -185,16 +185,8 @@ func (m *_DeviceConfigurationAck) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for DeviceConfigurationAck")
 		}
 
-		// Simple Field (deviceConfigurationAckDataBlock)
-		if pushErr := writeBuffer.PushContext("deviceConfigurationAckDataBlock"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceConfigurationAckDataBlock")
-		}
-		_deviceConfigurationAckDataBlockErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceConfigurationAckDataBlock())
-		if popErr := writeBuffer.PopContext("deviceConfigurationAckDataBlock"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceConfigurationAckDataBlock")
-		}
-		if _deviceConfigurationAckDataBlockErr != nil {
-			return errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error serializing 'deviceConfigurationAckDataBlock' field")
+		if err := WriteSimpleField[DeviceConfigurationAckDataBlock](ctx, "deviceConfigurationAckDataBlock", m.GetDeviceConfigurationAckDataBlock(), WriteComplex[DeviceConfigurationAckDataBlock](writeBuffer), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceConfigurationAckDataBlock' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeviceConfigurationAck"); popErr != nil {

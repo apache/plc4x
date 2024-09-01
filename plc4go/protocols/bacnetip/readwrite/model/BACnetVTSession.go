@@ -184,40 +184,16 @@ func (m *_BACnetVTSession) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for BACnetVTSession")
 	}
 
-	// Simple Field (localVtSessionId)
-	if pushErr := writeBuffer.PushContext("localVtSessionId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for localVtSessionId")
-	}
-	_localVtSessionIdErr := writeBuffer.WriteSerializable(ctx, m.GetLocalVtSessionId())
-	if popErr := writeBuffer.PopContext("localVtSessionId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for localVtSessionId")
-	}
-	if _localVtSessionIdErr != nil {
-		return errors.Wrap(_localVtSessionIdErr, "Error serializing 'localVtSessionId' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "localVtSessionId", m.GetLocalVtSessionId(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'localVtSessionId' field")
 	}
 
-	// Simple Field (removeVtSessionId)
-	if pushErr := writeBuffer.PushContext("removeVtSessionId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for removeVtSessionId")
-	}
-	_removeVtSessionIdErr := writeBuffer.WriteSerializable(ctx, m.GetRemoveVtSessionId())
-	if popErr := writeBuffer.PopContext("removeVtSessionId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for removeVtSessionId")
-	}
-	if _removeVtSessionIdErr != nil {
-		return errors.Wrap(_removeVtSessionIdErr, "Error serializing 'removeVtSessionId' field")
+	if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "removeVtSessionId", m.GetRemoveVtSessionId(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'removeVtSessionId' field")
 	}
 
-	// Simple Field (remoteVtAddress)
-	if pushErr := writeBuffer.PushContext("remoteVtAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for remoteVtAddress")
-	}
-	_remoteVtAddressErr := writeBuffer.WriteSerializable(ctx, m.GetRemoteVtAddress())
-	if popErr := writeBuffer.PopContext("remoteVtAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for remoteVtAddress")
-	}
-	if _remoteVtAddressErr != nil {
-		return errors.Wrap(_remoteVtAddressErr, "Error serializing 'remoteVtAddress' field")
+	if err := WriteSimpleField[BACnetAddress](ctx, "remoteVtAddress", m.GetRemoteVtAddress(), WriteComplex[BACnetAddress](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'remoteVtAddress' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetVTSession"); popErr != nil {

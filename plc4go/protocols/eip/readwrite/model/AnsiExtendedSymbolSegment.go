@@ -215,11 +215,8 @@ func (m *_AnsiExtendedSymbolSegment) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(err, "Error serializing 'dataSize' field")
 		}
 
-		// Simple Field (symbol)
-		symbol := string(m.GetSymbol())
-		_symbolErr := /*TODO: migrate me*/ writeBuffer.WriteString("symbol", uint32((uint8(len(m.GetSymbol())))*(8)), (symbol), utils.WithEncoding("UTF-8)"))
-		if _symbolErr != nil {
-			return errors.Wrap(_symbolErr, "Error serializing 'symbol' field")
+		if err := WriteSimpleField[string](ctx, "symbol", m.GetSymbol(), WriteString(writeBuffer, int32(int32(uint8(len(m.GetSymbol())))*int32(int32(8))))); err != nil {
+			return errors.Wrap(err, "Error serializing 'symbol' field")
 		}
 
 		if err := WriteOptionalField[uint8](ctx, "pad", m.GetPad(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {

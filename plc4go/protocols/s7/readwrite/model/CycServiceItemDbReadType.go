@@ -206,11 +206,8 @@ func (m *_CycServiceItemDbReadType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for CycServiceItemDbReadType")
 		}
 
-		// Simple Field (numberOfAreas)
-		numberOfAreas := uint8(m.GetNumberOfAreas())
-		_numberOfAreasErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfAreas", 8, uint8((numberOfAreas)))
-		if _numberOfAreasErr != nil {
-			return errors.Wrap(_numberOfAreasErr, "Error serializing 'numberOfAreas' field")
+		if err := WriteSimpleField[uint8](ctx, "numberOfAreas", m.GetNumberOfAreas(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfAreas' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {

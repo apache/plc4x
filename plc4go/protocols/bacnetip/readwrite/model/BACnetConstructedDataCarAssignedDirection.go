@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataCarAssignedDirection) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCarAssignedDirection")
 		}
 
-		// Simple Field (assignedDirection)
-		if pushErr := writeBuffer.PushContext("assignedDirection"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for assignedDirection")
-		}
-		_assignedDirectionErr := writeBuffer.WriteSerializable(ctx, m.GetAssignedDirection())
-		if popErr := writeBuffer.PopContext("assignedDirection"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for assignedDirection")
-		}
-		if _assignedDirectionErr != nil {
-			return errors.Wrap(_assignedDirectionErr, "Error serializing 'assignedDirection' field")
+		if err := WriteSimpleField[BACnetLiftCarDirectionTagged](ctx, "assignedDirection", m.GetAssignedDirection(), WriteComplex[BACnetLiftCarDirectionTagged](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'assignedDirection' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

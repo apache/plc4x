@@ -183,18 +183,12 @@ func (m *_ExtensionHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (xmlbody)
-	xmlbody := bool(m.GetXmlbody())
-	_xmlbodyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("xmlbody", (xmlbody))
-	if _xmlbodyErr != nil {
-		return errors.Wrap(_xmlbodyErr, "Error serializing 'xmlbody' field")
+	if err := WriteSimpleField[bool](ctx, "xmlbody", m.GetXmlbody(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'xmlbody' field")
 	}
 
-	// Simple Field (binaryBody)
-	binaryBody := bool(m.GetBinaryBody())
-	_binaryBodyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("binaryBody", (binaryBody))
-	if _binaryBodyErr != nil {
-		return errors.Wrap(_binaryBodyErr, "Error serializing 'binaryBody' field")
+	if err := WriteSimpleField[bool](ctx, "binaryBody", m.GetBinaryBody(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'binaryBody' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ExtensionHeader"); popErr != nil {

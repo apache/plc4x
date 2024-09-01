@@ -168,28 +168,12 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) SerializeWithWriteBuffer
 		return errors.Wrap(pushErr, "Error pushing for BACnetLandingDoorStatusLandingDoorsListEntry")
 	}
 
-	// Simple Field (floorNumber)
-	if pushErr := writeBuffer.PushContext("floorNumber"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for floorNumber")
-	}
-	_floorNumberErr := writeBuffer.WriteSerializable(ctx, m.GetFloorNumber())
-	if popErr := writeBuffer.PopContext("floorNumber"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for floorNumber")
-	}
-	if _floorNumberErr != nil {
-		return errors.Wrap(_floorNumberErr, "Error serializing 'floorNumber' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "floorNumber", m.GetFloorNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'floorNumber' field")
 	}
 
-	// Simple Field (doorStatus)
-	if pushErr := writeBuffer.PushContext("doorStatus"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for doorStatus")
-	}
-	_doorStatusErr := writeBuffer.WriteSerializable(ctx, m.GetDoorStatus())
-	if popErr := writeBuffer.PopContext("doorStatus"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for doorStatus")
-	}
-	if _doorStatusErr != nil {
-		return errors.Wrap(_doorStatusErr, "Error serializing 'doorStatus' field")
+	if err := WriteSimpleField[BACnetDoorStatusTagged](ctx, "doorStatus", m.GetDoorStatus(), WriteComplex[BACnetDoorStatusTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'doorStatus' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLandingDoorStatusLandingDoorsListEntry"); popErr != nil {

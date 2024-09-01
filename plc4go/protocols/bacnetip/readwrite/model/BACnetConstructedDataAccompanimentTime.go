@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataAccompanimentTime) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccompanimentTime")
 		}
 
-		// Simple Field (accompanimentTime)
-		if pushErr := writeBuffer.PushContext("accompanimentTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accompanimentTime")
-		}
-		_accompanimentTimeErr := writeBuffer.WriteSerializable(ctx, m.GetAccompanimentTime())
-		if popErr := writeBuffer.PopContext("accompanimentTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accompanimentTime")
-		}
-		if _accompanimentTimeErr != nil {
-			return errors.Wrap(_accompanimentTimeErr, "Error serializing 'accompanimentTime' field")
+		if err := WriteSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accompanimentTime", m.GetAccompanimentTime(), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'accompanimentTime' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

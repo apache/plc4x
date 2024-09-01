@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLightingCommand) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLightingCommand")
 		}
 
-		// Simple Field (lightingCommand)
-		if pushErr := writeBuffer.PushContext("lightingCommand"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lightingCommand")
-		}
-		_lightingCommandErr := writeBuffer.WriteSerializable(ctx, m.GetLightingCommand())
-		if popErr := writeBuffer.PopContext("lightingCommand"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lightingCommand")
-		}
-		if _lightingCommandErr != nil {
-			return errors.Wrap(_lightingCommandErr, "Error serializing 'lightingCommand' field")
+		if err := WriteSimpleField[BACnetLightingCommand](ctx, "lightingCommand", m.GetLightingCommand(), WriteComplex[BACnetLightingCommand](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'lightingCommand' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()

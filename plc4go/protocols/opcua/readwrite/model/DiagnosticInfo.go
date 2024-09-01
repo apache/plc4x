@@ -401,53 +401,32 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
-	// Simple Field (innerDiagnosticInfoSpecified)
-	innerDiagnosticInfoSpecified := bool(m.GetInnerDiagnosticInfoSpecified())
-	_innerDiagnosticInfoSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("innerDiagnosticInfoSpecified", (innerDiagnosticInfoSpecified))
-	if _innerDiagnosticInfoSpecifiedErr != nil {
-		return errors.Wrap(_innerDiagnosticInfoSpecifiedErr, "Error serializing 'innerDiagnosticInfoSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "innerDiagnosticInfoSpecified", m.GetInnerDiagnosticInfoSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'innerDiagnosticInfoSpecified' field")
 	}
 
-	// Simple Field (innerStatusCodeSpecified)
-	innerStatusCodeSpecified := bool(m.GetInnerStatusCodeSpecified())
-	_innerStatusCodeSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("innerStatusCodeSpecified", (innerStatusCodeSpecified))
-	if _innerStatusCodeSpecifiedErr != nil {
-		return errors.Wrap(_innerStatusCodeSpecifiedErr, "Error serializing 'innerStatusCodeSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "innerStatusCodeSpecified", m.GetInnerStatusCodeSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'innerStatusCodeSpecified' field")
 	}
 
-	// Simple Field (additionalInfoSpecified)
-	additionalInfoSpecified := bool(m.GetAdditionalInfoSpecified())
-	_additionalInfoSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("additionalInfoSpecified", (additionalInfoSpecified))
-	if _additionalInfoSpecifiedErr != nil {
-		return errors.Wrap(_additionalInfoSpecifiedErr, "Error serializing 'additionalInfoSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "additionalInfoSpecified", m.GetAdditionalInfoSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'additionalInfoSpecified' field")
 	}
 
-	// Simple Field (localeSpecified)
-	localeSpecified := bool(m.GetLocaleSpecified())
-	_localeSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("localeSpecified", (localeSpecified))
-	if _localeSpecifiedErr != nil {
-		return errors.Wrap(_localeSpecifiedErr, "Error serializing 'localeSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "localeSpecified", m.GetLocaleSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'localeSpecified' field")
 	}
 
-	// Simple Field (localizedTextSpecified)
-	localizedTextSpecified := bool(m.GetLocalizedTextSpecified())
-	_localizedTextSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("localizedTextSpecified", (localizedTextSpecified))
-	if _localizedTextSpecifiedErr != nil {
-		return errors.Wrap(_localizedTextSpecifiedErr, "Error serializing 'localizedTextSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "localizedTextSpecified", m.GetLocalizedTextSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'localizedTextSpecified' field")
 	}
 
-	// Simple Field (namespaceURISpecified)
-	namespaceURISpecified := bool(m.GetNamespaceURISpecified())
-	_namespaceURISpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("namespaceURISpecified", (namespaceURISpecified))
-	if _namespaceURISpecifiedErr != nil {
-		return errors.Wrap(_namespaceURISpecifiedErr, "Error serializing 'namespaceURISpecified' field")
+	if err := WriteSimpleField[bool](ctx, "namespaceURISpecified", m.GetNamespaceURISpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'namespaceURISpecified' field")
 	}
 
-	// Simple Field (symbolicIdSpecified)
-	symbolicIdSpecified := bool(m.GetSymbolicIdSpecified())
-	_symbolicIdSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("symbolicIdSpecified", (symbolicIdSpecified))
-	if _symbolicIdSpecifiedErr != nil {
-		return errors.Wrap(_symbolicIdSpecifiedErr, "Error serializing 'symbolicIdSpecified' field")
+	if err := WriteSimpleField[bool](ctx, "symbolicIdSpecified", m.GetSymbolicIdSpecified(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'symbolicIdSpecified' field")
 	}
 
 	if err := WriteOptionalField[int32](ctx, "symbolicId", m.GetSymbolicId(), WriteSignedInt(writeBuffer, 32), true); err != nil {

@@ -206,40 +206,16 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(pushErr, "Error pushing for BACnetRouterEntry")
 	}
 
-	// Simple Field (networkNumber)
-	if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for networkNumber")
-	}
-	_networkNumberErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkNumber())
-	if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for networkNumber")
-	}
-	if _networkNumberErr != nil {
-		return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
+	if err := WriteSimpleField[BACnetContextTagUnsignedInteger](ctx, "networkNumber", m.GetNetworkNumber(), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkNumber' field")
 	}
 
-	// Simple Field (macAddress)
-	if pushErr := writeBuffer.PushContext("macAddress"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for macAddress")
-	}
-	_macAddressErr := writeBuffer.WriteSerializable(ctx, m.GetMacAddress())
-	if popErr := writeBuffer.PopContext("macAddress"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for macAddress")
-	}
-	if _macAddressErr != nil {
-		return errors.Wrap(_macAddressErr, "Error serializing 'macAddress' field")
+	if err := WriteSimpleField[BACnetContextTagOctetString](ctx, "macAddress", m.GetMacAddress(), WriteComplex[BACnetContextTagOctetString](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'macAddress' field")
 	}
 
-	// Simple Field (status)
-	if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for status")
-	}
-	_statusErr := writeBuffer.WriteSerializable(ctx, m.GetStatus())
-	if popErr := writeBuffer.PopContext("status"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for status")
-	}
-	if _statusErr != nil {
-		return errors.Wrap(_statusErr, "Error serializing 'status' field")
+	if err := WriteSimpleField[BACnetRouterEntryStatusTagged](ctx, "status", m.GetStatus(), WriteComplex[BACnetRouterEntryStatusTagged](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'status' field")
 	}
 
 	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "performanceIndex", GetRef(m.GetPerformanceIndex()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {

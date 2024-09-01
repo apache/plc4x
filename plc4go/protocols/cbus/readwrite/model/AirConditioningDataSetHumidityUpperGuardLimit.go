@@ -232,47 +232,20 @@ func (m *_AirConditioningDataSetHumidityUpperGuardLimit) SerializeWithWriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for AirConditioningDataSetHumidityUpperGuardLimit")
 		}
 
-		// Simple Field (zoneGroup)
-		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("zoneGroup", (zoneGroup))
-		if _zoneGroupErr != nil {
-			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
+		if err := WriteSimpleField[byte](ctx, "zoneGroup", m.GetZoneGroup(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneGroup' field")
 		}
 
-		// Simple Field (zoneList)
-		if pushErr := writeBuffer.PushContext("zoneList"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneList")
-		}
-		_zoneListErr := writeBuffer.WriteSerializable(ctx, m.GetZoneList())
-		if popErr := writeBuffer.PopContext("zoneList"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneList")
-		}
-		if _zoneListErr != nil {
-			return errors.Wrap(_zoneListErr, "Error serializing 'zoneList' field")
+		if err := WriteSimpleField[HVACZoneList](ctx, "zoneList", m.GetZoneList(), WriteComplex[HVACZoneList](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneList' field")
 		}
 
-		// Simple Field (limit)
-		if pushErr := writeBuffer.PushContext("limit"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for limit")
-		}
-		_limitErr := writeBuffer.WriteSerializable(ctx, m.GetLimit())
-		if popErr := writeBuffer.PopContext("limit"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for limit")
-		}
-		if _limitErr != nil {
-			return errors.Wrap(_limitErr, "Error serializing 'limit' field")
+		if err := WriteSimpleField[HVACHumidity](ctx, "limit", m.GetLimit(), WriteComplex[HVACHumidity](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'limit' field")
 		}
 
-		// Simple Field (hvacModeAndFlags)
-		if pushErr := writeBuffer.PushContext("hvacModeAndFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for hvacModeAndFlags")
-		}
-		_hvacModeAndFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetHvacModeAndFlags())
-		if popErr := writeBuffer.PopContext("hvacModeAndFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for hvacModeAndFlags")
-		}
-		if _hvacModeAndFlagsErr != nil {
-			return errors.Wrap(_hvacModeAndFlagsErr, "Error serializing 'hvacModeAndFlags' field")
+		if err := WriteSimpleField[HVACHumidityModeAndFlags](ctx, "hvacModeAndFlags", m.GetHvacModeAndFlags(), WriteComplex[HVACHumidityModeAndFlags](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hvacModeAndFlags' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataSetHumidityUpperGuardLimit"); popErr != nil {

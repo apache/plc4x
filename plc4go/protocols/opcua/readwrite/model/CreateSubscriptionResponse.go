@@ -251,44 +251,24 @@ func (m *_CreateSubscriptionResponse) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for CreateSubscriptionResponse")
 		}
 
-		// Simple Field (responseHeader)
-		if pushErr := writeBuffer.PushContext("responseHeader"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for responseHeader")
-		}
-		_responseHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetResponseHeader())
-		if popErr := writeBuffer.PopContext("responseHeader"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for responseHeader")
-		}
-		if _responseHeaderErr != nil {
-			return errors.Wrap(_responseHeaderErr, "Error serializing 'responseHeader' field")
+		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
-		// Simple Field (subscriptionId)
-		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
-		if _subscriptionIdErr != nil {
-			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
+		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
 
-		// Simple Field (revisedPublishingInterval)
-		revisedPublishingInterval := float64(m.GetRevisedPublishingInterval())
-		_revisedPublishingIntervalErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("revisedPublishingInterval", 64, (revisedPublishingInterval))
-		if _revisedPublishingIntervalErr != nil {
-			return errors.Wrap(_revisedPublishingIntervalErr, "Error serializing 'revisedPublishingInterval' field")
+		if err := WriteSimpleField[float64](ctx, "revisedPublishingInterval", m.GetRevisedPublishingInterval(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedPublishingInterval' field")
 		}
 
-		// Simple Field (revisedLifetimeCount)
-		revisedLifetimeCount := uint32(m.GetRevisedLifetimeCount())
-		_revisedLifetimeCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("revisedLifetimeCount", 32, uint32((revisedLifetimeCount)))
-		if _revisedLifetimeCountErr != nil {
-			return errors.Wrap(_revisedLifetimeCountErr, "Error serializing 'revisedLifetimeCount' field")
+		if err := WriteSimpleField[uint32](ctx, "revisedLifetimeCount", m.GetRevisedLifetimeCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedLifetimeCount' field")
 		}
 
-		// Simple Field (revisedMaxKeepAliveCount)
-		revisedMaxKeepAliveCount := uint32(m.GetRevisedMaxKeepAliveCount())
-		_revisedMaxKeepAliveCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("revisedMaxKeepAliveCount", 32, uint32((revisedMaxKeepAliveCount)))
-		if _revisedMaxKeepAliveCountErr != nil {
-			return errors.Wrap(_revisedMaxKeepAliveCountErr, "Error serializing 'revisedMaxKeepAliveCount' field")
+		if err := WriteSimpleField[uint32](ctx, "revisedMaxKeepAliveCount", m.GetRevisedMaxKeepAliveCount(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'revisedMaxKeepAliveCount' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CreateSubscriptionResponse"); popErr != nil {

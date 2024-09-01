@@ -239,11 +239,8 @@ func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for MediaTransportControlDataRepeatOnOff")
 		}
 
-		// Simple Field (repeatType)
-		repeatType := byte(m.GetRepeatType())
-		_repeatTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("repeatType", (repeatType))
-		if _repeatTypeErr != nil {
-			return errors.Wrap(_repeatTypeErr, "Error serializing 'repeatType' field")
+		if err := WriteSimpleField[byte](ctx, "repeatType", m.GetRepeatType(), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'repeatType' field")
 		}
 		// Virtual field
 		isOff := m.GetIsOff()

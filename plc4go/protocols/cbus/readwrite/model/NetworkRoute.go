@@ -175,16 +175,8 @@ func (m *_NetworkRoute) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for NetworkRoute")
 	}
 
-	// Simple Field (networkPCI)
-	if pushErr := writeBuffer.PushContext("networkPCI"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for networkPCI")
-	}
-	_networkPCIErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkPCI())
-	if popErr := writeBuffer.PopContext("networkPCI"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for networkPCI")
-	}
-	if _networkPCIErr != nil {
-		return errors.Wrap(_networkPCIErr, "Error serializing 'networkPCI' field")
+	if err := WriteSimpleField[NetworkProtocolControlInformation](ctx, "networkPCI", m.GetNetworkPCI(), WriteComplex[NetworkProtocolControlInformation](writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'networkPCI' field")
 	}
 
 	if err := WriteComplexTypeArrayField(ctx, "additionalBridgeAddresses", m.GetAdditionalBridgeAddresses(), writeBuffer); err != nil {

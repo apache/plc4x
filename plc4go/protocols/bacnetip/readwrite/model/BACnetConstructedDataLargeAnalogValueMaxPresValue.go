@@ -219,16 +219,8 @@ func (m *_BACnetConstructedDataLargeAnalogValueMaxPresValue) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataLargeAnalogValueMaxPresValue")
 		}
 
-		// Simple Field (maxPresValue)
-		if pushErr := writeBuffer.PushContext("maxPresValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maxPresValue")
-		}
-		_maxPresValueErr := writeBuffer.WriteSerializable(ctx, m.GetMaxPresValue())
-		if popErr := writeBuffer.PopContext("maxPresValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maxPresValue")
-		}
-		if _maxPresValueErr != nil {
-			return errors.Wrap(_maxPresValueErr, "Error serializing 'maxPresValue' field")
+		if err := WriteSimpleField[BACnetApplicationTagDouble](ctx, "maxPresValue", m.GetMaxPresValue(), WriteComplex[BACnetApplicationTagDouble](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxPresValue' field")
 		}
 		// Virtual field
 		actualValue := m.GetActualValue()
