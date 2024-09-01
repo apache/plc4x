@@ -222,12 +222,9 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	if pushErr := writeBuffer.PushContext("CIPAttributes"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for CIPAttributes")
 	}
-
-	// Implicit Field (numberOfClasses) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numberOfClasses := uint16(uint16(len(m.GetClassId())))
-	_numberOfClassesErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("numberOfClasses", 16, uint16((numberOfClasses)))
-	if _numberOfClassesErr != nil {
-		return errors.Wrap(_numberOfClassesErr, "Error serializing 'numberOfClasses' field")
+	if err := WriteImplicitField(ctx, "numberOfClasses", numberOfClasses, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberOfClasses' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "classId", m.GetClassId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {

@@ -300,12 +300,9 @@ func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		if _readLengthErr != nil {
 			return errors.Wrap(_readLengthErr, "Error serializing 'readLength' field")
 		}
-
-		// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		writeLength := uint32(uint32((uint32(uint32(len(m.GetItems()))) * uint32((utils.InlineIf((bool((m.GetIndexGroup()) == (61570))), func() any { return uint32(uint32(16)) }, func() any { return uint32(uint32(12)) }).(uint32))))) + uint32(uint32(len(m.GetData()))))
-		_writeLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("writeLength", 32, uint32((writeLength)))
-		if _writeLengthErr != nil {
-			return errors.Wrap(_writeLengthErr, "Error serializing 'writeLength' field")
+		if err := WriteImplicitField(ctx, "writeLength", writeLength, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'writeLength' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {

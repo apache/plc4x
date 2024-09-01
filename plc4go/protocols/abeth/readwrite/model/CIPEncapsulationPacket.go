@@ -279,12 +279,9 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 	if err := WriteDiscriminatorField(ctx, "commandType", m.GetCommandType(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'commandType' field")
 	}
-
-	// Implicit Field (packetLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	packetLen := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(28)))
-	_packetLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("packetLen", 16, uint16((packetLen)))
-	if _packetLenErr != nil {
-		return errors.Wrap(_packetLenErr, "Error serializing 'packetLen' field")
+	if err := WriteImplicitField(ctx, "packetLen", packetLen, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'packetLen' field")
 	}
 
 	// Simple Field (sessionHandle)

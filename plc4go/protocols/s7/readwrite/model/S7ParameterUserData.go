@@ -202,12 +202,9 @@ func (m *_S7ParameterUserData) SerializeWithWriteBuffer(ctx context.Context, wri
 		if pushErr := writeBuffer.PushContext("S7ParameterUserData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for S7ParameterUserData")
 		}
-
-		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.GetItems())))
-		_numItemsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
-		if _numItemsErr != nil {
-			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
+		if err := WriteImplicitField(ctx, "numItems", numItems, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numItems' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {

@@ -211,12 +211,9 @@ func (m *_EipListIdentityResponse) SerializeWithWriteBuffer(ctx context.Context,
 		if pushErr := writeBuffer.PushContext("EipListIdentityResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for EipListIdentityResponse")
 		}
-
-		// Implicit Field (itemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemCount := uint16(uint16(len(m.GetItems())))
-		_itemCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("itemCount", 16, uint16((itemCount)))
-		if _itemCountErr != nil {
-			return errors.Wrap(_itemCountErr, "Error serializing 'itemCount' field")
+		if err := WriteImplicitField(ctx, "itemCount", itemCount, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemCount' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "items", m.GetItems(), writeBuffer); err != nil {

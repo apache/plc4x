@@ -172,12 +172,9 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	if pushErr := writeBuffer.PushContext("AmsString"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for AmsString")
 	}
-
-	// Implicit Field (strLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	strLen := uint16(uint16(uint16(len(m.GetText()))) + uint16(uint16(1)))
-	_strLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("strLen", 16, uint16((strLen)))
-	if _strLenErr != nil {
-		return errors.Wrap(_strLenErr, "Error serializing 'strLen' field")
+	if err := WriteImplicitField(ctx, "strLen", strLen, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'strLen' field")
 	}
 
 	// Simple Field (text)

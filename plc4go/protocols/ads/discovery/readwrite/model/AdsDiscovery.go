@@ -305,12 +305,9 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if _portNumberErr != nil {
 		return errors.Wrap(_portNumberErr, "Error serializing 'portNumber' field")
 	}
-
-	// Implicit Field (numBlocks) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numBlocks := uint32(uint32(len(m.GetBlocks())))
-	_numBlocksErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("numBlocks", 32, uint32((numBlocks)))
-	if _numBlocksErr != nil {
-		return errors.Wrap(_numBlocksErr, "Error serializing 'numBlocks' field")
+	if err := WriteImplicitField(ctx, "numBlocks", numBlocks, WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numBlocks' field")
 	}
 
 	if err := WriteComplexTypeArrayField(ctx, "blocks", m.GetBlocks(), writeBuffer, codegen.WithByteOrder(binary.LittleEndian)); err != nil {

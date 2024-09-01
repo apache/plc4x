@@ -447,12 +447,9 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		if pushErr := writeBuffer.PushContext("CipIdentity"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for CipIdentity")
 		}
-
-		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint16(uint16(uint16(34)) + uint16(uint8(len(m.GetProductName()))))
-		_itemLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("itemLength", 16, uint16((itemLength)))
-		if _itemLengthErr != nil {
-			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
+		if err := WriteImplicitField(ctx, "itemLength", itemLength, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemLength' field")
 		}
 
 		// Simple Field (encapsulationProtocolVersion)
@@ -536,12 +533,9 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		if _serialNumberErr != nil {
 			return errors.Wrap(_serialNumberErr, "Error serializing 'serialNumber' field")
 		}
-
-		// Implicit Field (productNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		productNameLength := uint8(uint8(len(m.GetProductName())))
-		_productNameLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("productNameLength", 8, uint8((productNameLength)))
-		if _productNameLengthErr != nil {
-			return errors.Wrap(_productNameLengthErr, "Error serializing 'productNameLength' field")
+		if err := WriteImplicitField(ctx, "productNameLength", productNameLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'productNameLength' field")
 		}
 
 		// Simple Field (productName)

@@ -218,12 +218,9 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
-
-	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	len := uint16(uint16(m.GetPayload().GetLengthInBytes(ctx)) + uint16(uint16(4)))
-	_lenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("len", 16, uint16((len)))
-	if _lenErr != nil {
-		return errors.Wrap(_lenErr, "Error serializing 'len' field")
+	if err := WriteImplicitField(ctx, "len", len, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'len' field")
 	}
 
 	// Simple Field (payload)

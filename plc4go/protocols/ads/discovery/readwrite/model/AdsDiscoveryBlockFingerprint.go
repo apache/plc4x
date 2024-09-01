@@ -193,12 +193,9 @@ func (m *_AdsDiscoveryBlockFingerprint) SerializeWithWriteBuffer(ctx context.Con
 		if pushErr := writeBuffer.PushContext("AdsDiscoveryBlockFingerprint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockFingerprint")
 		}
-
-		// Implicit Field (dataLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataLen := uint16(uint16(len(m.GetData())))
-		_dataLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataLen", 16, uint16((dataLen)))
-		if _dataLenErr != nil {
-			return errors.Wrap(_dataLenErr, "Error serializing 'dataLen' field")
+		if err := WriteImplicitField(ctx, "dataLen", dataLen, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataLen' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

@@ -269,12 +269,9 @@ func (pm *_BVLC) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 	if err := WriteDiscriminatorField(ctx, "bvlcFunction", m.GetBvlcFunction(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'bvlcFunction' field")
 	}
-
-	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	bvlcLength := uint16(uint16(m.GetLengthInBytes(ctx)))
-	_bvlcLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("bvlcLength", 16, uint16((bvlcLength)))
-	if _bvlcLengthErr != nil {
-		return errors.Wrap(_bvlcLengthErr, "Error serializing 'bvlcLength' field")
+	if err := WriteImplicitField(ctx, "bvlcLength", bvlcLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'bvlcLength' field")
 	}
 	// Virtual field
 	bvlcPayloadLength := m.GetBvlcPayloadLength()

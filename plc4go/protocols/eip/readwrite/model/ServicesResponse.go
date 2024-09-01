@@ -265,12 +265,9 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 		if pushErr := writeBuffer.PushContext("ServicesResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ServicesResponse")
 		}
-
-		// Implicit Field (serviceLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		serviceLen := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(4)))
-		_serviceLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("serviceLen", 16, uint16((serviceLen)))
-		if _serviceLenErr != nil {
-			return errors.Wrap(_serviceLenErr, "Error serializing 'serviceLen' field")
+		if err := WriteImplicitField(ctx, "serviceLen", serviceLen, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceLen' field")
 		}
 
 		// Simple Field (encapsulationProtocol)

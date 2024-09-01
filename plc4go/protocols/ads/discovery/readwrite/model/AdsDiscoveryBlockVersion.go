@@ -193,12 +193,9 @@ func (m *_AdsDiscoveryBlockVersion) SerializeWithWriteBuffer(ctx context.Context
 		if pushErr := writeBuffer.PushContext("AdsDiscoveryBlockVersion"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockVersion")
 		}
-
-		// Implicit Field (versionDataLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		versionDataLen := uint16(uint16(len(m.GetVersionData())))
-		_versionDataLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("versionDataLen", 16, uint16((versionDataLen)))
-		if _versionDataLenErr != nil {
-			return errors.Wrap(_versionDataLenErr, "Error serializing 'versionDataLen' field")
+		if err := WriteImplicitField(ctx, "versionDataLen", versionDataLen, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'versionDataLen' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "versionData", m.GetVersionData(), WriteByteArray(writeBuffer, 8)); err != nil {

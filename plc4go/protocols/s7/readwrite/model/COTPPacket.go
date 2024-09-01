@@ -249,12 +249,9 @@ func (pm *_COTPPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("COTPPacket"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for COTPPacket")
 	}
-
-	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8((uint8((utils.InlineIf((bool((m.GetPayload()) != (nil))), func() any { return uint8((m.GetPayload()).GetLengthInBytes(ctx)) }, func() any { return uint8(uint8(0)) }).(uint8))) + uint8(uint8(1)))))
-	_headerLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("headerLength", 8, uint8((headerLength)))
-	if _headerLengthErr != nil {
-		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
+	if err := WriteImplicitField(ctx, "headerLength", headerLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'headerLength' field")
 	}
 
 	if err := WriteDiscriminatorField(ctx, "tpduCode", m.GetTpduCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {

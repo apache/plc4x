@@ -224,12 +224,9 @@ func (m *_CipConnectedRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		if pushErr := writeBuffer.PushContext("CipConnectedRequest"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for CipConnectedRequest")
 		}
-
-		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		requestPathSize := uint8(uint8(uint8(len(m.GetPathSegments()))) / uint8(uint8(2)))
-		_requestPathSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("requestPathSize", 8, uint8((requestPathSize)))
-		if _requestPathSizeErr != nil {
-			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
+		if err := WriteImplicitField(ctx, "requestPathSize", requestPathSize, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestPathSize' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "pathSegments", m.GetPathSegments(), WriteByteArray(writeBuffer, 8)); err != nil {

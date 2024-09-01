@@ -370,12 +370,9 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(ct
 		if _nextObjectIdErr != nil {
 			return errors.Wrap(_nextObjectIdErr, "Error serializing 'nextObjectId' field")
 		}
-
-		// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numberOfObjects := uint8(uint8(len(m.GetObjects())))
-		_numberOfObjectsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
-		if _numberOfObjectsErr != nil {
-			return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
+		if err := WriteImplicitField(ctx, "numberOfObjects", numberOfObjects, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfObjects' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "objects", m.GetObjects(), writeBuffer); err != nil {

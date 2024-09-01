@@ -231,12 +231,9 @@ func (m *_ModbusPDUWriteFileRecordRequestItem) SerializeWithWriteBuffer(ctx cont
 	if _recordNumberErr != nil {
 		return errors.Wrap(_recordNumberErr, "Error serializing 'recordNumber' field")
 	}
-
-	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	recordLength := uint16(uint16(uint16(len(m.GetRecordData()))) / uint16(uint16(2)))
-	_recordLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("recordLength", 16, uint16((recordLength)))
-	if _recordLengthErr != nil {
-		return errors.Wrap(_recordLengthErr, "Error serializing 'recordLength' field")
+	if err := WriteImplicitField(ctx, "recordLength", recordLength, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'recordLength' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "recordData", m.GetRecordData(), WriteByteArray(writeBuffer, 8)); err != nil {

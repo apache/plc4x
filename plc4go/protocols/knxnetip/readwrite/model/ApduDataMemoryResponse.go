@@ -212,12 +212,9 @@ func (m *_ApduDataMemoryResponse) SerializeWithWriteBuffer(ctx context.Context, 
 		if pushErr := writeBuffer.PushContext("ApduDataMemoryResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ApduDataMemoryResponse")
 		}
-
-		// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numBytes := uint8(uint8(len(m.GetData())))
-		_numBytesErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numBytes", 6, uint8((numBytes)))
-		if _numBytesErr != nil {
-			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
+		if err := WriteImplicitField(ctx, "numBytes", numBytes, WriteUnsignedByte(writeBuffer, 6)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numBytes' field")
 		}
 
 		// Simple Field (address)

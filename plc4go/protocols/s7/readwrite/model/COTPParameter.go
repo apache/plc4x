@@ -199,12 +199,9 @@ func (pm *_COTPParameter) SerializeParent(ctx context.Context, writeBuffer utils
 	if err := WriteDiscriminatorField(ctx, "parameterType", m.GetParameterType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'parameterType' field")
 	}
-
-	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(2)))
-	_parameterLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("parameterLength", 8, uint8((parameterLength)))
-	if _parameterLengthErr != nil {
-		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
+	if err := WriteImplicitField(ctx, "parameterLength", parameterLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'parameterLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

@@ -547,26 +547,17 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 	if _flagsErr != nil {
 		return errors.Wrap(_flagsErr, "Error serializing 'flags' field")
 	}
-
-	// Implicit Field (propertyNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	propertyNameLength := uint16(uint16(len(m.GetPropertyName())))
-	_propertyNameLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("propertyNameLength", 16, uint16((propertyNameLength)))
-	if _propertyNameLengthErr != nil {
-		return errors.Wrap(_propertyNameLengthErr, "Error serializing 'propertyNameLength' field")
+	if err := WriteImplicitField(ctx, "propertyNameLength", propertyNameLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'propertyNameLength' field")
 	}
-
-	// Implicit Field (dataTypeNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataTypeNameLength := uint16(uint16(len(m.GetDataTypeName())))
-	_dataTypeNameLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataTypeNameLength", 16, uint16((dataTypeNameLength)))
-	if _dataTypeNameLengthErr != nil {
-		return errors.Wrap(_dataTypeNameLengthErr, "Error serializing 'dataTypeNameLength' field")
+	if err := WriteImplicitField(ctx, "dataTypeNameLength", dataTypeNameLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataTypeNameLength' field")
 	}
-
-	// Implicit Field (commentLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	commentLength := uint16(uint16(len(m.GetComment())))
-	_commentLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("commentLength", 16, uint16((commentLength)))
-	if _commentLengthErr != nil {
-		return errors.Wrap(_commentLengthErr, "Error serializing 'commentLength' field")
+	if err := WriteImplicitField(ctx, "commentLength", commentLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'commentLength' field")
 	}
 
 	// Simple Field (arrayDimensions)

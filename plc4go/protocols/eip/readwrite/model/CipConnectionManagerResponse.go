@@ -389,12 +389,9 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 		if _toApiErr != nil {
 			return errors.Wrap(_toApiErr, "Error serializing 'toApi' field")
 		}
-
-		// Implicit Field (replySize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		replySize := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(30)))
-		_replySizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("replySize", 8, uint8((replySize)))
-		if _replySizeErr != nil {
-			return errors.Wrap(_replySizeErr, "Error serializing 'replySize' field")
+		if err := WriteImplicitField(ctx, "replySize", replySize, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'replySize' field")
 		}
 
 		// Reserved Field (reserved)

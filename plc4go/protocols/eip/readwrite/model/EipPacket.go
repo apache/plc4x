@@ -290,12 +290,9 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	if err := WriteDiscriminatorField(ctx, "command", m.GetCommand(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
 		return errors.Wrap(err, "Error serializing 'command' field")
 	}
-
-	// Implicit Field (packetLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	packetLength := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(24)))
-	_packetLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("packetLength", 16, uint16((packetLength)))
-	if _packetLengthErr != nil {
-		return errors.Wrap(_packetLengthErr, "Error serializing 'packetLength' field")
+	if err := WriteImplicitField(ctx, "packetLength", packetLength, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'packetLength' field")
 	}
 
 	// Simple Field (sessionHandle)

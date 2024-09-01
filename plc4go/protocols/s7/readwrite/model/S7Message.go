@@ -333,19 +333,13 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	if _tpduReferenceErr != nil {
 		return errors.Wrap(_tpduReferenceErr, "Error serializing 'tpduReference' field")
 	}
-
-	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength := uint16(utils.InlineIf(bool((m.GetParameter()) != (nil)), func() any { return uint16((m.GetParameter()).GetLengthInBytes(ctx)) }, func() any { return uint16(uint16(0)) }).(uint16))
-	_parameterLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("parameterLength", 16, uint16((parameterLength)))
-	if _parameterLengthErr != nil {
-		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
+	if err := WriteImplicitField(ctx, "parameterLength", parameterLength, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'parameterLength' field")
 	}
-
-	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	payloadLength := uint16(utils.InlineIf(bool((m.GetPayload()) != (nil)), func() any { return uint16((m.GetPayload()).GetLengthInBytes(ctx)) }, func() any { return uint16(uint16(0)) }).(uint16))
-	_payloadLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("payloadLength", 16, uint16((payloadLength)))
-	if _payloadLengthErr != nil {
-		return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
+	if err := WriteImplicitField(ctx, "payloadLength", payloadLength, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'payloadLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

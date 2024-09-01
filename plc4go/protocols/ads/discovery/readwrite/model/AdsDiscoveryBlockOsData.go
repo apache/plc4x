@@ -193,12 +193,9 @@ func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(ctx context.Context,
 		if pushErr := writeBuffer.PushContext("AdsDiscoveryBlockOsData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockOsData")
 		}
-
-		// Implicit Field (osDataLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		osDataLen := uint16(uint16(len(m.GetOsData())))
-		_osDataLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("osDataLen", 16, uint16((osDataLen)))
-		if _osDataLenErr != nil {
-			return errors.Wrap(_osDataLenErr, "Error serializing 'osDataLen' field")
+		if err := WriteImplicitField(ctx, "osDataLen", osDataLen, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'osDataLen' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "osData", m.GetOsData(), WriteByteArray(writeBuffer, 8)); err != nil {

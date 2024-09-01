@@ -251,12 +251,9 @@ func (pm *_KnxNetIpMessage) SerializeParent(ctx context.Context, writeBuffer uti
 	if pushErr := writeBuffer.PushContext("KnxNetIpMessage"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for KnxNetIpMessage")
 	}
-
-	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(6))
-	_headerLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("headerLength", 8, uint8((headerLength)))
-	if _headerLengthErr != nil {
-		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
+	if err := WriteImplicitField(ctx, "headerLength", headerLength, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'headerLength' field")
 	}
 
 	if err := WriteConstField(ctx, "protocolVersion", KnxNetIpMessage_PROTOCOLVERSION, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
@@ -266,12 +263,9 @@ func (pm *_KnxNetIpMessage) SerializeParent(ctx context.Context, writeBuffer uti
 	if err := WriteDiscriminatorField(ctx, "msgType", m.GetMsgType(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'msgType' field")
 	}
-
-	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength := uint16(uint16(m.GetLengthInBytes(ctx)))
-	_totalLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("totalLength", 16, uint16((totalLength)))
-	if _totalLengthErr != nil {
-		return errors.Wrap(_totalLengthErr, "Error serializing 'totalLength' field")
+	if err := WriteImplicitField(ctx, "totalLength", totalLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'totalLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

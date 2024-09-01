@@ -239,12 +239,9 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) SerializeWithWriteBuf
 		if err := WriteConstField(ctx, "functionId", S7PayloadUserDataItemCpuFunctionAlarmAckRequest_FUNCTIONID, WriteUnsignedByte(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'functionId' field")
 		}
-
-		// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numberOfObjects := uint8(uint8(len(m.GetMessageObjects())))
-		_numberOfObjectsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
-		if _numberOfObjectsErr != nil {
-			return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
+		if err := WriteImplicitField(ctx, "numberOfObjects", numberOfObjects, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberOfObjects' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "messageObjects", m.GetMessageObjects(), writeBuffer); err != nil {

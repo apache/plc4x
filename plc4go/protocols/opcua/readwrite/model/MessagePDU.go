@@ -242,12 +242,9 @@ func (pm *_MessagePDU) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 	if _chunkErr != nil {
 		return errors.Wrap(_chunkErr, "Error serializing 'chunk' field")
 	}
-
-	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength := uint32(uint32(m.GetLengthInBytes(ctx)))
-	_totalLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("totalLength", 32, uint32((totalLength)))
-	if _totalLengthErr != nil {
-		return errors.Wrap(_totalLengthErr, "Error serializing 'totalLength' field")
+	if err := WriteImplicitField(ctx, "totalLength", totalLength, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+		return errors.Wrap(err, "Error serializing 'totalLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

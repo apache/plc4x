@@ -229,14 +229,11 @@ func (m *_S7VarPayloadDataItem) SerializeWithWriteBuffer(ctx context.Context, wr
 	if _transportSizeErr != nil {
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
-
-	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint16(uint16(uint16(len(m.GetData()))) * uint16((utils.InlineIf((bool((m.GetTransportSize()) == (DataTransportSize_BIT))), func() any { return uint16(uint16(1)) }, func() any {
 		return uint16((utils.InlineIf(m.GetTransportSize().SizeInBits(), func() any { return uint16(uint16(8)) }, func() any { return uint16(uint16(1)) }).(uint16)))
 	}).(uint16))))
-	_dataLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataLength", 16, uint16((dataLength)))
-	if _dataLengthErr != nil {
-		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
+	if err := WriteImplicitField(ctx, "dataLength", dataLength, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataLength' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

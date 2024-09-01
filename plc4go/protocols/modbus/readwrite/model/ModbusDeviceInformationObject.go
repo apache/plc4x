@@ -185,12 +185,9 @@ func (m *_ModbusDeviceInformationObject) SerializeWithWriteBuffer(ctx context.Co
 	if _objectIdErr != nil {
 		return errors.Wrap(_objectIdErr, "Error serializing 'objectId' field")
 	}
-
-	// Implicit Field (objectLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	objectLength := uint8(uint8(len(m.GetData())))
-	_objectLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectLength", 8, uint8((objectLength)))
-	if _objectLengthErr != nil {
-		return errors.Wrap(_objectLengthErr, "Error serializing 'objectLength' field")
+	if err := WriteImplicitField(ctx, "objectLength", objectLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'objectLength' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

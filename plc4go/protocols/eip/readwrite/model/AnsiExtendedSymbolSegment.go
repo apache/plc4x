@@ -210,12 +210,9 @@ func (m *_AnsiExtendedSymbolSegment) SerializeWithWriteBuffer(ctx context.Contex
 		if pushErr := writeBuffer.PushContext("AnsiExtendedSymbolSegment"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for AnsiExtendedSymbolSegment")
 		}
-
-		// Implicit Field (dataSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataSize := uint8(uint8(len(m.GetSymbol())))
-		_dataSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dataSize", 8, uint8((dataSize)))
-		if _dataSizeErr != nil {
-			return errors.Wrap(_dataSizeErr, "Error serializing 'dataSize' field")
+		if err := WriteImplicitField(ctx, "dataSize", dataSize, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataSize' field")
 		}
 
 		// Simple Field (symbol)

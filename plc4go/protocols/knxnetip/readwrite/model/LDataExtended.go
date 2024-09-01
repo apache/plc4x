@@ -325,12 +325,9 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		if err := WriteByteArrayField(ctx, "destinationAddress", m.GetDestinationAddress(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'destinationAddress' field")
 		}
-
-		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataLength := uint8(uint8(m.GetApdu().GetLengthInBytes(ctx)) - uint8(uint8(1)))
-		_dataLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dataLength", 8, uint8((dataLength)))
-		if _dataLengthErr != nil {
-			return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
+		if err := WriteImplicitField(ctx, "dataLength", dataLength, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataLength' field")
 		}
 
 		// Simple Field (apdu)

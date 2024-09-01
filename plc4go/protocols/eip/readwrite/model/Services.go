@@ -189,12 +189,9 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	if pushErr := writeBuffer.PushContext("Services"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for Services")
 	}
-
-	// Implicit Field (serviceNb) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	serviceNb := uint16(uint16(len(m.GetOffsets())))
-	_serviceNbErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("serviceNb", 16, uint16((serviceNb)))
-	if _serviceNbErr != nil {
-		return errors.Wrap(_serviceNbErr, "Error serializing 'serviceNb' field")
+	if err := WriteImplicitField(ctx, "serviceNb", serviceNb, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'serviceNb' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "offsets", m.GetOffsets(), WriteUnsignedShort(writeBuffer, 16)); err != nil {

@@ -211,12 +211,9 @@ func (m *_ListServicesResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 		if pushErr := writeBuffer.PushContext("ListServicesResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ListServicesResponse")
 		}
-
-		// Implicit Field (typeIdCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		typeIdCount := uint16(uint16(len(m.GetTypeIds())))
-		_typeIdCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("typeIdCount", 16, uint16((typeIdCount)))
-		if _typeIdCountErr != nil {
-			return errors.Wrap(_typeIdCountErr, "Error serializing 'typeIdCount' field")
+		if err := WriteImplicitField(ctx, "typeIdCount", typeIdCount, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'typeIdCount' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "typeIds", m.GetTypeIds(), writeBuffer); err != nil {
