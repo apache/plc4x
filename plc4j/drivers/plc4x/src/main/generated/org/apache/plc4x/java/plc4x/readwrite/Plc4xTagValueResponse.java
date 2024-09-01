@@ -98,8 +98,7 @@ public class Plc4xTagValueResponse implements Message {
     writeOptionalField(
         "value",
         value,
-        new DataWriterDataIoDefault(
-            writeBuffer, (wb, val) -> Plc4xValue.staticSerialize(wb, val, valueType)),
+        writeDataIO(writeBuffer, (wb, val) -> Plc4xValue.staticSerialize(wb, val, valueType)),
         (getValueType()) != (Plc4xValueType.NULL));
 
     writeBuffer.popContext("Plc4xTagValueResponse");

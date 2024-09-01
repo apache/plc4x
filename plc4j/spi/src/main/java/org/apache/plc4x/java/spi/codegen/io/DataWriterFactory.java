@@ -101,6 +101,10 @@ public class DataWriterFactory {
         return new DataWriterComplexDefault<>(writeBuffer);
     }
 
+    public static DataWriterDataIoDefault writeDataIO(WriteBuffer writeBuffer, DataIoSerializerFunction<WriteBuffer> serializer) {
+        return new DataWriterDataIoDefault(writeBuffer,serializer);
+    }
+
     public static DataWriter<LocalDate> writeDate(WriteBuffer writeBuffer) {
         return new DataWriterSimpleDate(writeBuffer);
     }
