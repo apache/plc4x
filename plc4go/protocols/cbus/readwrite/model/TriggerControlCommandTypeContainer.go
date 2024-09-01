@@ -878,10 +878,10 @@ func (e TriggerControlCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e TriggerControlCommandTypeContainer) TriggerControlCommandTypeContainerGetNumBytes() uint8 {
+func (e TriggerControlCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e TriggerControlCommandTypeContainer) TriggerControlCommandTypeContainerGetCommandType() TriggerControlCommandType {
+func (e TriggerControlCommandTypeContainer) GetCommandType() TriggerControlCommandType {
 	return e.CommandType()
 }
 

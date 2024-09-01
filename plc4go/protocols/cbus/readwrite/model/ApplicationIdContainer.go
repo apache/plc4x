@@ -3748,10 +3748,10 @@ func (e ApplicationIdContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e ApplicationIdContainer) ApplicationIdContainerGetLightingCompatible() LightingCompatible {
+func (e ApplicationIdContainer) GetLightingCompatible() LightingCompatible {
 	return e.LightingCompatible()
 }
-func (e ApplicationIdContainer) ApplicationIdContainerGetApplicationId() ApplicationId {
+func (e ApplicationIdContainer) GetApplicationId() ApplicationId {
 	return e.ApplicationId()
 }
 

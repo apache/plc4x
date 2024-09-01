@@ -155,7 +155,7 @@ func (e MeasurementCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e MeasurementCommandType) MeasurementCommandTypeGetNumberOfArguments() uint8 {
+func (e MeasurementCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

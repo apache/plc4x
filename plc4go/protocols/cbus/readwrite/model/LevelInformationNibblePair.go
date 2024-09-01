@@ -305,7 +305,7 @@ func (e LevelInformationNibblePair) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e LevelInformationNibblePair) LevelInformationNibblePairGetNibbleValue() uint8 {
+func (e LevelInformationNibblePair) GetNibbleValue() uint8 {
 	return e.NibbleValue()
 }
 

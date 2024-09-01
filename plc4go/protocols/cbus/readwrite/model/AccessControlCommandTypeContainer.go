@@ -1443,13 +1443,13 @@ func (e AccessControlCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e AccessControlCommandTypeContainer) AccessControlCommandTypeContainerGetNumBytes() uint8 {
+func (e AccessControlCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e AccessControlCommandTypeContainer) AccessControlCommandTypeContainerGetCommandType() AccessControlCommandType {
+func (e AccessControlCommandTypeContainer) GetCommandType() AccessControlCommandType {
 	return e.CommandType()
 }
-func (e AccessControlCommandTypeContainer) AccessControlCommandTypeContainerGetCategory() AccessControlCategory {
+func (e AccessControlCommandTypeContainer) GetCategory() AccessControlCategory {
 	return e.Category()
 }
 

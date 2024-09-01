@@ -155,7 +155,7 @@ func (e TelephonyCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e TelephonyCommandType) TelephonyCommandTypeGetNumberOfArguments() uint8 {
+func (e TelephonyCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

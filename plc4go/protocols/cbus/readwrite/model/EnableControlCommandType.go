@@ -155,7 +155,7 @@ func (e EnableControlCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e EnableControlCommandType) EnableControlCommandTypeGetNumberOfArguments() uint8 {
+func (e EnableControlCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

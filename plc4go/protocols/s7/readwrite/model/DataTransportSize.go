@@ -215,7 +215,7 @@ func (e DataTransportSize) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e DataTransportSize) DataTransportSizeGetSizeInBits() bool {
+func (e DataTransportSize) GetSizeInBits() bool {
 	return e.SizeInBits()
 }
 

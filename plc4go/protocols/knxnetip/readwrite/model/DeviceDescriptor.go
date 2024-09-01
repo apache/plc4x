@@ -570,10 +570,10 @@ func (e DeviceDescriptor) GetValue() uint16 {
 	return uint16(e)
 }
 
-func (e DeviceDescriptor) DeviceDescriptorGetFirmwareType() FirmwareType {
+func (e DeviceDescriptor) GetFirmwareType() FirmwareType {
 	return e.FirmwareType()
 }
-func (e DeviceDescriptor) DeviceDescriptorGetMediumType() DeviceDescriptorMediumType {
+func (e DeviceDescriptor) GetMediumType() DeviceDescriptorMediumType {
 	return e.MediumType()
 }
 

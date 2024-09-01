@@ -195,7 +195,7 @@ func (e LightingCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e LightingCommandType) LightingCommandTypeGetNumberOfArguments() uint8 {
+func (e LightingCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

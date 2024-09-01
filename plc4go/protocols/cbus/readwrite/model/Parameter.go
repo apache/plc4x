@@ -7920,22 +7920,22 @@ func (e Parameter) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e Parameter) ParameterGetParameterType() ParameterType {
+func (e Parameter) GetParameterType() ParameterType {
 	return e.ParameterType()
 }
-func (e Parameter) ParameterGetForm() string {
+func (e Parameter) GetForm() string {
 	return e.Form()
 }
-func (e Parameter) ParameterGetIsVolatile() bool {
+func (e Parameter) GetIsVolatile() bool {
 	return e.IsVolatile()
 }
-func (e Parameter) ParameterGetParameterDescription() string {
+func (e Parameter) GetParameterDescription() string {
 	return e.ParameterDescription()
 }
-func (e Parameter) ParameterGetProtectionLevel() ProtectionLevel {
+func (e Parameter) GetProtectionLevel() ProtectionLevel {
 	return e.ProtectionLevel()
 }
-func (e Parameter) ParameterGetGroup() string {
+func (e Parameter) GetGroup() string {
 	return e.Group()
 }
 

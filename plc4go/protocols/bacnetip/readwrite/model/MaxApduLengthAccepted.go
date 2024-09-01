@@ -305,7 +305,7 @@ func (e MaxApduLengthAccepted) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e MaxApduLengthAccepted) MaxApduLengthAcceptedGetNumberOfOctets() uint16 {
+func (e MaxApduLengthAccepted) GetNumberOfOctets() uint16 {
 	return e.NumberOfOctets()
 }
 

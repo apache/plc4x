@@ -9810,10 +9810,10 @@ func (e KnxManufacturer) GetValue() uint16 {
 	return uint16(e)
 }
 
-func (e KnxManufacturer) KnxManufacturerGetNumber() uint16 {
+func (e KnxManufacturer) GetNumber() uint16 {
 	return e.Number()
 }
-func (e KnxManufacturer) KnxManufacturerGetName() string {
+func (e KnxManufacturer) GetName() string {
 	return e.Name()
 }
 

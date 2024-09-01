@@ -295,7 +295,7 @@ func (e ComObjectValueType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e ComObjectValueType) ComObjectValueTypeGetSizeInBytes() uint8 {
+func (e ComObjectValueType) GetSizeInBytes() uint8 {
 	return e.SizeInBytes()
 }
 

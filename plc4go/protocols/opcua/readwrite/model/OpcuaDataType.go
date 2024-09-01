@@ -385,7 +385,7 @@ func (e OpcuaDataType) GetValue() string {
 	return string(e)
 }
 
-func (e OpcuaDataType) OpcuaDataTypeGetVariantType() uint8 {
+func (e OpcuaDataType) GetVariantType() uint8 {
 	return e.VariantType()
 }
 

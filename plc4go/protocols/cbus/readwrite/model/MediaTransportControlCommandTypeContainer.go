@@ -1760,10 +1760,10 @@ func (e MediaTransportControlCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e MediaTransportControlCommandTypeContainer) MediaTransportControlCommandTypeContainerGetNumBytes() uint8 {
+func (e MediaTransportControlCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e MediaTransportControlCommandTypeContainer) MediaTransportControlCommandTypeContainerGetCommandType() MediaTransportControlCommandType {
+func (e MediaTransportControlCommandTypeContainer) GetCommandType() MediaTransportControlCommandType {
 	return e.CommandType()
 }
 

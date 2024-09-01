@@ -18905,7 +18905,7 @@ func (e ComObjectTableAddresses) GetValue() uint16 {
 	return uint16(e)
 }
 
-func (e ComObjectTableAddresses) ComObjectTableAddressesGetComObjectTableAddress() uint16 {
+func (e ComObjectTableAddresses) GetComObjectTableAddress() uint16 {
 	return e.ComObjectTableAddress()
 }
 

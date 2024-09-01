@@ -178,10 +178,10 @@ func (e MeasurementCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e MeasurementCommandTypeContainer) MeasurementCommandTypeContainerGetNumBytes() uint8 {
+func (e MeasurementCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e MeasurementCommandTypeContainer) MeasurementCommandTypeContainerGetCommandType() MeasurementCommandType {
+func (e MeasurementCommandTypeContainer) GetCommandType() MeasurementCommandType {
 	return e.CommandType()
 }
 

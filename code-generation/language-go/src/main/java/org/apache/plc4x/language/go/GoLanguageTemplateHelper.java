@@ -544,7 +544,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else {
             outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
-        return "WriteEnum[" + languageTypeName + "," + getLanguageTypeNameForTypeReference(outputTypeReference) + "](ctx, " + languageTypeName + ".Get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + ".PLC4XEnumName, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
+        return "WriteEnum[" + languageTypeName + "," + getLanguageTypeNameForTypeReference(outputTypeReference) + "](" + languageTypeName + ".Get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + ".PLC4XEnumName, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
     }
 
     public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {

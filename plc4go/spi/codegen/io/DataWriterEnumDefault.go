@@ -22,6 +22,7 @@ package io
 import (
 	"context"
 	"encoding/binary"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 

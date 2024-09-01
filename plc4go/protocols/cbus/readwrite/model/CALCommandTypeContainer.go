@@ -1802,10 +1802,10 @@ func (e CALCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e CALCommandTypeContainer) CALCommandTypeContainerGetNumBytes() uint8 {
+func (e CALCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e CALCommandTypeContainer) CALCommandTypeContainerGetCommandType() CALCommandType {
+func (e CALCommandTypeContainer) GetCommandType() CALCommandType {
 	return e.CommandType()
 }
 

@@ -155,7 +155,7 @@ func (e TemperatureBroadcastCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e TemperatureBroadcastCommandType) TemperatureBroadcastCommandTypeGetNumberOfArguments() uint8 {
+func (e TemperatureBroadcastCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

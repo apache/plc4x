@@ -195,7 +195,7 @@ func (e TriggerControlCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e TriggerControlCommandType) TriggerControlCommandTypeGetNumberOfArguments() uint8 {
+func (e TriggerControlCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

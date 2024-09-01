@@ -225,7 +225,7 @@ func (e AccessControlCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e AccessControlCommandType) AccessControlCommandTypeGetNumberOfArguments() uint8 {
+func (e AccessControlCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

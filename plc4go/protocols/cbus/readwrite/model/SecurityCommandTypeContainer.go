@@ -1844,10 +1844,10 @@ func (e SecurityCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e SecurityCommandTypeContainer) SecurityCommandTypeContainerGetNumBytes() uint8 {
+func (e SecurityCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e SecurityCommandTypeContainer) SecurityCommandTypeContainerGetCommandType() SecurityCommandType {
+func (e SecurityCommandTypeContainer) GetCommandType() SecurityCommandType {
 	return e.CommandType()
 }
 

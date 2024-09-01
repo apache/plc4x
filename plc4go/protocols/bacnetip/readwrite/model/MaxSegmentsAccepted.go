@@ -225,7 +225,7 @@ func (e MaxSegmentsAccepted) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e MaxSegmentsAccepted) MaxSegmentsAcceptedGetMaxSegments() uint8 {
+func (e MaxSegmentsAccepted) GetMaxSegments() uint8 {
 	return e.MaxSegments()
 }
 

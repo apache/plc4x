@@ -290,10 +290,10 @@ func (e ClockAndTimekeepingCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e ClockAndTimekeepingCommandTypeContainer) ClockAndTimekeepingCommandTypeContainerGetNumBytes() uint8 {
+func (e ClockAndTimekeepingCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e ClockAndTimekeepingCommandTypeContainer) ClockAndTimekeepingCommandTypeContainerGetCommandType() ClockAndTimekeepingCommandType {
+func (e ClockAndTimekeepingCommandTypeContainer) GetCommandType() ClockAndTimekeepingCommandType {
 	return e.CommandType()
 }
 

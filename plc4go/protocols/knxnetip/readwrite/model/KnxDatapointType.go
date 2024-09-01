@@ -6519,13 +6519,13 @@ func (e KnxDatapointType) GetValue() uint32 {
 	return uint32(e)
 }
 
-func (e KnxDatapointType) KnxDatapointTypeGetNumber() uint16 {
+func (e KnxDatapointType) GetNumber() uint16 {
 	return e.Number()
 }
-func (e KnxDatapointType) KnxDatapointTypeGetName() string {
+func (e KnxDatapointType) GetName() string {
 	return e.Name()
 }
-func (e KnxDatapointType) KnxDatapointTypeGetDatapointMainType() KnxDatapointMainType {
+func (e KnxDatapointType) GetDatapointMainType() KnxDatapointMainType {
 	return e.DatapointMainType()
 }
 

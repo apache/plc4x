@@ -1281,13 +1281,13 @@ func (e KnxDatapointMainType) GetValue() uint16 {
 	return uint16(e)
 }
 
-func (e KnxDatapointMainType) KnxDatapointMainTypeGetNumber() uint16 {
+func (e KnxDatapointMainType) GetNumber() uint16 {
 	return e.Number()
 }
-func (e KnxDatapointMainType) KnxDatapointMainTypeGetName() string {
+func (e KnxDatapointMainType) GetName() string {
 	return e.Name()
 }
-func (e KnxDatapointMainType) KnxDatapointMainTypeGetSizeInBits() uint8 {
+func (e KnxDatapointMainType) GetSizeInBits() uint8 {
 	return e.SizeInBits()
 }
 

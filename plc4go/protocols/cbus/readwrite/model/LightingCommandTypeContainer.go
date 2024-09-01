@@ -878,10 +878,10 @@ func (e LightingCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e LightingCommandTypeContainer) LightingCommandTypeContainerGetNumBytes() uint8 {
+func (e LightingCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e LightingCommandTypeContainer) LightingCommandTypeContainerGetCommandType() LightingCommandType {
+func (e LightingCommandTypeContainer) GetCommandType() LightingCommandType {
 	return e.CommandType()
 }
 

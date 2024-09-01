@@ -215,7 +215,7 @@ func (e RequestType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e RequestType) RequestTypeGetControlChar() uint8 {
+func (e RequestType) GetControlChar() uint8 {
 	return e.ControlChar()
 }
 

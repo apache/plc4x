@@ -415,7 +415,7 @@ func (e SimulatedDataTypeSizes) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e SimulatedDataTypeSizes) SimulatedDataTypeSizesGetDataTypeSize() uint8 {
+func (e SimulatedDataTypeSizes) GetDataTypeSize() uint8 {
 	return e.DataTypeSize()
 }
 

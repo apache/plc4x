@@ -325,7 +325,7 @@ func (e Attribute) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e Attribute) AttributeGetBytesReturned() uint8 {
+func (e Attribute) GetBytesReturned() uint8 {
 	return e.BytesReturned()
 }
 

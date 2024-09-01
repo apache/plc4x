@@ -4954,16 +4954,16 @@ func (e KnxInterfaceObjectProperty) GetValue() uint32 {
 	return uint32(e)
 }
 
-func (e KnxInterfaceObjectProperty) KnxInterfaceObjectPropertyGetPropertyDataType() KnxPropertyDataType {
+func (e KnxInterfaceObjectProperty) GetPropertyDataType() KnxPropertyDataType {
 	return e.PropertyDataType()
 }
-func (e KnxInterfaceObjectProperty) KnxInterfaceObjectPropertyGetName() string {
+func (e KnxInterfaceObjectProperty) GetName() string {
 	return e.Name()
 }
-func (e KnxInterfaceObjectProperty) KnxInterfaceObjectPropertyGetPropertyId() uint8 {
+func (e KnxInterfaceObjectProperty) GetPropertyId() uint8 {
 	return e.PropertyId()
 }
-func (e KnxInterfaceObjectProperty) KnxInterfaceObjectPropertyGetObjectType() KnxInterfaceObjectType {
+func (e KnxInterfaceObjectProperty) GetObjectType() KnxInterfaceObjectType {
 	return e.ObjectType()
 }
 

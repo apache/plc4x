@@ -514,10 +514,10 @@ func (e KnxInterfaceObjectType) GetValue() uint16 {
 	return uint16(e)
 }
 
-func (e KnxInterfaceObjectType) KnxInterfaceObjectTypeGetCode() string {
+func (e KnxInterfaceObjectType) GetCode() string {
 	return e.Code()
 }
-func (e KnxInterfaceObjectType) KnxInterfaceObjectTypeGetName() string {
+func (e KnxInterfaceObjectType) GetName() string {
 	return e.Name()
 }
 

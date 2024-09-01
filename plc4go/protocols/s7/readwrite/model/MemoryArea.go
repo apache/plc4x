@@ -235,7 +235,7 @@ func (e MemoryArea) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e MemoryArea) MemoryAreaGetShortName() string {
+func (e MemoryArea) GetShortName() string {
 	return e.ShortName()
 }
 

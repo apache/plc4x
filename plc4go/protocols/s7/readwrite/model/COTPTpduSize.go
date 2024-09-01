@@ -215,7 +215,7 @@ func (e COTPTpduSize) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e COTPTpduSize) COTPTpduSizeGetSizeInBytes() uint16 {
+func (e COTPTpduSize) GetSizeInBytes() uint16 {
 	return e.SizeInBytes()
 }
 

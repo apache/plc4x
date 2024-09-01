@@ -185,7 +185,7 @@ func (e ProtectionLevel) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e ProtectionLevel) ProtectionLevelGetDescription() string {
+func (e ProtectionLevel) GetDescription() string {
 	return e.Description()
 }
 

@@ -415,7 +415,7 @@ func (e ModbusDataType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e ModbusDataType) ModbusDataTypeGetDataTypeSize() uint8 {
+func (e ModbusDataType) GetDataTypeSize() uint8 {
 	return e.DataTypeSize()
 }
 

@@ -458,10 +458,10 @@ func (e SupportedPhysicalMedia) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e SupportedPhysicalMedia) SupportedPhysicalMediaGetKnxSupport() bool {
+func (e SupportedPhysicalMedia) GetKnxSupport() bool {
 	return e.KnxSupport()
 }
-func (e SupportedPhysicalMedia) SupportedPhysicalMediaGetDescription() string {
+func (e SupportedPhysicalMedia) GetDescription() string {
 	return e.Description()
 }
 

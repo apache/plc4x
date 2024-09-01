@@ -203,7 +203,7 @@ func (pm *_BACnetUnconfirmedServiceRequest) SerializeParent(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequest")
 	}
 
-	if err := WriteDiscriminatorEnumField(ctx, "serviceChoice", "BACnetUnconfirmedServiceChoice", m.GetServiceChoice(), WriteEnum[BACnetUnconfirmedServiceChoice, uint8](ctx, BACnetUnconfirmedServiceChoice.GetValue, BACnetUnconfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+	if err := WriteDiscriminatorEnumField(ctx, "serviceChoice", "BACnetUnconfirmedServiceChoice", m.GetServiceChoice(), WriteEnum[BACnetUnconfirmedServiceChoice, uint8](BACnetUnconfirmedServiceChoice.GetValue, BACnetUnconfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
 		return errors.Wrap(err, "Error serializing 'serviceChoice' field")
 	}
 

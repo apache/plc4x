@@ -508,7 +508,7 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(_sourceAmsPortErr, "Error serializing 'sourceAmsPort' field")
 	}
 
-	if err := WriteDiscriminatorEnumField(ctx, "commandId", "CommandId", m.GetCommandId(), WriteEnum[CommandId, uint16](ctx, CommandId.GetValue, CommandId.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+	if err := WriteDiscriminatorEnumField(ctx, "commandId", "CommandId", m.GetCommandId(), WriteEnum[CommandId, uint16](CommandId.GetValue, CommandId.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
 		return errors.Wrap(err, "Error serializing 'commandId' field")
 	}
 

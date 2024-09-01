@@ -388,10 +388,10 @@ func (e EnableControlCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e EnableControlCommandTypeContainer) EnableControlCommandTypeContainerGetNumBytes() uint8 {
+func (e EnableControlCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e EnableControlCommandTypeContainer) EnableControlCommandTypeContainerGetCommandType() EnableControlCommandType {
+func (e EnableControlCommandTypeContainer) GetCommandType() EnableControlCommandType {
 	return e.CommandType()
 }
 

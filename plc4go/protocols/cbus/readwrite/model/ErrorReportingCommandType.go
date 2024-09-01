@@ -185,7 +185,7 @@ func (e ErrorReportingCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e ErrorReportingCommandType) ErrorReportingCommandTypeGetNumberOfArguments() uint8 {
+func (e ErrorReportingCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

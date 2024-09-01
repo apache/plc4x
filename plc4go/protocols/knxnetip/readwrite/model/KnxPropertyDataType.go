@@ -1083,13 +1083,13 @@ func (e KnxPropertyDataType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e KnxPropertyDataType) KnxPropertyDataTypeGetNumber() uint8 {
+func (e KnxPropertyDataType) GetNumber() uint8 {
 	return e.Number()
 }
-func (e KnxPropertyDataType) KnxPropertyDataTypeGetSizeInBytes() uint8 {
+func (e KnxPropertyDataType) GetSizeInBytes() uint8 {
 	return e.SizeInBytes()
 }
-func (e KnxPropertyDataType) KnxPropertyDataTypeGetName() string {
+func (e KnxPropertyDataType) GetName() string {
 	return e.Name()
 }
 

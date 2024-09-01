@@ -250,16 +250,8 @@ func (m *_CycServiceItemAnyType) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for CycServiceItemAnyType")
 		}
 
-		if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for transportSize")
-		}
-		// Enum field (transportSize)
-		_transportSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("TransportSize", 8, uint8(m.TransportSize.Code()), utils.WithAdditionalStringRepresentation(m.GetTransportSize().PLC4XEnumName()))
-		if _transportSizeErr != nil {
-			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
-		}
-		if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportSize")
+		if err := WriteEnumField(ctx, "transportSize", "TransportSize", m.GetTransportSize(), WriteEnum[TransportSize, uint8](TransportSize.GetCode, TransportSize.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+			return errors.Wrap(err, "Error serializing 'transportSize' field")
 		}
 
 		// Simple Field (length)

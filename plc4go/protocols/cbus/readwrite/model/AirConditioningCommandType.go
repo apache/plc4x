@@ -335,7 +335,7 @@ func (e AirConditioningCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e AirConditioningCommandType) AirConditioningCommandTypeGetNumberOfArguments() uint8 {
+func (e AirConditioningCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

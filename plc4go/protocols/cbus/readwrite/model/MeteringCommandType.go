@@ -155,7 +155,7 @@ func (e MeteringCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e MeteringCommandType) MeteringCommandTypeGetNumberOfArguments() uint8 {
+func (e MeteringCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

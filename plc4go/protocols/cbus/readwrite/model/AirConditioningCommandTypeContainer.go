@@ -430,10 +430,10 @@ func (e AirConditioningCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e AirConditioningCommandTypeContainer) AirConditioningCommandTypeContainerGetNumBytes() uint8 {
+func (e AirConditioningCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e AirConditioningCommandTypeContainer) AirConditioningCommandTypeContainerGetCommandType() AirConditioningCommandType {
+func (e AirConditioningCommandTypeContainer) GetCommandType() AirConditioningCommandType {
 	return e.CommandType()
 }
 

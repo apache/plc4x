@@ -20954,10 +20954,10 @@ func (e BACnetVendorId) GetValue() uint16 {
 	return uint16(e)
 }
 
-func (e BACnetVendorId) BACnetVendorIdGetVendorId() uint16 {
+func (e BACnetVendorId) GetVendorId() uint16 {
 	return e.VendorId()
 }
-func (e BACnetVendorId) BACnetVendorIdGetVendorName() string {
+func (e BACnetVendorId) GetVendorName() string {
 	return e.VendorName()
 }
 

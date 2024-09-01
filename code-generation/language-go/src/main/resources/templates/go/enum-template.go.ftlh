@@ -225,7 +225,7 @@ func (e ${type.name}) GetValue() <#if type.type.isPresent()>${helper.getLanguage
 
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
-func (e ${type.name}) ${type.name}Get${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}  {
+func (e ${type.name}) Get${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}  {
 	return e.${constantName?cap_first}()
 }
 	</#list>

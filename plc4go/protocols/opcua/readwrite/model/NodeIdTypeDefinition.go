@@ -204,7 +204,7 @@ func (pm *_NodeIdTypeDefinition) SerializeParent(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for NodeIdTypeDefinition")
 	}
 
-	if err := WriteDiscriminatorEnumField(ctx, "nodeType", "NodeIdType", m.GetNodeType(), WriteEnum[NodeIdType, uint8](ctx, NodeIdType.GetValue, NodeIdType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 6))); err != nil {
+	if err := WriteDiscriminatorEnumField(ctx, "nodeType", "NodeIdType", m.GetNodeType(), WriteEnum[NodeIdType, uint8](NodeIdType.GetValue, NodeIdType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 6))); err != nil {
 		return errors.Wrap(err, "Error serializing 'nodeType' field")
 	}
 

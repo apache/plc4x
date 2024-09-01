@@ -439,7 +439,7 @@ func (e CIPDataTypeCode) GetValue() uint16 {
 	return uint16(e)
 }
 
-func (e CIPDataTypeCode) CIPDataTypeCodeGetSize() uint8 {
+func (e CIPDataTypeCode) GetSize() uint8 {
 	return e.Size()
 }
 

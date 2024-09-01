@@ -175,7 +175,7 @@ func (e SecurityCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e SecurityCommandType) SecurityCommandTypeGetNumberOfArguments() uint8 {
+func (e SecurityCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

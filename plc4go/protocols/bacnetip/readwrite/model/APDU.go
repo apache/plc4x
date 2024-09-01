@@ -195,7 +195,7 @@ func (pm *_APDU) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 		return errors.Wrap(pushErr, "Error pushing for APDU")
 	}
 
-	if err := WriteDiscriminatorEnumField(ctx, "apduType", "ApduType", m.GetApduType(), WriteEnum[ApduType, uint8](ctx, ApduType.GetValue, ApduType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
+	if err := WriteDiscriminatorEnumField(ctx, "apduType", "ApduType", m.GetApduType(), WriteEnum[ApduType, uint8](ApduType.GetValue, ApduType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
 		return errors.Wrap(err, "Error serializing 'apduType' field")
 	}
 

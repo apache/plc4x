@@ -299,7 +299,7 @@ func (e MediaTransportControlCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e MediaTransportControlCommandType) MediaTransportControlCommandTypeGetNumberOfArguments() uint8 {
+func (e MediaTransportControlCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

@@ -1935,37 +1935,37 @@ func (e TransportSize) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e TransportSize) TransportSizeGetSupported_S7_300() bool {
+func (e TransportSize) GetSupported_S7_300() bool {
 	return e.Supported_S7_300()
 }
-func (e TransportSize) TransportSizeGetSupported_LOGO() bool {
+func (e TransportSize) GetSupported_LOGO() bool {
 	return e.Supported_LOGO()
 }
-func (e TransportSize) TransportSizeGetCode() uint8 {
+func (e TransportSize) GetCode() uint8 {
 	return e.Code()
 }
-func (e TransportSize) TransportSizeGetSizeInBytes() uint8 {
+func (e TransportSize) GetSizeInBytes() uint8 {
 	return e.SizeInBytes()
 }
-func (e TransportSize) TransportSizeGetSupported_S7_400() bool {
+func (e TransportSize) GetSupported_S7_400() bool {
 	return e.Supported_S7_400()
 }
-func (e TransportSize) TransportSizeGetSupported_S7_1200() bool {
+func (e TransportSize) GetSupported_S7_1200() bool {
 	return e.Supported_S7_1200()
 }
-func (e TransportSize) TransportSizeGetShortName() uint8 {
+func (e TransportSize) GetShortName() uint8 {
 	return e.ShortName()
 }
-func (e TransportSize) TransportSizeGetSupported_S7_1500() bool {
+func (e TransportSize) GetSupported_S7_1500() bool {
 	return e.Supported_S7_1500()
 }
-func (e TransportSize) TransportSizeGetDataTransportSize() DataTransportSize {
+func (e TransportSize) GetDataTransportSize() DataTransportSize {
 	return e.DataTransportSize()
 }
-func (e TransportSize) TransportSizeGetDataProtocolId() string {
+func (e TransportSize) GetDataProtocolId() string {
 	return e.DataProtocolId()
 }
-func (e TransportSize) TransportSizeGetBaseType() TransportSize {
+func (e TransportSize) GetBaseType() TransportSize {
 	return e.BaseType()
 }
 

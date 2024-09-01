@@ -192,7 +192,7 @@ func (pm *_AdsDiscoveryBlock) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlock")
 	}
 
-	if err := WriteDiscriminatorEnumField(ctx, "blockType", "AdsDiscoveryBlockType", m.GetBlockType(), WriteEnum[AdsDiscoveryBlockType, uint16](ctx, AdsDiscoveryBlockType.GetValue, AdsDiscoveryBlockType.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+	if err := WriteDiscriminatorEnumField(ctx, "blockType", "AdsDiscoveryBlockType", m.GetBlockType(), WriteEnum[AdsDiscoveryBlockType, uint16](AdsDiscoveryBlockType.GetValue, AdsDiscoveryBlockType.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
 		return errors.Wrap(err, "Error serializing 'blockType' field")
 	}
 

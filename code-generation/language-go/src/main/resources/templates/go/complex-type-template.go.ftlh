@@ -1258,20 +1258,13 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 				<#break>
 				<#case "enum">
 					<#assign enumField = field.asEnumField().orElseThrow()>
+					<#assign typedField = field.asTypedField().orElseThrow()>
+					<#assign namedField = field.asNamedField().orElseThrow()>
 
-	if pushErr := writeBuffer.PushContext("${enumField.name}"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ${enumField.name}")<@emitImport import="github.com/pkg/errors" />
+	if err := WriteEnumField(ctx, "${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", m.Get${namedField.name?cap_first}(), ${helper.getEnumDataWriterCall(typedField.type, namedField.name, enumField.fieldName)}${helper.getFieldOptions(typedField, parserArguments)});err != nil{
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-							<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
-	// Enum field (${enumField.name})
-	_${enumField.name}Err := ${helper.getWriteBufferWriteMethodCall(enumField.type.asNonSimpleTypeReference().orElseThrow().name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumValueFieldAccessor, enumField, "utils.WithAdditionalStringRepresentation(m.Get${enumField.name?cap_first}().PLC4XEnumName())")}
-	if _${enumField.name}Err != nil {
-		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-	if popErr := writeBuffer.PopContext("${enumField.name}"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ${enumField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-					<#break>
+				<#break>
 				<#case "implicit">
 					<#assign implicitField = field.asImplicitField().orElseThrow()>
 					<#assign simpleTypeReference = implicitField.type.asSimpleTypeReference().orElseThrow()>

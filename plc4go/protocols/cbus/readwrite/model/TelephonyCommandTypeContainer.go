@@ -626,10 +626,10 @@ func (e TelephonyCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e TelephonyCommandTypeContainer) TelephonyCommandTypeContainerGetNumBytes() uint8 {
+func (e TelephonyCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e TelephonyCommandTypeContainer) TelephonyCommandTypeContainerGetCommandType() TelephonyCommandType {
+func (e TelephonyCommandTypeContainer) GetCommandType() TelephonyCommandType {
 	return e.CommandType()
 }
 

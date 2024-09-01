@@ -165,7 +165,7 @@ func (e ClockAndTimekeepingCommandType) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e ClockAndTimekeepingCommandType) ClockAndTimekeepingCommandTypeGetNumberOfArguments() uint8 {
+func (e ClockAndTimekeepingCommandType) GetNumberOfArguments() uint8 {
 	return e.NumberOfArguments()
 }
 

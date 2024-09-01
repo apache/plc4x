@@ -276,10 +276,10 @@ func (e MeteringCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e MeteringCommandTypeContainer) MeteringCommandTypeContainerGetNumBytes() uint8 {
+func (e MeteringCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e MeteringCommandTypeContainer) MeteringCommandTypeContainerGetCommandType() MeteringCommandType {
+func (e MeteringCommandTypeContainer) GetCommandType() MeteringCommandType {
 	return e.CommandType()
 }
 

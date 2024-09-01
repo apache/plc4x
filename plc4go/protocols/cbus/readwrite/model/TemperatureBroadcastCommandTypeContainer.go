@@ -388,10 +388,10 @@ func (e TemperatureBroadcastCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e TemperatureBroadcastCommandTypeContainer) TemperatureBroadcastCommandTypeContainerGetNumBytes() uint8 {
+func (e TemperatureBroadcastCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e TemperatureBroadcastCommandTypeContainer) TemperatureBroadcastCommandTypeContainerGetCommandType() TemperatureBroadcastCommandType {
+func (e TemperatureBroadcastCommandTypeContainer) GetCommandType() TemperatureBroadcastCommandType {
 	return e.CommandType()
 }
 

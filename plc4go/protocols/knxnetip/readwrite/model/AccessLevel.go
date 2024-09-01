@@ -234,10 +234,10 @@ func (e AccessLevel) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e AccessLevel) AccessLevelGetPurpose() string {
+func (e AccessLevel) GetPurpose() string {
 	return e.Purpose()
 }
-func (e AccessLevel) AccessLevelGetNeedsAuthentication() bool {
+func (e AccessLevel) GetNeedsAuthentication() bool {
 	return e.NeedsAuthentication()
 }
 

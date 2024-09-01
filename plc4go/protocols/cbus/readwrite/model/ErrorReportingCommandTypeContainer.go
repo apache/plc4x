@@ -220,10 +220,10 @@ func (e ErrorReportingCommandTypeContainer) GetValue() uint8 {
 	return uint8(e)
 }
 
-func (e ErrorReportingCommandTypeContainer) ErrorReportingCommandTypeContainerGetNumBytes() uint8 {
+func (e ErrorReportingCommandTypeContainer) GetNumBytes() uint8 {
 	return e.NumBytes()
 }
-func (e ErrorReportingCommandTypeContainer) ErrorReportingCommandTypeContainerGetCommandType() ErrorReportingCommandType {
+func (e ErrorReportingCommandTypeContainer) GetCommandType() ErrorReportingCommandType {
 	return e.CommandType()
 }
 

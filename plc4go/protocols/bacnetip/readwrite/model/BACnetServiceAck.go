@@ -233,7 +233,7 @@ func (pm *_BACnetServiceAck) SerializeParent(ctx context.Context, writeBuffer ut
 		return errors.Wrap(pushErr, "Error pushing for BACnetServiceAck")
 	}
 
-	if err := WriteDiscriminatorEnumField(ctx, "serviceChoice", "BACnetConfirmedServiceChoice", m.GetServiceChoice(), WriteEnum[BACnetConfirmedServiceChoice, uint8](ctx, BACnetConfirmedServiceChoice.GetValue, BACnetConfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+	if err := WriteDiscriminatorEnumField(ctx, "serviceChoice", "BACnetConfirmedServiceChoice", m.GetServiceChoice(), WriteEnum[BACnetConfirmedServiceChoice, uint8](BACnetConfirmedServiceChoice.GetValue, BACnetConfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
 		return errors.Wrap(err, "Error serializing 'serviceChoice' field")
 	}
 	// Virtual field

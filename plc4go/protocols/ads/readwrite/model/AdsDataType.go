@@ -724,10 +724,10 @@ func (e AdsDataType) GetValue() int8 {
 	return int8(e)
 }
 
-func (e AdsDataType) AdsDataTypeGetNumBytes() uint16 {
+func (e AdsDataType) GetNumBytes() uint16 {
 	return e.NumBytes()
 }
-func (e AdsDataType) AdsDataTypeGetPlcValueType() PlcValueType {
+func (e AdsDataType) GetPlcValueType() PlcValueType {
 	return e.PlcValueType()
 }
 
