@@ -74,6 +74,8 @@ type _ModbusPDUReadDeviceIdentificationResponse struct {
 	Objects          []ModbusDeviceInformationObject
 }
 
+var _ ModbusPDUReadDeviceIdentificationResponse = (*_ModbusPDUReadDeviceIdentificationResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

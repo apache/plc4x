@@ -56,6 +56,8 @@ type _BACnetCalendarEntryWeekNDay struct {
 	WeekNDay BACnetWeekNDayTagged
 }
 
+var _ BACnetCalendarEntryWeekNDay = (*_BACnetCalendarEntryWeekNDay)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

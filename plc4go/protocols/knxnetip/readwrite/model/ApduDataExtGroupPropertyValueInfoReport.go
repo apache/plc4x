@@ -51,6 +51,8 @@ type _ApduDataExtGroupPropertyValueInfoReport struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtGroupPropertyValueInfoReport = (*_ApduDataExtGroupPropertyValueInfoReport)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

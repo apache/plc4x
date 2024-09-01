@@ -58,6 +58,8 @@ type _BACnetConstructedDataIPAddress struct {
 	IpAddress BACnetApplicationTagOctetString
 }
 
+var _ BACnetConstructedDataIPAddress = (*_BACnetConstructedDataIPAddress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

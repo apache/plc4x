@@ -51,6 +51,8 @@ type _BACnetConstructedDataElevatorGroupAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataElevatorGroupAll = (*_BACnetConstructedDataElevatorGroupAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -61,6 +61,8 @@ type _BACnetConstructedDataAccessDoors struct {
 	AccessDoors          []BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataAccessDoors = (*_BACnetConstructedDataAccessDoors)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

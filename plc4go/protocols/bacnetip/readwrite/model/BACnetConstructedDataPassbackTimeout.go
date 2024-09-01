@@ -58,6 +58,8 @@ type _BACnetConstructedDataPassbackTimeout struct {
 	PassbackTimeout BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPassbackTimeout = (*_BACnetConstructedDataPassbackTimeout)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

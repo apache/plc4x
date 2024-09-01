@@ -58,6 +58,8 @@ type _BACnetConstructedDataEnergyMeterRef struct {
 	EnergyMeterRef BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataEnergyMeterRef = (*_BACnetConstructedDataEnergyMeterRef)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

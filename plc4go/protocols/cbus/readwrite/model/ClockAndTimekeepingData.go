@@ -35,15 +35,25 @@ import (
 
 // ClockAndTimekeepingData is the corresponding interface of ClockAndTimekeepingData
 type ClockAndTimekeepingData interface {
+	ClockAndTimekeepingDataContract
+	ClockAndTimekeepingDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ClockAndTimekeepingDataContract provides a set of functions which can be overwritten by a sub struct
+type ClockAndTimekeepingDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() ClockAndTimekeepingCommandTypeContainer
 	// GetArgument returns Argument (property field)
 	GetArgument() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() ClockAndTimekeepingCommandType
+}
+
+// ClockAndTimekeepingDataRequirements provides a set of functions which need to be implemented by a sub struct
+type ClockAndTimekeepingDataRequirements interface {
 }
 
 // ClockAndTimekeepingDataExactly can be used when we want exactly this type and not a type which fulfills ClockAndTimekeepingData.
@@ -59,6 +69,8 @@ type _ClockAndTimekeepingData struct {
 	CommandTypeContainer ClockAndTimekeepingCommandTypeContainer
 	Argument             byte
 }
+
+var _ ClockAndTimekeepingDataContract = (*_ClockAndTimekeepingData)(nil)
 
 type _ClockAndTimekeepingDataChildRequirements interface {
 	utils.Serializable

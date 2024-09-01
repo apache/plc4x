@@ -51,6 +51,8 @@ type _ApduDataExtNetworkParameterRead struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtNetworkParameterRead = (*_ApduDataExtNetworkParameterRead)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

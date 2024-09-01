@@ -58,6 +58,8 @@ type _BACnetConstructedDataOccupancyState struct {
 	OccupancyState BACnetAccessZoneOccupancyStateTagged
 }
 
+var _ BACnetConstructedDataOccupancyState = (*_BACnetConstructedDataOccupancyState)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

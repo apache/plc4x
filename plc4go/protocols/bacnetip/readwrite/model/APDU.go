@@ -35,9 +35,19 @@ import (
 
 // APDU is the corresponding interface of APDU
 type APDU interface {
+	APDUContract
+	APDURequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// APDUContract provides a set of functions which can be overwritten by a sub struct
+type APDUContract interface {
+}
+
+// APDURequirements provides a set of functions which need to be implemented by a sub struct
+type APDURequirements interface {
 	// GetApduType returns ApduType (discriminator field)
 	GetApduType() ApduType
 }
@@ -56,6 +66,8 @@ type _APDU struct {
 	// Arguments.
 	ApduLength uint16
 }
+
+var _ APDUContract = (*_APDU)(nil)
 
 type _APDUChildRequirements interface {
 	utils.Serializable

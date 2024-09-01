@@ -61,6 +61,8 @@ type _BACnetConstructedDataCarDoorStatus struct {
 	CarDoorStatus        []BACnetDoorStatusTagged
 }
 
+var _ BACnetConstructedDataCarDoorStatus = (*_BACnetConstructedDataCarDoorStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

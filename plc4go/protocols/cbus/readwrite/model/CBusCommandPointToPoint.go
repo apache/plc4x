@@ -56,6 +56,8 @@ type _CBusCommandPointToPoint struct {
 	Command CBusPointToPointCommand
 }
 
+var _ CBusCommandPointToPoint = (*_CBusCommandPointToPoint)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

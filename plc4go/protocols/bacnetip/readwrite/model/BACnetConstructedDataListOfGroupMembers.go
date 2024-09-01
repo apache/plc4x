@@ -56,6 +56,8 @@ type _BACnetConstructedDataListOfGroupMembers struct {
 	ListOfGroupMembers []BACnetReadAccessSpecification
 }
 
+var _ BACnetConstructedDataListOfGroupMembers = (*_BACnetConstructedDataListOfGroupMembers)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

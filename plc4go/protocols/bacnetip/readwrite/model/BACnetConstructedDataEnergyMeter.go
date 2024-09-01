@@ -58,6 +58,8 @@ type _BACnetConstructedDataEnergyMeter struct {
 	EnergyMeter BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataEnergyMeter = (*_BACnetConstructedDataEnergyMeter)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

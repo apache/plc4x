@@ -51,6 +51,8 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse struct {
 	*_S7PayloadUserDataItem
 }
 
+var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

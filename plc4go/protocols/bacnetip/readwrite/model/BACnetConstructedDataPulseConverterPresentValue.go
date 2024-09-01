@@ -58,6 +58,8 @@ type _BACnetConstructedDataPulseConverterPresentValue struct {
 	PresentValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataPulseConverterPresentValue = (*_BACnetConstructedDataPulseConverterPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

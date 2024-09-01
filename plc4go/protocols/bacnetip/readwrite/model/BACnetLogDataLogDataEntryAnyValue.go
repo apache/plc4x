@@ -56,6 +56,8 @@ type _BACnetLogDataLogDataEntryAnyValue struct {
 	AnyValue BACnetConstructedData
 }
 
+var _ BACnetLogDataLogDataEntryAnyValue = (*_BACnetLogDataLogDataEntryAnyValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

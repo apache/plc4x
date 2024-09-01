@@ -61,6 +61,8 @@ type _BACnetConstructedDataNegativeAccessRules struct {
 	NegativeAccessRules  []BACnetAccessRule
 }
 
+var _ BACnetConstructedDataNegativeAccessRules = (*_BACnetConstructedDataNegativeAccessRules)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

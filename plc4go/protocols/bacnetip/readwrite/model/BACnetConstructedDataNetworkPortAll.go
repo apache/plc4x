@@ -51,6 +51,8 @@ type _BACnetConstructedDataNetworkPortAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataNetworkPortAll = (*_BACnetConstructedDataNetworkPortAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

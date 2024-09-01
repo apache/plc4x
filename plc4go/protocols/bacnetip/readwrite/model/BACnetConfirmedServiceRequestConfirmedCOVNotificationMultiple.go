@@ -68,6 +68,8 @@ type _BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple struct {
 	ListOfCovNotifications      ListOfCovNotificationsList
 }
 
+var _ BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple = (*_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

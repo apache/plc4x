@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccessEventTime struct {
 	AccessEventTime BACnetTimeStamp
 }
 
+var _ BACnetConstructedDataAccessEventTime = (*_BACnetConstructedDataAccessEventTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -62,6 +62,8 @@ type _BACnetConfirmedServiceRequestReadProperty struct {
 	ArrayIndex         BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestReadProperty = (*_BACnetConfirmedServiceRequestReadProperty)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

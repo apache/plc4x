@@ -56,6 +56,8 @@ type _BACnetPropertyStatesBackupState struct {
 	BackupState BACnetBackupStateTagged
 }
 
+var _ BACnetPropertyStatesBackupState = (*_BACnetPropertyStatesBackupState)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

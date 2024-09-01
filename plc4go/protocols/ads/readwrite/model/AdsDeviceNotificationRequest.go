@@ -62,6 +62,8 @@ type _AdsDeviceNotificationRequest struct {
 	AdsStampHeaders []AdsStampHeader
 }
 
+var _ AdsDeviceNotificationRequest = (*_AdsDeviceNotificationRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

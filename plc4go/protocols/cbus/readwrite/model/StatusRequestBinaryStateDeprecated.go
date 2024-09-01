@@ -59,6 +59,8 @@ type _StatusRequestBinaryStateDeprecated struct {
 	reservedField1 *byte
 }
 
+var _ StatusRequestBinaryStateDeprecated = (*_StatusRequestBinaryStateDeprecated)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

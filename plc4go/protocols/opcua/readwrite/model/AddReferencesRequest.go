@@ -62,6 +62,8 @@ type _AddReferencesRequest struct {
 	ReferencesToAdd     []ExtensionObjectDefinition
 }
 
+var _ AddReferencesRequest = (*_AddReferencesRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

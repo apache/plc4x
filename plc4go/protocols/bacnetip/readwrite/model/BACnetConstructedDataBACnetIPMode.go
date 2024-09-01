@@ -58,6 +58,8 @@ type _BACnetConstructedDataBACnetIPMode struct {
 	BacnetIpMode BACnetIPModeTagged
 }
 
+var _ BACnetConstructedDataBACnetIPMode = (*_BACnetConstructedDataBACnetIPMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

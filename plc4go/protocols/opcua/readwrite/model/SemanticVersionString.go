@@ -49,6 +49,8 @@ type SemanticVersionStringExactly interface {
 type _SemanticVersionString struct {
 }
 
+var _ SemanticVersionString = (*_SemanticVersionString)(nil)
+
 // NewSemanticVersionString factory function for _SemanticVersionString
 func NewSemanticVersionString() *_SemanticVersionString {
 	return &_SemanticVersionString{}

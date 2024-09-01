@@ -58,6 +58,8 @@ type _BACnetConstructedDataRequestedShedLevel struct {
 	RequestedShedLevel BACnetShedLevel
 }
 
+var _ BACnetConstructedDataRequestedShedLevel = (*_BACnetConstructedDataRequestedShedLevel)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

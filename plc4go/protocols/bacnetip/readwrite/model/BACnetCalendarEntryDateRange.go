@@ -56,6 +56,8 @@ type _BACnetCalendarEntryDateRange struct {
 	DateRange BACnetDateRangeEnclosed
 }
 
+var _ BACnetCalendarEntryDateRange = (*_BACnetCalendarEntryDateRange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataLocation struct {
 	Location BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataLocation = (*_BACnetConstructedDataLocation)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

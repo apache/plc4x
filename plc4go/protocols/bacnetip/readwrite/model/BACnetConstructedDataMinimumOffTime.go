@@ -58,6 +58,8 @@ type _BACnetConstructedDataMinimumOffTime struct {
 	MinimumOffTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMinimumOffTime = (*_BACnetConstructedDataMinimumOffTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

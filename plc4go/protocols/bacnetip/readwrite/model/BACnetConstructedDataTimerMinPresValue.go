@@ -58,6 +58,8 @@ type _BACnetConstructedDataTimerMinPresValue struct {
 	MinPresValue BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataTimerMinPresValue = (*_BACnetConstructedDataTimerMinPresValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

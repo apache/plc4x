@@ -62,6 +62,8 @@ type _DeleteReferencesRequest struct {
 	ReferencesToDelete     []ExtensionObjectDefinition
 }
 
+var _ DeleteReferencesRequest = (*_DeleteReferencesRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

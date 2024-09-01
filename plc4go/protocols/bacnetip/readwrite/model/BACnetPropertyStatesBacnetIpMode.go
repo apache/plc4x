@@ -56,6 +56,8 @@ type _BACnetPropertyStatesBacnetIpMode struct {
 	BacnetIpMode BACnetIPModeTagged
 }
 
+var _ BACnetPropertyStatesBacnetIpMode = (*_BACnetPropertyStatesBacnetIpMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

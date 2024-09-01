@@ -56,6 +56,8 @@ type _BACnetServiceAckVTOpen struct {
 	RemoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetServiceAckVTOpen = (*_BACnetServiceAckVTOpen)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

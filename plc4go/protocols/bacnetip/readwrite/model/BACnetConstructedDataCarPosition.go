@@ -58,6 +58,8 @@ type _BACnetConstructedDataCarPosition struct {
 	CarPosition BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataCarPosition = (*_BACnetConstructedDataCarPosition)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

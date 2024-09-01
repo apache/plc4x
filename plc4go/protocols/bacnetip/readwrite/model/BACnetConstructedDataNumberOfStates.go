@@ -58,6 +58,8 @@ type _BACnetConstructedDataNumberOfStates struct {
 	NumberOfState BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataNumberOfStates = (*_BACnetConstructedDataNumberOfStates)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

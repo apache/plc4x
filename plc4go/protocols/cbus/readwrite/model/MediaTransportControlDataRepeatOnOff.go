@@ -62,6 +62,8 @@ type _MediaTransportControlDataRepeatOnOff struct {
 	RepeatType byte
 }
 
+var _ MediaTransportControlDataRepeatOnOff = (*_MediaTransportControlDataRepeatOnOff)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

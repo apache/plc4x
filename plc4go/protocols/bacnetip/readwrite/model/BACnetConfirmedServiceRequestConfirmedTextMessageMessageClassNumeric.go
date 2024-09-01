@@ -56,6 +56,8 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric struc
 	NumericValue BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

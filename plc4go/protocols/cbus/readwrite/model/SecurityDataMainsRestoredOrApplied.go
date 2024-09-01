@@ -51,6 +51,8 @@ type _SecurityDataMainsRestoredOrApplied struct {
 	*_SecurityData
 }
 
+var _ SecurityDataMainsRestoredOrApplied = (*_SecurityDataMainsRestoredOrApplied)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetConstructedDataMultiStateInputAlarmValues struct {
 	AlarmValues []BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMultiStateInputAlarmValues = (*_BACnetConstructedDataMultiStateInputAlarmValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

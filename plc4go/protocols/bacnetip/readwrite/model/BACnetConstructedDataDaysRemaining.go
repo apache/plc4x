@@ -58,6 +58,8 @@ type _BACnetConstructedDataDaysRemaining struct {
 	DaysRemaining BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetConstructedDataDaysRemaining = (*_BACnetConstructedDataDaysRemaining)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

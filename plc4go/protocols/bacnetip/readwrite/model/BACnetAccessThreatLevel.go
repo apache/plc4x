@@ -54,6 +54,8 @@ type _BACnetAccessThreatLevel struct {
 	ThreatLevel BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetAccessThreatLevel = (*_BACnetAccessThreatLevel)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

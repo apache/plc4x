@@ -62,6 +62,8 @@ type _BACnetEventLogRecordLogDatumNotification struct {
 	InnerClosingTag BACnetClosingTag
 }
 
+var _ BACnetEventLogRecordLogDatumNotification = (*_BACnetEventLogRecordLogDatumNotification)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

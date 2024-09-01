@@ -56,6 +56,8 @@ type _BACnetPropertyStatesTimerTransition struct {
 	TimerTransition BACnetTimerTransitionTagged
 }
 
+var _ BACnetPropertyStatesTimerTransition = (*_BACnetPropertyStatesTimerTransition)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

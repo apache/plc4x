@@ -35,13 +35,23 @@ import (
 
 // BACnetPropertyAccessResultAccessResult is the corresponding interface of BACnetPropertyAccessResultAccessResult
 type BACnetPropertyAccessResultAccessResult interface {
+	BACnetPropertyAccessResultAccessResultContract
+	BACnetPropertyAccessResultAccessResultRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetPropertyAccessResultAccessResultContract provides a set of functions which can be overwritten by a sub struct
+type BACnetPropertyAccessResultAccessResultContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetPropertyAccessResultAccessResultRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetPropertyAccessResultAccessResultRequirements interface {
 }
 
 // BACnetPropertyAccessResultAccessResultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyAccessResultAccessResult.
@@ -61,6 +71,8 @@ type _BACnetPropertyAccessResultAccessResult struct {
 	PropertyIdentifierArgument BACnetPropertyIdentifier
 	PropertyArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
+
+var _ BACnetPropertyAccessResultAccessResultContract = (*_BACnetPropertyAccessResultAccessResult)(nil)
 
 type _BACnetPropertyAccessResultAccessResultChildRequirements interface {
 	utils.Serializable

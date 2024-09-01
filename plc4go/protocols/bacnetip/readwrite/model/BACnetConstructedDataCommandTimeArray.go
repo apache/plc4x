@@ -61,6 +61,8 @@ type _BACnetConstructedDataCommandTimeArray struct {
 	CommandTimeArray     []BACnetTimeStamp
 }
 
+var _ BACnetConstructedDataCommandTimeArray = (*_BACnetConstructedDataCommandTimeArray)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

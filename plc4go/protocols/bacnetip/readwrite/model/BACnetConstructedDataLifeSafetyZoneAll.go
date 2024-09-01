@@ -51,6 +51,8 @@ type _BACnetConstructedDataLifeSafetyZoneAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataLifeSafetyZoneAll = (*_BACnetConstructedDataLifeSafetyZoneAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

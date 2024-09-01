@@ -35,13 +35,23 @@ import (
 
 // ErrorReportingData is the corresponding interface of ErrorReportingData
 type ErrorReportingData interface {
+	ErrorReportingDataContract
+	ErrorReportingDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ErrorReportingDataContract provides a set of functions which can be overwritten by a sub struct
+type ErrorReportingDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() ErrorReportingCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() ErrorReportingCommandType
+}
+
+// ErrorReportingDataRequirements provides a set of functions which need to be implemented by a sub struct
+type ErrorReportingDataRequirements interface {
 }
 
 // ErrorReportingDataExactly can be used when we want exactly this type and not a type which fulfills ErrorReportingData.
@@ -56,6 +66,8 @@ type _ErrorReportingData struct {
 	_ErrorReportingDataChildRequirements
 	CommandTypeContainer ErrorReportingCommandTypeContainer
 }
+
+var _ ErrorReportingDataContract = (*_ErrorReportingData)(nil)
 
 type _ErrorReportingDataChildRequirements interface {
 	utils.Serializable

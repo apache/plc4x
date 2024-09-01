@@ -56,6 +56,8 @@ type _MediaTransportControlDataSetCategory struct {
 	CategoryNumber uint8
 }
 
+var _ MediaTransportControlDataSetCategory = (*_MediaTransportControlDataSetCategory)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

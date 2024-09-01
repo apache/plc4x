@@ -35,15 +35,25 @@ import (
 
 // MessagePDU is the corresponding interface of MessagePDU
 type MessagePDU interface {
+	MessagePDUContract
+	MessagePDURequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// MessagePDUContract provides a set of functions which can be overwritten by a sub struct
+type MessagePDUContract interface {
+	// GetChunk returns Chunk (property field)
+	GetChunk() ChunkType
+}
+
+// MessagePDURequirements provides a set of functions which need to be implemented by a sub struct
+type MessagePDURequirements interface {
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() string
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
-	// GetChunk returns Chunk (property field)
-	GetChunk() ChunkType
 }
 
 // MessagePDUExactly can be used when we want exactly this type and not a type which fulfills MessagePDU.
@@ -58,6 +68,8 @@ type _MessagePDU struct {
 	_MessagePDUChildRequirements
 	Chunk ChunkType
 }
+
+var _ MessagePDUContract = (*_MessagePDU)(nil)
 
 type _MessagePDUChildRequirements interface {
 	utils.Serializable

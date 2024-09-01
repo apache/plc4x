@@ -56,6 +56,8 @@ type _BACnetConstructedDataFailedAttemptEvents struct {
 	FailedAttemptEvents []BACnetAccessEventTagged
 }
 
+var _ BACnetConstructedDataFailedAttemptEvents = (*_BACnetConstructedDataFailedAttemptEvents)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

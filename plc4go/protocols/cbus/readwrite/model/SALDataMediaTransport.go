@@ -56,6 +56,8 @@ type _SALDataMediaTransport struct {
 	MediaTransportControlData MediaTransportControlData
 }
 
+var _ SALDataMediaTransport = (*_SALDataMediaTransport)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

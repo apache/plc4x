@@ -58,6 +58,8 @@ type _BACnetConstructedDataScheduleDefault struct {
 	ScheduleDefault BACnetConstructedDataElement
 }
 
+var _ BACnetConstructedDataScheduleDefault = (*_BACnetConstructedDataScheduleDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

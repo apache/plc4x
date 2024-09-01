@@ -59,6 +59,8 @@ type _AccessControlDataValidAccessRequest struct {
 	Data                   []byte
 }
 
+var _ AccessControlDataValidAccessRequest = (*_AccessControlDataValidAccessRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

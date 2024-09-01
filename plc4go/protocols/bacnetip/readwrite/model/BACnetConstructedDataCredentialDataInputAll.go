@@ -51,6 +51,8 @@ type _BACnetConstructedDataCredentialDataInputAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataCredentialDataInputAll = (*_BACnetConstructedDataCredentialDataInputAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetOptionalCharacterStringValue struct {
 	Characterstring BACnetApplicationTagCharacterString
 }
 
+var _ BACnetOptionalCharacterStringValue = (*_BACnetOptionalCharacterStringValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

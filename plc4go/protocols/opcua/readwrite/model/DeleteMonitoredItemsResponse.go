@@ -68,6 +68,8 @@ type _DeleteMonitoredItemsResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ DeleteMonitoredItemsResponse = (*_DeleteMonitoredItemsResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

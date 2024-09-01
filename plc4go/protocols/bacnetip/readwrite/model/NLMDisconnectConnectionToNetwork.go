@@ -56,6 +56,8 @@ type _NLMDisconnectConnectionToNetwork struct {
 	DestinationNetworkAddress uint16
 }
 
+var _ NLMDisconnectConnectionToNetwork = (*_NLMDisconnectConnectionToNetwork)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

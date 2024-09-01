@@ -35,15 +35,25 @@ import (
 
 // BACnetFaultParameterFaultExtendedParametersEntry is the corresponding interface of BACnetFaultParameterFaultExtendedParametersEntry
 type BACnetFaultParameterFaultExtendedParametersEntry interface {
+	BACnetFaultParameterFaultExtendedParametersEntryContract
+	BACnetFaultParameterFaultExtendedParametersEntryRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryContract provides a set of functions which can be overwritten by a sub struct
+type BACnetFaultParameterFaultExtendedParametersEntryContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
+}
+
+// BACnetFaultParameterFaultExtendedParametersEntryRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetFaultParameterFaultExtendedParametersEntryRequirements interface {
 }
 
 // BACnetFaultParameterFaultExtendedParametersEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntry.
@@ -58,6 +68,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntry struct {
 	_BACnetFaultParameterFaultExtendedParametersEntryChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetFaultParameterFaultExtendedParametersEntryContract = (*_BACnetFaultParameterFaultExtendedParametersEntry)(nil)
 
 type _BACnetFaultParameterFaultExtendedParametersEntryChildRequirements interface {
 	utils.Serializable

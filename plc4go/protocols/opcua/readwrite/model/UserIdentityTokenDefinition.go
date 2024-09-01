@@ -33,9 +33,19 @@ import (
 
 // UserIdentityTokenDefinition is the corresponding interface of UserIdentityTokenDefinition
 type UserIdentityTokenDefinition interface {
+	UserIdentityTokenDefinitionContract
+	UserIdentityTokenDefinitionRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// UserIdentityTokenDefinitionContract provides a set of functions which can be overwritten by a sub struct
+type UserIdentityTokenDefinitionContract interface {
+}
+
+// UserIdentityTokenDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
+type UserIdentityTokenDefinitionRequirements interface {
 	// GetIdentifier returns Identifier (discriminator field)
 	GetIdentifier() string
 }
@@ -51,6 +61,8 @@ type UserIdentityTokenDefinitionExactly interface {
 type _UserIdentityTokenDefinition struct {
 	_UserIdentityTokenDefinitionChildRequirements
 }
+
+var _ UserIdentityTokenDefinitionContract = (*_UserIdentityTokenDefinition)(nil)
 
 type _UserIdentityTokenDefinitionChildRequirements interface {
 	utils.Serializable

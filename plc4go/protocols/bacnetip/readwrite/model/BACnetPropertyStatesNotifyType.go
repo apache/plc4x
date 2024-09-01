@@ -56,6 +56,8 @@ type _BACnetPropertyStatesNotifyType struct {
 	NotifyType BACnetNotifyTypeTagged
 }
 
+var _ BACnetPropertyStatesNotifyType = (*_BACnetPropertyStatesNotifyType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

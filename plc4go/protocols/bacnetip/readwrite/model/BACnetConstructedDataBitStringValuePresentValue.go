@@ -58,6 +58,8 @@ type _BACnetConstructedDataBitStringValuePresentValue struct {
 	PresentValue BACnetApplicationTagBitString
 }
 
+var _ BACnetConstructedDataBitStringValuePresentValue = (*_BACnetConstructedDataBitStringValuePresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

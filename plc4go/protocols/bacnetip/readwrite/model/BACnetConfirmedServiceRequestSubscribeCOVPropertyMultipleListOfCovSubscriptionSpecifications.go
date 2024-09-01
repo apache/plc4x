@@ -63,6 +63,8 @@ type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
 	ClosingTag                BACnetClosingTag
 }
 
+var _ BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

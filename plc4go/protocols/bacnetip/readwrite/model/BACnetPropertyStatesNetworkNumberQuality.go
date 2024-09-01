@@ -56,6 +56,8 @@ type _BACnetPropertyStatesNetworkNumberQuality struct {
 	NetworkNumberQuality BACnetNetworkNumberQualityTagged
 }
 
+var _ BACnetPropertyStatesNetworkNumberQuality = (*_BACnetPropertyStatesNetworkNumberQuality)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

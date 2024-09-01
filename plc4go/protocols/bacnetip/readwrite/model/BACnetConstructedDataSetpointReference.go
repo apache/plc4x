@@ -58,6 +58,8 @@ type _BACnetConstructedDataSetpointReference struct {
 	SetpointReference BACnetSetpointReference
 }
 
+var _ BACnetConstructedDataSetpointReference = (*_BACnetConstructedDataSetpointReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

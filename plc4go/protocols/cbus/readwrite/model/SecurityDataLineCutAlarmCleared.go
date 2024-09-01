@@ -51,6 +51,8 @@ type _SecurityDataLineCutAlarmCleared struct {
 	*_SecurityData
 }
 
+var _ SecurityDataLineCutAlarmCleared = (*_SecurityDataLineCutAlarmCleared)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

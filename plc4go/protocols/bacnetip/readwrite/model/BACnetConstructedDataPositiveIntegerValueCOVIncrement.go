@@ -58,6 +58,8 @@ type _BACnetConstructedDataPositiveIntegerValueCOVIncrement struct {
 	CovIncrement BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPositiveIntegerValueCOVIncrement = (*_BACnetConstructedDataPositiveIntegerValueCOVIncrement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

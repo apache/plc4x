@@ -51,6 +51,8 @@ type _ApduDataIndividualAddressResponse struct {
 	*_ApduData
 }
 
+var _ ApduDataIndividualAddressResponse = (*_ApduDataIndividualAddressResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

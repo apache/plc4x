@@ -35,13 +35,23 @@ import (
 
 // BACnetConfirmedServiceRequest is the corresponding interface of BACnetConfirmedServiceRequest
 type BACnetConfirmedServiceRequest interface {
+	BACnetConfirmedServiceRequestContract
+	BACnetConfirmedServiceRequestRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetServiceChoice returns ServiceChoice (discriminator field)
-	GetServiceChoice() BACnetConfirmedServiceChoice
+}
+
+// BACnetConfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
+type BACnetConfirmedServiceRequestContract interface {
 	// GetServiceRequestPayloadLength returns ServiceRequestPayloadLength (virtual field)
 	GetServiceRequestPayloadLength() uint32
+}
+
+// BACnetConfirmedServiceRequestRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetConfirmedServiceRequestRequirements interface {
+	// GetServiceChoice returns ServiceChoice (discriminator field)
+	GetServiceChoice() BACnetConfirmedServiceChoice
 }
 
 // BACnetConfirmedServiceRequestExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequest.
@@ -58,6 +68,8 @@ type _BACnetConfirmedServiceRequest struct {
 	// Arguments.
 	ServiceRequestLength uint32
 }
+
+var _ BACnetConfirmedServiceRequestContract = (*_BACnetConfirmedServiceRequest)(nil)
 
 type _BACnetConfirmedServiceRequestChildRequirements interface {
 	utils.Serializable

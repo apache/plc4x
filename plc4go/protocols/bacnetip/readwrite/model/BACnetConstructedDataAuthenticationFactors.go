@@ -61,6 +61,8 @@ type _BACnetConstructedDataAuthenticationFactors struct {
 	AuthenticationFactors []BACnetCredentialAuthenticationFactor
 }
 
+var _ BACnetConstructedDataAuthenticationFactors = (*_BACnetConstructedDataAuthenticationFactors)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

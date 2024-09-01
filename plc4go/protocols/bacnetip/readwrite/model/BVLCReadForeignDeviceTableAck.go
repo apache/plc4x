@@ -61,6 +61,8 @@ type _BVLCReadForeignDeviceTableAck struct {
 	BvlcPayloadLength uint16
 }
 
+var _ BVLCReadForeignDeviceTableAck = (*_BVLCReadForeignDeviceTableAck)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

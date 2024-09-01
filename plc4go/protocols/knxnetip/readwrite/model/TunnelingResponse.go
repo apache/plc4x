@@ -58,6 +58,8 @@ type _TunnelingResponse struct {
 	TunnelingResponseDataBlock TunnelingResponseDataBlock
 }
 
+var _ TunnelingResponse = (*_TunnelingResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

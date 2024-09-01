@@ -49,6 +49,8 @@ type DateStringExactly interface {
 type _DateString struct {
 }
 
+var _ DateString = (*_DateString)(nil)
+
 // NewDateString factory function for _DateString
 func NewDateString() *_DateString {
 	return &_DateString{}

@@ -58,6 +58,8 @@ type _BACnetConstructedDataTimerRunning struct {
 	TimerRunning BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataTimerRunning = (*_BACnetConstructedDataTimerRunning)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataDoorOpenTooLongTime struct {
 	DoorOpenTooLongTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataDoorOpenTooLongTime = (*_BACnetConstructedDataDoorOpenTooLongTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

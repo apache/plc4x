@@ -58,6 +58,8 @@ type _BACnetConstructedDataIsUTC struct {
 	IsUtc BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataIsUTC = (*_BACnetConstructedDataIsUTC)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

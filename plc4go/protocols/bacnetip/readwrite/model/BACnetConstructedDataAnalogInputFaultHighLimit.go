@@ -58,6 +58,8 @@ type _BACnetConstructedDataAnalogInputFaultHighLimit struct {
 	FaultHighLimit BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataAnalogInputFaultHighLimit = (*_BACnetConstructedDataAnalogInputFaultHighLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetLogRecordLogDatumFailure struct {
 	Failure ErrorEnclosed
 }
 
+var _ BACnetLogRecordLogDatumFailure = (*_BACnetLogRecordLogDatumFailure)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

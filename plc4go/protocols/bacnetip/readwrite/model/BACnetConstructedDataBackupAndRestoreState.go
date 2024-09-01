@@ -58,6 +58,8 @@ type _BACnetConstructedDataBackupAndRestoreState struct {
 	BackupAndRestoreState BACnetBackupStateTagged
 }
 
+var _ BACnetConstructedDataBackupAndRestoreState = (*_BACnetConstructedDataBackupAndRestoreState)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

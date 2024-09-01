@@ -61,6 +61,8 @@ type _BACnetConstructedDataAuthenticationPolicyNames struct {
 	AuthenticationPolicyNames []BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataAuthenticationPolicyNames = (*_BACnetConstructedDataAuthenticationPolicyNames)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

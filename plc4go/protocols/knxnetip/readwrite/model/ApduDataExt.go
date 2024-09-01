@@ -35,9 +35,19 @@ import (
 
 // ApduDataExt is the corresponding interface of ApduDataExt
 type ApduDataExt interface {
+	ApduDataExtContract
+	ApduDataExtRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ApduDataExtContract provides a set of functions which can be overwritten by a sub struct
+type ApduDataExtContract interface {
+}
+
+// ApduDataExtRequirements provides a set of functions which need to be implemented by a sub struct
+type ApduDataExtRequirements interface {
 	// GetExtApciType returns ExtApciType (discriminator field)
 	GetExtApciType() uint8
 }
@@ -56,6 +66,8 @@ type _ApduDataExt struct {
 	// Arguments.
 	Length uint8
 }
+
+var _ ApduDataExtContract = (*_ApduDataExt)(nil)
 
 type _ApduDataExtChildRequirements interface {
 	utils.Serializable

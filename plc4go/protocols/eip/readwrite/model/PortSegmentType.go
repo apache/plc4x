@@ -35,9 +35,19 @@ import (
 
 // PortSegmentType is the corresponding interface of PortSegmentType
 type PortSegmentType interface {
+	PortSegmentTypeContract
+	PortSegmentTypeRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// PortSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
+type PortSegmentTypeContract interface {
+}
+
+// PortSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
+type PortSegmentTypeRequirements interface {
 	// GetExtendedLinkAddress returns ExtendedLinkAddress (discriminator field)
 	GetExtendedLinkAddress() bool
 }
@@ -53,6 +63,8 @@ type PortSegmentTypeExactly interface {
 type _PortSegmentType struct {
 	_PortSegmentTypeChildRequirements
 }
+
+var _ PortSegmentTypeContract = (*_PortSegmentType)(nil)
 
 type _PortSegmentTypeChildRequirements interface {
 	utils.Serializable

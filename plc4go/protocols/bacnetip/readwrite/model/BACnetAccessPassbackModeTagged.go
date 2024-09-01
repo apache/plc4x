@@ -61,6 +61,8 @@ type _BACnetAccessPassbackModeTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetAccessPassbackModeTagged = (*_BACnetAccessPassbackModeTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

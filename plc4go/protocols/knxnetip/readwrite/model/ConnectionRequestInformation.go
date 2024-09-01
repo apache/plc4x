@@ -35,9 +35,19 @@ import (
 
 // ConnectionRequestInformation is the corresponding interface of ConnectionRequestInformation
 type ConnectionRequestInformation interface {
+	ConnectionRequestInformationContract
+	ConnectionRequestInformationRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ConnectionRequestInformationContract provides a set of functions which can be overwritten by a sub struct
+type ConnectionRequestInformationContract interface {
+}
+
+// ConnectionRequestInformationRequirements provides a set of functions which need to be implemented by a sub struct
+type ConnectionRequestInformationRequirements interface {
 	// GetConnectionType returns ConnectionType (discriminator field)
 	GetConnectionType() uint8
 }
@@ -53,6 +63,8 @@ type ConnectionRequestInformationExactly interface {
 type _ConnectionRequestInformation struct {
 	_ConnectionRequestInformationChildRequirements
 }
+
+var _ ConnectionRequestInformationContract = (*_ConnectionRequestInformation)(nil)
 
 type _ConnectionRequestInformationChildRequirements interface {
 	utils.Serializable

@@ -58,6 +58,8 @@ type _BACnetConstructedDataAverageValue struct {
 	AverageValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataAverageValue = (*_BACnetConstructedDataAverageValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

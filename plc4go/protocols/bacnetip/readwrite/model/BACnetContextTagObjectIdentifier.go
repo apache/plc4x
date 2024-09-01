@@ -60,6 +60,8 @@ type _BACnetContextTagObjectIdentifier struct {
 	Payload BACnetTagPayloadObjectIdentifier
 }
 
+var _ BACnetContextTagObjectIdentifier = (*_BACnetContextTagObjectIdentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataCarMovingDirection struct {
 	CarMovingDirection BACnetLiftCarDirectionTagged
 }
 
+var _ BACnetConstructedDataCarMovingDirection = (*_BACnetConstructedDataCarMovingDirection)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

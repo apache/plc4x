@@ -56,6 +56,8 @@ type _ErrorReportingSystemCategoryTypeBuildingManagementSystems struct {
 	CategoryForType ErrorReportingSystemCategoryTypeForBuildingManagementSystems
 }
 
+var _ ErrorReportingSystemCategoryTypeBuildingManagementSystems = (*_ErrorReportingSystemCategoryTypeBuildingManagementSystems)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

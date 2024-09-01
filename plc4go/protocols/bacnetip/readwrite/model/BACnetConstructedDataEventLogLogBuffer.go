@@ -56,6 +56,8 @@ type _BACnetConstructedDataEventLogLogBuffer struct {
 	FloorText []BACnetEventLogRecord
 }
 
+var _ BACnetConstructedDataEventLogLogBuffer = (*_BACnetConstructedDataEventLogLogBuffer)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -49,6 +49,8 @@ type DurationStringExactly interface {
 type _DurationString struct {
 }
 
+var _ DurationString = (*_DurationString)(nil)
+
 // NewDurationString factory function for _DurationString
 func NewDurationString() *_DurationString {
 	return &_DurationString{}

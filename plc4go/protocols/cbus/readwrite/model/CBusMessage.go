@@ -33,9 +33,19 @@ import (
 
 // CBusMessage is the corresponding interface of CBusMessage
 type CBusMessage interface {
+	CBusMessageContract
+	CBusMessageRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CBusMessageContract provides a set of functions which can be overwritten by a sub struct
+type CBusMessageContract interface {
+}
+
+// CBusMessageRequirements provides a set of functions which need to be implemented by a sub struct
+type CBusMessageRequirements interface {
 	// GetIsResponse returns IsResponse (discriminator field)
 	GetIsResponse() bool
 }
@@ -55,6 +65,8 @@ type _CBusMessage struct {
 	RequestContext RequestContext
 	CBusOptions    CBusOptions
 }
+
+var _ CBusMessageContract = (*_CBusMessage)(nil)
 
 type _CBusMessageChildRequirements interface {
 	utils.Serializable

@@ -58,6 +58,8 @@ type _BACnetConstructedDataSlaveProxyEnable struct {
 	SlaveProxyEnable BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataSlaveProxyEnable = (*_BACnetConstructedDataSlaveProxyEnable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

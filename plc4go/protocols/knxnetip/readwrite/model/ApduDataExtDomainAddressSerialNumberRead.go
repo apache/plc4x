@@ -51,6 +51,8 @@ type _ApduDataExtDomainAddressSerialNumberRead struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtDomainAddressSerialNumberRead = (*_ApduDataExtDomainAddressSerialNumberRead)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

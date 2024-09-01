@@ -58,6 +58,8 @@ type _BACnetConstructedDataBACnetIPGlobalAddress struct {
 	BacnetIpGlobalAddress BACnetHostNPort
 }
 
+var _ BACnetConstructedDataBACnetIPGlobalAddress = (*_BACnetConstructedDataBACnetIPGlobalAddress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

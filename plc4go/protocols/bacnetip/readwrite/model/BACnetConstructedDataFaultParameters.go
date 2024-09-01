@@ -58,6 +58,8 @@ type _BACnetConstructedDataFaultParameters struct {
 	FaultParameters BACnetFaultParameter
 }
 
+var _ BACnetConstructedDataFaultParameters = (*_BACnetConstructedDataFaultParameters)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

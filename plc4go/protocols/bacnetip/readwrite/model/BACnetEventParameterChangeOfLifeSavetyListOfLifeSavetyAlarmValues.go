@@ -63,6 +63,8 @@ type _BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues struct {
 	TagNumber uint8
 }
 
+var _ BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues = (*_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

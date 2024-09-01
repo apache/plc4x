@@ -65,6 +65,8 @@ type _S7PayloadUserDataItemCyclicServicesSubscribeRequest struct {
 	Item       []CycServiceItemType
 }
 
+var _ S7PayloadUserDataItemCyclicServicesSubscribeRequest = (*_S7PayloadUserDataItemCyclicServicesSubscribeRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

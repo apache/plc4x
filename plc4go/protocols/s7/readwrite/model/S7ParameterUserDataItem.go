@@ -35,9 +35,19 @@ import (
 
 // S7ParameterUserDataItem is the corresponding interface of S7ParameterUserDataItem
 type S7ParameterUserDataItem interface {
+	S7ParameterUserDataItemContract
+	S7ParameterUserDataItemRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// S7ParameterUserDataItemContract provides a set of functions which can be overwritten by a sub struct
+type S7ParameterUserDataItemContract interface {
+}
+
+// S7ParameterUserDataItemRequirements provides a set of functions which need to be implemented by a sub struct
+type S7ParameterUserDataItemRequirements interface {
 	// GetItemType returns ItemType (discriminator field)
 	GetItemType() uint8
 }
@@ -53,6 +63,8 @@ type S7ParameterUserDataItemExactly interface {
 type _S7ParameterUserDataItem struct {
 	_S7ParameterUserDataItemChildRequirements
 }
+
+var _ S7ParameterUserDataItemContract = (*_S7ParameterUserDataItem)(nil)
 
 type _S7ParameterUserDataItemChildRequirements interface {
 	utils.Serializable

@@ -56,6 +56,8 @@ type _BACnetPropertyStatesLifeSafetyMode struct {
 	LifeSafetyMode BACnetLifeSafetyModeTagged
 }
 
+var _ BACnetPropertyStatesLifeSafetyMode = (*_BACnetPropertyStatesLifeSafetyMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

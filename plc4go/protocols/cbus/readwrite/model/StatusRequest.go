@@ -35,11 +35,21 @@ import (
 
 // StatusRequest is the corresponding interface of StatusRequest
 type StatusRequest interface {
+	StatusRequestContract
+	StatusRequestRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// StatusRequestContract provides a set of functions which can be overwritten by a sub struct
+type StatusRequestContract interface {
 	// GetStatusType returns StatusType (property field)
 	GetStatusType() byte
+}
+
+// StatusRequestRequirements provides a set of functions which need to be implemented by a sub struct
+type StatusRequestRequirements interface {
 }
 
 // StatusRequestExactly can be used when we want exactly this type and not a type which fulfills StatusRequest.
@@ -54,6 +64,8 @@ type _StatusRequest struct {
 	_StatusRequestChildRequirements
 	StatusType byte
 }
+
+var _ StatusRequestContract = (*_StatusRequest)(nil)
 
 type _StatusRequestChildRequirements interface {
 	utils.Serializable

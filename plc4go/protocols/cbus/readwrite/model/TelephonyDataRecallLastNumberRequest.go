@@ -60,6 +60,8 @@ type _TelephonyDataRecallLastNumberRequest struct {
 	RecallLastNumberType byte
 }
 
+var _ TelephonyDataRecallLastNumberRequest = (*_TelephonyDataRecallLastNumberRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

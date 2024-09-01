@@ -59,6 +59,8 @@ type _ModbusPDUDiagnosticResponse struct {
 	Data        uint16
 }
 
+var _ ModbusPDUDiagnosticResponse = (*_ModbusPDUDiagnosticResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

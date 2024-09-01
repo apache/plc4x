@@ -58,6 +58,8 @@ type _BACnetConstructedDataLogDeviceObjectProperty struct {
 	LogDeviceObjectProperty BACnetDeviceObjectPropertyReference
 }
 
+var _ BACnetConstructedDataLogDeviceObjectProperty = (*_BACnetConstructedDataLogDeviceObjectProperty)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

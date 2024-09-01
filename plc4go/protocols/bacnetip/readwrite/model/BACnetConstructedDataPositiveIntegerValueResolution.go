@@ -58,6 +58,8 @@ type _BACnetConstructedDataPositiveIntegerValueResolution struct {
 	Resolution BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPositiveIntegerValueResolution = (*_BACnetConstructedDataPositiveIntegerValueResolution)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

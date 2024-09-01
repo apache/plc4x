@@ -51,6 +51,8 @@ type _BACnetConstructedDataOctetstringValueAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataOctetstringValueAll = (*_BACnetConstructedDataOctetstringValueAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

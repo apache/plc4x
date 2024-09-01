@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestCreateObject struct {
 	ListOfValues    BACnetPropertyValues
 }
 
+var _ BACnetConfirmedServiceRequestCreateObject = (*_BACnetConfirmedServiceRequestCreateObject)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataBufferSize struct {
 	BufferSize BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataBufferSize = (*_BACnetConstructedDataBufferSize)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

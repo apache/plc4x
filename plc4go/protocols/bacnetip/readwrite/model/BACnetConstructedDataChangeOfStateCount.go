@@ -58,6 +58,8 @@ type _BACnetConstructedDataChangeOfStateCount struct {
 	ChangeIfStateCount BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataChangeOfStateCount = (*_BACnetConstructedDataChangeOfStateCount)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

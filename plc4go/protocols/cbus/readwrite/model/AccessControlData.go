@@ -35,9 +35,15 @@ import (
 
 // AccessControlData is the corresponding interface of AccessControlData
 type AccessControlData interface {
+	AccessControlDataContract
+	AccessControlDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// AccessControlDataContract provides a set of functions which can be overwritten by a sub struct
+type AccessControlDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() AccessControlCommandTypeContainer
 	// GetNetworkId returns NetworkId (property field)
@@ -46,6 +52,10 @@ type AccessControlData interface {
 	GetAccessPointId() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() AccessControlCommandType
+}
+
+// AccessControlDataRequirements provides a set of functions which need to be implemented by a sub struct
+type AccessControlDataRequirements interface {
 }
 
 // AccessControlDataExactly can be used when we want exactly this type and not a type which fulfills AccessControlData.
@@ -62,6 +72,8 @@ type _AccessControlData struct {
 	NetworkId            byte
 	AccessPointId        byte
 }
+
+var _ AccessControlDataContract = (*_AccessControlData)(nil)
 
 type _AccessControlDataChildRequirements interface {
 	utils.Serializable

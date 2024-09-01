@@ -58,6 +58,8 @@ type _ConnectionRequestInformationTunnelConnection struct {
 	reservedField0 *uint8
 }
 
+var _ ConnectionRequestInformationTunnelConnection = (*_ConnectionRequestInformationTunnelConnection)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

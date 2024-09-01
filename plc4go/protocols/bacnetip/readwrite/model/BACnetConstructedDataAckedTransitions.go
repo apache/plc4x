@@ -58,6 +58,8 @@ type _BACnetConstructedDataAckedTransitions struct {
 	AckedTransitions BACnetEventTransitionBitsTagged
 }
 
+var _ BACnetConstructedDataAckedTransitions = (*_BACnetConstructedDataAckedTransitions)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

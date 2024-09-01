@@ -58,6 +58,8 @@ type _BACnetContextTagEnumerated struct {
 	Payload BACnetTagPayloadEnumerated
 }
 
+var _ BACnetContextTagEnumerated = (*_BACnetContextTagEnumerated)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

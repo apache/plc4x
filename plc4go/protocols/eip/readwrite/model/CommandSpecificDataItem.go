@@ -35,9 +35,19 @@ import (
 
 // CommandSpecificDataItem is the corresponding interface of CommandSpecificDataItem
 type CommandSpecificDataItem interface {
+	CommandSpecificDataItemContract
+	CommandSpecificDataItemRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CommandSpecificDataItemContract provides a set of functions which can be overwritten by a sub struct
+type CommandSpecificDataItemContract interface {
+}
+
+// CommandSpecificDataItemRequirements provides a set of functions which need to be implemented by a sub struct
+type CommandSpecificDataItemRequirements interface {
 	// GetItemType returns ItemType (discriminator field)
 	GetItemType() uint16
 }
@@ -53,6 +63,8 @@ type CommandSpecificDataItemExactly interface {
 type _CommandSpecificDataItem struct {
 	_CommandSpecificDataItemChildRequirements
 }
+
+var _ CommandSpecificDataItemContract = (*_CommandSpecificDataItem)(nil)
 
 type _CommandSpecificDataItemChildRequirements interface {
 	utils.Serializable

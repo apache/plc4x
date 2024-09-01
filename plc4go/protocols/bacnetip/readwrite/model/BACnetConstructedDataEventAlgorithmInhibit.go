@@ -58,6 +58,8 @@ type _BACnetConstructedDataEventAlgorithmInhibit struct {
 	EventAlgorithmInhibit BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataEventAlgorithmInhibit = (*_BACnetConstructedDataEventAlgorithmInhibit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

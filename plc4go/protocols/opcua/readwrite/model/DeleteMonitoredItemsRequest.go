@@ -65,6 +65,8 @@ type _DeleteMonitoredItemsRequest struct {
 	MonitoredItemIds     []uint32
 }
 
+var _ DeleteMonitoredItemsRequest = (*_DeleteMonitoredItemsRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

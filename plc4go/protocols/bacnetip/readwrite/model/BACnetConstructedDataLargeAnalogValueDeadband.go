@@ -58,6 +58,8 @@ type _BACnetConstructedDataLargeAnalogValueDeadband struct {
 	Deadband BACnetApplicationTagDouble
 }
 
+var _ BACnetConstructedDataLargeAnalogValueDeadband = (*_BACnetConstructedDataLargeAnalogValueDeadband)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -63,6 +63,8 @@ type _BACnetEventParameterChangeOfTimerAlarmValue struct {
 	TagNumber uint8
 }
 
+var _ BACnetEventParameterChangeOfTimerAlarmValue = (*_BACnetEventParameterChangeOfTimerAlarmValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

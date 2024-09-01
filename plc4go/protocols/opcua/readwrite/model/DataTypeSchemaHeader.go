@@ -77,6 +77,8 @@ type _DataTypeSchemaHeader struct {
 	SimpleDataTypes        []DataTypeDescription
 }
 
+var _ DataTypeSchemaHeader = (*_DataTypeSchemaHeader)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

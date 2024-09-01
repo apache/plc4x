@@ -61,6 +61,8 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged st
 	TagClass  TagClass
 }
 
+var _ BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

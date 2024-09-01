@@ -57,6 +57,8 @@ type _BACnetCredentialAuthenticationFactor struct {
 	AuthenticationFactor BACnetAuthenticationFactorEnclosed
 }
 
+var _ BACnetCredentialAuthenticationFactor = (*_BACnetCredentialAuthenticationFactor)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -89,6 +89,8 @@ type _ServerDiagnosticsSummaryDataType struct {
 	RejectedRequestsCount         uint32
 }
 
+var _ ServerDiagnosticsSummaryDataType = (*_ServerDiagnosticsSummaryDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

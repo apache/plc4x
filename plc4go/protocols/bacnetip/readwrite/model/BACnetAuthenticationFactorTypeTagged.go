@@ -61,6 +61,8 @@ type _BACnetAuthenticationFactorTypeTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetAuthenticationFactorTypeTagged = (*_BACnetAuthenticationFactorTypeTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

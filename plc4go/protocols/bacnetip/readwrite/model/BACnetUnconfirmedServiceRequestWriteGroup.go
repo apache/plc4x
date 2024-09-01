@@ -65,6 +65,8 @@ type _BACnetUnconfirmedServiceRequestWriteGroup struct {
 	InhibitDelay  BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetUnconfirmedServiceRequestWriteGroup = (*_BACnetUnconfirmedServiceRequestWriteGroup)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

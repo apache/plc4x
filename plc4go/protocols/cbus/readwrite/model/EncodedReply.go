@@ -35,13 +35,23 @@ import (
 
 // EncodedReply is the corresponding interface of EncodedReply
 type EncodedReply interface {
+	EncodedReplyContract
+	EncodedReplyRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// EncodedReplyContract provides a set of functions which can be overwritten by a sub struct
+type EncodedReplyContract interface {
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
 	// GetIsMonitoredSAL returns IsMonitoredSAL (virtual field)
 	GetIsMonitoredSAL() bool
+}
+
+// EncodedReplyRequirements provides a set of functions which need to be implemented by a sub struct
+type EncodedReplyRequirements interface {
 }
 
 // EncodedReplyExactly can be used when we want exactly this type and not a type which fulfills EncodedReply.
@@ -60,6 +70,8 @@ type _EncodedReply struct {
 	CBusOptions    CBusOptions
 	RequestContext RequestContext
 }
+
+var _ EncodedReplyContract = (*_EncodedReply)(nil)
 
 type _EncodedReplyChildRequirements interface {
 	utils.Serializable

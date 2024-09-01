@@ -51,6 +51,8 @@ type _SecurityDataLowBatteryCorrected struct {
 	*_SecurityData
 }
 
+var _ SecurityDataLowBatteryCorrected = (*_SecurityDataLowBatteryCorrected)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -89,6 +89,8 @@ type _CreateSessionResponse struct {
 	MaxRequestMessageSize          uint32
 }
 
+var _ CreateSessionResponse = (*_CreateSessionResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataReasonForHalt struct {
 	ProgramError BACnetProgramErrorTagged
 }
 
+var _ BACnetConstructedDataReasonForHalt = (*_BACnetConstructedDataReasonForHalt)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

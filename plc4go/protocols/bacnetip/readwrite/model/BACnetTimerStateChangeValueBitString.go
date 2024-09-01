@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueBitString struct {
 	BitStringValue BACnetApplicationTagBitString
 }
 
+var _ BACnetTimerStateChangeValueBitString = (*_BACnetTimerStateChangeValueBitString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

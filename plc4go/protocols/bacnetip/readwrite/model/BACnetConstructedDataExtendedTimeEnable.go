@@ -58,6 +58,8 @@ type _BACnetConstructedDataExtendedTimeEnable struct {
 	ExtendedTimeEnable BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataExtendedTimeEnable = (*_BACnetConstructedDataExtendedTimeEnable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

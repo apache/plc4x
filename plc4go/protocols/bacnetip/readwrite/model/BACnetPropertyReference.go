@@ -57,6 +57,8 @@ type _BACnetPropertyReference struct {
 	ArrayIndex         BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetPropertyReference = (*_BACnetPropertyReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

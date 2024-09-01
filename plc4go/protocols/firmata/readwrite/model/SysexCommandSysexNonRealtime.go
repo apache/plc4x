@@ -51,6 +51,8 @@ type _SysexCommandSysexNonRealtime struct {
 	*_SysexCommand
 }
 
+var _ SysexCommandSysexNonRealtime = (*_SysexCommandSysexNonRealtime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

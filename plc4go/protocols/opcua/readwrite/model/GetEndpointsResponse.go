@@ -62,6 +62,8 @@ type _GetEndpointsResponse struct {
 	Endpoints      []ExtensionObjectDefinition
 }
 
+var _ GetEndpointsResponse = (*_GetEndpointsResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

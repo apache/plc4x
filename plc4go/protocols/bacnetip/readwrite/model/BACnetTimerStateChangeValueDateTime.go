@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueDateTime struct {
 	DateTimeValue BACnetDateTimeEnclosed
 }
 
+var _ BACnetTimerStateChangeValueDateTime = (*_BACnetTimerStateChangeValueDateTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

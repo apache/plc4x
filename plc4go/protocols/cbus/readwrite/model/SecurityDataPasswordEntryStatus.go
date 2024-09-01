@@ -66,6 +66,8 @@ type _SecurityDataPasswordEntryStatus struct {
 	Code byte
 }
 
+var _ SecurityDataPasswordEntryStatus = (*_SecurityDataPasswordEntryStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

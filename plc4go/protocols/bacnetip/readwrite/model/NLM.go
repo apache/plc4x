@@ -35,13 +35,23 @@ import (
 
 // NLM is the corresponding interface of NLM
 type NLM interface {
+	NLMContract
+	NLMRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetMessageType returns MessageType (discriminator field)
-	GetMessageType() uint8
+}
+
+// NLMContract provides a set of functions which can be overwritten by a sub struct
+type NLMContract interface {
 	// GetIsVendorProprietaryMessage returns IsVendorProprietaryMessage (virtual field)
 	GetIsVendorProprietaryMessage() bool
+}
+
+// NLMRequirements provides a set of functions which need to be implemented by a sub struct
+type NLMRequirements interface {
+	// GetMessageType returns MessageType (discriminator field)
+	GetMessageType() uint8
 }
 
 // NLMExactly can be used when we want exactly this type and not a type which fulfills NLM.
@@ -58,6 +68,8 @@ type _NLM struct {
 	// Arguments.
 	ApduLength uint16
 }
+
+var _ NLMContract = (*_NLM)(nil)
 
 type _NLMChildRequirements interface {
 	utils.Serializable

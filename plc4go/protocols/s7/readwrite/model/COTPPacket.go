@@ -35,15 +35,25 @@ import (
 
 // COTPPacket is the corresponding interface of COTPPacket
 type COTPPacket interface {
+	COTPPacketContract
+	COTPPacketRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetTpduCode returns TpduCode (discriminator field)
-	GetTpduCode() uint8
+}
+
+// COTPPacketContract provides a set of functions which can be overwritten by a sub struct
+type COTPPacketContract interface {
 	// GetParameters returns Parameters (property field)
 	GetParameters() []COTPParameter
 	// GetPayload returns Payload (property field)
 	GetPayload() S7Message
+}
+
+// COTPPacketRequirements provides a set of functions which need to be implemented by a sub struct
+type COTPPacketRequirements interface {
+	// GetTpduCode returns TpduCode (discriminator field)
+	GetTpduCode() uint8
 }
 
 // COTPPacketExactly can be used when we want exactly this type and not a type which fulfills COTPPacket.
@@ -62,6 +72,8 @@ type _COTPPacket struct {
 	// Arguments.
 	CotpLen uint16
 }
+
+var _ COTPPacketContract = (*_COTPPacket)(nil)
 
 type _COTPPacketChildRequirements interface {
 	utils.Serializable

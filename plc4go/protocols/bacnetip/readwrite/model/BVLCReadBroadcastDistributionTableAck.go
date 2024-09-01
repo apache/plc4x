@@ -61,6 +61,8 @@ type _BVLCReadBroadcastDistributionTableAck struct {
 	BvlcPayloadLength uint16
 }
 
+var _ BVLCReadBroadcastDistributionTableAck = (*_BVLCReadBroadcastDistributionTableAck)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

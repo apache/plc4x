@@ -56,6 +56,8 @@ type _ModbusPDUReadExceptionStatusResponse struct {
 	Value uint8
 }
 
+var _ ModbusPDUReadExceptionStatusResponse = (*_ModbusPDUReadExceptionStatusResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

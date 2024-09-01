@@ -70,6 +70,8 @@ type _MediaTransportControlDataEnumerationsSize struct {
 	Size     uint8
 }
 
+var _ MediaTransportControlDataEnumerationsSize = (*_MediaTransportControlDataEnumerationsSize)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

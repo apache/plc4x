@@ -59,6 +59,8 @@ type _SignedSoftwareCertificate struct {
 	Signature       PascalByteString
 }
 
+var _ SignedSoftwareCertificate = (*_SignedSoftwareCertificate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

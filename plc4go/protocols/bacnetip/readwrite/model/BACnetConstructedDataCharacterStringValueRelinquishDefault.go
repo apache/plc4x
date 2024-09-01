@@ -58,6 +58,8 @@ type _BACnetConstructedDataCharacterStringValueRelinquishDefault struct {
 	RelinquishDefault BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataCharacterStringValueRelinquishDefault = (*_BACnetConstructedDataCharacterStringValueRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

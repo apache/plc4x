@@ -66,6 +66,8 @@ type _BACnetEscalatorOperationDirectionTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetEscalatorOperationDirectionTagged = (*_BACnetEscalatorOperationDirectionTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

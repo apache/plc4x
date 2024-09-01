@@ -61,6 +61,8 @@ type _BACnetConstructedDataCharacterStringValueAlarmValues struct {
 	AlarmValues          []BACnetOptionalCharacterString
 }
 
+var _ BACnetConstructedDataCharacterStringValueAlarmValues = (*_BACnetConstructedDataCharacterStringValueAlarmValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

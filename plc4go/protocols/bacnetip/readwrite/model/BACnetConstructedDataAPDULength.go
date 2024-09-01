@@ -58,6 +58,8 @@ type _BACnetConstructedDataAPDULength struct {
 	ApduLength BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataAPDULength = (*_BACnetConstructedDataAPDULength)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

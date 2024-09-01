@@ -77,6 +77,8 @@ type _AirConditioningDataHumidityScheduleEntry struct {
 	RawLevel             HVACRawLevels
 }
 
+var _ AirConditioningDataHumidityScheduleEntry = (*_AirConditioningDataHumidityScheduleEntry)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

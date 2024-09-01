@@ -61,6 +61,8 @@ type _BACnetConstructedDataExceptionSchedule struct {
 	ExceptionSchedule    []BACnetSpecialEvent
 }
 
+var _ BACnetConstructedDataExceptionSchedule = (*_BACnetConstructedDataExceptionSchedule)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

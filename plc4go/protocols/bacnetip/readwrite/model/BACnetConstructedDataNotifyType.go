@@ -58,6 +58,8 @@ type _BACnetConstructedDataNotifyType struct {
 	NotifyType BACnetNotifyTypeTagged
 }
 
+var _ BACnetConstructedDataNotifyType = (*_BACnetConstructedDataNotifyType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

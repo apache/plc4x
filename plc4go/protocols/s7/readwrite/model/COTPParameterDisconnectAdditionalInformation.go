@@ -56,6 +56,8 @@ type _COTPParameterDisconnectAdditionalInformation struct {
 	Data []byte
 }
 
+var _ COTPParameterDisconnectAdditionalInformation = (*_COTPParameterDisconnectAdditionalInformation)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -62,6 +62,8 @@ type _BACnetServiceAckVTData struct {
 	VtDataFlag          BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetServiceAckVTData = (*_BACnetServiceAckVTData)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetProcessIdSelectionNull struct {
 	NullValue BACnetApplicationTagNull
 }
 
+var _ BACnetProcessIdSelectionNull = (*_BACnetProcessIdSelectionNull)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

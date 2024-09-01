@@ -68,6 +68,8 @@ type _BACnetNotificationParametersBufferReady struct {
 	InnerClosingTag      BACnetClosingTag
 }
 
+var _ BACnetNotificationParametersBufferReady = (*_BACnetNotificationParametersBufferReady)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

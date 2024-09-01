@@ -68,6 +68,8 @@ type _CreateMonitoredItemsRequest struct {
 	ItemsToCreate      []ExtensionObjectDefinition
 }
 
+var _ CreateMonitoredItemsRequest = (*_CreateMonitoredItemsRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

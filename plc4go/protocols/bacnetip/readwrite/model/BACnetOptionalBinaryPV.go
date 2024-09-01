@@ -35,13 +35,23 @@ import (
 
 // BACnetOptionalBinaryPV is the corresponding interface of BACnetOptionalBinaryPV
 type BACnetOptionalBinaryPV interface {
+	BACnetOptionalBinaryPVContract
+	BACnetOptionalBinaryPVRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetOptionalBinaryPVContract provides a set of functions which can be overwritten by a sub struct
+type BACnetOptionalBinaryPVContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetOptionalBinaryPVRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetOptionalBinaryPVRequirements interface {
 }
 
 // BACnetOptionalBinaryPVExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalBinaryPV.
@@ -56,6 +66,8 @@ type _BACnetOptionalBinaryPV struct {
 	_BACnetOptionalBinaryPVChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetOptionalBinaryPVContract = (*_BACnetOptionalBinaryPV)(nil)
 
 type _BACnetOptionalBinaryPVChildRequirements interface {
 	utils.Serializable

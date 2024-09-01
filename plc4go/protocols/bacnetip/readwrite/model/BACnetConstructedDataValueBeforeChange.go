@@ -58,6 +58,8 @@ type _BACnetConstructedDataValueBeforeChange struct {
 	ValuesBeforeChange BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataValueBeforeChange = (*_BACnetConstructedDataValueBeforeChange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

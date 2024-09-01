@@ -49,6 +49,8 @@ type AudioDataTypeExactly interface {
 type _AudioDataType struct {
 }
 
+var _ AudioDataType = (*_AudioDataType)(nil)
+
 // NewAudioDataType factory function for _AudioDataType
 func NewAudioDataType() *_AudioDataType {
 	return &_AudioDataType{}

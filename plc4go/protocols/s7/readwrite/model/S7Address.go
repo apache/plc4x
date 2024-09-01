@@ -35,9 +35,19 @@ import (
 
 // S7Address is the corresponding interface of S7Address
 type S7Address interface {
+	S7AddressContract
+	S7AddressRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// S7AddressContract provides a set of functions which can be overwritten by a sub struct
+type S7AddressContract interface {
+}
+
+// S7AddressRequirements provides a set of functions which need to be implemented by a sub struct
+type S7AddressRequirements interface {
 	// GetAddressType returns AddressType (discriminator field)
 	GetAddressType() uint8
 }
@@ -53,6 +63,8 @@ type S7AddressExactly interface {
 type _S7Address struct {
 	_S7AddressChildRequirements
 }
+
+var _ S7AddressContract = (*_S7Address)(nil)
 
 type _S7AddressChildRequirements interface {
 	utils.Serializable

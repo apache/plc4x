@@ -58,6 +58,8 @@ type _BACnetConstructedDataInProgress struct {
 	InProgress BACnetLightingInProgressTagged
 }
 
+var _ BACnetConstructedDataInProgress = (*_BACnetConstructedDataInProgress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

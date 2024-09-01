@@ -58,6 +58,8 @@ type _BACnetConstructedDataTimeDelay struct {
 	TimeDelay BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataTimeDelay = (*_BACnetConstructedDataTimeDelay)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

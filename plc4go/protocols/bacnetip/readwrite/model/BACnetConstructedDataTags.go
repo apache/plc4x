@@ -61,6 +61,8 @@ type _BACnetConstructedDataTags struct {
 	Tags                 []BACnetNameValue
 }
 
+var _ BACnetConstructedDataTags = (*_BACnetConstructedDataTags)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

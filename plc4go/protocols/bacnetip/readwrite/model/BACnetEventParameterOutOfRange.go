@@ -71,6 +71,8 @@ type _BACnetEventParameterOutOfRange struct {
 	ClosingTag    BACnetClosingTag
 }
 
+var _ BACnetEventParameterOutOfRange = (*_BACnetEventParameterOutOfRange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

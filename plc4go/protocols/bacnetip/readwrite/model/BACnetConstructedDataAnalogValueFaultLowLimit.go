@@ -58,6 +58,8 @@ type _BACnetConstructedDataAnalogValueFaultLowLimit struct {
 	FaultLowLimit BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataAnalogValueFaultLowLimit = (*_BACnetConstructedDataAnalogValueFaultLowLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

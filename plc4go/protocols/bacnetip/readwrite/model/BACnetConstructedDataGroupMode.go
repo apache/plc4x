@@ -58,6 +58,8 @@ type _BACnetConstructedDataGroupMode struct {
 	GroupMode BACnetLiftGroupModeTagged
 }
 
+var _ BACnetConstructedDataGroupMode = (*_BACnetConstructedDataGroupMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

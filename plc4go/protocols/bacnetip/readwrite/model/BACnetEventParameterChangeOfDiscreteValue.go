@@ -62,6 +62,8 @@ type _BACnetEventParameterChangeOfDiscreteValue struct {
 	ClosingTag BACnetClosingTag
 }
 
+var _ BACnetEventParameterChangeOfDiscreteValue = (*_BACnetEventParameterChangeOfDiscreteValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

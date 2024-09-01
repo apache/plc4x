@@ -56,6 +56,8 @@ type _BACnetConstructedDataLiftFaultSignals struct {
 	FaultSignals []BACnetLiftFaultTagged
 }
 
+var _ BACnetConstructedDataLiftFaultSignals = (*_BACnetConstructedDataLiftFaultSignals)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

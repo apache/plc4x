@@ -35,9 +35,19 @@ import (
 
 // ServiceId is the corresponding interface of ServiceId
 type ServiceId interface {
+	ServiceIdContract
+	ServiceIdRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ServiceIdContract provides a set of functions which can be overwritten by a sub struct
+type ServiceIdContract interface {
+}
+
+// ServiceIdRequirements provides a set of functions which need to be implemented by a sub struct
+type ServiceIdRequirements interface {
 	// GetServiceType returns ServiceType (discriminator field)
 	GetServiceType() uint8
 }
@@ -53,6 +63,8 @@ type ServiceIdExactly interface {
 type _ServiceId struct {
 	_ServiceIdChildRequirements
 }
+
+var _ ServiceIdContract = (*_ServiceId)(nil)
 
 type _ServiceIdChildRequirements interface {
 	utils.Serializable

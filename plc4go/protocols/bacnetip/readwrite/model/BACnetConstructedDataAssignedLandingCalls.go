@@ -61,6 +61,8 @@ type _BACnetConstructedDataAssignedLandingCalls struct {
 	AssignedLandingCalls []BACnetAssignedLandingCalls
 }
 
+var _ BACnetConstructedDataAssignedLandingCalls = (*_BACnetConstructedDataAssignedLandingCalls)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

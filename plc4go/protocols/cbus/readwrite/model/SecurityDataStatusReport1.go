@@ -65,6 +65,8 @@ type _SecurityDataStatusReport1 struct {
 	ZoneStatus   []ZoneStatus
 }
 
+var _ SecurityDataStatusReport1 = (*_SecurityDataStatusReport1)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

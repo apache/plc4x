@@ -61,6 +61,8 @@ type _BACnetNetworkNumberQualityTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetNetworkNumberQualityTagged = (*_BACnetNetworkNumberQualityTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

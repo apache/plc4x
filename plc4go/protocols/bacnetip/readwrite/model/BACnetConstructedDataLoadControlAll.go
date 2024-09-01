@@ -51,6 +51,8 @@ type _BACnetConstructedDataLoadControlAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataLoadControlAll = (*_BACnetConstructedDataLoadControlAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

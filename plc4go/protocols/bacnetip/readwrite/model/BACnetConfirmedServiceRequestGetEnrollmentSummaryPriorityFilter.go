@@ -66,6 +66,8 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter struct {
 	TagNumber uint8
 }
 
+var _ BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

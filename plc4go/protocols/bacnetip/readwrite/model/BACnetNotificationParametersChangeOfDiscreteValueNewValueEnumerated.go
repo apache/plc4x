@@ -56,6 +56,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated struct
 	EnumeratedValue BACnetApplicationTagEnumerated
 }
 
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

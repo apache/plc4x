@@ -58,6 +58,8 @@ type _BACnetConstructedDataMinimumOutput struct {
 	MinimumOutput BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataMinimumOutput = (*_BACnetConstructedDataMinimumOutput)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

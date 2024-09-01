@@ -51,6 +51,8 @@ type _ModbusPDUGetComEventLogRequest struct {
 	*_ModbusPDU
 }
 
+var _ ModbusPDUGetComEventLogRequest = (*_ModbusPDUGetComEventLogRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

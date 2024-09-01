@@ -56,6 +56,8 @@ type _BACnetLogDataLogDataEntryFailure struct {
 	Failure ErrorEnclosed
 }
 
+var _ BACnetLogDataLogDataEntryFailure = (*_BACnetLogDataLogDataEntryFailure)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

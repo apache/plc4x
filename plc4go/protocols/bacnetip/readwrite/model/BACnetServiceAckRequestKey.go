@@ -59,6 +59,8 @@ type _BACnetServiceAckRequestKey struct {
 	ServiceAckPayloadLength uint32
 }
 
+var _ BACnetServiceAckRequestKey = (*_BACnetServiceAckRequestKey)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

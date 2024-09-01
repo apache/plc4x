@@ -61,6 +61,8 @@ type _BACnetConstructedDataActionText struct {
 	ActionText           []BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataActionText = (*_BACnetConstructedDataActionText)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

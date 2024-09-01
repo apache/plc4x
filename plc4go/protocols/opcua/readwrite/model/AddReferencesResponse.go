@@ -68,6 +68,8 @@ type _AddReferencesResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ AddReferencesResponse = (*_AddReferencesResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

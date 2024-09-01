@@ -51,6 +51,8 @@ type _BACnetConstructedDataNotificationClassAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataNotificationClassAll = (*_BACnetConstructedDataNotificationClassAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

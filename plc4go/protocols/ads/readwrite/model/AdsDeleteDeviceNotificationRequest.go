@@ -56,6 +56,8 @@ type _AdsDeleteDeviceNotificationRequest struct {
 	NotificationHandle uint32
 }
 
+var _ AdsDeleteDeviceNotificationRequest = (*_AdsDeleteDeviceNotificationRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

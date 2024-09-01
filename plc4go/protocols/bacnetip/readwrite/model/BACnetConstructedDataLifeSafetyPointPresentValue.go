@@ -58,6 +58,8 @@ type _BACnetConstructedDataLifeSafetyPointPresentValue struct {
 	PresentValue BACnetLifeSafetyStateTagged
 }
 
+var _ BACnetConstructedDataLifeSafetyPointPresentValue = (*_BACnetConstructedDataLifeSafetyPointPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

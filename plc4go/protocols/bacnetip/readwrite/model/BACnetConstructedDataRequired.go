@@ -51,6 +51,8 @@ type _BACnetConstructedDataRequired struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataRequired = (*_BACnetConstructedDataRequired)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

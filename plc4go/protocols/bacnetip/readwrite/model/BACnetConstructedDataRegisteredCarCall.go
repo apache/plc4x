@@ -61,6 +61,8 @@ type _BACnetConstructedDataRegisteredCarCall struct {
 	RegisteredCarCall    []BACnetLiftCarCallList
 }
 
+var _ BACnetConstructedDataRegisteredCarCall = (*_BACnetConstructedDataRegisteredCarCall)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

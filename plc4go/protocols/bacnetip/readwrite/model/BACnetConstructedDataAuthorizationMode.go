@@ -58,6 +58,8 @@ type _BACnetConstructedDataAuthorizationMode struct {
 	AuthorizationMode BACnetAuthorizationModeTagged
 }
 
+var _ BACnetConstructedDataAuthorizationMode = (*_BACnetConstructedDataAuthorizationMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

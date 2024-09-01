@@ -58,6 +58,8 @@ type _BACnetConstructedDataAPDUTimeout struct {
 	ApduTimeout BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataAPDUTimeout = (*_BACnetConstructedDataAPDUTimeout)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataInputReference struct {
 	InputReference BACnetObjectPropertyReference
 }
 
+var _ BACnetConstructedDataInputReference = (*_BACnetConstructedDataInputReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

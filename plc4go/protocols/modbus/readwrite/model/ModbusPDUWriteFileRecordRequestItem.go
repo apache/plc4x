@@ -63,6 +63,8 @@ type _ModbusPDUWriteFileRecordRequestItem struct {
 	RecordData    []byte
 }
 
+var _ ModbusPDUWriteFileRecordRequestItem = (*_ModbusPDUWriteFileRecordRequestItem)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

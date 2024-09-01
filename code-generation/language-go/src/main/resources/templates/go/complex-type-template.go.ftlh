@@ -84,13 +84,62 @@ const ${type.name}_${field.name?upper_case} ${helper.getLanguageTypeNameForField
 
 // ${type.name} is the corresponding interface of ${type.name?cap_first}
 type ${type.name} interface {
+<#if type.isDiscriminatedParentTypeDefinition()>
+	${type.name}Contract
+	${type.name}Requirements
 	fmt.Stringer<@emitImport import="fmt" />
 	utils.LengthAware
 	utils.Serializable
-<#if type.isDiscriminatedChildTypeDefinition()>
-	${type.parentType.orElseThrow().name?cap_first}
+<#else>
+	fmt.Stringer<@emitImport import="fmt" />
+	utils.LengthAware
+	utils.Serializable
+	<#if type.isDiscriminatedChildTypeDefinition()>
+		${type.parentType.orElseThrow().name?cap_first}
+	</#if>
+	<#list type.propertyFields as field>
+		<#assign typeRef=field.asTypedField().orElseThrow().type>
+	// Get${field.name?cap_first} returns ${field.name?cap_first} (property field)
+	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+	</#list>
+	<#list type.virtualFields as field>
+		<#assign typeRef=field.asTypedField().orElseThrow().type>
+	// Get${field.name?cap_first} returns ${field.name?cap_first} (virtual field)
+	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+	</#list>
+	<#list type.abstractFields as field>
+		<#assign namedField=field.asNamedField().orElseThrow()>
+	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
+	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
+	</#list>
 </#if>
+}
+
 <#if type.isDiscriminatedParentTypeDefinition()>
+// ${type.name}Contract provides a set of functions which can be overwritten by a sub struct
+type ${type.name}Contract interface {
+	<#if type.isDiscriminatedChildTypeDefinition()>
+	${type.parentType.orElseThrow().name?cap_first}
+	</#if>
+	<#list type.propertyFields as field>
+		<#assign typeRef=field.asTypedField().orElseThrow().type>
+	// Get${field.name?cap_first} returns ${field.name?cap_first} (property field)
+	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+	</#list>
+	<#list type.virtualFields as field>
+		<#assign typeRef=field.asTypedField().orElseThrow().type>
+	// Get${field.name?cap_first} returns ${field.name?cap_first} (virtual field)
+	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+	</#list>
+	<#list type.abstractFields as field>
+		<#assign namedField=field.asNamedField().orElseThrow()>
+	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
+	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
+	</#list>
+}
+
+// ${type.name}Requirements provides a set of functions which need to be implemented by a sub struct
+type ${type.name}Requirements interface {
 	<#list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
 	<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
@@ -98,23 +147,8 @@ type ${type.name} interface {
 	Get${discriminatorName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
 		</#if>
 	</#list>
-</#if>
-<#list type.propertyFields as field>
-    <#assign typeRef=field.asTypedField().orElseThrow().type>
-	// Get${field.name?cap_first} returns ${field.name?cap_first} (property field)
-	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
-</#list>
-<#list type.virtualFields as field>
-    <#assign typeRef=field.asTypedField().orElseThrow().type>
-	// Get${field.name?cap_first} returns ${field.name?cap_first} (virtual field)
-	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
-</#list>
-<#list type.abstractFields as field>
-	<#assign namedField=field.asNamedField().orElseThrow()>
-	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
-	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
-</#list>
 }
+</#if>
 
 // ${type.name}Exactly can be used when we want exactly this type and not a type which fulfills ${type.name}.
 // This is useful for switch cases.
@@ -156,6 +190,12 @@ type _${type.name} struct {
 	</#list>
 </#if>
 }
+
+<#if type.isDiscriminatedParentTypeDefinition()>
+var _ ${type.name}Contract = (*_${type.name})(nil)
+<#else>
+var _ ${type.name} = (*_${type.name})(nil)
+</#if>
 
 <#if type.isDiscriminatedParentTypeDefinition()>
 type _${type.name}ChildRequirements interface {
@@ -847,7 +887,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${namedField.name} := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)})
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1066,7 +1106,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 
 	if _, err := Read${field.typeName?cap_first}Field(ctx, "unknown", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)}); err!=nil{
-			return nil, errors.Wrap(_UnknownErr, "Error parsing unknown field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
+			return nil, errors.Wrap(err, "Error parsing unknown field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "virtual">${helper.emitRequiredImportRaw(". \"github.com/apache/plc4x/plc4go/spi/codegen/fields\"")}

@@ -56,6 +56,8 @@ type _BACnetPropertyStatesProgramChange struct {
 	ProgramState BACnetProgramStateTagged
 }
 
+var _ BACnetPropertyStatesProgramChange = (*_BACnetPropertyStatesProgramChange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetChannelValueInteger struct {
 	IntegerValue BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetChannelValueInteger = (*_BACnetChannelValueInteger)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

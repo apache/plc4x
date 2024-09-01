@@ -35,13 +35,23 @@ import (
 
 // BACnetServiceAck is the corresponding interface of BACnetServiceAck
 type BACnetServiceAck interface {
+	BACnetServiceAckContract
+	BACnetServiceAckRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetServiceChoice returns ServiceChoice (discriminator field)
-	GetServiceChoice() BACnetConfirmedServiceChoice
+}
+
+// BACnetServiceAckContract provides a set of functions which can be overwritten by a sub struct
+type BACnetServiceAckContract interface {
 	// GetServiceAckPayloadLength returns ServiceAckPayloadLength (virtual field)
 	GetServiceAckPayloadLength() uint32
+}
+
+// BACnetServiceAckRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetServiceAckRequirements interface {
+	// GetServiceChoice returns ServiceChoice (discriminator field)
+	GetServiceChoice() BACnetConfirmedServiceChoice
 }
 
 // BACnetServiceAckExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAck.
@@ -58,6 +68,8 @@ type _BACnetServiceAck struct {
 	// Arguments.
 	ServiceAckLength uint32
 }
+
+var _ BACnetServiceAckContract = (*_BACnetServiceAck)(nil)
 
 type _BACnetServiceAckChildRequirements interface {
 	utils.Serializable

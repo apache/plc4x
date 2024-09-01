@@ -51,6 +51,8 @@ type _AccessControlDataCloseAccessPoint struct {
 	*_AccessControlData
 }
 
+var _ AccessControlDataCloseAccessPoint = (*_AccessControlDataCloseAccessPoint)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

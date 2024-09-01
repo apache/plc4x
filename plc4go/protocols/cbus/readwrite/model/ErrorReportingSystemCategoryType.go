@@ -33,9 +33,19 @@ import (
 
 // ErrorReportingSystemCategoryType is the corresponding interface of ErrorReportingSystemCategoryType
 type ErrorReportingSystemCategoryType interface {
+	ErrorReportingSystemCategoryTypeContract
+	ErrorReportingSystemCategoryTypeRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ErrorReportingSystemCategoryTypeContract provides a set of functions which can be overwritten by a sub struct
+type ErrorReportingSystemCategoryTypeContract interface {
+}
+
+// ErrorReportingSystemCategoryTypeRequirements provides a set of functions which need to be implemented by a sub struct
+type ErrorReportingSystemCategoryTypeRequirements interface {
 	// GetErrorReportingSystemCategoryClass returns ErrorReportingSystemCategoryClass (discriminator field)
 	GetErrorReportingSystemCategoryClass() ErrorReportingSystemCategoryClass
 }
@@ -51,6 +61,8 @@ type ErrorReportingSystemCategoryTypeExactly interface {
 type _ErrorReportingSystemCategoryType struct {
 	_ErrorReportingSystemCategoryTypeChildRequirements
 }
+
+var _ ErrorReportingSystemCategoryTypeContract = (*_ErrorReportingSystemCategoryType)(nil)
 
 type _ErrorReportingSystemCategoryTypeChildRequirements interface {
 	utils.Serializable

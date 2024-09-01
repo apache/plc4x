@@ -51,6 +51,8 @@ type _ApduDataExtFileStreamInfoReport struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtFileStreamInfoReport = (*_ApduDataExtFileStreamInfoReport)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

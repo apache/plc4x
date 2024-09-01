@@ -68,6 +68,8 @@ type _BACnetNotificationParametersUnsignedRange struct {
 	InnerClosingTag BACnetClosingTag
 }
 
+var _ BACnetNotificationParametersUnsignedRange = (*_BACnetNotificationParametersUnsignedRange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

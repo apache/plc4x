@@ -51,6 +51,8 @@ type _BACnetConstructedDataPulseConverterAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataPulseConverterAll = (*_BACnetConstructedDataPulseConverterAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

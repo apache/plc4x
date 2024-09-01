@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccumulatorFaultLowLimit struct {
 	FaultLowLimit BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataAccumulatorFaultLowLimit = (*_BACnetConstructedDataAccumulatorFaultLowLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

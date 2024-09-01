@@ -33,9 +33,19 @@ import (
 
 // BACnetError is the corresponding interface of BACnetError
 type BACnetError interface {
+	BACnetErrorContract
+	BACnetErrorRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetErrorContract provides a set of functions which can be overwritten by a sub struct
+type BACnetErrorContract interface {
+}
+
+// BACnetErrorRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetErrorRequirements interface {
 	// GetErrorChoice returns ErrorChoice (discriminator field)
 	GetErrorChoice() BACnetConfirmedServiceChoice
 }
@@ -51,6 +61,8 @@ type BACnetErrorExactly interface {
 type _BACnetError struct {
 	_BACnetErrorChildRequirements
 }
+
+var _ BACnetErrorContract = (*_BACnetError)(nil)
 
 type _BACnetErrorChildRequirements interface {
 	utils.Serializable

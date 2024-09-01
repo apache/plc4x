@@ -56,6 +56,8 @@ type _BACnetConstructedDataActiveCOVSubscriptions struct {
 	ActiveCOVSubscriptions []BACnetCOVSubscription
 }
 
+var _ BACnetConstructedDataActiveCOVSubscriptions = (*_BACnetConstructedDataActiveCOVSubscriptions)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

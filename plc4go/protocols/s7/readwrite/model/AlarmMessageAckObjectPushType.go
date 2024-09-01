@@ -72,6 +72,8 @@ type _AlarmMessageAckObjectPushType struct {
 	AckStateComing State
 }
 
+var _ AlarmMessageAckObjectPushType = (*_AlarmMessageAckObjectPushType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

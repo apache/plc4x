@@ -59,6 +59,8 @@ type _EndpointUrlListDataType struct {
 	EndpointUrlList     []PascalString
 }
 
+var _ EndpointUrlListDataType = (*_EndpointUrlListDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

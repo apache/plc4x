@@ -35,15 +35,25 @@ import (
 
 // CBusCommand is the corresponding interface of CBusCommand
 type CBusCommand interface {
+	CBusCommandContract
+	CBusCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CBusCommandContract provides a set of functions which can be overwritten by a sub struct
+type CBusCommandContract interface {
 	// GetHeader returns Header (property field)
 	GetHeader() CBusHeader
 	// GetIsDeviceManagement returns IsDeviceManagement (virtual field)
 	GetIsDeviceManagement() bool
 	// GetDestinationAddressType returns DestinationAddressType (virtual field)
 	GetDestinationAddressType() DestinationAddressType
+}
+
+// CBusCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type CBusCommandRequirements interface {
 }
 
 // CBusCommandExactly can be used when we want exactly this type and not a type which fulfills CBusCommand.
@@ -61,6 +71,8 @@ type _CBusCommand struct {
 	// Arguments.
 	CBusOptions CBusOptions
 }
+
+var _ CBusCommandContract = (*_CBusCommand)(nil)
 
 type _CBusCommandChildRequirements interface {
 	utils.Serializable

@@ -56,6 +56,8 @@ type _BACnetChannelValueNull struct {
 	NullValue BACnetApplicationTagNull
 }
 
+var _ BACnetChannelValueNull = (*_BACnetChannelValueNull)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

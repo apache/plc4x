@@ -62,6 +62,8 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 	ServiceParameters BACnetConstructedData
 }
 
+var _ BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer = (*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestReadPropertyMultiple struct {
 	ServiceRequestPayloadLength uint32
 }
 
+var _ BACnetConfirmedServiceRequestReadPropertyMultiple = (*_BACnetConfirmedServiceRequestReadPropertyMultiple)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

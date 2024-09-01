@@ -63,6 +63,8 @@ type _BACnetAuthenticationPolicyList struct {
 	TagNumber uint8
 }
 
+var _ BACnetAuthenticationPolicyList = (*_BACnetAuthenticationPolicyList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

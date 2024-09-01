@@ -35,9 +35,19 @@ import (
 
 // DataSegmentType is the corresponding interface of DataSegmentType
 type DataSegmentType interface {
+	DataSegmentTypeContract
+	DataSegmentTypeRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// DataSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
+type DataSegmentTypeContract interface {
+}
+
+// DataSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
+type DataSegmentTypeRequirements interface {
 	// GetDataSegmentType returns DataSegmentType (discriminator field)
 	GetDataSegmentType() uint8
 }
@@ -53,6 +63,8 @@ type DataSegmentTypeExactly interface {
 type _DataSegmentType struct {
 	_DataSegmentTypeChildRequirements
 }
+
+var _ DataSegmentTypeContract = (*_DataSegmentType)(nil)
 
 type _DataSegmentTypeChildRequirements interface {
 	utils.Serializable

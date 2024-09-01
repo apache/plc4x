@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestAtomicReadFile struct {
 	AccessMethod   BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 }
 
+var _ BACnetConfirmedServiceRequestAtomicReadFile = (*_BACnetConfirmedServiceRequestAtomicReadFile)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

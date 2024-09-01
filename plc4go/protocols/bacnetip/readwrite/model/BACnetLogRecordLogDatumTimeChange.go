@@ -56,6 +56,8 @@ type _BACnetLogRecordLogDatumTimeChange struct {
 	TimeChange BACnetContextTagReal
 }
 
+var _ BACnetLogRecordLogDatumTimeChange = (*_BACnetLogRecordLogDatumTimeChange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

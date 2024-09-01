@@ -58,6 +58,8 @@ type _BACnetConstructedDataReferencePort struct {
 	ReferencePort BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataReferencePort = (*_BACnetConstructedDataReferencePort)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

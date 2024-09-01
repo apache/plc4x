@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestVTOpen struct {
 	LocalVtSessionIdentifier BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestVTOpen = (*_BACnetConfirmedServiceRequestVTOpen)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

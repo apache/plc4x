@@ -61,6 +61,8 @@ type _BACnetConstructedDataLandingDoorStatus struct {
 	LandingDoorStatus    []BACnetLandingDoorStatus
 }
 
+var _ BACnetConstructedDataLandingDoorStatus = (*_BACnetConstructedDataLandingDoorStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

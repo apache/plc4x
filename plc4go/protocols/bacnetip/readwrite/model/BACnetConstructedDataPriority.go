@@ -61,6 +61,8 @@ type _BACnetConstructedDataPriority struct {
 	Priority             []BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPriority = (*_BACnetConstructedDataPriority)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

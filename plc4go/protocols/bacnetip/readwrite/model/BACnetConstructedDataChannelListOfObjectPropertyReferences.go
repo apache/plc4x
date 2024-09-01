@@ -61,6 +61,8 @@ type _BACnetConstructedDataChannelListOfObjectPropertyReferences struct {
 	References           []BACnetDeviceObjectPropertyReference
 }
 
+var _ BACnetConstructedDataChannelListOfObjectPropertyReferences = (*_BACnetConstructedDataChannelListOfObjectPropertyReferences)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -59,6 +59,8 @@ type _CEMIAdditionalInformationRelativeTimestamp struct {
 	RelativeTimestamp RelativeTimestamp
 }
 
+var _ CEMIAdditionalInformationRelativeTimestamp = (*_CEMIAdditionalInformationRelativeTimestamp)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

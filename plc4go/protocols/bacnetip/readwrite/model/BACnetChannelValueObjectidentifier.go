@@ -56,6 +56,8 @@ type _BACnetChannelValueObjectidentifier struct {
 	ObjectidentifierValue BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetChannelValueObjectidentifier = (*_BACnetChannelValueObjectidentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

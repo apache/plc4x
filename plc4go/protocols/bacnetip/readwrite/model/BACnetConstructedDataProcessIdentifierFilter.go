@@ -58,6 +58,8 @@ type _BACnetConstructedDataProcessIdentifierFilter struct {
 	ProcessIdentifierFilter BACnetProcessIdSelection
 }
 
+var _ BACnetConstructedDataProcessIdentifierFilter = (*_BACnetConstructedDataProcessIdentifierFilter)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

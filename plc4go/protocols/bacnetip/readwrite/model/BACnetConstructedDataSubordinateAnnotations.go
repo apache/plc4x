@@ -61,6 +61,8 @@ type _BACnetConstructedDataSubordinateAnnotations struct {
 	SubordinateAnnotations []BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataSubordinateAnnotations = (*_BACnetConstructedDataSubordinateAnnotations)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -35,9 +35,15 @@ import (
 
 // LevelInformation is the corresponding interface of LevelInformation
 type LevelInformation interface {
+	LevelInformationContract
+	LevelInformationRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// LevelInformationContract provides a set of functions which can be overwritten by a sub struct
+type LevelInformationContract interface {
 	// GetRaw returns Raw (property field)
 	GetRaw() uint16
 	// GetNibble1 returns Nibble1 (virtual field)
@@ -58,6 +64,10 @@ type LevelInformation interface {
 	GetIsCorrupted() bool
 }
 
+// LevelInformationRequirements provides a set of functions which need to be implemented by a sub struct
+type LevelInformationRequirements interface {
+}
+
 // LevelInformationExactly can be used when we want exactly this type and not a type which fulfills LevelInformation.
 // This is useful for switch cases.
 type LevelInformationExactly interface {
@@ -70,6 +80,8 @@ type _LevelInformation struct {
 	_LevelInformationChildRequirements
 	Raw uint16
 }
+
+var _ LevelInformationContract = (*_LevelInformation)(nil)
 
 type _LevelInformationChildRequirements interface {
 	utils.Serializable

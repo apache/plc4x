@@ -68,6 +68,8 @@ type _BACnetEventParameterChangeOfTimer struct {
 	ClosingTag          BACnetClosingTag
 }
 
+var _ BACnetEventParameterChangeOfTimer = (*_BACnetEventParameterChangeOfTimer)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

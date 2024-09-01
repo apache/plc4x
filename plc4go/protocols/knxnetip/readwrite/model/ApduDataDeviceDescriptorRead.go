@@ -56,6 +56,8 @@ type _ApduDataDeviceDescriptorRead struct {
 	DescriptorType uint8
 }
 
+var _ ApduDataDeviceDescriptorRead = (*_ApduDataDeviceDescriptorRead)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

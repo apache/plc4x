@@ -51,6 +51,8 @@ type _ApduDataExtReadRouterStatusResponse struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtReadRouterStatusResponse = (*_ApduDataExtReadRouterStatusResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

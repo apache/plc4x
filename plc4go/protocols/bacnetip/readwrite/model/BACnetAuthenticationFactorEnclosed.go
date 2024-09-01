@@ -63,6 +63,8 @@ type _BACnetAuthenticationFactorEnclosed struct {
 	TagNumber uint8
 }
 
+var _ BACnetAuthenticationFactorEnclosed = (*_BACnetAuthenticationFactorEnclosed)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

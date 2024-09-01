@@ -35,9 +35,19 @@ import (
 
 // CEMIAdditionalInformation is the corresponding interface of CEMIAdditionalInformation
 type CEMIAdditionalInformation interface {
+	CEMIAdditionalInformationContract
+	CEMIAdditionalInformationRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CEMIAdditionalInformationContract provides a set of functions which can be overwritten by a sub struct
+type CEMIAdditionalInformationContract interface {
+}
+
+// CEMIAdditionalInformationRequirements provides a set of functions which need to be implemented by a sub struct
+type CEMIAdditionalInformationRequirements interface {
 	// GetAdditionalInformationType returns AdditionalInformationType (discriminator field)
 	GetAdditionalInformationType() uint8
 }
@@ -53,6 +63,8 @@ type CEMIAdditionalInformationExactly interface {
 type _CEMIAdditionalInformation struct {
 	_CEMIAdditionalInformationChildRequirements
 }
+
+var _ CEMIAdditionalInformationContract = (*_CEMIAdditionalInformation)(nil)
 
 type _CEMIAdditionalInformationChildRequirements interface {
 	utils.Serializable

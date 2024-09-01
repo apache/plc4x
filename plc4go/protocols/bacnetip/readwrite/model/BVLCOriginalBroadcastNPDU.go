@@ -61,6 +61,8 @@ type _BVLCOriginalBroadcastNPDU struct {
 	BvlcPayloadLength uint16
 }
 
+var _ BVLCOriginalBroadcastNPDU = (*_BVLCOriginalBroadcastNPDU)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

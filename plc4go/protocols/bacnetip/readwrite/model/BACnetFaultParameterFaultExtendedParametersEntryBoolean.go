@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryBoolean struct {
 	BooleanValue BACnetApplicationTagBoolean
 }
 
+var _ BACnetFaultParameterFaultExtendedParametersEntryBoolean = (*_BACnetFaultParameterFaultExtendedParametersEntryBoolean)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

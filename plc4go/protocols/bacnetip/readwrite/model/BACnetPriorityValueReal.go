@@ -56,6 +56,8 @@ type _BACnetPriorityValueReal struct {
 	RealValue BACnetApplicationTagReal
 }
 
+var _ BACnetPriorityValueReal = (*_BACnetPriorityValueReal)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataTransition struct {
 	Transition BACnetLightingTransitionTagged
 }
 
+var _ BACnetConstructedDataTransition = (*_BACnetConstructedDataTransition)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

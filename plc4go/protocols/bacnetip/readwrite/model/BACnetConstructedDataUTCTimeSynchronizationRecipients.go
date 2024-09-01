@@ -56,6 +56,8 @@ type _BACnetConstructedDataUTCTimeSynchronizationRecipients struct {
 	UtcTimeSynchronizationRecipients []BACnetRecipient
 }
 
+var _ BACnetConstructedDataUTCTimeSynchronizationRecipients = (*_BACnetConstructedDataUTCTimeSynchronizationRecipients)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

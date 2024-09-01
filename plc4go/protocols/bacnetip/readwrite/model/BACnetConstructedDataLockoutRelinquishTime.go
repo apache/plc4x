@@ -58,6 +58,8 @@ type _BACnetConstructedDataLockoutRelinquishTime struct {
 	LockoutRelinquishTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataLockoutRelinquishTime = (*_BACnetConstructedDataLockoutRelinquishTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

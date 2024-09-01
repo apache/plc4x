@@ -56,6 +56,8 @@ type _BACnetPropertyStatesReasonForHalt struct {
 	ReasonForHalt BACnetProgramErrorTagged
 }
 
+var _ BACnetPropertyStatesReasonForHalt = (*_BACnetPropertyStatesReasonForHalt)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

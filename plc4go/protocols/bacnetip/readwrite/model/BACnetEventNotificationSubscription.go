@@ -63,6 +63,8 @@ type _BACnetEventNotificationSubscription struct {
 	TimeRemaining               BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetEventNotificationSubscription = (*_BACnetEventNotificationSubscription)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

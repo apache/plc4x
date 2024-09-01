@@ -51,6 +51,8 @@ type _SecurityDataExitDelayStarted struct {
 	*_SecurityData
 }
 
+var _ SecurityDataExitDelayStarted = (*_SecurityDataExitDelayStarted)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

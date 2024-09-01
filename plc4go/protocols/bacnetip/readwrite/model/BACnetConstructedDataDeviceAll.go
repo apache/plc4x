@@ -51,6 +51,8 @@ type _BACnetConstructedDataDeviceAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataDeviceAll = (*_BACnetConstructedDataDeviceAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

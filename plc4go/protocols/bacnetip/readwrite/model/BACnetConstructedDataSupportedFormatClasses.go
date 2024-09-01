@@ -61,6 +61,8 @@ type _BACnetConstructedDataSupportedFormatClasses struct {
 	SupportedFormats     []BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataSupportedFormatClasses = (*_BACnetConstructedDataSupportedFormatClasses)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

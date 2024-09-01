@@ -49,6 +49,8 @@ type ContinuationPointExactly interface {
 type _ContinuationPoint struct {
 }
 
+var _ ContinuationPoint = (*_ContinuationPoint)(nil)
+
 // NewContinuationPoint factory function for _ContinuationPoint
 func NewContinuationPoint() *_ContinuationPoint {
 	return &_ContinuationPoint{}

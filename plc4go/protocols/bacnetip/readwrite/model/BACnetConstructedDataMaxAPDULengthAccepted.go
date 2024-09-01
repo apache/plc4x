@@ -58,6 +58,8 @@ type _BACnetConstructedDataMaxAPDULengthAccepted struct {
 	MaxApduLengthAccepted BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMaxAPDULengthAccepted = (*_BACnetConstructedDataMaxAPDULengthAccepted)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

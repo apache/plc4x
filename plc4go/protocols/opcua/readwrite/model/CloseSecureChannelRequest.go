@@ -56,6 +56,8 @@ type _CloseSecureChannelRequest struct {
 	RequestHeader ExtensionObjectDefinition
 }
 
+var _ CloseSecureChannelRequest = (*_CloseSecureChannelRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

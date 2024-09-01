@@ -58,6 +58,8 @@ type _BACnetConstructedDataTraceFlag struct {
 	TraceFlag BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataTraceFlag = (*_BACnetConstructedDataTraceFlag)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

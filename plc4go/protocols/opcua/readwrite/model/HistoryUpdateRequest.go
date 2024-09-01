@@ -62,6 +62,8 @@ type _HistoryUpdateRequest struct {
 	HistoryUpdateDetails     []ExtensionObject
 }
 
+var _ HistoryUpdateRequest = (*_HistoryUpdateRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

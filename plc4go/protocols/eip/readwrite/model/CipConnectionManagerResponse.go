@@ -77,6 +77,8 @@ type _CipConnectionManagerResponse struct {
 	reservedField1 *uint8
 }
 
+var _ CipConnectionManagerResponse = (*_CipConnectionManagerResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

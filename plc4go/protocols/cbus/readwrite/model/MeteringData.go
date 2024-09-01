@@ -35,15 +35,25 @@ import (
 
 // MeteringData is the corresponding interface of MeteringData
 type MeteringData interface {
+	MeteringDataContract
+	MeteringDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// MeteringDataContract provides a set of functions which can be overwritten by a sub struct
+type MeteringDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() MeteringCommandTypeContainer
 	// GetArgument returns Argument (property field)
 	GetArgument() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() MeteringCommandType
+}
+
+// MeteringDataRequirements provides a set of functions which need to be implemented by a sub struct
+type MeteringDataRequirements interface {
 }
 
 // MeteringDataExactly can be used when we want exactly this type and not a type which fulfills MeteringData.
@@ -59,6 +69,8 @@ type _MeteringData struct {
 	CommandTypeContainer MeteringCommandTypeContainer
 	Argument             byte
 }
+
+var _ MeteringDataContract = (*_MeteringData)(nil)
 
 type _MeteringDataChildRequirements interface {
 	utils.Serializable

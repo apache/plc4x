@@ -51,6 +51,8 @@ type _DataSetWriterMessageDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ DataSetWriterMessageDataType = (*_DataSetWriterMessageDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

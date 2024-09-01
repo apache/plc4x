@@ -35,13 +35,23 @@ import (
 
 // BACnetLogDataLogDataEntry is the corresponding interface of BACnetLogDataLogDataEntry
 type BACnetLogDataLogDataEntry interface {
+	BACnetLogDataLogDataEntryContract
+	BACnetLogDataLogDataEntryRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetLogDataLogDataEntryContract provides a set of functions which can be overwritten by a sub struct
+type BACnetLogDataLogDataEntryContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetLogDataLogDataEntryRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetLogDataLogDataEntryRequirements interface {
 }
 
 // BACnetLogDataLogDataEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntry.
@@ -56,6 +66,8 @@ type _BACnetLogDataLogDataEntry struct {
 	_BACnetLogDataLogDataEntryChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetLogDataLogDataEntryContract = (*_BACnetLogDataLogDataEntry)(nil)
 
 type _BACnetLogDataLogDataEntryChildRequirements interface {
 	utils.Serializable

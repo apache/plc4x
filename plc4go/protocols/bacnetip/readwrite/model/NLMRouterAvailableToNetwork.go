@@ -56,6 +56,8 @@ type _NLMRouterAvailableToNetwork struct {
 	DestinationNetworkAddresses []uint16
 }
 
+var _ NLMRouterAvailableToNetwork = (*_NLMRouterAvailableToNetwork)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

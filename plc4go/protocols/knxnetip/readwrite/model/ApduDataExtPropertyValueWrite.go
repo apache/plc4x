@@ -68,6 +68,8 @@ type _ApduDataExtPropertyValueWrite struct {
 	Data        []byte
 }
 
+var _ ApduDataExtPropertyValueWrite = (*_ApduDataExtPropertyValueWrite)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -68,6 +68,8 @@ type _MonitoredItemCreateResult struct {
 	FilterResult            ExtensionObject
 }
 
+var _ MonitoredItemCreateResult = (*_MonitoredItemCreateResult)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

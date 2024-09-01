@@ -51,6 +51,8 @@ type _BACnetConstructedDataTrendLogMultipleAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataTrendLogMultipleAll = (*_BACnetConstructedDataTrendLogMultipleAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataSetpoint struct {
 	Setpoint BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataSetpoint = (*_BACnetConstructedDataSetpoint)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

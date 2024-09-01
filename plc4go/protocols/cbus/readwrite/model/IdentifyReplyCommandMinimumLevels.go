@@ -56,6 +56,8 @@ type _IdentifyReplyCommandMinimumLevels struct {
 	MinimumLevels []byte
 }
 
+var _ IdentifyReplyCommandMinimumLevels = (*_IdentifyReplyCommandMinimumLevels)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

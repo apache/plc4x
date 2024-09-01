@@ -59,6 +59,8 @@ type _ParameterValueBaudRateSelector struct {
 	Data  []byte
 }
 
+var _ ParameterValueBaudRateSelector = (*_ParameterValueBaudRateSelector)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

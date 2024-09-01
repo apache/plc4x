@@ -56,6 +56,8 @@ type _BACnetConstructedDataMultiStateValueFaultValues struct {
 	FaultValues []BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMultiStateValueFaultValues = (*_BACnetConstructedDataMultiStateValueFaultValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

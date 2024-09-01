@@ -68,6 +68,8 @@ type _SetMonitoringModeRequest struct {
 	MonitoredItemIds     []uint32
 }
 
+var _ SetMonitoringModeRequest = (*_SetMonitoringModeRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

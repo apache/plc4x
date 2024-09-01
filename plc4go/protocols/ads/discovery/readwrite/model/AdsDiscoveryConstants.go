@@ -54,6 +54,8 @@ type AdsDiscoveryConstantsExactly interface {
 type _AdsDiscoveryConstants struct {
 }
 
+var _ AdsDiscoveryConstants = (*_AdsDiscoveryConstants)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.

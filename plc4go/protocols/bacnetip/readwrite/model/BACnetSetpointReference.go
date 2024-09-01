@@ -54,6 +54,8 @@ type _BACnetSetpointReference struct {
 	SetPointReference BACnetObjectPropertyReferenceEnclosed
 }
 
+var _ BACnetSetpointReference = (*_BACnetSetpointReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

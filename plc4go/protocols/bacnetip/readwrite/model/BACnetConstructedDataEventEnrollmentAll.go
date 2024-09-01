@@ -51,6 +51,8 @@ type _BACnetConstructedDataEventEnrollmentAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataEventEnrollmentAll = (*_BACnetConstructedDataEventEnrollmentAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

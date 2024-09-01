@@ -56,6 +56,8 @@ type _BACnetPropertyStatesSecurityLevel struct {
 	SecurityLevel BACnetSecurityLevelTagged
 }
 
+var _ BACnetPropertyStatesSecurityLevel = (*_BACnetPropertyStatesSecurityLevel)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

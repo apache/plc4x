@@ -56,6 +56,8 @@ type _BACnetPropertyStatesDoorStatus struct {
 	DoorStatus BACnetDoorStatusTagged
 }
 
+var _ BACnetPropertyStatesDoorStatus = (*_BACnetPropertyStatesDoorStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

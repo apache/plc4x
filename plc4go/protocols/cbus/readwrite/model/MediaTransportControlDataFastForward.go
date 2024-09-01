@@ -72,6 +72,8 @@ type _MediaTransportControlDataFastForward struct {
 	Operation byte
 }
 
+var _ MediaTransportControlDataFastForward = (*_MediaTransportControlDataFastForward)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

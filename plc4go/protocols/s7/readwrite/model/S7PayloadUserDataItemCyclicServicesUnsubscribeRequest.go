@@ -59,6 +59,8 @@ type _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest struct {
 	JobId    uint8
 }
 
+var _ S7PayloadUserDataItemCyclicServicesUnsubscribeRequest = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

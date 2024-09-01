@@ -68,6 +68,8 @@ type _ClockAndTimekeepingDataUpdateDate struct {
 	DayOfWeek uint8
 }
 
+var _ ClockAndTimekeepingDataUpdateDate = (*_ClockAndTimekeepingDataUpdateDate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

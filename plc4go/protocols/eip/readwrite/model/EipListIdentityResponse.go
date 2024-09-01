@@ -56,6 +56,8 @@ type _EipListIdentityResponse struct {
 	Items []CommandSpecificDataItem
 }
 
+var _ EipListIdentityResponse = (*_EipListIdentityResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

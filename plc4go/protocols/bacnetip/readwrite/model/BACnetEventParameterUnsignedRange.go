@@ -68,6 +68,8 @@ type _BACnetEventParameterUnsignedRange struct {
 	ClosingTag BACnetClosingTag
 }
 
+var _ BACnetEventParameterUnsignedRange = (*_BACnetEventParameterUnsignedRange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

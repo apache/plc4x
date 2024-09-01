@@ -75,6 +75,8 @@ type _NLMUpdateKeyUpdateControlFlags struct {
 	RemoveAllKeys                                      bool
 }
 
+var _ NLMUpdateKeyUpdateControlFlags = (*_NLMUpdateKeyUpdateControlFlags)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

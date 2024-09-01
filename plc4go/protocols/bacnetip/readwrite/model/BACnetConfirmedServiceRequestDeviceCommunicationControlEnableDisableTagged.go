@@ -61,6 +61,8 @@ type _BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
 	TagClass  TagClass
 }
 
+var _ BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged = (*_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -65,6 +65,8 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessage struct {
 	Message                 BACnetContextTagCharacterString
 }
 
+var _ BACnetConfirmedServiceRequestConfirmedTextMessage = (*_BACnetConfirmedServiceRequestConfirmedTextMessage)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

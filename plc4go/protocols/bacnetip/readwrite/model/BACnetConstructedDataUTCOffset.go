@@ -58,6 +58,8 @@ type _BACnetConstructedDataUTCOffset struct {
 	UtcOffset BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetConstructedDataUTCOffset = (*_BACnetConstructedDataUTCOffset)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

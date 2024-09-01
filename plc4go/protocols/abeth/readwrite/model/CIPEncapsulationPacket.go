@@ -37,11 +37,15 @@ import (
 
 // CIPEncapsulationPacket is the corresponding interface of CIPEncapsulationPacket
 type CIPEncapsulationPacket interface {
+	CIPEncapsulationPacketContract
+	CIPEncapsulationPacketRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetCommandType returns CommandType (discriminator field)
-	GetCommandType() uint16
+}
+
+// CIPEncapsulationPacketContract provides a set of functions which can be overwritten by a sub struct
+type CIPEncapsulationPacketContract interface {
 	// GetSessionHandle returns SessionHandle (property field)
 	GetSessionHandle() uint32
 	// GetStatus returns Status (property field)
@@ -50,6 +54,12 @@ type CIPEncapsulationPacket interface {
 	GetSenderContext() []uint8
 	// GetOptions returns Options (property field)
 	GetOptions() uint32
+}
+
+// CIPEncapsulationPacketRequirements provides a set of functions which need to be implemented by a sub struct
+type CIPEncapsulationPacketRequirements interface {
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() uint16
 }
 
 // CIPEncapsulationPacketExactly can be used when we want exactly this type and not a type which fulfills CIPEncapsulationPacket.
@@ -69,6 +79,8 @@ type _CIPEncapsulationPacket struct {
 	// Reserved Fields
 	reservedField0 *uint32
 }
+
+var _ CIPEncapsulationPacketContract = (*_CIPEncapsulationPacket)(nil)
 
 type _CIPEncapsulationPacketChildRequirements interface {
 	utils.Serializable

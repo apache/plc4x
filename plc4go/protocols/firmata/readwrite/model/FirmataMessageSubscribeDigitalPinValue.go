@@ -63,6 +63,8 @@ type _FirmataMessageSubscribeDigitalPinValue struct {
 	reservedField0 *uint8
 }
 
+var _ FirmataMessageSubscribeDigitalPinValue = (*_FirmataMessageSubscribeDigitalPinValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

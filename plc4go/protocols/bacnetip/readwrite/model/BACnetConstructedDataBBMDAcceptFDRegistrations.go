@@ -58,6 +58,8 @@ type _BACnetConstructedDataBBMDAcceptFDRegistrations struct {
 	BbmdAcceptFDRegistrations BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataBBMDAcceptFDRegistrations = (*_BACnetConstructedDataBBMDAcceptFDRegistrations)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

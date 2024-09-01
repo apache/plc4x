@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryReference struct {
 	Reference BACnetDeviceObjectPropertyReferenceEnclosed
 }
 
+var _ BACnetFaultParameterFaultExtendedParametersEntryReference = (*_BACnetFaultParameterFaultExtendedParametersEntryReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

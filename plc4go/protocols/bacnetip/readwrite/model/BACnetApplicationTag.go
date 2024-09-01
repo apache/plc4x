@@ -35,15 +35,25 @@ import (
 
 // BACnetApplicationTag is the corresponding interface of BACnetApplicationTag
 type BACnetApplicationTag interface {
+	BACnetApplicationTagContract
+	BACnetApplicationTagRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetApplicationTagContract provides a set of functions which can be overwritten by a sub struct
+type BACnetApplicationTagContract interface {
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetActualTagNumber returns ActualTagNumber (virtual field)
 	GetActualTagNumber() uint8
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
+}
+
+// BACnetApplicationTagRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetApplicationTagRequirements interface {
 }
 
 // BACnetApplicationTagExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTag.
@@ -58,6 +68,8 @@ type _BACnetApplicationTag struct {
 	_BACnetApplicationTagChildRequirements
 	Header BACnetTagHeader
 }
+
+var _ BACnetApplicationTagContract = (*_BACnetApplicationTag)(nil)
 
 type _BACnetApplicationTagChildRequirements interface {
 	utils.Serializable

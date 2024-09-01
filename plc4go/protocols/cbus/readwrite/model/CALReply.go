@@ -35,13 +35,23 @@ import (
 
 // CALReply is the corresponding interface of CALReply
 type CALReply interface {
+	CALReplyContract
+	CALReplyRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CALReplyContract provides a set of functions which can be overwritten by a sub struct
+type CALReplyContract interface {
 	// GetCalType returns CalType (property field)
 	GetCalType() byte
 	// GetCalData returns CalData (property field)
 	GetCalData() CALData
+}
+
+// CALReplyRequirements provides a set of functions which need to be implemented by a sub struct
+type CALReplyRequirements interface {
 }
 
 // CALReplyExactly can be used when we want exactly this type and not a type which fulfills CALReply.
@@ -61,6 +71,8 @@ type _CALReply struct {
 	CBusOptions    CBusOptions
 	RequestContext RequestContext
 }
+
+var _ CALReplyContract = (*_CALReply)(nil)
 
 type _CALReplyChildRequirements interface {
 	utils.Serializable

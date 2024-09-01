@@ -58,6 +58,8 @@ type _BACnetConstructedDataUserExternalIdentifier struct {
 	UserExternalIdentifier BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataUserExternalIdentifier = (*_BACnetConstructedDataUserExternalIdentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

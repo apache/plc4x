@@ -62,6 +62,8 @@ type _ComObjectTableRealisationType1 struct {
 	ComObjectDescriptors []GroupObjectDescriptorRealisationType1
 }
 
+var _ ComObjectTableRealisationType1 = (*_ComObjectTableRealisationType1)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -52,6 +52,8 @@ type _BVLCReadBroadcastDistributionTable struct {
 	*_BVLC
 }
 
+var _ BVLCReadBroadcastDistributionTable = (*_BVLCReadBroadcastDistributionTable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

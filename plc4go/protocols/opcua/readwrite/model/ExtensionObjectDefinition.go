@@ -33,9 +33,19 @@ import (
 
 // ExtensionObjectDefinition is the corresponding interface of ExtensionObjectDefinition
 type ExtensionObjectDefinition interface {
+	ExtensionObjectDefinitionContract
+	ExtensionObjectDefinitionRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ExtensionObjectDefinitionContract provides a set of functions which can be overwritten by a sub struct
+type ExtensionObjectDefinitionContract interface {
+}
+
+// ExtensionObjectDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
+type ExtensionObjectDefinitionRequirements interface {
 	// GetIdentifier returns Identifier (discriminator field)
 	GetIdentifier() string
 }
@@ -51,6 +61,8 @@ type ExtensionObjectDefinitionExactly interface {
 type _ExtensionObjectDefinition struct {
 	_ExtensionObjectDefinitionChildRequirements
 }
+
+var _ ExtensionObjectDefinitionContract = (*_ExtensionObjectDefinition)(nil)
 
 type _ExtensionObjectDefinitionChildRequirements interface {
 	utils.Serializable

@@ -58,6 +58,8 @@ type _BACnetConstructedDataLoadControlPresentValue struct {
 	PresentValue BACnetShedStateTagged
 }
 
+var _ BACnetConstructedDataLoadControlPresentValue = (*_BACnetConstructedDataLoadControlPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataMachineRoomID struct {
 	MachineRoomId BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetConstructedDataMachineRoomID = (*_BACnetConstructedDataMachineRoomID)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

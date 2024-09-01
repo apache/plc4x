@@ -58,6 +58,8 @@ type _BACnetConstructedDataPowerMode struct {
 	PowerMode BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataPowerMode = (*_BACnetConstructedDataPowerMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

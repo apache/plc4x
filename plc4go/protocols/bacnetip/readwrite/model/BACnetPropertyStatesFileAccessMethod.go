@@ -56,6 +56,8 @@ type _BACnetPropertyStatesFileAccessMethod struct {
 	FileAccessMethod BACnetFileAccessMethodTagged
 }
 
+var _ BACnetPropertyStatesFileAccessMethod = (*_BACnetPropertyStatesFileAccessMethod)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

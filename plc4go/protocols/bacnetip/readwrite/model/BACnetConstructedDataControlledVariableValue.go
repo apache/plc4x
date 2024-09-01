@@ -58,6 +58,8 @@ type _BACnetConstructedDataControlledVariableValue struct {
 	ControlledVariableValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataControlledVariableValue = (*_BACnetConstructedDataControlledVariableValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

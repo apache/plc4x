@@ -66,6 +66,8 @@ type _BACnetPropertyWriteDefinition struct {
 	ObjectTypeArgument BACnetObjectType
 }
 
+var _ BACnetPropertyWriteDefinition = (*_BACnetPropertyWriteDefinition)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

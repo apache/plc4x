@@ -59,6 +59,8 @@ type _BACnetServiceAckGetEventInformation struct {
 	MoreEvents           BACnetContextTagBoolean
 }
 
+var _ BACnetServiceAckGetEventInformation = (*_BACnetServiceAckGetEventInformation)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

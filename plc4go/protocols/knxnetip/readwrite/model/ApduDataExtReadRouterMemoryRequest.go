@@ -51,6 +51,8 @@ type _ApduDataExtReadRouterMemoryRequest struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtReadRouterMemoryRequest = (*_ApduDataExtReadRouterMemoryRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

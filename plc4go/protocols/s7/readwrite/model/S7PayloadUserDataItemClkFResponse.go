@@ -62,6 +62,8 @@ type _S7PayloadUserDataItemClkFResponse struct {
 	TimeStamp DateAndTime
 }
 
+var _ S7PayloadUserDataItemClkFResponse = (*_S7PayloadUserDataItemClkFResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

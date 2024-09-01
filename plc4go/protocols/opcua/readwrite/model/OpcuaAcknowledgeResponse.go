@@ -59,6 +59,8 @@ type _OpcuaAcknowledgeResponse struct {
 	Limits  OpcuaProtocolLimits
 }
 
+var _ OpcuaAcknowledgeResponse = (*_OpcuaAcknowledgeResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _SALDataTelephonyStatusAndControl struct {
 	TelephonyData TelephonyData
 }
 
+var _ SALDataTelephonyStatusAndControl = (*_SALDataTelephonyStatusAndControl)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

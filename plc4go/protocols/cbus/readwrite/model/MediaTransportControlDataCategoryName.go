@@ -56,6 +56,8 @@ type _MediaTransportControlDataCategoryName struct {
 	CategoryName string
 }
 
+var _ MediaTransportControlDataCategoryName = (*_MediaTransportControlDataCategoryName)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

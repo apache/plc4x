@@ -49,6 +49,8 @@ type TrimmedStringExactly interface {
 type _TrimmedString struct {
 }
 
+var _ TrimmedString = (*_TrimmedString)(nil)
+
 // NewTrimmedString factory function for _TrimmedString
 func NewTrimmedString() *_TrimmedString {
 	return &_TrimmedString{}

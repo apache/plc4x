@@ -62,6 +62,8 @@ type _NetworkGroupDataType struct {
 	NetworkPaths     []ExtensionObjectDefinition
 }
 
+var _ NetworkGroupDataType = (*_NetworkGroupDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

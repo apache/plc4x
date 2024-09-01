@@ -51,6 +51,8 @@ type _DataSetReaderTransportDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ DataSetReaderTransportDataType = (*_DataSetReaderTransportDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

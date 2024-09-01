@@ -56,6 +56,8 @@ type _BACnetConstructedDataRestartNotificationRecipients struct {
 	RestartNotificationRecipients []BACnetRecipient
 }
 
+var _ BACnetConstructedDataRestartNotificationRecipients = (*_BACnetConstructedDataRestartNotificationRecipients)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

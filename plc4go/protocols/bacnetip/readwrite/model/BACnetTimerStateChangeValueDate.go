@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueDate struct {
 	DateValue BACnetApplicationTagDate
 }
 
+var _ BACnetTimerStateChangeValueDate = (*_BACnetTimerStateChangeValueDate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -49,6 +49,8 @@ type ImagePNGExactly interface {
 type _ImagePNG struct {
 }
 
+var _ ImagePNG = (*_ImagePNG)(nil)
+
 // NewImagePNG factory function for _ImagePNG
 func NewImagePNG() *_ImagePNG {
 	return &_ImagePNG{}

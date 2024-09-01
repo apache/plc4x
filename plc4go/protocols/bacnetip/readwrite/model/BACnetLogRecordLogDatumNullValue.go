@@ -56,6 +56,8 @@ type _BACnetLogRecordLogDatumNullValue struct {
 	NullValue BACnetContextTagNull
 }
 
+var _ BACnetLogRecordLogDatumNullValue = (*_BACnetLogRecordLogDatumNullValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

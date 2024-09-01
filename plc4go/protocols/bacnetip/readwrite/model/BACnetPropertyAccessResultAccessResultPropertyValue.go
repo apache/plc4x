@@ -56,6 +56,8 @@ type _BACnetPropertyAccessResultAccessResultPropertyValue struct {
 	PropertyValue BACnetConstructedData
 }
 
+var _ BACnetPropertyAccessResultAccessResultPropertyValue = (*_BACnetPropertyAccessResultAccessResultPropertyValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

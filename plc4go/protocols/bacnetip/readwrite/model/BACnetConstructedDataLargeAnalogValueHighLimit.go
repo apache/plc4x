@@ -58,6 +58,8 @@ type _BACnetConstructedDataLargeAnalogValueHighLimit struct {
 	HighLimit BACnetApplicationTagDouble
 }
 
+var _ BACnetConstructedDataLargeAnalogValueHighLimit = (*_BACnetConstructedDataLargeAnalogValueHighLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

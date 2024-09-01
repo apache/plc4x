@@ -56,6 +56,8 @@ type _BACnetPriorityValueCharacterString struct {
 	CharacterStringValue BACnetApplicationTagCharacterString
 }
 
+var _ BACnetPriorityValueCharacterString = (*_BACnetPriorityValueCharacterString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

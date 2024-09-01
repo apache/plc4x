@@ -49,6 +49,8 @@ type ImageBMPExactly interface {
 type _ImageBMP struct {
 }
 
+var _ ImageBMP = (*_ImageBMP)(nil)
+
 // NewImageBMP factory function for _ImageBMP
 func NewImageBMP() *_ImageBMP {
 	return &_ImageBMP{}

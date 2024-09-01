@@ -35,9 +35,19 @@ import (
 
 // FirmataCommand is the corresponding interface of FirmataCommand
 type FirmataCommand interface {
+	FirmataCommandContract
+	FirmataCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// FirmataCommandContract provides a set of functions which can be overwritten by a sub struct
+type FirmataCommandContract interface {
+}
+
+// FirmataCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type FirmataCommandRequirements interface {
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 }
@@ -56,6 +66,8 @@ type _FirmataCommand struct {
 	// Arguments.
 	Response bool
 }
+
+var _ FirmataCommandContract = (*_FirmataCommand)(nil)
 
 type _FirmataCommandChildRequirements interface {
 	utils.Serializable

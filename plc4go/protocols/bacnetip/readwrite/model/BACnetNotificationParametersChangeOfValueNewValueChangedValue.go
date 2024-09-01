@@ -56,6 +56,8 @@ type _BACnetNotificationParametersChangeOfValueNewValueChangedValue struct {
 	ChangedValue BACnetContextTagReal
 }
 
+var _ BACnetNotificationParametersChangeOfValueNewValueChangedValue = (*_BACnetNotificationParametersChangeOfValueNewValueChangedValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

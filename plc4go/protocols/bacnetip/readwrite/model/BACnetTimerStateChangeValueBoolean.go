@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueBoolean struct {
 	BooleanValue BACnetApplicationTagBoolean
 }
 
+var _ BACnetTimerStateChangeValueBoolean = (*_BACnetTimerStateChangeValueBoolean)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

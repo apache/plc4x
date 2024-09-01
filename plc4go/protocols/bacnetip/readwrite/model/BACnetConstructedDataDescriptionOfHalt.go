@@ -58,6 +58,8 @@ type _BACnetConstructedDataDescriptionOfHalt struct {
 	DescriptionForHalt BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataDescriptionOfHalt = (*_BACnetConstructedDataDescriptionOfHalt)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

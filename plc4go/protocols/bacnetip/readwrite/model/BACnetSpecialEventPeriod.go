@@ -35,13 +35,23 @@ import (
 
 // BACnetSpecialEventPeriod is the corresponding interface of BACnetSpecialEventPeriod
 type BACnetSpecialEventPeriod interface {
+	BACnetSpecialEventPeriodContract
+	BACnetSpecialEventPeriodRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetSpecialEventPeriodContract provides a set of functions which can be overwritten by a sub struct
+type BACnetSpecialEventPeriodContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetSpecialEventPeriodRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetSpecialEventPeriodRequirements interface {
 }
 
 // BACnetSpecialEventPeriodExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventPeriod.
@@ -56,6 +66,8 @@ type _BACnetSpecialEventPeriod struct {
 	_BACnetSpecialEventPeriodChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetSpecialEventPeriodContract = (*_BACnetSpecialEventPeriod)(nil)
 
 type _BACnetSpecialEventPeriodChildRequirements interface {
 	utils.Serializable

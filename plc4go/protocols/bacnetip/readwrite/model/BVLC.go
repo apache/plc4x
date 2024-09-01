@@ -40,13 +40,23 @@ const BVLC_BACNETTYPE uint8 = 0x81
 
 // BVLC is the corresponding interface of BVLC
 type BVLC interface {
+	BVLCContract
+	BVLCRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetBvlcFunction returns BvlcFunction (discriminator field)
-	GetBvlcFunction() uint8
+}
+
+// BVLCContract provides a set of functions which can be overwritten by a sub struct
+type BVLCContract interface {
 	// GetBvlcPayloadLength returns BvlcPayloadLength (virtual field)
 	GetBvlcPayloadLength() uint16
+}
+
+// BVLCRequirements provides a set of functions which need to be implemented by a sub struct
+type BVLCRequirements interface {
+	// GetBvlcFunction returns BvlcFunction (discriminator field)
+	GetBvlcFunction() uint8
 }
 
 // BVLCExactly can be used when we want exactly this type and not a type which fulfills BVLC.
@@ -60,6 +70,8 @@ type BVLCExactly interface {
 type _BVLC struct {
 	_BVLCChildRequirements
 }
+
+var _ BVLCContract = (*_BVLC)(nil)
 
 type _BVLCChildRequirements interface {
 	utils.Serializable

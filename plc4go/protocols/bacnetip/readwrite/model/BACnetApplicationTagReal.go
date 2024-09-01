@@ -58,6 +58,8 @@ type _BACnetApplicationTagReal struct {
 	Payload BACnetTagPayloadReal
 }
 
+var _ BACnetApplicationTagReal = (*_BACnetApplicationTagReal)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

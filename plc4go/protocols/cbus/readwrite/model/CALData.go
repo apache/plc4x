@@ -35,9 +35,15 @@ import (
 
 // CALData is the corresponding interface of CALData
 type CALData interface {
+	CALDataContract
+	CALDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CALDataContract provides a set of functions which can be overwritten by a sub struct
+type CALDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() CALCommandTypeContainer
 	// GetAdditionalData returns AdditionalData (property field)
@@ -46,6 +52,10 @@ type CALData interface {
 	GetCommandType() CALCommandType
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (virtual field)
 	GetSendIdentifyRequestBefore() bool
+}
+
+// CALDataRequirements provides a set of functions which need to be implemented by a sub struct
+type CALDataRequirements interface {
 }
 
 // CALDataExactly can be used when we want exactly this type and not a type which fulfills CALData.
@@ -64,6 +74,8 @@ type _CALData struct {
 	// Arguments.
 	RequestContext RequestContext
 }
+
+var _ CALDataContract = (*_CALData)(nil)
 
 type _CALDataChildRequirements interface {
 	utils.Serializable

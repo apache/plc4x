@@ -58,6 +58,8 @@ type _BACnetConstructedDataLastKeyServer struct {
 	LastKeyServer BACnetAddressBinding
 }
 
+var _ BACnetConstructedDataLastKeyServer = (*_BACnetConstructedDataLastKeyServer)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

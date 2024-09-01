@@ -51,6 +51,8 @@ type _ApduDataExtGroupPropertyValueWrite struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtGroupPropertyValueWrite = (*_ApduDataExtGroupPropertyValueWrite)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

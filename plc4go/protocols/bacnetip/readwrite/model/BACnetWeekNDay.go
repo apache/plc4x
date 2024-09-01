@@ -49,6 +49,8 @@ type BACnetWeekNDayExactly interface {
 type _BACnetWeekNDay struct {
 }
 
+var _ BACnetWeekNDay = (*_BACnetWeekNDay)(nil)
+
 // NewBACnetWeekNDay factory function for _BACnetWeekNDay
 func NewBACnetWeekNDay() *_BACnetWeekNDay {
 	return &_BACnetWeekNDay{}

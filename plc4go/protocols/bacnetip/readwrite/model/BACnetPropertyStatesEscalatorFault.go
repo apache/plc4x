@@ -56,6 +56,8 @@ type _BACnetPropertyStatesEscalatorFault struct {
 	EscalatorFault BACnetEscalatorFaultTagged
 }
 
+var _ BACnetPropertyStatesEscalatorFault = (*_BACnetPropertyStatesEscalatorFault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

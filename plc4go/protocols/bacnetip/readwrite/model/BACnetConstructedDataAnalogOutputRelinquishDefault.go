@@ -58,6 +58,8 @@ type _BACnetConstructedDataAnalogOutputRelinquishDefault struct {
 	RelinquishDefault BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataAnalogOutputRelinquishDefault = (*_BACnetConstructedDataAnalogOutputRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

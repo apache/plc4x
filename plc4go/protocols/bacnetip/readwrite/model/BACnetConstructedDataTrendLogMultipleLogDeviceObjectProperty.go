@@ -61,6 +61,8 @@ type _BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty struct {
 	GroupMembers         []BACnetDeviceObjectPropertyReference
 }
 
+var _ BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty = (*_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

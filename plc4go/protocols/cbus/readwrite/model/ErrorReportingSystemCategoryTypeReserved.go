@@ -56,6 +56,8 @@ type _ErrorReportingSystemCategoryTypeReserved struct {
 	ReservedValue uint8
 }
 
+var _ ErrorReportingSystemCategoryTypeReserved = (*_ErrorReportingSystemCategoryTypeReserved)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

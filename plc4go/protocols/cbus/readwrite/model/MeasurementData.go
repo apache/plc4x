@@ -35,13 +35,23 @@ import (
 
 // MeasurementData is the corresponding interface of MeasurementData
 type MeasurementData interface {
+	MeasurementDataContract
+	MeasurementDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// MeasurementDataContract provides a set of functions which can be overwritten by a sub struct
+type MeasurementDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() MeasurementCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() MeasurementCommandType
+}
+
+// MeasurementDataRequirements provides a set of functions which need to be implemented by a sub struct
+type MeasurementDataRequirements interface {
 }
 
 // MeasurementDataExactly can be used when we want exactly this type and not a type which fulfills MeasurementData.
@@ -56,6 +66,8 @@ type _MeasurementData struct {
 	_MeasurementDataChildRequirements
 	CommandTypeContainer MeasurementCommandTypeContainer
 }
+
+var _ MeasurementDataContract = (*_MeasurementData)(nil)
 
 type _MeasurementDataChildRequirements interface {
 	utils.Serializable

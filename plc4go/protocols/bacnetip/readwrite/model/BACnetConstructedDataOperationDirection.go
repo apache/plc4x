@@ -58,6 +58,8 @@ type _BACnetConstructedDataOperationDirection struct {
 	OperationDirection BACnetEscalatorOperationDirectionTagged
 }
 
+var _ BACnetConstructedDataOperationDirection = (*_BACnetConstructedDataOperationDirection)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

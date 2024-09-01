@@ -59,6 +59,8 @@ type _CreateObjectError struct {
 	FirstFailedElementNumber BACnetContextTagUnsignedInteger
 }
 
+var _ CreateObjectError = (*_CreateObjectError)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

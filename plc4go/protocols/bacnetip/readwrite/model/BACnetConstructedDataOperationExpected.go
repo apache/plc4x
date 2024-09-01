@@ -58,6 +58,8 @@ type _BACnetConstructedDataOperationExpected struct {
 	LifeSafetyOperations BACnetLifeSafetyOperationTagged
 }
 
+var _ BACnetConstructedDataOperationExpected = (*_BACnetConstructedDataOperationExpected)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

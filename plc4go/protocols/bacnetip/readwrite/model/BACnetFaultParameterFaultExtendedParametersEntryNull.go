@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryNull struct {
 	NullValue BACnetApplicationTagNull
 }
 
+var _ BACnetFaultParameterFaultExtendedParametersEntryNull = (*_BACnetFaultParameterFaultExtendedParametersEntryNull)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

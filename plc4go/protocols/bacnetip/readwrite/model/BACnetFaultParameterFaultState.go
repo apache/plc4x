@@ -62,6 +62,8 @@ type _BACnetFaultParameterFaultState struct {
 	ClosingTag        BACnetClosingTag
 }
 
+var _ BACnetFaultParameterFaultState = (*_BACnetFaultParameterFaultState)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

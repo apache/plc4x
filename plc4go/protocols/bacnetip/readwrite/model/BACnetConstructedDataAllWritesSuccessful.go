@@ -58,6 +58,8 @@ type _BACnetConstructedDataAllWritesSuccessful struct {
 	AllWritesSuccessful BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataAllWritesSuccessful = (*_BACnetConstructedDataAllWritesSuccessful)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -67,6 +67,8 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest struct {
 	reservedField0 *uint8
 }
 
+var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

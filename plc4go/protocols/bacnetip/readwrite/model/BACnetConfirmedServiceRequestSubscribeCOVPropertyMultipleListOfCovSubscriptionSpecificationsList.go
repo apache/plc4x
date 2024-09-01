@@ -63,6 +63,8 @@ type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
 	TagNumber uint8
 }
 
+var _ BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

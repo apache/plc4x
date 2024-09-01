@@ -61,6 +61,8 @@ type _BACnetAccessRuleTimeRangeSpecifierTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetAccessRuleTimeRangeSpecifierTagged = (*_BACnetAccessRuleTimeRangeSpecifierTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

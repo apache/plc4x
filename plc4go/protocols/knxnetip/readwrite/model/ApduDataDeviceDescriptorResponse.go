@@ -59,6 +59,8 @@ type _ApduDataDeviceDescriptorResponse struct {
 	Data           []byte
 }
 
+var _ ApduDataDeviceDescriptorResponse = (*_ApduDataDeviceDescriptorResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

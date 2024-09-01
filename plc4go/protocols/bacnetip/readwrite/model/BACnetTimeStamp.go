@@ -35,13 +35,23 @@ import (
 
 // BACnetTimeStamp is the corresponding interface of BACnetTimeStamp
 type BACnetTimeStamp interface {
+	BACnetTimeStampContract
+	BACnetTimeStampRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetTimeStampContract provides a set of functions which can be overwritten by a sub struct
+type BACnetTimeStampContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetTimeStampRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetTimeStampRequirements interface {
 }
 
 // BACnetTimeStampExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStamp.
@@ -56,6 +66,8 @@ type _BACnetTimeStamp struct {
 	_BACnetTimeStampChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetTimeStampContract = (*_BACnetTimeStamp)(nil)
 
 type _BACnetTimeStampChildRequirements interface {
 	utils.Serializable

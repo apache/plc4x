@@ -35,9 +35,19 @@ import (
 
 // S7Parameter is the corresponding interface of S7Parameter
 type S7Parameter interface {
+	S7ParameterContract
+	S7ParameterRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// S7ParameterContract provides a set of functions which can be overwritten by a sub struct
+type S7ParameterContract interface {
+}
+
+// S7ParameterRequirements provides a set of functions which need to be implemented by a sub struct
+type S7ParameterRequirements interface {
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetParameterType returns ParameterType (discriminator field)
@@ -55,6 +65,8 @@ type S7ParameterExactly interface {
 type _S7Parameter struct {
 	_S7ParameterChildRequirements
 }
+
+var _ S7ParameterContract = (*_S7Parameter)(nil)
 
 type _S7ParameterChildRequirements interface {
 	utils.Serializable

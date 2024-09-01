@@ -62,6 +62,8 @@ type _CBusPointToPointCommandIndirect struct {
 	UnitAddress   UnitAddress
 }
 
+var _ CBusPointToPointCommandIndirect = (*_CBusPointToPointCommandIndirect)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

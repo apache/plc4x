@@ -61,6 +61,8 @@ type _BACnetConstructedDataUnspecified struct {
 	Data                 []BACnetConstructedDataElement
 }
 
+var _ BACnetConstructedDataUnspecified = (*_BACnetConstructedDataUnspecified)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

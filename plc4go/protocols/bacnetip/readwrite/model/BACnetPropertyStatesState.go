@@ -56,6 +56,8 @@ type _BACnetPropertyStatesState struct {
 	State BACnetEventStateTagged
 }
 
+var _ BACnetPropertyStatesState = (*_BACnetPropertyStatesState)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

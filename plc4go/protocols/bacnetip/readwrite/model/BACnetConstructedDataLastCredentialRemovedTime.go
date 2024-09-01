@@ -58,6 +58,8 @@ type _BACnetConstructedDataLastCredentialRemovedTime struct {
 	LastCredentialRemovedTime BACnetDateTime
 }
 
+var _ BACnetConstructedDataLastCredentialRemovedTime = (*_BACnetConstructedDataLastCredentialRemovedTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

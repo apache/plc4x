@@ -56,6 +56,8 @@ type _BACnetConstructedDataVTClassesSupported struct {
 	VtClassesSupported []BACnetVTClassTagged
 }
 
+var _ BACnetConstructedDataVTClassesSupported = (*_BACnetConstructedDataVTClassesSupported)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

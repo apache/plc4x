@@ -66,6 +66,8 @@ type _ListOfCovNotificationsValue struct {
 	ObjectTypeArgument BACnetObjectType
 }
 
+var _ ListOfCovNotificationsValue = (*_ListOfCovNotificationsValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

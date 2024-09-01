@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryReal struct {
 	RealValue BACnetApplicationTagReal
 }
 
+var _ BACnetFaultParameterFaultExtendedParametersEntryReal = (*_BACnetFaultParameterFaultExtendedParametersEntryReal)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

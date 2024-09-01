@@ -61,6 +61,8 @@ type _FirmataCommandSetDigitalPinValue struct {
 	reservedField0 *uint8
 }
 
+var _ FirmataCommandSetDigitalPinValue = (*_FirmataCommandSetDigitalPinValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

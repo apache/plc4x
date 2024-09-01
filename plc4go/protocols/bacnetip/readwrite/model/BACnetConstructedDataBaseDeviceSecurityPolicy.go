@@ -58,6 +58,8 @@ type _BACnetConstructedDataBaseDeviceSecurityPolicy struct {
 	BaseDeviceSecurityPolicy BACnetSecurityLevelTagged
 }
 
+var _ BACnetConstructedDataBaseDeviceSecurityPolicy = (*_BACnetConstructedDataBaseDeviceSecurityPolicy)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

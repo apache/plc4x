@@ -65,6 +65,8 @@ type _ModbusPDUGetComEventLogResponse struct {
 	Events       []byte
 }
 
+var _ ModbusPDUGetComEventLogResponse = (*_ModbusPDUGetComEventLogResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

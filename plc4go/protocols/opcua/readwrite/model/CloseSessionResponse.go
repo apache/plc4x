@@ -56,6 +56,8 @@ type _CloseSessionResponse struct {
 	ResponseHeader ExtensionObjectDefinition
 }
 
+var _ CloseSessionResponse = (*_CloseSessionResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataThreatAuthority struct {
 	ThreatAuthority BACnetAccessThreatLevel
 }
 
+var _ BACnetConstructedDataThreatAuthority = (*_BACnetConstructedDataThreatAuthority)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

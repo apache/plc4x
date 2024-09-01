@@ -56,6 +56,8 @@ type _BACnetPropertyStateActionUnknown struct {
 	UnknownValue BACnetContextTagUnknown
 }
 
+var _ BACnetPropertyStateActionUnknown = (*_BACnetPropertyStateActionUnknown)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

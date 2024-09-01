@@ -58,6 +58,8 @@ type _CIPEncapsulationReadRequest struct {
 	Request DF1RequestMessage
 }
 
+var _ CIPEncapsulationReadRequest = (*_CIPEncapsulationReadRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetEventLogRecordLogDatumLogStatus struct {
 	LogStatus BACnetLogStatusTagged
 }
 
+var _ BACnetEventLogRecordLogDatumLogStatus = (*_BACnetEventLogRecordLogDatumLogStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

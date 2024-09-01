@@ -59,6 +59,8 @@ type _ModbusPDUWriteMultipleHoldingRegistersResponse struct {
 	Quantity        uint16
 }
 
+var _ ModbusPDUWriteMultipleHoldingRegistersResponse = (*_ModbusPDUWriteMultipleHoldingRegistersResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataAttemptedSamples struct {
 	AttemptedSamples BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataAttemptedSamples = (*_BACnetConstructedDataAttemptedSamples)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

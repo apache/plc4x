@@ -56,6 +56,8 @@ type _BACnetConstructedDataActiveVTSessions struct {
 	ActiveVTSession []BACnetVTSession
 }
 
+var _ BACnetConstructedDataActiveVTSessions = (*_BACnetConstructedDataActiveVTSessions)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

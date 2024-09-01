@@ -35,13 +35,23 @@ import (
 
 // BACnetPropertyStates is the corresponding interface of BACnetPropertyStates
 type BACnetPropertyStates interface {
+	BACnetPropertyStatesContract
+	BACnetPropertyStatesRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetPropertyStatesContract provides a set of functions which can be overwritten by a sub struct
+type BACnetPropertyStatesContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetPropertyStatesRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetPropertyStatesRequirements interface {
 }
 
 // BACnetPropertyStatesExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStates.
@@ -56,6 +66,8 @@ type _BACnetPropertyStates struct {
 	_BACnetPropertyStatesChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetPropertyStatesContract = (*_BACnetPropertyStates)(nil)
 
 type _BACnetPropertyStatesChildRequirements interface {
 	utils.Serializable

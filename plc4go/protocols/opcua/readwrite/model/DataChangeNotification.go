@@ -65,6 +65,8 @@ type _DataChangeNotification struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ DataChangeNotification = (*_DataChangeNotification)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -61,6 +61,8 @@ type _BACnetConstructedDataIPv6DNSServer struct {
 	Ipv6DnsServer        []BACnetApplicationTagOctetString
 }
 
+var _ BACnetConstructedDataIPv6DNSServer = (*_BACnetConstructedDataIPv6DNSServer)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

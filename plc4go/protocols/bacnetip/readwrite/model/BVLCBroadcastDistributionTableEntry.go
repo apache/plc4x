@@ -60,6 +60,8 @@ type _BVLCBroadcastDistributionTableEntry struct {
 	BroadcastDistributionMap []uint8
 }
 
+var _ BVLCBroadcastDistributionTableEntry = (*_BVLCBroadcastDistributionTableEntry)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

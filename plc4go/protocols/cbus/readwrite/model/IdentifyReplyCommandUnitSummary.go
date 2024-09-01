@@ -75,6 +75,8 @@ type _IdentifyReplyCommandUnitSummary struct {
 	UnitGeneratingClock    bool
 }
 
+var _ IdentifyReplyCommandUnitSummary = (*_IdentifyReplyCommandUnitSummary)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

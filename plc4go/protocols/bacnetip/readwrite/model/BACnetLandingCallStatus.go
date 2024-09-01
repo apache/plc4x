@@ -60,6 +60,8 @@ type _BACnetLandingCallStatus struct {
 	FloorText   BACnetContextTagCharacterString
 }
 
+var _ BACnetLandingCallStatus = (*_BACnetLandingCallStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

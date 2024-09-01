@@ -51,6 +51,8 @@ type _ConnectionResponseDataBlockDeviceManagement struct {
 	*_ConnectionResponseDataBlock
 }
 
+var _ ConnectionResponseDataBlockDeviceManagement = (*_ConnectionResponseDataBlockDeviceManagement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccompaniment struct {
 	Accompaniment BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataAccompaniment = (*_BACnetConstructedDataAccompaniment)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

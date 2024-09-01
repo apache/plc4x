@@ -56,6 +56,8 @@ type _BACnetConstructedDataSupportedSecurityAlgorithms struct {
 	SupportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataSupportedSecurityAlgorithms = (*_BACnetConstructedDataSupportedSecurityAlgorithms)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

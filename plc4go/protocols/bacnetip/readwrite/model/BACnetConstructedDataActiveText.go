@@ -58,6 +58,8 @@ type _BACnetConstructedDataActiveText struct {
 	ActiveText BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataActiveText = (*_BACnetConstructedDataActiveText)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -35,15 +35,25 @@ import (
 
 // BACnetTimerStateChangeValue is the corresponding interface of BACnetTimerStateChangeValue
 type BACnetTimerStateChangeValue interface {
+	BACnetTimerStateChangeValueContract
+	BACnetTimerStateChangeValueRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetTimerStateChangeValueContract provides a set of functions which can be overwritten by a sub struct
+type BACnetTimerStateChangeValueContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
+}
+
+// BACnetTimerStateChangeValueRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetTimerStateChangeValueRequirements interface {
 }
 
 // BACnetTimerStateChangeValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValue.
@@ -61,6 +71,8 @@ type _BACnetTimerStateChangeValue struct {
 	// Arguments.
 	ObjectTypeArgument BACnetObjectType
 }
+
+var _ BACnetTimerStateChangeValueContract = (*_BACnetTimerStateChangeValue)(nil)
 
 type _BACnetTimerStateChangeValueChildRequirements interface {
 	utils.Serializable

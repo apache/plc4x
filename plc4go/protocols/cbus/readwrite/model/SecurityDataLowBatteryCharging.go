@@ -60,6 +60,8 @@ type _SecurityDataLowBatteryCharging struct {
 	StartStop byte
 }
 
+var _ SecurityDataLowBatteryCharging = (*_SecurityDataLowBatteryCharging)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

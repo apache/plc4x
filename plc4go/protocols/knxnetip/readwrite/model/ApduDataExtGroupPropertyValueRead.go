@@ -51,6 +51,8 @@ type _ApduDataExtGroupPropertyValueRead struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtGroupPropertyValueRead = (*_ApduDataExtGroupPropertyValueRead)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

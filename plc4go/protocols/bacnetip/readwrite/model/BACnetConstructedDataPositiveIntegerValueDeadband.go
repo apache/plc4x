@@ -58,6 +58,8 @@ type _BACnetConstructedDataPositiveIntegerValueDeadband struct {
 	Deadband BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPositiveIntegerValueDeadband = (*_BACnetConstructedDataPositiveIntegerValueDeadband)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

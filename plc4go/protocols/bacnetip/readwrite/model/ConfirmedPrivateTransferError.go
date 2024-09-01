@@ -65,6 +65,8 @@ type _ConfirmedPrivateTransferError struct {
 	ErrorParameters BACnetConstructedData
 }
 
+var _ ConfirmedPrivateTransferError = (*_ConfirmedPrivateTransferError)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

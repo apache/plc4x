@@ -58,6 +58,8 @@ type _BACnetConstructedDataPositiveIntegerValueHighLimit struct {
 	HighLimit BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPositiveIntegerValueHighLimit = (*_BACnetConstructedDataPositiveIntegerValueHighLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

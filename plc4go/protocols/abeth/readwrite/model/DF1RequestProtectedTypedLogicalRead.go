@@ -68,6 +68,8 @@ type _DF1RequestProtectedTypedLogicalRead struct {
 	SubElementNumber uint8
 }
 
+var _ DF1RequestProtectedTypedLogicalRead = (*_DF1RequestProtectedTypedLogicalRead)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

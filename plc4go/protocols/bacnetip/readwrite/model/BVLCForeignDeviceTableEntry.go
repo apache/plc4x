@@ -63,6 +63,8 @@ type _BVLCForeignDeviceTableEntry struct {
 	SecondRemainingBeforePurge uint16
 }
 
+var _ BVLCForeignDeviceTableEntry = (*_BVLCForeignDeviceTableEntry)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

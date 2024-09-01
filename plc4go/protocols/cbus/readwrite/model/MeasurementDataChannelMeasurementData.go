@@ -75,6 +75,8 @@ type _MeasurementDataChannelMeasurementData struct {
 	Lsb        uint8
 }
 
+var _ MeasurementDataChannelMeasurementData = (*_MeasurementDataChannelMeasurementData)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

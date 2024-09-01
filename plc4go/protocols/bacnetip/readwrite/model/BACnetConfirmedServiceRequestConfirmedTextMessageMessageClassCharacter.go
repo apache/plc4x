@@ -56,6 +56,8 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter str
 	CharacterValue BACnetContextTagCharacterString
 }
 
+var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

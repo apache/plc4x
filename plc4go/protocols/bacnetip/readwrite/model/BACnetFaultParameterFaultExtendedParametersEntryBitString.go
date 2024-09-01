@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryBitString struct {
 	BitStringValue BACnetApplicationTagBitString
 }
 
+var _ BACnetFaultParameterFaultExtendedParametersEntryBitString = (*_BACnetFaultParameterFaultExtendedParametersEntryBitString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -39,9 +39,19 @@ const S7DataAlarmMessage_NUMBERMESSAGEOBJ uint8 = 0x01
 
 // S7DataAlarmMessage is the corresponding interface of S7DataAlarmMessage
 type S7DataAlarmMessage interface {
+	S7DataAlarmMessageContract
+	S7DataAlarmMessageRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// S7DataAlarmMessageContract provides a set of functions which can be overwritten by a sub struct
+type S7DataAlarmMessageContract interface {
+}
+
+// S7DataAlarmMessageRequirements provides a set of functions which need to be implemented by a sub struct
+type S7DataAlarmMessageRequirements interface {
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
 	GetCpuFunctionType() uint8
 }
@@ -57,6 +67,8 @@ type S7DataAlarmMessageExactly interface {
 type _S7DataAlarmMessage struct {
 	_S7DataAlarmMessageChildRequirements
 }
+
+var _ S7DataAlarmMessageContract = (*_S7DataAlarmMessage)(nil)
 
 type _S7DataAlarmMessageChildRequirements interface {
 	utils.Serializable

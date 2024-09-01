@@ -58,6 +58,8 @@ type _BACnetConstructedDataDoNotHide struct {
 	DoNotHide BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataDoNotHide = (*_BACnetConstructedDataDoNotHide)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

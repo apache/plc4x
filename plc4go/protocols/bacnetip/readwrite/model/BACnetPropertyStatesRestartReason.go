@@ -56,6 +56,8 @@ type _BACnetPropertyStatesRestartReason struct {
 	RestartReason BACnetRestartReasonTagged
 }
 
+var _ BACnetPropertyStatesRestartReason = (*_BACnetPropertyStatesRestartReason)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataLightingCommandDefaultPriority struct {
 	LightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataLightingCommandDefaultPriority = (*_BACnetConstructedDataLightingCommandDefaultPriority)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

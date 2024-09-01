@@ -58,6 +58,8 @@ type _BACnetConstructedDataPriorityArray struct {
 	PriorityArray BACnetPriorityArray
 }
 
+var _ BACnetConstructedDataPriorityArray = (*_BACnetConstructedDataPriorityArray)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataEgressActive struct {
 	EgressActive BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataEgressActive = (*_BACnetConstructedDataEgressActive)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

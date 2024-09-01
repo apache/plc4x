@@ -56,6 +56,8 @@ type _BACnetPropertyStatesLiftCarDriveStatus struct {
 	LiftCarDriveStatus BACnetLiftCarDriveStatusTagged
 }
 
+var _ BACnetPropertyStatesLiftCarDriveStatus = (*_BACnetPropertyStatesLiftCarDriveStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

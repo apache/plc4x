@@ -62,6 +62,8 @@ type _BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 	Password      BACnetContextTagCharacterString
 }
 
+var _ BACnetConfirmedServiceRequestDeviceCommunicationControl = (*_BACnetConfirmedServiceRequestDeviceCommunicationControl)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetLogRecordLogDatumRealValue struct {
 	RealValue BACnetContextTagReal
 }
 
+var _ BACnetLogRecordLogDatumRealValue = (*_BACnetLogRecordLogDatumRealValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

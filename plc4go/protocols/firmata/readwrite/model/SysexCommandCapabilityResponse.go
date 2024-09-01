@@ -51,6 +51,8 @@ type _SysexCommandCapabilityResponse struct {
 	*_SysexCommand
 }
 
+var _ SysexCommandCapabilityResponse = (*_SysexCommandCapabilityResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

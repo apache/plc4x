@@ -56,6 +56,8 @@ type _BACnetChannelValueReal struct {
 	RealValue BACnetApplicationTagReal
 }
 
+var _ BACnetChannelValueReal = (*_BACnetChannelValueReal)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

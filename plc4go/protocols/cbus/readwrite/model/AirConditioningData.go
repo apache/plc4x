@@ -35,13 +35,23 @@ import (
 
 // AirConditioningData is the corresponding interface of AirConditioningData
 type AirConditioningData interface {
+	AirConditioningDataContract
+	AirConditioningDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// AirConditioningDataContract provides a set of functions which can be overwritten by a sub struct
+type AirConditioningDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() AirConditioningCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() AirConditioningCommandType
+}
+
+// AirConditioningDataRequirements provides a set of functions which need to be implemented by a sub struct
+type AirConditioningDataRequirements interface {
 }
 
 // AirConditioningDataExactly can be used when we want exactly this type and not a type which fulfills AirConditioningData.
@@ -56,6 +66,8 @@ type _AirConditioningData struct {
 	_AirConditioningDataChildRequirements
 	CommandTypeContainer AirConditioningCommandTypeContainer
 }
+
+var _ AirConditioningDataContract = (*_AirConditioningData)(nil)
 
 type _AirConditioningDataChildRequirements interface {
 	utils.Serializable

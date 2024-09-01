@@ -56,6 +56,8 @@ type _ConnectionResponseDataBlockTunnelConnection struct {
 	KnxAddress KnxAddress
 }
 
+var _ ConnectionResponseDataBlockTunnelConnection = (*_ConnectionResponseDataBlockTunnelConnection)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataFDBBMDAddress struct {
 	FDBBMDAddress BACnetHostNPort
 }
 
+var _ BACnetConstructedDataFDBBMDAddress = (*_BACnetConstructedDataFDBBMDAddress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

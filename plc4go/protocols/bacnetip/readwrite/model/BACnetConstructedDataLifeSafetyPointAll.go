@@ -51,6 +51,8 @@ type _BACnetConstructedDataLifeSafetyPointAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataLifeSafetyPointAll = (*_BACnetConstructedDataLifeSafetyPointAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

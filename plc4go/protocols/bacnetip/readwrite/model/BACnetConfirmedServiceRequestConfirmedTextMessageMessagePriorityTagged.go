@@ -61,6 +61,8 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged str
 	TagClass  TagClass
 }
 
+var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

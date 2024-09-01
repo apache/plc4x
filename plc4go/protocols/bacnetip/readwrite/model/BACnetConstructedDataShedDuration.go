@@ -58,6 +58,8 @@ type _BACnetConstructedDataShedDuration struct {
 	ShedDuration BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataShedDuration = (*_BACnetConstructedDataShedDuration)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

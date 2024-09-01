@@ -58,6 +58,8 @@ type _BACnetConstructedDataDeployedProfileLocation struct {
 	DeployedProfileLocation BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataDeployedProfileLocation = (*_BACnetConstructedDataDeployedProfileLocation)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataFileType struct {
 	FileType BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataFileType = (*_BACnetConstructedDataFileType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

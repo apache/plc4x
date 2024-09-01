@@ -56,6 +56,8 @@ type _IdentifyReplyCommandGAVValuesStored struct {
 	Values []byte
 }
 
+var _ IdentifyReplyCommandGAVValuesStored = (*_IdentifyReplyCommandGAVValuesStored)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

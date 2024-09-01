@@ -66,6 +66,8 @@ type _BACnetCOVSubscription struct {
 	CovIncrement                BACnetContextTagReal
 }
 
+var _ BACnetCOVSubscription = (*_BACnetCOVSubscription)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataCredentialDataInputPresentValue struct {
 	PresentValue BACnetAuthenticationFactor
 }
 
+var _ BACnetConstructedDataCredentialDataInputPresentValue = (*_BACnetConstructedDataCredentialDataInputPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

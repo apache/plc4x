@@ -63,6 +63,8 @@ type _IdentifyReplyCommandNetworkVoltage struct {
 	VoltsDecimalPlace string
 }
 
+var _ IdentifyReplyCommandNetworkVoltage = (*_IdentifyReplyCommandNetworkVoltage)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

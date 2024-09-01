@@ -56,6 +56,8 @@ type _BACnetConfirmedServiceRequestGetEventInformation struct {
 	LastReceivedObjectIdentifier BACnetContextTagObjectIdentifier
 }
 
+var _ BACnetConfirmedServiceRequestGetEventInformation = (*_BACnetConfirmedServiceRequestGetEventInformation)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

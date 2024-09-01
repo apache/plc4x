@@ -58,6 +58,8 @@ type _BACnetConstructedDataPositiveIntegerValueMaxPresValue struct {
 	MaxPresValue BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPositiveIntegerValueMaxPresValue = (*_BACnetConstructedDataPositiveIntegerValueMaxPresValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

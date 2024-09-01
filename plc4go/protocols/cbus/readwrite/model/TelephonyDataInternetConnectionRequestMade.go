@@ -51,6 +51,8 @@ type _TelephonyDataInternetConnectionRequestMade struct {
 	*_TelephonyData
 }
 
+var _ TelephonyDataInternetConnectionRequestMade = (*_TelephonyDataInternetConnectionRequestMade)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

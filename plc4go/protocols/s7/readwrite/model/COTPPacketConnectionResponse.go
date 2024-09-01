@@ -62,6 +62,8 @@ type _COTPPacketConnectionResponse struct {
 	ProtocolClass        COTPProtocolClass
 }
 
+var _ COTPPacketConnectionResponse = (*_COTPPacketConnectionResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

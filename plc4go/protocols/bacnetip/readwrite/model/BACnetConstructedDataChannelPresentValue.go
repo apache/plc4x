@@ -58,6 +58,8 @@ type _BACnetConstructedDataChannelPresentValue struct {
 	PresentValue BACnetChannelValue
 }
 
+var _ BACnetConstructedDataChannelPresentValue = (*_BACnetConstructedDataChannelPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

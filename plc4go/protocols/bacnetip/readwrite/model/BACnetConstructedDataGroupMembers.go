@@ -61,6 +61,8 @@ type _BACnetConstructedDataGroupMembers struct {
 	GroupMembers         []BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetConstructedDataGroupMembers = (*_BACnetConstructedDataGroupMembers)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

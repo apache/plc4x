@@ -58,6 +58,8 @@ type _BACnetConstructedDataCarLoad struct {
 	CarLoad BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataCarLoad = (*_BACnetConstructedDataCarLoad)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

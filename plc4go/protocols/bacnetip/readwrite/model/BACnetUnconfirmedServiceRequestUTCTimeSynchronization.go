@@ -59,6 +59,8 @@ type _BACnetUnconfirmedServiceRequestUTCTimeSynchronization struct {
 	SynchronizedTime BACnetApplicationTagTime
 }
 
+var _ BACnetUnconfirmedServiceRequestUTCTimeSynchronization = (*_BACnetUnconfirmedServiceRequestUTCTimeSynchronization)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -64,6 +64,8 @@ type _ReferenceListEntryDataType struct {
 	reservedField0 *uint8
 }
 
+var _ ReferenceListEntryDataType = (*_ReferenceListEntryDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

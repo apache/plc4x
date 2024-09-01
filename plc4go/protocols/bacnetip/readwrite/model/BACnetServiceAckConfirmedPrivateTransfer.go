@@ -62,6 +62,8 @@ type _BACnetServiceAckConfirmedPrivateTransfer struct {
 	ResultBlock   BACnetConstructedData
 }
 
+var _ BACnetServiceAckConfirmedPrivateTransfer = (*_BACnetServiceAckConfirmedPrivateTransfer)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

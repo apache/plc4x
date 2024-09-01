@@ -58,6 +58,8 @@ type _BACnetConstructedDataCurrentCommandPriority struct {
 	CurrentCommandPriority BACnetOptionalUnsigned
 }
 
+var _ BACnetConstructedDataCurrentCommandPriority = (*_BACnetConstructedDataCurrentCommandPriority)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -54,6 +54,8 @@ type _InterfaceOptions1PowerUpSettings struct {
 	InterfaceOptions1 InterfaceOptions1
 }
 
+var _ InterfaceOptions1PowerUpSettings = (*_InterfaceOptions1PowerUpSettings)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -51,6 +51,8 @@ type _TriggerControlDataTriggerMin struct {
 	*_TriggerControlData
 }
 
+var _ TriggerControlDataTriggerMin = (*_TriggerControlDataTriggerMin)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

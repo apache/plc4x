@@ -56,6 +56,8 @@ type _BACnetLogDataLogDataEntryUnsignedValue struct {
 	UnsignedValue BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetLogDataLogDataEntryUnsignedValue = (*_BACnetLogDataLogDataEntryUnsignedValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

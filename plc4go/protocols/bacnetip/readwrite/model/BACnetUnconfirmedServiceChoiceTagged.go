@@ -61,6 +61,8 @@ type _BACnetUnconfirmedServiceChoiceTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetUnconfirmedServiceChoiceTagged = (*_BACnetUnconfirmedServiceChoiceTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

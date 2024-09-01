@@ -58,6 +58,8 @@ type _BACnetConstructedDataAckRequired struct {
 	AckRequired BACnetEventTransitionBitsTagged
 }
 
+var _ BACnetConstructedDataAckRequired = (*_BACnetConstructedDataAckRequired)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

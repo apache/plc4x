@@ -58,6 +58,8 @@ type _BACnetConstructedDataIPv6DHCPLeaseTimeRemaining struct {
 	Ipv6DhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataIPv6DHCPLeaseTimeRemaining = (*_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

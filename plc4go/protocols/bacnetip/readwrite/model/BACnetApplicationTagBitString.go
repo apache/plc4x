@@ -56,6 +56,8 @@ type _BACnetApplicationTagBitString struct {
 	Payload BACnetTagPayloadBitString
 }
 
+var _ BACnetApplicationTagBitString = (*_BACnetApplicationTagBitString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

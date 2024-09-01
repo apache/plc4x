@@ -58,6 +58,8 @@ type _BACnetConstructedDataLockout struct {
 	Lockout BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataLockout = (*_BACnetConstructedDataLockout)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

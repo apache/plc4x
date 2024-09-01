@@ -45,13 +45,15 @@ const AmsPacket_BROADCAST bool = bool(false)
 
 // AmsPacket is the corresponding interface of AmsPacket
 type AmsPacket interface {
+	AmsPacketContract
+	AmsPacketRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetCommandId returns CommandId (discriminator field)
-	GetCommandId() CommandId
-	// GetResponse returns Response (discriminator field)
-	GetResponse() bool
+}
+
+// AmsPacketContract provides a set of functions which can be overwritten by a sub struct
+type AmsPacketContract interface {
 	// GetTargetAmsNetId returns TargetAmsNetId (property field)
 	GetTargetAmsNetId() AmsNetId
 	// GetTargetAmsPort returns TargetAmsPort (property field)
@@ -64,6 +66,14 @@ type AmsPacket interface {
 	GetErrorCode() uint32
 	// GetInvokeId returns InvokeId (property field)
 	GetInvokeId() uint32
+}
+
+// AmsPacketRequirements provides a set of functions which need to be implemented by a sub struct
+type AmsPacketRequirements interface {
+	// GetCommandId returns CommandId (discriminator field)
+	GetCommandId() CommandId
+	// GetResponse returns Response (discriminator field)
+	GetResponse() bool
 }
 
 // AmsPacketExactly can be used when we want exactly this type and not a type which fulfills AmsPacket.
@@ -85,6 +95,8 @@ type _AmsPacket struct {
 	// Reserved Fields
 	reservedField0 *int8
 }
+
+var _ AmsPacketContract = (*_AmsPacket)(nil)
 
 type _AmsPacketChildRequirements interface {
 	utils.Serializable

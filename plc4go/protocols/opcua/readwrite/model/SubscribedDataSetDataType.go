@@ -51,6 +51,8 @@ type _SubscribedDataSetDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ SubscribedDataSetDataType = (*_SubscribedDataSetDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

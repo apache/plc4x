@@ -62,6 +62,8 @@ type _BACnetConfirmedServiceRequestVTData struct {
 	VtDataFlag          BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestVTData = (*_BACnetConfirmedServiceRequestVTData)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

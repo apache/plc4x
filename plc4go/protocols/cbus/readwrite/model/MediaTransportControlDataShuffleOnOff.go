@@ -60,6 +60,8 @@ type _MediaTransportControlDataShuffleOnOff struct {
 	State byte
 }
 
+var _ MediaTransportControlDataShuffleOnOff = (*_MediaTransportControlDataShuffleOnOff)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

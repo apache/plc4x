@@ -59,6 +59,8 @@ type _RegisterServerRequest struct {
 	Server        ExtensionObjectDefinition
 }
 
+var _ RegisterServerRequest = (*_RegisterServerRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

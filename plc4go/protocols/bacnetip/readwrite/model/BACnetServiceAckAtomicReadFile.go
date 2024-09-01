@@ -59,6 +59,8 @@ type _BACnetServiceAckAtomicReadFile struct {
 	AccessMethod BACnetServiceAckAtomicReadFileStreamOrRecord
 }
 
+var _ BACnetServiceAckAtomicReadFile = (*_BACnetServiceAckAtomicReadFile)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

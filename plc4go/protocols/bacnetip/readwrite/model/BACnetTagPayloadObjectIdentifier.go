@@ -62,6 +62,8 @@ type _BACnetTagPayloadObjectIdentifier struct {
 	InstanceNumber   uint32
 }
 
+var _ BACnetTagPayloadObjectIdentifier = (*_BACnetTagPayloadObjectIdentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

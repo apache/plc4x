@@ -58,6 +58,8 @@ type _BACnetConstructedDataExpirationTime struct {
 	ExpirationTime BACnetDateTime
 }
 
+var _ BACnetConstructedDataExpirationTime = (*_BACnetConstructedDataExpirationTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

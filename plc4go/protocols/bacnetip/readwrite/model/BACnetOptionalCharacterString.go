@@ -35,13 +35,23 @@ import (
 
 // BACnetOptionalCharacterString is the corresponding interface of BACnetOptionalCharacterString
 type BACnetOptionalCharacterString interface {
+	BACnetOptionalCharacterStringContract
+	BACnetOptionalCharacterStringRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetOptionalCharacterStringContract provides a set of functions which can be overwritten by a sub struct
+type BACnetOptionalCharacterStringContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetOptionalCharacterStringRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetOptionalCharacterStringRequirements interface {
 }
 
 // BACnetOptionalCharacterStringExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalCharacterString.
@@ -56,6 +66,8 @@ type _BACnetOptionalCharacterString struct {
 	_BACnetOptionalCharacterStringChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetOptionalCharacterStringContract = (*_BACnetOptionalCharacterString)(nil)
 
 type _BACnetOptionalCharacterStringChildRequirements interface {
 	utils.Serializable

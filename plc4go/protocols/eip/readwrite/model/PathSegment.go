@@ -35,9 +35,19 @@ import (
 
 // PathSegment is the corresponding interface of PathSegment
 type PathSegment interface {
+	PathSegmentContract
+	PathSegmentRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// PathSegmentContract provides a set of functions which can be overwritten by a sub struct
+type PathSegmentContract interface {
+}
+
+// PathSegmentRequirements provides a set of functions which need to be implemented by a sub struct
+type PathSegmentRequirements interface {
 	// GetPathSegment returns PathSegment (discriminator field)
 	GetPathSegment() uint8
 }
@@ -53,6 +63,8 @@ type PathSegmentExactly interface {
 type _PathSegment struct {
 	_PathSegmentChildRequirements
 }
+
+var _ PathSegmentContract = (*_PathSegment)(nil)
 
 type _PathSegmentChildRequirements interface {
 	utils.Serializable

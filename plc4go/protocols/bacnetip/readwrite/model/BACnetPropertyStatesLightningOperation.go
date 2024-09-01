@@ -56,6 +56,8 @@ type _BACnetPropertyStatesLightningOperation struct {
 	LightningOperation BACnetLightingOperationTagged
 }
 
+var _ BACnetPropertyStatesLightningOperation = (*_BACnetPropertyStatesLightningOperation)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

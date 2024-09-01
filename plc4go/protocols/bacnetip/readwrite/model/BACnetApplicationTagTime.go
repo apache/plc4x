@@ -56,6 +56,8 @@ type _BACnetApplicationTagTime struct {
 	Payload BACnetTagPayloadTime
 }
 
+var _ BACnetApplicationTagTime = (*_BACnetApplicationTagTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

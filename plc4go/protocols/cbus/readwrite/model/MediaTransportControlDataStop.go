@@ -51,6 +51,8 @@ type _MediaTransportControlDataStop struct {
 	*_MediaTransportControlData
 }
 
+var _ MediaTransportControlDataStop = (*_MediaTransportControlDataStop)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -68,6 +68,8 @@ type _AirConditioningDataZoneHvacPlantStatus struct {
 	HvacErrorCode HVACError
 }
 
+var _ AirConditioningDataZoneHvacPlantStatus = (*_AirConditioningDataZoneHvacPlantStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

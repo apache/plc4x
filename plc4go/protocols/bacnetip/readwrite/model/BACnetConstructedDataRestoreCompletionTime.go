@@ -58,6 +58,8 @@ type _BACnetConstructedDataRestoreCompletionTime struct {
 	CompletionTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataRestoreCompletionTime = (*_BACnetConstructedDataRestoreCompletionTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

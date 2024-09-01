@@ -58,6 +58,8 @@ type _BACnetConstructedDataMaxFailedAttempts struct {
 	MaxFailedAttempts BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMaxFailedAttempts = (*_BACnetConstructedDataMaxFailedAttempts)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -49,6 +49,8 @@ type EncodedTicketExactly interface {
 type _EncodedTicket struct {
 }
 
+var _ EncodedTicket = (*_EncodedTicket)(nil)
+
 // NewEncodedTicket factory function for _EncodedTicket
 func NewEncodedTicket() *_EncodedTicket {
 	return &_EncodedTicket{}

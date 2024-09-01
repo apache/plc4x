@@ -58,6 +58,8 @@ type _BACnetConstructedDataUserName struct {
 	UserName BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataUserName = (*_BACnetConstructedDataUserName)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

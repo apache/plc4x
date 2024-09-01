@@ -65,6 +65,8 @@ type _AdsMultiRequestItemReadWrite struct {
 	ItemWriteLength uint32
 }
 
+var _ AdsMultiRequestItemReadWrite = (*_AdsMultiRequestItemReadWrite)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

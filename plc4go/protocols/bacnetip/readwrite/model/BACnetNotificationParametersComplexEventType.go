@@ -56,6 +56,8 @@ type _BACnetNotificationParametersComplexEventType struct {
 	ListOfValues BACnetPropertyValues
 }
 
+var _ BACnetNotificationParametersComplexEventType = (*_BACnetNotificationParametersComplexEventType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

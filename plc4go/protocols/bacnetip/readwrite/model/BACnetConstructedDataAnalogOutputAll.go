@@ -51,6 +51,8 @@ type _BACnetConstructedDataAnalogOutputAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataAnalogOutputAll = (*_BACnetConstructedDataAnalogOutputAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

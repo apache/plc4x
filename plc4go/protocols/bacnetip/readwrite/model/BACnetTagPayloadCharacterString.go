@@ -63,6 +63,8 @@ type _BACnetTagPayloadCharacterString struct {
 	ActualLength uint32
 }
 
+var _ BACnetTagPayloadCharacterString = (*_BACnetTagPayloadCharacterString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -35,13 +35,23 @@ import (
 
 // BACnetCalendarEntry is the corresponding interface of BACnetCalendarEntry
 type BACnetCalendarEntry interface {
+	BACnetCalendarEntryContract
+	BACnetCalendarEntryRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetCalendarEntryContract provides a set of functions which can be overwritten by a sub struct
+type BACnetCalendarEntryContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetCalendarEntryRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetCalendarEntryRequirements interface {
 }
 
 // BACnetCalendarEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetCalendarEntry.
@@ -56,6 +66,8 @@ type _BACnetCalendarEntry struct {
 	_BACnetCalendarEntryChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetCalendarEntryContract = (*_BACnetCalendarEntry)(nil)
 
 type _BACnetCalendarEntryChildRequirements interface {
 	utils.Serializable

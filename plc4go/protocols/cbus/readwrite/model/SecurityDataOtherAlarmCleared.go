@@ -51,6 +51,8 @@ type _SecurityDataOtherAlarmCleared struct {
 	*_SecurityData
 }
 
+var _ SecurityDataOtherAlarmCleared = (*_SecurityDataOtherAlarmCleared)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

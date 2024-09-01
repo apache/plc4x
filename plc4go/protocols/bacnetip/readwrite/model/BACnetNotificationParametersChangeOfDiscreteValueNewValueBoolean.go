@@ -56,6 +56,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean struct {
 	BooleanValue BACnetApplicationTagBoolean
 }
 
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

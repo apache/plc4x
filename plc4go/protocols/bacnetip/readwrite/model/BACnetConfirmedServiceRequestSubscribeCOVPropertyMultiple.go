@@ -68,6 +68,8 @@ type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple struct {
 	ListOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
 }
 
+var _ BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

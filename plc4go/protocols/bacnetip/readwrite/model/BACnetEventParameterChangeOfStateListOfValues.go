@@ -63,6 +63,8 @@ type _BACnetEventParameterChangeOfStateListOfValues struct {
 	TagNumber uint8
 }
 
+var _ BACnetEventParameterChangeOfStateListOfValues = (*_BACnetEventParameterChangeOfStateListOfValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

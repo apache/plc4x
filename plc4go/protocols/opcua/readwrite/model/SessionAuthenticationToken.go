@@ -49,6 +49,8 @@ type SessionAuthenticationTokenExactly interface {
 type _SessionAuthenticationToken struct {
 }
 
+var _ SessionAuthenticationToken = (*_SessionAuthenticationToken)(nil)
+
 // NewSessionAuthenticationToken factory function for _SessionAuthenticationToken
 func NewSessionAuthenticationToken() *_SessionAuthenticationToken {
 	return &_SessionAuthenticationToken{}

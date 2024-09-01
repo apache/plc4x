@@ -65,6 +65,8 @@ type _BACnetEventParameterCommandFailure struct {
 	ClosingTag                BACnetClosingTag
 }
 
+var _ BACnetEventParameterCommandFailure = (*_BACnetEventParameterCommandFailure)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

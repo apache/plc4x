@@ -56,6 +56,8 @@ type _BACnetPriorityValueInteger struct {
 	IntegerValue BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetPriorityValueInteger = (*_BACnetPriorityValueInteger)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _DeviceConfigurationAck struct {
 	DeviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock
 }
 
+var _ DeviceConfigurationAck = (*_DeviceConfigurationAck)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

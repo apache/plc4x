@@ -62,6 +62,8 @@ type _ModbusPDUMaskWriteHoldingRegisterResponse struct {
 	OrMask           uint16
 }
 
+var _ ModbusPDUMaskWriteHoldingRegisterResponse = (*_ModbusPDUMaskWriteHoldingRegisterResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

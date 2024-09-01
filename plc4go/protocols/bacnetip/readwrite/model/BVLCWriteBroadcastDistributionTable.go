@@ -61,6 +61,8 @@ type _BVLCWriteBroadcastDistributionTable struct {
 	BvlcPayloadLength uint16
 }
 
+var _ BVLCWriteBroadcastDistributionTable = (*_BVLCWriteBroadcastDistributionTable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

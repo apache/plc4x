@@ -56,6 +56,8 @@ type _BACnetClientCOVNone struct {
 	DefaultIncrement BACnetApplicationTagNull
 }
 
+var _ BACnetClientCOVNone = (*_BACnetClientCOVNone)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

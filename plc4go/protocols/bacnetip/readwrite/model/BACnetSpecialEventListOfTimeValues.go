@@ -63,6 +63,8 @@ type _BACnetSpecialEventListOfTimeValues struct {
 	TagNumber uint8
 }
 
+var _ BACnetSpecialEventListOfTimeValues = (*_BACnetSpecialEventListOfTimeValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

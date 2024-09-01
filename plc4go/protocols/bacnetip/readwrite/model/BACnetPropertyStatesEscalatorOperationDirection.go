@@ -56,6 +56,8 @@ type _BACnetPropertyStatesEscalatorOperationDirection struct {
 	EscalatorOperationDirection BACnetEscalatorOperationDirectionTagged
 }
 
+var _ BACnetPropertyStatesEscalatorOperationDirection = (*_BACnetPropertyStatesEscalatorOperationDirection)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetHostAddressIpAddress struct {
 	IpAddress BACnetContextTagOctetString
 }
 
+var _ BACnetHostAddressIpAddress = (*_BACnetHostAddressIpAddress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

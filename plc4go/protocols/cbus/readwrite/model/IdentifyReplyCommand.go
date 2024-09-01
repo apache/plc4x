@@ -33,9 +33,19 @@ import (
 
 // IdentifyReplyCommand is the corresponding interface of IdentifyReplyCommand
 type IdentifyReplyCommand interface {
+	IdentifyReplyCommandContract
+	IdentifyReplyCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// IdentifyReplyCommandContract provides a set of functions which can be overwritten by a sub struct
+type IdentifyReplyCommandContract interface {
+}
+
+// IdentifyReplyCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type IdentifyReplyCommandRequirements interface {
 	// GetAttribute returns Attribute (discriminator field)
 	GetAttribute() Attribute
 }
@@ -54,6 +64,8 @@ type _IdentifyReplyCommand struct {
 	// Arguments.
 	NumBytes uint8
 }
+
+var _ IdentifyReplyCommandContract = (*_IdentifyReplyCommand)(nil)
 
 type _IdentifyReplyCommandChildRequirements interface {
 	utils.Serializable

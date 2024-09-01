@@ -51,6 +51,8 @@ type _AdsDeviceNotificationResponse struct {
 	*_AmsPacket
 }
 
+var _ AdsDeviceNotificationResponse = (*_AdsDeviceNotificationResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

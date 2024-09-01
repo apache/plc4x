@@ -58,6 +58,8 @@ type _BACnetConstructedDataProgramChange struct {
 	ProgramChange BACnetProgramRequestTagged
 }
 
+var _ BACnetConstructedDataProgramChange = (*_BACnetConstructedDataProgramChange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

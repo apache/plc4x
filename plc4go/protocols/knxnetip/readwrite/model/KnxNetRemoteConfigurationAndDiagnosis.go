@@ -56,6 +56,8 @@ type _KnxNetRemoteConfigurationAndDiagnosis struct {
 	Version uint8
 }
 
+var _ KnxNetRemoteConfigurationAndDiagnosis = (*_KnxNetRemoteConfigurationAndDiagnosis)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

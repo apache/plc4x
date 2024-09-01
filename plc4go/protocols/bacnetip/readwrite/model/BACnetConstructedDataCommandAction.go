@@ -61,6 +61,8 @@ type _BACnetConstructedDataCommandAction struct {
 	ActionLists          []BACnetActionList
 }
 
+var _ BACnetConstructedDataCommandAction = (*_BACnetConstructedDataCommandAction)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

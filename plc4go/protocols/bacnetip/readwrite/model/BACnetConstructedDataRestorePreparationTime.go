@@ -58,6 +58,8 @@ type _BACnetConstructedDataRestorePreparationTime struct {
 	RestorePreparationTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataRestorePreparationTime = (*_BACnetConstructedDataRestorePreparationTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

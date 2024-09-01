@@ -56,6 +56,8 @@ type _SysexCommandAnalogMappingQueryResponse struct {
 	Pin uint8
 }
 
+var _ SysexCommandAnalogMappingQueryResponse = (*_SysexCommandAnalogMappingQueryResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

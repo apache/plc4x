@@ -56,6 +56,8 @@ type _BACnetLandingCallStatusCommandDestination struct {
 	Destination BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetLandingCallStatusCommandDestination = (*_BACnetLandingCallStatusCommandDestination)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

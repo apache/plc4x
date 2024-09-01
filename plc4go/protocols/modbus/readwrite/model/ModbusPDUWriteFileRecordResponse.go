@@ -56,6 +56,8 @@ type _ModbusPDUWriteFileRecordResponse struct {
 	Items []ModbusPDUWriteFileRecordResponseItem
 }
 
+var _ ModbusPDUWriteFileRecordResponse = (*_ModbusPDUWriteFileRecordResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

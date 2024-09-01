@@ -92,6 +92,8 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedEventNotification struct {
 	EventValues                BACnetNotificationParameters
 }
 
+var _ BACnetUnconfirmedServiceRequestUnconfirmedEventNotification = (*_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

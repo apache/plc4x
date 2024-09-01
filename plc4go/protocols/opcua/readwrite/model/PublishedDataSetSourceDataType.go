@@ -51,6 +51,8 @@ type _PublishedDataSetSourceDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ PublishedDataSetSourceDataType = (*_PublishedDataSetSourceDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

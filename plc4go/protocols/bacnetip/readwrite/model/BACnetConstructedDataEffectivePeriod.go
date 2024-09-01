@@ -58,6 +58,8 @@ type _BACnetConstructedDataEffectivePeriod struct {
 	DateRange BACnetDateRange
 }
 
+var _ BACnetConstructedDataEffectivePeriod = (*_BACnetConstructedDataEffectivePeriod)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

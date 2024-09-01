@@ -61,6 +61,8 @@ type _BVLCDistributeBroadcastToNetwork struct {
 	BvlcPayloadLength uint16
 }
 
+var _ BVLCDistributeBroadcastToNetwork = (*_BVLCDistributeBroadcastToNetwork)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

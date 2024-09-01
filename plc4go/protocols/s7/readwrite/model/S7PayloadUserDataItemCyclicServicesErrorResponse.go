@@ -51,6 +51,8 @@ type _S7PayloadUserDataItemCyclicServicesErrorResponse struct {
 	*_S7PayloadUserDataItem
 }
 
+var _ S7PayloadUserDataItemCyclicServicesErrorResponse = (*_S7PayloadUserDataItemCyclicServicesErrorResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

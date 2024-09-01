@@ -56,6 +56,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate struct 
 	DateValue BACnetApplicationTagDate
 }
 
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -59,6 +59,8 @@ type _DeviceConfigurationRequestDataBlock struct {
 	reservedField0 *uint8
 }
 
+var _ DeviceConfigurationRequestDataBlock = (*_DeviceConfigurationRequestDataBlock)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

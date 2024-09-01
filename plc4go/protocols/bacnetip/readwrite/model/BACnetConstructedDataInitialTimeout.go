@@ -58,6 +58,8 @@ type _BACnetConstructedDataInitialTimeout struct {
 	InitialTimeout BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataInitialTimeout = (*_BACnetConstructedDataInitialTimeout)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

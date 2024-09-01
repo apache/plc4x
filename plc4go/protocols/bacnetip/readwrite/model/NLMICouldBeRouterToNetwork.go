@@ -59,6 +59,8 @@ type _NLMICouldBeRouterToNetwork struct {
 	PerformanceIndex          uint8
 }
 
+var _ NLMICouldBeRouterToNetwork = (*_NLMICouldBeRouterToNetwork)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

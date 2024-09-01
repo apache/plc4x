@@ -58,6 +58,8 @@ type _BACnetConstructedDataLastRestartReason struct {
 	LastRestartReason BACnetRestartReasonTagged
 }
 
+var _ BACnetConstructedDataLastRestartReason = (*_BACnetConstructedDataLastRestartReason)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

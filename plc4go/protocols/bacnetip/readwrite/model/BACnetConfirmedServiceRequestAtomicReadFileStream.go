@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestAtomicReadFileStream struct {
 	RequestOctetCount BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestAtomicReadFileStream = (*_BACnetConfirmedServiceRequestAtomicReadFileStream)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

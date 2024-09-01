@@ -57,6 +57,8 @@ type _ModbusPDUReadFileRecordResponseItem struct {
 	Data          []byte
 }
 
+var _ ModbusPDUReadFileRecordResponseItem = (*_ModbusPDUReadFileRecordResponseItem)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

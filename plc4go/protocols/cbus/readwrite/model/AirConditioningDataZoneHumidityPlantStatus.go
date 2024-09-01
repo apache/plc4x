@@ -68,6 +68,8 @@ type _AirConditioningDataZoneHumidityPlantStatus struct {
 	HumidityErrorCode HVACHumidityError
 }
 
+var _ AirConditioningDataZoneHumidityPlantStatus = (*_AirConditioningDataZoneHumidityPlantStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

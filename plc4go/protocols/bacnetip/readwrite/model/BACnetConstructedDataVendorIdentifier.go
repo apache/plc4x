@@ -58,6 +58,8 @@ type _BACnetConstructedDataVendorIdentifier struct {
 	VendorIdentifier BACnetVendorIdTagged
 }
 
+var _ BACnetConstructedDataVendorIdentifier = (*_BACnetConstructedDataVendorIdentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

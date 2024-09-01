@@ -58,6 +58,8 @@ type _BACnetConstructedDataBinaryValueRelinquishDefault struct {
 	RelinquishDefault BACnetBinaryPVTagged
 }
 
+var _ BACnetConstructedDataBinaryValueRelinquishDefault = (*_BACnetConstructedDataBinaryValueRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataFDSubscriptionLifetime struct {
 	FdSubscriptionLifetime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataFDSubscriptionLifetime = (*_BACnetConstructedDataFDSubscriptionLifetime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -52,6 +52,8 @@ type _CIPEncapsulationConnectionResponse struct {
 	*_CIPEncapsulationPacket
 }
 
+var _ CIPEncapsulationConnectionResponse = (*_CIPEncapsulationConnectionResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

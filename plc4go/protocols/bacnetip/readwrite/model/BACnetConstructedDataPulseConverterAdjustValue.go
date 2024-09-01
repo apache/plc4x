@@ -58,6 +58,8 @@ type _BACnetConstructedDataPulseConverterAdjustValue struct {
 	AdjustValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataPulseConverterAdjustValue = (*_BACnetConstructedDataPulseConverterAdjustValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

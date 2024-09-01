@@ -56,6 +56,8 @@ type _BACnetHostAddressName struct {
 	Name BACnetContextTagCharacterString
 }
 
+var _ BACnetHostAddressName = (*_BACnetHostAddressName)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

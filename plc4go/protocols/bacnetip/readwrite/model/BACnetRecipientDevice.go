@@ -56,6 +56,8 @@ type _BACnetRecipientDevice struct {
 	DeviceValue BACnetContextTagObjectIdentifier
 }
 
+var _ BACnetRecipientDevice = (*_BACnetRecipientDevice)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

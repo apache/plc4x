@@ -61,6 +61,8 @@ type _BACnetConstructedDataNetworkAccessSecurityPolicies struct {
 	NetworkAccessSecurityPolicies []BACnetNetworkSecurityPolicy
 }
 
+var _ BACnetConstructedDataNetworkAccessSecurityPolicies = (*_BACnetConstructedDataNetworkAccessSecurityPolicies)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

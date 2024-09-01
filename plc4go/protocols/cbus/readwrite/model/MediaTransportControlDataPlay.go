@@ -51,6 +51,8 @@ type _MediaTransportControlDataPlay struct {
 	*_MediaTransportControlData
 }
 
+var _ MediaTransportControlDataPlay = (*_MediaTransportControlDataPlay)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

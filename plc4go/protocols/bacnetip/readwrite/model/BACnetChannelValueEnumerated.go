@@ -56,6 +56,8 @@ type _BACnetChannelValueEnumerated struct {
 	EnumeratedValue BACnetApplicationTagEnumerated
 }
 
+var _ BACnetChannelValueEnumerated = (*_BACnetChannelValueEnumerated)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

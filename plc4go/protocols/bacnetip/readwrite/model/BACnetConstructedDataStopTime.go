@@ -58,6 +58,8 @@ type _BACnetConstructedDataStopTime struct {
 	StopTime BACnetDateTime
 }
 
+var _ BACnetConstructedDataStopTime = (*_BACnetConstructedDataStopTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

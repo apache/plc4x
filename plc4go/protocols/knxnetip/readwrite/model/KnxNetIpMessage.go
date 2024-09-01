@@ -40,9 +40,19 @@ const KnxNetIpMessage_PROTOCOLVERSION uint8 = 0x10
 
 // KnxNetIpMessage is the corresponding interface of KnxNetIpMessage
 type KnxNetIpMessage interface {
+	KnxNetIpMessageContract
+	KnxNetIpMessageRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// KnxNetIpMessageContract provides a set of functions which can be overwritten by a sub struct
+type KnxNetIpMessageContract interface {
+}
+
+// KnxNetIpMessageRequirements provides a set of functions which need to be implemented by a sub struct
+type KnxNetIpMessageRequirements interface {
 	// GetMsgType returns MsgType (discriminator field)
 	GetMsgType() uint16
 }
@@ -58,6 +68,8 @@ type KnxNetIpMessageExactly interface {
 type _KnxNetIpMessage struct {
 	_KnxNetIpMessageChildRequirements
 }
+
+var _ KnxNetIpMessageContract = (*_KnxNetIpMessage)(nil)
 
 type _KnxNetIpMessageChildRequirements interface {
 	utils.Serializable

@@ -58,6 +58,8 @@ type _BACnetConstructedDataCarLoadUnits struct {
 	Units BACnetEngineeringUnitsTagged
 }
 
+var _ BACnetConstructedDataCarLoadUnits = (*_BACnetConstructedDataCarLoadUnits)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

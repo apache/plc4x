@@ -56,6 +56,8 @@ type _BACnetServiceAckCreateObject struct {
 	ObjectIdentifier BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetServiceAckCreateObject = (*_BACnetServiceAckCreateObject)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -35,13 +35,23 @@ import (
 
 // NodeIdTypeDefinition is the corresponding interface of NodeIdTypeDefinition
 type NodeIdTypeDefinition interface {
+	NodeIdTypeDefinitionContract
+	NodeIdTypeDefinitionRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetNodeType returns NodeType (discriminator field)
-	GetNodeType() NodeIdType
+}
+
+// NodeIdTypeDefinitionContract provides a set of functions which can be overwritten by a sub struct
+type NodeIdTypeDefinitionContract interface {
 	// GetIdentifier returns Identifier (abstract field)
 	GetIdentifier() string
+}
+
+// NodeIdTypeDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
+type NodeIdTypeDefinitionRequirements interface {
+	// GetNodeType returns NodeType (discriminator field)
+	GetNodeType() NodeIdType
 }
 
 // NodeIdTypeDefinitionExactly can be used when we want exactly this type and not a type which fulfills NodeIdTypeDefinition.
@@ -55,6 +65,8 @@ type NodeIdTypeDefinitionExactly interface {
 type _NodeIdTypeDefinition struct {
 	_NodeIdTypeDefinitionChildRequirements
 }
+
+var _ NodeIdTypeDefinitionContract = (*_NodeIdTypeDefinition)(nil)
 
 type _NodeIdTypeDefinitionChildRequirements interface {
 	utils.Serializable

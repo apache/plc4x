@@ -60,6 +60,8 @@ type _BACnetAuthenticationFactorFormat struct {
 	VendorFormat BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetAuthenticationFactorFormat = (*_BACnetAuthenticationFactorFormat)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

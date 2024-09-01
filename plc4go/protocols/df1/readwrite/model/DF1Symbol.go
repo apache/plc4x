@@ -40,9 +40,19 @@ const DF1Symbol_MESSAGESTART uint8 = 0x10
 
 // DF1Symbol is the corresponding interface of DF1Symbol
 type DF1Symbol interface {
+	DF1SymbolContract
+	DF1SymbolRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// DF1SymbolContract provides a set of functions which can be overwritten by a sub struct
+type DF1SymbolContract interface {
+}
+
+// DF1SymbolRequirements provides a set of functions which need to be implemented by a sub struct
+type DF1SymbolRequirements interface {
 	// GetSymbolType returns SymbolType (discriminator field)
 	GetSymbolType() uint8
 }
@@ -58,6 +68,8 @@ type DF1SymbolExactly interface {
 type _DF1Symbol struct {
 	_DF1SymbolChildRequirements
 }
+
+var _ DF1SymbolContract = (*_DF1Symbol)(nil)
 
 type _DF1SymbolChildRequirements interface {
 	utils.Serializable

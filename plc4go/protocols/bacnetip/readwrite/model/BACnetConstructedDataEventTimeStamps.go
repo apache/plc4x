@@ -67,6 +67,8 @@ type _BACnetConstructedDataEventTimeStamps struct {
 	EventTimeStamps      []BACnetTimeStamp
 }
 
+var _ BACnetConstructedDataEventTimeStamps = (*_BACnetConstructedDataEventTimeStamps)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataLargeAnalogValueLowLimit struct {
 	LowLimit BACnetApplicationTagDouble
 }
 
+var _ BACnetConstructedDataLargeAnalogValueLowLimit = (*_BACnetConstructedDataLargeAnalogValueLowLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

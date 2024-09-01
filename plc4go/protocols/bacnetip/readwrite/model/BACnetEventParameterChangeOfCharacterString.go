@@ -65,6 +65,8 @@ type _BACnetEventParameterChangeOfCharacterString struct {
 	ClosingTag        BACnetClosingTag
 }
 
+var _ BACnetEventParameterChangeOfCharacterString = (*_BACnetEventParameterChangeOfCharacterString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

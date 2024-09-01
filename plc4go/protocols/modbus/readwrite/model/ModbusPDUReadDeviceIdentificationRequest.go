@@ -62,6 +62,8 @@ type _ModbusPDUReadDeviceIdentificationRequest struct {
 	ObjectId uint8
 }
 
+var _ ModbusPDUReadDeviceIdentificationRequest = (*_ModbusPDUReadDeviceIdentificationRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

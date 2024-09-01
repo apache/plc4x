@@ -69,6 +69,8 @@ type _BACnetLightingCommand struct {
 	Priority           BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetLightingCommand = (*_BACnetLightingCommand)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -74,6 +74,8 @@ type _CipConnectionManagerCloseResponse struct {
 	reservedField1 *uint8
 }
 
+var _ CipConnectionManagerCloseResponse = (*_CipConnectionManagerCloseResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

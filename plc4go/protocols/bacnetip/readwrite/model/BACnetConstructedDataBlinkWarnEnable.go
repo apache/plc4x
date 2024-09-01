@@ -58,6 +58,8 @@ type _BACnetConstructedDataBlinkWarnEnable struct {
 	BlinkWarnEnable BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataBlinkWarnEnable = (*_BACnetConstructedDataBlinkWarnEnable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

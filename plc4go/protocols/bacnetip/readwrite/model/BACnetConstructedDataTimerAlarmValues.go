@@ -56,6 +56,8 @@ type _BACnetConstructedDataTimerAlarmValues struct {
 	AlarmValues []BACnetTimerStateTagged
 }
 
+var _ BACnetConstructedDataTimerAlarmValues = (*_BACnetConstructedDataTimerAlarmValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccessDoorPresentValue struct {
 	PresentValue BACnetDoorValueTagged
 }
 
+var _ BACnetConstructedDataAccessDoorPresentValue = (*_BACnetConstructedDataAccessDoorPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

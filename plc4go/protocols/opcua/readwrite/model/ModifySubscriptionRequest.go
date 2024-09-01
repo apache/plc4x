@@ -74,6 +74,8 @@ type _ModifySubscriptionRequest struct {
 	Priority                    uint8
 }
 
+var _ ModifySubscriptionRequest = (*_ModifySubscriptionRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

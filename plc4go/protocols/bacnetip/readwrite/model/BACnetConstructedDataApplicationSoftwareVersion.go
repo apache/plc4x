@@ -58,6 +58,8 @@ type _BACnetConstructedDataApplicationSoftwareVersion struct {
 	ApplicationSoftwareVersion BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataApplicationSoftwareVersion = (*_BACnetConstructedDataApplicationSoftwareVersion)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

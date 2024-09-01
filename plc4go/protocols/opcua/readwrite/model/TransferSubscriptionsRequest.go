@@ -67,6 +67,8 @@ type _TransferSubscriptionsRequest struct {
 	reservedField0 *uint8
 }
 
+var _ TransferSubscriptionsRequest = (*_TransferSubscriptionsRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

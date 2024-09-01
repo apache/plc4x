@@ -60,6 +60,8 @@ type _BACnetAuthenticationPolicy struct {
 	Timeout       BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetAuthenticationPolicy = (*_BACnetAuthenticationPolicy)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

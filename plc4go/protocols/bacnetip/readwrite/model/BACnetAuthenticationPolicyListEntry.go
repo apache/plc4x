@@ -57,6 +57,8 @@ type _BACnetAuthenticationPolicyListEntry struct {
 	Index               BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetAuthenticationPolicyListEntry = (*_BACnetAuthenticationPolicyListEntry)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

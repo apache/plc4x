@@ -58,6 +58,8 @@ type _BACnetConstructedDataEventDetectionEnable struct {
 	EventDetectionEnable BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataEventDetectionEnable = (*_BACnetConstructedDataEventDetectionEnable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

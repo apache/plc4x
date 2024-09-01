@@ -66,6 +66,8 @@ type _BACnetNetworkPortCommandTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetNetworkPortCommandTagged = (*_BACnetNetworkPortCommandTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

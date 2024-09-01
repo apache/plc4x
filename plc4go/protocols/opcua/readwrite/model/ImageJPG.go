@@ -49,6 +49,8 @@ type ImageJPGExactly interface {
 type _ImageJPG struct {
 }
 
+var _ ImageJPG = (*_ImageJPG)(nil)
+
 // NewImageJPG factory function for _ImageJPG
 func NewImageJPG() *_ImageJPG {
 	return &_ImageJPG{}

@@ -51,6 +51,8 @@ type _WriterGroupTransportDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ WriterGroupTransportDataType = (*_WriterGroupTransportDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

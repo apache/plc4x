@@ -49,6 +49,8 @@ type NumericRangeExactly interface {
 type _NumericRange struct {
 }
 
+var _ NumericRange = (*_NumericRange)(nil)
+
 // NewNumericRange factory function for _NumericRange
 func NewNumericRange() *_NumericRange {
 	return &_NumericRange{}

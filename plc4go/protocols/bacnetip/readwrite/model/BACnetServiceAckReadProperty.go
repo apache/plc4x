@@ -65,6 +65,8 @@ type _BACnetServiceAckReadProperty struct {
 	Values             BACnetConstructedData
 }
 
+var _ BACnetServiceAckReadProperty = (*_BACnetServiceAckReadProperty)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

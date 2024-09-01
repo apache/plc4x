@@ -56,6 +56,8 @@ type _BACnetPriorityValueOctetString struct {
 	OctetStringValue BACnetApplicationTagOctetString
 }
 
+var _ BACnetPriorityValueOctetString = (*_BACnetPriorityValueOctetString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

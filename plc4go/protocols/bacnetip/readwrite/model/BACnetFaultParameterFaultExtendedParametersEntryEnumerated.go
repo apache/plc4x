@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryEnumerated struct {
 	EnumeratedValue BACnetApplicationTagEnumerated
 }
 
+var _ BACnetFaultParameterFaultExtendedParametersEntryEnumerated = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumerated)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

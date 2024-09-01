@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccessEventAuthenticationFactor struct {
 	AccessEventAuthenticationFactor BACnetAuthenticationFactor
 }
 
+var _ BACnetConstructedDataAccessEventAuthenticationFactor = (*_BACnetConstructedDataAccessEventAuthenticationFactor)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

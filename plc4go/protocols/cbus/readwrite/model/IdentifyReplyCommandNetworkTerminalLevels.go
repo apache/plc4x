@@ -56,6 +56,8 @@ type _IdentifyReplyCommandNetworkTerminalLevels struct {
 	NetworkTerminalLevels []byte
 }
 
+var _ IdentifyReplyCommandNetworkTerminalLevels = (*_IdentifyReplyCommandNetworkTerminalLevels)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

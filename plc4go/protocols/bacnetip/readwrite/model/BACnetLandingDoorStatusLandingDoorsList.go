@@ -63,6 +63,8 @@ type _BACnetLandingDoorStatusLandingDoorsList struct {
 	TagNumber uint8
 }
 
+var _ BACnetLandingDoorStatusLandingDoorsList = (*_BACnetLandingDoorStatusLandingDoorsList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -56,6 +56,8 @@ type _NLMIAmRouterToNetwork struct {
 	DestinationNetworkAddresses []uint16
 }
 
+var _ NLMIAmRouterToNetwork = (*_NLMIAmRouterToNetwork)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

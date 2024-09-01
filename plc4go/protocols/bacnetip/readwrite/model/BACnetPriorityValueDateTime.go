@@ -56,6 +56,8 @@ type _BACnetPriorityValueDateTime struct {
 	DateTimeValue BACnetDateTimeEnclosed
 }
 
+var _ BACnetPriorityValueDateTime = (*_BACnetPriorityValueDateTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

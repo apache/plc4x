@@ -56,6 +56,8 @@ type _BACnetPriorityValueConstructedValue struct {
 	ConstructedValue BACnetConstructedData
 }
 
+var _ BACnetPriorityValueConstructedValue = (*_BACnetPriorityValueConstructedValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

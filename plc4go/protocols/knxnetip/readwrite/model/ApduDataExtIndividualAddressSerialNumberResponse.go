@@ -51,6 +51,8 @@ type _ApduDataExtIndividualAddressSerialNumberResponse struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtIndividualAddressSerialNumberResponse = (*_ApduDataExtIndividualAddressSerialNumberResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

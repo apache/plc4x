@@ -51,6 +51,8 @@ type _BACnetConstructedDataScheduleAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataScheduleAll = (*_BACnetConstructedDataScheduleAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

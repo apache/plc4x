@@ -68,6 +68,8 @@ type _CreateSubscriptionResponse struct {
 	RevisedMaxKeepAliveCount  uint32
 }
 
+var _ CreateSubscriptionResponse = (*_CreateSubscriptionResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

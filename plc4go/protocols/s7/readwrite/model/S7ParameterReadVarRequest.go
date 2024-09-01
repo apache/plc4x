@@ -56,6 +56,8 @@ type _S7ParameterReadVarRequest struct {
 	Items []S7VarRequestParameterItem
 }
 
+var _ S7ParameterReadVarRequest = (*_S7ParameterReadVarRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -35,13 +35,23 @@ import (
 
 // Payload is the corresponding interface of Payload
 type Payload interface {
+	PayloadContract
+	PayloadRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetExtensible returns Extensible (discriminator field)
-	GetExtensible() bool
+}
+
+// PayloadContract provides a set of functions which can be overwritten by a sub struct
+type PayloadContract interface {
 	// GetSequenceHeader returns SequenceHeader (property field)
 	GetSequenceHeader() SequenceHeader
+}
+
+// PayloadRequirements provides a set of functions which need to be implemented by a sub struct
+type PayloadRequirements interface {
+	// GetExtensible returns Extensible (discriminator field)
+	GetExtensible() bool
 }
 
 // PayloadExactly can be used when we want exactly this type and not a type which fulfills Payload.
@@ -59,6 +69,8 @@ type _Payload struct {
 	// Arguments.
 	ByteCount uint32
 }
+
+var _ PayloadContract = (*_Payload)(nil)
 
 type _PayloadChildRequirements interface {
 	utils.Serializable

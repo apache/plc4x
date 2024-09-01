@@ -62,6 +62,8 @@ type _ApduDataExtPropertyDescriptionRead struct {
 	Index       uint8
 }
 
+var _ ApduDataExtPropertyDescriptionRead = (*_ApduDataExtPropertyDescriptionRead)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

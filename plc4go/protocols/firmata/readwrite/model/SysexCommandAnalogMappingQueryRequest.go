@@ -51,6 +51,8 @@ type _SysexCommandAnalogMappingQueryRequest struct {
 	*_SysexCommand
 }
 
+var _ SysexCommandAnalogMappingQueryRequest = (*_SysexCommandAnalogMappingQueryRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

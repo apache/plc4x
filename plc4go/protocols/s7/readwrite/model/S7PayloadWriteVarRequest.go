@@ -56,6 +56,8 @@ type _S7PayloadWriteVarRequest struct {
 	Items []S7VarPayloadDataItem
 }
 
+var _ S7PayloadWriteVarRequest = (*_S7PayloadWriteVarRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

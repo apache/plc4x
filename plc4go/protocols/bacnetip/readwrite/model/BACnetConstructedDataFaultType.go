@@ -58,6 +58,8 @@ type _BACnetConstructedDataFaultType struct {
 	FaultType BACnetFaultTypeTagged
 }
 
+var _ BACnetConstructedDataFaultType = (*_BACnetConstructedDataFaultType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

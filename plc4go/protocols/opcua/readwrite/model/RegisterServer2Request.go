@@ -65,6 +65,8 @@ type _RegisterServer2Request struct {
 	DiscoveryConfiguration     []ExtensionObject
 }
 
+var _ RegisterServer2Request = (*_RegisterServer2Request)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

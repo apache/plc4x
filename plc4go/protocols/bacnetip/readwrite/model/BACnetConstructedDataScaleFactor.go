@@ -58,6 +58,8 @@ type _BACnetConstructedDataScaleFactor struct {
 	ScaleFactor BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataScaleFactor = (*_BACnetConstructedDataScaleFactor)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

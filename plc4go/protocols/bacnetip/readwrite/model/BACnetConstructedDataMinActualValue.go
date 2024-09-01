@@ -58,6 +58,8 @@ type _BACnetConstructedDataMinActualValue struct {
 	MinActualValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataMinActualValue = (*_BACnetConstructedDataMinActualValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

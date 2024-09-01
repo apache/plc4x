@@ -58,6 +58,8 @@ type _BACnetConstructedDataDateTimePatternValuePresentValue struct {
 	PresentValue BACnetDateTime
 }
 
+var _ BACnetConstructedDataDateTimePatternValuePresentValue = (*_BACnetConstructedDataDateTimePatternValuePresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -64,6 +64,8 @@ type _BACnetReadAccessResultListOfResults struct {
 	ObjectTypeArgument BACnetObjectType
 }
 
+var _ BACnetReadAccessResultListOfResults = (*_BACnetReadAccessResultListOfResults)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

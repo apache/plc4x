@@ -61,6 +61,8 @@ type _BACnetConstructedDataMakingCarCall struct {
 	MakingCarCall        []BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMakingCarCall = (*_BACnetConstructedDataMakingCarCall)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

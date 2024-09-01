@@ -58,6 +58,8 @@ type _BACnetConstructedDataLowDiffLimit struct {
 	LowDiffLimit BACnetOptionalREAL
 }
 
+var _ BACnetConstructedDataLowDiffLimit = (*_BACnetConstructedDataLowDiffLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

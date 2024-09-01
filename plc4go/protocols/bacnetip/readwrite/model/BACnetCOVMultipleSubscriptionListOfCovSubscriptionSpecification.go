@@ -63,6 +63,8 @@ type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification struct {
 	TagNumber uint8
 }
 
+var _ BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

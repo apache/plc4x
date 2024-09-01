@@ -56,6 +56,8 @@ type _S7VarRequestParameterItemAddress struct {
 	Address S7Address
 }
 
+var _ S7VarRequestParameterItemAddress = (*_S7VarRequestParameterItemAddress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

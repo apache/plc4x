@@ -56,6 +56,8 @@ type _NLMRouterBusyToNetwork struct {
 	DestinationNetworkAddresses []uint16
 }
 
+var _ NLMRouterBusyToNetwork = (*_NLMRouterBusyToNetwork)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

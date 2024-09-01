@@ -51,6 +51,8 @@ type _BACnetConstructedDataEscalatorAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataEscalatorAll = (*_BACnetConstructedDataEscalatorAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

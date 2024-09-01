@@ -58,6 +58,8 @@ type _BACnetConstructedDataClientCOVIncrement struct {
 	CovIncrement BACnetClientCOV
 }
 
+var _ BACnetConstructedDataClientCOVIncrement = (*_BACnetConstructedDataClientCOVIncrement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

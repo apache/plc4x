@@ -56,6 +56,8 @@ type _BACnetCalendarEntryDate struct {
 	DateValue BACnetContextTagDate
 }
 
+var _ BACnetCalendarEntryDate = (*_BACnetCalendarEntryDate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

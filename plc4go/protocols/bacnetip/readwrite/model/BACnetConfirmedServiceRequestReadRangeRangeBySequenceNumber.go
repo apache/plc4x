@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber struct {
 	Count                   BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber = (*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

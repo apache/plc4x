@@ -58,6 +58,8 @@ type _BACnetConstructedDataLoopPresentValue struct {
 	PresentValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataLoopPresentValue = (*_BACnetConstructedDataLoopPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

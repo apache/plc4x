@@ -56,6 +56,8 @@ type _S7PayloadReadVarResponse struct {
 	Items []S7VarPayloadDataItem
 }
 
+var _ S7PayloadReadVarResponse = (*_S7PayloadReadVarResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

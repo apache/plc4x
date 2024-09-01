@@ -58,6 +58,8 @@ type _BACnetConstructedDataLowerDeck struct {
 	LowerDeck BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetConstructedDataLowerDeck = (*_BACnetConstructedDataLowerDeck)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

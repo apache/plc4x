@@ -51,6 +51,8 @@ type _MeteringDataMeasureDrinkingWater struct {
 	*_MeteringData
 }
 
+var _ MeteringDataMeasureDrinkingWater = (*_MeteringDataMeasureDrinkingWater)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

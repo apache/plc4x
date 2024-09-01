@@ -35,9 +35,19 @@ import (
 
 // LogicalSegmentType is the corresponding interface of LogicalSegmentType
 type LogicalSegmentType interface {
+	LogicalSegmentTypeContract
+	LogicalSegmentTypeRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// LogicalSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
+type LogicalSegmentTypeContract interface {
+}
+
+// LogicalSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
+type LogicalSegmentTypeRequirements interface {
 	// GetLogicalSegmentType returns LogicalSegmentType (discriminator field)
 	GetLogicalSegmentType() uint8
 }
@@ -53,6 +63,8 @@ type LogicalSegmentTypeExactly interface {
 type _LogicalSegmentType struct {
 	_LogicalSegmentTypeChildRequirements
 }
+
+var _ LogicalSegmentTypeContract = (*_LogicalSegmentType)(nil)
 
 type _LogicalSegmentTypeChildRequirements interface {
 	utils.Serializable

@@ -62,6 +62,8 @@ type _BACnetFaultParameterFaultCharacterString struct {
 	ClosingTag        BACnetClosingTag
 }
 
+var _ BACnetFaultParameterFaultCharacterString = (*_BACnetFaultParameterFaultCharacterString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

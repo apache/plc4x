@@ -56,6 +56,8 @@ type _BACnetPropertyStatesProtocolLevel struct {
 	ProtocolLevel BACnetProtocolLevelTagged
 }
 
+var _ BACnetPropertyStatesProtocolLevel = (*_BACnetPropertyStatesProtocolLevel)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -35,13 +35,15 @@ import (
 
 // BACnetConstructedData is the corresponding interface of BACnetConstructedData
 type BACnetConstructedData interface {
+	BACnetConstructedDataContract
+	BACnetConstructedDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetObjectTypeArgument returns ObjectTypeArgument (discriminator field)
-	GetObjectTypeArgument() BACnetObjectType
-	// GetPropertyIdentifierArgument returns PropertyIdentifierArgument (discriminator field)
-	GetPropertyIdentifierArgument() BACnetPropertyIdentifier
+}
+
+// BACnetConstructedDataContract provides a set of functions which can be overwritten by a sub struct
+type BACnetConstructedDataContract interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -50,6 +52,14 @@ type BACnetConstructedData interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetConstructedDataRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetConstructedDataRequirements interface {
+	// GetObjectTypeArgument returns ObjectTypeArgument (discriminator field)
+	GetObjectTypeArgument() BACnetObjectType
+	// GetPropertyIdentifierArgument returns PropertyIdentifierArgument (discriminator field)
+	GetPropertyIdentifierArgument() BACnetPropertyIdentifier
 }
 
 // BACnetConstructedDataExactly can be used when we want exactly this type and not a type which fulfills BACnetConstructedData.
@@ -70,6 +80,8 @@ type _BACnetConstructedData struct {
 	TagNumber          uint8
 	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
+
+var _ BACnetConstructedDataContract = (*_BACnetConstructedData)(nil)
 
 type _BACnetConstructedDataChildRequirements interface {
 	utils.Serializable

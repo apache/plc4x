@@ -71,6 +71,8 @@ type _OpenSecureChannelRequest struct {
 	RequestedLifetime     uint32
 }
 
+var _ OpenSecureChannelRequest = (*_OpenSecureChannelRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

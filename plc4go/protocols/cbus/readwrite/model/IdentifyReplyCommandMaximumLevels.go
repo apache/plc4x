@@ -56,6 +56,8 @@ type _IdentifyReplyCommandMaximumLevels struct {
 	MaximumLevels []byte
 }
 
+var _ IdentifyReplyCommandMaximumLevels = (*_IdentifyReplyCommandMaximumLevels)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

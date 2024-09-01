@@ -58,6 +58,8 @@ type _BACnetConstructedDataUserInformationReference struct {
 	UserInformationReference BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataUserInformationReference = (*_BACnetConstructedDataUserInformationReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

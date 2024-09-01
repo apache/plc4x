@@ -58,6 +58,8 @@ type _BACnetConstructedDataCarDriveStatus struct {
 	CarDriveStatus BACnetLiftCarDriveStatusTagged
 }
 
+var _ BACnetConstructedDataCarDriveStatus = (*_BACnetConstructedDataCarDriveStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

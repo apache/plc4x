@@ -56,6 +56,8 @@ type _RegisterServerResponse struct {
 	ResponseHeader ExtensionObjectDefinition
 }
 
+var _ RegisterServerResponse = (*_RegisterServerResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

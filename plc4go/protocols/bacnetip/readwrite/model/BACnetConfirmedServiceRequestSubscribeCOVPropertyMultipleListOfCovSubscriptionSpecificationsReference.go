@@ -60,6 +60,8 @@ type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
 	Timestamped       BACnetContextTagBoolean
 }
 
+var _ BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

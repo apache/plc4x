@@ -65,6 +65,8 @@ type _BACnetConfirmedServiceRequestLifeSafetyOperation struct {
 	ObjectIdentifier            BACnetContextTagObjectIdentifier
 }
 
+var _ BACnetConfirmedServiceRequestLifeSafetyOperation = (*_BACnetConfirmedServiceRequestLifeSafetyOperation)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -49,6 +49,8 @@ type StructureExactly interface {
 type _Structure struct {
 }
 
+var _ Structure = (*_Structure)(nil)
+
 // NewStructure factory function for _Structure
 func NewStructure() *_Structure {
 	return &_Structure{}

@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryOctetString struct {
 	OctetStringValue BACnetApplicationTagOctetString
 }
 
+var _ BACnetFaultParameterFaultExtendedParametersEntryOctetString = (*_BACnetFaultParameterFaultExtendedParametersEntryOctetString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

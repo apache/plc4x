@@ -58,6 +58,8 @@ type _BACnetConstructedDataUpdateKeySetTimeout struct {
 	UpdateKeySetTimeout BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataUpdateKeySetTimeout = (*_BACnetConstructedDataUpdateKeySetTimeout)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

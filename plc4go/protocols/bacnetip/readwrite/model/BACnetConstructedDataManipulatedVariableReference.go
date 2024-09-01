@@ -58,6 +58,8 @@ type _BACnetConstructedDataManipulatedVariableReference struct {
 	ManipulatedVariableReference BACnetObjectPropertyReference
 }
 
+var _ BACnetConstructedDataManipulatedVariableReference = (*_BACnetConstructedDataManipulatedVariableReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

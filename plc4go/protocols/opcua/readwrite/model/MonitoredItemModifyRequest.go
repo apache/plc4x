@@ -59,6 +59,8 @@ type _MonitoredItemModifyRequest struct {
 	RequestedParameters ExtensionObjectDefinition
 }
 
+var _ MonitoredItemModifyRequest = (*_MonitoredItemModifyRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

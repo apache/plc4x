@@ -35,9 +35,15 @@ import (
 
 // TriggerControlData is the corresponding interface of TriggerControlData
 type TriggerControlData interface {
+	TriggerControlDataContract
+	TriggerControlDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// TriggerControlDataContract provides a set of functions which can be overwritten by a sub struct
+type TriggerControlDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() TriggerControlCommandTypeContainer
 	// GetTriggerGroup returns TriggerGroup (property field)
@@ -46,6 +52,10 @@ type TriggerControlData interface {
 	GetCommandType() TriggerControlCommandType
 	// GetIsUnused returns IsUnused (virtual field)
 	GetIsUnused() bool
+}
+
+// TriggerControlDataRequirements provides a set of functions which need to be implemented by a sub struct
+type TriggerControlDataRequirements interface {
 }
 
 // TriggerControlDataExactly can be used when we want exactly this type and not a type which fulfills TriggerControlData.
@@ -61,6 +71,8 @@ type _TriggerControlData struct {
 	CommandTypeContainer TriggerControlCommandTypeContainer
 	TriggerGroup         byte
 }
+
+var _ TriggerControlDataContract = (*_TriggerControlData)(nil)
 
 type _TriggerControlDataChildRequirements interface {
 	utils.Serializable

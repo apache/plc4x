@@ -58,6 +58,8 @@ type _BACnetConstructedDataIPv6DefaultGateway struct {
 	Ipv6DefaultGateway BACnetApplicationTagOctetString
 }
 
+var _ BACnetConstructedDataIPv6DefaultGateway = (*_BACnetConstructedDataIPv6DefaultGateway)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetContextTagSignedInteger struct {
 	Payload BACnetTagPayloadSignedInteger
 }
 
+var _ BACnetContextTagSignedInteger = (*_BACnetContextTagSignedInteger)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

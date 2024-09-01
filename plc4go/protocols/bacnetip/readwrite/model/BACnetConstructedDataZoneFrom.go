@@ -58,6 +58,8 @@ type _BACnetConstructedDataZoneFrom struct {
 	ZoneFrom BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataZoneFrom = (*_BACnetConstructedDataZoneFrom)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -49,6 +49,8 @@ type IntegerIdExactly interface {
 type _IntegerId struct {
 }
 
+var _ IntegerId = (*_IntegerId)(nil)
+
 // NewIntegerId factory function for _IntegerId
 func NewIntegerId() *_IntegerId {
 	return &_IntegerId{}

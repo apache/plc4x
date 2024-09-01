@@ -58,6 +58,8 @@ type _BACnetConstructedDataInProcess struct {
 	InProcess BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataInProcess = (*_BACnetConstructedDataInProcess)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

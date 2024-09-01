@@ -58,6 +58,8 @@ type _BACnetConstructedDataAnalogValueMaxPresValue struct {
 	MaxPresValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataAnalogValueMaxPresValue = (*_BACnetConstructedDataAnalogValueMaxPresValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

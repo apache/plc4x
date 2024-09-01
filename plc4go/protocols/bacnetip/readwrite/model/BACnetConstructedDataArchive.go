@@ -58,6 +58,8 @@ type _BACnetConstructedDataArchive struct {
 	Archive BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataArchive = (*_BACnetConstructedDataArchive)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

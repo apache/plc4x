@@ -58,6 +58,8 @@ type _BACnetConstructedDataTimerMaxPresValue struct {
 	MaxPresValue BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataTimerMaxPresValue = (*_BACnetConstructedDataTimerMaxPresValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

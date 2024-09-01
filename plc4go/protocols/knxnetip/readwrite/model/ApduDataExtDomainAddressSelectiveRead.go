@@ -51,6 +51,8 @@ type _ApduDataExtDomainAddressSelectiveRead struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtDomainAddressSelectiveRead = (*_ApduDataExtDomainAddressSelectiveRead)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

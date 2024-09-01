@@ -56,6 +56,8 @@ type _BACnetPropertyStatesLiftCarDirection struct {
 	LiftCarDirection BACnetLiftCarDirectionTagged
 }
 
+var _ BACnetPropertyStatesLiftCarDirection = (*_BACnetPropertyStatesLiftCarDirection)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

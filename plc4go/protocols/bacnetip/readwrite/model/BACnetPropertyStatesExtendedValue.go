@@ -56,6 +56,8 @@ type _BACnetPropertyStatesExtendedValue struct {
 	ExtendedValue BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetPropertyStatesExtendedValue = (*_BACnetPropertyStatesExtendedValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

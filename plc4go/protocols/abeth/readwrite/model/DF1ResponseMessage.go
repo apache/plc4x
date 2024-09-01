@@ -35,11 +35,15 @@ import (
 
 // DF1ResponseMessage is the corresponding interface of DF1ResponseMessage
 type DF1ResponseMessage interface {
+	DF1ResponseMessageContract
+	DF1ResponseMessageRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetCommandCode returns CommandCode (discriminator field)
-	GetCommandCode() uint8
+}
+
+// DF1ResponseMessageContract provides a set of functions which can be overwritten by a sub struct
+type DF1ResponseMessageContract interface {
 	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() uint8
 	// GetSourceAddress returns SourceAddress (property field)
@@ -48,6 +52,12 @@ type DF1ResponseMessage interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
+}
+
+// DF1ResponseMessageRequirements provides a set of functions which need to be implemented by a sub struct
+type DF1ResponseMessageRequirements interface {
+	// GetCommandCode returns CommandCode (discriminator field)
+	GetCommandCode() uint8
 }
 
 // DF1ResponseMessageExactly can be used when we want exactly this type and not a type which fulfills DF1ResponseMessage.
@@ -71,6 +81,8 @@ type _DF1ResponseMessage struct {
 	reservedField0 *uint8
 	reservedField1 *uint8
 }
+
+var _ DF1ResponseMessageContract = (*_DF1ResponseMessage)(nil)
 
 type _DF1ResponseMessageChildRequirements interface {
 	utils.Serializable

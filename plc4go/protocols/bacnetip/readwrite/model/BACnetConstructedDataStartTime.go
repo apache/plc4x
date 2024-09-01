@@ -58,6 +58,8 @@ type _BACnetConstructedDataStartTime struct {
 	StartTime BACnetDateTime
 }
 
+var _ BACnetConstructedDataStartTime = (*_BACnetConstructedDataStartTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

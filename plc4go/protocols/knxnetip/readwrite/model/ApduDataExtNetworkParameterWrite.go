@@ -51,6 +51,8 @@ type _ApduDataExtNetworkParameterWrite struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtNetworkParameterWrite = (*_ApduDataExtNetworkParameterWrite)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

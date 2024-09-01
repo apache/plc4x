@@ -58,6 +58,8 @@ type _BACnetConstructedDataDerivativeConstant struct {
 	DerivativeConstant BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataDerivativeConstant = (*_BACnetConstructedDataDerivativeConstant)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -57,6 +57,8 @@ type _ProjectInstallationIdentifier struct {
 	InstallationNumber uint8
 }
 
+var _ ProjectInstallationIdentifier = (*_ProjectInstallationIdentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

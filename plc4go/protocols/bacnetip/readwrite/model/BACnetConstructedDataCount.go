@@ -58,6 +58,8 @@ type _BACnetConstructedDataCount struct {
 	Count BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataCount = (*_BACnetConstructedDataCount)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

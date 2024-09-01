@@ -56,6 +56,8 @@ type _BACnetOptionalUnsignedValue struct {
 	UnsignedValue BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetOptionalUnsignedValue = (*_BACnetOptionalUnsignedValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

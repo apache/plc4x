@@ -35,9 +35,19 @@ import (
 
 // CEMI is the corresponding interface of CEMI
 type CEMI interface {
+	CEMIContract
+	CEMIRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CEMIContract provides a set of functions which can be overwritten by a sub struct
+type CEMIContract interface {
+}
+
+// CEMIRequirements provides a set of functions which need to be implemented by a sub struct
+type CEMIRequirements interface {
 	// GetMessageCode returns MessageCode (discriminator field)
 	GetMessageCode() uint8
 }
@@ -56,6 +66,8 @@ type _CEMI struct {
 	// Arguments.
 	Size uint16
 }
+
+var _ CEMIContract = (*_CEMI)(nil)
 
 type _CEMIChildRequirements interface {
 	utils.Serializable

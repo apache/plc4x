@@ -58,6 +58,8 @@ type _BACnetConstructedDataIPSubnetMask struct {
 	IpSubnetMask BACnetApplicationTagOctetString
 }
 
+var _ BACnetConstructedDataIPSubnetMask = (*_BACnetConstructedDataIPSubnetMask)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

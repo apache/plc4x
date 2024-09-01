@@ -68,6 +68,8 @@ type _BACnetConfirmedServiceRequestAtomicWriteFile struct {
 	ClosingTag        BACnetClosingTag
 }
 
+var _ BACnetConfirmedServiceRequestAtomicWriteFile = (*_BACnetConfirmedServiceRequestAtomicWriteFile)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

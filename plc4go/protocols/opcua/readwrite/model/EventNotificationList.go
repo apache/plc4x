@@ -59,6 +59,8 @@ type _EventNotificationList struct {
 	Events     []ExtensionObjectDefinition
 }
 
+var _ EventNotificationList = (*_EventNotificationList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

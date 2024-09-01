@@ -58,6 +58,8 @@ type _BACnetContextTagCharacterString struct {
 	Payload BACnetTagPayloadCharacterString
 }
 
+var _ BACnetContextTagCharacterString = (*_BACnetContextTagCharacterString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

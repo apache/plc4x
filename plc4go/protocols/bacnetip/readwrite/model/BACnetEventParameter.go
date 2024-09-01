@@ -35,13 +35,23 @@ import (
 
 // BACnetEventParameter is the corresponding interface of BACnetEventParameter
 type BACnetEventParameter interface {
+	BACnetEventParameterContract
+	BACnetEventParameterRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetEventParameterContract provides a set of functions which can be overwritten by a sub struct
+type BACnetEventParameterContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetEventParameterRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetEventParameterRequirements interface {
 }
 
 // BACnetEventParameterExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameter.
@@ -56,6 +66,8 @@ type _BACnetEventParameter struct {
 	_BACnetEventParameterChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetEventParameterContract = (*_BACnetEventParameter)(nil)
 
 type _BACnetEventParameterChildRequirements interface {
 	utils.Serializable

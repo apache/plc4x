@@ -63,6 +63,8 @@ type _BACnetObjectPropertyReferenceEnclosed struct {
 	TagNumber uint8
 }
 
+var _ BACnetObjectPropertyReferenceEnclosed = (*_BACnetObjectPropertyReferenceEnclosed)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

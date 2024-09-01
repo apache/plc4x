@@ -62,6 +62,8 @@ type _CBusCommandDeviceManagement struct {
 	ParameterValue byte
 }
 
+var _ CBusCommandDeviceManagement = (*_CBusCommandDeviceManagement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

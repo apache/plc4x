@@ -90,6 +90,8 @@ type _ConfirmedEventNotificationRequest struct {
 	EventValues                BACnetNotificationParameters
 }
 
+var _ ConfirmedEventNotificationRequest = (*_ConfirmedEventNotificationRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

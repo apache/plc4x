@@ -81,6 +81,8 @@ type _BACnetObjectTypesSupportedTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetObjectTypesSupportedTagged = (*_BACnetObjectTypesSupportedTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -51,6 +51,8 @@ type _BACnetConstructedDataLiftAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataLiftAll = (*_BACnetConstructedDataLiftAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -51,6 +51,8 @@ type _MeteringDataMeasureOtherWater struct {
 	*_MeteringData
 }
 
+var _ MeteringDataMeasureOtherWater = (*_MeteringDataMeasureOtherWater)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetPropertyStatesLockStatus struct {
 	LockStatus BACnetLockStatusTagged
 }
 
+var _ BACnetPropertyStatesLockStatus = (*_BACnetPropertyStatesLockStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

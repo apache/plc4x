@@ -61,6 +61,8 @@ type _BACnetConstructedDataAuthenticationPolicyList struct {
 	AuthenticationPolicyList []BACnetAuthenticationPolicy
 }
 
+var _ BACnetConstructedDataAuthenticationPolicyList = (*_BACnetConstructedDataAuthenticationPolicyList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

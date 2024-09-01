@@ -77,6 +77,8 @@ type _ActivateSessionRequest struct {
 	UserTokenSignature             ExtensionObjectDefinition
 }
 
+var _ ActivateSessionRequest = (*_ActivateSessionRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

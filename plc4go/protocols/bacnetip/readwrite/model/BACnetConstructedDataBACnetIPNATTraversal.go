@@ -58,6 +58,8 @@ type _BACnetConstructedDataBACnetIPNATTraversal struct {
 	BacnetIPNATTraversal BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataBACnetIPNATTraversal = (*_BACnetConstructedDataBACnetIPNATTraversal)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

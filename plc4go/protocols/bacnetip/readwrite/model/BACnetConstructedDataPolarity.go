@@ -58,6 +58,8 @@ type _BACnetConstructedDataPolarity struct {
 	Polarity BACnetPolarityTagged
 }
 
+var _ BACnetConstructedDataPolarity = (*_BACnetConstructedDataPolarity)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

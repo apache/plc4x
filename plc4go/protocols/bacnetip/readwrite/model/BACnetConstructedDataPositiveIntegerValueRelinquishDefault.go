@@ -58,6 +58,8 @@ type _BACnetConstructedDataPositiveIntegerValueRelinquishDefault struct {
 	RelinquishDefault BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPositiveIntegerValueRelinquishDefault = (*_BACnetConstructedDataPositiveIntegerValueRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

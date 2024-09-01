@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccumulatorHighLimit struct {
 	HighLimit BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataAccumulatorHighLimit = (*_BACnetConstructedDataAccumulatorHighLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

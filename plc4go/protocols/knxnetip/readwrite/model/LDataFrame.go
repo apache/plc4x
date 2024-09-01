@@ -35,13 +35,15 @@ import (
 
 // LDataFrame is the corresponding interface of LDataFrame
 type LDataFrame interface {
+	LDataFrameContract
+	LDataFrameRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetNotAckFrame returns NotAckFrame (discriminator field)
-	GetNotAckFrame() bool
-	// GetPolling returns Polling (discriminator field)
-	GetPolling() bool
+}
+
+// LDataFrameContract provides a set of functions which can be overwritten by a sub struct
+type LDataFrameContract interface {
 	// GetFrameType returns FrameType (property field)
 	GetFrameType() bool
 	// GetNotRepeated returns NotRepeated (property field)
@@ -52,6 +54,14 @@ type LDataFrame interface {
 	GetAcknowledgeRequested() bool
 	// GetErrorFlag returns ErrorFlag (property field)
 	GetErrorFlag() bool
+}
+
+// LDataFrameRequirements provides a set of functions which need to be implemented by a sub struct
+type LDataFrameRequirements interface {
+	// GetNotAckFrame returns NotAckFrame (discriminator field)
+	GetNotAckFrame() bool
+	// GetPolling returns Polling (discriminator field)
+	GetPolling() bool
 }
 
 // LDataFrameExactly can be used when we want exactly this type and not a type which fulfills LDataFrame.
@@ -70,6 +80,8 @@ type _LDataFrame struct {
 	AcknowledgeRequested bool
 	ErrorFlag            bool
 }
+
+var _ LDataFrameContract = (*_LDataFrame)(nil)
 
 type _LDataFrameChildRequirements interface {
 	utils.Serializable

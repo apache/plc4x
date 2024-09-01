@@ -62,6 +62,8 @@ type _BACnetUnconfirmedServiceRequestIHave struct {
 	ObjectName       BACnetApplicationTagCharacterString
 }
 
+var _ BACnetUnconfirmedServiceRequestIHave = (*_BACnetUnconfirmedServiceRequestIHave)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _ModbusPDUReadInputRegistersResponse struct {
 	Value []byte
 }
 
+var _ ModbusPDUReadInputRegistersResponse = (*_ModbusPDUReadInputRegistersResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

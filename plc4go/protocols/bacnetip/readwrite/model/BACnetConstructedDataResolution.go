@@ -58,6 +58,8 @@ type _BACnetConstructedDataResolution struct {
 	Resolution BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataResolution = (*_BACnetConstructedDataResolution)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

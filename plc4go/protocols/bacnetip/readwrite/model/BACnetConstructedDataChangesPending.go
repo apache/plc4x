@@ -58,6 +58,8 @@ type _BACnetConstructedDataChangesPending struct {
 	ChangesPending BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataChangesPending = (*_BACnetConstructedDataChangesPending)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

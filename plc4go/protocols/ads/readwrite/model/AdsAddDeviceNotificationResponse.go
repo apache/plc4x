@@ -59,6 +59,8 @@ type _AdsAddDeviceNotificationResponse struct {
 	NotificationHandle uint32
 }
 
+var _ AdsAddDeviceNotificationResponse = (*_AdsAddDeviceNotificationResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

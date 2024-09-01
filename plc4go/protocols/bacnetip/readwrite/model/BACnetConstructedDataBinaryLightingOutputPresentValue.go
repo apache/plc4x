@@ -58,6 +58,8 @@ type _BACnetConstructedDataBinaryLightingOutputPresentValue struct {
 	PresentValue BACnetBinaryLightingPVTagged
 }
 
+var _ BACnetConstructedDataBinaryLightingOutputPresentValue = (*_BACnetConstructedDataBinaryLightingOutputPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

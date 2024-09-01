@@ -35,13 +35,23 @@ import (
 
 // BACnetValueSource is the corresponding interface of BACnetValueSource
 type BACnetValueSource interface {
+	BACnetValueSourceContract
+	BACnetValueSourceRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetValueSourceContract provides a set of functions which can be overwritten by a sub struct
+type BACnetValueSourceContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetValueSourceRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetValueSourceRequirements interface {
 }
 
 // BACnetValueSourceExactly can be used when we want exactly this type and not a type which fulfills BACnetValueSource.
@@ -56,6 +66,8 @@ type _BACnetValueSource struct {
 	_BACnetValueSourceChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetValueSourceContract = (*_BACnetValueSource)(nil)
 
 type _BACnetValueSourceChildRequirements interface {
 	utils.Serializable

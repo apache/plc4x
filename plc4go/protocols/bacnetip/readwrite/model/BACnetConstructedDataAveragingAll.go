@@ -51,6 +51,8 @@ type _BACnetConstructedDataAveragingAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataAveragingAll = (*_BACnetConstructedDataAveragingAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

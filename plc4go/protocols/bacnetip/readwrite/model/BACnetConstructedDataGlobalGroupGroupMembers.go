@@ -61,6 +61,8 @@ type _BACnetConstructedDataGlobalGroupGroupMembers struct {
 	GroupMembers         []BACnetDeviceObjectPropertyReference
 }
 
+var _ BACnetConstructedDataGlobalGroupGroupMembers = (*_BACnetConstructedDataGlobalGroupGroupMembers)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

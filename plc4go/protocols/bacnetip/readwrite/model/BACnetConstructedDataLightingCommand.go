@@ -58,6 +58,8 @@ type _BACnetConstructedDataLightingCommand struct {
 	LightingCommand BACnetLightingCommand
 }
 
+var _ BACnetConstructedDataLightingCommand = (*_BACnetConstructedDataLightingCommand)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataProtocolVersion struct {
 	ProtocolVersion BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataProtocolVersion = (*_BACnetConstructedDataProtocolVersion)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

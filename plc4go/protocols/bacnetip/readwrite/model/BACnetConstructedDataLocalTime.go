@@ -58,6 +58,8 @@ type _BACnetConstructedDataLocalTime struct {
 	LocalTime BACnetApplicationTagTime
 }
 
+var _ BACnetConstructedDataLocalTime = (*_BACnetConstructedDataLocalTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

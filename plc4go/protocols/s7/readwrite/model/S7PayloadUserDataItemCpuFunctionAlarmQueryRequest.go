@@ -71,6 +71,8 @@ type _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest struct {
 	reservedField1 *uint8
 }
 
+var _ S7PayloadUserDataItemCpuFunctionAlarmQueryRequest = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

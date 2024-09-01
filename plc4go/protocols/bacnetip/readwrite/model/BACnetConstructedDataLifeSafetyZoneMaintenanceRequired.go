@@ -58,6 +58,8 @@ type _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired struct {
 	MaintenanceRequired BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataLifeSafetyZoneMaintenanceRequired = (*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

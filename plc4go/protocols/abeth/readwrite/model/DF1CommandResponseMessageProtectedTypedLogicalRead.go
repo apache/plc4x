@@ -56,6 +56,8 @@ type _DF1CommandResponseMessageProtectedTypedLogicalRead struct {
 	Data []uint8
 }
 
+var _ DF1CommandResponseMessageProtectedTypedLogicalRead = (*_DF1CommandResponseMessageProtectedTypedLogicalRead)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

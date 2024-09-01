@@ -58,6 +58,8 @@ type _BACnetConstructedDataMinPresValue struct {
 	MinPresValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataMinPresValue = (*_BACnetConstructedDataMinPresValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

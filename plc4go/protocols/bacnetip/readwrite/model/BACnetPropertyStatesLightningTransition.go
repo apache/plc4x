@@ -56,6 +56,8 @@ type _BACnetPropertyStatesLightningTransition struct {
 	LightningTransition BACnetLightingTransitionTagged
 }
 
+var _ BACnetPropertyStatesLightningTransition = (*_BACnetPropertyStatesLightningTransition)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

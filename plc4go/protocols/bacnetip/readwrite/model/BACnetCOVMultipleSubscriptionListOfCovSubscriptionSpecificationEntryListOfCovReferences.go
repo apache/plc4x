@@ -63,6 +63,8 @@ type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOf
 	TagNumber uint8
 }
 
+var _ BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

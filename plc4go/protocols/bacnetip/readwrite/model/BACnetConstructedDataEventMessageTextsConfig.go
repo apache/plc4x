@@ -67,6 +67,8 @@ type _BACnetConstructedDataEventMessageTextsConfig struct {
 	EventMessageTextsConfig []BACnetOptionalCharacterString
 }
 
+var _ BACnetConstructedDataEventMessageTextsConfig = (*_BACnetConstructedDataEventMessageTextsConfig)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

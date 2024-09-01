@@ -58,6 +58,8 @@ type _BACnetConstructedDataLargeAnalogValueCOVIncrement struct {
 	CovIncrement BACnetApplicationTagDouble
 }
 
+var _ BACnetConstructedDataLargeAnalogValueCOVIncrement = (*_BACnetConstructedDataLargeAnalogValueCOVIncrement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

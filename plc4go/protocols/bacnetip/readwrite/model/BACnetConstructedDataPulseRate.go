@@ -58,6 +58,8 @@ type _BACnetConstructedDataPulseRate struct {
 	PulseRate BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPulseRate = (*_BACnetConstructedDataPulseRate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

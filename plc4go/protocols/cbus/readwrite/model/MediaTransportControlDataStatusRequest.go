@@ -51,6 +51,8 @@ type _MediaTransportControlDataStatusRequest struct {
 	*_MediaTransportControlData
 }
 
+var _ MediaTransportControlDataStatusRequest = (*_MediaTransportControlDataStatusRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

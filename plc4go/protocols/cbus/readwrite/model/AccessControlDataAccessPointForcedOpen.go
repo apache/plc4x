@@ -51,6 +51,8 @@ type _AccessControlDataAccessPointForcedOpen struct {
 	*_AccessControlData
 }
 
+var _ AccessControlDataAccessPointForcedOpen = (*_AccessControlDataAccessPointForcedOpen)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -59,6 +59,8 @@ type _ModbusPDUReadDiscreteInputsRequest struct {
 	Quantity        uint16
 }
 
+var _ ModbusPDUReadDiscreteInputsRequest = (*_ModbusPDUReadDiscreteInputsRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataNextStoppingFloor struct {
 	NextStoppingFloor BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataNextStoppingFloor = (*_BACnetConstructedDataNextStoppingFloor)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

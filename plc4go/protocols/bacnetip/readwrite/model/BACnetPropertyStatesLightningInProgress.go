@@ -56,6 +56,8 @@ type _BACnetPropertyStatesLightningInProgress struct {
 	LightningInProgress BACnetLightingInProgressTagged
 }
 
+var _ BACnetPropertyStatesLightningInProgress = (*_BACnetPropertyStatesLightningInProgress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

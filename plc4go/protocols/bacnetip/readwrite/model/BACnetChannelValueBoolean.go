@@ -56,6 +56,8 @@ type _BACnetChannelValueBoolean struct {
 	BooleanValue BACnetApplicationTagBoolean
 }
 
+var _ BACnetChannelValueBoolean = (*_BACnetChannelValueBoolean)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

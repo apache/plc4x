@@ -35,9 +35,19 @@ import (
 
 // ConnectionResponseDataBlock is the corresponding interface of ConnectionResponseDataBlock
 type ConnectionResponseDataBlock interface {
+	ConnectionResponseDataBlockContract
+	ConnectionResponseDataBlockRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ConnectionResponseDataBlockContract provides a set of functions which can be overwritten by a sub struct
+type ConnectionResponseDataBlockContract interface {
+}
+
+// ConnectionResponseDataBlockRequirements provides a set of functions which need to be implemented by a sub struct
+type ConnectionResponseDataBlockRequirements interface {
 	// GetConnectionType returns ConnectionType (discriminator field)
 	GetConnectionType() uint8
 }
@@ -53,6 +63,8 @@ type ConnectionResponseDataBlockExactly interface {
 type _ConnectionResponseDataBlock struct {
 	_ConnectionResponseDataBlockChildRequirements
 }
+
+var _ ConnectionResponseDataBlockContract = (*_ConnectionResponseDataBlock)(nil)
 
 type _ConnectionResponseDataBlockChildRequirements interface {
 	utils.Serializable

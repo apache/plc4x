@@ -51,6 +51,8 @@ type _ModbusPDUReadExceptionStatusRequest struct {
 	*_ModbusPDU
 }
 
+var _ ModbusPDUReadExceptionStatusRequest = (*_ModbusPDUReadExceptionStatusRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

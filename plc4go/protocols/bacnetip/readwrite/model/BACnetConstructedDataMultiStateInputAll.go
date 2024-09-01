@@ -51,6 +51,8 @@ type _BACnetConstructedDataMultiStateInputAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataMultiStateInputAll = (*_BACnetConstructedDataMultiStateInputAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

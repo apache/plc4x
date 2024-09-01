@@ -148,6 +148,8 @@ type _SubscriptionDiagnosticsDataType struct {
 	reservedField0 *uint8
 }
 
+var _ SubscriptionDiagnosticsDataType = (*_SubscriptionDiagnosticsDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

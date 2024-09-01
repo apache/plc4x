@@ -58,6 +58,8 @@ type _BACnetConstructedDataLargeAnalogValueRelinquishDefault struct {
 	RelinquishDefault BACnetApplicationTagDouble
 }
 
+var _ BACnetConstructedDataLargeAnalogValueRelinquishDefault = (*_BACnetConstructedDataLargeAnalogValueRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

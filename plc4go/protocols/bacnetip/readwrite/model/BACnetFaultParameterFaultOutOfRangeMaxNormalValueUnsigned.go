@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned struct {
 	UnsignedValue BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

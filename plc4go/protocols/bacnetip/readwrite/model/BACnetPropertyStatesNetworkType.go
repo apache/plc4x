@@ -56,6 +56,8 @@ type _BACnetPropertyStatesNetworkType struct {
 	NetworkType BACnetNetworkTypeTagged
 }
 
+var _ BACnetPropertyStatesNetworkType = (*_BACnetPropertyStatesNetworkType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

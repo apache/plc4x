@@ -56,6 +56,8 @@ type _BACnetConstructedDataVirtualMACAddressTable struct {
 	VirtualMacAddressTable []BACnetVMACEntry
 }
 
+var _ BACnetConstructedDataVirtualMACAddressTable = (*_BACnetConstructedDataVirtualMACAddressTable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -51,6 +51,8 @@ type _BACnetConstructedDataNotificationForwarderAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataNotificationForwarderAll = (*_BACnetConstructedDataNotificationForwarderAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

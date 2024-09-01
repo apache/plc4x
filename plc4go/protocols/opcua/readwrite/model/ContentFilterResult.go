@@ -65,6 +65,8 @@ type _ContentFilterResult struct {
 	ElementDiagnosticInfos     []DiagnosticInfo
 }
 
+var _ ContentFilterResult = (*_ContentFilterResult)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

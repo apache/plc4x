@@ -58,6 +58,8 @@ type _BACnetConstructedDataChannelNumber struct {
 	ChannelNumber BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataChannelNumber = (*_BACnetConstructedDataChannelNumber)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

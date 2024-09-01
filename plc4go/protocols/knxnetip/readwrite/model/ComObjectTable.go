@@ -33,9 +33,19 @@ import (
 
 // ComObjectTable is the corresponding interface of ComObjectTable
 type ComObjectTable interface {
+	ComObjectTableContract
+	ComObjectTableRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ComObjectTableContract provides a set of functions which can be overwritten by a sub struct
+type ComObjectTableContract interface {
+}
+
+// ComObjectTableRequirements provides a set of functions which need to be implemented by a sub struct
+type ComObjectTableRequirements interface {
 	// GetFirmwareType returns FirmwareType (discriminator field)
 	GetFirmwareType() FirmwareType
 }
@@ -51,6 +61,8 @@ type ComObjectTableExactly interface {
 type _ComObjectTable struct {
 	_ComObjectTableChildRequirements
 }
+
+var _ ComObjectTableContract = (*_ComObjectTable)(nil)
 
 type _ComObjectTableChildRequirements interface {
 	utils.Serializable

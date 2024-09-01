@@ -56,6 +56,8 @@ type _BACnetOptionalREALValue struct {
 	RealValue BACnetApplicationTagReal
 }
 
+var _ BACnetOptionalREALValue = (*_BACnetOptionalREALValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

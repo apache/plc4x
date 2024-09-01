@@ -68,6 +68,8 @@ type _BACnetConfirmedServiceRequestWriteProperty struct {
 	Priority           BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestWriteProperty = (*_BACnetConfirmedServiceRequestWriteProperty)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

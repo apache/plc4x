@@ -35,13 +35,23 @@ import (
 
 // BACnetScale is the corresponding interface of BACnetScale
 type BACnetScale interface {
+	BACnetScaleContract
+	BACnetScaleRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetScaleContract provides a set of functions which can be overwritten by a sub struct
+type BACnetScaleContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetScaleRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetScaleRequirements interface {
 }
 
 // BACnetScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetScale.
@@ -56,6 +66,8 @@ type _BACnetScale struct {
 	_BACnetScaleChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetScaleContract = (*_BACnetScale)(nil)
 
 type _BACnetScaleChildRequirements interface {
 	utils.Serializable

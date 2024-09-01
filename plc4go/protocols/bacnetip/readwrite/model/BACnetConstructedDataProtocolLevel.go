@@ -58,6 +58,8 @@ type _BACnetConstructedDataProtocolLevel struct {
 	ProtocolLevel BACnetProtocolLevelTagged
 }
 
+var _ BACnetConstructedDataProtocolLevel = (*_BACnetConstructedDataProtocolLevel)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

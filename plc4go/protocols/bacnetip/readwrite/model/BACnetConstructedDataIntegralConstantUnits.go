@@ -58,6 +58,8 @@ type _BACnetConstructedDataIntegralConstantUnits struct {
 	Units BACnetEngineeringUnitsTagged
 }
 
+var _ BACnetConstructedDataIntegralConstantUnits = (*_BACnetConstructedDataIntegralConstantUnits)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

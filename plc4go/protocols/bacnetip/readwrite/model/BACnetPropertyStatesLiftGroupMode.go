@@ -56,6 +56,8 @@ type _BACnetPropertyStatesLiftGroupMode struct {
 	LiftGroupMode BACnetLiftGroupModeTagged
 }
 
+var _ BACnetPropertyStatesLiftGroupMode = (*_BACnetPropertyStatesLiftGroupMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

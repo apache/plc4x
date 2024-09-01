@@ -56,6 +56,8 @@ type _BACnetPropertyStatesNetworkPortCommand struct {
 	NetworkPortCommand BACnetNetworkPortCommandTagged
 }
 
+var _ BACnetPropertyStatesNetworkPortCommand = (*_BACnetPropertyStatesNetworkPortCommand)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestReinitializeDevice struct {
 	Password                   BACnetContextTagCharacterString
 }
 
+var _ BACnetConfirmedServiceRequestReinitializeDevice = (*_BACnetConfirmedServiceRequestReinitializeDevice)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

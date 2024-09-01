@@ -60,6 +60,8 @@ type _MediaTransportControlDataPauseResume struct {
 	Operation byte
 }
 
+var _ MediaTransportControlDataPauseResume = (*_MediaTransportControlDataPauseResume)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

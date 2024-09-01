@@ -61,6 +61,8 @@ type _BACnetAccessRuleLocationSpecifierTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetAccessRuleLocationSpecifierTagged = (*_BACnetAccessRuleLocationSpecifierTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

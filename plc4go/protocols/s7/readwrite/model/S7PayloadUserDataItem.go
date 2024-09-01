@@ -35,21 +35,31 @@ import (
 
 // S7PayloadUserDataItem is the corresponding interface of S7PayloadUserDataItem
 type S7PayloadUserDataItem interface {
+	S7PayloadUserDataItemContract
+	S7PayloadUserDataItemRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetCpuFunctionGroup returns CpuFunctionGroup (discriminator field)
-	GetCpuFunctionGroup() uint8
-	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
-	GetCpuFunctionType() uint8
-	// GetCpuSubfunction returns CpuSubfunction (discriminator field)
-	GetCpuSubfunction() uint8
+}
+
+// S7PayloadUserDataItemContract provides a set of functions which can be overwritten by a sub struct
+type S7PayloadUserDataItemContract interface {
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
 	// GetDataLength returns DataLength (property field)
 	GetDataLength() uint16
+}
+
+// S7PayloadUserDataItemRequirements provides a set of functions which need to be implemented by a sub struct
+type S7PayloadUserDataItemRequirements interface {
+	// GetCpuFunctionGroup returns CpuFunctionGroup (discriminator field)
+	GetCpuFunctionGroup() uint8
+	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
+	GetCpuFunctionType() uint8
+	// GetCpuSubfunction returns CpuSubfunction (discriminator field)
+	GetCpuSubfunction() uint8
 }
 
 // S7PayloadUserDataItemExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItem.
@@ -66,6 +76,8 @@ type _S7PayloadUserDataItem struct {
 	TransportSize DataTransportSize
 	DataLength    uint16
 }
+
+var _ S7PayloadUserDataItemContract = (*_S7PayloadUserDataItem)(nil)
 
 type _S7PayloadUserDataItemChildRequirements interface {
 	utils.Serializable

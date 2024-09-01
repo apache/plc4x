@@ -58,6 +58,8 @@ type _BACnetConstructedDataBitStringValueRelinquishDefault struct {
 	RelinquishDefault BACnetApplicationTagBitString
 }
 
+var _ BACnetConstructedDataBitStringValueRelinquishDefault = (*_BACnetConstructedDataBitStringValueRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetPropertyStatesBoolean struct {
 	BooleanValue BACnetContextTagBoolean
 }
 
+var _ BACnetPropertyStatesBoolean = (*_BACnetPropertyStatesBoolean)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

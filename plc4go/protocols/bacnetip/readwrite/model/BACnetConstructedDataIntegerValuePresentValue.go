@@ -58,6 +58,8 @@ type _BACnetConstructedDataIntegerValuePresentValue struct {
 	PresentValue BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetConstructedDataIntegerValuePresentValue = (*_BACnetConstructedDataIntegerValuePresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

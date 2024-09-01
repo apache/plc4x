@@ -59,6 +59,8 @@ type _CBusPointToPointToMultiPointCommandNormal struct {
 	SalData     SALData
 }
 
+var _ CBusPointToPointToMultiPointCommandNormal = (*_CBusPointToPointToMultiPointCommandNormal)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -68,6 +68,8 @@ type _DeleteReferencesResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ DeleteReferencesResponse = (*_DeleteReferencesResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

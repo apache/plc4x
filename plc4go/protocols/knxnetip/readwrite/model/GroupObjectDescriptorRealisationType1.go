@@ -77,6 +77,8 @@ type _GroupObjectDescriptorRealisationType1 struct {
 	reservedField0 *uint8
 }
 
+var _ GroupObjectDescriptorRealisationType1 = (*_GroupObjectDescriptorRealisationType1)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

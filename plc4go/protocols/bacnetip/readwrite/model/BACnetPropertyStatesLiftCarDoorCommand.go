@@ -56,6 +56,8 @@ type _BACnetPropertyStatesLiftCarDoorCommand struct {
 	LiftCarDoorCommand BACnetLiftCarDoorCommandTagged
 }
 
+var _ BACnetPropertyStatesLiftCarDoorCommand = (*_BACnetPropertyStatesLiftCarDoorCommand)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

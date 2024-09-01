@@ -56,6 +56,8 @@ type _TelephonyDataDialInFailure struct {
 	Reason DialInFailureReason
 }
 
+var _ TelephonyDataDialInFailure = (*_TelephonyDataDialInFailure)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

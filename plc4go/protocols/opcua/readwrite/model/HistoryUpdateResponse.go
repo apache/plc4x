@@ -68,6 +68,8 @@ type _HistoryUpdateResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ HistoryUpdateResponse = (*_HistoryUpdateResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

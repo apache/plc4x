@@ -61,6 +61,8 @@ type _BACnetRouterEntryStatusTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetRouterEntryStatusTagged = (*_BACnetRouterEntryStatusTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

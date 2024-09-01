@@ -58,6 +58,8 @@ type _BACnetConstructedDataDoorUnlockDelayTime struct {
 	DoorUnlockDelayTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataDoorUnlockDelayTime = (*_BACnetConstructedDataDoorUnlockDelayTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

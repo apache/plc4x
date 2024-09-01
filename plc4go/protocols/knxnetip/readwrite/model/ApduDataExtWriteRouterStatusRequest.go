@@ -51,6 +51,8 @@ type _ApduDataExtWriteRouterStatusRequest struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtWriteRouterStatusRequest = (*_ApduDataExtWriteRouterStatusRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

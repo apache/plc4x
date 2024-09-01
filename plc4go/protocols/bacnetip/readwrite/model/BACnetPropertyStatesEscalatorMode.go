@@ -56,6 +56,8 @@ type _BACnetPropertyStatesEscalatorMode struct {
 	EscalatorMode BACnetEscalatorModeTagged
 }
 
+var _ BACnetPropertyStatesEscalatorMode = (*_BACnetPropertyStatesEscalatorMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

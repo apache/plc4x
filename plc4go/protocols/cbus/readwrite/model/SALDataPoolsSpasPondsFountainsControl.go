@@ -56,6 +56,8 @@ type _SALDataPoolsSpasPondsFountainsControl struct {
 	PoolsSpaPondsFountainsData LightingData
 }
 
+var _ SALDataPoolsSpasPondsFountainsControl = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

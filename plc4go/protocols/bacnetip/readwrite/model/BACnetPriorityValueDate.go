@@ -56,6 +56,8 @@ type _BACnetPriorityValueDate struct {
 	DateValue BACnetApplicationTagDate
 }
 
+var _ BACnetPriorityValueDate = (*_BACnetPriorityValueDate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

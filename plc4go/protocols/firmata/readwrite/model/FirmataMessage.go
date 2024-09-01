@@ -37,9 +37,19 @@ import (
 
 // FirmataMessage is the corresponding interface of FirmataMessage
 type FirmataMessage interface {
+	FirmataMessageContract
+	FirmataMessageRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// FirmataMessageContract provides a set of functions which can be overwritten by a sub struct
+type FirmataMessageContract interface {
+}
+
+// FirmataMessageRequirements provides a set of functions which need to be implemented by a sub struct
+type FirmataMessageRequirements interface {
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 }
@@ -58,6 +68,8 @@ type _FirmataMessage struct {
 	// Arguments.
 	Response bool
 }
+
+var _ FirmataMessageContract = (*_FirmataMessage)(nil)
 
 type _FirmataMessageChildRequirements interface {
 	utils.Serializable

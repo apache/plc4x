@@ -59,6 +59,8 @@ type _NetworkProtocolControlInformation struct {
 	reservedField0 *uint8
 }
 
+var _ NetworkProtocolControlInformation = (*_NetworkProtocolControlInformation)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

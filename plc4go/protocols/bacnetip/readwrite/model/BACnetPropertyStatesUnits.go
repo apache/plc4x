@@ -56,6 +56,8 @@ type _BACnetPropertyStatesUnits struct {
 	Units BACnetEngineeringUnitsTagged
 }
 
+var _ BACnetPropertyStatesUnits = (*_BACnetPropertyStatesUnits)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

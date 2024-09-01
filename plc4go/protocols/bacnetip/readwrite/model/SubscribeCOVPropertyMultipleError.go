@@ -59,6 +59,8 @@ type _SubscribeCOVPropertyMultipleError struct {
 	FirstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription
 }
 
+var _ SubscribeCOVPropertyMultipleError = (*_SubscribeCOVPropertyMultipleError)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

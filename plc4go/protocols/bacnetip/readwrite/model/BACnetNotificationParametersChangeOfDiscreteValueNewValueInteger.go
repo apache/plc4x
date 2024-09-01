@@ -56,6 +56,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger struct {
 	IntegerValue BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

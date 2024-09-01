@@ -89,6 +89,8 @@ type _SecurityGroupDataType struct {
 	GroupProperties         []ExtensionObjectDefinition
 }
 
+var _ SecurityGroupDataType = (*_SecurityGroupDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

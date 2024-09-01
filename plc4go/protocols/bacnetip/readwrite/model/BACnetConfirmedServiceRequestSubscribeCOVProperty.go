@@ -71,6 +71,8 @@ type _BACnetConfirmedServiceRequestSubscribeCOVProperty struct {
 	CovIncrement                BACnetContextTagReal
 }
 
+var _ BACnetConfirmedServiceRequestSubscribeCOVProperty = (*_BACnetConfirmedServiceRequestSubscribeCOVProperty)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

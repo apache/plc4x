@@ -58,6 +58,8 @@ type _BACnetConstructedDataRequestedUpdateInterval struct {
 	RequestedUpdateInterval BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataRequestedUpdateInterval = (*_BACnetConstructedDataRequestedUpdateInterval)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetPriorityValueBitString struct {
 	BitStringValue BACnetApplicationTagBitString
 }
 
+var _ BACnetPriorityValueBitString = (*_BACnetPriorityValueBitString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

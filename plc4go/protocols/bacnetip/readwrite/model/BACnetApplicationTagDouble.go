@@ -58,6 +58,8 @@ type _BACnetApplicationTagDouble struct {
 	Payload BACnetTagPayloadDouble
 }
 
+var _ BACnetApplicationTagDouble = (*_BACnetApplicationTagDouble)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataTimeSynchronizationInterval struct {
 	TimeSynchronization BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataTimeSynchronizationInterval = (*_BACnetConstructedDataTimeSynchronizationInterval)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

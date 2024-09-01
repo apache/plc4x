@@ -56,6 +56,8 @@ type _BACnetConstructedDataCOVURecipients struct {
 	CovuRecipients []BACnetRecipient
 }
 
+var _ BACnetConstructedDataCOVURecipients = (*_BACnetConstructedDataCOVURecipients)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

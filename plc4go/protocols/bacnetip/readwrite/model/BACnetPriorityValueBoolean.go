@@ -56,6 +56,8 @@ type _BACnetPriorityValueBoolean struct {
 	BooleanValue BACnetApplicationTagBoolean
 }
 
+var _ BACnetPriorityValueBoolean = (*_BACnetPriorityValueBoolean)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

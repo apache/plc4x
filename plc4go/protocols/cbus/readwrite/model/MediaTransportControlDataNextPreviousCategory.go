@@ -60,6 +60,8 @@ type _MediaTransportControlDataNextPreviousCategory struct {
 	Operation byte
 }
 
+var _ MediaTransportControlDataNextPreviousCategory = (*_MediaTransportControlDataNextPreviousCategory)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

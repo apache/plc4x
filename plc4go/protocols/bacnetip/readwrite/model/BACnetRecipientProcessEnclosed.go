@@ -63,6 +63,8 @@ type _BACnetRecipientProcessEnclosed struct {
 	TagNumber uint8
 }
 
+var _ BACnetRecipientProcessEnclosed = (*_BACnetRecipientProcessEnclosed)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

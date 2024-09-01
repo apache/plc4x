@@ -35,9 +35,15 @@ import (
 
 // BACnetConfirmedServiceRequestReadRangeRange is the corresponding interface of BACnetConfirmedServiceRequestReadRangeRange
 type BACnetConfirmedServiceRequestReadRangeRange interface {
+	BACnetConfirmedServiceRequestReadRangeRangeContract
+	BACnetConfirmedServiceRequestReadRangeRangeRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetConfirmedServiceRequestReadRangeRangeContract provides a set of functions which can be overwritten by a sub struct
+type BACnetConfirmedServiceRequestReadRangeRangeContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetOpeningTag returns OpeningTag (property field)
@@ -46,6 +52,10 @@ type BACnetConfirmedServiceRequestReadRangeRange interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetConfirmedServiceRequestReadRangeRangeRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetConfirmedServiceRequestReadRangeRangeRequirements interface {
 }
 
 // BACnetConfirmedServiceRequestReadRangeRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRange.
@@ -62,6 +72,8 @@ type _BACnetConfirmedServiceRequestReadRangeRange struct {
 	OpeningTag      BACnetOpeningTag
 	ClosingTag      BACnetClosingTag
 }
+
+var _ BACnetConfirmedServiceRequestReadRangeRangeContract = (*_BACnetConfirmedServiceRequestReadRangeRange)(nil)
 
 type _BACnetConfirmedServiceRequestReadRangeRangeChildRequirements interface {
 	utils.Serializable

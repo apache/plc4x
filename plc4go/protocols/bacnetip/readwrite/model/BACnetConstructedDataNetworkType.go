@@ -58,6 +58,8 @@ type _BACnetConstructedDataNetworkType struct {
 	NetworkType BACnetNetworkTypeTagged
 }
 
+var _ BACnetConstructedDataNetworkType = (*_BACnetConstructedDataNetworkType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

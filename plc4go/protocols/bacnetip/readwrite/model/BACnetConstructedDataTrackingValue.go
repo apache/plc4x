@@ -58,6 +58,8 @@ type _BACnetConstructedDataTrackingValue struct {
 	TrackingValue BACnetLifeSafetyStateTagged
 }
 
+var _ BACnetConstructedDataTrackingValue = (*_BACnetConstructedDataTrackingValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

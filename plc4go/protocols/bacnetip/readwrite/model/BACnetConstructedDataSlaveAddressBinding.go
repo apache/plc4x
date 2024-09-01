@@ -56,6 +56,8 @@ type _BACnetConstructedDataSlaveAddressBinding struct {
 	SlaveAddressBinding []BACnetAddressBinding
 }
 
+var _ BACnetConstructedDataSlaveAddressBinding = (*_BACnetConstructedDataSlaveAddressBinding)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

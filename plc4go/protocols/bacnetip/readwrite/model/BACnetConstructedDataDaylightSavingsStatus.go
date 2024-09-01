@@ -58,6 +58,8 @@ type _BACnetConstructedDataDaylightSavingsStatus struct {
 	DaylightSavingsStatus BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataDaylightSavingsStatus = (*_BACnetConstructedDataDaylightSavingsStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

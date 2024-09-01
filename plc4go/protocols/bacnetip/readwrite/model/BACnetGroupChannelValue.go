@@ -60,6 +60,8 @@ type _BACnetGroupChannelValue struct {
 	Value              BACnetChannelValue
 }
 
+var _ BACnetGroupChannelValue = (*_BACnetGroupChannelValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -59,6 +59,8 @@ type _S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse struct {
 	Items      []AssociatedQueryValueType
 }
 
+var _ S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

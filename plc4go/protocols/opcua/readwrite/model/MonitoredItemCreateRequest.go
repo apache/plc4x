@@ -62,6 +62,8 @@ type _MonitoredItemCreateRequest struct {
 	RequestedParameters ExtensionObjectDefinition
 }
 
+var _ MonitoredItemCreateRequest = (*_MonitoredItemCreateRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

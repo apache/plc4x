@@ -59,6 +59,8 @@ type _ChangeListAddError struct {
 	FirstFailedElementNumber BACnetContextTagUnsignedInteger
 }
 
+var _ ChangeListAddError = (*_ChangeListAddError)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

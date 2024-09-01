@@ -54,6 +54,8 @@ type _BACnetLandingDoorStatus struct {
 	LandingDoors BACnetLandingDoorStatusLandingDoorsList
 }
 
+var _ BACnetLandingDoorStatus = (*_BACnetLandingDoorStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

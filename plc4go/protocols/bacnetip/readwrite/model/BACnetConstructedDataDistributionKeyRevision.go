@@ -58,6 +58,8 @@ type _BACnetConstructedDataDistributionKeyRevision struct {
 	DistributionKeyRevision BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataDistributionKeyRevision = (*_BACnetConstructedDataDistributionKeyRevision)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

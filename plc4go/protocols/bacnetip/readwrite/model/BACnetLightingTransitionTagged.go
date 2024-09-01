@@ -66,6 +66,8 @@ type _BACnetLightingTransitionTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetLightingTransitionTagged = (*_BACnetLightingTransitionTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

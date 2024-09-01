@@ -58,6 +58,8 @@ type _BACnetConstructedDataFileSize struct {
 	FileSize BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataFileSize = (*_BACnetConstructedDataFileSize)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

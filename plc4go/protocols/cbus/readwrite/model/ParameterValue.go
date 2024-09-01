@@ -33,9 +33,19 @@ import (
 
 // ParameterValue is the corresponding interface of ParameterValue
 type ParameterValue interface {
+	ParameterValueContract
+	ParameterValueRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ParameterValueContract provides a set of functions which can be overwritten by a sub struct
+type ParameterValueContract interface {
+}
+
+// ParameterValueRequirements provides a set of functions which need to be implemented by a sub struct
+type ParameterValueRequirements interface {
 	// GetParameterType returns ParameterType (discriminator field)
 	GetParameterType() ParameterType
 }
@@ -54,6 +64,8 @@ type _ParameterValue struct {
 	// Arguments.
 	NumBytes uint8
 }
+
+var _ ParameterValueContract = (*_ParameterValue)(nil)
 
 type _ParameterValueChildRequirements interface {
 	utils.Serializable

@@ -63,6 +63,8 @@ type _BACnetReadAccessProperty struct {
 	ObjectTypeArgument BACnetObjectType
 }
 
+var _ BACnetReadAccessProperty = (*_BACnetReadAccessProperty)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataStateDescription struct {
 	StateDescription BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataStateDescription = (*_BACnetConstructedDataStateDescription)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -35,9 +35,15 @@ import (
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValue is the corresponding interface of BACnetNotificationParametersChangeOfDiscreteValueNewValue
 type BACnetNotificationParametersChangeOfDiscreteValueNewValue interface {
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueContract
+	BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueContract provides a set of functions which can be overwritten by a sub struct
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueContract interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -48,6 +54,10 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValue interface {
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
+}
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements interface {
 }
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValue.
@@ -67,6 +77,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)(nil)
 
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements interface {
 	utils.Serializable

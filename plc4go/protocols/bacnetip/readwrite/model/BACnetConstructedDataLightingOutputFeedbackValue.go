@@ -58,6 +58,8 @@ type _BACnetConstructedDataLightingOutputFeedbackValue struct {
 	FeedbackValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataLightingOutputFeedbackValue = (*_BACnetConstructedDataLightingOutputFeedbackValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

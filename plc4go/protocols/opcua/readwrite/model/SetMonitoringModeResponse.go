@@ -68,6 +68,8 @@ type _SetMonitoringModeResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ SetMonitoringModeResponse = (*_SetMonitoringModeResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataValueSource struct {
 	ValueSource BACnetValueSource
 }
 
+var _ BACnetConstructedDataValueSource = (*_BACnetConstructedDataValueSource)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

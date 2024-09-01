@@ -51,6 +51,8 @@ type _MeteringDataMeasureElectricity struct {
 	*_MeteringData
 }
 
+var _ MeteringDataMeasureElectricity = (*_MeteringDataMeasureElectricity)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

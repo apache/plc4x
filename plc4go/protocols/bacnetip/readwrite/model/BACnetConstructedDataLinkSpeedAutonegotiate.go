@@ -58,6 +58,8 @@ type _BACnetConstructedDataLinkSpeedAutonegotiate struct {
 	LinkSpeedAutonegotiate BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataLinkSpeedAutonegotiate = (*_BACnetConstructedDataLinkSpeedAutonegotiate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

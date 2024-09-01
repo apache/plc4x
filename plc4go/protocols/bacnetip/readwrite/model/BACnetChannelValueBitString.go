@@ -56,6 +56,8 @@ type _BACnetChannelValueBitString struct {
 	BitStringValue BACnetApplicationTagBitString
 }
 
+var _ BACnetChannelValueBitString = (*_BACnetChannelValueBitString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

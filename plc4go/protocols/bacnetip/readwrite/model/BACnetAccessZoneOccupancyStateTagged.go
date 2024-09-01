@@ -66,6 +66,8 @@ type _BACnetAccessZoneOccupancyStateTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetAccessZoneOccupancyStateTagged = (*_BACnetAccessZoneOccupancyStateTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

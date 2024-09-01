@@ -51,6 +51,8 @@ type _BACnetConstructedDataStructuredViewAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataStructuredViewAll = (*_BACnetConstructedDataStructuredViewAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

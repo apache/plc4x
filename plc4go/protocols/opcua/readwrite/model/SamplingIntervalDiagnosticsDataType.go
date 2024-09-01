@@ -65,6 +65,8 @@ type _SamplingIntervalDiagnosticsDataType struct {
 	DisabledMonitoredItemCount uint32
 }
 
+var _ SamplingIntervalDiagnosticsDataType = (*_SamplingIntervalDiagnosticsDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -74,6 +74,8 @@ type _CEMIAdditionalInformationBusmonitorInfo struct {
 	SequenceNumber  uint8
 }
 
+var _ CEMIAdditionalInformationBusmonitorInfo = (*_CEMIAdditionalInformationBusmonitorInfo)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

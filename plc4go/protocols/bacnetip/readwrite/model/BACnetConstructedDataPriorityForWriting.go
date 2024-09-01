@@ -58,6 +58,8 @@ type _BACnetConstructedDataPriorityForWriting struct {
 	PriorityForWriting BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPriorityForWriting = (*_BACnetConstructedDataPriorityForWriting)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

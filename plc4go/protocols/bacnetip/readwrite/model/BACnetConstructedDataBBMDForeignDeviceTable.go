@@ -56,6 +56,8 @@ type _BACnetConstructedDataBBMDForeignDeviceTable struct {
 	BbmdForeignDeviceTable []BACnetBDTEntry
 }
 
+var _ BACnetConstructedDataBBMDForeignDeviceTable = (*_BACnetConstructedDataBBMDForeignDeviceTable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

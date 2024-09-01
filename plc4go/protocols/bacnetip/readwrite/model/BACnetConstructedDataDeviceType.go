@@ -58,6 +58,8 @@ type _BACnetConstructedDataDeviceType struct {
 	DeviceType BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataDeviceType = (*_BACnetConstructedDataDeviceType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

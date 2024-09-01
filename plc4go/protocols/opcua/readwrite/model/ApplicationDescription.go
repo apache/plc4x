@@ -77,6 +77,8 @@ type _ApplicationDescription struct {
 	DiscoveryUrls       []PascalString
 }
 
+var _ ApplicationDescription = (*_ApplicationDescription)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

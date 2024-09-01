@@ -59,6 +59,8 @@ type _COTPPacketDisconnectResponse struct {
 	SourceReference      uint16
 }
 
+var _ COTPPacketDisconnectResponse = (*_COTPPacketDisconnectResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -33,9 +33,19 @@ import (
 
 // AdsMultiRequestItem is the corresponding interface of AdsMultiRequestItem
 type AdsMultiRequestItem interface {
+	AdsMultiRequestItemContract
+	AdsMultiRequestItemRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// AdsMultiRequestItemContract provides a set of functions which can be overwritten by a sub struct
+type AdsMultiRequestItemContract interface {
+}
+
+// AdsMultiRequestItemRequirements provides a set of functions which need to be implemented by a sub struct
+type AdsMultiRequestItemRequirements interface {
 	// GetIndexGroup returns IndexGroup (discriminator field)
 	GetIndexGroup() uint32
 }
@@ -51,6 +61,8 @@ type AdsMultiRequestItemExactly interface {
 type _AdsMultiRequestItem struct {
 	_AdsMultiRequestItemChildRequirements
 }
+
+var _ AdsMultiRequestItemContract = (*_AdsMultiRequestItem)(nil)
 
 type _AdsMultiRequestItemChildRequirements interface {
 	utils.Serializable

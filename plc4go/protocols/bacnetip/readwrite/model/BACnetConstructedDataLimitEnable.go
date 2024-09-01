@@ -58,6 +58,8 @@ type _BACnetConstructedDataLimitEnable struct {
 	LimitEnable BACnetLimitEnableTagged
 }
 
+var _ BACnetConstructedDataLimitEnable = (*_BACnetConstructedDataLimitEnable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

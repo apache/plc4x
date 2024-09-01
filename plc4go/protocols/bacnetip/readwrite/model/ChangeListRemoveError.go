@@ -59,6 +59,8 @@ type _ChangeListRemoveError struct {
 	FirstFailedElementNumber BACnetContextTagUnsignedInteger
 }
 
+var _ ChangeListRemoveError = (*_ChangeListRemoveError)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

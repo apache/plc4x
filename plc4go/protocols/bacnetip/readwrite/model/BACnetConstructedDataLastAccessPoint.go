@@ -58,6 +58,8 @@ type _BACnetConstructedDataLastAccessPoint struct {
 	LastAccessPoint BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataLastAccessPoint = (*_BACnetConstructedDataLastAccessPoint)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

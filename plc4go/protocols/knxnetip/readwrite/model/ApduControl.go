@@ -35,9 +35,19 @@ import (
 
 // ApduControl is the corresponding interface of ApduControl
 type ApduControl interface {
+	ApduControlContract
+	ApduControlRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ApduControlContract provides a set of functions which can be overwritten by a sub struct
+type ApduControlContract interface {
+}
+
+// ApduControlRequirements provides a set of functions which need to be implemented by a sub struct
+type ApduControlRequirements interface {
 	// GetControlType returns ControlType (discriminator field)
 	GetControlType() uint8
 }
@@ -53,6 +63,8 @@ type ApduControlExactly interface {
 type _ApduControl struct {
 	_ApduControlChildRequirements
 }
+
+var _ ApduControlContract = (*_ApduControl)(nil)
 
 type _ApduControlChildRequirements interface {
 	utils.Serializable

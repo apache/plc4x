@@ -35,9 +35,19 @@ import (
 
 // SysexCommand is the corresponding interface of SysexCommand
 type SysexCommand interface {
+	SysexCommandContract
+	SysexCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// SysexCommandContract provides a set of functions which can be overwritten by a sub struct
+type SysexCommandContract interface {
+}
+
+// SysexCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type SysexCommandRequirements interface {
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() uint8
 	// GetResponse returns Response (discriminator field)
@@ -55,6 +65,8 @@ type SysexCommandExactly interface {
 type _SysexCommand struct {
 	_SysexCommandChildRequirements
 }
+
+var _ SysexCommandContract = (*_SysexCommand)(nil)
 
 type _SysexCommandChildRequirements interface {
 	utils.Serializable

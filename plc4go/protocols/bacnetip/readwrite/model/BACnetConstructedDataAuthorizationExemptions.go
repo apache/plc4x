@@ -56,6 +56,8 @@ type _BACnetConstructedDataAuthorizationExemptions struct {
 	AuthorizationExemption []BACnetAuthorizationExemptionTagged
 }
 
+var _ BACnetConstructedDataAuthorizationExemptions = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

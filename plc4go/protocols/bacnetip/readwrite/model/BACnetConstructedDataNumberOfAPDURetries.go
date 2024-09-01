@@ -58,6 +58,8 @@ type _BACnetConstructedDataNumberOfAPDURetries struct {
 	NumberOfApduRetries BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataNumberOfAPDURetries = (*_BACnetConstructedDataNumberOfAPDURetries)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

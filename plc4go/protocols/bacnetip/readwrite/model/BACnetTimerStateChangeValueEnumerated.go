@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueEnumerated struct {
 	EnumeratedValue BACnetApplicationTagEnumerated
 }
 
+var _ BACnetTimerStateChangeValueEnumerated = (*_BACnetTimerStateChangeValueEnumerated)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

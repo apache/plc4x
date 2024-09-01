@@ -56,6 +56,8 @@ type _BACnetPropertyStatesBinaryLightningValue struct {
 	BinaryLightningValue BACnetBinaryLightingPVTagged
 }
 
+var _ BACnetPropertyStatesBinaryLightningValue = (*_BACnetPropertyStatesBinaryLightningValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

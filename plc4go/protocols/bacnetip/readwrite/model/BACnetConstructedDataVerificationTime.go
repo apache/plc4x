@@ -58,6 +58,8 @@ type _BACnetConstructedDataVerificationTime struct {
 	VerificationTime BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetConstructedDataVerificationTime = (*_BACnetConstructedDataVerificationTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

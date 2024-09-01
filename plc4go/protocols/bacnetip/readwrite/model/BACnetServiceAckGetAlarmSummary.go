@@ -62,6 +62,8 @@ type _BACnetServiceAckGetAlarmSummary struct {
 	AcknowledgedTransitions BACnetEventTransitionBitsTagged
 }
 
+var _ BACnetServiceAckGetAlarmSummary = (*_BACnetServiceAckGetAlarmSummary)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

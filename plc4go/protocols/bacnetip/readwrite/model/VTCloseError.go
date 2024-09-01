@@ -59,6 +59,8 @@ type _VTCloseError struct {
 	ListOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers
 }
 
+var _ VTCloseError = (*_VTCloseError)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

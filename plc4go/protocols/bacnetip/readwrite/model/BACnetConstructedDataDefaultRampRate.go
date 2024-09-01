@@ -58,6 +58,8 @@ type _BACnetConstructedDataDefaultRampRate struct {
 	DefaultRampRate BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataDefaultRampRate = (*_BACnetConstructedDataDefaultRampRate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

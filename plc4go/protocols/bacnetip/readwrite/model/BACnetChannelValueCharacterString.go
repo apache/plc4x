@@ -56,6 +56,8 @@ type _BACnetChannelValueCharacterString struct {
 	CharacterStringValue BACnetApplicationTagCharacterString
 }
 
+var _ BACnetChannelValueCharacterString = (*_BACnetChannelValueCharacterString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

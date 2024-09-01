@@ -58,6 +58,8 @@ type _BACnetConstructedDataBinaryLightingOutputRelinquishDefault struct {
 	RelinquishDefault BACnetBinaryLightingPVTagged
 }
 
+var _ BACnetConstructedDataBinaryLightingOutputRelinquishDefault = (*_BACnetConstructedDataBinaryLightingOutputRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

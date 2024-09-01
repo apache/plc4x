@@ -63,6 +63,8 @@ type _BACnetAssignedLandingCallsLandingCallsList struct {
 	TagNumber uint8
 }
 
+var _ BACnetAssignedLandingCallsLandingCallsList = (*_BACnetAssignedLandingCallsLandingCallsList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -59,6 +59,8 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlRequest struct {
 	SzlIndex uint16
 }
 
+var _ S7PayloadUserDataItemCpuFunctionReadSzlRequest = (*_S7PayloadUserDataItemCpuFunctionReadSzlRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

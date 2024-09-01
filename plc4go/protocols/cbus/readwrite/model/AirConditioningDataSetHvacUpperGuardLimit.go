@@ -65,6 +65,8 @@ type _AirConditioningDataSetHvacUpperGuardLimit struct {
 	HvacModeAndFlags HVACModeAndFlags
 }
 
+var _ AirConditioningDataSetHvacUpperGuardLimit = (*_AirConditioningDataSetHvacUpperGuardLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

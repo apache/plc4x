@@ -59,6 +59,8 @@ type _BACnetServiceAckReadPropertyConditional struct {
 	ServiceAckPayloadLength uint32
 }
 
+var _ BACnetServiceAckReadPropertyConditional = (*_BACnetServiceAckReadPropertyConditional)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

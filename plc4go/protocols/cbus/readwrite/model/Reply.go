@@ -35,11 +35,21 @@ import (
 
 // Reply is the corresponding interface of Reply
 type Reply interface {
+	ReplyContract
+	ReplyRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ReplyContract provides a set of functions which can be overwritten by a sub struct
+type ReplyContract interface {
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
+}
+
+// ReplyRequirements provides a set of functions which need to be implemented by a sub struct
+type ReplyRequirements interface {
 }
 
 // ReplyExactly can be used when we want exactly this type and not a type which fulfills Reply.
@@ -58,6 +68,8 @@ type _Reply struct {
 	CBusOptions    CBusOptions
 	RequestContext RequestContext
 }
+
+var _ ReplyContract = (*_Reply)(nil)
 
 type _ReplyChildRequirements interface {
 	utils.Serializable

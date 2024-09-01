@@ -58,6 +58,8 @@ type _BACnetConstructedDataDerivativeConstantUnits struct {
 	Units BACnetEngineeringUnitsTagged
 }
 
+var _ BACnetConstructedDataDerivativeConstantUnits = (*_BACnetConstructedDataDerivativeConstantUnits)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

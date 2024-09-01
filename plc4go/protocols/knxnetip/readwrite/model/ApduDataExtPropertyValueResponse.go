@@ -68,6 +68,8 @@ type _ApduDataExtPropertyValueResponse struct {
 	Data        []byte
 }
 
+var _ ApduDataExtPropertyValueResponse = (*_ApduDataExtPropertyValueResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

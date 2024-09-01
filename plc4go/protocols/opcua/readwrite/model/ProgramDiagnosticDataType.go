@@ -89,6 +89,8 @@ type _ProgramDiagnosticDataType struct {
 	LastMethodReturnStatus        ExtensionObjectDefinition
 }
 
+var _ ProgramDiagnosticDataType = (*_ProgramDiagnosticDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

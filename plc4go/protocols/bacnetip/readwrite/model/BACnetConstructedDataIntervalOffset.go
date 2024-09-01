@@ -58,6 +58,8 @@ type _BACnetConstructedDataIntervalOffset struct {
 	IntervalOffset BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataIntervalOffset = (*_BACnetConstructedDataIntervalOffset)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

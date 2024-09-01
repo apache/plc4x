@@ -58,6 +58,8 @@ type _BACnetConstructedDataDutyWindow struct {
 	DutyWindow BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataDutyWindow = (*_BACnetConstructedDataDutyWindow)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

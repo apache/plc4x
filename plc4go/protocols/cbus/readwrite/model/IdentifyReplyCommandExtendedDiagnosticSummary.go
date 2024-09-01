@@ -116,6 +116,8 @@ type _IdentifyReplyCommandExtendedDiagnosticSummary struct {
 	reservedField2 *uint8
 }
 
+var _ IdentifyReplyCommandExtendedDiagnosticSummary = (*_IdentifyReplyCommandExtendedDiagnosticSummary)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

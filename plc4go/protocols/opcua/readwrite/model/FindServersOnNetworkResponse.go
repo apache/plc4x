@@ -65,6 +65,8 @@ type _FindServersOnNetworkResponse struct {
 	Servers              []ExtensionObjectDefinition
 }
 
+var _ FindServersOnNetworkResponse = (*_FindServersOnNetworkResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

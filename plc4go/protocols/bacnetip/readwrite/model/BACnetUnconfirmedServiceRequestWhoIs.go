@@ -59,6 +59,8 @@ type _BACnetUnconfirmedServiceRequestWhoIs struct {
 	DeviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetUnconfirmedServiceRequestWhoIs = (*_BACnetUnconfirmedServiceRequestWhoIs)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

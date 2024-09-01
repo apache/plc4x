@@ -71,6 +71,8 @@ type _MonitoredSALShortFormBasicMode struct {
 	SalData       SALData
 }
 
+var _ MonitoredSALShortFormBasicMode = (*_MonitoredSALShortFormBasicMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

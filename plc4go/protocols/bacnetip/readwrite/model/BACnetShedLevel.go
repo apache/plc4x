@@ -35,13 +35,23 @@ import (
 
 // BACnetShedLevel is the corresponding interface of BACnetShedLevel
 type BACnetShedLevel interface {
+	BACnetShedLevelContract
+	BACnetShedLevelRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetShedLevelContract provides a set of functions which can be overwritten by a sub struct
+type BACnetShedLevelContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetShedLevelRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetShedLevelRequirements interface {
 }
 
 // BACnetShedLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetShedLevel.
@@ -56,6 +66,8 @@ type _BACnetShedLevel struct {
 	_BACnetShedLevelChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetShedLevelContract = (*_BACnetShedLevel)(nil)
 
 type _BACnetShedLevelChildRequirements interface {
 	utils.Serializable

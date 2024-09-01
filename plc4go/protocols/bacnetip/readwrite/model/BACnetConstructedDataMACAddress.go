@@ -58,6 +58,8 @@ type _BACnetConstructedDataMACAddress struct {
 	MacAddress BACnetApplicationTagOctetString
 }
 
+var _ BACnetConstructedDataMACAddress = (*_BACnetConstructedDataMACAddress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

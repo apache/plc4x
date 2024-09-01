@@ -35,9 +35,19 @@ import (
 
 // BACnetUnconfirmedServiceRequest is the corresponding interface of BACnetUnconfirmedServiceRequest
 type BACnetUnconfirmedServiceRequest interface {
+	BACnetUnconfirmedServiceRequestContract
+	BACnetUnconfirmedServiceRequestRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetUnconfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
+type BACnetUnconfirmedServiceRequestContract interface {
+}
+
+// BACnetUnconfirmedServiceRequestRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetUnconfirmedServiceRequestRequirements interface {
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetUnconfirmedServiceChoice
 }
@@ -56,6 +66,8 @@ type _BACnetUnconfirmedServiceRequest struct {
 	// Arguments.
 	ServiceRequestLength uint16
 }
+
+var _ BACnetUnconfirmedServiceRequestContract = (*_BACnetUnconfirmedServiceRequest)(nil)
 
 type _BACnetUnconfirmedServiceRequestChildRequirements interface {
 	utils.Serializable

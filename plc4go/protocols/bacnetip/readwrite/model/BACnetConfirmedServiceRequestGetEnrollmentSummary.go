@@ -71,6 +71,8 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummary struct {
 	NotificationClassFilter BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestGetEnrollmentSummary = (*_BACnetConfirmedServiceRequestGetEnrollmentSummary)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

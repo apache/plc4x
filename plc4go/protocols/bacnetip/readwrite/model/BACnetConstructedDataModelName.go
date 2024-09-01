@@ -58,6 +58,8 @@ type _BACnetConstructedDataModelName struct {
 	ModelName BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataModelName = (*_BACnetConstructedDataModelName)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

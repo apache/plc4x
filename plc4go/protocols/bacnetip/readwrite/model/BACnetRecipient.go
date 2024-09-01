@@ -35,13 +35,23 @@ import (
 
 // BACnetRecipient is the corresponding interface of BACnetRecipient
 type BACnetRecipient interface {
+	BACnetRecipientContract
+	BACnetRecipientRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetRecipientContract provides a set of functions which can be overwritten by a sub struct
+type BACnetRecipientContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetRecipientRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetRecipientRequirements interface {
 }
 
 // BACnetRecipientExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipient.
@@ -56,6 +66,8 @@ type _BACnetRecipient struct {
 	_BACnetRecipientChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetRecipientContract = (*_BACnetRecipient)(nil)
 
 type _BACnetRecipientChildRequirements interface {
 	utils.Serializable

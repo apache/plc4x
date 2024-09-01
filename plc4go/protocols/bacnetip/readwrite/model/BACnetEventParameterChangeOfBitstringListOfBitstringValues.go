@@ -63,6 +63,8 @@ type _BACnetEventParameterChangeOfBitstringListOfBitstringValues struct {
 	TagNumber uint8
 }
 
+var _ BACnetEventParameterChangeOfBitstringListOfBitstringValues = (*_BACnetEventParameterChangeOfBitstringListOfBitstringValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

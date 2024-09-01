@@ -65,6 +65,8 @@ type _PubSubConfigurationRefDataType struct {
 	GroupIndex        uint16
 }
 
+var _ PubSubConfigurationRefDataType = (*_PubSubConfigurationRefDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

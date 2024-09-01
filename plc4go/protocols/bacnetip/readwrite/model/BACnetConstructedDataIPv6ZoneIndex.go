@@ -58,6 +58,8 @@ type _BACnetConstructedDataIPv6ZoneIndex struct {
 	Ipv6ZoneIndex BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataIPv6ZoneIndex = (*_BACnetConstructedDataIPv6ZoneIndex)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

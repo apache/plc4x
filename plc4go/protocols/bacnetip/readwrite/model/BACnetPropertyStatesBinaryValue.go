@@ -56,6 +56,8 @@ type _BACnetPropertyStatesBinaryValue struct {
 	BinaryValue BACnetBinaryPVTagged
 }
 
+var _ BACnetPropertyStatesBinaryValue = (*_BACnetPropertyStatesBinaryValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

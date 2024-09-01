@@ -56,6 +56,8 @@ type _BACnetPriorityValueDouble struct {
 	DoubleValue BACnetApplicationTagDouble
 }
 
+var _ BACnetPriorityValueDouble = (*_BACnetPriorityValueDouble)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -63,6 +63,8 @@ type _ModbusPDUReadFileRecordRequestItem struct {
 	RecordLength  uint16
 }
 
+var _ ModbusPDUReadFileRecordRequestItem = (*_ModbusPDUReadFileRecordRequestItem)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataCommand struct {
 	Command BACnetNetworkPortCommandTagged
 }
 
+var _ BACnetConstructedDataCommand = (*_BACnetConstructedDataCommand)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

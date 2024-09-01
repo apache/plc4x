@@ -58,6 +58,8 @@ type _BACnetConstructedDataFirmwareRevision struct {
 	FirmwareRevision BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataFirmwareRevision = (*_BACnetConstructedDataFirmwareRevision)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

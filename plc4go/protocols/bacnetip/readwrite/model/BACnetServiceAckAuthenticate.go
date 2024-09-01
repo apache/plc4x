@@ -59,6 +59,8 @@ type _BACnetServiceAckAuthenticate struct {
 	ServiceAckPayloadLength uint32
 }
 
+var _ BACnetServiceAckAuthenticate = (*_BACnetServiceAckAuthenticate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

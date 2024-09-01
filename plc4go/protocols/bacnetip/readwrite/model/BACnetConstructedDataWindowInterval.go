@@ -58,6 +58,8 @@ type _BACnetConstructedDataWindowInterval struct {
 	WindowInterval BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataWindowInterval = (*_BACnetConstructedDataWindowInterval)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

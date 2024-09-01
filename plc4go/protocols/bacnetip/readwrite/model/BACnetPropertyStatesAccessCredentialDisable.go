@@ -56,6 +56,8 @@ type _BACnetPropertyStatesAccessCredentialDisable struct {
 	AccessCredentialDisable BACnetAccessCredentialDisableTagged
 }
 
+var _ BACnetPropertyStatesAccessCredentialDisable = (*_BACnetPropertyStatesAccessCredentialDisable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

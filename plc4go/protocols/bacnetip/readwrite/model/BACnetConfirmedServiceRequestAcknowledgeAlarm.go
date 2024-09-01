@@ -71,6 +71,8 @@ type _BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 	TimeOfAcknowledgment           BACnetTimeStampEnclosed
 }
 
+var _ BACnetConfirmedServiceRequestAcknowledgeAlarm = (*_BACnetConfirmedServiceRequestAcknowledgeAlarm)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataLargeAnalogValueResolution struct {
 	Resolution BACnetApplicationTagDouble
 }
 
+var _ BACnetConstructedDataLargeAnalogValueResolution = (*_BACnetConstructedDataLargeAnalogValueResolution)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

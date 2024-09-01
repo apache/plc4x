@@ -56,6 +56,8 @@ type _BACnetChannelValueOctetString struct {
 	OctetStringValue BACnetApplicationTagOctetString
 }
 
+var _ BACnetChannelValueOctetString = (*_BACnetChannelValueOctetString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

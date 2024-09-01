@@ -61,6 +61,8 @@ type _BACnetConstructedDataCarDoorText struct {
 	CarDoorText          []BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataCarDoorText = (*_BACnetConstructedDataCarDoorText)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

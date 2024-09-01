@@ -77,6 +77,8 @@ type _SessionlessInvokeRequestType struct {
 	ServiceId         uint32
 }
 
+var _ SessionlessInvokeRequestType = (*_SessionlessInvokeRequestType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

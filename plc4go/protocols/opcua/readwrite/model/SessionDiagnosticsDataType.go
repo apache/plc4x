@@ -185,6 +185,8 @@ type _SessionDiagnosticsDataType struct {
 	UnregisterNodesCount               ExtensionObjectDefinition
 }
 
+var _ SessionDiagnosticsDataType = (*_SessionDiagnosticsDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

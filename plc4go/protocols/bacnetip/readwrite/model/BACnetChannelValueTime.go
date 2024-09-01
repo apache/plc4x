@@ -56,6 +56,8 @@ type _BACnetChannelValueTime struct {
 	TimeValue BACnetApplicationTagTime
 }
 
+var _ BACnetChannelValueTime = (*_BACnetChannelValueTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

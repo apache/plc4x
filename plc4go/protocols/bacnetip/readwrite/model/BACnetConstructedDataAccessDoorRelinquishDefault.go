@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccessDoorRelinquishDefault struct {
 	RelinquishDefault BACnetDoorValueTagged
 }
 
+var _ BACnetConstructedDataAccessDoorRelinquishDefault = (*_BACnetConstructedDataAccessDoorRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

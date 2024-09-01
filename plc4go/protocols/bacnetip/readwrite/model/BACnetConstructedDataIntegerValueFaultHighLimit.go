@@ -58,6 +58,8 @@ type _BACnetConstructedDataIntegerValueFaultHighLimit struct {
 	FaultHighLimit BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetConstructedDataIntegerValueFaultHighLimit = (*_BACnetConstructedDataIntegerValueFaultHighLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

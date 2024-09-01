@@ -56,6 +56,8 @@ type _SALDataTemperatureBroadcast struct {
 	TemperatureBroadcastData TemperatureBroadcastData
 }
 
+var _ SALDataTemperatureBroadcast = (*_SALDataTemperatureBroadcast)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

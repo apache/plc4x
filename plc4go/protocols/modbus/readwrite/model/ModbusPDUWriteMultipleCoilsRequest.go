@@ -62,6 +62,8 @@ type _ModbusPDUWriteMultipleCoilsRequest struct {
 	Value           []byte
 }
 
+var _ ModbusPDUWriteMultipleCoilsRequest = (*_ModbusPDUWriteMultipleCoilsRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

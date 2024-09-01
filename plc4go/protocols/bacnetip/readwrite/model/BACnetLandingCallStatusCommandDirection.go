@@ -56,6 +56,8 @@ type _BACnetLandingCallStatusCommandDirection struct {
 	Direction BACnetLiftCarDirectionTagged
 }
 
+var _ BACnetLandingCallStatusCommandDirection = (*_BACnetLandingCallStatusCommandDirection)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetTimeStampSequence struct {
 	SequenceNumber BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetTimeStampSequence = (*_BACnetTimeStampSequence)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

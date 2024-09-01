@@ -51,6 +51,8 @@ type _ClockAndTimekeepingDataRequestRefresh struct {
 	*_ClockAndTimekeepingData
 }
 
+var _ ClockAndTimekeepingDataRequestRefresh = (*_ClockAndTimekeepingDataRequestRefresh)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

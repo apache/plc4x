@@ -58,6 +58,8 @@ type _BACnetConstructedDataAlertEnrollmentPresentValue struct {
 	PresentValue BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetConstructedDataAlertEnrollmentPresentValue = (*_BACnetConstructedDataAlertEnrollmentPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

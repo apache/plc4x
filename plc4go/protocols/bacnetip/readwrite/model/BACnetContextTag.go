@@ -35,17 +35,27 @@ import (
 
 // BACnetContextTag is the corresponding interface of BACnetContextTag
 type BACnetContextTag interface {
+	BACnetContextTagContract
+	BACnetContextTagRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetDataType returns DataType (discriminator field)
-	GetDataType() BACnetDataType
+}
+
+// BACnetContextTagContract provides a set of functions which can be overwritten by a sub struct
+type BACnetContextTagContract interface {
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetTagNumber returns TagNumber (virtual field)
 	GetTagNumber() uint8
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
+}
+
+// BACnetContextTagRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetContextTagRequirements interface {
+	// GetDataType returns DataType (discriminator field)
+	GetDataType() BACnetDataType
 }
 
 // BACnetContextTagExactly can be used when we want exactly this type and not a type which fulfills BACnetContextTag.
@@ -63,6 +73,8 @@ type _BACnetContextTag struct {
 	// Arguments.
 	TagNumberArgument uint8
 }
+
+var _ BACnetContextTagContract = (*_BACnetContextTag)(nil)
 
 type _BACnetContextTagChildRequirements interface {
 	utils.Serializable

@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueNoValue struct {
 	NoValue BACnetContextTagNull
 }
 
+var _ BACnetTimerStateChangeValueNoValue = (*_BACnetTimerStateChangeValueNoValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

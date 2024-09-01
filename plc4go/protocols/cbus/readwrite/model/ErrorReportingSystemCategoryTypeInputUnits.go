@@ -56,6 +56,8 @@ type _ErrorReportingSystemCategoryTypeInputUnits struct {
 	CategoryForType ErrorReportingSystemCategoryTypeForInputUnits
 }
 
+var _ ErrorReportingSystemCategoryTypeInputUnits = (*_ErrorReportingSystemCategoryTypeInputUnits)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

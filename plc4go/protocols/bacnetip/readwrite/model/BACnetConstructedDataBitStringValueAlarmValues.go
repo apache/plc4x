@@ -61,6 +61,8 @@ type _BACnetConstructedDataBitStringValueAlarmValues struct {
 	AlarmValues          []BACnetApplicationTagBitString
 }
 
+var _ BACnetConstructedDataBitStringValueAlarmValues = (*_BACnetConstructedDataBitStringValueAlarmValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

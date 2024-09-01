@@ -111,6 +111,8 @@ type _BACnetEventParameterExtendedParameters struct {
 	TagNumber uint8
 }
 
+var _ BACnetEventParameterExtendedParameters = (*_BACnetEventParameterExtendedParameters)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

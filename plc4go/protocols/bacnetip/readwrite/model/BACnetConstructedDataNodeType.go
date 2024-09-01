@@ -58,6 +58,8 @@ type _BACnetConstructedDataNodeType struct {
 	NodeType BACnetNodeTypeTagged
 }
 
+var _ BACnetConstructedDataNodeType = (*_BACnetConstructedDataNodeType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

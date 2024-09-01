@@ -56,6 +56,8 @@ type _BACnetConstructedDataSubscribedRecipients struct {
 	SubscribedRecipients []BACnetEventNotificationSubscription
 }
 
+var _ BACnetConstructedDataSubscribedRecipients = (*_BACnetConstructedDataSubscribedRecipients)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataInstantaneousPower struct {
 	InstantaneousPower BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataInstantaneousPower = (*_BACnetConstructedDataInstantaneousPower)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

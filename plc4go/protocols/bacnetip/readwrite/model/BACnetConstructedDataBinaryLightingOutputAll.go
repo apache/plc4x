@@ -51,6 +51,8 @@ type _BACnetConstructedDataBinaryLightingOutputAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataBinaryLightingOutputAll = (*_BACnetConstructedDataBinaryLightingOutputAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

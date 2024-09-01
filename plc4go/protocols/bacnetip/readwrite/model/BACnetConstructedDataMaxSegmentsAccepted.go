@@ -58,6 +58,8 @@ type _BACnetConstructedDataMaxSegmentsAccepted struct {
 	MaxSegmentsAccepted BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMaxSegmentsAccepted = (*_BACnetConstructedDataMaxSegmentsAccepted)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

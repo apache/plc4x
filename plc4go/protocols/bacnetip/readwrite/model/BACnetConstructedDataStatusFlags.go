@@ -58,6 +58,8 @@ type _BACnetConstructedDataStatusFlags struct {
 	StatusFlags BACnetStatusFlagsTagged
 }
 
+var _ BACnetConstructedDataStatusFlags = (*_BACnetConstructedDataStatusFlags)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

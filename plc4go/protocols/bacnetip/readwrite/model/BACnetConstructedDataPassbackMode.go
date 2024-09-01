@@ -58,6 +58,8 @@ type _BACnetConstructedDataPassbackMode struct {
 	PassbackMode BACnetAccessPassbackModeTagged
 }
 
+var _ BACnetConstructedDataPassbackMode = (*_BACnetConstructedDataPassbackMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

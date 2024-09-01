@@ -63,6 +63,8 @@ type _BACnetFaultParameterFaultLifeSafetyListOfFaultValues struct {
 	TagNumber uint8
 }
 
+var _ BACnetFaultParameterFaultLifeSafetyListOfFaultValues = (*_BACnetFaultParameterFaultLifeSafetyListOfFaultValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

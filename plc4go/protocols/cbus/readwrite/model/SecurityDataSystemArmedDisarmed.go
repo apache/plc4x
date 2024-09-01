@@ -56,6 +56,8 @@ type _SecurityDataSystemArmedDisarmed struct {
 	ArmCodeType SecurityArmCode
 }
 
+var _ SecurityDataSystemArmedDisarmed = (*_SecurityDataSystemArmedDisarmed)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

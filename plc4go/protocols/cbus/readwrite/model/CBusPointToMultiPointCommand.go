@@ -35,11 +35,21 @@ import (
 
 // CBusPointToMultiPointCommand is the corresponding interface of CBusPointToMultiPointCommand
 type CBusPointToMultiPointCommand interface {
+	CBusPointToMultiPointCommandContract
+	CBusPointToMultiPointCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CBusPointToMultiPointCommandContract provides a set of functions which can be overwritten by a sub struct
+type CBusPointToMultiPointCommandContract interface {
 	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
+}
+
+// CBusPointToMultiPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type CBusPointToMultiPointCommandRequirements interface {
 }
 
 // CBusPointToMultiPointCommandExactly can be used when we want exactly this type and not a type which fulfills CBusPointToMultiPointCommand.
@@ -57,6 +67,8 @@ type _CBusPointToMultiPointCommand struct {
 	// Arguments.
 	CBusOptions CBusOptions
 }
+
+var _ CBusPointToMultiPointCommandContract = (*_CBusPointToMultiPointCommand)(nil)
 
 type _CBusPointToMultiPointCommandChildRequirements interface {
 	utils.Serializable

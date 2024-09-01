@@ -35,11 +35,15 @@ import (
 
 // Variant is the corresponding interface of Variant
 type Variant interface {
+	VariantContract
+	VariantRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetVariantType returns VariantType (discriminator field)
-	GetVariantType() uint8
+}
+
+// VariantContract provides a set of functions which can be overwritten by a sub struct
+type VariantContract interface {
 	// GetArrayLengthSpecified returns ArrayLengthSpecified (property field)
 	GetArrayLengthSpecified() bool
 	// GetArrayDimensionsSpecified returns ArrayDimensionsSpecified (property field)
@@ -48,6 +52,12 @@ type Variant interface {
 	GetNoOfArrayDimensions() *int32
 	// GetArrayDimensions returns ArrayDimensions (property field)
 	GetArrayDimensions() []bool
+}
+
+// VariantRequirements provides a set of functions which need to be implemented by a sub struct
+type VariantRequirements interface {
+	// GetVariantType returns VariantType (discriminator field)
+	GetVariantType() uint8
 }
 
 // VariantExactly can be used when we want exactly this type and not a type which fulfills Variant.
@@ -65,6 +75,8 @@ type _Variant struct {
 	NoOfArrayDimensions      *int32
 	ArrayDimensions          []bool
 }
+
+var _ VariantContract = (*_Variant)(nil)
 
 type _VariantChildRequirements interface {
 	utils.Serializable

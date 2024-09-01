@@ -56,6 +56,8 @@ type _BACnetPropertyStatesIntegerValue struct {
 	IntegerValue BACnetContextTagSignedInteger
 }
 
+var _ BACnetPropertyStatesIntegerValue = (*_BACnetPropertyStatesIntegerValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

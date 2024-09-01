@@ -51,6 +51,8 @@ type _ModbusPDUReportServerIdRequest struct {
 	*_ModbusPDU
 }
 
+var _ ModbusPDUReportServerIdRequest = (*_ModbusPDUReportServerIdRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -35,13 +35,23 @@ import (
 
 // BACnetClientCOV is the corresponding interface of BACnetClientCOV
 type BACnetClientCOV interface {
+	BACnetClientCOVContract
+	BACnetClientCOVRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetClientCOVContract provides a set of functions which can be overwritten by a sub struct
+type BACnetClientCOVContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetClientCOVRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetClientCOVRequirements interface {
 }
 
 // BACnetClientCOVExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOV.
@@ -56,6 +66,8 @@ type _BACnetClientCOV struct {
 	_BACnetClientCOVChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetClientCOVContract = (*_BACnetClientCOV)(nil)
 
 type _BACnetClientCOVChildRequirements interface {
 	utils.Serializable

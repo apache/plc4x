@@ -58,6 +58,8 @@ type _BACnetConstructedDataAllowGroupDelayInhibit struct {
 	AllowGroupDelayInhibit BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataAllowGroupDelayInhibit = (*_BACnetConstructedDataAllowGroupDelayInhibit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

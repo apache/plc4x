@@ -56,6 +56,8 @@ type _MeteringDataElectricityConsumption struct {
 	KWhr uint32
 }
 
+var _ MeteringDataElectricityConsumption = (*_MeteringDataElectricityConsumption)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

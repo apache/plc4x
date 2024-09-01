@@ -58,6 +58,8 @@ type _BACnetConstructedDataSchedulePresentValue struct {
 	PresentValue BACnetConstructedDataElement
 }
 
+var _ BACnetConstructedDataSchedulePresentValue = (*_BACnetConstructedDataSchedulePresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

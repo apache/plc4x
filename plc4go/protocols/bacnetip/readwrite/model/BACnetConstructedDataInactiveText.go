@@ -58,6 +58,8 @@ type _BACnetConstructedDataInactiveText struct {
 	InactiveText BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataInactiveText = (*_BACnetConstructedDataInactiveText)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -68,6 +68,8 @@ type _BACnetEventParameterChangeOfBitstring struct {
 	ClosingTag            BACnetClosingTag
 }
 
+var _ BACnetEventParameterChangeOfBitstring = (*_BACnetEventParameterChangeOfBitstring)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

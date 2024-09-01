@@ -65,6 +65,8 @@ type _MediaTransportControlDataTotalTracks struct {
 	TotalTracksLSB  byte
 }
 
+var _ MediaTransportControlDataTotalTracks = (*_MediaTransportControlDataTotalTracks)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

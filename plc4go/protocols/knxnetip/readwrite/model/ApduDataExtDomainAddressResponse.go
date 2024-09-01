@@ -51,6 +51,8 @@ type _ApduDataExtDomainAddressResponse struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtDomainAddressResponse = (*_ApduDataExtDomainAddressResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

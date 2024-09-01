@@ -56,6 +56,8 @@ type _BACnetRecipientAddress struct {
 	AddressValue BACnetAddressEnclosed
 }
 
+var _ BACnetRecipientAddress = (*_BACnetRecipientAddress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

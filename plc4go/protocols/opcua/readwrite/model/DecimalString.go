@@ -49,6 +49,8 @@ type DecimalStringExactly interface {
 type _DecimalString struct {
 }
 
+var _ DecimalString = (*_DecimalString)(nil)
+
 // NewDecimalString factory function for _DecimalString
 func NewDecimalString() *_DecimalString {
 	return &_DecimalString{}

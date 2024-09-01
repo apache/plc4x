@@ -56,6 +56,8 @@ type _BACnetPriorityValueTime struct {
 	TimeValue BACnetApplicationTagTime
 }
 
+var _ BACnetPriorityValueTime = (*_BACnetPriorityValueTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

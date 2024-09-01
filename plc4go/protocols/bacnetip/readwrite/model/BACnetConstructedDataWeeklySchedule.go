@@ -61,6 +61,8 @@ type _BACnetConstructedDataWeeklySchedule struct {
 	WeeklySchedule       []BACnetDailySchedule
 }
 
+var _ BACnetConstructedDataWeeklySchedule = (*_BACnetConstructedDataWeeklySchedule)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -62,6 +62,8 @@ type _COTPPacketDisconnectRequest struct {
 	ProtocolClass        COTPProtocolClass
 }
 
+var _ COTPPacketDisconnectRequest = (*_COTPPacketDisconnectRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

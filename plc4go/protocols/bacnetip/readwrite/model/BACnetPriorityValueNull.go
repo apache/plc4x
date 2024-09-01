@@ -56,6 +56,8 @@ type _BACnetPriorityValueNull struct {
 	NullValue BACnetApplicationTagNull
 }
 
+var _ BACnetPriorityValueNull = (*_BACnetPriorityValueNull)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

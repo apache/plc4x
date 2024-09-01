@@ -56,6 +56,8 @@ type _BACnetClientCOVObject struct {
 	RealIncrement BACnetApplicationTagReal
 }
 
+var _ BACnetClientCOVObject = (*_BACnetClientCOVObject)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataEscalatorMode struct {
 	EscalatorMode BACnetEscalatorModeTagged
 }
 
+var _ BACnetConstructedDataEscalatorMode = (*_BACnetConstructedDataEscalatorMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

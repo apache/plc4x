@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier struct {
 	ObjectidentifierValue BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier = (*_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

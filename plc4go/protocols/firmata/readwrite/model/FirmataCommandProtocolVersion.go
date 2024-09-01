@@ -59,6 +59,8 @@ type _FirmataCommandProtocolVersion struct {
 	MinorVersion uint8
 }
 
+var _ FirmataCommandProtocolVersion = (*_FirmataCommandProtocolVersion)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

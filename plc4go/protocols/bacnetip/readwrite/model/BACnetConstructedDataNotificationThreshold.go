@@ -58,6 +58,8 @@ type _BACnetConstructedDataNotificationThreshold struct {
 	NotificationThreshold BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataNotificationThreshold = (*_BACnetConstructedDataNotificationThreshold)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

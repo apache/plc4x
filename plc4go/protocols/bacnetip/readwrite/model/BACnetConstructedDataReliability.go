@@ -58,6 +58,8 @@ type _BACnetConstructedDataReliability struct {
 	Reliability BACnetReliabilityTagged
 }
 
+var _ BACnetConstructedDataReliability = (*_BACnetConstructedDataReliability)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

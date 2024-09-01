@@ -56,6 +56,8 @@ type _SecurityDataArmReadyNotReady struct {
 	ZoneNumber uint8
 }
 
+var _ SecurityDataArmReadyNotReady = (*_SecurityDataArmReadyNotReady)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

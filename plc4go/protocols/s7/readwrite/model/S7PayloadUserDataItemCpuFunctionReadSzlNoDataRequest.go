@@ -51,6 +51,8 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest struct {
 	*_S7PayloadUserDataItem
 }
 
+var _ S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest = (*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

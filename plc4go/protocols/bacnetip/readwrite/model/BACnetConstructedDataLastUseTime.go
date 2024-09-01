@@ -58,6 +58,8 @@ type _BACnetConstructedDataLastUseTime struct {
 	LastUseTime BACnetDateTime
 }
 
+var _ BACnetConstructedDataLastUseTime = (*_BACnetConstructedDataLastUseTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

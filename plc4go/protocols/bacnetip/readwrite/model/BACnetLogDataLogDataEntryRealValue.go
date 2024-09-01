@@ -56,6 +56,8 @@ type _BACnetLogDataLogDataEntryRealValue struct {
 	RealValue BACnetContextTagReal
 }
 
+var _ BACnetLogDataLogDataEntryRealValue = (*_BACnetLogDataLogDataEntryRealValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

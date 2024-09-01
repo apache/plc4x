@@ -58,6 +58,8 @@ type _BACnetConstructedDataCredentialStatus struct {
 	BinaryPv BACnetBinaryPVTagged
 }
 
+var _ BACnetConstructedDataCredentialStatus = (*_BACnetConstructedDataCredentialStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

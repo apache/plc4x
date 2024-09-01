@@ -58,6 +58,8 @@ type _BACnetConstructedDataReadOnly struct {
 	ReadOnly BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataReadOnly = (*_BACnetConstructedDataReadOnly)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

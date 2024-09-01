@@ -56,6 +56,8 @@ type _BACnetPropertyStatesAuthenticationStatus struct {
 	AuthenticationStatus BACnetAuthenticationStatusTagged
 }
 
+var _ BACnetPropertyStatesAuthenticationStatus = (*_BACnetPropertyStatesAuthenticationStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

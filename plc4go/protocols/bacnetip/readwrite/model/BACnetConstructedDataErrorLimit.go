@@ -58,6 +58,8 @@ type _BACnetConstructedDataErrorLimit struct {
 	ErrorLimit BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataErrorLimit = (*_BACnetConstructedDataErrorLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

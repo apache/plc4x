@@ -51,6 +51,8 @@ type _ConnectionTransportDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ ConnectionTransportDataType = (*_ConnectionTransportDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

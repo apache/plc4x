@@ -56,6 +56,8 @@ type _SALDataIrrigationControl struct {
 	IrrigationControlData LightingData
 }
 
+var _ SALDataIrrigationControl = (*_SALDataIrrigationControl)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

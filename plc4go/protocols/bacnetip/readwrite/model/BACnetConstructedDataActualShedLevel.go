@@ -58,6 +58,8 @@ type _BACnetConstructedDataActualShedLevel struct {
 	ActualShedLevel BACnetShedLevel
 }
 
+var _ BACnetConstructedDataActualShedLevel = (*_BACnetConstructedDataActualShedLevel)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetConstructedDataMembers struct {
 	Members []BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataMembers = (*_BACnetConstructedDataMembers)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

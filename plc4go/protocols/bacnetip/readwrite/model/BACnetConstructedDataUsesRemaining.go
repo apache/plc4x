@@ -58,6 +58,8 @@ type _BACnetConstructedDataUsesRemaining struct {
 	UsesRemaining BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetConstructedDataUsesRemaining = (*_BACnetConstructedDataUsesRemaining)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier 
 	ObjectidentifierValue BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

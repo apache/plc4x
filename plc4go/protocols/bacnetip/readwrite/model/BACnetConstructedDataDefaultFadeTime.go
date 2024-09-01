@@ -58,6 +58,8 @@ type _BACnetConstructedDataDefaultFadeTime struct {
 	DefaultFadeTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataDefaultFadeTime = (*_BACnetConstructedDataDefaultFadeTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

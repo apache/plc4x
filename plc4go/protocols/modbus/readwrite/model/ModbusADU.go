@@ -34,9 +34,19 @@ import (
 
 // ModbusADU is the corresponding interface of ModbusADU
 type ModbusADU interface {
+	ModbusADUContract
+	ModbusADURequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ModbusADUContract provides a set of functions which can be overwritten by a sub struct
+type ModbusADUContract interface {
+}
+
+// ModbusADURequirements provides a set of functions which need to be implemented by a sub struct
+type ModbusADURequirements interface {
 	// GetDriverType returns DriverType (discriminator field)
 	GetDriverType() DriverType
 }
@@ -55,6 +65,8 @@ type _ModbusADU struct {
 	// Arguments.
 	Response bool
 }
+
+var _ ModbusADUContract = (*_ModbusADU)(nil)
 
 type _ModbusADUChildRequirements interface {
 	utils.Serializable

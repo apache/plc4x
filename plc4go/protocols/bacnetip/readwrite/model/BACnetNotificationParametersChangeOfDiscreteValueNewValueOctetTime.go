@@ -56,6 +56,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime struct 
 	TimeValue BACnetApplicationTagTime
 }
 
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

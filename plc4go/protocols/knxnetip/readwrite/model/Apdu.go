@@ -35,15 +35,25 @@ import (
 
 // Apdu is the corresponding interface of Apdu
 type Apdu interface {
+	ApduContract
+	ApduRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetControl returns Control (discriminator field)
-	GetControl() uint8
+}
+
+// ApduContract provides a set of functions which can be overwritten by a sub struct
+type ApduContract interface {
 	// GetNumbered returns Numbered (property field)
 	GetNumbered() bool
 	// GetCounter returns Counter (property field)
 	GetCounter() uint8
+}
+
+// ApduRequirements provides a set of functions which need to be implemented by a sub struct
+type ApduRequirements interface {
+	// GetControl returns Control (discriminator field)
+	GetControl() uint8
 }
 
 // ApduExactly can be used when we want exactly this type and not a type which fulfills Apdu.
@@ -62,6 +72,8 @@ type _Apdu struct {
 	// Arguments.
 	DataLength uint8
 }
+
+var _ ApduContract = (*_Apdu)(nil)
 
 type _ApduChildRequirements interface {
 	utils.Serializable

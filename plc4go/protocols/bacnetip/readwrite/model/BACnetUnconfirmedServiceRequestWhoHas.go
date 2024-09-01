@@ -62,6 +62,8 @@ type _BACnetUnconfirmedServiceRequestWhoHas struct {
 	Object                       BACnetUnconfirmedServiceRequestWhoHasObject
 }
 
+var _ BACnetUnconfirmedServiceRequestWhoHas = (*_BACnetUnconfirmedServiceRequestWhoHas)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

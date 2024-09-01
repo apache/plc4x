@@ -86,6 +86,8 @@ type _NLMUpdateKeyUpdate struct {
 	Set2Keys           []NLMUpdateKeyUpdateKeyEntry
 }
 
+var _ NLMUpdateKeyUpdate = (*_NLMUpdateKeyUpdate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

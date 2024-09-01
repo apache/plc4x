@@ -58,6 +58,8 @@ type _BACnetConstructedDataLimitMonitoringInterval struct {
 	LimitMonitoringInterval BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataLimitMonitoringInterval = (*_BACnetConstructedDataLimitMonitoringInterval)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

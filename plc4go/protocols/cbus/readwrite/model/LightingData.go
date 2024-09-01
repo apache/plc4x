@@ -35,13 +35,23 @@ import (
 
 // LightingData is the corresponding interface of LightingData
 type LightingData interface {
+	LightingDataContract
+	LightingDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// LightingDataContract provides a set of functions which can be overwritten by a sub struct
+type LightingDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() LightingCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() LightingCommandType
+}
+
+// LightingDataRequirements provides a set of functions which need to be implemented by a sub struct
+type LightingDataRequirements interface {
 }
 
 // LightingDataExactly can be used when we want exactly this type and not a type which fulfills LightingData.
@@ -56,6 +66,8 @@ type _LightingData struct {
 	_LightingDataChildRequirements
 	CommandTypeContainer LightingCommandTypeContainer
 }
+
+var _ LightingDataContract = (*_LightingData)(nil)
 
 type _LightingDataChildRequirements interface {
 	utils.Serializable

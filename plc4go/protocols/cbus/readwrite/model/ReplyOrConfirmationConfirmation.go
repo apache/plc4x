@@ -59,6 +59,8 @@ type _ReplyOrConfirmationConfirmation struct {
 	EmbeddedReply ReplyOrConfirmation
 }
 
+var _ ReplyOrConfirmationConfirmation = (*_ReplyOrConfirmationConfirmation)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

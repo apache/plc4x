@@ -58,6 +58,8 @@ type _BACnetConstructedDataMaintenanceRequired struct {
 	MaintenanceRequired BACnetMaintenanceTagged
 }
 
+var _ BACnetConstructedDataMaintenanceRequired = (*_BACnetConstructedDataMaintenanceRequired)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

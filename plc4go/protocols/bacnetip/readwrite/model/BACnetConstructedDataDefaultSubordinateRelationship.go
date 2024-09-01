@@ -58,6 +58,8 @@ type _BACnetConstructedDataDefaultSubordinateRelationship struct {
 	DefaultSubordinateRelationship BACnetRelationshipTagged
 }
 
+var _ BACnetConstructedDataDefaultSubordinateRelationship = (*_BACnetConstructedDataDefaultSubordinateRelationship)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

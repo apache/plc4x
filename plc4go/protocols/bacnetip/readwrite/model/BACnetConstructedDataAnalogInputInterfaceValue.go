@@ -58,6 +58,8 @@ type _BACnetConstructedDataAnalogInputInterfaceValue struct {
 	InterfaceValue BACnetOptionalREAL
 }
 
+var _ BACnetConstructedDataAnalogInputInterfaceValue = (*_BACnetConstructedDataAnalogInputInterfaceValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

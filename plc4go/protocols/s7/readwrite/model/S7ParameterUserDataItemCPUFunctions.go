@@ -77,6 +77,8 @@ type _S7ParameterUserDataItemCPUFunctions struct {
 	ErrorCode               *uint16
 }
 
+var _ S7ParameterUserDataItemCPUFunctions = (*_S7ParameterUserDataItemCPUFunctions)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

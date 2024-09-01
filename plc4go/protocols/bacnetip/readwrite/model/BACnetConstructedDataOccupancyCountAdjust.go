@@ -58,6 +58,8 @@ type _BACnetConstructedDataOccupancyCountAdjust struct {
 	OccupancyCountAdjust BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataOccupancyCountAdjust = (*_BACnetConstructedDataOccupancyCountAdjust)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

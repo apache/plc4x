@@ -57,6 +57,8 @@ type _BACnetAssignedLandingCallsLandingCallsListEntry struct {
 	Direction   BACnetLiftCarDirectionTagged
 }
 
+var _ BACnetAssignedLandingCallsLandingCallsListEntry = (*_BACnetAssignedLandingCallsLandingCallsListEntry)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -59,6 +59,8 @@ type _UserIdentityToken struct {
 	UserIdentityTokenDefinition UserIdentityTokenDefinition
 }
 
+var _ UserIdentityToken = (*_UserIdentityToken)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

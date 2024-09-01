@@ -58,6 +58,8 @@ type _CBusPointToPointCommandDirect struct {
 	reservedField0 *uint8
 }
 
+var _ CBusPointToPointCommandDirect = (*_CBusPointToPointCommandDirect)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

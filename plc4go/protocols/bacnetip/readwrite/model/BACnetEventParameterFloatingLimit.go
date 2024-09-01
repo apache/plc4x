@@ -74,6 +74,8 @@ type _BACnetEventParameterFloatingLimit struct {
 	ClosingTag        BACnetClosingTag
 }
 
+var _ BACnetEventParameterFloatingLimit = (*_BACnetEventParameterFloatingLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

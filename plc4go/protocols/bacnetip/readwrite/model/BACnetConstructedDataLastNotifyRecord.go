@@ -58,6 +58,8 @@ type _BACnetConstructedDataLastNotifyRecord struct {
 	LastNotifyRecord BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataLastNotifyRecord = (*_BACnetConstructedDataLastNotifyRecord)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

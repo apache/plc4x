@@ -65,6 +65,8 @@ type _BACnetConfirmedServiceRequestRemoveListElement struct {
 	ListOfElements     BACnetConstructedData
 }
 
+var _ BACnetConfirmedServiceRequestRemoveListElement = (*_BACnetConfirmedServiceRequestRemoveListElement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

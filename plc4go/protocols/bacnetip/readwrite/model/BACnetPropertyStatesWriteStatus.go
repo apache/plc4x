@@ -56,6 +56,8 @@ type _BACnetPropertyStatesWriteStatus struct {
 	WriteStatus BACnetWriteStatusTagged
 }
 
+var _ BACnetPropertyStatesWriteStatus = (*_BACnetPropertyStatesWriteStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -83,6 +83,8 @@ type _IdentifyReplyCommandDSIStatus struct {
 	DimmingUCRevisionNumber byte
 }
 
+var _ IdentifyReplyCommandDSIStatus = (*_IdentifyReplyCommandDSIStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

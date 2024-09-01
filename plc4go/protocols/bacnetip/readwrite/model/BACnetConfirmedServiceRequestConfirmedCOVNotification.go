@@ -68,6 +68,8 @@ type _BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 	ListOfValues                BACnetPropertyValues
 }
 
+var _ BACnetConfirmedServiceRequestConfirmedCOVNotification = (*_BACnetConfirmedServiceRequestConfirmedCOVNotification)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _ModbusPDUReadFifoQueueRequest struct {
 	FifoPointerAddress uint16
 }
 
+var _ ModbusPDUReadFifoQueueRequest = (*_ModbusPDUReadFifoQueueRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

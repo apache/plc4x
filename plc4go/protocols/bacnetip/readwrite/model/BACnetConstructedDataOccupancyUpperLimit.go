@@ -58,6 +58,8 @@ type _BACnetConstructedDataOccupancyUpperLimit struct {
 	OccupancyUpperLimit BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataOccupancyUpperLimit = (*_BACnetConstructedDataOccupancyUpperLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

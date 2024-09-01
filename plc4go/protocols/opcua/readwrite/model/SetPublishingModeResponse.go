@@ -68,6 +68,8 @@ type _SetPublishingModeResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ SetPublishingModeResponse = (*_SetPublishingModeResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

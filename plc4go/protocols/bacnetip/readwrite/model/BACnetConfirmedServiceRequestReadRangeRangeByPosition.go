@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestReadRangeRangeByPosition struct {
 	Count          BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestReadRangeRangeByPosition = (*_BACnetConfirmedServiceRequestReadRangeRangeByPosition)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

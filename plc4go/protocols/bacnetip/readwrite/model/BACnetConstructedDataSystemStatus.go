@@ -58,6 +58,8 @@ type _BACnetConstructedDataSystemStatus struct {
 	SystemStatus BACnetDeviceStatusTagged
 }
 
+var _ BACnetConstructedDataSystemStatus = (*_BACnetConstructedDataSystemStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

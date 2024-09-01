@@ -58,6 +58,8 @@ type _BACnetConstructedDataLoggingRecord struct {
 	LoggingRecord BACnetAccumulatorRecord
 }
 
+var _ BACnetConstructedDataLoggingRecord = (*_BACnetConstructedDataLoggingRecord)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

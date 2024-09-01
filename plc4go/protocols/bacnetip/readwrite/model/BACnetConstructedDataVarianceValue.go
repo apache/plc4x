@@ -58,6 +58,8 @@ type _BACnetConstructedDataVarianceValue struct {
 	VarianceValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataVarianceValue = (*_BACnetConstructedDataVarianceValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

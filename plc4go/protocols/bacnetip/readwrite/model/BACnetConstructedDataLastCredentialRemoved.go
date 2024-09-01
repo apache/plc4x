@@ -58,6 +58,8 @@ type _BACnetConstructedDataLastCredentialRemoved struct {
 	LastCredentialRemoved BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataLastCredentialRemoved = (*_BACnetConstructedDataLastCredentialRemoved)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

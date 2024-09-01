@@ -51,6 +51,8 @@ type _ApduDataExtOpenRoutingTableRequest struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtOpenRoutingTableRequest = (*_ApduDataExtOpenRoutingTableRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

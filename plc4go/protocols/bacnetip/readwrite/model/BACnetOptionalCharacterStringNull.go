@@ -56,6 +56,8 @@ type _BACnetOptionalCharacterStringNull struct {
 	NullValue BACnetApplicationTagNull
 }
 
+var _ BACnetOptionalCharacterStringNull = (*_BACnetOptionalCharacterStringNull)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

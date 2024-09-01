@@ -100,6 +100,8 @@ type _BACnetPriorityArray struct {
 	ArrayIndexArgument BACnetTagPayloadUnsignedInteger
 }
 
+var _ BACnetPriorityArray = (*_BACnetPriorityArray)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

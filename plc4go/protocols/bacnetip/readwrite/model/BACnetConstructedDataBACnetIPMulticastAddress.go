@@ -58,6 +58,8 @@ type _BACnetConstructedDataBACnetIPMulticastAddress struct {
 	IpMulticastAddress BACnetApplicationTagOctetString
 }
 
+var _ BACnetConstructedDataBACnetIPMulticastAddress = (*_BACnetConstructedDataBACnetIPMulticastAddress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

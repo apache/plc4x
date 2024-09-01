@@ -35,9 +35,15 @@ import (
 
 // BACnetFaultParameterFaultOutOfRangeMinNormalValue is the corresponding interface of BACnetFaultParameterFaultOutOfRangeMinNormalValue
 type BACnetFaultParameterFaultOutOfRangeMinNormalValue interface {
+	BACnetFaultParameterFaultOutOfRangeMinNormalValueContract
+	BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetFaultParameterFaultOutOfRangeMinNormalValueContract provides a set of functions which can be overwritten by a sub struct
+type BACnetFaultParameterFaultOutOfRangeMinNormalValueContract interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -46,6 +52,10 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValue interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements interface {
 }
 
 // BACnetFaultParameterFaultOutOfRangeMinNormalValueExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMinNormalValue.
@@ -65,6 +75,8 @@ type _BACnetFaultParameterFaultOutOfRangeMinNormalValue struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetFaultParameterFaultOutOfRangeMinNormalValueContract = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)(nil)
 
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements interface {
 	utils.Serializable

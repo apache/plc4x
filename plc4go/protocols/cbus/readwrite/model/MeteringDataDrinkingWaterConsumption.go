@@ -56,6 +56,8 @@ type _MeteringDataDrinkingWaterConsumption struct {
 	KL uint32
 }
 
+var _ MeteringDataDrinkingWaterConsumption = (*_MeteringDataDrinkingWaterConsumption)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

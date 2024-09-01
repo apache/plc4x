@@ -71,6 +71,8 @@ type _ActivateSessionResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ ActivateSessionResponse = (*_ActivateSessionResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

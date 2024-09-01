@@ -60,6 +60,8 @@ type _AlarmMessageAckResponseType struct {
 	MessageObjects  []uint8
 }
 
+var _ AlarmMessageAckResponseType = (*_AlarmMessageAckResponseType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

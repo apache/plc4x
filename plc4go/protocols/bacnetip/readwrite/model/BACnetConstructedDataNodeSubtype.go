@@ -58,6 +58,8 @@ type _BACnetConstructedDataNodeSubtype struct {
 	NodeSubType BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataNodeSubtype = (*_BACnetConstructedDataNodeSubtype)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

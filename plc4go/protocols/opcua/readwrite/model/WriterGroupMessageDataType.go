@@ -51,6 +51,8 @@ type _WriterGroupMessageDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ WriterGroupMessageDataType = (*_WriterGroupMessageDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

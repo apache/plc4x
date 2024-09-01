@@ -49,6 +49,8 @@ type NormalizedStringExactly interface {
 type _NormalizedString struct {
 }
 
+var _ NormalizedString = (*_NormalizedString)(nil)
+
 // NewNormalizedString factory function for _NormalizedString
 func NewNormalizedString() *_NormalizedString {
 	return &_NormalizedString{}

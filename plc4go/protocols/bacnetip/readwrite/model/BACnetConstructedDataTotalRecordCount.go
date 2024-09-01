@@ -58,6 +58,8 @@ type _BACnetConstructedDataTotalRecordCount struct {
 	TotalRecordCount BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataTotalRecordCount = (*_BACnetConstructedDataTotalRecordCount)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

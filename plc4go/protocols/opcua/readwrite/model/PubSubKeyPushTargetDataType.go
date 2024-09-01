@@ -89,6 +89,8 @@ type _PubSubKeyPushTargetDataType struct {
 	SecurityGroups           []PascalString
 }
 
+var _ PubSubKeyPushTargetDataType = (*_PubSubKeyPushTargetDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

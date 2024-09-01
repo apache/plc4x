@@ -65,6 +65,8 @@ type _OpenSecureChannelResponse struct {
 	ServerNonce           PascalByteString
 }
 
+var _ OpenSecureChannelResponse = (*_OpenSecureChannelResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

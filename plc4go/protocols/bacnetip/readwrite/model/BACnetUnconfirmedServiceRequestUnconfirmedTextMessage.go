@@ -65,6 +65,8 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedTextMessage struct {
 	Message                 BACnetContextTagCharacterString
 }
 
+var _ BACnetUnconfirmedServiceRequestUnconfirmedTextMessage = (*_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

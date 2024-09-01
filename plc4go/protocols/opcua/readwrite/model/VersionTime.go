@@ -49,6 +49,8 @@ type VersionTimeExactly interface {
 type _VersionTime struct {
 }
 
+var _ VersionTime = (*_VersionTime)(nil)
+
 // NewVersionTime factory function for _VersionTime
 func NewVersionTime() *_VersionTime {
 	return &_VersionTime{}

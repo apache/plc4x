@@ -58,6 +58,8 @@ type _BACnetConstructedDataMusterPoint struct {
 	MusterPoint BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataMusterPoint = (*_BACnetConstructedDataMusterPoint)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

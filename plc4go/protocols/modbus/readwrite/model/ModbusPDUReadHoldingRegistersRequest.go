@@ -59,6 +59,8 @@ type _ModbusPDUReadHoldingRegistersRequest struct {
 	Quantity        uint16
 }
 
+var _ ModbusPDUReadHoldingRegistersRequest = (*_ModbusPDUReadHoldingRegistersRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

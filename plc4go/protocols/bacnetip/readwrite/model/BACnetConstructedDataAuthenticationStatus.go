@@ -58,6 +58,8 @@ type _BACnetConstructedDataAuthenticationStatus struct {
 	AuthenticationStatus BACnetAuthenticationStatusTagged
 }
 
+var _ BACnetConstructedDataAuthenticationStatus = (*_BACnetConstructedDataAuthenticationStatus)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

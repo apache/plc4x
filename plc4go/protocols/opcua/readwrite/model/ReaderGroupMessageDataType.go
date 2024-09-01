@@ -51,6 +51,8 @@ type _ReaderGroupMessageDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ ReaderGroupMessageDataType = (*_ReaderGroupMessageDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

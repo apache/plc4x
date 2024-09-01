@@ -56,6 +56,8 @@ type _ErrorReportingSystemCategoryTypeClimateControllers struct {
 	CategoryForType ErrorReportingSystemCategoryTypeForClimateControllers
 }
 
+var _ ErrorReportingSystemCategoryTypeClimateControllers = (*_ErrorReportingSystemCategoryTypeClimateControllers)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

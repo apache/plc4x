@@ -62,6 +62,8 @@ type _ModelChangeStructureDataType struct {
 	Verb         uint8
 }
 
+var _ ModelChangeStructureDataType = (*_ModelChangeStructureDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

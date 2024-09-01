@@ -58,6 +58,8 @@ type _BACnetConstructedDataRepresents struct {
 	Represents BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataRepresents = (*_BACnetConstructedDataRepresents)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataFileAccessMethod struct {
 	FileAccessMethod BACnetFileAccessMethodTagged
 }
 
+var _ BACnetConstructedDataFileAccessMethod = (*_BACnetConstructedDataFileAccessMethod)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

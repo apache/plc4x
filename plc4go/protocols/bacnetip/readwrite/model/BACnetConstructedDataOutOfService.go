@@ -58,6 +58,8 @@ type _BACnetConstructedDataOutOfService struct {
 	OutOfService BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataOutOfService = (*_BACnetConstructedDataOutOfService)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

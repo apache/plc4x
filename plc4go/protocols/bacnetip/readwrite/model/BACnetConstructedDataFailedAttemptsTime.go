@@ -58,6 +58,8 @@ type _BACnetConstructedDataFailedAttemptsTime struct {
 	FailedAttemptsTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataFailedAttemptsTime = (*_BACnetConstructedDataFailedAttemptsTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

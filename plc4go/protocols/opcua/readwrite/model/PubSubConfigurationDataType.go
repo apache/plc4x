@@ -70,6 +70,8 @@ type _PubSubConfigurationDataType struct {
 	reservedField0 *uint8
 }
 
+var _ PubSubConfigurationDataType = (*_PubSubConfigurationDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -61,6 +61,8 @@ type _BACnetConstructedDataCharacterStringValueFaultValues struct {
 	FaultValues          []BACnetOptionalCharacterString
 }
 
+var _ BACnetConstructedDataCharacterStringValueFaultValues = (*_BACnetConstructedDataCharacterStringValueFaultValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -51,6 +51,8 @@ type _ModbusPDUGetComEventCounterRequest struct {
 	*_ModbusPDU
 }
 
+var _ ModbusPDUGetComEventCounterRequest = (*_ModbusPDUGetComEventCounterRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataReliabilityEvaluationInhibit struct {
 	ReliabilityEvaluationInhibit BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataReliabilityEvaluationInhibit = (*_BACnetConstructedDataReliabilityEvaluationInhibit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

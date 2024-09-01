@@ -68,6 +68,8 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse struct {
 	Reserved03 uint8
 }
 
+var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

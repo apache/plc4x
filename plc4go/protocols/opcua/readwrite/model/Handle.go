@@ -49,6 +49,8 @@ type HandleExactly interface {
 type _Handle struct {
 }
 
+var _ Handle = (*_Handle)(nil)
+
 // NewHandle factory function for _Handle
 func NewHandle() *_Handle {
 	return &_Handle{}

@@ -58,6 +58,8 @@ type _BACnetConstructedDataAbsenteeLimit struct {
 	AbsenteeLimit BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataAbsenteeLimit = (*_BACnetConstructedDataAbsenteeLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

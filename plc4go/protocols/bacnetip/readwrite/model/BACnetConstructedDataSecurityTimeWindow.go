@@ -58,6 +58,8 @@ type _BACnetConstructedDataSecurityTimeWindow struct {
 	SecurityTimeWindow BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataSecurityTimeWindow = (*_BACnetConstructedDataSecurityTimeWindow)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

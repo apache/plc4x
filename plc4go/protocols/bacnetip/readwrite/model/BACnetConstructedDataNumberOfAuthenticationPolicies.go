@@ -58,6 +58,8 @@ type _BACnetConstructedDataNumberOfAuthenticationPolicies struct {
 	NumberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataNumberOfAuthenticationPolicies = (*_BACnetConstructedDataNumberOfAuthenticationPolicies)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

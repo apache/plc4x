@@ -66,6 +66,8 @@ type _BACnetLiftCarDriveStatusTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetLiftCarDriveStatusTagged = (*_BACnetLiftCarDriveStatusTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

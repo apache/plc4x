@@ -54,6 +54,8 @@ type _BACnetAssignedLandingCalls struct {
 	LandingCalls BACnetAssignedLandingCallsLandingCallsList
 }
 
+var _ BACnetAssignedLandingCalls = (*_BACnetAssignedLandingCalls)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

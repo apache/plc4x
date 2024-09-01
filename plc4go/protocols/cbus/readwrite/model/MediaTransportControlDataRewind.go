@@ -72,6 +72,8 @@ type _MediaTransportControlDataRewind struct {
 	Operation byte
 }
 
+var _ MediaTransportControlDataRewind = (*_MediaTransportControlDataRewind)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

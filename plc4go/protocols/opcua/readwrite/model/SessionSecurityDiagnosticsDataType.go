@@ -83,6 +83,8 @@ type _SessionSecurityDiagnosticsDataType struct {
 	ClientCertificate       PascalByteString
 }
 
+var _ SessionSecurityDiagnosticsDataType = (*_SessionSecurityDiagnosticsDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

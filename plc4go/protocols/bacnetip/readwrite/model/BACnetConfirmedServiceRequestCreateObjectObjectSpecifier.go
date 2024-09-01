@@ -72,6 +72,8 @@ type _BACnetConfirmedServiceRequestCreateObjectObjectSpecifier struct {
 	TagNumber uint8
 }
 
+var _ BACnetConfirmedServiceRequestCreateObjectObjectSpecifier = (*_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

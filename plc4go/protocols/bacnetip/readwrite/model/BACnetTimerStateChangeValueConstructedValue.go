@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueConstructedValue struct {
 	ConstructedValue BACnetConstructedData
 }
 
+var _ BACnetTimerStateChangeValueConstructedValue = (*_BACnetTimerStateChangeValueConstructedValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

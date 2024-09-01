@@ -58,6 +58,8 @@ type _BACnetConstructedDataStrikeCount struct {
 	StrikeCount BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataStrikeCount = (*_BACnetConstructedDataStrikeCount)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

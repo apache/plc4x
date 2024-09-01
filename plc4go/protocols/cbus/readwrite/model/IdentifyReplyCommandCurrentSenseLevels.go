@@ -56,6 +56,8 @@ type _IdentifyReplyCommandCurrentSenseLevels struct {
 	CurrentSenseLevels []byte
 }
 
+var _ IdentifyReplyCommandCurrentSenseLevels = (*_IdentifyReplyCommandCurrentSenseLevels)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

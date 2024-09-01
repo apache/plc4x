@@ -68,6 +68,8 @@ type _BACnetNotificationParametersChangeOfReliability struct {
 	InnerClosingTag BACnetClosingTag
 }
 
+var _ BACnetNotificationParametersChangeOfReliability = (*_BACnetNotificationParametersChangeOfReliability)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

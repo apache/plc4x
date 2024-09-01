@@ -58,6 +58,8 @@ type _BACnetConstructedDataBACnetIPv6UDPPort struct {
 	Ipv6UdpPort BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataBACnetIPv6UDPPort = (*_BACnetConstructedDataBACnetIPv6UDPPort)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

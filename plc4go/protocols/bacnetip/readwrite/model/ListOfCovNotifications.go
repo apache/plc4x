@@ -63,6 +63,8 @@ type _ListOfCovNotifications struct {
 	ClosingTag                BACnetClosingTag
 }
 
+var _ ListOfCovNotifications = (*_ListOfCovNotifications)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

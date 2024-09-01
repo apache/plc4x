@@ -65,6 +65,8 @@ type _AirConditioningDataZoneHumidity struct {
 	SensorStatus HVACSensorStatus
 }
 
+var _ AirConditioningDataZoneHumidity = (*_AirConditioningDataZoneHumidity)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

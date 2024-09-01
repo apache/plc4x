@@ -88,6 +88,8 @@ type _CipConnectionManagerCloseRequest struct {
 	reservedField0 *byte
 }
 
+var _ CipConnectionManagerCloseRequest = (*_CipConnectionManagerCloseRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataDefaultStepIncrement struct {
 	DefaultStepIncrement BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataDefaultStepIncrement = (*_BACnetConstructedDataDefaultStepIncrement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

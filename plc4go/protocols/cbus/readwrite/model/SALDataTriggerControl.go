@@ -56,6 +56,8 @@ type _SALDataTriggerControl struct {
 	TriggerControlData TriggerControlData
 }
 
+var _ SALDataTriggerControl = (*_SALDataTriggerControl)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

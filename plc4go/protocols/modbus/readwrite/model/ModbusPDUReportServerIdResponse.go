@@ -56,6 +56,8 @@ type _ModbusPDUReportServerIdResponse struct {
 	Value []byte
 }
 
+var _ ModbusPDUReportServerIdResponse = (*_ModbusPDUReportServerIdResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

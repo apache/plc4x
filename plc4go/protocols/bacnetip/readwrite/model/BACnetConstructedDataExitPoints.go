@@ -56,6 +56,8 @@ type _BACnetConstructedDataExitPoints struct {
 	ExitPoints []BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataExitPoints = (*_BACnetConstructedDataExitPoints)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

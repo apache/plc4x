@@ -58,6 +58,8 @@ type _BACnetConstructedDataAutoSlaveDiscovery struct {
 	AutoSlaveDiscovery BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataAutoSlaveDiscovery = (*_BACnetConstructedDataAutoSlaveDiscovery)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

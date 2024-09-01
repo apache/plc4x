@@ -58,6 +58,8 @@ type _BACnetConstructedDataAlarmValue struct {
 	BinaryPv BACnetBinaryPVTagged
 }
 
+var _ BACnetConstructedDataAlarmValue = (*_BACnetConstructedDataAlarmValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -96,6 +96,8 @@ type _BACnetTagPayloadSignedInteger struct {
 	ActualLength uint32
 }
 
+var _ BACnetTagPayloadSignedInteger = (*_BACnetTagPayloadSignedInteger)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

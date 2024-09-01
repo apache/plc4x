@@ -56,6 +56,8 @@ type _BACnetConstructedDataBBMDBroadcastDistributionTable struct {
 	BbmdBroadcastDistributionTable []BACnetBDTEntry
 }
 
+var _ BACnetConstructedDataBBMDBroadcastDistributionTable = (*_BACnetConstructedDataBBMDBroadcastDistributionTable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetLogDataLogDataEntryEnumeratedValue struct {
 	EnumeratedValue BACnetContextTagEnumerated
 }
 
+var _ BACnetLogDataLogDataEntryEnumeratedValue = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

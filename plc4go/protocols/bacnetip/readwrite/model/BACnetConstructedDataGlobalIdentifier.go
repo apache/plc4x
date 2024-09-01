@@ -58,6 +58,8 @@ type _BACnetConstructedDataGlobalIdentifier struct {
 	GlobalIdentifier BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataGlobalIdentifier = (*_BACnetConstructedDataGlobalIdentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

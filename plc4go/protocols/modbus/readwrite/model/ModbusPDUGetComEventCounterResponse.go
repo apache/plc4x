@@ -59,6 +59,8 @@ type _ModbusPDUGetComEventCounterResponse struct {
 	EventCount uint16
 }
 
+var _ ModbusPDUGetComEventCounterResponse = (*_ModbusPDUGetComEventCounterResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

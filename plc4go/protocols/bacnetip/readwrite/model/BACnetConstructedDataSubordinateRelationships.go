@@ -61,6 +61,8 @@ type _BACnetConstructedDataSubordinateRelationships struct {
 	SubordinateRelationships []BACnetRelationshipTagged
 }
 
+var _ BACnetConstructedDataSubordinateRelationships = (*_BACnetConstructedDataSubordinateRelationships)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

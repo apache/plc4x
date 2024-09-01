@@ -58,6 +58,8 @@ type _BACnetConstructedDataPassengerAlarm struct {
 	PassengerAlarm BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataPassengerAlarm = (*_BACnetConstructedDataPassengerAlarm)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -35,9 +35,19 @@ import (
 
 // COTPParameter is the corresponding interface of COTPParameter
 type COTPParameter interface {
+	COTPParameterContract
+	COTPParameterRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// COTPParameterContract provides a set of functions which can be overwritten by a sub struct
+type COTPParameterContract interface {
+}
+
+// COTPParameterRequirements provides a set of functions which need to be implemented by a sub struct
+type COTPParameterRequirements interface {
 	// GetParameterType returns ParameterType (discriminator field)
 	GetParameterType() uint8
 }
@@ -56,6 +66,8 @@ type _COTPParameter struct {
 	// Arguments.
 	Rest uint8
 }
+
+var _ COTPParameterContract = (*_COTPParameter)(nil)
 
 type _COTPParameterChildRequirements interface {
 	utils.Serializable

@@ -63,6 +63,8 @@ type _BACnetEventParameterChangeOfCharacterStringListOfAlarmValues struct {
 	TagNumber uint8
 }
 
+var _ BACnetEventParameterChangeOfCharacterStringListOfAlarmValues = (*_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

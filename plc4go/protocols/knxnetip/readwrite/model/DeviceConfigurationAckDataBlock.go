@@ -60,6 +60,8 @@ type _DeviceConfigurationAckDataBlock struct {
 	Status                 Status
 }
 
+var _ DeviceConfigurationAckDataBlock = (*_DeviceConfigurationAckDataBlock)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

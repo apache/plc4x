@@ -59,6 +59,8 @@ type _S7PayloadUserDataItemCyclicServicesChangeDrivenPush struct {
 	Items      []AssociatedQueryValueType
 }
 
+var _ S7PayloadUserDataItemCyclicServicesChangeDrivenPush = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenPush)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

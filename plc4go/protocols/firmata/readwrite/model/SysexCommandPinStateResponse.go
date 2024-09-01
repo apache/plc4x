@@ -62,6 +62,8 @@ type _SysexCommandPinStateResponse struct {
 	PinState uint8
 }
 
+var _ SysexCommandPinStateResponse = (*_SysexCommandPinStateResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

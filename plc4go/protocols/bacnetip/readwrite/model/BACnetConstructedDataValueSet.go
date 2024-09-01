@@ -58,6 +58,8 @@ type _BACnetConstructedDataValueSet struct {
 	ValueSet BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataValueSet = (*_BACnetConstructedDataValueSet)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

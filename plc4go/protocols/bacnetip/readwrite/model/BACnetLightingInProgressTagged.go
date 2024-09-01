@@ -61,6 +61,8 @@ type _BACnetLightingInProgressTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetLightingInProgressTagged = (*_BACnetLightingInProgressTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

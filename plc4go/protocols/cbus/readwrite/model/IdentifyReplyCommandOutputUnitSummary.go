@@ -65,6 +65,8 @@ type _IdentifyReplyCommandOutputUnitSummary struct {
 	TimeFromLastRecoverOfMainsInSeconds uint8
 }
 
+var _ IdentifyReplyCommandOutputUnitSummary = (*_IdentifyReplyCommandOutputUnitSummary)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

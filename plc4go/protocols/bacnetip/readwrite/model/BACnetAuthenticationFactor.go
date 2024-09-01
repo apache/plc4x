@@ -60,6 +60,8 @@ type _BACnetAuthenticationFactor struct {
 	Value       BACnetContextTagOctetString
 }
 
+var _ BACnetAuthenticationFactor = (*_BACnetAuthenticationFactor)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

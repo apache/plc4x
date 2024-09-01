@@ -58,6 +58,8 @@ type _BACnetConstructedDataBinaryOutputFeedbackValue struct {
 	FeedbackValue BACnetBinaryPVTagged
 }
 
+var _ BACnetConstructedDataBinaryOutputFeedbackValue = (*_BACnetConstructedDataBinaryOutputFeedbackValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

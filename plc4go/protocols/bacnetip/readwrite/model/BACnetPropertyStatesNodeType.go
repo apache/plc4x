@@ -56,6 +56,8 @@ type _BACnetPropertyStatesNodeType struct {
 	NodeType BACnetNodeTypeTagged
 }
 
+var _ BACnetPropertyStatesNodeType = (*_BACnetPropertyStatesNodeType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

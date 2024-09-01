@@ -58,6 +58,8 @@ type _BACnetConstructedDataMinimumValueTimestamp struct {
 	MinimumValueTimestamp BACnetDateTime
 }
 
+var _ BACnetConstructedDataMinimumValueTimestamp = (*_BACnetConstructedDataMinimumValueTimestamp)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

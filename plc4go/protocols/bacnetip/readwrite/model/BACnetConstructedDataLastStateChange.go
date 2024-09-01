@@ -58,6 +58,8 @@ type _BACnetConstructedDataLastStateChange struct {
 	LastStateChange BACnetTimerTransitionTagged
 }
 
+var _ BACnetConstructedDataLastStateChange = (*_BACnetConstructedDataLastStateChange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

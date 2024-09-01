@@ -56,6 +56,8 @@ type _BACnetNotificationParametersChangeOfValueNewValueChangedBits struct {
 	ChangedBits BACnetContextTagBitString
 }
 
+var _ BACnetNotificationParametersChangeOfValueNewValueChangedBits = (*_BACnetNotificationParametersChangeOfValueNewValueChangedBits)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

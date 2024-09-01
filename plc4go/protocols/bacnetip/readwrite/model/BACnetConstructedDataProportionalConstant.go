@@ -58,6 +58,8 @@ type _BACnetConstructedDataProportionalConstant struct {
 	ProportionalConstant BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataProportionalConstant = (*_BACnetConstructedDataProportionalConstant)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

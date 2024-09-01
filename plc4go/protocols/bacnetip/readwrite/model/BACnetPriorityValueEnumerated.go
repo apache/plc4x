@@ -56,6 +56,8 @@ type _BACnetPriorityValueEnumerated struct {
 	EnumeratedValue BACnetApplicationTagEnumerated
 }
 
+var _ BACnetPriorityValueEnumerated = (*_BACnetPriorityValueEnumerated)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

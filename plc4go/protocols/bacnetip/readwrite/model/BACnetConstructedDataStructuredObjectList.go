@@ -61,6 +61,8 @@ type _BACnetConstructedDataStructuredObjectList struct {
 	StructuredObjectList []BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetConstructedDataStructuredObjectList = (*_BACnetConstructedDataStructuredObjectList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

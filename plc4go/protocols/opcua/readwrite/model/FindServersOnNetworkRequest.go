@@ -68,6 +68,8 @@ type _FindServersOnNetworkRequest struct {
 	ServerCapabilityFilter     []PascalString
 }
 
+var _ FindServersOnNetworkRequest = (*_FindServersOnNetworkRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

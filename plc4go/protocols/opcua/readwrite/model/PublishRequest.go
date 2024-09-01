@@ -62,6 +62,8 @@ type _PublishRequest struct {
 	SubscriptionAcknowledgements     []ExtensionObjectDefinition
 }
 
+var _ PublishRequest = (*_PublishRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

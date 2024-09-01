@@ -58,6 +58,8 @@ type _BACnetConstructedDataInstanceOf struct {
 	InstanceOf BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataInstanceOf = (*_BACnetConstructedDataInstanceOf)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

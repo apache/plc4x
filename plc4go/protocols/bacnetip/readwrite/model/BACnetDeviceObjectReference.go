@@ -57,6 +57,8 @@ type _BACnetDeviceObjectReference struct {
 	ObjectIdentifier BACnetContextTagObjectIdentifier
 }
 
+var _ BACnetDeviceObjectReference = (*_BACnetDeviceObjectReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

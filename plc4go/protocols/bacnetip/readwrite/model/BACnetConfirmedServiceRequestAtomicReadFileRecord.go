@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestAtomicReadFileRecord struct {
 	RequestRecordCount BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestAtomicReadFileRecord = (*_BACnetConfirmedServiceRequestAtomicReadFileRecord)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

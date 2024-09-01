@@ -101,6 +101,8 @@ type _ProgramDiagnostic2DataType struct {
 	LastMethodReturnStatus        StatusCode
 }
 
+var _ ProgramDiagnostic2DataType = (*_ProgramDiagnostic2DataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

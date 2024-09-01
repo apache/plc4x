@@ -61,6 +61,8 @@ type _BVLCDeleteForeignDeviceTableEntry struct {
 	Port uint16
 }
 
+var _ BVLCDeleteForeignDeviceTableEntry = (*_BVLCDeleteForeignDeviceTableEntry)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

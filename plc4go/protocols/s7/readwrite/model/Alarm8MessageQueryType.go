@@ -69,6 +69,8 @@ type _Alarm8MessageQueryType struct {
 	MessageObjects  []AlarmMessageObjectQueryType
 }
 
+var _ Alarm8MessageQueryType = (*_Alarm8MessageQueryType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -56,6 +56,8 @@ type _BACnetUnconfirmedServiceRequestWhoHasObjectName struct {
 	ObjectName BACnetContextTagCharacterString
 }
 
+var _ BACnetUnconfirmedServiceRequestWhoHasObjectName = (*_BACnetUnconfirmedServiceRequestWhoHasObjectName)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

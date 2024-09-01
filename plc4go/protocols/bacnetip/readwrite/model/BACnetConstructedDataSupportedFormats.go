@@ -61,6 +61,8 @@ type _BACnetConstructedDataSupportedFormats struct {
 	SupportedFormats     []BACnetAuthenticationFactorFormat
 }
 
+var _ BACnetConstructedDataSupportedFormats = (*_BACnetConstructedDataSupportedFormats)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

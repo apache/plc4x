@@ -74,6 +74,8 @@ type _AdsAddDeviceNotificationRequest struct {
 	reservedField1 *uint64
 }
 
+var _ AdsAddDeviceNotificationRequest = (*_AdsAddDeviceNotificationRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

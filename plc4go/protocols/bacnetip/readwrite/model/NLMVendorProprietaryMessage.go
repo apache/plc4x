@@ -59,6 +59,8 @@ type _NLMVendorProprietaryMessage struct {
 	ProprietaryMessage []byte
 }
 
+var _ NLMVendorProprietaryMessage = (*_NLMVendorProprietaryMessage)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

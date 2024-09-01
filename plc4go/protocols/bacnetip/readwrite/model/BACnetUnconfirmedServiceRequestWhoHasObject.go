@@ -35,13 +35,23 @@ import (
 
 // BACnetUnconfirmedServiceRequestWhoHasObject is the corresponding interface of BACnetUnconfirmedServiceRequestWhoHasObject
 type BACnetUnconfirmedServiceRequestWhoHasObject interface {
+	BACnetUnconfirmedServiceRequestWhoHasObjectContract
+	BACnetUnconfirmedServiceRequestWhoHasObjectRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetUnconfirmedServiceRequestWhoHasObjectContract provides a set of functions which can be overwritten by a sub struct
+type BACnetUnconfirmedServiceRequestWhoHasObjectContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetUnconfirmedServiceRequestWhoHasObjectRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetUnconfirmedServiceRequestWhoHasObjectRequirements interface {
 }
 
 // BACnetUnconfirmedServiceRequestWhoHasObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestWhoHasObject.
@@ -56,6 +66,8 @@ type _BACnetUnconfirmedServiceRequestWhoHasObject struct {
 	_BACnetUnconfirmedServiceRequestWhoHasObjectChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetUnconfirmedServiceRequestWhoHasObjectContract = (*_BACnetUnconfirmedServiceRequestWhoHasObject)(nil)
 
 type _BACnetUnconfirmedServiceRequestWhoHasObjectChildRequirements interface {
 	utils.Serializable

@@ -58,6 +58,8 @@ type _BACnetConstructedDataCarDoorZone struct {
 	CarDoorZone BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataCarDoorZone = (*_BACnetConstructedDataCarDoorZone)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

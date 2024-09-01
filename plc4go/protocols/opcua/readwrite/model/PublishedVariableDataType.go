@@ -80,6 +80,8 @@ type _PublishedVariableDataType struct {
 	MetaDataProperties     []QualifiedName
 }
 
+var _ PublishedVariableDataType = (*_PublishedVariableDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

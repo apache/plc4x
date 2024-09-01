@@ -56,6 +56,8 @@ type _BACnetEventParameterChangeOfValueCivCriteriaBitmask struct {
 	Bitmask BACnetContextTagBitString
 }
 
+var _ BACnetEventParameterChangeOfValueCivCriteriaBitmask = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

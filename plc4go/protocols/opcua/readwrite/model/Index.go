@@ -49,6 +49,8 @@ type IndexExactly interface {
 type _Index struct {
 }
 
+var _ Index = (*_Index)(nil)
+
 // NewIndex factory function for _Index
 func NewIndex() *_Index {
 	return &_Index{}

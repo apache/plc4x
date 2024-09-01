@@ -56,6 +56,8 @@ type _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
 	Items []byte
 }
 
+var _ S7PayloadUserDataItemCpuFunctionAlarmQueryResponse = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

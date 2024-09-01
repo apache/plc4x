@@ -56,6 +56,8 @@ type _BACnetConstructedDataMaskedAlarmValues struct {
 	MaskedAlarmValues []BACnetDoorAlarmStateTagged
 }
 
+var _ BACnetConstructedDataMaskedAlarmValues = (*_BACnetConstructedDataMaskedAlarmValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataCarMode struct {
 	CarMode BACnetLiftCarModeTagged
 }
 
+var _ BACnetConstructedDataCarMode = (*_BACnetConstructedDataCarMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -76,6 +76,8 @@ type _BACnetConstructedDataElement struct {
 	ArrayIndexArgument         BACnetTagPayloadUnsignedInteger
 }
 
+var _ BACnetConstructedDataElement = (*_BACnetConstructedDataElement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

@@ -51,6 +51,8 @@ type _ApduDataExtDomainAddressWrite struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtDomainAddressWrite = (*_ApduDataExtDomainAddressWrite)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

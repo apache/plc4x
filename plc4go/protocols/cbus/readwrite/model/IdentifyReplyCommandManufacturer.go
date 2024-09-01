@@ -56,6 +56,8 @@ type _IdentifyReplyCommandManufacturer struct {
 	ManufacturerName string
 }
 
+var _ IdentifyReplyCommandManufacturer = (*_IdentifyReplyCommandManufacturer)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

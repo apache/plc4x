@@ -49,6 +49,8 @@ type ImageGIFExactly interface {
 type _ImageGIF struct {
 }
 
+var _ ImageGIF = (*_ImageGIF)(nil)
+
 // NewImageGIF factory function for _ImageGIF
 func NewImageGIF() *_ImageGIF {
 	return &_ImageGIF{}

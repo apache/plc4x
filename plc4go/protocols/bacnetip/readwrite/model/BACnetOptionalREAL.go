@@ -35,13 +35,23 @@ import (
 
 // BACnetOptionalREAL is the corresponding interface of BACnetOptionalREAL
 type BACnetOptionalREAL interface {
+	BACnetOptionalREALContract
+	BACnetOptionalREALRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetOptionalREALContract provides a set of functions which can be overwritten by a sub struct
+type BACnetOptionalREALContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetOptionalREALRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetOptionalREALRequirements interface {
 }
 
 // BACnetOptionalREALExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalREAL.
@@ -56,6 +66,8 @@ type _BACnetOptionalREAL struct {
 	_BACnetOptionalREALChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetOptionalREALContract = (*_BACnetOptionalREAL)(nil)
 
 type _BACnetOptionalREALChildRequirements interface {
 	utils.Serializable

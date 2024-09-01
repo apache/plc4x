@@ -56,6 +56,8 @@ type _BACnetChannelValueDate struct {
 	DateValue BACnetApplicationTagDate
 }
 
+var _ BACnetChannelValueDate = (*_BACnetChannelValueDate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

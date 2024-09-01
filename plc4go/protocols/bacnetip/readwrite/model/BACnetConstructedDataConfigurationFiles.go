@@ -61,6 +61,8 @@ type _BACnetConstructedDataConfigurationFiles struct {
 	ConfigurationFiles   []BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetConstructedDataConfigurationFiles = (*_BACnetConstructedDataConfigurationFiles)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

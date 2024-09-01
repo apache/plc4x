@@ -56,6 +56,8 @@ type _BACnetLogDataLogDataEntryBitStringValue struct {
 	BitStringValue BACnetContextTagBitString
 }
 
+var _ BACnetLogDataLogDataEntryBitStringValue = (*_BACnetLogDataLogDataEntryBitStringValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

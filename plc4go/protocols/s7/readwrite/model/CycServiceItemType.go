@@ -38,13 +38,23 @@ const CycServiceItemType_FUNCTIONID uint8 = 0x12
 
 // CycServiceItemType is the corresponding interface of CycServiceItemType
 type CycServiceItemType interface {
+	CycServiceItemTypeContract
+	CycServiceItemTypeRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CycServiceItemTypeContract provides a set of functions which can be overwritten by a sub struct
+type CycServiceItemTypeContract interface {
 	// GetByteLength returns ByteLength (property field)
 	GetByteLength() uint8
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() uint8
+}
+
+// CycServiceItemTypeRequirements provides a set of functions which need to be implemented by a sub struct
+type CycServiceItemTypeRequirements interface {
 }
 
 // CycServiceItemTypeExactly can be used when we want exactly this type and not a type which fulfills CycServiceItemType.
@@ -60,6 +70,8 @@ type _CycServiceItemType struct {
 	ByteLength uint8
 	SyntaxId   uint8
 }
+
+var _ CycServiceItemTypeContract = (*_CycServiceItemType)(nil)
 
 type _CycServiceItemTypeChildRequirements interface {
 	utils.Serializable

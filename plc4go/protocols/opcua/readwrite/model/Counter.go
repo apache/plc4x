@@ -49,6 +49,8 @@ type CounterExactly interface {
 type _Counter struct {
 }
 
+var _ Counter = (*_Counter)(nil)
+
 // NewCounter factory function for _Counter
 func NewCounter() *_Counter {
 	return &_Counter{}

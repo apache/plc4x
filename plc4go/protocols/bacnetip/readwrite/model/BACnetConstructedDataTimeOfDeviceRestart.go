@@ -58,6 +58,8 @@ type _BACnetConstructedDataTimeOfDeviceRestart struct {
 	TimeOfDeviceRestart BACnetTimeStamp
 }
 
+var _ BACnetConstructedDataTimeOfDeviceRestart = (*_BACnetConstructedDataTimeOfDeviceRestart)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

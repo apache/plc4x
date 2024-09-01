@@ -59,6 +59,8 @@ type _S7PayloadUserDataItemCpuFunctionAlarmAckResponse struct {
 	MessageObjects []uint8
 }
 
+var _ S7PayloadUserDataItemCpuFunctionAlarmAckResponse = (*_S7PayloadUserDataItemCpuFunctionAlarmAckResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

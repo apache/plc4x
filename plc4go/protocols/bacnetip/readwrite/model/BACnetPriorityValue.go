@@ -35,15 +35,25 @@ import (
 
 // BACnetPriorityValue is the corresponding interface of BACnetPriorityValue
 type BACnetPriorityValue interface {
+	BACnetPriorityValueContract
+	BACnetPriorityValueRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetPriorityValueContract provides a set of functions which can be overwritten by a sub struct
+type BACnetPriorityValueContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
+}
+
+// BACnetPriorityValueRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetPriorityValueRequirements interface {
 }
 
 // BACnetPriorityValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValue.
@@ -61,6 +71,8 @@ type _BACnetPriorityValue struct {
 	// Arguments.
 	ObjectTypeArgument BACnetObjectType
 }
+
+var _ BACnetPriorityValueContract = (*_BACnetPriorityValue)(nil)
 
 type _BACnetPriorityValueChildRequirements interface {
 	utils.Serializable

@@ -63,6 +63,8 @@ type _VTCloseErrorListOfVTSessionIdentifiers struct {
 	TagNumber uint8
 }
 
+var _ VTCloseErrorListOfVTSessionIdentifiers = (*_VTCloseErrorListOfVTSessionIdentifiers)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

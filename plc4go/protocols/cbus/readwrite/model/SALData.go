@@ -35,13 +35,23 @@ import (
 
 // SALData is the corresponding interface of SALData
 type SALData interface {
+	SALDataContract
+	SALDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetApplicationId returns ApplicationId (discriminator field)
-	GetApplicationId() ApplicationId
+}
+
+// SALDataContract provides a set of functions which can be overwritten by a sub struct
+type SALDataContract interface {
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData
+}
+
+// SALDataRequirements provides a set of functions which need to be implemented by a sub struct
+type SALDataRequirements interface {
+	// GetApplicationId returns ApplicationId (discriminator field)
+	GetApplicationId() ApplicationId
 }
 
 // SALDataExactly can be used when we want exactly this type and not a type which fulfills SALData.
@@ -56,6 +66,8 @@ type _SALData struct {
 	_SALDataChildRequirements
 	SalData SALData
 }
+
+var _ SALDataContract = (*_SALData)(nil)
 
 type _SALDataChildRequirements interface {
 	utils.Serializable

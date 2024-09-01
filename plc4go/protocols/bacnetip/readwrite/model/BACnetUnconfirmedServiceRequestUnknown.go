@@ -56,6 +56,8 @@ type _BACnetUnconfirmedServiceRequestUnknown struct {
 	UnknownBytes []byte
 }
 
+var _ BACnetUnconfirmedServiceRequestUnknown = (*_BACnetUnconfirmedServiceRequestUnknown)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

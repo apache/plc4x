@@ -61,6 +61,8 @@ type _BACnetConstructedDataShedLevelDescriptions struct {
 	ShedLevelDescriptions []BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataShedLevelDescriptions = (*_BACnetConstructedDataShedLevelDescriptions)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

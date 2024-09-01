@@ -49,6 +49,8 @@ type ApplicationInstanceCertificateExactly interface {
 type _ApplicationInstanceCertificate struct {
 }
 
+var _ ApplicationInstanceCertificate = (*_ApplicationInstanceCertificate)(nil)
+
 // NewApplicationInstanceCertificate factory function for _ApplicationInstanceCertificate
 func NewApplicationInstanceCertificate() *_ApplicationInstanceCertificate {
 	return &_ApplicationInstanceCertificate{}

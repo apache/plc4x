@@ -61,6 +61,8 @@ type _BACnetConstructedDataLinkSpeeds struct {
 	LinkSpeeds           []BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataLinkSpeeds = (*_BACnetConstructedDataLinkSpeeds)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

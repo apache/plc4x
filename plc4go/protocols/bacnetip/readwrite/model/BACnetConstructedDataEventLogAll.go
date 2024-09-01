@@ -51,6 +51,8 @@ type _BACnetConstructedDataEventLogAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataEventLogAll = (*_BACnetConstructedDataEventLogAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

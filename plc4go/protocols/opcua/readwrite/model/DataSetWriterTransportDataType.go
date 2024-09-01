@@ -51,6 +51,8 @@ type _DataSetWriterTransportDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ DataSetWriterTransportDataType = (*_DataSetWriterTransportDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

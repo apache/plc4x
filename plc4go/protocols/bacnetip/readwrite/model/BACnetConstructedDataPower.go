@@ -58,6 +58,8 @@ type _BACnetConstructedDataPower struct {
 	Power BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataPower = (*_BACnetConstructedDataPower)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

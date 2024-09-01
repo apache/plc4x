@@ -58,6 +58,8 @@ type _BACnetConstructedDataSegmentationSupported struct {
 	SegmentationSupported BACnetSegmentationTagged
 }
 
+var _ BACnetConstructedDataSegmentationSupported = (*_BACnetConstructedDataSegmentationSupported)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

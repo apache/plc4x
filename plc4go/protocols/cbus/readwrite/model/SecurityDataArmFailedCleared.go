@@ -51,6 +51,8 @@ type _SecurityDataArmFailedCleared struct {
 	*_SecurityData
 }
 
+var _ SecurityDataArmFailedCleared = (*_SecurityDataArmFailedCleared)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataObjectPropertyReference struct {
 	PropertyReference BACnetDeviceObjectPropertyReference
 }
 
+var _ BACnetConstructedDataObjectPropertyReference = (*_BACnetConstructedDataObjectPropertyReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

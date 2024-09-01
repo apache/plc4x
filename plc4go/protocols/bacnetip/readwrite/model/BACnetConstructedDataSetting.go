@@ -58,6 +58,8 @@ type _BACnetConstructedDataSetting struct {
 	Setting BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataSetting = (*_BACnetConstructedDataSetting)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

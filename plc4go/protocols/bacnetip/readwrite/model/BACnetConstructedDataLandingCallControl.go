@@ -58,6 +58,8 @@ type _BACnetConstructedDataLandingCallControl struct {
 	LandingCallControl BACnetLandingCallStatus
 }
 
+var _ BACnetConstructedDataLandingCallControl = (*_BACnetConstructedDataLandingCallControl)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

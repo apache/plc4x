@@ -56,6 +56,8 @@ type _BACnetConstructedDataRoutingTable struct {
 	RoutingTable []BACnetRouterEntry
 }
 
+var _ BACnetConstructedDataRoutingTable = (*_BACnetConstructedDataRoutingTable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

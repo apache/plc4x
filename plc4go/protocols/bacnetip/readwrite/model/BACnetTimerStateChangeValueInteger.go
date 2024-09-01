@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueInteger struct {
 	IntegerValue BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetTimerStateChangeValueInteger = (*_BACnetTimerStateChangeValueInteger)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

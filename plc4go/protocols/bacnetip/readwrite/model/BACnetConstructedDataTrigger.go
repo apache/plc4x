@@ -58,6 +58,8 @@ type _BACnetConstructedDataTrigger struct {
 	Trigger BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataTrigger = (*_BACnetConstructedDataTrigger)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

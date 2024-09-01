@@ -56,6 +56,8 @@ type _BACnetPropertyStatesPolarity struct {
 	Polarity BACnetPolarityTagged
 }
 
+var _ BACnetPropertyStatesPolarity = (*_BACnetPropertyStatesPolarity)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

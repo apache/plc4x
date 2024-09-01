@@ -56,6 +56,8 @@ type _BACnetConstructedDataTrendLogMultipleLogBuffer struct {
 	FloorText []BACnetLogMultipleRecord
 }
 
+var _ BACnetConstructedDataTrendLogMultipleLogBuffer = (*_BACnetConstructedDataTrendLogMultipleLogBuffer)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

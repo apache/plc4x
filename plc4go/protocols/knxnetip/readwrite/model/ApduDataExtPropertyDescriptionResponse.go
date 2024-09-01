@@ -80,6 +80,8 @@ type _ApduDataExtPropertyDescriptionResponse struct {
 	reservedField1 *uint8
 }
 
+var _ ApduDataExtPropertyDescriptionResponse = (*_ApduDataExtPropertyDescriptionResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

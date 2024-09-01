@@ -78,6 +78,8 @@ type _MonitoredSALLongFormSmartMode struct {
 	reservedField0 *byte
 }
 
+var _ MonitoredSALLongFormSmartMode = (*_MonitoredSALLongFormSmartMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

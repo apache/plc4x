@@ -56,6 +56,8 @@ type _BACnetPropertyStatesMaintenance struct {
 	Maintenance BACnetMaintenanceTagged
 }
 
+var _ BACnetPropertyStatesMaintenance = (*_BACnetPropertyStatesMaintenance)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

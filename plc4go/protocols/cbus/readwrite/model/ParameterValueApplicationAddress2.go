@@ -59,6 +59,8 @@ type _ParameterValueApplicationAddress2 struct {
 	Data  []byte
 }
 
+var _ ParameterValueApplicationAddress2 = (*_ParameterValueApplicationAddress2)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

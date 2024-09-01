@@ -58,6 +58,8 @@ type _BACnetConstructedDataMultiStateOutputInterfaceValue struct {
 	InterfaceValue BACnetOptionalBinaryPV
 }
 
+var _ BACnetConstructedDataMultiStateOutputInterfaceValue = (*_BACnetConstructedDataMultiStateOutputInterfaceValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

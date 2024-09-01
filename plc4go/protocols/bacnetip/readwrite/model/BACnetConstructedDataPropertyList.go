@@ -61,6 +61,8 @@ type _BACnetConstructedDataPropertyList struct {
 	PropertyList         []BACnetPropertyIdentifierTagged
 }
 
+var _ BACnetConstructedDataPropertyList = (*_BACnetConstructedDataPropertyList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

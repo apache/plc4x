@@ -67,6 +67,8 @@ type _BACnetEventTransitionBitsTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetEventTransitionBitsTagged = (*_BACnetEventTransitionBitsTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

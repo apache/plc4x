@@ -56,6 +56,8 @@ type _BACnetLogRecordLogDatumIntegerValue struct {
 	IntegerValue BACnetContextTagSignedInteger
 }
 
+var _ BACnetLogRecordLogDatumIntegerValue = (*_BACnetLogRecordLogDatumIntegerValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -68,6 +68,8 @@ type _BACnetNotificationParametersCommandFailure struct {
 	InnerClosingTag BACnetClosingTag
 }
 
+var _ BACnetNotificationParametersCommandFailure = (*_BACnetNotificationParametersCommandFailure)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

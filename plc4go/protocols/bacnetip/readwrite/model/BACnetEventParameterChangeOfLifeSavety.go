@@ -71,6 +71,8 @@ type _BACnetEventParameterChangeOfLifeSavety struct {
 	ClosingTag                  BACnetClosingTag
 }
 
+var _ BACnetEventParameterChangeOfLifeSavety = (*_BACnetEventParameterChangeOfLifeSavety)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

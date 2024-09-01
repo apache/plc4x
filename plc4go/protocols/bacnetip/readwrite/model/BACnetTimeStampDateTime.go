@@ -56,6 +56,8 @@ type _BACnetTimeStampDateTime struct {
 	DateTimeValue BACnetDateTimeEnclosed
 }
 
+var _ BACnetTimeStampDateTime = (*_BACnetTimeStampDateTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

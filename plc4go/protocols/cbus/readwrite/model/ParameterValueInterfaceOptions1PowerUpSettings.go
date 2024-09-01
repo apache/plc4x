@@ -56,6 +56,8 @@ type _ParameterValueInterfaceOptions1PowerUpSettings struct {
 	Value InterfaceOptions1PowerUpSettings
 }
 
+var _ ParameterValueInterfaceOptions1PowerUpSettings = (*_ParameterValueInterfaceOptions1PowerUpSettings)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

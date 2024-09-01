@@ -56,6 +56,8 @@ type _BACnetConstructedDataActiveCOVMultipleSubscriptions struct {
 	ActiveCOVMultipleSubscriptions []BACnetCOVMultipleSubscription
 }
 
+var _ BACnetConstructedDataActiveCOVMultipleSubscriptions = (*_BACnetConstructedDataActiveCOVMultipleSubscriptions)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

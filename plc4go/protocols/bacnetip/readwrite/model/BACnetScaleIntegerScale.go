@@ -56,6 +56,8 @@ type _BACnetScaleIntegerScale struct {
 	IntegerScale BACnetContextTagSignedInteger
 }
 
+var _ BACnetScaleIntegerScale = (*_BACnetScaleIntegerScale)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -68,6 +68,8 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple struct {
 	ListOfCovNotifications      ListOfCovNotificationsList
 }
 
+var _ BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple = (*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -59,6 +59,8 @@ type _ApduDataGroupValueResponse struct {
 	Data          []byte
 }
 
+var _ ApduDataGroupValueResponse = (*_ApduDataGroupValueResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

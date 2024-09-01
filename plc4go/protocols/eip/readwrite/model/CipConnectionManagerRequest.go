@@ -109,6 +109,8 @@ type _CipConnectionManagerRequest struct {
 	reservedField0 *uint32
 }
 
+var _ CipConnectionManagerRequest = (*_CipConnectionManagerRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

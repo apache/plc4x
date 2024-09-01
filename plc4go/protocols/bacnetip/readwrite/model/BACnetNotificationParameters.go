@@ -35,9 +35,15 @@ import (
 
 // BACnetNotificationParameters is the corresponding interface of BACnetNotificationParameters
 type BACnetNotificationParameters interface {
+	BACnetNotificationParametersContract
+	BACnetNotificationParametersRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetNotificationParametersContract provides a set of functions which can be overwritten by a sub struct
+type BACnetNotificationParametersContract interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -46,6 +52,10 @@ type BACnetNotificationParameters interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetNotificationParametersRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetNotificationParametersRequirements interface {
 }
 
 // BACnetNotificationParametersExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParameters.
@@ -66,6 +76,8 @@ type _BACnetNotificationParameters struct {
 	TagNumber          uint8
 	ObjectTypeArgument BACnetObjectType
 }
+
+var _ BACnetNotificationParametersContract = (*_BACnetNotificationParameters)(nil)
 
 type _BACnetNotificationParametersChildRequirements interface {
 	utils.Serializable

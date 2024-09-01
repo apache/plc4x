@@ -61,6 +61,8 @@ type _BACnetConstructedDataFloorText struct {
 	FloorText            []BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataFloorText = (*_BACnetConstructedDataFloorText)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

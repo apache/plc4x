@@ -56,6 +56,8 @@ type _BACnetChannelValueLightingCommand struct {
 	LigthingCommandValue BACnetLightingCommandEnclosed
 }
 
+var _ BACnetChannelValueLightingCommand = (*_BACnetChannelValueLightingCommand)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

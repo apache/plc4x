@@ -65,6 +65,8 @@ type _AirConditioningDataSetHumiditySetbackLimit struct {
 	HvacModeAndFlags HVACHumidityModeAndFlags
 }
 
+var _ AirConditioningDataSetHumiditySetbackLimit = (*_AirConditioningDataSetHumiditySetbackLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -59,6 +59,8 @@ type _NLMUpdateKeyDistributionKey struct {
 	Key         NLMUpdateKeyUpdateKeyEntry
 }
 
+var _ NLMUpdateKeyDistributionKey = (*_NLMUpdateKeyDistributionKey)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

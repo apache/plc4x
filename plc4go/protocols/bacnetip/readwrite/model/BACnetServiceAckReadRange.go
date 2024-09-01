@@ -74,6 +74,8 @@ type _BACnetServiceAckReadRange struct {
 	FirstSequenceNumber BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetServiceAckReadRange = (*_BACnetServiceAckReadRange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

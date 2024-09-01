@@ -58,6 +58,8 @@ type _BACnetConstructedDataBACnetIPv6MulticastAddress struct {
 	Ipv6MulticastAddress BACnetApplicationTagOctetString
 }
 
+var _ BACnetConstructedDataBACnetIPv6MulticastAddress = (*_BACnetConstructedDataBACnetIPv6MulticastAddress)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

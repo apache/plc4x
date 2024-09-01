@@ -56,6 +56,8 @@ type _BACnetPriorityValueObjectidentifier struct {
 	ObjectidentifierValue BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetPriorityValueObjectidentifier = (*_BACnetPriorityValueObjectidentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

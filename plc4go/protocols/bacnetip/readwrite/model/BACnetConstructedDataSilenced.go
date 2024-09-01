@@ -58,6 +58,8 @@ type _BACnetConstructedDataSilenced struct {
 	Silenced BACnetSilencedStateTagged
 }
 
+var _ BACnetConstructedDataSilenced = (*_BACnetConstructedDataSilenced)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

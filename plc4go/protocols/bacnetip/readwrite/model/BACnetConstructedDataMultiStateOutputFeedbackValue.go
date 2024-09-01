@@ -58,6 +58,8 @@ type _BACnetConstructedDataMultiStateOutputFeedbackValue struct {
 	FeedbackValue BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMultiStateOutputFeedbackValue = (*_BACnetConstructedDataMultiStateOutputFeedbackValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

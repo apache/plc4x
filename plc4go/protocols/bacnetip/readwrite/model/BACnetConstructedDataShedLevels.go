@@ -61,6 +61,8 @@ type _BACnetConstructedDataShedLevels struct {
 	ShedLevels           []BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataShedLevels = (*_BACnetConstructedDataShedLevels)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

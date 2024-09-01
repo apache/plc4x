@@ -65,6 +65,8 @@ type _BACnetFaultParameterFaultLifeSafety struct {
 	ClosingTag            BACnetClosingTag
 }
 
+var _ BACnetFaultParameterFaultLifeSafety = (*_BACnetFaultParameterFaultLifeSafety)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

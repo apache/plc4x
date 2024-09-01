@@ -49,6 +49,8 @@ type LocaleIdExactly interface {
 type _LocaleId struct {
 }
 
+var _ LocaleId = (*_LocaleId)(nil)
+
 // NewLocaleId factory function for _LocaleId
 func NewLocaleId() *_LocaleId {
 	return &_LocaleId{}

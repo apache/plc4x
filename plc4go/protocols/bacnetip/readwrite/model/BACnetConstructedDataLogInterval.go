@@ -58,6 +58,8 @@ type _BACnetConstructedDataLogInterval struct {
 	LogInterval BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataLogInterval = (*_BACnetConstructedDataLogInterval)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

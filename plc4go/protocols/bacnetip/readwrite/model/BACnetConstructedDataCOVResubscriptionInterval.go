@@ -58,6 +58,8 @@ type _BACnetConstructedDataCOVResubscriptionInterval struct {
 	CovResubscriptionInterval BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataCOVResubscriptionInterval = (*_BACnetConstructedDataCOVResubscriptionInterval)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

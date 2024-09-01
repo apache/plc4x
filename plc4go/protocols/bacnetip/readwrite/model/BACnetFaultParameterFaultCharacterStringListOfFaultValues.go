@@ -63,6 +63,8 @@ type _BACnetFaultParameterFaultCharacterStringListOfFaultValues struct {
 	TagNumber uint8
 }
 
+var _ BACnetFaultParameterFaultCharacterStringListOfFaultValues = (*_BACnetFaultParameterFaultCharacterStringListOfFaultValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

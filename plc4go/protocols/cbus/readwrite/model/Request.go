@@ -35,9 +35,15 @@ import (
 
 // Request is the corresponding interface of Request
 type Request interface {
+	RequestContract
+	RequestRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// RequestContract provides a set of functions which can be overwritten by a sub struct
+type RequestContract interface {
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() RequestType
 	// GetStartingCR returns StartingCR (property field)
@@ -50,6 +56,10 @@ type Request interface {
 	GetTermination() RequestTermination
 	// GetActualPeek returns ActualPeek (virtual field)
 	GetActualPeek() RequestType
+}
+
+// RequestRequirements provides a set of functions which need to be implemented by a sub struct
+type RequestRequirements interface {
 }
 
 // RequestExactly can be used when we want exactly this type and not a type which fulfills Request.
@@ -71,6 +81,8 @@ type _Request struct {
 	// Arguments.
 	CBusOptions CBusOptions
 }
+
+var _ RequestContract = (*_Request)(nil)
 
 type _RequestChildRequirements interface {
 	utils.Serializable

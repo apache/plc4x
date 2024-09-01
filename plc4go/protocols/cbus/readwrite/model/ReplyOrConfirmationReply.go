@@ -59,6 +59,8 @@ type _ReplyOrConfirmationReply struct {
 	Termination ResponseTermination
 }
 
+var _ ReplyOrConfirmationReply = (*_ReplyOrConfirmationReply)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

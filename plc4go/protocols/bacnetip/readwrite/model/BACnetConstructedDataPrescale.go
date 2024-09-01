@@ -58,6 +58,8 @@ type _BACnetConstructedDataPrescale struct {
 	Prescale BACnetPrescale
 }
 
+var _ BACnetConstructedDataPrescale = (*_BACnetConstructedDataPrescale)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -35,15 +35,25 @@ import (
 
 // CBusPointToPointCommand is the corresponding interface of CBusPointToPointCommand
 type CBusPointToPointCommand interface {
+	CBusPointToPointCommandContract
+	CBusPointToPointCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CBusPointToPointCommandContract provides a set of functions which can be overwritten by a sub struct
+type CBusPointToPointCommandContract interface {
 	// GetBridgeAddressCountPeek returns BridgeAddressCountPeek (property field)
 	GetBridgeAddressCountPeek() uint16
 	// GetCalData returns CalData (property field)
 	GetCalData() CALData
 	// GetIsDirect returns IsDirect (virtual field)
 	GetIsDirect() bool
+}
+
+// CBusPointToPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type CBusPointToPointCommandRequirements interface {
 }
 
 // CBusPointToPointCommandExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointCommand.
@@ -62,6 +72,8 @@ type _CBusPointToPointCommand struct {
 	// Arguments.
 	CBusOptions CBusOptions
 }
+
+var _ CBusPointToPointCommandContract = (*_CBusPointToPointCommand)(nil)
 
 type _CBusPointToPointCommandChildRequirements interface {
 	utils.Serializable

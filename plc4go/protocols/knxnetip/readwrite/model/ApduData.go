@@ -35,9 +35,19 @@ import (
 
 // ApduData is the corresponding interface of ApduData
 type ApduData interface {
+	ApduDataContract
+	ApduDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ApduDataContract provides a set of functions which can be overwritten by a sub struct
+type ApduDataContract interface {
+}
+
+// ApduDataRequirements provides a set of functions which need to be implemented by a sub struct
+type ApduDataRequirements interface {
 	// GetApciType returns ApciType (discriminator field)
 	GetApciType() uint8
 }
@@ -56,6 +66,8 @@ type _ApduData struct {
 	// Arguments.
 	DataLength uint8
 }
+
+var _ ApduDataContract = (*_ApduData)(nil)
 
 type _ApduDataChildRequirements interface {
 	utils.Serializable

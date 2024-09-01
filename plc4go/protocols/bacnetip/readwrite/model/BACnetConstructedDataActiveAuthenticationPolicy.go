@@ -58,6 +58,8 @@ type _BACnetConstructedDataActiveAuthenticationPolicy struct {
 	ActiveAuthenticationPolicy BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataActiveAuthenticationPolicy = (*_BACnetConstructedDataActiveAuthenticationPolicy)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

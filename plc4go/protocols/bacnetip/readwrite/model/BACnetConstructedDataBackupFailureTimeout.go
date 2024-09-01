@@ -58,6 +58,8 @@ type _BACnetConstructedDataBackupFailureTimeout struct {
 	BackupFailureTimeout BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataBackupFailureTimeout = (*_BACnetConstructedDataBackupFailureTimeout)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

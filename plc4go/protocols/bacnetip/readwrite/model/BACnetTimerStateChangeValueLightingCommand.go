@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueLightingCommand struct {
 	LigthingCommandValue BACnetLightingCommandEnclosed
 }
 
+var _ BACnetTimerStateChangeValueLightingCommand = (*_BACnetTimerStateChangeValueLightingCommand)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

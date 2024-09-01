@@ -56,6 +56,8 @@ type _ParameterValueCustomManufacturer struct {
 	Value CustomManufacturer
 }
 
+var _ ParameterValueCustomManufacturer = (*_ParameterValueCustomManufacturer)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

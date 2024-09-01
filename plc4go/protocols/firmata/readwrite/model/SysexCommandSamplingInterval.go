@@ -51,6 +51,8 @@ type _SysexCommandSamplingInterval struct {
 	*_SysexCommand
 }
 
+var _ SysexCommandSamplingInterval = (*_SysexCommandSamplingInterval)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

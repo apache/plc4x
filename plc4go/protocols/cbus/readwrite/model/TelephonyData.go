@@ -35,15 +35,25 @@ import (
 
 // TelephonyData is the corresponding interface of TelephonyData
 type TelephonyData interface {
+	TelephonyDataContract
+	TelephonyDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// TelephonyDataContract provides a set of functions which can be overwritten by a sub struct
+type TelephonyDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() TelephonyCommandTypeContainer
 	// GetArgument returns Argument (property field)
 	GetArgument() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() TelephonyCommandType
+}
+
+// TelephonyDataRequirements provides a set of functions which need to be implemented by a sub struct
+type TelephonyDataRequirements interface {
 }
 
 // TelephonyDataExactly can be used when we want exactly this type and not a type which fulfills TelephonyData.
@@ -59,6 +69,8 @@ type _TelephonyData struct {
 	CommandTypeContainer TelephonyCommandTypeContainer
 	Argument             byte
 }
+
+var _ TelephonyDataContract = (*_TelephonyData)(nil)
 
 type _TelephonyDataChildRequirements interface {
 	utils.Serializable

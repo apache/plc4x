@@ -64,6 +64,8 @@ type _S7ParameterSetupCommunication struct {
 	reservedField0 *uint8
 }
 
+var _ S7ParameterSetupCommunication = (*_S7ParameterSetupCommunication)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

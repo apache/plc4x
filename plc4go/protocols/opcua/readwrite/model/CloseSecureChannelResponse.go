@@ -56,6 +56,8 @@ type _CloseSecureChannelResponse struct {
 	ResponseHeader ExtensionObjectDefinition
 }
 
+var _ CloseSecureChannelResponse = (*_CloseSecureChannelResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

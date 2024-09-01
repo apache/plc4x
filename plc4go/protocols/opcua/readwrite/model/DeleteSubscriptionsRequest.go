@@ -62,6 +62,8 @@ type _DeleteSubscriptionsRequest struct {
 	SubscriptionIds     []uint32
 }
 
+var _ DeleteSubscriptionsRequest = (*_DeleteSubscriptionsRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

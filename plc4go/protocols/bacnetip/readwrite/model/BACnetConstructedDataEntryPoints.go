@@ -56,6 +56,8 @@ type _BACnetConstructedDataEntryPoints struct {
 	EntryPoints []BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataEntryPoints = (*_BACnetConstructedDataEntryPoints)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

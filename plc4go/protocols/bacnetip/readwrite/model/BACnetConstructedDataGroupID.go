@@ -58,6 +58,8 @@ type _BACnetConstructedDataGroupID struct {
 	GroupId BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataGroupID = (*_BACnetConstructedDataGroupID)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

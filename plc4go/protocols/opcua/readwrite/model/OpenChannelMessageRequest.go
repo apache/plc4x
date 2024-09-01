@@ -65,6 +65,8 @@ type _OpenChannelMessageRequest struct {
 	ReceiverCertificateThumbprint PascalByteString
 }
 
+var _ OpenChannelMessageRequest = (*_OpenChannelMessageRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

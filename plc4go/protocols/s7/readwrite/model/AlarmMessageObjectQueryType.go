@@ -80,6 +80,8 @@ type _AlarmMessageObjectQueryType struct {
 	reservedField0 *uint16
 }
 
+var _ AlarmMessageObjectQueryType = (*_AlarmMessageObjectQueryType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

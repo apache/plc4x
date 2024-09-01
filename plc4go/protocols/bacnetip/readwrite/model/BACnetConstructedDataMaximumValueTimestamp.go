@@ -58,6 +58,8 @@ type _BACnetConstructedDataMaximumValueTimestamp struct {
 	MaximumValueTimestamp BACnetDateTime
 }
 
+var _ BACnetConstructedDataMaximumValueTimestamp = (*_BACnetConstructedDataMaximumValueTimestamp)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

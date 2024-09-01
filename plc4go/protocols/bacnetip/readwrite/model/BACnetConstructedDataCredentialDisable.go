@@ -58,6 +58,8 @@ type _BACnetConstructedDataCredentialDisable struct {
 	CredentialDisable BACnetAccessCredentialDisableTagged
 }
 
+var _ BACnetConstructedDataCredentialDisable = (*_BACnetConstructedDataCredentialDisable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

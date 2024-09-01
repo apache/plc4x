@@ -51,6 +51,8 @@ type _SecurityDataCurrentAlarmType struct {
 	*_SecurityData
 }
 
+var _ SecurityDataCurrentAlarmType = (*_SecurityDataCurrentAlarmType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

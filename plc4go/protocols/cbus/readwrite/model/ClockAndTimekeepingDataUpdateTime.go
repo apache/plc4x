@@ -73,6 +73,8 @@ type _ClockAndTimekeepingDataUpdateTime struct {
 	DaylightSaving byte
 }
 
+var _ ClockAndTimekeepingDataUpdateTime = (*_ClockAndTimekeepingDataUpdateTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

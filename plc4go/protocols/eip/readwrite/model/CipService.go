@@ -35,9 +35,19 @@ import (
 
 // CipService is the corresponding interface of CipService
 type CipService interface {
+	CipServiceContract
+	CipServiceRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// CipServiceContract provides a set of functions which can be overwritten by a sub struct
+type CipServiceContract interface {
+}
+
+// CipServiceRequirements provides a set of functions which need to be implemented by a sub struct
+type CipServiceRequirements interface {
 	// GetConnected returns Connected (discriminator field)
 	GetConnected() bool
 	// GetResponse returns Response (discriminator field)
@@ -60,6 +70,8 @@ type _CipService struct {
 	// Arguments.
 	ServiceLen uint16
 }
+
+var _ CipServiceContract = (*_CipService)(nil)
 
 type _CipServiceChildRequirements interface {
 	utils.Serializable

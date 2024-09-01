@@ -58,6 +58,8 @@ type _BACnetConstructedDataEnable struct {
 	Enable BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataEnable = (*_BACnetConstructedDataEnable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

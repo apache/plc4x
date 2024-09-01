@@ -56,6 +56,8 @@ type _BACnetConstructedDataDeviceAddressBinding struct {
 	DeviceAddressBinding []BACnetAddressBinding
 }
 
+var _ BACnetConstructedDataDeviceAddressBinding = (*_BACnetConstructedDataDeviceAddressBinding)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

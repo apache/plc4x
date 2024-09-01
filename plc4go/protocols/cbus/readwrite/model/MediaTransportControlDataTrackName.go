@@ -56,6 +56,8 @@ type _MediaTransportControlDataTrackName struct {
 	TrackName string
 }
 
+var _ MediaTransportControlDataTrackName = (*_MediaTransportControlDataTrackName)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

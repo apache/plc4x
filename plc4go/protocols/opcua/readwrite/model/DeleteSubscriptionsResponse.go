@@ -68,6 +68,8 @@ type _DeleteSubscriptionsResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ DeleteSubscriptionsResponse = (*_DeleteSubscriptionsResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

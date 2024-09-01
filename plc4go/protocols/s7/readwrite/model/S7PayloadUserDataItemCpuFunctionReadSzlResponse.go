@@ -56,6 +56,8 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 	Items []byte
 }
 
+var _ S7PayloadUserDataItemCpuFunctionReadSzlResponse = (*_S7PayloadUserDataItemCpuFunctionReadSzlResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

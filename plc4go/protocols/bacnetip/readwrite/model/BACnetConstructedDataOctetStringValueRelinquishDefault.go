@@ -58,6 +58,8 @@ type _BACnetConstructedDataOctetStringValueRelinquishDefault struct {
 	RelinquishDefault BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetConstructedDataOctetStringValueRelinquishDefault = (*_BACnetConstructedDataOctetStringValueRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

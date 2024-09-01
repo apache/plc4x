@@ -51,6 +51,8 @@ type _BACnetConstructedDataIntegerValueAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataIntegerValueAll = (*_BACnetConstructedDataIntegerValueAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

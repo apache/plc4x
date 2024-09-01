@@ -59,6 +59,8 @@ type _StatusChangeNotification struct {
 	DiagnosticInfo DiagnosticInfo
 }
 
+var _ StatusChangeNotification = (*_StatusChangeNotification)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

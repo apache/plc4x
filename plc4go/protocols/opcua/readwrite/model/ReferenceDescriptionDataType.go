@@ -67,6 +67,8 @@ type _ReferenceDescriptionDataType struct {
 	reservedField0 *uint8
 }
 
+var _ ReferenceDescriptionDataType = (*_ReferenceDescriptionDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataTransactionNotificationClass struct {
 	TransactionNotificationClass BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataTransactionNotificationClass = (*_BACnetConstructedDataTransactionNotificationClass)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -65,6 +65,8 @@ type _BACnetEventParameterBufferReady struct {
 	ClosingTag                BACnetClosingTag
 }
 
+var _ BACnetEventParameterBufferReady = (*_BACnetEventParameterBufferReady)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

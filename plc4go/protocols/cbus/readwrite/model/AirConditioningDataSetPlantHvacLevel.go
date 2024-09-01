@@ -74,6 +74,8 @@ type _AirConditioningDataSetPlantHvacLevel struct {
 	AuxLevel         HVACAuxiliaryLevel
 }
 
+var _ AirConditioningDataSetPlantHvacLevel = (*_AirConditioningDataSetPlantHvacLevel)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

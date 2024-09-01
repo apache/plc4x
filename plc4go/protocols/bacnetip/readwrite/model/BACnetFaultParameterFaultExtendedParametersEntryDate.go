@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryDate struct {
 	DateValue BACnetApplicationTagDate
 }
 
+var _ BACnetFaultParameterFaultExtendedParametersEntryDate = (*_BACnetFaultParameterFaultExtendedParametersEntryDate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

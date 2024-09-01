@@ -56,6 +56,8 @@ type _SALDataClockAndTimekeeping struct {
 	ClockAndTimekeepingData ClockAndTimekeepingData
 }
 
+var _ SALDataClockAndTimekeeping = (*_SALDataClockAndTimekeeping)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

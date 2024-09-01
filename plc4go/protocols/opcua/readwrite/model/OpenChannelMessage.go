@@ -33,9 +33,19 @@ import (
 
 // OpenChannelMessage is the corresponding interface of OpenChannelMessage
 type OpenChannelMessage interface {
+	OpenChannelMessageContract
+	OpenChannelMessageRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// OpenChannelMessageContract provides a set of functions which can be overwritten by a sub struct
+type OpenChannelMessageContract interface {
+}
+
+// OpenChannelMessageRequirements provides a set of functions which need to be implemented by a sub struct
+type OpenChannelMessageRequirements interface {
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
 }
@@ -51,6 +61,8 @@ type OpenChannelMessageExactly interface {
 type _OpenChannelMessage struct {
 	_OpenChannelMessageChildRequirements
 }
+
+var _ OpenChannelMessageContract = (*_OpenChannelMessage)(nil)
 
 type _OpenChannelMessageChildRequirements interface {
 	utils.Serializable

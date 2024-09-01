@@ -56,6 +56,8 @@ type _SALDataErrorReporting struct {
 	ErrorReportingData ErrorReportingData
 }
 
+var _ SALDataErrorReporting = (*_SALDataErrorReporting)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -59,6 +59,8 @@ type _SemanticChangeStructureDataType struct {
 	AffectedType NodeId
 }
 
+var _ SemanticChangeStructureDataType = (*_SemanticChangeStructureDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

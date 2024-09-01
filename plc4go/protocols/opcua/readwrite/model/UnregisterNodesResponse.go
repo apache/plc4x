@@ -56,6 +56,8 @@ type _UnregisterNodesResponse struct {
 	ResponseHeader ExtensionObjectDefinition
 }
 
+var _ UnregisterNodesResponse = (*_UnregisterNodesResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

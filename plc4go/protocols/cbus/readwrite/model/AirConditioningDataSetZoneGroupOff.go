@@ -56,6 +56,8 @@ type _AirConditioningDataSetZoneGroupOff struct {
 	ZoneGroup byte
 }
 
+var _ AirConditioningDataSetZoneGroupOff = (*_AirConditioningDataSetZoneGroupOff)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

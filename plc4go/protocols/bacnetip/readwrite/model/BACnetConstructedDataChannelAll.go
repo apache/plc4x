@@ -51,6 +51,8 @@ type _BACnetConstructedDataChannelAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataChannelAll = (*_BACnetConstructedDataChannelAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

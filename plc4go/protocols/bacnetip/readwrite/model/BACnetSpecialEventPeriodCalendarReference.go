@@ -56,6 +56,8 @@ type _BACnetSpecialEventPeriodCalendarReference struct {
 	CalendarReference BACnetContextTagObjectIdentifier
 }
 
+var _ BACnetSpecialEventPeriodCalendarReference = (*_BACnetSpecialEventPeriodCalendarReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

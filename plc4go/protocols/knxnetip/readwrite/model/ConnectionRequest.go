@@ -64,6 +64,8 @@ type _ConnectionRequest struct {
 	ConnectionRequestInformation ConnectionRequestInformation
 }
 
+var _ ConnectionRequest = (*_ConnectionRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -59,6 +59,8 @@ type _WritePropertyMultipleError struct {
 	FirstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed
 }
 
+var _ WritePropertyMultipleError = (*_WritePropertyMultipleError)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

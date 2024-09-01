@@ -61,6 +61,8 @@ type _CIPEncapsulationReadResponse struct {
 	PacketLen uint16
 }
 
+var _ CIPEncapsulationReadResponse = (*_CIPEncapsulationReadResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

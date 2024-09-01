@@ -56,6 +56,8 @@ type _BACnetValueSourceObject struct {
 	Object BACnetDeviceObjectReferenceEnclosed
 }
 
+var _ BACnetValueSourceObject = (*_BACnetValueSourceObject)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

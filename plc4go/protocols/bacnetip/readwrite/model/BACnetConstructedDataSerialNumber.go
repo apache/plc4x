@@ -58,6 +58,8 @@ type _BACnetConstructedDataSerialNumber struct {
 	SerialNumber BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataSerialNumber = (*_BACnetConstructedDataSerialNumber)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

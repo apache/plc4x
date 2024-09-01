@@ -35,9 +35,15 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is the corresponding interface of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract provides a set of functions which can be overwritten by a sub struct
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -46,6 +52,10 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements interface {
 }
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass.
@@ -65,6 +75,8 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)(nil)
 
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements interface {
 	utils.Serializable

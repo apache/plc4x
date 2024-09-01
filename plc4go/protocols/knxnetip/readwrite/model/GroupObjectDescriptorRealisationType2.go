@@ -78,6 +78,8 @@ type _GroupObjectDescriptorRealisationType2 struct {
 	ValueType             ComObjectValueType
 }
 
+var _ GroupObjectDescriptorRealisationType2 = (*_GroupObjectDescriptorRealisationType2)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

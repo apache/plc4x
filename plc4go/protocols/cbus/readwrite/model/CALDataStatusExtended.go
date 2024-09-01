@@ -72,6 +72,8 @@ type _CALDataStatusExtended struct {
 	LevelInformation []LevelInformation
 }
 
+var _ CALDataStatusExtended = (*_CALDataStatusExtended)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

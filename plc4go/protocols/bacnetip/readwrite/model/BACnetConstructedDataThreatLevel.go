@@ -58,6 +58,8 @@ type _BACnetConstructedDataThreatLevel struct {
 	ThreatLevel BACnetAccessThreatLevel
 }
 
+var _ BACnetConstructedDataThreatLevel = (*_BACnetConstructedDataThreatLevel)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

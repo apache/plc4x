@@ -51,6 +51,8 @@ type _ApduDataExtGroupPropertyValueResponse struct {
 	*_ApduDataExt
 }
 
+var _ ApduDataExtGroupPropertyValueResponse = (*_ApduDataExtGroupPropertyValueResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

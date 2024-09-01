@@ -56,6 +56,8 @@ type _BACnetConstructedDataDateList struct {
 	DateList []BACnetCalendarEntry
 }
 
+var _ BACnetConstructedDataDateList = (*_BACnetConstructedDataDateList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

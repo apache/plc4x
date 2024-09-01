@@ -61,6 +61,8 @@ type _ConnectionStateResponse struct {
 	Status                 Status
 }
 
+var _ ConnectionStateResponse = (*_ConnectionStateResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

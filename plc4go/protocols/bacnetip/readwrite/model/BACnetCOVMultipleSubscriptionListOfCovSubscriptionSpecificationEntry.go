@@ -57,6 +57,8 @@ type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry struc
 	ListOfCovReferences       BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
 }
 
+var _ BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

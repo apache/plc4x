@@ -58,6 +58,8 @@ type _BACnetConstructedDataCOVPeriod struct {
 	CovPeriod BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataCOVPeriod = (*_BACnetConstructedDataCOVPeriod)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

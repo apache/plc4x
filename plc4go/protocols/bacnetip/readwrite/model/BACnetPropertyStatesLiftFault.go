@@ -56,6 +56,8 @@ type _BACnetPropertyStatesLiftFault struct {
 	LiftFault BACnetLiftFaultTagged
 }
 
+var _ BACnetPropertyStatesLiftFault = (*_BACnetPropertyStatesLiftFault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

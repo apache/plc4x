@@ -56,6 +56,8 @@ type _BACnetSpecialEventPeriodCalendarEntry struct {
 	CalendarEntry BACnetCalendarEntryEnclosed
 }
 
+var _ BACnetSpecialEventPeriodCalendarEntry = (*_BACnetSpecialEventPeriodCalendarEntry)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

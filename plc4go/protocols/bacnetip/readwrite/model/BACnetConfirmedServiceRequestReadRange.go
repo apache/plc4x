@@ -65,6 +65,8 @@ type _BACnetConfirmedServiceRequestReadRange struct {
 	ReadRange          BACnetConfirmedServiceRequestReadRangeRange
 }
 
+var _ BACnetConfirmedServiceRequestReadRange = (*_BACnetConfirmedServiceRequestReadRange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

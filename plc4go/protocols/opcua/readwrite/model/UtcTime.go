@@ -49,6 +49,8 @@ type UtcTimeExactly interface {
 type _UtcTime struct {
 }
 
+var _ UtcTime = (*_UtcTime)(nil)
+
 // NewUtcTime factory function for _UtcTime
 func NewUtcTime() *_UtcTime {
 	return &_UtcTime{}

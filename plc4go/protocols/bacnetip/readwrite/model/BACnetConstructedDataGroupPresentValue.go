@@ -56,6 +56,8 @@ type _BACnetConstructedDataGroupPresentValue struct {
 	PresentValue []BACnetReadAccessResult
 }
 
+var _ BACnetConstructedDataGroupPresentValue = (*_BACnetConstructedDataGroupPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

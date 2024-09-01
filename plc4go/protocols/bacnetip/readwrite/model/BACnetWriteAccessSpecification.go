@@ -63,6 +63,8 @@ type _BACnetWriteAccessSpecification struct {
 	ClosingTag                    BACnetClosingTag
 }
 
+var _ BACnetWriteAccessSpecification = (*_BACnetWriteAccessSpecification)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

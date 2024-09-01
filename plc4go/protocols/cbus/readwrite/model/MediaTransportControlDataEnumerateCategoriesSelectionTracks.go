@@ -67,6 +67,8 @@ type _MediaTransportControlDataEnumerateCategoriesSelectionTracks struct {
 	Start         uint8
 }
 
+var _ MediaTransportControlDataEnumerateCategoriesSelectionTracks = (*_MediaTransportControlDataEnumerateCategoriesSelectionTracks)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

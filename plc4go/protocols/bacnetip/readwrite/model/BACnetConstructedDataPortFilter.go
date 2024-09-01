@@ -61,6 +61,8 @@ type _BACnetConstructedDataPortFilter struct {
 	PortFilter           []BACnetPortPermission
 }
 
+var _ BACnetConstructedDataPortFilter = (*_BACnetConstructedDataPortFilter)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

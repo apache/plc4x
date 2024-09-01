@@ -35,9 +35,19 @@ import (
 
 // AdsDiscoveryBlock is the corresponding interface of AdsDiscoveryBlock
 type AdsDiscoveryBlock interface {
+	AdsDiscoveryBlockContract
+	AdsDiscoveryBlockRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// AdsDiscoveryBlockContract provides a set of functions which can be overwritten by a sub struct
+type AdsDiscoveryBlockContract interface {
+}
+
+// AdsDiscoveryBlockRequirements provides a set of functions which need to be implemented by a sub struct
+type AdsDiscoveryBlockRequirements interface {
 	// GetBlockType returns BlockType (discriminator field)
 	GetBlockType() AdsDiscoveryBlockType
 }
@@ -53,6 +63,8 @@ type AdsDiscoveryBlockExactly interface {
 type _AdsDiscoveryBlock struct {
 	_AdsDiscoveryBlockChildRequirements
 }
+
+var _ AdsDiscoveryBlockContract = (*_AdsDiscoveryBlock)(nil)
 
 type _AdsDiscoveryBlockChildRequirements interface {
 	utils.Serializable

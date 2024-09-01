@@ -58,6 +58,8 @@ type _BACnetConstructedDataProtocolRevision struct {
 	ProtocolRevision BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataProtocolRevision = (*_BACnetConstructedDataProtocolRevision)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

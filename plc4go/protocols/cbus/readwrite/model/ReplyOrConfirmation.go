@@ -35,13 +35,23 @@ import (
 
 // ReplyOrConfirmation is the corresponding interface of ReplyOrConfirmation
 type ReplyOrConfirmation interface {
+	ReplyOrConfirmationContract
+	ReplyOrConfirmationRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ReplyOrConfirmationContract provides a set of functions which can be overwritten by a sub struct
+type ReplyOrConfirmationContract interface {
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
 	// GetIsAlpha returns IsAlpha (virtual field)
 	GetIsAlpha() bool
+}
+
+// ReplyOrConfirmationRequirements provides a set of functions which need to be implemented by a sub struct
+type ReplyOrConfirmationRequirements interface {
 }
 
 // ReplyOrConfirmationExactly can be used when we want exactly this type and not a type which fulfills ReplyOrConfirmation.
@@ -60,6 +70,8 @@ type _ReplyOrConfirmation struct {
 	CBusOptions    CBusOptions
 	RequestContext RequestContext
 }
+
+var _ ReplyOrConfirmationContract = (*_ReplyOrConfirmation)(nil)
 
 type _ReplyOrConfirmationChildRequirements interface {
 	utils.Serializable

@@ -59,6 +59,8 @@ type _ModbusPDUWriteSingleRegisterRequest struct {
 	Value   uint16
 }
 
+var _ ModbusPDUWriteSingleRegisterRequest = (*_ModbusPDUWriteSingleRegisterRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

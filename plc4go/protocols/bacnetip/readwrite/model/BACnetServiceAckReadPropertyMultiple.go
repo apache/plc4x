@@ -59,6 +59,8 @@ type _BACnetServiceAckReadPropertyMultiple struct {
 	ServiceAckPayloadLength uint32
 }
 
+var _ BACnetServiceAckReadPropertyMultiple = (*_BACnetServiceAckReadPropertyMultiple)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

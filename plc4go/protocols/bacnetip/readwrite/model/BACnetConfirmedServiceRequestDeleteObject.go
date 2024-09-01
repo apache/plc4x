@@ -56,6 +56,8 @@ type _BACnetConfirmedServiceRequestDeleteObject struct {
 	ObjectIdentifier BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetConfirmedServiceRequestDeleteObject = (*_BACnetConfirmedServiceRequestDeleteObject)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

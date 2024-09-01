@@ -35,15 +35,25 @@ import (
 
 // DF1Command is the corresponding interface of DF1Command
 type DF1Command interface {
+	DF1CommandContract
+	DF1CommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetCommandCode returns CommandCode (discriminator field)
-	GetCommandCode() uint8
+}
+
+// DF1CommandContract provides a set of functions which can be overwritten by a sub struct
+type DF1CommandContract interface {
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
+}
+
+// DF1CommandRequirements provides a set of functions which need to be implemented by a sub struct
+type DF1CommandRequirements interface {
+	// GetCommandCode returns CommandCode (discriminator field)
+	GetCommandCode() uint8
 }
 
 // DF1CommandExactly can be used when we want exactly this type and not a type which fulfills DF1Command.
@@ -59,6 +69,8 @@ type _DF1Command struct {
 	Status             uint8
 	TransactionCounter uint16
 }
+
+var _ DF1CommandContract = (*_DF1Command)(nil)
 
 type _DF1CommandChildRequirements interface {
 	utils.Serializable

@@ -67,6 +67,8 @@ type _ConnectionResponse struct {
 	ConnectionResponseDataBlock ConnectionResponseDataBlock
 }
 
+var _ ConnectionResponse = (*_ConnectionResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -35,15 +35,25 @@ import (
 
 // MediaTransportControlData is the corresponding interface of MediaTransportControlData
 type MediaTransportControlData interface {
+	MediaTransportControlDataContract
+	MediaTransportControlDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// MediaTransportControlDataContract provides a set of functions which can be overwritten by a sub struct
+type MediaTransportControlDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() MediaTransportControlCommandTypeContainer
 	// GetMediaLinkGroup returns MediaLinkGroup (property field)
 	GetMediaLinkGroup() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() MediaTransportControlCommandType
+}
+
+// MediaTransportControlDataRequirements provides a set of functions which need to be implemented by a sub struct
+type MediaTransportControlDataRequirements interface {
 }
 
 // MediaTransportControlDataExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlData.
@@ -59,6 +69,8 @@ type _MediaTransportControlData struct {
 	CommandTypeContainer MediaTransportControlCommandTypeContainer
 	MediaLinkGroup       byte
 }
+
+var _ MediaTransportControlDataContract = (*_MediaTransportControlData)(nil)
 
 type _MediaTransportControlDataChildRequirements interface {
 	utils.Serializable

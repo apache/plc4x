@@ -58,6 +58,8 @@ type _BACnetConstructedDataElapsedActiveTime struct {
 	ElapsedActiveTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataElapsedActiveTime = (*_BACnetConstructedDataElapsedActiveTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

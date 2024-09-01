@@ -58,6 +58,8 @@ type _BACnetConstructedDataBelongsTo struct {
 	BelongsTo BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataBelongsTo = (*_BACnetConstructedDataBelongsTo)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

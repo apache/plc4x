@@ -56,6 +56,8 @@ type _S7PayloadWriteVarResponse struct {
 	Items []S7VarPayloadStatusItem
 }
 
+var _ S7PayloadWriteVarResponse = (*_S7PayloadWriteVarResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

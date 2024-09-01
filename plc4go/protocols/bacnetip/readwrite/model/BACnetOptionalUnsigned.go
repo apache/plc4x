@@ -35,13 +35,23 @@ import (
 
 // BACnetOptionalUnsigned is the corresponding interface of BACnetOptionalUnsigned
 type BACnetOptionalUnsigned interface {
+	BACnetOptionalUnsignedContract
+	BACnetOptionalUnsignedRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetOptionalUnsignedContract provides a set of functions which can be overwritten by a sub struct
+type BACnetOptionalUnsignedContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetOptionalUnsignedRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetOptionalUnsignedRequirements interface {
 }
 
 // BACnetOptionalUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalUnsigned.
@@ -56,6 +66,8 @@ type _BACnetOptionalUnsigned struct {
 	_BACnetOptionalUnsignedChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetOptionalUnsignedContract = (*_BACnetOptionalUnsigned)(nil)
 
 type _BACnetOptionalUnsignedChildRequirements interface {
 	utils.Serializable

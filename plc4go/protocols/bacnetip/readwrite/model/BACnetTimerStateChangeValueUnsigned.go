@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueUnsigned struct {
 	UnsignedValue BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetTimerStateChangeValueUnsigned = (*_BACnetTimerStateChangeValueUnsigned)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

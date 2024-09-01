@@ -56,6 +56,8 @@ type _BACnetPropertyAccessResultAccessResultPropertyAccessError struct {
 	PropertyAccessError ErrorEnclosed
 }
 
+var _ BACnetPropertyAccessResultAccessResultPropertyAccessError = (*_BACnetPropertyAccessResultAccessResultPropertyAccessError)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

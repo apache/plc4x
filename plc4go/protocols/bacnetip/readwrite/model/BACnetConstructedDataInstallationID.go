@@ -58,6 +58,8 @@ type _BACnetConstructedDataInstallationID struct {
 	InstallationId BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataInstallationID = (*_BACnetConstructedDataInstallationID)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

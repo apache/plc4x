@@ -58,6 +58,8 @@ type _BACnetConstructedDataProcessIdentifier struct {
 	ProcessIdentifier BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataProcessIdentifier = (*_BACnetConstructedDataProcessIdentifier)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

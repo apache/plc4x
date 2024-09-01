@@ -56,6 +56,8 @@ type _BACnetPriorityValueUnsigned struct {
 	UnsignedValue BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetPriorityValueUnsigned = (*_BACnetPriorityValueUnsigned)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

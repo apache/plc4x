@@ -35,15 +35,25 @@ import (
 
 // BACnetChannelValue is the corresponding interface of BACnetChannelValue
 type BACnetChannelValue interface {
+	BACnetChannelValueContract
+	BACnetChannelValueRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetChannelValueContract provides a set of functions which can be overwritten by a sub struct
+type BACnetChannelValueContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
 	// GetPeekedIsContextTag returns PeekedIsContextTag (virtual field)
 	GetPeekedIsContextTag() bool
+}
+
+// BACnetChannelValueRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetChannelValueRequirements interface {
 }
 
 // BACnetChannelValueExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValue.
@@ -58,6 +68,8 @@ type _BACnetChannelValue struct {
 	_BACnetChannelValueChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetChannelValueContract = (*_BACnetChannelValue)(nil)
 
 type _BACnetChannelValueChildRequirements interface {
 	utils.Serializable

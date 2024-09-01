@@ -58,6 +58,8 @@ type _BACnetConstructedDataPositiveIntegerValueMinPresValue struct {
 	MinPresValue BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPositiveIntegerValueMinPresValue = (*_BACnetConstructedDataPositiveIntegerValueMinPresValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

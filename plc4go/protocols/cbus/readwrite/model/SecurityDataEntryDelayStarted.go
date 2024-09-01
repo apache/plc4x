@@ -51,6 +51,8 @@ type _SecurityDataEntryDelayStarted struct {
 	*_SecurityData
 }
 
+var _ SecurityDataEntryDelayStarted = (*_SecurityDataEntryDelayStarted)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

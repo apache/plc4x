@@ -56,6 +56,8 @@ type _CBusCommandPointToMultiPoint struct {
 	Command CBusPointToMultiPointCommand
 }
 
+var _ CBusCommandPointToMultiPoint = (*_CBusCommandPointToMultiPoint)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

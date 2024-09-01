@@ -56,6 +56,8 @@ type _BACnetConstructedDataCredentials struct {
 	Credentials []BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataCredentials = (*_BACnetConstructedDataCredentials)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataLoggingType struct {
 	LoggingType BACnetLoggingTypeTagged
 }
 
+var _ BACnetConstructedDataLoggingType = (*_BACnetConstructedDataLoggingType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

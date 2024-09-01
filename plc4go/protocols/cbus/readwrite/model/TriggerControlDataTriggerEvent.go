@@ -56,6 +56,8 @@ type _TriggerControlDataTriggerEvent struct {
 	ActionSelector byte
 }
 
+var _ TriggerControlDataTriggerEvent = (*_TriggerControlDataTriggerEvent)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

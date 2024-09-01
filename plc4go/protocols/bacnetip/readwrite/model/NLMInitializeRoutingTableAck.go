@@ -59,6 +59,8 @@ type _NLMInitializeRoutingTableAck struct {
 	PortMappings  []NLMInitializeRoutingTablePortMapping
 }
 
+var _ NLMInitializeRoutingTableAck = (*_NLMInitializeRoutingTableAck)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

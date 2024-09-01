@@ -59,6 +59,8 @@ type _SubscriptionAcknowledgement struct {
 	SequenceNumber uint32
 }
 
+var _ SubscriptionAcknowledgement = (*_SubscriptionAcknowledgement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

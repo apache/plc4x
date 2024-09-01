@@ -71,6 +71,8 @@ type _BACnetNotificationParametersFloatingLimit struct {
 	InnerClosingTag BACnetClosingTag
 }
 
+var _ BACnetNotificationParametersFloatingLimit = (*_BACnetNotificationParametersFloatingLimit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

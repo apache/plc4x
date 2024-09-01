@@ -51,6 +51,8 @@ type _ApduDataIndividualAddressWrite struct {
 	*_ApduData
 }
 
+var _ ApduDataIndividualAddressWrite = (*_ApduDataIndividualAddressWrite)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

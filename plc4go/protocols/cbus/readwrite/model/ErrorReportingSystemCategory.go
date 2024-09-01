@@ -60,6 +60,8 @@ type _ErrorReportingSystemCategory struct {
 	SystemCategoryVariant ErrorReportingSystemCategoryVariant
 }
 
+var _ ErrorReportingSystemCategory = (*_ErrorReportingSystemCategory)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

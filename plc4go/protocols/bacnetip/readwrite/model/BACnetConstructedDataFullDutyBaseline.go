@@ -58,6 +58,8 @@ type _BACnetConstructedDataFullDutyBaseline struct {
 	FullDutyBaseLine BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataFullDutyBaseline = (*_BACnetConstructedDataFullDutyBaseline)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

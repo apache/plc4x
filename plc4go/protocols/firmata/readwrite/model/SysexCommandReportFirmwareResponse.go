@@ -62,6 +62,8 @@ type _SysexCommandReportFirmwareResponse struct {
 	FileName     []byte
 }
 
+var _ SysexCommandReportFirmwareResponse = (*_SysexCommandReportFirmwareResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

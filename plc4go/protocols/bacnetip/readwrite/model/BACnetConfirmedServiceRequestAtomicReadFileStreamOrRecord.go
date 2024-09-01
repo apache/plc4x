@@ -35,9 +35,15 @@ import (
 
 // BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is the corresponding interface of BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord interface {
+	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract
+	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract provides a set of functions which can be overwritten by a sub struct
+type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetOpeningTag returns OpeningTag (property field)
@@ -46,6 +52,10 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements interface {
 }
 
 // BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.
@@ -62,6 +72,8 @@ type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord struct {
 	OpeningTag      BACnetOpeningTag
 	ClosingTag      BACnetClosingTag
 }
+
+var _ BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract = (*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)(nil)
 
 type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildRequirements interface {
 	utils.Serializable

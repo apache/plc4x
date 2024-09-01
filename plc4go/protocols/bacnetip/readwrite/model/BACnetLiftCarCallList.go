@@ -54,6 +54,8 @@ type _BACnetLiftCarCallList struct {
 	FloorNumbers BACnetLiftCarCallListFloorList
 }
 
+var _ BACnetLiftCarCallList = (*_BACnetLiftCarCallList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

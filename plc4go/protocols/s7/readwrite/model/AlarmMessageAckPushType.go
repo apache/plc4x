@@ -63,6 +63,8 @@ type _AlarmMessageAckPushType struct {
 	MessageObjects  []AlarmMessageAckObjectPushType
 }
 
+var _ AlarmMessageAckPushType = (*_AlarmMessageAckPushType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

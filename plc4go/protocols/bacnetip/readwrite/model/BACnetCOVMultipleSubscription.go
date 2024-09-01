@@ -66,6 +66,8 @@ type _BACnetCOVMultipleSubscription struct {
 	ListOfCovSubscriptionSpecification BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification
 }
 
+var _ BACnetCOVMultipleSubscription = (*_BACnetCOVMultipleSubscription)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

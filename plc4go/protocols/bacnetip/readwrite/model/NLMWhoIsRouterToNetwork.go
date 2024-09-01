@@ -56,6 +56,8 @@ type _NLMWhoIsRouterToNetwork struct {
 	DestinationNetworkAddress *uint16
 }
 
+var _ NLMWhoIsRouterToNetwork = (*_NLMWhoIsRouterToNetwork)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

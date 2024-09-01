@@ -49,6 +49,8 @@ type EccEncryptedSecretExactly interface {
 type _EccEncryptedSecret struct {
 }
 
+var _ EccEncryptedSecret = (*_EccEncryptedSecret)(nil)
+
 // NewEccEncryptedSecret factory function for _EccEncryptedSecret
 func NewEccEncryptedSecret() *_EccEncryptedSecret {
 	return &_EccEncryptedSecret{}

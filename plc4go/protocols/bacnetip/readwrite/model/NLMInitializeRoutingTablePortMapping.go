@@ -63,6 +63,8 @@ type _NLMInitializeRoutingTablePortMapping struct {
 	PortInfo                  []byte
 }
 
+var _ NLMInitializeRoutingTablePortMapping = (*_NLMInitializeRoutingTablePortMapping)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

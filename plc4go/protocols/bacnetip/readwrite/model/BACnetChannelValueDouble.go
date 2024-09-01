@@ -56,6 +56,8 @@ type _BACnetChannelValueDouble struct {
 	DoubleValue BACnetApplicationTagDouble
 }
 
+var _ BACnetChannelValueDouble = (*_BACnetChannelValueDouble)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

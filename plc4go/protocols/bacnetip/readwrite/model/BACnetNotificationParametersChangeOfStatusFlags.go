@@ -65,6 +65,8 @@ type _BACnetNotificationParametersChangeOfStatusFlags struct {
 	InnerClosingTag BACnetClosingTag
 }
 
+var _ BACnetNotificationParametersChangeOfStatusFlags = (*_BACnetNotificationParametersChangeOfStatusFlags)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

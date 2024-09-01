@@ -58,6 +58,8 @@ type _BACnetConstructedDataProtocolServicesSupported struct {
 	ProtocolServicesSupported BACnetServicesSupportedTagged
 }
 
+var _ BACnetConstructedDataProtocolServicesSupported = (*_BACnetConstructedDataProtocolServicesSupported)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

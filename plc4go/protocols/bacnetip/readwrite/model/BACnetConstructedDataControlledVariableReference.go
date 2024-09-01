@@ -58,6 +58,8 @@ type _BACnetConstructedDataControlledVariableReference struct {
 	ControlledVariableReference BACnetObjectPropertyReference
 }
 
+var _ BACnetConstructedDataControlledVariableReference = (*_BACnetConstructedDataControlledVariableReference)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

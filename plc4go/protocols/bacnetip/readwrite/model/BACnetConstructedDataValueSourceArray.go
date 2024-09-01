@@ -61,6 +61,8 @@ type _BACnetConstructedDataValueSourceArray struct {
 	VtClassesSupported   []BACnetValueSource
 }
 
+var _ BACnetConstructedDataValueSourceArray = (*_BACnetConstructedDataValueSourceArray)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

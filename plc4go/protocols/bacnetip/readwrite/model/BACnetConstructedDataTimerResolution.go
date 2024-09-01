@@ -58,6 +58,8 @@ type _BACnetConstructedDataTimerResolution struct {
 	Resolution BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataTimerResolution = (*_BACnetConstructedDataTimerResolution)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

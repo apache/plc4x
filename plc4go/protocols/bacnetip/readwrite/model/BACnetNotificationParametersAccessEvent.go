@@ -77,6 +77,8 @@ type _BACnetNotificationParametersAccessEvent struct {
 	InnerClosingTag      BACnetClosingTag
 }
 
+var _ BACnetNotificationParametersAccessEvent = (*_BACnetNotificationParametersAccessEvent)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

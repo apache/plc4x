@@ -49,6 +49,8 @@ type GroupObjectDescriptorRealisationType6Exactly interface {
 type _GroupObjectDescriptorRealisationType6 struct {
 }
 
+var _ GroupObjectDescriptorRealisationType6 = (*_GroupObjectDescriptorRealisationType6)(nil)
+
 // NewGroupObjectDescriptorRealisationType6 factory function for _GroupObjectDescriptorRealisationType6
 func NewGroupObjectDescriptorRealisationType6() *_GroupObjectDescriptorRealisationType6 {
 	return &_GroupObjectDescriptorRealisationType6{}

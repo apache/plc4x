@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestVTClose struct {
 	ServiceRequestPayloadLength uint32
 }
 
+var _ BACnetConfirmedServiceRequestVTClose = (*_BACnetConfirmedServiceRequestVTClose)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

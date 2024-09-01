@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccessEventTag struct {
 	AccessEventTag BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataAccessEventTag = (*_BACnetConstructedDataAccessEventTag)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

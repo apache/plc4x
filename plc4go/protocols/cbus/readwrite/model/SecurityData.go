@@ -35,15 +35,25 @@ import (
 
 // SecurityData is the corresponding interface of SecurityData
 type SecurityData interface {
+	SecurityDataContract
+	SecurityDataRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// SecurityDataContract provides a set of functions which can be overwritten by a sub struct
+type SecurityDataContract interface {
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() SecurityCommandTypeContainer
 	// GetArgument returns Argument (property field)
 	GetArgument() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() SecurityCommandType
+}
+
+// SecurityDataRequirements provides a set of functions which need to be implemented by a sub struct
+type SecurityDataRequirements interface {
 }
 
 // SecurityDataExactly can be used when we want exactly this type and not a type which fulfills SecurityData.
@@ -59,6 +69,8 @@ type _SecurityData struct {
 	CommandTypeContainer SecurityCommandTypeContainer
 	Argument             byte
 }
+
+var _ SecurityDataContract = (*_SecurityData)(nil)
 
 type _SecurityDataChildRequirements interface {
 	utils.Serializable

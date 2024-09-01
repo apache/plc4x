@@ -56,6 +56,8 @@ type _AdsDeleteDeviceNotificationResponse struct {
 	Result ReturnCode
 }
 
+var _ AdsDeleteDeviceNotificationResponse = (*_AdsDeleteDeviceNotificationResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

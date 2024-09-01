@@ -35,11 +35,21 @@ import (
 
 // MonitoredSAL is the corresponding interface of MonitoredSAL
 type MonitoredSAL interface {
+	MonitoredSALContract
+	MonitoredSALRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// MonitoredSALContract provides a set of functions which can be overwritten by a sub struct
+type MonitoredSALContract interface {
 	// GetSalType returns SalType (property field)
 	GetSalType() byte
+}
+
+// MonitoredSALRequirements provides a set of functions which need to be implemented by a sub struct
+type MonitoredSALRequirements interface {
 }
 
 // MonitoredSALExactly can be used when we want exactly this type and not a type which fulfills MonitoredSAL.
@@ -57,6 +67,8 @@ type _MonitoredSAL struct {
 	// Arguments.
 	CBusOptions CBusOptions
 }
+
+var _ MonitoredSALContract = (*_MonitoredSAL)(nil)
 
 type _MonitoredSALChildRequirements interface {
 	utils.Serializable

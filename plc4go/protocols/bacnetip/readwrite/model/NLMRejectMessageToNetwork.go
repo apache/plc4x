@@ -59,6 +59,8 @@ type _NLMRejectMessageToNetwork struct {
 	DestinationNetworkAddress uint16
 }
 
+var _ NLMRejectMessageToNetwork = (*_NLMRejectMessageToNetwork)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

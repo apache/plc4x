@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal struct {
 	RealValue BACnetApplicationTagReal
 }
 
+var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

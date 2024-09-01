@@ -58,6 +58,8 @@ type _BACnetConstructedDataBias struct {
 	Bias BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataBias = (*_BACnetConstructedDataBias)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

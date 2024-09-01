@@ -67,6 +67,8 @@ type _BACnetReadAccessPropertyReadResult struct {
 	ArrayIndexArgument         BACnetTagPayloadUnsignedInteger
 }
 
+var _ BACnetReadAccessPropertyReadResult = (*_BACnetReadAccessPropertyReadResult)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

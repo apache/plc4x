@@ -74,6 +74,8 @@ type _S7PayloadDiagnosticMessage struct {
 	TimeStamp     DateAndTime
 }
 
+var _ S7PayloadDiagnosticMessage = (*_S7PayloadDiagnosticMessage)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

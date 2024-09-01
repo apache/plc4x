@@ -61,6 +61,8 @@ type _BACnetConstructedDataElevatorGroupGroupMembers struct {
 	GroupMembers         []BACnetApplicationTagObjectIdentifier
 }
 
+var _ BACnetConstructedDataElevatorGroupGroupMembers = (*_BACnetConstructedDataElevatorGroupGroupMembers)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

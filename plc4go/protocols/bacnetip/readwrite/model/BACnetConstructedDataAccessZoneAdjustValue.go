@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccessZoneAdjustValue struct {
 	AdjustValue BACnetApplicationTagSignedInteger
 }
 
+var _ BACnetConstructedDataAccessZoneAdjustValue = (*_BACnetConstructedDataAccessZoneAdjustValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

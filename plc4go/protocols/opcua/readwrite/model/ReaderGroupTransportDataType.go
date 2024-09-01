@@ -51,6 +51,8 @@ type _ReaderGroupTransportDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ ReaderGroupTransportDataType = (*_ReaderGroupTransportDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

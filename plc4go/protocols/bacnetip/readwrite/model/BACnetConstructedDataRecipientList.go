@@ -56,6 +56,8 @@ type _BACnetConstructedDataRecipientList struct {
 	RecipientList []BACnetDestination
 }
 
+var _ BACnetConstructedDataRecipientList = (*_BACnetConstructedDataRecipientList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

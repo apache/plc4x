@@ -80,6 +80,8 @@ type _QueryFirstResponse struct {
 	FilterResult        ExtensionObjectDefinition
 }
 
+var _ QueryFirstResponse = (*_QueryFirstResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -60,6 +60,8 @@ type _TelephonyDataIsolateSecondaryOutlet struct {
 	IsolateStatus byte
 }
 
+var _ TelephonyDataIsolateSecondaryOutlet = (*_TelephonyDataIsolateSecondaryOutlet)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

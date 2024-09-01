@@ -56,6 +56,8 @@ type _SALDataAirConditioning struct {
 	AirConditioningData AirConditioningData
 }
 
+var _ SALDataAirConditioning = (*_SALDataAirConditioning)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

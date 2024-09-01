@@ -72,6 +72,8 @@ type _BACnetDestination struct {
 	Transitions                 BACnetEventTransitionBitsTagged
 }
 
+var _ BACnetDestination = (*_BACnetDestination)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

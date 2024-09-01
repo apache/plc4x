@@ -56,6 +56,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime struct {
 	DateTimeValue BACnetDateTimeEnclosed
 }
 
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

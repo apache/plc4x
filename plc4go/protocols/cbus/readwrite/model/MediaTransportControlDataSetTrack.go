@@ -65,6 +65,8 @@ type _MediaTransportControlDataSetTrack struct {
 	TrackLSB  byte
 }
 
+var _ MediaTransportControlDataSetTrack = (*_MediaTransportControlDataSetTrack)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

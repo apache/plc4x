@@ -56,6 +56,8 @@ type _BACnetLogRecordLogDatumBooleanValue struct {
 	BooleanValue BACnetContextTagBoolean
 }
 
+var _ BACnetLogRecordLogDatumBooleanValue = (*_BACnetLogRecordLogDatumBooleanValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

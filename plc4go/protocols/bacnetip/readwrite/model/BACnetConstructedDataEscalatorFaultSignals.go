@@ -56,6 +56,8 @@ type _BACnetConstructedDataEscalatorFaultSignals struct {
 	FaultSignals []BACnetEscalatorFaultTagged
 }
 
+var _ BACnetConstructedDataEscalatorFaultSignals = (*_BACnetConstructedDataEscalatorFaultSignals)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

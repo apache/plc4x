@@ -58,6 +58,8 @@ type _BACnetConstructedDataCredentialDataInputUpdateTime struct {
 	UpdateTime BACnetTimeStamp
 }
 
+var _ BACnetConstructedDataCredentialDataInputUpdateTime = (*_BACnetConstructedDataCredentialDataInputUpdateTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataDefaultTimeout struct {
 	DefaultTimeout BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataDefaultTimeout = (*_BACnetConstructedDataDefaultTimeout)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

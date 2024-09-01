@@ -56,6 +56,8 @@ type _MediaTransportControlDataSelectionName struct {
 	SelectionName string
 }
 
+var _ MediaTransportControlDataSelectionName = (*_MediaTransportControlDataSelectionName)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

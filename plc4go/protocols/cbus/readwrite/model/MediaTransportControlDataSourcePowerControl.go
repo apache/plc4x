@@ -60,6 +60,8 @@ type _MediaTransportControlDataSourcePowerControl struct {
 	State byte
 }
 
+var _ MediaTransportControlDataSourcePowerControl = (*_MediaTransportControlDataSourcePowerControl)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

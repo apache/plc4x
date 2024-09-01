@@ -58,6 +58,8 @@ type _BACnetConstructedDataLargeAnalogValueMinPresValue struct {
 	MinPresValue BACnetApplicationTagDouble
 }
 
+var _ BACnetConstructedDataLargeAnalogValueMinPresValue = (*_BACnetConstructedDataLargeAnalogValueMinPresValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

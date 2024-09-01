@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccessEvent struct {
 	AccessEvent BACnetAccessEventTagged
 }
 
+var _ BACnetConstructedDataAccessEvent = (*_BACnetConstructedDataAccessEvent)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

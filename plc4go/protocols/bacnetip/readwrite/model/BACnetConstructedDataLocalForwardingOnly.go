@@ -58,6 +58,8 @@ type _BACnetConstructedDataLocalForwardingOnly struct {
 	LocalForwardingOnly BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataLocalForwardingOnly = (*_BACnetConstructedDataLocalForwardingOnly)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

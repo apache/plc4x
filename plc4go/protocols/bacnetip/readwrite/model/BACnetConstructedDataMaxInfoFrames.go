@@ -58,6 +58,8 @@ type _BACnetConstructedDataMaxInfoFrames struct {
 	MaxInfoFrames BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMaxInfoFrames = (*_BACnetConstructedDataMaxInfoFrames)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

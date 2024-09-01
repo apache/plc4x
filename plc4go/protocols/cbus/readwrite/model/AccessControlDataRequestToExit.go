@@ -51,6 +51,8 @@ type _AccessControlDataRequestToExit struct {
 	*_AccessControlData
 }
 
+var _ AccessControlDataRequestToExit = (*_AccessControlDataRequestToExit)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

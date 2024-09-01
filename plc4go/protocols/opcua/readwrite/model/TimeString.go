@@ -49,6 +49,8 @@ type TimeStringExactly interface {
 type _TimeString struct {
 }
 
+var _ TimeString = (*_TimeString)(nil)
+
 // NewTimeString factory function for _TimeString
 func NewTimeString() *_TimeString {
 	return &_TimeString{}

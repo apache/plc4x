@@ -35,9 +35,19 @@ import (
 
 // S7VarRequestParameterItem is the corresponding interface of S7VarRequestParameterItem
 type S7VarRequestParameterItem interface {
+	S7VarRequestParameterItemContract
+	S7VarRequestParameterItemRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// S7VarRequestParameterItemContract provides a set of functions which can be overwritten by a sub struct
+type S7VarRequestParameterItemContract interface {
+}
+
+// S7VarRequestParameterItemRequirements provides a set of functions which need to be implemented by a sub struct
+type S7VarRequestParameterItemRequirements interface {
 	// GetItemType returns ItemType (discriminator field)
 	GetItemType() uint8
 }
@@ -53,6 +63,8 @@ type S7VarRequestParameterItemExactly interface {
 type _S7VarRequestParameterItem struct {
 	_S7VarRequestParameterItemChildRequirements
 }
+
+var _ S7VarRequestParameterItemContract = (*_S7VarRequestParameterItem)(nil)
 
 type _S7VarRequestParameterItemChildRequirements interface {
 	utils.Serializable

@@ -62,6 +62,8 @@ type _IdentifyReplyCommandSummary struct {
 	Version         string
 }
 
+var _ IdentifyReplyCommandSummary = (*_IdentifyReplyCommandSummary)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

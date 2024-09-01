@@ -58,6 +58,8 @@ type _BACnetConstructedDataIntegralConstant struct {
 	IntegralConstant BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataIntegralConstant = (*_BACnetConstructedDataIntegralConstant)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

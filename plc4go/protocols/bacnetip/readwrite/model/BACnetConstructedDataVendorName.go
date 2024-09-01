@@ -58,6 +58,8 @@ type _BACnetConstructedDataVendorName struct {
 	VendorName BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataVendorName = (*_BACnetConstructedDataVendorName)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

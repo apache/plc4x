@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccompanimentTime struct {
 	AccompanimentTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataAccompanimentTime = (*_BACnetConstructedDataAccompanimentTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

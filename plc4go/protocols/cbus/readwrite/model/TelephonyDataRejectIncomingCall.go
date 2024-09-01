@@ -51,6 +51,8 @@ type _TelephonyDataRejectIncomingCall struct {
 	*_TelephonyData
 }
 
+var _ TelephonyDataRejectIncomingCall = (*_TelephonyDataRejectIncomingCall)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

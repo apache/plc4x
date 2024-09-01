@@ -65,6 +65,8 @@ type _BACnetUnconfirmedServiceRequestIAm struct {
 	VendorId                        BACnetVendorIdTagged
 }
 
+var _ BACnetUnconfirmedServiceRequestIAm = (*_BACnetUnconfirmedServiceRequestIAm)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

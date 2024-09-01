@@ -58,6 +58,8 @@ type _BACnetConstructedDataSecurityPDUTimeout struct {
 	SecurityPduTimeout BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataSecurityPDUTimeout = (*_BACnetConstructedDataSecurityPDUTimeout)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

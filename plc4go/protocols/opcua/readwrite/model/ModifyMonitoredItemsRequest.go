@@ -68,6 +68,8 @@ type _ModifyMonitoredItemsRequest struct {
 	ItemsToModify      []ExtensionObjectDefinition
 }
 
+var _ ModifyMonitoredItemsRequest = (*_ModifyMonitoredItemsRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataBACnetIPv6Mode struct {
 	BacnetIpv6Mode BACnetIPModeTagged
 }
 
+var _ BACnetConstructedDataBACnetIPv6Mode = (*_BACnetConstructedDataBACnetIPv6Mode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

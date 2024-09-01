@@ -58,6 +58,8 @@ type _BACnetConstructedDataValueChangeTime struct {
 	ValueChangeTime BACnetDateTime
 }
 
+var _ BACnetConstructedDataValueChangeTime = (*_BACnetConstructedDataValueChangeTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

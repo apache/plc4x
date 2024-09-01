@@ -51,6 +51,8 @@ type _BACnetConstructedDataLoopAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataLoopAll = (*_BACnetConstructedDataLoopAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

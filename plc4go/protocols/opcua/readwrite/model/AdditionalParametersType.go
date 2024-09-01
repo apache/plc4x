@@ -59,6 +59,8 @@ type _AdditionalParametersType struct {
 	Parameters     []ExtensionObjectDefinition
 }
 
+var _ AdditionalParametersType = (*_AdditionalParametersType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

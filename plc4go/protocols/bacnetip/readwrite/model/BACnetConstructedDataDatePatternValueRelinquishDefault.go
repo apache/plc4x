@@ -58,6 +58,8 @@ type _BACnetConstructedDataDatePatternValueRelinquishDefault struct {
 	RelinquishDefault BACnetApplicationTagDate
 }
 
+var _ BACnetConstructedDataDatePatternValueRelinquishDefault = (*_BACnetConstructedDataDatePatternValueRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

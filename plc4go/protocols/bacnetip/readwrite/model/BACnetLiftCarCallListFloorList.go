@@ -63,6 +63,8 @@ type _BACnetLiftCarCallListFloorList struct {
 	TagNumber uint8
 }
 
+var _ BACnetLiftCarCallListFloorList = (*_BACnetLiftCarCallListFloorList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

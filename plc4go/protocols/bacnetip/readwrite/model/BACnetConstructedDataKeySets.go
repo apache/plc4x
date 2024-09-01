@@ -61,6 +61,8 @@ type _BACnetConstructedDataKeySets struct {
 	KeySets              []BACnetSecurityKeySet
 }
 
+var _ BACnetConstructedDataKeySets = (*_BACnetConstructedDataKeySets)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

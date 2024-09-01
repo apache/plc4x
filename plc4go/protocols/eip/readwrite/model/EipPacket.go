@@ -35,15 +35,15 @@ import (
 
 // EipPacket is the corresponding interface of EipPacket
 type EipPacket interface {
+	EipPacketContract
+	EipPacketRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetCommand returns Command (discriminator field)
-	GetCommand() uint16
-	// GetPacketLength returns PacketLength (discriminator field)
-	GetPacketLength() uint16
-	// GetResponse returns Response (discriminator field)
-	GetResponse() bool
+}
+
+// EipPacketContract provides a set of functions which can be overwritten by a sub struct
+type EipPacketContract interface {
 	// GetSessionHandle returns SessionHandle (property field)
 	GetSessionHandle() uint32
 	// GetStatus returns Status (property field)
@@ -52,6 +52,16 @@ type EipPacket interface {
 	GetSenderContext() []byte
 	// GetOptions returns Options (property field)
 	GetOptions() uint32
+}
+
+// EipPacketRequirements provides a set of functions which need to be implemented by a sub struct
+type EipPacketRequirements interface {
+	// GetCommand returns Command (discriminator field)
+	GetCommand() uint16
+	// GetPacketLength returns PacketLength (discriminator field)
+	GetPacketLength() uint16
+	// GetResponse returns Response (discriminator field)
+	GetResponse() bool
 }
 
 // EipPacketExactly can be used when we want exactly this type and not a type which fulfills EipPacket.
@@ -69,6 +79,8 @@ type _EipPacket struct {
 	SenderContext []byte
 	Options       uint32
 }
+
+var _ EipPacketContract = (*_EipPacket)(nil)
 
 type _EipPacketChildRequirements interface {
 	utils.Serializable

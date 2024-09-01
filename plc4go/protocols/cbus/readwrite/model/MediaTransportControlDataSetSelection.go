@@ -59,6 +59,8 @@ type _MediaTransportControlDataSetSelection struct {
 	SelectionLo byte
 }
 
+var _ MediaTransportControlDataSetSelection = (*_MediaTransportControlDataSetSelection)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -66,6 +66,8 @@ type _BACnetAccessCredentialDisableTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetAccessCredentialDisableTagged = (*_BACnetAccessCredentialDisableTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

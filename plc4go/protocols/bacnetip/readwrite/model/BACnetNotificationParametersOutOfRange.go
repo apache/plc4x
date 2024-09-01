@@ -71,6 +71,8 @@ type _BACnetNotificationParametersOutOfRange struct {
 	InnerClosingTag BACnetClosingTag
 }
 
+var _ BACnetNotificationParametersOutOfRange = (*_BACnetNotificationParametersOutOfRange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

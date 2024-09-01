@@ -58,6 +58,8 @@ type _BACnetConstructedDataIPDHCPLeaseTime struct {
 	IpDhcpLeaseTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataIPDHCPLeaseTime = (*_BACnetConstructedDataIPDHCPLeaseTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

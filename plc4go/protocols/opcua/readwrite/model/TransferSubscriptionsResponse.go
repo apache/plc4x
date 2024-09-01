@@ -68,6 +68,8 @@ type _TransferSubscriptionsResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ TransferSubscriptionsResponse = (*_TransferSubscriptionsResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

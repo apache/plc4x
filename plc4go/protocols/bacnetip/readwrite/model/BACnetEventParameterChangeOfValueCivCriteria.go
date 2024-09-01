@@ -35,9 +35,15 @@ import (
 
 // BACnetEventParameterChangeOfValueCivCriteria is the corresponding interface of BACnetEventParameterChangeOfValueCivCriteria
 type BACnetEventParameterChangeOfValueCivCriteria interface {
+	BACnetEventParameterChangeOfValueCivCriteriaContract
+	BACnetEventParameterChangeOfValueCivCriteriaRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetEventParameterChangeOfValueCivCriteriaContract provides a set of functions which can be overwritten by a sub struct
+type BACnetEventParameterChangeOfValueCivCriteriaContract interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -46,6 +52,10 @@ type BACnetEventParameterChangeOfValueCivCriteria interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetEventParameterChangeOfValueCivCriteriaRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetEventParameterChangeOfValueCivCriteriaRequirements interface {
 }
 
 // BACnetEventParameterChangeOfValueCivCriteriaExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteria.
@@ -65,6 +75,8 @@ type _BACnetEventParameterChangeOfValueCivCriteria struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetEventParameterChangeOfValueCivCriteriaContract = (*_BACnetEventParameterChangeOfValueCivCriteria)(nil)
 
 type _BACnetEventParameterChangeOfValueCivCriteriaChildRequirements interface {
 	utils.Serializable

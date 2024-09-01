@@ -56,6 +56,8 @@ type _BACnetOptionalBinaryPVValue struct {
 	BinaryPv BACnetBinaryPVTagged
 }
 
+var _ BACnetOptionalBinaryPVValue = (*_BACnetOptionalBinaryPVValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -68,6 +68,8 @@ type _CreateMonitoredItemsResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ CreateMonitoredItemsResponse = (*_CreateMonitoredItemsResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

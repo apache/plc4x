@@ -33,9 +33,19 @@ import (
 
 // S7Payload is the corresponding interface of S7Payload
 type S7Payload interface {
+	S7PayloadContract
+	S7PayloadRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// S7PayloadContract provides a set of functions which can be overwritten by a sub struct
+type S7PayloadContract interface {
+}
+
+// S7PayloadRequirements provides a set of functions which need to be implemented by a sub struct
+type S7PayloadRequirements interface {
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetParameterParameterType returns ParameterParameterType (discriminator field)
@@ -56,6 +66,8 @@ type _S7Payload struct {
 	// Arguments.
 	Parameter S7Parameter
 }
+
+var _ S7PayloadContract = (*_S7Payload)(nil)
 
 type _S7PayloadChildRequirements interface {
 	utils.Serializable

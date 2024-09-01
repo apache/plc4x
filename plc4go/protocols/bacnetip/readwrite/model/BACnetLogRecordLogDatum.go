@@ -35,9 +35,15 @@ import (
 
 // BACnetLogRecordLogDatum is the corresponding interface of BACnetLogRecordLogDatum
 type BACnetLogRecordLogDatum interface {
+	BACnetLogRecordLogDatumContract
+	BACnetLogRecordLogDatumRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetLogRecordLogDatumContract provides a set of functions which can be overwritten by a sub struct
+type BACnetLogRecordLogDatumContract interface {
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -46,6 +52,10 @@ type BACnetLogRecordLogDatum interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetLogRecordLogDatumRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetLogRecordLogDatumRequirements interface {
 }
 
 // BACnetLogRecordLogDatumExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatum.
@@ -65,6 +75,8 @@ type _BACnetLogRecordLogDatum struct {
 	// Arguments.
 	TagNumber uint8
 }
+
+var _ BACnetLogRecordLogDatumContract = (*_BACnetLogRecordLogDatum)(nil)
 
 type _BACnetLogRecordLogDatumChildRequirements interface {
 	utils.Serializable

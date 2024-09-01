@@ -58,6 +58,8 @@ type _BACnetConstructedDataMaxMaster struct {
 	MaxMaster BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMaxMaster = (*_BACnetConstructedDataMaxMaster)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

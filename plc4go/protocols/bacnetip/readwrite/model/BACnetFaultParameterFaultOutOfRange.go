@@ -65,6 +65,8 @@ type _BACnetFaultParameterFaultOutOfRange struct {
 	ClosingTag     BACnetClosingTag
 }
 
+var _ BACnetFaultParameterFaultOutOfRange = (*_BACnetFaultParameterFaultOutOfRange)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

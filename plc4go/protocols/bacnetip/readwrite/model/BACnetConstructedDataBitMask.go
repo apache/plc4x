@@ -58,6 +58,8 @@ type _BACnetConstructedDataBitMask struct {
 	BitString BACnetApplicationTagBitString
 }
 
+var _ BACnetConstructedDataBitMask = (*_BACnetConstructedDataBitMask)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

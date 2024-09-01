@@ -68,6 +68,8 @@ type _BACnetServiceAckGetEnrollmentSummary struct {
 	NotificationClass BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetServiceAckGetEnrollmentSummary = (*_BACnetServiceAckGetEnrollmentSummary)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -49,6 +49,8 @@ type UriStringExactly interface {
 type _UriString struct {
 }
 
+var _ UriString = (*_UriString)(nil)
+
 // NewUriString factory function for _UriString
 func NewUriString() *_UriString {
 	return &_UriString{}

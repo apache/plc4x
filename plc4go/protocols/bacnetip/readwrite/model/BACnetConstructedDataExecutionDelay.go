@@ -61,6 +61,8 @@ type _BACnetConstructedDataExecutionDelay struct {
 	ExecutionDelay       []BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataExecutionDelay = (*_BACnetConstructedDataExecutionDelay)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

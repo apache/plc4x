@@ -74,6 +74,8 @@ type _AirConditioningDataSetZoneHvacMode struct {
 	AuxLevel         HVACAuxiliaryLevel
 }
 
+var _ AirConditioningDataSetZoneHvacMode = (*_AirConditioningDataSetZoneHvacMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

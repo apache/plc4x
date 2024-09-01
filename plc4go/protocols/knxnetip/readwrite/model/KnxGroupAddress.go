@@ -33,9 +33,19 @@ import (
 
 // KnxGroupAddress is the corresponding interface of KnxGroupAddress
 type KnxGroupAddress interface {
+	KnxGroupAddressContract
+	KnxGroupAddressRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// KnxGroupAddressContract provides a set of functions which can be overwritten by a sub struct
+type KnxGroupAddressContract interface {
+}
+
+// KnxGroupAddressRequirements provides a set of functions which need to be implemented by a sub struct
+type KnxGroupAddressRequirements interface {
 	// GetNumLevels returns NumLevels (discriminator field)
 	GetNumLevels() uint8
 }
@@ -51,6 +61,8 @@ type KnxGroupAddressExactly interface {
 type _KnxGroupAddress struct {
 	_KnxGroupAddressChildRequirements
 }
+
+var _ KnxGroupAddressContract = (*_KnxGroupAddress)(nil)
 
 type _KnxGroupAddressChildRequirements interface {
 	utils.Serializable

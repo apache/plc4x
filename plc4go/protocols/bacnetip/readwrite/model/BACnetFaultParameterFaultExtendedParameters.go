@@ -63,6 +63,8 @@ type _BACnetFaultParameterFaultExtendedParameters struct {
 	TagNumber uint8
 }
 
+var _ BACnetFaultParameterFaultExtendedParameters = (*_BACnetFaultParameterFaultExtendedParameters)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

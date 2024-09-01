@@ -58,6 +58,8 @@ type _BACnetConstructedDataEventParameters struct {
 	EventParameter BACnetEventParameter
 }
 
+var _ BACnetConstructedDataEventParameters = (*_BACnetConstructedDataEventParameters)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataMode struct {
 	Mode BACnetLifeSafetyModeTagged
 }
 
+var _ BACnetConstructedDataMode = (*_BACnetConstructedDataMode)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

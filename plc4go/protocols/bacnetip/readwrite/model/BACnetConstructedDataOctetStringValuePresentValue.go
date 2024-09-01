@@ -58,6 +58,8 @@ type _BACnetConstructedDataOctetStringValuePresentValue struct {
 	PresentValue BACnetApplicationTagOctetString
 }
 
+var _ BACnetConstructedDataOctetStringValuePresentValue = (*_BACnetConstructedDataOctetStringValuePresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -80,6 +80,8 @@ type _SetTriggeringResponse struct {
 	RemoveDiagnosticInfos     []DiagnosticInfo
 }
 
+var _ SetTriggeringResponse = (*_SetTriggeringResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

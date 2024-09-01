@@ -68,6 +68,8 @@ type _RegisterServer2Response struct {
 	DiagnosticInfos          []DiagnosticInfo
 }
 
+var _ RegisterServer2Response = (*_RegisterServer2Response)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

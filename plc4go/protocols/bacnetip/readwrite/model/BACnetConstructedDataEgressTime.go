@@ -58,6 +58,8 @@ type _BACnetConstructedDataEgressTime struct {
 	EgressTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataEgressTime = (*_BACnetConstructedDataEgressTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

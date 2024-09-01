@@ -68,6 +68,8 @@ type _ModifyMonitoredItemsResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ ModifyMonitoredItemsResponse = (*_ModifyMonitoredItemsResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -58,6 +58,8 @@ type _BACnetConstructedDataNetworkInterfaceName struct {
 	NetworkInterfaceName BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataNetworkInterfaceName = (*_BACnetConstructedDataNetworkInterfaceName)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

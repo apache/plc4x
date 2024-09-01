@@ -56,6 +56,8 @@ type _IdentifyReplyCommandGAVPhysicalAddresses struct {
 	Values []byte
 }
 
+var _ IdentifyReplyCommandGAVPhysicalAddresses = (*_IdentifyReplyCommandGAVPhysicalAddresses)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

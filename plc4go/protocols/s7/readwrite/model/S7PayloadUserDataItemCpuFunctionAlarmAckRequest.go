@@ -59,6 +59,8 @@ type _S7PayloadUserDataItemCpuFunctionAlarmAckRequest struct {
 	MessageObjects []AlarmMessageObjectAckType
 }
 
+var _ S7PayloadUserDataItemCpuFunctionAlarmAckRequest = (*_S7PayloadUserDataItemCpuFunctionAlarmAckRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

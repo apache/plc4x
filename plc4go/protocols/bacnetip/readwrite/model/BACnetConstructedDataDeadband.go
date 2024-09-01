@@ -58,6 +58,8 @@ type _BACnetConstructedDataDeadband struct {
 	Deadband BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataDeadband = (*_BACnetConstructedDataDeadband)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

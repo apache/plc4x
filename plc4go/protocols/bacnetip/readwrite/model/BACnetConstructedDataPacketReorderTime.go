@@ -58,6 +58,8 @@ type _BACnetConstructedDataPacketReorderTime struct {
 	PacketReorderTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataPacketReorderTime = (*_BACnetConstructedDataPacketReorderTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -51,6 +51,8 @@ type _BACnetConstructedDataAccessDoorAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataAccessDoorAll = (*_BACnetConstructedDataAccessDoorAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

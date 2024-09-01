@@ -58,6 +58,8 @@ type _BACnetConstructedDataAccessEventCredential struct {
 	AccessEventCredential BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataAccessEventCredential = (*_BACnetConstructedDataAccessEventCredential)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

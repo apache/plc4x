@@ -61,6 +61,8 @@ type _BACnetContextTagBoolean struct {
 	Payload BACnetTagPayloadBoolean
 }
 
+var _ BACnetContextTagBoolean = (*_BACnetContextTagBoolean)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

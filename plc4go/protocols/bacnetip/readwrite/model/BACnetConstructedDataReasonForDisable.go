@@ -56,6 +56,8 @@ type _BACnetConstructedDataReasonForDisable struct {
 	ReasonForDisable []BACnetAccessCredentialDisableReasonTagged
 }
 
+var _ BACnetConstructedDataReasonForDisable = (*_BACnetConstructedDataReasonForDisable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

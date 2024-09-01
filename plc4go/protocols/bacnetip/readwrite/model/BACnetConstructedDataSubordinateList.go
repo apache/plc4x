@@ -61,6 +61,8 @@ type _BACnetConstructedDataSubordinateList struct {
 	SubordinateList      []BACnetDeviceObjectReference
 }
 
+var _ BACnetConstructedDataSubordinateList = (*_BACnetConstructedDataSubordinateList)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

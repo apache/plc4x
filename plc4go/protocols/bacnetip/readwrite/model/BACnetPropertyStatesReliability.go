@@ -56,6 +56,8 @@ type _BACnetPropertyStatesReliability struct {
 	Reliability BACnetReliabilityTagged
 }
 
+var _ BACnetPropertyStatesReliability = (*_BACnetPropertyStatesReliability)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

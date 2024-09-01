@@ -51,6 +51,8 @@ type _SysexCommandAnalogMappingResponse struct {
 	*_SysexCommand
 }
 
+var _ SysexCommandAnalogMappingResponse = (*_SysexCommandAnalogMappingResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

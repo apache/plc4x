@@ -56,6 +56,8 @@ type _BACnetFaultParameterFaultExtendedParametersEntryUnsigned struct {
 	UnsignedValue BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetFaultParameterFaultExtendedParametersEntryUnsigned = (*_BACnetFaultParameterFaultExtendedParametersEntryUnsigned)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

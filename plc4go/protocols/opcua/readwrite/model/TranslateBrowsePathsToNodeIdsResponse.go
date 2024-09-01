@@ -68,6 +68,8 @@ type _TranslateBrowsePathsToNodeIdsResponse struct {
 	DiagnosticInfos     []DiagnosticInfo
 }
 
+var _ TranslateBrowsePathsToNodeIdsResponse = (*_TranslateBrowsePathsToNodeIdsResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

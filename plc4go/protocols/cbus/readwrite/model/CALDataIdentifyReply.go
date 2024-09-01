@@ -59,6 +59,8 @@ type _CALDataIdentifyReply struct {
 	IdentifyReplyCommand IdentifyReplyCommand
 }
 
+var _ CALDataIdentifyReply = (*_CALDataIdentifyReply)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

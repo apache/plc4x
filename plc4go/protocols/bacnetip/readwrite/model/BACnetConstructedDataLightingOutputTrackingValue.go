@@ -58,6 +58,8 @@ type _BACnetConstructedDataLightingOutputTrackingValue struct {
 	TrackingValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataLightingOutputTrackingValue = (*_BACnetConstructedDataLightingOutputTrackingValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

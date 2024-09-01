@@ -51,6 +51,8 @@ type _DataSetReaderMessageDataType struct {
 	*_ExtensionObjectDefinition
 }
 
+var _ DataSetReaderMessageDataType = (*_DataSetReaderMessageDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

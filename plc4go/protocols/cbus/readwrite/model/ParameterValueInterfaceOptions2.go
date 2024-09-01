@@ -59,6 +59,8 @@ type _ParameterValueInterfaceOptions2 struct {
 	Data  []byte
 }
 
+var _ ParameterValueInterfaceOptions2 = (*_ParameterValueInterfaceOptions2)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

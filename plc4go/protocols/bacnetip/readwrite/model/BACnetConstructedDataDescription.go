@@ -58,6 +58,8 @@ type _BACnetConstructedDataDescription struct {
 	Description BACnetApplicationTagCharacterString
 }
 
+var _ BACnetConstructedDataDescription = (*_BACnetConstructedDataDescription)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

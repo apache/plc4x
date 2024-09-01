@@ -56,6 +56,8 @@ type _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement st
 	ReferencedPropertyIncrement BACnetContextTagReal
 }
 
+var _ BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement = (*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

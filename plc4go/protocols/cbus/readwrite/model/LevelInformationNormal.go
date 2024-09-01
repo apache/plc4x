@@ -63,6 +63,8 @@ type _LevelInformationNormal struct {
 	Pair2 LevelInformationNibblePair
 }
 
+var _ LevelInformationNormal = (*_LevelInformationNormal)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

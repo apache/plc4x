@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueReal struct {
 	RealValue BACnetApplicationTagReal
 }
 
+var _ BACnetTimerStateChangeValueReal = (*_BACnetTimerStateChangeValueReal)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

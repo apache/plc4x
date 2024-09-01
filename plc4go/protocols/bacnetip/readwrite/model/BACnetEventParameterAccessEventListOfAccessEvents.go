@@ -63,6 +63,8 @@ type _BACnetEventParameterAccessEventListOfAccessEvents struct {
 	TagNumber uint8
 }
 
+var _ BACnetEventParameterAccessEventListOfAccessEvents = (*_BACnetEventParameterAccessEventListOfAccessEvents)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

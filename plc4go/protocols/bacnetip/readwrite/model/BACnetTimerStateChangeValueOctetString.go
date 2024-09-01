@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueOctetString struct {
 	OctetStringValue BACnetApplicationTagOctetString
 }
 
+var _ BACnetTimerStateChangeValueOctetString = (*_BACnetTimerStateChangeValueOctetString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

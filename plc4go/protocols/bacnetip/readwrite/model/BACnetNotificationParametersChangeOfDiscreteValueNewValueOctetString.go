@@ -56,6 +56,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString struc
 	OctetStringValue BACnetApplicationTagOctetString
 }
 
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

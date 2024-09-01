@@ -62,6 +62,8 @@ type _DeleteNodesRequest struct {
 	NodesToDelete     []ExtensionObjectDefinition
 }
 
+var _ DeleteNodesRequest = (*_DeleteNodesRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

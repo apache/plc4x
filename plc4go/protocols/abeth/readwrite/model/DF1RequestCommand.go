@@ -35,9 +35,19 @@ import (
 
 // DF1RequestCommand is the corresponding interface of DF1RequestCommand
 type DF1RequestCommand interface {
+	DF1RequestCommandContract
+	DF1RequestCommandRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// DF1RequestCommandContract provides a set of functions which can be overwritten by a sub struct
+type DF1RequestCommandContract interface {
+}
+
+// DF1RequestCommandRequirements provides a set of functions which need to be implemented by a sub struct
+type DF1RequestCommandRequirements interface {
 	// GetFunctionCode returns FunctionCode (discriminator field)
 	GetFunctionCode() uint8
 }
@@ -53,6 +63,8 @@ type DF1RequestCommandExactly interface {
 type _DF1RequestCommand struct {
 	_DF1RequestCommandChildRequirements
 }
+
+var _ DF1RequestCommandContract = (*_DF1RequestCommand)(nil)
 
 type _DF1RequestCommandChildRequirements interface {
 	utils.Serializable

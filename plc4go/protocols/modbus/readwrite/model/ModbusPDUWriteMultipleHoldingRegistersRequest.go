@@ -62,6 +62,8 @@ type _ModbusPDUWriteMultipleHoldingRegistersRequest struct {
 	Value           []byte
 }
 
+var _ ModbusPDUWriteMultipleHoldingRegistersRequest = (*_ModbusPDUWriteMultipleHoldingRegistersRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

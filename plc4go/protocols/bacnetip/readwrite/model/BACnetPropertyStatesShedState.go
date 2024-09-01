@@ -56,6 +56,8 @@ type _BACnetPropertyStatesShedState struct {
 	ShedState BACnetShedStateTagged
 }
 
+var _ BACnetPropertyStatesShedState = (*_BACnetPropertyStatesShedState)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetOptionalBinaryPVNull struct {
 	NullValue BACnetApplicationTagNull
 }
 
+var _ BACnetOptionalBinaryPVNull = (*_BACnetOptionalBinaryPVNull)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

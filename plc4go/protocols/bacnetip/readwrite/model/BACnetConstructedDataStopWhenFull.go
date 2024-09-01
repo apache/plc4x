@@ -58,6 +58,8 @@ type _BACnetConstructedDataStopWhenFull struct {
 	StopWhenFull BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataStopWhenFull = (*_BACnetConstructedDataStopWhenFull)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

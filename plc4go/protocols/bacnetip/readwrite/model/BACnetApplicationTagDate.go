@@ -56,6 +56,8 @@ type _BACnetApplicationTagDate struct {
 	Payload BACnetTagPayloadDate
 }
 
+var _ BACnetApplicationTagDate = (*_BACnetApplicationTagDate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _IdentifyReplyCommandFirmwareVersion struct {
 	FirmwareVersion string
 }
 
+var _ IdentifyReplyCommandFirmwareVersion = (*_IdentifyReplyCommandFirmwareVersion)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

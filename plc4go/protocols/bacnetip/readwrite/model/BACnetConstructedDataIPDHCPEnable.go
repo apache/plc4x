@@ -58,6 +58,8 @@ type _BACnetConstructedDataIPDHCPEnable struct {
 	IpDhcpEnable BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataIPDHCPEnable = (*_BACnetConstructedDataIPDHCPEnable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -56,6 +56,8 @@ type _BACnetTimerStateChangeValueCharacterString struct {
 	CharacterStringValue BACnetApplicationTagCharacterString
 }
 
+var _ BACnetTimerStateChangeValueCharacterString = (*_BACnetTimerStateChangeValueCharacterString)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

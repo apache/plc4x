@@ -59,6 +59,8 @@ type _S7PayloadUserDataItemClkSetRequest struct {
 	reservedField1 *uint8
 }
 
+var _ S7PayloadUserDataItemClkSetRequest = (*_S7PayloadUserDataItemClkSetRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

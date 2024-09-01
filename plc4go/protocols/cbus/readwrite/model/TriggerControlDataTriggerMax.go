@@ -51,6 +51,8 @@ type _TriggerControlDataTriggerMax struct {
 	*_TriggerControlData
 }
 
+var _ TriggerControlDataTriggerMax = (*_TriggerControlDataTriggerMax)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

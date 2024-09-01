@@ -51,6 +51,8 @@ type _SysexCommandReportFirmwareRequest struct {
 	*_SysexCommand
 }
 
+var _ SysexCommandReportFirmwareRequest = (*_SysexCommandReportFirmwareRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

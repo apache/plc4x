@@ -58,6 +58,8 @@ type _BACnetConstructedDataEventAlgorithmInhibitRef struct {
 	EventAlgorithmInhibitRef BACnetObjectPropertyReference
 }
 
+var _ BACnetConstructedDataEventAlgorithmInhibitRef = (*_BACnetConstructedDataEventAlgorithmInhibitRef)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

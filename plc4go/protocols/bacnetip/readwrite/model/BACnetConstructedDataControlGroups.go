@@ -61,6 +61,8 @@ type _BACnetConstructedDataControlGroups struct {
 	ControlGroups        []BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataControlGroups = (*_BACnetConstructedDataControlGroups)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

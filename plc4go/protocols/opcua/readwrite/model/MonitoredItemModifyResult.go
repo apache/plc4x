@@ -65,6 +65,8 @@ type _MonitoredItemModifyResult struct {
 	FilterResult            ExtensionObject
 }
 
+var _ MonitoredItemModifyResult = (*_MonitoredItemModifyResult)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

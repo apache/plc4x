@@ -49,6 +49,8 @@ type BitFieldMaskDataTypeExactly interface {
 type _BitFieldMaskDataType struct {
 }
 
+var _ BitFieldMaskDataType = (*_BitFieldMaskDataType)(nil)
+
 // NewBitFieldMaskDataType factory function for _BitFieldMaskDataType
 func NewBitFieldMaskDataType() *_BitFieldMaskDataType {
 	return &_BitFieldMaskDataType{}

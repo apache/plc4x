@@ -51,6 +51,8 @@ type _S7PayloadUserDataItemClkFRequest struct {
 	*_S7PayloadUserDataItem
 }
 
+var _ S7PayloadUserDataItemClkFRequest = (*_S7PayloadUserDataItemClkFRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

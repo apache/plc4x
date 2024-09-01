@@ -57,6 +57,8 @@ type _BACnetNetworkSecurityPolicy struct {
 	SecurityLevel BACnetSecurityPolicyTagged
 }
 
+var _ BACnetNetworkSecurityPolicy = (*_BACnetNetworkSecurityPolicy)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

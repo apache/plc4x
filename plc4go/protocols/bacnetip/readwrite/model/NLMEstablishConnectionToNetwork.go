@@ -59,6 +59,8 @@ type _NLMEstablishConnectionToNetwork struct {
 	TerminationTime           uint8
 }
 
+var _ NLMEstablishConnectionToNetwork = (*_NLMEstablishConnectionToNetwork)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

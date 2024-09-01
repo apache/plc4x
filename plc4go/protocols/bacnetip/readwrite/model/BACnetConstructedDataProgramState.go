@@ -58,6 +58,8 @@ type _BACnetConstructedDataProgramState struct {
 	ProgramState BACnetProgramStateTagged
 }
 
+var _ BACnetConstructedDataProgramState = (*_BACnetConstructedDataProgramState)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

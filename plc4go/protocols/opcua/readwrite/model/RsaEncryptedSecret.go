@@ -49,6 +49,8 @@ type RsaEncryptedSecretExactly interface {
 type _RsaEncryptedSecret struct {
 }
 
+var _ RsaEncryptedSecret = (*_RsaEncryptedSecret)(nil)
+
 // NewRsaEncryptedSecret factory function for _RsaEncryptedSecret
 func NewRsaEncryptedSecret() *_RsaEncryptedSecret {
 	return &_RsaEncryptedSecret{}

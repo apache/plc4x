@@ -69,6 +69,8 @@ type _SubscribeCOVPropertyMultipleErrorFirstFailedSubscription struct {
 	TagNumber uint8
 }
 
+var _ SubscribeCOVPropertyMultipleErrorFirstFailedSubscription = (*_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

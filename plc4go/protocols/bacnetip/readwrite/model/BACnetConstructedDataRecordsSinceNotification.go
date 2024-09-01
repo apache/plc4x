@@ -58,6 +58,8 @@ type _BACnetConstructedDataRecordsSinceNotification struct {
 	RecordsSinceNotifications BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataRecordsSinceNotification = (*_BACnetConstructedDataRecordsSinceNotification)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

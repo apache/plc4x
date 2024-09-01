@@ -65,6 +65,8 @@ type _BACnetConfirmedServiceRequestAddListElement struct {
 	ListOfElements     BACnetConstructedData
 }
 
+var _ BACnetConfirmedServiceRequestAddListElement = (*_BACnetConfirmedServiceRequestAddListElement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

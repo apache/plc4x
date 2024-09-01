@@ -51,6 +51,8 @@ type _TriggerControlDataIndicatorKill struct {
 	*_TriggerControlData
 }
 
+var _ TriggerControlDataIndicatorKill = (*_TriggerControlDataIndicatorKill)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -60,6 +60,8 @@ type _TunnelingResponseDataBlock struct {
 	Status                 Status
 }
 
+var _ TunnelingResponseDataBlock = (*_TunnelingResponseDataBlock)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

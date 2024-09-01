@@ -68,6 +68,8 @@ type _BACnetEventParameterExtended struct {
 	ClosingTag        BACnetClosingTag
 }
 
+var _ BACnetEventParameterExtended = (*_BACnetEventParameterExtended)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

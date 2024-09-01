@@ -66,6 +66,8 @@ type _BACnetPropertyIdentifierTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetPropertyIdentifierTagged = (*_BACnetPropertyIdentifierTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

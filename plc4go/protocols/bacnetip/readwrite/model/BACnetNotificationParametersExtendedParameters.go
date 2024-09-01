@@ -111,6 +111,8 @@ type _BACnetNotificationParametersExtendedParameters struct {
 	TagNumber uint8
 }
 
+var _ BACnetNotificationParametersExtendedParameters = (*_BACnetNotificationParametersExtendedParameters)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

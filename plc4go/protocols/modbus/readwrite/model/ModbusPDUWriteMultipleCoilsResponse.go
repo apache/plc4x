@@ -59,6 +59,8 @@ type _ModbusPDUWriteMultipleCoilsResponse struct {
 	Quantity        uint16
 }
 
+var _ ModbusPDUWriteMultipleCoilsResponse = (*_ModbusPDUWriteMultipleCoilsResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

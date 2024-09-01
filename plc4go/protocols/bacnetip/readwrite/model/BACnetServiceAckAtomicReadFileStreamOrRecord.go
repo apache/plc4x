@@ -35,9 +35,15 @@ import (
 
 // BACnetServiceAckAtomicReadFileStreamOrRecord is the corresponding interface of BACnetServiceAckAtomicReadFileStreamOrRecord
 type BACnetServiceAckAtomicReadFileStreamOrRecord interface {
+	BACnetServiceAckAtomicReadFileStreamOrRecordContract
+	BACnetServiceAckAtomicReadFileStreamOrRecordRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetServiceAckAtomicReadFileStreamOrRecordContract provides a set of functions which can be overwritten by a sub struct
+type BACnetServiceAckAtomicReadFileStreamOrRecordContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetOpeningTag returns OpeningTag (property field)
@@ -46,6 +52,10 @@ type BACnetServiceAckAtomicReadFileStreamOrRecord interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetServiceAckAtomicReadFileStreamOrRecordRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetServiceAckAtomicReadFileStreamOrRecordRequirements interface {
 }
 
 // BACnetServiceAckAtomicReadFileStreamOrRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetServiceAckAtomicReadFileStreamOrRecord.
@@ -62,6 +72,8 @@ type _BACnetServiceAckAtomicReadFileStreamOrRecord struct {
 	OpeningTag      BACnetOpeningTag
 	ClosingTag      BACnetClosingTag
 }
+
+var _ BACnetServiceAckAtomicReadFileStreamOrRecordContract = (*_BACnetServiceAckAtomicReadFileStreamOrRecord)(nil)
 
 type _BACnetServiceAckAtomicReadFileStreamOrRecordChildRequirements interface {
 	utils.Serializable

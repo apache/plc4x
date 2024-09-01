@@ -35,13 +35,23 @@ import (
 
 // BACnetProcessIdSelection is the corresponding interface of BACnetProcessIdSelection
 type BACnetProcessIdSelection interface {
+	BACnetProcessIdSelectionContract
+	BACnetProcessIdSelectionRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetProcessIdSelectionContract provides a set of functions which can be overwritten by a sub struct
+type BACnetProcessIdSelectionContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetProcessIdSelectionRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetProcessIdSelectionRequirements interface {
 }
 
 // BACnetProcessIdSelectionExactly can be used when we want exactly this type and not a type which fulfills BACnetProcessIdSelection.
@@ -56,6 +66,8 @@ type _BACnetProcessIdSelection struct {
 	_BACnetProcessIdSelectionChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetProcessIdSelectionContract = (*_BACnetProcessIdSelection)(nil)
 
 type _BACnetProcessIdSelectionChildRequirements interface {
 	utils.Serializable

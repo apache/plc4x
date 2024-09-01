@@ -59,6 +59,8 @@ type _AccessControlDataInvalidAccessRequest struct {
 	Data                   []byte
 }
 
+var _ AccessControlDataInvalidAccessRequest = (*_AccessControlDataInvalidAccessRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

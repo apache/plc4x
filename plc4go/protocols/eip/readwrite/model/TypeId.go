@@ -35,9 +35,19 @@ import (
 
 // TypeId is the corresponding interface of TypeId
 type TypeId interface {
+	TypeIdContract
+	TypeIdRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// TypeIdContract provides a set of functions which can be overwritten by a sub struct
+type TypeIdContract interface {
+}
+
+// TypeIdRequirements provides a set of functions which need to be implemented by a sub struct
+type TypeIdRequirements interface {
 	// GetId returns Id (discriminator field)
 	GetId() uint16
 }
@@ -53,6 +63,8 @@ type TypeIdExactly interface {
 type _TypeId struct {
 	_TypeIdChildRequirements
 }
+
+var _ TypeIdContract = (*_TypeId)(nil)
 
 type _TypeIdChildRequirements interface {
 	utils.Serializable

@@ -35,13 +35,23 @@ import (
 
 // BACnetFaultParameter is the corresponding interface of BACnetFaultParameter
 type BACnetFaultParameter interface {
+	BACnetFaultParameterContract
+	BACnetFaultParameterRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// BACnetFaultParameterContract provides a set of functions which can be overwritten by a sub struct
+type BACnetFaultParameterContract interface {
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+}
+
+// BACnetFaultParameterRequirements provides a set of functions which need to be implemented by a sub struct
+type BACnetFaultParameterRequirements interface {
 }
 
 // BACnetFaultParameterExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameter.
@@ -56,6 +66,8 @@ type _BACnetFaultParameter struct {
 	_BACnetFaultParameterChildRequirements
 	PeekedTagHeader BACnetTagHeader
 }
+
+var _ BACnetFaultParameterContract = (*_BACnetFaultParameter)(nil)
 
 type _BACnetFaultParameterChildRequirements interface {
 	utils.Serializable

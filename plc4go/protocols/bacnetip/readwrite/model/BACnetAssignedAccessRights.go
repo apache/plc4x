@@ -57,6 +57,8 @@ type _BACnetAssignedAccessRights struct {
 	Enable               BACnetContextTagBoolean
 }
 
+var _ BACnetAssignedAccessRights = (*_BACnetAssignedAccessRights)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

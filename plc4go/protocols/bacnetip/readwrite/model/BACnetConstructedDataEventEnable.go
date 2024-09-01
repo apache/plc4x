@@ -58,6 +58,8 @@ type _BACnetConstructedDataEventEnable struct {
 	EventEnable BACnetEventTransitionBitsTagged
 }
 
+var _ BACnetConstructedDataEventEnable = (*_BACnetConstructedDataEventEnable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

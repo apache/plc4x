@@ -58,6 +58,8 @@ type _BACnetConstructedDataDirectReading struct {
 	DirectReading BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataDirectReading = (*_BACnetConstructedDataDirectReading)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

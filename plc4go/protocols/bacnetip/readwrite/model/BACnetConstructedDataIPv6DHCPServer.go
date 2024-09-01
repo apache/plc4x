@@ -58,6 +58,8 @@ type _BACnetConstructedDataIPv6DHCPServer struct {
 	DhcpServer BACnetApplicationTagOctetString
 }
 
+var _ BACnetConstructedDataIPv6DHCPServer = (*_BACnetConstructedDataIPv6DHCPServer)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

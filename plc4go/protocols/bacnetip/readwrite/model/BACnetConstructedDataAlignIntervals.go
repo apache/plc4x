@@ -58,6 +58,8 @@ type _BACnetConstructedDataAlignIntervals struct {
 	AlignIntervals BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataAlignIntervals = (*_BACnetConstructedDataAlignIntervals)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

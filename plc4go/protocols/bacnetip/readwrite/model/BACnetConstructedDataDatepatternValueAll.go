@@ -51,6 +51,8 @@ type _BACnetConstructedDataDatepatternValueAll struct {
 	*_BACnetConstructedData
 }
 
+var _ BACnetConstructedDataDatepatternValueAll = (*_BACnetConstructedDataDatepatternValueAll)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

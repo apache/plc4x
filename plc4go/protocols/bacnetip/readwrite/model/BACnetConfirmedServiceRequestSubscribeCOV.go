@@ -65,6 +65,8 @@ type _BACnetConfirmedServiceRequestSubscribeCOV struct {
 	LifetimeInSeconds           BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetConfirmedServiceRequestSubscribeCOV = (*_BACnetConfirmedServiceRequestSubscribeCOV)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

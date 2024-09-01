@@ -59,6 +59,8 @@ type _BACnetConfirmedServiceRequestAuthenticate struct {
 	ServiceRequestPayloadLength uint32
 }
 
+var _ BACnetConfirmedServiceRequestAuthenticate = (*_BACnetConfirmedServiceRequestAuthenticate)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

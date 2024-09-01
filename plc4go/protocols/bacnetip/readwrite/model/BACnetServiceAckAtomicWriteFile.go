@@ -56,6 +56,8 @@ type _BACnetServiceAckAtomicWriteFile struct {
 	FileStartPosition BACnetContextTagSignedInteger
 }
 
+var _ BACnetServiceAckAtomicWriteFile = (*_BACnetServiceAckAtomicWriteFile)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

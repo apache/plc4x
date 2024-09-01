@@ -59,6 +59,8 @@ type _ConfigurationVersionDataType struct {
 	MinorVersion uint32
 }
 
+var _ ConfigurationVersionDataType = (*_ConfigurationVersionDataType)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

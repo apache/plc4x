@@ -56,6 +56,8 @@ type _BACnetShedLevelPercent struct {
 	Percent BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetShedLevelPercent = (*_BACnetShedLevelPercent)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

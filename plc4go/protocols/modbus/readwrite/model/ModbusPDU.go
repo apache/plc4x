@@ -35,9 +35,19 @@ import (
 
 // ModbusPDU is the corresponding interface of ModbusPDU
 type ModbusPDU interface {
+	ModbusPDUContract
+	ModbusPDURequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+}
+
+// ModbusPDUContract provides a set of functions which can be overwritten by a sub struct
+type ModbusPDUContract interface {
+}
+
+// ModbusPDURequirements provides a set of functions which need to be implemented by a sub struct
+type ModbusPDURequirements interface {
 	// GetErrorFlag returns ErrorFlag (discriminator field)
 	GetErrorFlag() bool
 	// GetFunctionFlag returns FunctionFlag (discriminator field)
@@ -57,6 +67,8 @@ type ModbusPDUExactly interface {
 type _ModbusPDU struct {
 	_ModbusPDUChildRequirements
 }
+
+var _ ModbusPDUContract = (*_ModbusPDU)(nil)
 
 type _ModbusPDUChildRequirements interface {
 	utils.Serializable

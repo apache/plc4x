@@ -61,6 +61,8 @@ type _BACnetConstructedDataSubordinateTags struct {
 	SubordinateList      []BACnetNameValueCollection
 }
 
+var _ BACnetConstructedDataSubordinateTags = (*_BACnetConstructedDataSubordinateTags)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

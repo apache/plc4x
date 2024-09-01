@@ -62,6 +62,8 @@ type _TranslateBrowsePathsToNodeIdsRequest struct {
 	BrowsePaths     []ExtensionObjectDefinition
 }
 
+var _ TranslateBrowsePathsToNodeIdsRequest = (*_TranslateBrowsePathsToNodeIdsRequest)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

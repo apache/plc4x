@@ -51,6 +51,8 @@ type _S7PayloadUserDataItemCyclicServicesUnsubscribeResponse struct {
 	*_S7PayloadUserDataItem
 }
 
+var _ S7PayloadUserDataItemCyclicServicesUnsubscribeResponse = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

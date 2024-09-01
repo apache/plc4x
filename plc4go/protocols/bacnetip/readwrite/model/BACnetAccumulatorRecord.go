@@ -63,6 +63,8 @@ type _BACnetAccumulatorRecord struct {
 	AccumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged
 }
 
+var _ BACnetAccumulatorRecord = (*_BACnetAccumulatorRecord)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

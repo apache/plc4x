@@ -58,6 +58,8 @@ type _BACnetConstructedDataWindowSamples struct {
 	WindowSamples BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataWindowSamples = (*_BACnetConstructedDataWindowSamples)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

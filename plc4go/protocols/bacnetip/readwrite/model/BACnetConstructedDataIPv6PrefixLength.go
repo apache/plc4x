@@ -58,6 +58,8 @@ type _BACnetConstructedDataIPv6PrefixLength struct {
 	Ipv6PrefixLength BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataIPv6PrefixLength = (*_BACnetConstructedDataIPv6PrefixLength)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

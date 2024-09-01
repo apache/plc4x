@@ -58,6 +58,8 @@ type _BACnetConstructedDataMultiStateValueRelinquishDefault struct {
 	RelinquishDefault BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataMultiStateValueRelinquishDefault = (*_BACnetConstructedDataMultiStateValueRelinquishDefault)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

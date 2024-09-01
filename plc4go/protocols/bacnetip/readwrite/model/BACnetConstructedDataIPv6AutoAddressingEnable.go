@@ -58,6 +58,8 @@ type _BACnetConstructedDataIPv6AutoAddressingEnable struct {
 	AutoAddressingEnable BACnetApplicationTagBoolean
 }
 
+var _ BACnetConstructedDataIPv6AutoAddressingEnable = (*_BACnetConstructedDataIPv6AutoAddressingEnable)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

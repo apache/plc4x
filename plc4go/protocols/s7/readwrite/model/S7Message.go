@@ -38,17 +38,27 @@ const S7Message_PROTOCOLID uint8 = 0x32
 
 // S7Message is the corresponding interface of S7Message
 type S7Message interface {
+	S7MessageContract
+	S7MessageRequirements
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	// GetMessageType returns MessageType (discriminator field)
-	GetMessageType() uint8
+}
+
+// S7MessageContract provides a set of functions which can be overwritten by a sub struct
+type S7MessageContract interface {
 	// GetTpduReference returns TpduReference (property field)
 	GetTpduReference() uint16
 	// GetParameter returns Parameter (property field)
 	GetParameter() S7Parameter
 	// GetPayload returns Payload (property field)
 	GetPayload() S7Payload
+}
+
+// S7MessageRequirements provides a set of functions which need to be implemented by a sub struct
+type S7MessageRequirements interface {
+	// GetMessageType returns MessageType (discriminator field)
+	GetMessageType() uint8
 }
 
 // S7MessageExactly can be used when we want exactly this type and not a type which fulfills S7Message.
@@ -67,6 +77,8 @@ type _S7Message struct {
 	// Reserved Fields
 	reservedField0 *uint16
 }
+
+var _ S7MessageContract = (*_S7Message)(nil)
 
 type _S7MessageChildRequirements interface {
 	utils.Serializable

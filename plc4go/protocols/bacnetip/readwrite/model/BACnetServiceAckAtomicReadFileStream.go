@@ -59,6 +59,8 @@ type _BACnetServiceAckAtomicReadFileStream struct {
 	FileData          BACnetApplicationTagOctetString
 }
 
+var _ BACnetServiceAckAtomicReadFileStream = (*_BACnetServiceAckAtomicReadFileStream)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

@@ -57,6 +57,8 @@ type _BACnetRecipientProcess struct {
 	ProcessIdentifier BACnetContextTagUnsignedInteger
 }
 
+var _ BACnetRecipientProcess = (*_BACnetRecipientProcess)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

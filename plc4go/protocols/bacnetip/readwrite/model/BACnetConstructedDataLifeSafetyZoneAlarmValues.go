@@ -56,6 +56,8 @@ type _BACnetConstructedDataLifeSafetyZoneAlarmValues struct {
 	AlarmValues []BACnetLifeSafetyStateTagged
 }
 
+var _ BACnetConstructedDataLifeSafetyZoneAlarmValues = (*_BACnetConstructedDataLifeSafetyZoneAlarmValues)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

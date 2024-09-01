@@ -58,6 +58,8 @@ type _BACnetConstructedDataDoorExtendedPulseTime struct {
 	DoorExtendedPulseTime BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataDoorExtendedPulseTime = (*_BACnetConstructedDataDoorExtendedPulseTime)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

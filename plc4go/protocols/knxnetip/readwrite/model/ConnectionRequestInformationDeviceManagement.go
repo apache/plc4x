@@ -51,6 +51,8 @@ type _ConnectionRequestInformationDeviceManagement struct {
 	*_ConnectionRequestInformation
 }
 
+var _ ConnectionRequestInformationDeviceManagement = (*_ConnectionRequestInformationDeviceManagement)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

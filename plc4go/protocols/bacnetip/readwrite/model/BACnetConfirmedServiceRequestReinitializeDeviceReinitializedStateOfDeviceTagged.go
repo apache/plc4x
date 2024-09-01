@@ -61,6 +61,8 @@ type _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceT
 	TagClass  TagClass
 }
 
+var _ BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged = (*_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

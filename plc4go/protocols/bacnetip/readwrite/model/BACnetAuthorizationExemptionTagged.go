@@ -66,6 +66,8 @@ type _BACnetAuthorizationExemptionTagged struct {
 	TagClass  TagClass
 }
 
+var _ BACnetAuthorizationExemptionTagged = (*_BACnetAuthorizationExemptionTagged)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

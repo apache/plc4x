@@ -61,6 +61,8 @@ type _CBusPointToMultiPointCommandNormal struct {
 	reservedField0 *byte
 }
 
+var _ CBusPointToMultiPointCommandNormal = (*_CBusPointToMultiPointCommandNormal)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

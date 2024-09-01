@@ -58,6 +58,8 @@ type _BACnetConstructedDataOccupancyCount struct {
 	OccupancyCount BACnetApplicationTagUnsignedInteger
 }
 
+var _ BACnetConstructedDataOccupancyCount = (*_BACnetConstructedDataOccupancyCount)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

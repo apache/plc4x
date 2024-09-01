@@ -58,6 +58,8 @@ type _BACnetConstructedDataAnalogInputPresentValue struct {
 	PresentValue BACnetApplicationTagReal
 }
 
+var _ BACnetConstructedDataAnalogInputPresentValue = (*_BACnetConstructedDataAnalogInputPresentValue)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

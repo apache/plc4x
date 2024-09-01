@@ -66,6 +66,8 @@ type _BACnetPropertyAccessResult struct {
 	AccessResult       BACnetPropertyAccessResultAccessResult
 }
 
+var _ BACnetPropertyAccessResult = (*_BACnetPropertyAccessResult)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.

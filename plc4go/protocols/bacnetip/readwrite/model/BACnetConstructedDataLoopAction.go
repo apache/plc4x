@@ -58,6 +58,8 @@ type _BACnetConstructedDataLoopAction struct {
 	Action BACnetActionTagged
 }
 
+var _ BACnetConstructedDataLoopAction = (*_BACnetConstructedDataLoopAction)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

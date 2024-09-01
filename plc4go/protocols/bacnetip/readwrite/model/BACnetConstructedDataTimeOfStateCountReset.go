@@ -58,6 +58,8 @@ type _BACnetConstructedDataTimeOfStateCountReset struct {
 	TimeOfStateCountReset BACnetDateTime
 }
 
+var _ BACnetConstructedDataTimeOfStateCountReset = (*_BACnetConstructedDataTimeOfStateCountReset)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.

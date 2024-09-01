@@ -56,6 +56,8 @@ type _IdentifyReplyCommandLogicalAssignment struct {
 	LogicAssigment []LogicAssignment
 }
 
+var _ IdentifyReplyCommandLogicalAssignment = (*_IdentifyReplyCommandLogicalAssignment)(nil)
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
