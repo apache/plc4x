@@ -248,12 +248,8 @@ func (pm *_NLM) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuff
 		return errors.Wrap(pushErr, "Error pushing for NLM")
 	}
 
-	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType := uint8(child.GetMessageType())
-	_messageTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("messageType", 8, uint8((messageType)))
-
-	if _messageTypeErr != nil {
-		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
+	if err := WriteDiscriminatorField(ctx, "messageType", m.GetMessageType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageType' field")
 	}
 	// Virtual field
 	isVendorProprietaryMessage := m.GetIsVendorProprietaryMessage()

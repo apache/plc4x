@@ -153,6 +153,10 @@ func (e TsnStreamState) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("TsnStreamState", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e TsnStreamState) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e TsnStreamState) PLC4XEnumName() string {
 	switch e {

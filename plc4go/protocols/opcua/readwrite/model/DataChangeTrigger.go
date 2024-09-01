@@ -141,6 +141,10 @@ func (e DataChangeTrigger) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("DataChangeTrigger", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e DataChangeTrigger) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e DataChangeTrigger) PLC4XEnumName() string {
 	switch e {

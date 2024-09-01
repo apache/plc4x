@@ -207,6 +207,10 @@ func (e OpcuaNodeIdServicesVariableSubscribed) SerializeWithWriteBuffer(ctx cont
 	return /*TODO: migrate me*/ writeBuffer.WriteInt32("OpcuaNodeIdServicesVariableSubscribed", 32, int32(int32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e OpcuaNodeIdServicesVariableSubscribed) GetValue() int32 {
+	return int32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableSubscribed) PLC4XEnumName() string {
 	switch e {

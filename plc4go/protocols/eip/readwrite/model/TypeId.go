@@ -184,12 +184,8 @@ func (pm *_TypeId) SerializeParent(ctx context.Context, writeBuffer utils.WriteB
 		return errors.Wrap(pushErr, "Error pushing for TypeId")
 	}
 
-	// Discriminator Field (id) (Used as input to a switch field)
-	id := uint16(child.GetId())
-	_idErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("id", 16, uint16((id)))
-
-	if _idErr != nil {
-		return errors.Wrap(_idErr, "Error serializing 'id' field")
+	if err := WriteDiscriminatorField(ctx, "id", m.GetId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'id' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

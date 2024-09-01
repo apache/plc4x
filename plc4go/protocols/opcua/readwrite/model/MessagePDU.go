@@ -227,12 +227,8 @@ func (pm *_MessagePDU) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(pushErr, "Error pushing for MessagePDU")
 	}
 
-	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType := string(child.GetMessageType())
-	_messageTypeErr := /*TODO: migrate me*/ writeBuffer.WriteString("messageType", uint32(24), (messageType), utils.WithEncoding("UTF-8)"))
-
-	if _messageTypeErr != nil {
-		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
+	if err := WriteDiscriminatorField(ctx, "messageType", m.GetMessageType(), WriteString(writeBuffer, 24)); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageType' field")
 	}
 
 	// Simple Field (chunk)

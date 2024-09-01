@@ -265,20 +265,12 @@ func (pm *_ModbusPDU) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(pushErr, "Error pushing for ModbusPDU")
 	}
 
-	// Discriminator Field (errorFlag) (Used as input to a switch field)
-	errorFlag := bool(child.GetErrorFlag())
-	_errorFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("errorFlag", (errorFlag))
-
-	if _errorFlagErr != nil {
-		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
+	if err := WriteDiscriminatorField(ctx, "errorFlag", m.GetErrorFlag(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'errorFlag' field")
 	}
 
-	// Discriminator Field (functionFlag) (Used as input to a switch field)
-	functionFlag := uint8(child.GetFunctionFlag())
-	_functionFlagErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("functionFlag", 7, uint8((functionFlag)))
-
-	if _functionFlagErr != nil {
-		return errors.Wrap(_functionFlagErr, "Error serializing 'functionFlag' field")
+	if err := WriteDiscriminatorField(ctx, "functionFlag", m.GetFunctionFlag(), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		return errors.Wrap(err, "Error serializing 'functionFlag' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

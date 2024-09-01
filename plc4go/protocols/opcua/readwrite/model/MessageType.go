@@ -159,6 +159,10 @@ func (e MessageType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	return /*TODO: migrate me*/ writeBuffer.WriteString("MessageType", uint32(24), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF-8)"))
 }
 
+func (e MessageType) GetValue() string {
+	return string(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e MessageType) PLC4XEnumName() string {
 	switch e {

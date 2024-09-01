@@ -223,12 +223,8 @@ func (pm *_CEMI) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 		return errors.Wrap(pushErr, "Error pushing for CEMI")
 	}
 
-	// Discriminator Field (messageCode) (Used as input to a switch field)
-	messageCode := uint8(child.GetMessageCode())
-	_messageCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("messageCode", 8, uint8((messageCode)))
-
-	if _messageCodeErr != nil {
-		return errors.Wrap(_messageCodeErr, "Error serializing 'messageCode' field")
+	if err := WriteDiscriminatorField(ctx, "messageCode", m.GetMessageCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageCode' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

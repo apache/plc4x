@@ -1798,6 +1798,17 @@ func (e CALCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, w
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("CALCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e CALCommandTypeContainer) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e CALCommandTypeContainer) CALCommandTypeContainerGetNumBytes() uint8 {
+	return e.NumBytes()
+}
+func (e CALCommandTypeContainer) CALCommandTypeContainerGetCommandType() CALCommandType {
+	return e.CommandType()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e CALCommandTypeContainer) PLC4XEnumName() string {
 	switch e {

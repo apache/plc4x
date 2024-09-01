@@ -147,6 +147,10 @@ func (e HVACHumidityModeAndFlagsMode) SerializeWithWriteBuffer(ctx context.Conte
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("HVACHumidityModeAndFlagsMode", 3, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e HVACHumidityModeAndFlagsMode) GetValue() uint8 {
+	return uint8(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e HVACHumidityModeAndFlagsMode) PLC4XEnumName() string {
 	switch e {

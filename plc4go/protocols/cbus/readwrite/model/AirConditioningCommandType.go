@@ -331,6 +331,14 @@ func (e AirConditioningCommandType) SerializeWithWriteBuffer(ctx context.Context
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("AirConditioningCommandType", 4, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e AirConditioningCommandType) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e AirConditioningCommandType) AirConditioningCommandTypeGetNumberOfArguments() uint8 {
+	return e.NumberOfArguments()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e AirConditioningCommandType) PLC4XEnumName() string {
 	switch e {

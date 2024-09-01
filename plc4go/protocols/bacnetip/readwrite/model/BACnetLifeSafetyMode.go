@@ -219,6 +219,10 @@ func (e BACnetLifeSafetyMode) SerializeWithWriteBuffer(ctx context.Context, writ
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("BACnetLifeSafetyMode", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e BACnetLifeSafetyMode) GetValue() uint16 {
+	return uint16(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e BACnetLifeSafetyMode) PLC4XEnumName() string {
 	switch e {

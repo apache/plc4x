@@ -159,6 +159,10 @@ func (e DialOutFailureReason) SerializeWithWriteBuffer(ctx context.Context, writ
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("DialOutFailureReason", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e DialOutFailureReason) GetValue() uint8 {
+	return uint8(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e DialOutFailureReason) PLC4XEnumName() string {
 	switch e {

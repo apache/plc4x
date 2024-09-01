@@ -135,6 +135,10 @@ func (e PubSubDiagnosticsCounterClassification) SerializeWithWriteBuffer(ctx con
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("PubSubDiagnosticsCounterClassification", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e PubSubDiagnosticsCounterClassification) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e PubSubDiagnosticsCounterClassification) PLC4XEnumName() string {
 	switch e {

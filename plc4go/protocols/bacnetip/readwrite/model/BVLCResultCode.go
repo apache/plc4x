@@ -165,6 +165,10 @@ func (e BVLCResultCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("BVLCResultCode", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e BVLCResultCode) GetValue() uint16 {
+	return uint16(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e BVLCResultCode) PLC4XEnumName() string {
 	switch e {

@@ -178,12 +178,8 @@ func (pm *_PortSegmentType) SerializeParent(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for PortSegmentType")
 	}
 
-	// Discriminator Field (extendedLinkAddress) (Used as input to a switch field)
-	extendedLinkAddress := bool(child.GetExtendedLinkAddress())
-	_extendedLinkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteBit("extendedLinkAddress", (extendedLinkAddress))
-
-	if _extendedLinkAddressErr != nil {
-		return errors.Wrap(_extendedLinkAddressErr, "Error serializing 'extendedLinkAddress' field")
+	if err := WriteDiscriminatorField(ctx, "extendedLinkAddress", m.GetExtendedLinkAddress(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'extendedLinkAddress' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

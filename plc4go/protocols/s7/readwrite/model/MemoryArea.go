@@ -231,6 +231,14 @@ func (e MemoryArea) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("MemoryArea", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e MemoryArea) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e MemoryArea) MemoryAreaGetShortName() string {
+	return e.ShortName()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e MemoryArea) PLC4XEnumName() string {
 	switch e {

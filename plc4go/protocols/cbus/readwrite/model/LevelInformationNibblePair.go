@@ -301,6 +301,14 @@ func (e LevelInformationNibblePair) SerializeWithWriteBuffer(ctx context.Context
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("LevelInformationNibblePair", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e LevelInformationNibblePair) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e LevelInformationNibblePair) LevelInformationNibblePairGetNibbleValue() uint8 {
+	return e.NibbleValue()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e LevelInformationNibblePair) PLC4XEnumName() string {
 	switch e {

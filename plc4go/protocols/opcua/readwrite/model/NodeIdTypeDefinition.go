@@ -204,18 +204,8 @@ func (pm *_NodeIdTypeDefinition) SerializeParent(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for NodeIdTypeDefinition")
 	}
 
-	// Discriminator Field (nodeType) (Used as input to a switch field)
-	nodeType := NodeIdType(child.GetNodeType())
-	if pushErr := writeBuffer.PushContext("nodeType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for nodeType")
-	}
-	_nodeTypeErr := writeBuffer.WriteSerializable(ctx, nodeType)
-	if popErr := writeBuffer.PopContext("nodeType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for nodeType")
-	}
-
-	if _nodeTypeErr != nil {
-		return errors.Wrap(_nodeTypeErr, "Error serializing 'nodeType' field")
+	if err := WriteDiscriminatorEnumField(ctx, "nodeType", "NodeIdType", m.GetNodeType(), WriteEnum[NodeIdType, uint8](ctx, NodeIdType.GetValue, NodeIdType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 6))); err != nil {
+		return errors.Wrap(err, "Error serializing 'nodeType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

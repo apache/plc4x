@@ -176,12 +176,8 @@ func (pm *_DataSegmentType) SerializeParent(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for DataSegmentType")
 	}
 
-	// Discriminator Field (dataSegmentType) (Used as input to a switch field)
-	dataSegmentType := uint8(child.GetDataSegmentType())
-	_dataSegmentTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dataSegmentType", 5, uint8((dataSegmentType)))
-
-	if _dataSegmentTypeErr != nil {
-		return errors.Wrap(_dataSegmentTypeErr, "Error serializing 'dataSegmentType' field")
+	if err := WriteDiscriminatorField(ctx, "dataSegmentType", m.GetDataSegmentType(), WriteUnsignedByte(writeBuffer, 5)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataSegmentType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

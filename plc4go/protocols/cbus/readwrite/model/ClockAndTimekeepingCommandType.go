@@ -161,6 +161,14 @@ func (e ClockAndTimekeepingCommandType) SerializeWithWriteBuffer(ctx context.Con
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("ClockAndTimekeepingCommandType", 4, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e ClockAndTimekeepingCommandType) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e ClockAndTimekeepingCommandType) ClockAndTimekeepingCommandTypeGetNumberOfArguments() uint8 {
+	return e.NumberOfArguments()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e ClockAndTimekeepingCommandType) PLC4XEnumName() string {
 	switch e {

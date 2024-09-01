@@ -194,12 +194,8 @@ func (pm *_ConnectionRequestInformation) SerializeParent(ctx context.Context, wr
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
-	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType := uint8(child.GetConnectionType())
-	_connectionTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("connectionType", 8, uint8((connectionType)))
-
-	if _connectionTypeErr != nil {
-		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")
+	if err := WriteDiscriminatorField(ctx, "connectionType", m.GetConnectionType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'connectionType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

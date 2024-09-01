@@ -182,12 +182,8 @@ func (pm *_ApduControl) SerializeParent(ctx context.Context, writeBuffer utils.W
 		return errors.Wrap(pushErr, "Error pushing for ApduControl")
 	}
 
-	// Discriminator Field (controlType) (Used as input to a switch field)
-	controlType := uint8(child.GetControlType())
-	_controlTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("controlType", 2, uint8((controlType)))
-
-	if _controlTypeErr != nil {
-		return errors.Wrap(_controlTypeErr, "Error serializing 'controlType' field")
+	if err := WriteDiscriminatorField(ctx, "controlType", m.GetControlType(), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+		return errors.Wrap(err, "Error serializing 'controlType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

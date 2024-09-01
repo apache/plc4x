@@ -622,6 +622,17 @@ func (e TelephonyCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Cont
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("TelephonyCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e TelephonyCommandTypeContainer) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e TelephonyCommandTypeContainer) TelephonyCommandTypeContainerGetNumBytes() uint8 {
+	return e.NumBytes()
+}
+func (e TelephonyCommandTypeContainer) TelephonyCommandTypeContainerGetCommandType() TelephonyCommandType {
+	return e.CommandType()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e TelephonyCommandTypeContainer) PLC4XEnumName() string {
 	switch e {

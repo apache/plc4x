@@ -20950,6 +20950,17 @@ func (e BACnetVendorId) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("BACnetVendorId", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e BACnetVendorId) GetValue() uint16 {
+	return uint16(e)
+}
+
+func (e BACnetVendorId) BACnetVendorIdGetVendorId() uint16 {
+	return e.VendorId()
+}
+func (e BACnetVendorId) BACnetVendorIdGetVendorName() string {
+	return e.VendorName()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e BACnetVendorId) PLC4XEnumName() string {
 	switch e {

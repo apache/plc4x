@@ -178,12 +178,8 @@ func (pm *_CommandSpecificDataItem) SerializeParent(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for CommandSpecificDataItem")
 	}
 
-	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType := uint16(child.GetItemType())
-	_itemTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("itemType", 16, uint16((itemType)))
-
-	if _itemTypeErr != nil {
-		return errors.Wrap(_itemTypeErr, "Error serializing 'itemType' field")
+	if err := WriteDiscriminatorField(ctx, "itemType", m.GetItemType(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'itemType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

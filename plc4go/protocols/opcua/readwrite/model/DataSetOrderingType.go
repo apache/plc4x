@@ -141,6 +141,10 @@ func (e DataSetOrderingType) SerializeWithWriteBuffer(ctx context.Context, write
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("DataSetOrderingType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e DataSetOrderingType) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e DataSetOrderingType) PLC4XEnumName() string {
 	switch e {

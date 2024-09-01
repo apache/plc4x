@@ -240,20 +240,12 @@ func (pm *_CipService) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(pushErr, "Error pushing for CipService")
 	}
 
-	// Discriminator Field (response) (Used as input to a switch field)
-	response := bool(child.GetResponse())
-	_responseErr := /*TODO: migrate me*/ writeBuffer.WriteBit("response", (response))
-
-	if _responseErr != nil {
-		return errors.Wrap(_responseErr, "Error serializing 'response' field")
+	if err := WriteDiscriminatorField(ctx, "response", m.GetResponse(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'response' field")
 	}
 
-	// Discriminator Field (service) (Used as input to a switch field)
-	service := uint8(child.GetService())
-	_serviceErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("service", 7, uint8((service)))
-
-	if _serviceErr != nil {
-		return errors.Wrap(_serviceErr, "Error serializing 'service' field")
+	if err := WriteDiscriminatorField(ctx, "service", m.GetService(), WriteUnsignedByte(writeBuffer, 7)); err != nil {
+		return errors.Wrap(err, "Error serializing 'service' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

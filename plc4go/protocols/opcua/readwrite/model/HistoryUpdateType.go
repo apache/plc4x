@@ -147,6 +147,10 @@ func (e HistoryUpdateType) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("HistoryUpdateType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e HistoryUpdateType) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e HistoryUpdateType) PLC4XEnumName() string {
 	switch e {

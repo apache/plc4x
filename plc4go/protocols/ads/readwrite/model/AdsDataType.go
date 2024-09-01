@@ -720,6 +720,17 @@ func (e AdsDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	return /*TODO: migrate me*/ writeBuffer.WriteInt8("AdsDataType", 8, int8(int8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e AdsDataType) GetValue() int8 {
+	return int8(e)
+}
+
+func (e AdsDataType) AdsDataTypeGetNumBytes() uint16 {
+	return e.NumBytes()
+}
+func (e AdsDataType) AdsDataTypeGetPlcValueType() PlcValueType {
+	return e.PlcValueType()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e AdsDataType) PLC4XEnumName() string {
 	switch e {

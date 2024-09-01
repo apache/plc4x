@@ -147,6 +147,10 @@ func (e StatusCoding) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	return /*TODO: migrate me*/ writeBuffer.WriteByte("StatusCoding", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e StatusCoding) GetValue() byte {
+	return byte(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e StatusCoding) PLC4XEnumName() string {
 	switch e {

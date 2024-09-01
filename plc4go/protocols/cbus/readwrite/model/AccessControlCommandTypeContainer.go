@@ -1439,6 +1439,20 @@ func (e AccessControlCommandTypeContainer) SerializeWithWriteBuffer(ctx context.
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("AccessControlCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e AccessControlCommandTypeContainer) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e AccessControlCommandTypeContainer) AccessControlCommandTypeContainerGetNumBytes() uint8 {
+	return e.NumBytes()
+}
+func (e AccessControlCommandTypeContainer) AccessControlCommandTypeContainerGetCommandType() AccessControlCommandType {
+	return e.CommandType()
+}
+func (e AccessControlCommandTypeContainer) AccessControlCommandTypeContainerGetCategory() AccessControlCategory {
+	return e.Category()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e AccessControlCommandTypeContainer) PLC4XEnumName() string {
 	switch e {

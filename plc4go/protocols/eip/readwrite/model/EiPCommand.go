@@ -141,6 +141,10 @@ func (e EiPCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("EiPCommand", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e EiPCommand) GetValue() uint16 {
+	return uint16(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e EiPCommand) PLC4XEnumName() string {
 	switch e {

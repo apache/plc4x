@@ -489,6 +489,10 @@ func (e BACnetObjectType) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("BACnetObjectType", 10, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e BACnetObjectType) GetValue() uint16 {
+	return uint16(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e BACnetObjectType) PLC4XEnumName() string {
 	switch e {

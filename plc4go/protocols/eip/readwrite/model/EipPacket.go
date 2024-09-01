@@ -287,12 +287,8 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(pushErr, "Error pushing for EipPacket")
 	}
 
-	// Discriminator Field (command) (Used as input to a switch field)
-	command := uint16(child.GetCommand())
-	_commandErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("command", 16, uint16((command)))
-
-	if _commandErr != nil {
-		return errors.Wrap(_commandErr, "Error serializing 'command' field")
+	if err := WriteDiscriminatorField(ctx, "command", m.GetCommand(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'command' field")
 	}
 
 	// Implicit Field (packetLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

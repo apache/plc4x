@@ -7916,6 +7916,29 @@ func (e Parameter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("Parameter", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e Parameter) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e Parameter) ParameterGetParameterType() ParameterType {
+	return e.ParameterType()
+}
+func (e Parameter) ParameterGetForm() string {
+	return e.Form()
+}
+func (e Parameter) ParameterGetIsVolatile() bool {
+	return e.IsVolatile()
+}
+func (e Parameter) ParameterGetParameterDescription() string {
+	return e.ParameterDescription()
+}
+func (e Parameter) ParameterGetProtectionLevel() ProtectionLevel {
+	return e.ProtectionLevel()
+}
+func (e Parameter) ParameterGetGroup() string {
+	return e.Group()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e Parameter) PLC4XEnumName() string {
 	switch e {

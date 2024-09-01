@@ -384,6 +384,17 @@ func (e EnableControlCommandTypeContainer) SerializeWithWriteBuffer(ctx context.
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("EnableControlCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e EnableControlCommandTypeContainer) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e EnableControlCommandTypeContainer) EnableControlCommandTypeContainerGetNumBytes() uint8 {
+	return e.NumBytes()
+}
+func (e EnableControlCommandTypeContainer) EnableControlCommandTypeContainerGetCommandType() EnableControlCommandType {
+	return e.CommandType()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e EnableControlCommandTypeContainer) PLC4XEnumName() string {
 	switch e {

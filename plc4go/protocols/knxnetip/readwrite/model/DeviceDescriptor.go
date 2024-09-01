@@ -566,6 +566,17 @@ func (e DeviceDescriptor) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e DeviceDescriptor) GetValue() uint16 {
+	return uint16(e)
+}
+
+func (e DeviceDescriptor) DeviceDescriptorGetFirmwareType() FirmwareType {
+	return e.FirmwareType()
+}
+func (e DeviceDescriptor) DeviceDescriptorGetMediumType() DeviceDescriptorMediumType {
+	return e.MediumType()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e DeviceDescriptor) PLC4XEnumName() string {
 	switch e {

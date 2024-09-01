@@ -141,6 +141,10 @@ func (e BACnetEventTransitionBits) SerializeWithWriteBuffer(ctx context.Context,
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("BACnetEventTransitionBits", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e BACnetEventTransitionBits) GetValue() uint8 {
+	return uint8(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e BACnetEventTransitionBits) PLC4XEnumName() string {
 	switch e {

@@ -259,12 +259,8 @@ func (pm *_ApduDataExt) SerializeParent(ctx context.Context, writeBuffer utils.W
 		return errors.Wrap(pushErr, "Error pushing for ApduDataExt")
 	}
 
-	// Discriminator Field (extApciType) (Used as input to a switch field)
-	extApciType := uint8(child.GetExtApciType())
-	_extApciTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("extApciType", 6, uint8((extApciType)))
-
-	if _extApciTypeErr != nil {
-		return errors.Wrap(_extApciTypeErr, "Error serializing 'extApciType' field")
+	if err := WriteDiscriminatorField(ctx, "extApciType", m.GetExtApciType(), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+		return errors.Wrap(err, "Error serializing 'extApciType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

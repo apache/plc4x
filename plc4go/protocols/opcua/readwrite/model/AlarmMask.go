@@ -147,6 +147,10 @@ func (e AlarmMask) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("AlarmMask", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e AlarmMask) GetValue() uint16 {
+	return uint16(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e AlarmMask) PLC4XEnumName() string {
 	switch e {

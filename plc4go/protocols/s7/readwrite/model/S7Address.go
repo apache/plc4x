@@ -176,12 +176,8 @@ func (pm *_S7Address) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(pushErr, "Error pushing for S7Address")
 	}
 
-	// Discriminator Field (addressType) (Used as input to a switch field)
-	addressType := uint8(child.GetAddressType())
-	_addressTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("addressType", 8, uint8((addressType)))
-
-	if _addressTypeErr != nil {
-		return errors.Wrap(_addressTypeErr, "Error serializing 'addressType' field")
+	if err := WriteDiscriminatorField(ctx, "addressType", m.GetAddressType(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'addressType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

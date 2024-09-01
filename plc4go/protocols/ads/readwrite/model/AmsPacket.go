@@ -508,18 +508,8 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(_sourceAmsPortErr, "Error serializing 'sourceAmsPort' field")
 	}
 
-	// Discriminator Field (commandId) (Used as input to a switch field)
-	commandId := CommandId(child.GetCommandId())
-	if pushErr := writeBuffer.PushContext("commandId"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for commandId")
-	}
-	_commandIdErr := writeBuffer.WriteSerializable(ctx, commandId)
-	if popErr := writeBuffer.PopContext("commandId"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for commandId")
-	}
-
-	if _commandIdErr != nil {
-		return errors.Wrap(_commandIdErr, "Error serializing 'commandId' field")
+	if err := WriteDiscriminatorEnumField(ctx, "commandId", "CommandId", m.GetCommandId(), WriteEnum[CommandId, uint16](ctx, CommandId.GetValue, CommandId.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandId' field")
 	}
 
 	if err := WriteConstField(ctx, "initCommand", AmsPacket_INITCOMMAND, WriteBoolean(writeBuffer)); err != nil {
@@ -550,12 +540,8 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(err, "Error serializing 'noReturn' field")
 	}
 
-	// Discriminator Field (response) (Used as input to a switch field)
-	response := bool(child.GetResponse())
-	_responseErr := /*TODO: migrate me*/ writeBuffer.WriteBit("response", (response))
-
-	if _responseErr != nil {
-		return errors.Wrap(_responseErr, "Error serializing 'response' field")
+	if err := WriteDiscriminatorField(ctx, "response", m.GetResponse(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'response' field")
 	}
 
 	if err := WriteConstField(ctx, "broadcast", AmsPacket_BROADCAST, WriteBoolean(writeBuffer)); err != nil {

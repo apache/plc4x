@@ -171,6 +171,10 @@ func (e ServerState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("ServerState", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e ServerState) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e ServerState) PLC4XEnumName() string {
 	switch e {

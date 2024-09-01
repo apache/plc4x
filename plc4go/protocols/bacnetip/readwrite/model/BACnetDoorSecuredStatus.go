@@ -141,6 +141,10 @@ func (e BACnetDoorSecuredStatus) SerializeWithWriteBuffer(ctx context.Context, w
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("BACnetDoorSecuredStatus", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e BACnetDoorSecuredStatus) GetValue() uint8 {
+	return uint8(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e BACnetDoorSecuredStatus) PLC4XEnumName() string {
 	switch e {

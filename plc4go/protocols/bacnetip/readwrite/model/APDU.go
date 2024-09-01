@@ -195,18 +195,8 @@ func (pm *_APDU) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 		return errors.Wrap(pushErr, "Error pushing for APDU")
 	}
 
-	// Discriminator Field (apduType) (Used as input to a switch field)
-	apduType := ApduType(child.GetApduType())
-	if pushErr := writeBuffer.PushContext("apduType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for apduType")
-	}
-	_apduTypeErr := writeBuffer.WriteSerializable(ctx, apduType)
-	if popErr := writeBuffer.PopContext("apduType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for apduType")
-	}
-
-	if _apduTypeErr != nil {
-		return errors.Wrap(_apduTypeErr, "Error serializing 'apduType' field")
+	if err := WriteDiscriminatorEnumField(ctx, "apduType", "ApduType", m.GetApduType(), WriteEnum[ApduType, uint8](ctx, ApduType.GetValue, ApduType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 4))); err != nil {
+		return errors.Wrap(err, "Error serializing 'apduType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

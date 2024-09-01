@@ -282,12 +282,8 @@ func (pm *_LDataFrame) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(_frameTypeErr, "Error serializing 'frameType' field")
 	}
 
-	// Discriminator Field (polling) (Used as input to a switch field)
-	polling := bool(child.GetPolling())
-	_pollingErr := /*TODO: migrate me*/ writeBuffer.WriteBit("polling", (polling))
-
-	if _pollingErr != nil {
-		return errors.Wrap(_pollingErr, "Error serializing 'polling' field")
+	if err := WriteDiscriminatorField(ctx, "polling", m.GetPolling(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'polling' field")
 	}
 
 	// Simple Field (notRepeated)
@@ -297,12 +293,8 @@ func (pm *_LDataFrame) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(_notRepeatedErr, "Error serializing 'notRepeated' field")
 	}
 
-	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	notAckFrame := bool(child.GetNotAckFrame())
-	_notAckFrameErr := /*TODO: migrate me*/ writeBuffer.WriteBit("notAckFrame", (notAckFrame))
-
-	if _notAckFrameErr != nil {
-		return errors.Wrap(_notAckFrameErr, "Error serializing 'notAckFrame' field")
+	if err := WriteDiscriminatorField(ctx, "notAckFrame", m.GetNotAckFrame(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'notAckFrame' field")
 	}
 
 	// Simple Field (priority)

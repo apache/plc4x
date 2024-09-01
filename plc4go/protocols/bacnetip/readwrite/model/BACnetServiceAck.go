@@ -233,18 +233,8 @@ func (pm *_BACnetServiceAck) SerializeParent(ctx context.Context, writeBuffer ut
 		return errors.Wrap(pushErr, "Error pushing for BACnetServiceAck")
 	}
 
-	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := BACnetConfirmedServiceChoice(child.GetServiceChoice())
-	if pushErr := writeBuffer.PushContext("serviceChoice"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for serviceChoice")
-	}
-	_serviceChoiceErr := writeBuffer.WriteSerializable(ctx, serviceChoice)
-	if popErr := writeBuffer.PopContext("serviceChoice"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for serviceChoice")
-	}
-
-	if _serviceChoiceErr != nil {
-		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
+	if err := WriteDiscriminatorEnumField(ctx, "serviceChoice", "BACnetConfirmedServiceChoice", m.GetServiceChoice(), WriteEnum[BACnetConfirmedServiceChoice, uint8](ctx, BACnetConfirmedServiceChoice.GetValue, BACnetConfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8))); err != nil {
+		return errors.Wrap(err, "Error serializing 'serviceChoice' field")
 	}
 	// Virtual field
 	serviceAckPayloadLength := m.GetServiceAckPayloadLength()

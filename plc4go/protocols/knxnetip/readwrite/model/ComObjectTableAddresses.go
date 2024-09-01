@@ -18901,6 +18901,14 @@ func (e ComObjectTableAddresses) SerializeWithWriteBuffer(ctx context.Context, w
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("ComObjectTableAddresses", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e ComObjectTableAddresses) GetValue() uint16 {
+	return uint16(e)
+}
+
+func (e ComObjectTableAddresses) ComObjectTableAddressesGetComObjectTableAddress() uint16 {
+	return e.ComObjectTableAddress()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e ComObjectTableAddresses) PLC4XEnumName() string {
 	switch e {

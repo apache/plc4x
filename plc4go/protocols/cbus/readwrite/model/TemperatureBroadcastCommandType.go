@@ -151,6 +151,14 @@ func (e TemperatureBroadcastCommandType) SerializeWithWriteBuffer(ctx context.Co
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("TemperatureBroadcastCommandType", 4, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e TemperatureBroadcastCommandType) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e TemperatureBroadcastCommandType) TemperatureBroadcastCommandTypeGetNumberOfArguments() uint8 {
+	return e.NumberOfArguments()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e TemperatureBroadcastCommandType) PLC4XEnumName() string {
 	switch e {

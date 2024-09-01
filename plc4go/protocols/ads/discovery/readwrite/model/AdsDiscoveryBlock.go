@@ -192,18 +192,8 @@ func (pm *_AdsDiscoveryBlock) SerializeParent(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlock")
 	}
 
-	// Discriminator Field (blockType) (Used as input to a switch field)
-	blockType := AdsDiscoveryBlockType(child.GetBlockType())
-	if pushErr := writeBuffer.PushContext("blockType"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for blockType")
-	}
-	_blockTypeErr := writeBuffer.WriteSerializable(ctx, blockType)
-	if popErr := writeBuffer.PopContext("blockType"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for blockType")
-	}
-
-	if _blockTypeErr != nil {
-		return errors.Wrap(_blockTypeErr, "Error serializing 'blockType' field")
+	if err := WriteDiscriminatorEnumField(ctx, "blockType", "AdsDiscoveryBlockType", m.GetBlockType(), WriteEnum[AdsDiscoveryBlockType, uint16](ctx, AdsDiscoveryBlockType.GetValue, AdsDiscoveryBlockType.PLC4XEnumName, WriteUnsignedShort(writeBuffer, 16))); err != nil {
+		return errors.Wrap(err, "Error serializing 'blockType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

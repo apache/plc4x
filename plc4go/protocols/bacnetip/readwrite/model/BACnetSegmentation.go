@@ -147,6 +147,10 @@ func (e BACnetSegmentation) SerializeWithWriteBuffer(ctx context.Context, writeB
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("BACnetSegmentation", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e BACnetSegmentation) GetValue() uint8 {
+	return uint8(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e BACnetSegmentation) PLC4XEnumName() string {
 	switch e {

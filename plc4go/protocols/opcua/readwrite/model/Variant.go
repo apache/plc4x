@@ -315,12 +315,8 @@ func (pm *_Variant) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_arrayDimensionsSpecifiedErr, "Error serializing 'arrayDimensionsSpecified' field")
 	}
 
-	// Discriminator Field (VariantType) (Used as input to a switch field)
-	VariantType := uint8(child.GetVariantType())
-	_VariantTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("VariantType", 6, uint8((VariantType)))
-
-	if _VariantTypeErr != nil {
-		return errors.Wrap(_VariantTypeErr, "Error serializing 'VariantType' field")
+	if err := WriteDiscriminatorField(ctx, "VariantType", m.GetVariantType(), WriteUnsignedByte(writeBuffer, 6)); err != nil {
+		return errors.Wrap(err, "Error serializing 'VariantType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

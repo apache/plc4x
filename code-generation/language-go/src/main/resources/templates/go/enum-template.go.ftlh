@@ -219,6 +219,18 @@ func (e ${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	</#if>
 </#if>
 
+func (e ${type.name}) GetValue() <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if> {
+	return <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>(e)
+}
+
+<#if type.constantNames?has_content>
+    <#list type.constantNames as constantName>
+func (e ${type.name}) ${type.name}Get${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}  {
+	return e.${constantName?cap_first}()
+}
+	</#list>
+</#if>
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e ${type.name}) PLC4XEnumName() string {
 	switch e {

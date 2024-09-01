@@ -287,12 +287,8 @@ func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer u
 		}
 	}
 
-	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode := uint8(child.GetCommandCode())
-	_commandCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("commandCode", 8, uint8((commandCode)))
-
-	if _commandCodeErr != nil {
-		return errors.Wrap(_commandCodeErr, "Error serializing 'commandCode' field")
+	if err := WriteDiscriminatorField(ctx, "commandCode", m.GetCommandCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'commandCode' field")
 	}
 
 	// Simple Field (status)

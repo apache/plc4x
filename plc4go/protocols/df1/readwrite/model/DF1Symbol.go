@@ -212,12 +212,8 @@ func (pm *_DF1Symbol) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(err, "Error serializing 'messageStart' field")
 	}
 
-	// Discriminator Field (symbolType) (Used as input to a switch field)
-	symbolType := uint8(child.GetSymbolType())
-	_symbolTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("symbolType", 8, uint8((symbolType)))
-
-	if _symbolTypeErr != nil {
-		return errors.Wrap(_symbolTypeErr, "Error serializing 'symbolType' field")
+	if err := WriteDiscriminatorField(ctx, "symbolType", m.GetSymbolType(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'symbolType' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

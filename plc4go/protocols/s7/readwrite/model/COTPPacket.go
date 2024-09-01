@@ -257,12 +257,8 @@ func (pm *_COTPPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
 	}
 
-	// Discriminator Field (tpduCode) (Used as input to a switch field)
-	tpduCode := uint8(child.GetTpduCode())
-	_tpduCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("tpduCode", 8, uint8((tpduCode)))
-
-	if _tpduCodeErr != nil {
-		return errors.Wrap(_tpduCodeErr, "Error serializing 'tpduCode' field")
+	if err := WriteDiscriminatorField(ctx, "tpduCode", m.GetTpduCode(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'tpduCode' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

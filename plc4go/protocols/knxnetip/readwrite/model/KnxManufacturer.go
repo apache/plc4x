@@ -9806,6 +9806,17 @@ func (e KnxManufacturer) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("KnxManufacturer", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e KnxManufacturer) GetValue() uint16 {
+	return uint16(e)
+}
+
+func (e KnxManufacturer) KnxManufacturerGetNumber() uint16 {
+	return e.Number()
+}
+func (e KnxManufacturer) KnxManufacturerGetName() string {
+	return e.Name()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e KnxManufacturer) PLC4XEnumName() string {
 	switch e {

@@ -153,6 +153,10 @@ func (e AccessRestrictionType) SerializeWithWriteBuffer(ctx context.Context, wri
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("AccessRestrictionType", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e AccessRestrictionType) GetValue() uint16 {
+	return uint16(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e AccessRestrictionType) PLC4XEnumName() string {
 	switch e {

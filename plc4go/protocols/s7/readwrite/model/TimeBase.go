@@ -141,6 +141,10 @@ func (e TimeBase) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("TimeBase", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e TimeBase) GetValue() uint8 {
+	return uint8(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e TimeBase) PLC4XEnumName() string {
 	switch e {

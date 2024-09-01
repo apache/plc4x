@@ -465,7 +465,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             String paramsStringString = paramsString.toString();
             if (StringUtils.isNotBlank(paramsStringString) || typeDefinition.isDiscriminatedChildTypeDefinition()) { // In this case we need to spell the function out
                 String genericTypeParam = "";
-                if (typeDefinition.isDiscriminatedParentTypeDefinition()||typeDefinition.isDiscriminatedChildTypeDefinition()) {
+                if (typeDefinition.isDiscriminatedParentTypeDefinition() || typeDefinition.isDiscriminatedChildTypeDefinition()) {
                     genericTypeParam = "[" + typeName + "]";
                 }
                 return "ReadComplex[" + typeName + "](" + parserCallString + "ParseWithBufferProducer" + genericTypeParam + "(" + StringUtils.substring(paramsStringString, 2) + "), readBuffer)";
@@ -544,7 +544,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else {
             outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
-        return "WriteEnum(" + languageTypeName + "::get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + "::name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
+        return "WriteEnum[" + languageTypeName + "," + getLanguageTypeNameForTypeReference(outputTypeReference) + "](ctx, " + languageTypeName + ".Get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + ".PLC4XEnumName, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
     }
 
     public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {

@@ -4950,6 +4950,23 @@ func (e KnxInterfaceObjectProperty) SerializeWithWriteBuffer(ctx context.Context
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("KnxInterfaceObjectProperty", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e KnxInterfaceObjectProperty) GetValue() uint32 {
+	return uint32(e)
+}
+
+func (e KnxInterfaceObjectProperty) KnxInterfaceObjectPropertyGetPropertyDataType() KnxPropertyDataType {
+	return e.PropertyDataType()
+}
+func (e KnxInterfaceObjectProperty) KnxInterfaceObjectPropertyGetName() string {
+	return e.Name()
+}
+func (e KnxInterfaceObjectProperty) KnxInterfaceObjectPropertyGetPropertyId() uint8 {
+	return e.PropertyId()
+}
+func (e KnxInterfaceObjectProperty) KnxInterfaceObjectPropertyGetObjectType() KnxInterfaceObjectType {
+	return e.ObjectType()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e KnxInterfaceObjectProperty) PLC4XEnumName() string {
 	switch e {

@@ -20,6 +20,7 @@
 package io
 
 import (
+	"context"
 	"math/big"
 	"time"
 
@@ -93,8 +94,8 @@ func WriteString(writeBuffer utils.WriteBuffer, bitLength uint32) DataWriter[str
 	return NewDataWriterSimpleString(writeBuffer, bitLength)
 }
 
-func WriteEnum[T any, I any](enumSerializer func(T) I, enumNamer func(T) string, dataWriter DataWriter[I], log zerolog.Logger) *DataWriterEnumDefault[T, I] {
-	return NewDataWriterEnumDefault[T, I](enumSerializer, enumNamer, dataWriter, log)
+func WriteEnum[T any, I any](ctx context.Context, enumSerializer func(T) I, enumNamer func(T) string, dataWriter DataWriter[I]) *DataWriterEnumDefault[T, I] {
+	return NewDataWriterEnumDefault[T, I](enumSerializer, enumNamer, dataWriter)
 }
 
 func WriteComplex[T spi.Message](writeBuffer utils.WriteBuffer, log zerolog.Logger) *DataWriterComplexDefault[T] {

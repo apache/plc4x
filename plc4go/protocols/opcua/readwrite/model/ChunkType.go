@@ -141,6 +141,10 @@ func (e ChunkType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	return /*TODO: migrate me*/ writeBuffer.WriteString("ChunkType", uint32(8), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF-8)"))
 }
 
+func (e ChunkType) GetValue() string {
+	return string(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e ChunkType) PLC4XEnumName() string {
 	switch e {

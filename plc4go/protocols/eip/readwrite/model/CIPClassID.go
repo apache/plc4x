@@ -539,6 +539,10 @@ func (e CIPClassID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("CIPClassID", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e CIPClassID) GetValue() uint16 {
+	return uint16(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e CIPClassID) PLC4XEnumName() string {
 	switch e {

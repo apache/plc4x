@@ -195,6 +195,10 @@ func (e UadpNetworkMessageContentMask) SerializeWithWriteBuffer(ctx context.Cont
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("UadpNetworkMessageContentMask", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e UadpNetworkMessageContentMask) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e UadpNetworkMessageContentMask) PLC4XEnumName() string {
 	switch e {

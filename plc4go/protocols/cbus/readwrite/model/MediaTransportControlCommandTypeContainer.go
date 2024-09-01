@@ -1756,6 +1756,17 @@ func (e MediaTransportControlCommandTypeContainer) SerializeWithWriteBuffer(ctx 
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("MediaTransportControlCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e MediaTransportControlCommandTypeContainer) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e MediaTransportControlCommandTypeContainer) MediaTransportControlCommandTypeContainerGetNumBytes() uint8 {
+	return e.NumBytes()
+}
+func (e MediaTransportControlCommandTypeContainer) MediaTransportControlCommandTypeContainerGetCommandType() MediaTransportControlCommandType {
+	return e.CommandType()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e MediaTransportControlCommandTypeContainer) PLC4XEnumName() string {
 	switch e {

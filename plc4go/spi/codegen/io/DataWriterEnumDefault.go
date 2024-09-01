@@ -22,10 +22,6 @@ package io
 import (
 	"context"
 	"encoding/binary"
-	"reflect"
-
-	"github.com/rs/zerolog"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -33,18 +29,15 @@ type DataWriterEnumDefault[T any, I any] struct {
 	enumSerializer func(T) I
 	enumNamer      func(T) string
 	dataWriter     DataWriter[I]
-
-	log zerolog.Logger
 }
 
 var _ DataWriterEnum[string] = (*DataWriterEnumDefault[string, string])(nil)
 
-func NewDataWriterEnumDefault[T any, I any](enumSerializer func(T) I, enumNamer func(T) string, dataWriter DataWriter[I], log zerolog.Logger) *DataWriterEnumDefault[T, I] {
+func NewDataWriterEnumDefault[T any, I any](enumSerializer func(T) I, enumNamer func(T) string, dataWriter DataWriter[I]) *DataWriterEnumDefault[T, I] {
 	return &DataWriterEnumDefault[T, I]{
 		enumSerializer: enumSerializer,
 		enumNamer:      enumNamer,
 		dataWriter:     dataWriter,
-		log:            log,
 	}
 }
 
@@ -65,14 +58,10 @@ func (d *DataWriterEnumDefault[T, I]) PopContext(logicalName string, writerArgs 
 }
 
 func (d *DataWriterEnumDefault[T, I]) Write(ctx context.Context, logicalName string, value T, writerArgs ...utils.WithWriterArgs) error {
-	return WriteWithRawWriter(ctx, d.log, logicalName, value, d.enumSerializer, d.enumNamer, d.dataWriter, writerArgs...)
+	return WriteWithRawWriter(ctx, logicalName, value, d.enumSerializer, d.enumNamer, d.dataWriter, writerArgs...)
 }
 
-func WriteWithRawWriter[T any, I any](ctx context.Context, localLog zerolog.Logger, logicalName string, value T, enumSerializer func(T) I, enumNamer func(T) string, rawWriter DataWriter[I], args ...utils.WithWriterArgs) error {
-	if reflect.ValueOf(value).IsNil() { //TODO: find a way to not use reflect
-		localLog.Warn().Str("logicalName", logicalName).Msg("Trying to serialize null value for logicalName")
-		return nil
-	}
+func WriteWithRawWriter[T any, I any](ctx context.Context, logicalName string, value T, enumSerializer func(T) I, enumNamer func(T) string, rawWriter DataWriter[I], args ...utils.WithWriterArgs) error {
 	rawValue := enumSerializer(value)
 	return rawWriter.Write(ctx, logicalName, rawValue, append(args, utils.WithAdditionalStringRepresentation(enumNamer(value)))...)
 }

@@ -1249,27 +1249,13 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 				<#break>
 				<#case "discriminator">
 					<#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
+					<#assign typedField = field.asTypedField().orElseThrow()>
+					<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-	${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.Get${discriminatorField.name?cap_first}())
-					<#if helper.isEnumField(field)>
-                        <#assign namedField = field.asNamedField().orElseThrow()>
-	if pushErr := writeBuffer.PushContext("${namedField.name}"); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
+	if err := <#if typedField.type.isEnumTypeReference()>WriteDiscriminatorEnumField(ctx, "${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", m.Get${discriminatorField.name?cap_first}(), ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")}${helper.getFieldOptions(typedField, parserArguments)});<#else>WriteDiscriminatorField(ctx, "${namedField.name}", m.Get${discriminatorField.name?cap_first}(), ${helper.getDataWriterCall(typedField.type, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});</#if>err != nil{
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-	_${discriminatorField.name}Err := writeBuffer.WriteSerializable(ctx, ${discriminatorField.name})
-	if popErr := writeBuffer.PopContext("${namedField.name}"); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-					<#else>
-                        <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
-	_${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(discriminatorField.name, simpleTypeReference, "(" + discriminatorField.name + ")", discriminatorField)}
-					</#if>
-
-	if _${discriminatorField.name}Err != nil {
-		return errors.Wrap(_${discriminatorField.name}Err, "Error serializing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-					<#break>
+				<#break>
 				<#case "enum">
 					<#assign enumField = field.asEnumField().orElseThrow()>
 

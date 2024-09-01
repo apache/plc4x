@@ -159,6 +159,10 @@ func (e ConfirmationType) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return /*TODO: migrate me*/ writeBuffer.WriteByte("ConfirmationType", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e ConfirmationType) GetValue() byte {
+	return byte(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e ConfirmationType) PLC4XEnumName() string {
 	switch e {

@@ -510,6 +510,17 @@ func (e KnxInterfaceObjectType) SerializeWithWriteBuffer(ctx context.Context, wr
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("KnxInterfaceObjectType", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e KnxInterfaceObjectType) GetValue() uint16 {
+	return uint16(e)
+}
+
+func (e KnxInterfaceObjectType) KnxInterfaceObjectTypeGetCode() string {
+	return e.Code()
+}
+func (e KnxInterfaceObjectType) KnxInterfaceObjectTypeGetName() string {
+	return e.Name()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e KnxInterfaceObjectType) PLC4XEnumName() string {
 	switch e {

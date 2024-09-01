@@ -321,6 +321,14 @@ func (e Attribute) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("Attribute", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e Attribute) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e Attribute) AttributeGetBytesReturned() uint8 {
+	return e.BytesReturned()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e Attribute) PLC4XEnumName() string {
 	switch e {

@@ -147,6 +147,10 @@ func (e OpcuaIdentifierType) SerializeWithWriteBuffer(ctx context.Context, write
 	return /*TODO: migrate me*/ writeBuffer.WriteString("OpcuaIdentifierType", uint32(8), string(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()), utils.WithEncoding("UTF-8)"))
 }
 
+func (e OpcuaIdentifierType) GetValue() string {
+	return string(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaIdentifierType) PLC4XEnumName() string {
 	switch e {

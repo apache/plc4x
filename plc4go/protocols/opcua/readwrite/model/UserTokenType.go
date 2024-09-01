@@ -147,6 +147,10 @@ func (e UserTokenType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("UserTokenType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e UserTokenType) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e UserTokenType) PLC4XEnumName() string {
 	switch e {

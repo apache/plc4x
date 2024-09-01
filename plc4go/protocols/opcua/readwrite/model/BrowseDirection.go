@@ -147,6 +147,10 @@ func (e BrowseDirection) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("BrowseDirection", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e BrowseDirection) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e BrowseDirection) PLC4XEnumName() string {
 	switch e {

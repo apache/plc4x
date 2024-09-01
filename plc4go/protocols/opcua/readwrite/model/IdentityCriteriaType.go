@@ -171,6 +171,10 @@ func (e IdentityCriteriaType) SerializeWithWriteBuffer(ctx context.Context, writ
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("IdentityCriteriaType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e IdentityCriteriaType) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e IdentityCriteriaType) PLC4XEnumName() string {
 	switch e {

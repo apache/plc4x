@@ -263,12 +263,8 @@ func (pm *_KnxNetIpMessage) SerializeParent(ctx context.Context, writeBuffer uti
 		return errors.Wrap(err, "Error serializing 'protocolVersion' field")
 	}
 
-	// Discriminator Field (msgType) (Used as input to a switch field)
-	msgType := uint16(child.GetMsgType())
-	_msgTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("msgType", 16, uint16((msgType)))
-
-	if _msgTypeErr != nil {
-		return errors.Wrap(_msgTypeErr, "Error serializing 'msgType' field")
+	if err := WriteDiscriminatorField(ctx, "msgType", m.GetMsgType(), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'msgType' field")
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

@@ -1931,6 +1931,44 @@ func (e TransportSize) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("TransportSize", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e TransportSize) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e TransportSize) TransportSizeGetSupported_S7_300() bool {
+	return e.Supported_S7_300()
+}
+func (e TransportSize) TransportSizeGetSupported_LOGO() bool {
+	return e.Supported_LOGO()
+}
+func (e TransportSize) TransportSizeGetCode() uint8 {
+	return e.Code()
+}
+func (e TransportSize) TransportSizeGetSizeInBytes() uint8 {
+	return e.SizeInBytes()
+}
+func (e TransportSize) TransportSizeGetSupported_S7_400() bool {
+	return e.Supported_S7_400()
+}
+func (e TransportSize) TransportSizeGetSupported_S7_1200() bool {
+	return e.Supported_S7_1200()
+}
+func (e TransportSize) TransportSizeGetShortName() uint8 {
+	return e.ShortName()
+}
+func (e TransportSize) TransportSizeGetSupported_S7_1500() bool {
+	return e.Supported_S7_1500()
+}
+func (e TransportSize) TransportSizeGetDataTransportSize() DataTransportSize {
+	return e.DataTransportSize()
+}
+func (e TransportSize) TransportSizeGetDataProtocolId() string {
+	return e.DataProtocolId()
+}
+func (e TransportSize) TransportSizeGetBaseType() TransportSize {
+	return e.BaseType()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e TransportSize) PLC4XEnumName() string {
 	switch e {

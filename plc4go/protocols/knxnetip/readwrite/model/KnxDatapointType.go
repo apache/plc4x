@@ -6515,6 +6515,20 @@ func (e KnxDatapointType) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("KnxDatapointType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e KnxDatapointType) GetValue() uint32 {
+	return uint32(e)
+}
+
+func (e KnxDatapointType) KnxDatapointTypeGetNumber() uint16 {
+	return e.Number()
+}
+func (e KnxDatapointType) KnxDatapointTypeGetName() string {
+	return e.Name()
+}
+func (e KnxDatapointType) KnxDatapointTypeGetDatapointMainType() KnxDatapointMainType {
+	return e.DatapointMainType()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e KnxDatapointType) PLC4XEnumName() string {
 	switch e {

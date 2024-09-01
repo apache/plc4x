@@ -221,6 +221,14 @@ func (e MaxSegmentsAccepted) SerializeWithWriteBuffer(ctx context.Context, write
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("MaxSegmentsAccepted", 3, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e MaxSegmentsAccepted) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e MaxSegmentsAccepted) MaxSegmentsAcceptedGetMaxSegments() uint8 {
+	return e.MaxSegments()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e MaxSegmentsAccepted) PLC4XEnumName() string {
 	switch e {

@@ -266,12 +266,8 @@ func (pm *_BVLC) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 		return errors.Wrap(err, "Error serializing 'bacnetType' field")
 	}
 
-	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
-	bvlcFunction := uint8(child.GetBvlcFunction())
-	_bvlcFunctionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("bvlcFunction", 8, uint8((bvlcFunction)))
-
-	if _bvlcFunctionErr != nil {
-		return errors.Wrap(_bvlcFunctionErr, "Error serializing 'bvlcFunction' field")
+	if err := WriteDiscriminatorField(ctx, "bvlcFunction", m.GetBvlcFunction(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'bvlcFunction' field")
 	}
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

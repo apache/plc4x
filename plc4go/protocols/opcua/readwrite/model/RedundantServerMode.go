@@ -147,6 +147,10 @@ func (e RedundantServerMode) SerializeWithWriteBuffer(ctx context.Context, write
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("RedundantServerMode", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e RedundantServerMode) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e RedundantServerMode) PLC4XEnumName() string {
 	switch e {

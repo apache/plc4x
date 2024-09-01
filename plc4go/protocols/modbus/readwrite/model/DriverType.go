@@ -141,6 +141,10 @@ func (e DriverType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	return /*TODO: migrate me*/ writeBuffer.WriteUint32("DriverType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e DriverType) GetValue() uint32 {
+	return uint32(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e DriverType) PLC4XEnumName() string {
 	switch e {

@@ -903,6 +903,10 @@ func (e ErrorCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	return /*TODO: migrate me*/ writeBuffer.WriteUint16("ErrorCode", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e ErrorCode) GetValue() uint16 {
+	return uint16(e)
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e ErrorCode) PLC4XEnumName() string {
 	switch e {

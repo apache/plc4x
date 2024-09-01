@@ -291,6 +291,14 @@ func (e ComObjectValueType) SerializeWithWriteBuffer(ctx context.Context, writeB
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("ComObjectValueType", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e ComObjectValueType) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e ComObjectValueType) ComObjectValueTypeGetSizeInBytes() uint8 {
+	return e.SizeInBytes()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e ComObjectValueType) PLC4XEnumName() string {
 	switch e {

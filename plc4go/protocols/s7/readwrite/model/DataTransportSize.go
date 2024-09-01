@@ -211,6 +211,14 @@ func (e DataTransportSize) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	return /*TODO: migrate me*/ writeBuffer.WriteUint8("DataTransportSize", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
+func (e DataTransportSize) GetValue() uint8 {
+	return uint8(e)
+}
+
+func (e DataTransportSize) DataTransportSizeGetSizeInBits() bool {
+	return e.SizeInBits()
+}
+
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e DataTransportSize) PLC4XEnumName() string {
 	switch e {
