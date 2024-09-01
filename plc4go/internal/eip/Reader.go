@@ -239,7 +239,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 			serviceBuf := utils.NewReadBufferByteBased(read.GetBytes()[offset:offset+length], utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
 			var err error
 			// TODO: If we're using a connected connection, do this differently
-			arr[i], err = readWriteModel.CipServiceParseWithBuffer(context.Background(), serviceBuf, false, length)
+			arr[i], err = readWriteModel.CipServiceParseWithBuffer[readWriteModel.CipService](context.Background(), serviceBuf, false, length)
 			if err != nil {
 				return nil, err
 			}

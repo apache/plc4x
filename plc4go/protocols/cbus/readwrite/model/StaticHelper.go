@@ -84,7 +84,7 @@ func ReadCBusCommand(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptio
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return CBusCommandParse(ctx, rawBytes, cBusOptions)
+	return CBusCommandParse[CBusCommand](ctx, rawBytes, cBusOptions)
 }
 
 func WriteEncodedReply(ctx context.Context, writeBuffer utils.WriteBuffer, encodedReply EncodedReply) error {
@@ -96,7 +96,7 @@ func ReadEncodedReply(ctx context.Context, readBuffer utils.ReadBuffer, options 
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return EncodedReplyParse(ctx, rawBytes, options, requestContext)
+	return EncodedReplyParse[EncodedReply](ctx, rawBytes, options, requestContext)
 }
 
 func WriteCALData(ctx context.Context, writeBuffer utils.WriteBuffer, calData CALData) error {
@@ -108,7 +108,7 @@ func ReadCALData(ctx context.Context, readBuffer utils.ReadBuffer) (CALData, err
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting hex")
 	}
-	return CALDataParse(ctx, rawBytes, nil)
+	return CALDataParse[CALData](ctx, rawBytes, nil)
 }
 
 func readBytesFromHex(ctx context.Context, logicalName string, readBuffer utils.ReadBuffer, srchk bool) ([]byte, error) {

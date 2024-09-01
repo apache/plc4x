@@ -50,7 +50,7 @@ package ${outputFlavor?replace("-","")}
 import (
 	"context"
 
-	"github.com/apache/plc4x/plc4go/protocols/${helper.getSanitizedPackageName()}/${outputFlavor?replace("-","")}/model"
+	. "github.com/apache/plc4x/plc4go/protocols/${helper.getSanitizedPackageName()}/${outputFlavor?replace("-","")}/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -72,13 +72,13 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeNa
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 			<#elseif parserArgument.type.isEnumTypeReference()>
-        ${parserArgument.name}, _ := model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(arguments[${parserArgument?index}])
+        ${parserArgument.name}, _ := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(arguments[${parserArgument?index}])
 			<#else>
-		var ${parserArgument.name} model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+		var ${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
 			</#if>
 		</#list>
 	</#if>
-		return model.${typeDefinition.name}ParseWithBuffer(context.Background(), io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#list></#if>)
+		return ${typeDefinition.name}ParseWithBuffer<#if typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()||typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedParentTypeDefinition()>[${typeDefinition.name}]</#if>(context.Background(), io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#list></#if>)
 </#list>
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

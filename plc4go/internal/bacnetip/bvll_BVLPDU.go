@@ -99,7 +99,7 @@ func (b *_BVLPDU) Decode(pdu Arg) error {
 		data := pdu.GetPduData()
 		b.PutData(data...)
 		var err error
-		b.bvlc, err = readWriteModel.BVLCParse(context.Background(), data)
+		b.bvlc, err = readWriteModel.BVLCParse[readWriteModel.BVLC](context.Background(), data)
 		if err != nil {
 			return errors.Wrap(err, "error parsing NPDU")
 		}

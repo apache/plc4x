@@ -112,7 +112,7 @@ func (s *Subscriber) handleValueChange(ctx context.Context, destinationAddress [
 	// Decode the group-address according to the settings in the driver
 	// Group addresses can be 1, 2 or 3 levels (3 being the default)
 	ctxForModel := options.GetLoggerContextForModel(ctx, s.log, options.WithPassLoggerToModel(s.passLogToModel))
-	groupAddress, err := driverModel.KnxGroupAddressParse(ctxForModel, destinationAddress, s.connection.getGroupAddressNumLevels())
+	groupAddress, err := driverModel.KnxGroupAddressParse[driverModel.KnxGroupAddress](ctxForModel, destinationAddress, s.connection.getGroupAddressNumLevels())
 	if err != nil {
 		return
 	}

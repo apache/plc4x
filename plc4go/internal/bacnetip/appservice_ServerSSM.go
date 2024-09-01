@@ -475,7 +475,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 		// TODO: this is nonsense... We need to parse the service and the apdu not sure where to get it from now..
 		// TODO: it should be the original apdu, we might just need to use that as base and forward it as non segmented
 		ctxForModel := options.GetLoggerContextForModel(context.TODO(), s.log, options.WithPassLoggerToModel(s.passLogToModel))
-		parse, err := readWriteModel.APDUParse(ctxForModel, s.segmentAPDU.serviceBytes, uint16(len(s.segmentAPDU.serviceBytes)))
+		parse, err := readWriteModel.APDUParse[readWriteModel.APDU](ctxForModel, s.segmentAPDU.serviceBytes, uint16(len(s.segmentAPDU.serviceBytes)))
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")
 		}

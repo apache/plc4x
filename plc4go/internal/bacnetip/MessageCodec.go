@@ -272,7 +272,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			return nil, nil
 		}
 		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		bvlcPacket, err := model.BVLCParse(ctxForModel, data)
+		bvlcPacket, err := model.BVLCParse[model.BVLC](ctxForModel, data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

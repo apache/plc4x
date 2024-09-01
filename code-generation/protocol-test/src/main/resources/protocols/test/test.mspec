@@ -121,6 +121,7 @@
             [simple string 8 abstractStringField]
         ]
     ]
+    [abstract bit oneMoreBit]
 ]
 
 [type ArrayTypeTest

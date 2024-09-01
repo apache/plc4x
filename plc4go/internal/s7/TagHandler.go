@@ -267,7 +267,7 @@ func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", tagAddress)
 		}
 		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		s7Address, err := readWriteModel.S7AddressAnyParse(ctxForModel, addressData)
+		s7Address, err := readWriteModel.S7AddressParse[readWriteModel.S7AddressAny](ctxForModel, addressData)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to parse address: %s", tagAddress)
 		}

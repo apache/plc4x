@@ -302,7 +302,7 @@ func (a *_APCI) Decode(pdu Arg) error {
 	switch rm := a.rootMessage.(type) {
 	case *messageBridge:
 		data := rm.GetPduData()
-		parse, err := readWriteModel.APDUParse(context.Background(), data, uint16(len(data)))
+		parse, err := readWriteModel.APDUParse[readWriteModel.APDU](context.Background(), data, uint16(len(data)))
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")
 		}

@@ -98,7 +98,7 @@ func (suite *TestAnnexJCodecSuite) TestResult() {
 	pduBytes, err := bacnetip.Xtob("81.00.0006.0000")
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -118,7 +118,7 @@ func (suite *TestAnnexJCodecSuite) TestResult() {
 	pduBytes, err = bacnetip.Xtob("81.00.0006.0010") // TODO: check if this is right or if it should be 01 as there is no code for 1
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -140,7 +140,7 @@ func (suite *TestAnnexJCodecSuite) TestWriteBroadcastDistributionTable() {
 	pduBytes, err := bacnetip.Xtob("81.01.0004")
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -162,7 +162,7 @@ func (suite *TestAnnexJCodecSuite) TestWriteBroadcastDistributionTable() {
 		"c0.a8.00.fe.ba.c0 ff.ff.ff.00") // address and mask
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -184,7 +184,7 @@ func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTable() {
 	pduBytes, err := bacnetip.Xtob("81.02.0004")
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -206,7 +206,7 @@ func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTableAck() {
 	pduBytes, err := bacnetip.Xtob("81.03.0004")
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -228,7 +228,7 @@ func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTableAck() {
 		"c0.a8.00.fe.ba.c0 ff.ff.ff.00") // address and mask
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -263,7 +263,7 @@ func (suite *TestAnnexJCodecSuite) TestForwardNPDU() {
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -289,7 +289,7 @@ func (suite *TestAnnexJCodecSuite) TestRegisterForeignDevice() {
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -311,7 +311,7 @@ func (suite *TestAnnexJCodecSuite) TestReadForeignDeviceTable() {
 	pduBytes, err := bacnetip.Xtob("81.06.0004")
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -333,7 +333,7 @@ func (suite *TestAnnexJCodecSuite) TestReadForeignDeviceTableAck() {
 	pduBytes, err := bacnetip.Xtob("81.07.0004")
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -362,7 +362,7 @@ func (suite *TestAnnexJCodecSuite) TestReadForeignDeviceTableAck() {
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -385,7 +385,7 @@ func (suite *TestAnnexJCodecSuite) TestDeleteForeignDeviceTableEntry() {
 		"c0.a8.00.0b.ba.c0") // address of entry to be deleted
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -423,7 +423,7 @@ func (suite *TestAnnexJCodecSuite) TestDistributeBroadcastToNetwork() {
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -456,7 +456,7 @@ func (suite *TestAnnexJCodecSuite) TestOriginalUnicastNPDU() {
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())
@@ -489,7 +489,7 @@ func (suite *TestAnnexJCodecSuite) TestOriginalBroadcastNPDU() {
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
-		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		parse, err := readWriteModel.BVLCParse[readWriteModel.BVLC](testutils.TestContext(suite.T()), pduBytes)
 		suite.Assert().NoError(err)
 		if parse != nil {
 			suite.T().Log("\n" + parse.String())

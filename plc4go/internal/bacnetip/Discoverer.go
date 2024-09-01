@@ -178,7 +178,7 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 					}
 					d.log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
 					ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
-					incomingBvlc, err := driverModel.BVLCParse(ctxForModel, buf[:n])
+					incomingBvlc, err := driverModel.BVLCParse[driverModel.BVLC](ctxForModel, buf[:n])
 					if err != nil {
 						d.log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true
@@ -218,7 +218,7 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 					}
 					d.log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
 					ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
-					incomingBvlc, err := driverModel.BVLCParse(ctxForModel, buf[:n])
+					incomingBvlc, err := driverModel.BVLCParse[driverModel.BVLC](ctxForModel, buf[:n])
 					if err != nil {
 						d.log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true

@@ -30,7 +30,7 @@ func NoMorePathSegments(ctx context.Context, readBuffer utils.ReadBuffer) func()
 		initialPos := readBuffer.GetPos()
 		defer readBuffer.Reset(initialPos)
 
-		_, err := PathSegmentParseWithBuffer(ctx, readBuffer)
+		_, err := PathSegmentParseWithBuffer[PathSegment](ctx, readBuffer)
 		return err != nil
 	}
 }

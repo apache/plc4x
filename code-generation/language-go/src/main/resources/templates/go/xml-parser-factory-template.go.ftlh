@@ -52,7 +52,7 @@ import (
 	"strings"
 	"strconv"
 
-	"github.com/apache/plc4x/plc4go/protocols/${helper.getSanitizedPackageName()}/${outputFlavor?replace("-","")}/model"
+	. "github.com/apache/plc4x/plc4go/protocols/${helper.getSanitizedPackageName()}/${outputFlavor?replace("-","")}/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -78,7 +78,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
             <#list 0..typeDefinition.parserArguments.orElseThrow()?size-1 as i>
                 <#assign parserArgument=typeDefinition.parserArguments.orElseThrow()[i]>
                 <#if parserArgument.type.isEnumTypeReference()>
-            ${parserArgument.name}, _ := model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(parserArguments[${i}])
+            ${parserArgument.name}, _ := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(parserArguments[${i}])
                 <#else>
                     <#switch helper.getLanguageTypeNameForTypeReference(parserArgument.type)>
                         <#case "bool">
@@ -113,15 +113,15 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
                             <#break>
                         <#default>
 			// TODO: find a way to parse the sub types
-            var ${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference()>model.</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+            var ${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference()></#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
                             <#break>
                     </#switch>
                 </#if>
             </#list>
             <#assign parserArgumentList><#list typeDefinition.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep> </#list> </#assign>
-            return model.${typeDefinition.name}ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), ${parserArgumentList})
+            return ${typeDefinition.name}ParseWithBuffer<#if typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()||typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedParentTypeDefinition()>[${typeDefinition.name}]</#if>(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), ${parserArgumentList})
         <#else>
-			return model.${typeDefinition.name}ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+			return ${typeDefinition.name}ParseWithBuffer<#if typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()||typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedParentTypeDefinition()>[${typeDefinition.name}]</#if>(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
         </#if>
     </#list>
     }

@@ -201,7 +201,7 @@ func (d *UDPDirector) handleRead() {
 	}
 
 	ctxForModel := options.GetLoggerContextForModel(context.TODO(), d.log, options.WithPassLoggerToModel(d.passLogToModel))
-	bvlc, err := model.BVLCParse(ctxForModel, readBytes)
+	bvlc, err := model.BVLCParse[model.BVLC](ctxForModel, readBytes)
 	if err != nil {
 		// pass along to a handler
 		d.handleError(errors.Wrap(err, "error parsing bvlc"))

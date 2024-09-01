@@ -103,7 +103,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			return nil, nil
 		}
 		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		knxMessage, err := model.KnxNetIpMessageParse(ctxForModel, data)
+		knxMessage, err := model.KnxNetIpMessageParse[model.KnxNetIpMessage](ctxForModel, data)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error parsing message")
 			// TODO: Possibly clean up ...

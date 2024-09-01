@@ -96,7 +96,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 
 		request := s7MessageRequest
 		// Create a new Request with correct tpuId (is not known before)
-		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.Parameter, request.Payload)
+		s7MessageRequest = readWriteModel.NewS7MessageRequest(tpduId, request.GetParameter(), request.GetPayload())
 
 		// Assemble the finished paket
 		m.log.Trace().Msg("Assemble paket")
