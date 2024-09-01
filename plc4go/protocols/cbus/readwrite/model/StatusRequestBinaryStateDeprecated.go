@@ -202,20 +202,8 @@ func (m *_StatusRequestBinaryStateDeprecated) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for StatusRequestBinaryStateDeprecated")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0xFA)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0xFA),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := /*TODO: migrate me*/ writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0xFA), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
 		// Simple Field (application)
@@ -230,20 +218,8 @@ func (m *_StatusRequestBinaryStateDeprecated) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved byte = byte(0x00)
-			if m.reservedField1 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": byte(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := /*TODO: migrate me*/ writeBuffer.WriteByte("reserved", reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[byte](ctx, "reserved", byte(0x00), WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
 		if popErr := writeBuffer.PopContext("StatusRequestBinaryStateDeprecated"); popErr != nil {

@@ -353,20 +353,8 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(_writeEnabledErr, "Error serializing 'writeEnabled' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x0)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x0),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 1)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
 		// Simple Field (propertyDataType)
@@ -381,20 +369,8 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(_propertyDataTypeErr, "Error serializing 'propertyDataType' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x0)
-			if m.reservedField1 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x0),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x0), WriteUnsignedByte(writeBuffer, 4)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
 		// Simple Field (maxNrOfElements)

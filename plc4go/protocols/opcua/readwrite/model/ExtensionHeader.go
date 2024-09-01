@@ -179,20 +179,8 @@ func (m *_ExtensionHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for ExtensionHeader")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved int8 = int8(0x00)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": int8(0x00),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := /*TODO: migrate me*/ writeBuffer.WriteInt8("reserved", 5, int8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[int8](ctx, "reserved", int8(0x00), WriteSignedByte(writeBuffer, 5)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
 	// Simple Field (xmlbody)

@@ -686,20 +686,8 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(_flagPersistentErr, "Error serializing 'flagPersistent' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint8 = uint8(0x00)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 3, uint8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 3), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
 	// Simple Field (flagExtendedFlags)
@@ -737,20 +725,8 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(_flagContextMaskErr, "Error serializing 'flagContextMask' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint16 = uint16(0x0000)
-		if m.reservedField1 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint16(0x0000),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField1
-		}
-		_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x0000), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 	nameLength := uint16(uint16(len(m.GetName())))
 	if err := WriteImplicitField(ctx, "nameLength", nameLength, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.LittleEndian)); err != nil {

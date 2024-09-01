@@ -343,20 +343,8 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_instanceSegmentErr, "Error serializing 'instanceSegment' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint16 = uint16(0x9D05)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint16(0x9D05),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x9D05), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 		messageSize := uint16(uint16(uint16(uint16(m.GetLengthInBytes(ctx)))-uint16(uint16(10))) - uint16(uint16(4)))
 		if err := WriteImplicitField(ctx, "messageSize", messageSize, WriteUnsignedShort(writeBuffer, 16)); err != nil {

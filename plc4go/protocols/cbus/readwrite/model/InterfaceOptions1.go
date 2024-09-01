@@ -253,20 +253,8 @@ func (m *_InterfaceOptions1) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(pushErr, "Error pushing for InterfaceOptions1")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
 	// Simple Field (idmon)
@@ -304,20 +292,8 @@ func (m *_InterfaceOptions1) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(_xonXoffErr, "Error serializing 'xonXoff' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField1 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField1
-		}
-		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 
 	// Simple Field (connect)

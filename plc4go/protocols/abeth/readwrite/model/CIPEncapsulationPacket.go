@@ -309,20 +309,8 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 		return errors.Wrap(_optionsErr, "Error serializing 'options' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint32 = uint32(0x00000000)
-		if pm.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint32(0x00000000),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *pm.reservedField0
-		}
-		_err := /*TODO: migrate me*/ writeBuffer.WriteUint32("reserved", 32, uint32(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint32](ctx, "reserved", uint32(0x00000000), WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

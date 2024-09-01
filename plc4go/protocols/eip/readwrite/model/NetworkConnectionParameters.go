@@ -254,20 +254,8 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(_connectionSizeErr, "Error serializing 'connectionSize' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved uint8 = uint8(0x00)
-		if m.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField0
-		}
-		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 
 	// Simple Field (owner)
@@ -284,20 +272,8 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField1 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField1
-		}
-		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 	}
 
 	// Simple Field (priority)
@@ -314,20 +290,8 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(_connectionSizeTypeErr, "Error serializing 'connectionSizeType' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved bool = bool(false)
-		if m.reservedField2 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": bool(false),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *m.reservedField2
-		}
-		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[bool](ctx, "reserved", bool(false), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 3")
 	}
 
 	if popErr := writeBuffer.PopContext("NetworkConnectionParameters"); popErr != nil {

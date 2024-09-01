@@ -277,20 +277,8 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(_encapsulationProtocolErr, "Error serializing 'encapsulationProtocol' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x00)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint8(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint8](ctx, "reserved", uint8(0x00), WriteUnsignedByte(writeBuffer, 2)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
 		// Simple Field (supportsCIPEncapsulation)
@@ -300,20 +288,8 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(_supportsCIPEncapsulationErr, "Error serializing 'supportsCIPEncapsulation' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint16 = uint16(0x00)
-			if m.reservedField1 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint16(0x00),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 12, uint16(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint16](ctx, "reserved", uint16(0x00), WriteUnsignedShort(writeBuffer, 12)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
 		// Simple Field (supportsUDP)

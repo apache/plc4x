@@ -347,36 +347,12 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(_cycleTimeInMsErr, "Error serializing 'cycleTimeInMs' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint64 = uint64(0x0000)
-			if m.reservedField0 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint64(0x0000),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := /*TODO: migrate me*/ writeBuffer.WriteUint64("reserved", 64, uint64(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint64](ctx, "reserved", uint64(0x0000), WriteUnsignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint64 = uint64(0x0000)
-			if m.reservedField1 != nil {
-				log.Info().Fields(map[string]any{
-					"expected value": uint64(0x0000),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := /*TODO: migrate me*/ writeBuffer.WriteUint64("reserved", 64, uint64(reserved))
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if err := WriteReservedField[uint64](ctx, "reserved", uint64(0x0000), WriteUnsignedLong(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserved' field number 2")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsAddDeviceNotificationRequest"); popErr != nil {

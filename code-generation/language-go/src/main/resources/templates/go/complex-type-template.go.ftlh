@@ -1449,22 +1449,22 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 					<#break>
 				<#case "reserved">
 					<#assign reservedField = field.asReservedField().orElseThrow()>
-					<#assign simpleTypeReference = reservedField.type.asSimpleTypeReference().orElseThrow()>
+					<#assign typedField = field.asTypedField().orElseThrow()>
 
-	// Reserved Field (reserved)
-	{
-		var reserved ${helper.getLanguageTypeNameForTypeReference(simpleTypeReference)} = ${helper.getReservedValue(reservedField)}
-		if <#if type.isAbstract()>p</#if>m.reservedField${reservedFieldIndex} != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": ${helper.getReservedValue(reservedField)},
-				"got value": reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *<#if type.isAbstract()>p</#if>m.reservedField${reservedFieldIndex}
-		}<#assign reservedFieldIndex=reservedFieldIndex+1>
-		_err := ${helper.getWriteBufferWriteMethodCall("reserved", simpleTypeReference, "reserved", reservedField)}
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")<@emitImport import="github.com/pkg/errors" />
-		}
+					<@compress single_line=true>
+	if err := WriteReservedField[${helper.getLanguageTypeNameForField(reservedField)}](
+						ctx,
+						"reserved",
+						<#if helper.isGeneratePropertiesForReservedFields()>
+							reservedField${reservedFieldIndex}!=nil?reservedField${reservedFieldIndex}:
+						</#if>
+						${helper.getReservedValue(reservedField)},
+						${helper.getDataWriterCall(typedField.type, "reserved")}
+						${helper.getFieldOptions(typedField, parserArguments)});
+						<#assign reservedFieldIndex=reservedFieldIndex+1> err != nil {
+					</@compress>
+
+		return errors.Wrap(err, "Error serializing 'reserved' field number ${reservedFieldIndex}")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>
 				<#case "simple">

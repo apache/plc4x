@@ -548,20 +548,8 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(err, "Error serializing 'broadcast' field")
 	}
 
-	// Reserved Field (reserved)
-	{
-		var reserved int8 = int8(0x0)
-		if pm.reservedField0 != nil {
-			log.Info().Fields(map[string]any{
-				"expected value": int8(0x0),
-				"got value":      reserved,
-			}).Msg("Overriding reserved field with unexpected value.")
-			reserved = *pm.reservedField0
-		}
-		_err := /*TODO: migrate me*/ writeBuffer.WriteInt8("reserved", 7, int8(reserved))
-		if _err != nil {
-			return errors.Wrap(_err, "Error serializing 'reserved' field")
-		}
+	if err := WriteReservedField[int8](ctx, "reserved", int8(0x0), WriteSignedByte(writeBuffer, 7)); err != nil {
+		return errors.Wrap(err, "Error serializing 'reserved' field number 1")
 	}
 	length := uint32(uint32(uint32(m.GetLengthInBytes(ctx))) - uint32(uint32(32)))
 	if err := WriteImplicitField(ctx, "length", length, WriteUnsignedInt(writeBuffer, 32)); err != nil {
