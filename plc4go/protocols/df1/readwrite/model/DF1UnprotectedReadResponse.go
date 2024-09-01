@@ -185,15 +185,10 @@ func (m *_DF1UnprotectedReadResponse) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for DF1UnprotectedReadResponse")
 		}
 
-		// Manual Array Field (data)
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
-		}
-		for _, m := range m.GetData() {
-			WriteData(ctx, writeBuffer, m)
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
+		if err := WriteManualArrayField[byte](ctx, "data", m.GetData(), func(ctx context.Context, writeBuffer utils.WriteBuffer, m byte) error {
+			return WriteData(ctx, writeBuffer, m)
+		}, writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DF1UnprotectedReadResponse"); popErr != nil {

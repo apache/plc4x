@@ -235,15 +235,10 @@ func (m *_SysexCommandReportFirmwareResponse) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
 		}
 
-		// Manual Array Field (fileName)
-		if pushErr := writeBuffer.PushContext("fileName", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileName")
-		}
-		for _, m := range m.GetFileName() {
-			SerializeSysexString(ctx, writeBuffer, m)
-		}
-		if popErr := writeBuffer.PopContext("fileName", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileName")
+		if err := WriteManualArrayField[byte](ctx, "fileName", m.GetFileName(), func(ctx context.Context, writeBuffer utils.WriteBuffer, m byte) error {
+			return SerializeSysexString(ctx, writeBuffer, m)
+		}, writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileName' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SysexCommandReportFirmwareResponse"); popErr != nil {

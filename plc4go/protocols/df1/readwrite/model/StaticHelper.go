@@ -70,12 +70,14 @@ func ReadData(ctx context.Context, io utils.ReadBuffer) func(context.Context) (u
 	}
 }
 
-func WriteData(ctx context.Context, io utils.WriteBuffer, element uint8) {
+func WriteData(ctx context.Context, io utils.WriteBuffer, element byte) error {
 	if element == 0x10 {
 		// If a value is 0x10, this has to be duplicated in order to be escaped.
-		_ = io.WriteUint8("", 8, element)
+		if err := io.WriteUint8("", 8, element); err != nil {
+			return err
+		}
 	}
-	_ = io.WriteUint8("", 8, element)
+	return io.WriteUint8("", 8, element)
 }
 
 func DataLength(ctx context.Context, data []byte) uint16 {

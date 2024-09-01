@@ -84,7 +84,7 @@ func WriteManualField[T any](ctx context.Context, logicalName string, runnable f
 	return NewFieldWriterManual[T](log).WriteManualField(ctx, logicalName, runnable, writeBuffer, writerArgs...)
 }
 
-func WriteManualArrayField[T any](ctx context.Context, logicalName string, values []T, runnable func(ctx context.Context) error, writeBuffer utils.WriteBuffer, writerArgs ...utils.WithWriterArgs) error {
+func WriteManualArrayField[T any](ctx context.Context, logicalName string, values []T, runnable func(context.Context, utils.WriteBuffer, T) error, writeBuffer utils.WriteBuffer, writerArgs ...utils.WithWriterArgs) error {
 	log := *zerolog.Ctx(ctx)
 	return NewFieldWriterManualArray[T](log).WriteManualArrayField(ctx, logicalName, values, runnable, writeBuffer, writerArgs...)
 }

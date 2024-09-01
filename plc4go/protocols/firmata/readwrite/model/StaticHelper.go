@@ -43,9 +43,14 @@ func ParseSysexString(ctx context.Context, io utils.ReadBuffer) func(context.Con
 	}
 }
 
-func SerializeSysexString(ctx context.Context, io utils.WriteBuffer, data byte) {
-	_ = io.WriteByte("", data)
-	_ = io.WriteByte("", 0x00)
+func SerializeSysexString(ctx context.Context, io utils.WriteBuffer, data byte) error {
+	if err := io.WriteByte("", data); err != nil {
+		return err
+	}
+	if err := io.WriteByte("", 0x00); err != nil {
+		return err
+	}
+	return nil
 }
 
 func LengthSysexString(ctx context.Context, data []byte) uint16 {

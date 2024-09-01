@@ -41,7 +41,7 @@ func NewFieldWriterManualArray[T any](logger zerolog.Logger) *FieldWriterManualA
 	}
 }
 
-func (f *FieldWriterManualArray[T]) WriteManualArrayField(ctx context.Context, logicalName string, values []T, consumer func(context.Context) error, writeBuffer utils.WriteBuffer, writerArgs ...utils.WithWriterArgs) error {
+func (f *FieldWriterManualArray[T]) WriteManualArrayField(ctx context.Context, logicalName string, values []T, consumer func(context.Context, utils.WriteBuffer, T) error, writeBuffer utils.WriteBuffer, writerArgs ...utils.WithWriterArgs) error {
 	f.log.Debug().Str("logicalName", logicalName).Msg("write field")
 	return f.SwitchParseByteOrderIfNecessarySerializeWrapped(ctx, func(ctx context.Context) error {
 		if values != nil {
@@ -49,7 +49,7 @@ func (f *FieldWriterManualArray[T]) WriteManualArrayField(ctx context.Context, l
 				return errors.Wrap(err, "error pushing context for "+logicalName)
 			}
 			for _, value := range values {
-				if err := consumer(ctx); err != nil {
+				if err := consumer(ctx, writeBuffer, value); err != nil {
 					return errors.Wrapf(err, "error writing value %s for %v", logicalName, value)
 				}
 			}
