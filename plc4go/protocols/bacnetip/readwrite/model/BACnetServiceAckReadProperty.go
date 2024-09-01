@@ -272,36 +272,12 @@ func (m *_BACnetServiceAckReadProperty) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
 		}
 
-		// Optional Field (arrayIndex) (Can be skipped, if the value is null)
-		var arrayIndex BACnetContextTagUnsignedInteger = nil
-		if m.GetArrayIndex() != nil {
-			if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for arrayIndex")
-			}
-			arrayIndex = m.GetArrayIndex()
-			_arrayIndexErr := writeBuffer.WriteSerializable(ctx, arrayIndex)
-			if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for arrayIndex")
-			}
-			if _arrayIndexErr != nil {
-				return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 		}
 
-		// Optional Field (values) (Can be skipped, if the value is null)
-		var values BACnetConstructedData = nil
-		if m.GetValues() != nil {
-			if pushErr := writeBuffer.PushContext("values"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for values")
-			}
-			values = m.GetValues()
-			_valuesErr := writeBuffer.WriteSerializable(ctx, values)
-			if popErr := writeBuffer.PopContext("values"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for values")
-			}
-			if _valuesErr != nil {
-				return errors.Wrap(_valuesErr, "Error serializing 'values' field")
-			}
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "values", GetRef(m.GetValues()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'values' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckReadProperty"); popErr != nil {

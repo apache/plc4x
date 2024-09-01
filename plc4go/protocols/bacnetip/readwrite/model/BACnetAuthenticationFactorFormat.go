@@ -208,36 +208,12 @@ func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(ctx context
 		return errors.Wrap(_formatTypeErr, "Error serializing 'formatType' field")
 	}
 
-	// Optional Field (vendorId) (Can be skipped, if the value is null)
-	var vendorId BACnetVendorIdTagged = nil
-	if m.GetVendorId() != nil {
-		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorId")
-		}
-		vendorId = m.GetVendorId()
-		_vendorIdErr := writeBuffer.WriteSerializable(ctx, vendorId)
-		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorId")
-		}
-		if _vendorIdErr != nil {
-			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
-		}
+	if err := WriteOptionalField[BACnetVendorIdTagged](ctx, "vendorId", GetRef(m.GetVendorId()), WriteComplex[BACnetVendorIdTagged](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'vendorId' field")
 	}
 
-	// Optional Field (vendorFormat) (Can be skipped, if the value is null)
-	var vendorFormat BACnetContextTagUnsignedInteger = nil
-	if m.GetVendorFormat() != nil {
-		if pushErr := writeBuffer.PushContext("vendorFormat"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for vendorFormat")
-		}
-		vendorFormat = m.GetVendorFormat()
-		_vendorFormatErr := writeBuffer.WriteSerializable(ctx, vendorFormat)
-		if popErr := writeBuffer.PopContext("vendorFormat"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for vendorFormat")
-		}
-		if _vendorFormatErr != nil {
-			return errors.Wrap(_vendorFormatErr, "Error serializing 'vendorFormat' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "vendorFormat", GetRef(m.GetVendorFormat()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'vendorFormat' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetAuthenticationFactorFormat"); popErr != nil {

@@ -284,52 +284,16 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) SerializeWi
 			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
-		// Optional Field (issueConfirmedNotifications) (Can be skipped, if the value is null)
-		var issueConfirmedNotifications BACnetContextTagBoolean = nil
-		if m.GetIssueConfirmedNotifications() != nil {
-			if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
-			}
-			issueConfirmedNotifications = m.GetIssueConfirmedNotifications()
-			_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(ctx, issueConfirmedNotifications)
-			if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
-			}
-			if _issueConfirmedNotificationsErr != nil {
-				return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", GetRef(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 		}
 
-		// Optional Field (lifetime) (Can be skipped, if the value is null)
-		var lifetime BACnetContextTagUnsignedInteger = nil
-		if m.GetLifetime() != nil {
-			if pushErr := writeBuffer.PushContext("lifetime"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for lifetime")
-			}
-			lifetime = m.GetLifetime()
-			_lifetimeErr := writeBuffer.WriteSerializable(ctx, lifetime)
-			if popErr := writeBuffer.PopContext("lifetime"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for lifetime")
-			}
-			if _lifetimeErr != nil {
-				return errors.Wrap(_lifetimeErr, "Error serializing 'lifetime' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", GetRef(m.GetLifetime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'lifetime' field")
 		}
 
-		// Optional Field (maxNotificationDelay) (Can be skipped, if the value is null)
-		var maxNotificationDelay BACnetContextTagUnsignedInteger = nil
-		if m.GetMaxNotificationDelay() != nil {
-			if pushErr := writeBuffer.PushContext("maxNotificationDelay"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for maxNotificationDelay")
-			}
-			maxNotificationDelay = m.GetMaxNotificationDelay()
-			_maxNotificationDelayErr := writeBuffer.WriteSerializable(ctx, maxNotificationDelay)
-			if popErr := writeBuffer.PopContext("maxNotificationDelay"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for maxNotificationDelay")
-			}
-			if _maxNotificationDelayErr != nil {
-				return errors.Wrap(_maxNotificationDelayErr, "Error serializing 'maxNotificationDelay' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "maxNotificationDelay", GetRef(m.GetMaxNotificationDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'maxNotificationDelay' field")
 		}
 
 		// Simple Field (listOfCovSubscriptionSpecifications)

@@ -214,20 +214,8 @@ func (m *_BACnetLogRecord) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_logDatumErr, "Error serializing 'logDatum' field")
 	}
 
-	// Optional Field (statusFlags) (Can be skipped, if the value is null)
-	var statusFlags BACnetStatusFlagsTagged = nil
-	if m.GetStatusFlags() != nil {
-		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusFlags")
-		}
-		statusFlags = m.GetStatusFlags()
-		_statusFlagsErr := writeBuffer.WriteSerializable(ctx, statusFlags)
-		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusFlags")
-		}
-		if _statusFlagsErr != nil {
-			return errors.Wrap(_statusFlagsErr, "Error serializing 'statusFlags' field")
-		}
+	if err := WriteOptionalField[BACnetStatusFlagsTagged](ctx, "statusFlags", GetRef(m.GetStatusFlags()), WriteComplex[BACnetStatusFlagsTagged](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'statusFlags' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLogRecord"); popErr != nil {

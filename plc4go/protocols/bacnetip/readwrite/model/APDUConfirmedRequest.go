@@ -512,24 +512,12 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
 		}
 
-		// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
-		var sequenceNumber *uint8 = nil
-		if m.GetSequenceNumber() != nil {
-			sequenceNumber = m.GetSequenceNumber()
-			_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceNumber", 8, uint8(*(sequenceNumber)))
-			if _sequenceNumberErr != nil {
-				return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "sequenceNumber", m.GetSequenceNumber(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'sequenceNumber' field")
 		}
 
-		// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
-		var proposedWindowSize *uint8 = nil
-		if m.GetProposedWindowSize() != nil {
-			proposedWindowSize = m.GetProposedWindowSize()
-			_proposedWindowSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("proposedWindowSize", 8, uint8(*(proposedWindowSize)))
-			if _proposedWindowSizeErr != nil {
-				return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "proposedWindowSize", m.GetProposedWindowSize(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'proposedWindowSize' field")
 		}
 		// Virtual field
 		apduHeaderReduction := m.GetApduHeaderReduction()
@@ -538,36 +526,12 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_apduHeaderReductionErr, "Error serializing 'apduHeaderReduction' field")
 		}
 
-		// Optional Field (serviceRequest) (Can be skipped, if the value is null)
-		var serviceRequest BACnetConfirmedServiceRequest = nil
-		if m.GetServiceRequest() != nil {
-			if pushErr := writeBuffer.PushContext("serviceRequest"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for serviceRequest")
-			}
-			serviceRequest = m.GetServiceRequest()
-			_serviceRequestErr := writeBuffer.WriteSerializable(ctx, serviceRequest)
-			if popErr := writeBuffer.PopContext("serviceRequest"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for serviceRequest")
-			}
-			if _serviceRequestErr != nil {
-				return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
-			}
+		if err := WriteOptionalField[BACnetConfirmedServiceRequest](ctx, "serviceRequest", GetRef(m.GetServiceRequest()), WriteComplex[BACnetConfirmedServiceRequest](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceRequest' field")
 		}
 
-		// Optional Field (segmentServiceChoice) (Can be skipped, if the value is null)
-		var segmentServiceChoice *BACnetConfirmedServiceChoice = nil
-		if m.GetSegmentServiceChoice() != nil {
-			if pushErr := writeBuffer.PushContext("segmentServiceChoice"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for segmentServiceChoice")
-			}
-			segmentServiceChoice = m.GetSegmentServiceChoice()
-			_segmentServiceChoiceErr := writeBuffer.WriteSerializable(ctx, segmentServiceChoice)
-			if popErr := writeBuffer.PopContext("segmentServiceChoice"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for segmentServiceChoice")
-			}
-			if _segmentServiceChoiceErr != nil {
-				return errors.Wrap(_segmentServiceChoiceErr, "Error serializing 'segmentServiceChoice' field")
-			}
+		if err := WriteOptionalEnumField[BACnetConfirmedServiceChoice](ctx, "segmentServiceChoice", "BACnetConfirmedServiceChoice", m.GetSegmentServiceChoice(), WriteEnum[BACnetConfirmedServiceChoice, uint8](BACnetConfirmedServiceChoice.GetValue, BACnetConfirmedServiceChoice.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool(m.GetSegmentedMessage()) && bool(bool((*m.GetSequenceNumber()) != (0)))); err != nil {
+			return errors.Wrap(err, "Error serializing 'segmentServiceChoice' field")
 		}
 		// Virtual field
 		segmentReduction := m.GetSegmentReduction()

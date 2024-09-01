@@ -273,36 +273,12 @@ func (m *_BACnetConfirmedServiceRequestReadRange) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
 		}
 
-		// Optional Field (propertyArrayIndex) (Can be skipped, if the value is null)
-		var propertyArrayIndex BACnetContextTagUnsignedInteger = nil
-		if m.GetPropertyArrayIndex() != nil {
-			if pushErr := writeBuffer.PushContext("propertyArrayIndex"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for propertyArrayIndex")
-			}
-			propertyArrayIndex = m.GetPropertyArrayIndex()
-			_propertyArrayIndexErr := writeBuffer.WriteSerializable(ctx, propertyArrayIndex)
-			if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for propertyArrayIndex")
-			}
-			if _propertyArrayIndexErr != nil {
-				return errors.Wrap(_propertyArrayIndexErr, "Error serializing 'propertyArrayIndex' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", GetRef(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyArrayIndex' field")
 		}
 
-		// Optional Field (readRange) (Can be skipped, if the value is null)
-		var readRange BACnetConfirmedServiceRequestReadRangeRange = nil
-		if m.GetReadRange() != nil {
-			if pushErr := writeBuffer.PushContext("readRange"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for readRange")
-			}
-			readRange = m.GetReadRange()
-			_readRangeErr := writeBuffer.WriteSerializable(ctx, readRange)
-			if popErr := writeBuffer.PopContext("readRange"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for readRange")
-			}
-			if _readRangeErr != nil {
-				return errors.Wrap(_readRangeErr, "Error serializing 'readRange' field")
-			}
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestReadRangeRange](ctx, "readRange", GetRef(m.GetReadRange()), WriteComplex[BACnetConfirmedServiceRequestReadRangeRange](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'readRange' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadRange"); popErr != nil {

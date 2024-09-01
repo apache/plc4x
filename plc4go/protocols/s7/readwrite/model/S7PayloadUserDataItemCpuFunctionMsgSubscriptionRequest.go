@@ -291,30 +291,12 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 			return errors.Wrap(_magicKeyErr, "Error serializing 'magicKey' field")
 		}
 
-		// Optional Field (alarmtype) (Can be skipped, if the value is null)
-		var alarmtype *AlarmStateType = nil
-		if m.GetAlarmtype() != nil {
-			if pushErr := writeBuffer.PushContext("alarmtype"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for alarmtype")
-			}
-			alarmtype = m.GetAlarmtype()
-			_alarmtypeErr := writeBuffer.WriteSerializable(ctx, alarmtype)
-			if popErr := writeBuffer.PopContext("alarmtype"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for alarmtype")
-			}
-			if _alarmtypeErr != nil {
-				return errors.Wrap(_alarmtypeErr, "Error serializing 'alarmtype' field")
-			}
+		if err := WriteOptionalEnumField[AlarmStateType](ctx, "alarmtype", "AlarmStateType", m.GetAlarmtype(), WriteEnum[AlarmStateType, uint8](AlarmStateType.GetValue, AlarmStateType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetSubscription()) >= (128))); err != nil {
+			return errors.Wrap(err, "Error serializing 'alarmtype' field")
 		}
 
-		// Optional Field (reserve) (Can be skipped, if the value is null)
-		var reserve *uint8 = nil
-		if m.GetReserve() != nil {
-			reserve = m.GetReserve()
-			_reserveErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserve", 8, uint8(*(reserve)))
-			if _reserveErr != nil {
-				return errors.Wrap(_reserveErr, "Error serializing 'reserve' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "reserve", m.GetReserve(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'reserve' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest"); popErr != nil {

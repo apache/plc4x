@@ -307,20 +307,8 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 		}
 
-		// Optional Field (notificationClass) (Can be skipped, if the value is null)
-		var notificationClass BACnetApplicationTagUnsignedInteger = nil
-		if m.GetNotificationClass() != nil {
-			if pushErr := writeBuffer.PushContext("notificationClass"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for notificationClass")
-			}
-			notificationClass = m.GetNotificationClass()
-			_notificationClassErr := writeBuffer.WriteSerializable(ctx, notificationClass)
-			if popErr := writeBuffer.PopContext("notificationClass"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for notificationClass")
-			}
-			if _notificationClassErr != nil {
-				return errors.Wrap(_notificationClassErr, "Error serializing 'notificationClass' field")
-			}
+		if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "notificationClass", GetRef(m.GetNotificationClass()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckGetEnrollmentSummary"); popErr != nil {

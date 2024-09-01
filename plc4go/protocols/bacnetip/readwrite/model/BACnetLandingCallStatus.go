@@ -214,20 +214,8 @@ func (m *_BACnetLandingCallStatus) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(_commandErr, "Error serializing 'command' field")
 	}
 
-	// Optional Field (floorText) (Can be skipped, if the value is null)
-	var floorText BACnetContextTagCharacterString = nil
-	if m.GetFloorText() != nil {
-		if pushErr := writeBuffer.PushContext("floorText"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for floorText")
-		}
-		floorText = m.GetFloorText()
-		_floorTextErr := writeBuffer.WriteSerializable(ctx, floorText)
-		if popErr := writeBuffer.PopContext("floorText"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for floorText")
-		}
-		if _floorTextErr != nil {
-			return errors.Wrap(_floorTextErr, "Error serializing 'floorText' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "floorText", GetRef(m.GetFloorText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'floorText' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLandingCallStatus"); popErr != nil {

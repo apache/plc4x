@@ -285,30 +285,12 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
 	}
 
-	// Optional Field (namespaceURI) (Can be skipped, if the value is null)
-	var namespaceURI PascalString = nil
-	if m.GetNamespaceURI() != nil {
-		if pushErr := writeBuffer.PushContext("namespaceURI"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for namespaceURI")
-		}
-		namespaceURI = m.GetNamespaceURI()
-		_namespaceURIErr := writeBuffer.WriteSerializable(ctx, namespaceURI)
-		if popErr := writeBuffer.PopContext("namespaceURI"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for namespaceURI")
-		}
-		if _namespaceURIErr != nil {
-			return errors.Wrap(_namespaceURIErr, "Error serializing 'namespaceURI' field")
-		}
+	if err := WriteOptionalField[PascalString](ctx, "namespaceURI", GetRef(m.GetNamespaceURI()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'namespaceURI' field")
 	}
 
-	// Optional Field (serverIndex) (Can be skipped, if the value is null)
-	var serverIndex *uint32 = nil
-	if m.GetServerIndex() != nil {
-		serverIndex = m.GetServerIndex()
-		_serverIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("serverIndex", 32, uint32(*(serverIndex)))
-		if _serverIndexErr != nil {
-			return errors.Wrap(_serverIndexErr, "Error serializing 'serverIndex' field")
-		}
+	if err := WriteOptionalField[uint32](ctx, "serverIndex", m.GetServerIndex(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'serverIndex' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ExpandedNodeId"); popErr != nil {

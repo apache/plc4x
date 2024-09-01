@@ -229,20 +229,8 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(_alphaErr, "Error serializing 'alpha' field")
 	}
 
-	// Optional Field (secondAlpha) (Can be skipped, if the value is null)
-	var secondAlpha Alpha = nil
-	if m.GetSecondAlpha() != nil {
-		if pushErr := writeBuffer.PushContext("secondAlpha"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for secondAlpha")
-		}
-		secondAlpha = m.GetSecondAlpha()
-		_secondAlphaErr := writeBuffer.WriteSerializable(ctx, secondAlpha)
-		if popErr := writeBuffer.PopContext("secondAlpha"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for secondAlpha")
-		}
-		if _secondAlphaErr != nil {
-			return errors.Wrap(_secondAlphaErr, "Error serializing 'secondAlpha' field")
-		}
+	if err := WriteOptionalField[Alpha](ctx, "secondAlpha", GetRef(m.GetSecondAlpha()), WriteComplex[Alpha](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'secondAlpha' field")
 	}
 
 	// Simple Field (confirmationType)

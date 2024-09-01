@@ -186,20 +186,8 @@ func (m *_BACnetRecipientProcess) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(_recipientErr, "Error serializing 'recipient' field")
 	}
 
-	// Optional Field (processIdentifier) (Can be skipped, if the value is null)
-	var processIdentifier BACnetContextTagUnsignedInteger = nil
-	if m.GetProcessIdentifier() != nil {
-		if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for processIdentifier")
-		}
-		processIdentifier = m.GetProcessIdentifier()
-		_processIdentifierErr := writeBuffer.WriteSerializable(ctx, processIdentifier)
-		if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for processIdentifier")
-		}
-		if _processIdentifierErr != nil {
-			return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "processIdentifier", GetRef(m.GetProcessIdentifier()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'processIdentifier' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetRecipientProcess"); popErr != nil {

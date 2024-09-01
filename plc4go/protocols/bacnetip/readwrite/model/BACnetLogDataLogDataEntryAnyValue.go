@@ -187,20 +187,8 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntryAnyValue")
 		}
 
-		// Optional Field (anyValue) (Can be skipped, if the value is null)
-		var anyValue BACnetConstructedData = nil
-		if m.GetAnyValue() != nil {
-			if pushErr := writeBuffer.PushContext("anyValue"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for anyValue")
-			}
-			anyValue = m.GetAnyValue()
-			_anyValueErr := writeBuffer.WriteSerializable(ctx, anyValue)
-			if popErr := writeBuffer.PopContext("anyValue"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for anyValue")
-			}
-			if _anyValueErr != nil {
-				return errors.Wrap(_anyValueErr, "Error serializing 'anyValue' field")
-			}
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "anyValue", GetRef(m.GetAnyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'anyValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetLogDataLogDataEntryAnyValue"); popErr != nil {

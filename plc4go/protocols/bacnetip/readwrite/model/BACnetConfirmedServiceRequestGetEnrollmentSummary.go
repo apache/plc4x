@@ -313,84 +313,24 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 			return errors.Wrap(_acknowledgmentFilterErr, "Error serializing 'acknowledgmentFilter' field")
 		}
 
-		// Optional Field (enrollmentFilter) (Can be skipped, if the value is null)
-		var enrollmentFilter BACnetRecipientProcessEnclosed = nil
-		if m.GetEnrollmentFilter() != nil {
-			if pushErr := writeBuffer.PushContext("enrollmentFilter"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for enrollmentFilter")
-			}
-			enrollmentFilter = m.GetEnrollmentFilter()
-			_enrollmentFilterErr := writeBuffer.WriteSerializable(ctx, enrollmentFilter)
-			if popErr := writeBuffer.PopContext("enrollmentFilter"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for enrollmentFilter")
-			}
-			if _enrollmentFilterErr != nil {
-				return errors.Wrap(_enrollmentFilterErr, "Error serializing 'enrollmentFilter' field")
-			}
+		if err := WriteOptionalField[BACnetRecipientProcessEnclosed](ctx, "enrollmentFilter", GetRef(m.GetEnrollmentFilter()), WriteComplex[BACnetRecipientProcessEnclosed](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'enrollmentFilter' field")
 		}
 
-		// Optional Field (eventStateFilter) (Can be skipped, if the value is null)
-		var eventStateFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged = nil
-		if m.GetEventStateFilter() != nil {
-			if pushErr := writeBuffer.PushContext("eventStateFilter"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for eventStateFilter")
-			}
-			eventStateFilter = m.GetEventStateFilter()
-			_eventStateFilterErr := writeBuffer.WriteSerializable(ctx, eventStateFilter)
-			if popErr := writeBuffer.PopContext("eventStateFilter"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for eventStateFilter")
-			}
-			if _eventStateFilterErr != nil {
-				return errors.Wrap(_eventStateFilterErr, "Error serializing 'eventStateFilter' field")
-			}
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](ctx, "eventStateFilter", GetRef(m.GetEventStateFilter()), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventStateFilter' field")
 		}
 
-		// Optional Field (eventTypeFilter) (Can be skipped, if the value is null)
-		var eventTypeFilter BACnetEventTypeTagged = nil
-		if m.GetEventTypeFilter() != nil {
-			if pushErr := writeBuffer.PushContext("eventTypeFilter"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for eventTypeFilter")
-			}
-			eventTypeFilter = m.GetEventTypeFilter()
-			_eventTypeFilterErr := writeBuffer.WriteSerializable(ctx, eventTypeFilter)
-			if popErr := writeBuffer.PopContext("eventTypeFilter"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for eventTypeFilter")
-			}
-			if _eventTypeFilterErr != nil {
-				return errors.Wrap(_eventTypeFilterErr, "Error serializing 'eventTypeFilter' field")
-			}
+		if err := WriteOptionalField[BACnetEventTypeTagged](ctx, "eventTypeFilter", GetRef(m.GetEventTypeFilter()), WriteComplex[BACnetEventTypeTagged](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventTypeFilter' field")
 		}
 
-		// Optional Field (priorityFilter) (Can be skipped, if the value is null)
-		var priorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter = nil
-		if m.GetPriorityFilter() != nil {
-			if pushErr := writeBuffer.PushContext("priorityFilter"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for priorityFilter")
-			}
-			priorityFilter = m.GetPriorityFilter()
-			_priorityFilterErr := writeBuffer.WriteSerializable(ctx, priorityFilter)
-			if popErr := writeBuffer.PopContext("priorityFilter"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for priorityFilter")
-			}
-			if _priorityFilterErr != nil {
-				return errors.Wrap(_priorityFilterErr, "Error serializing 'priorityFilter' field")
-			}
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](ctx, "priorityFilter", GetRef(m.GetPriorityFilter()), WriteComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'priorityFilter' field")
 		}
 
-		// Optional Field (notificationClassFilter) (Can be skipped, if the value is null)
-		var notificationClassFilter BACnetContextTagUnsignedInteger = nil
-		if m.GetNotificationClassFilter() != nil {
-			if pushErr := writeBuffer.PushContext("notificationClassFilter"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for notificationClassFilter")
-			}
-			notificationClassFilter = m.GetNotificationClassFilter()
-			_notificationClassFilterErr := writeBuffer.WriteSerializable(ctx, notificationClassFilter)
-			if popErr := writeBuffer.PopContext("notificationClassFilter"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for notificationClassFilter")
-			}
-			if _notificationClassFilterErr != nil {
-				return errors.Wrap(_notificationClassFilterErr, "Error serializing 'notificationClassFilter' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "notificationClassFilter", GetRef(m.GetNotificationClassFilter()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationClassFilter' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestGetEnrollmentSummary"); popErr != nil {

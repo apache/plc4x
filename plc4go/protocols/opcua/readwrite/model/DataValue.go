@@ -417,76 +417,28 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(_valueSpecifiedErr, "Error serializing 'valueSpecified' field")
 	}
 
-	// Optional Field (value) (Can be skipped, if the value is null)
-	var value Variant = nil
-	if m.GetValue() != nil {
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		value = m.GetValue()
-		_valueErr := writeBuffer.WriteSerializable(ctx, value)
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
-		}
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
-		}
+	if err := WriteOptionalField[Variant](ctx, "value", GetRef(m.GetValue()), WriteComplex[Variant](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
-	// Optional Field (statusCode) (Can be skipped, if the value is null)
-	var statusCode StatusCode = nil
-	if m.GetStatusCode() != nil {
-		if pushErr := writeBuffer.PushContext("statusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusCode")
-		}
-		statusCode = m.GetStatusCode()
-		_statusCodeErr := writeBuffer.WriteSerializable(ctx, statusCode)
-		if popErr := writeBuffer.PopContext("statusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusCode")
-		}
-		if _statusCodeErr != nil {
-			return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
-		}
+	if err := WriteOptionalField[StatusCode](ctx, "statusCode", GetRef(m.GetStatusCode()), WriteComplex[StatusCode](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'statusCode' field")
 	}
 
-	// Optional Field (sourceTimestamp) (Can be skipped, if the value is null)
-	var sourceTimestamp *int64 = nil
-	if m.GetSourceTimestamp() != nil {
-		sourceTimestamp = m.GetSourceTimestamp()
-		_sourceTimestampErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("sourceTimestamp", 64, int64(*(sourceTimestamp)))
-		if _sourceTimestampErr != nil {
-			return errors.Wrap(_sourceTimestampErr, "Error serializing 'sourceTimestamp' field")
-		}
+	if err := WriteOptionalField[int64](ctx, "sourceTimestamp", m.GetSourceTimestamp(), WriteSignedLong(writeBuffer, 64), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceTimestamp' field")
 	}
 
-	// Optional Field (sourcePicoseconds) (Can be skipped, if the value is null)
-	var sourcePicoseconds *uint16 = nil
-	if m.GetSourcePicoseconds() != nil {
-		sourcePicoseconds = m.GetSourcePicoseconds()
-		_sourcePicosecondsErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sourcePicoseconds", 16, uint16(*(sourcePicoseconds)))
-		if _sourcePicosecondsErr != nil {
-			return errors.Wrap(_sourcePicosecondsErr, "Error serializing 'sourcePicoseconds' field")
-		}
+	if err := WriteOptionalField[uint16](ctx, "sourcePicoseconds", m.GetSourcePicoseconds(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourcePicoseconds' field")
 	}
 
-	// Optional Field (serverTimestamp) (Can be skipped, if the value is null)
-	var serverTimestamp *int64 = nil
-	if m.GetServerTimestamp() != nil {
-		serverTimestamp = m.GetServerTimestamp()
-		_serverTimestampErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("serverTimestamp", 64, int64(*(serverTimestamp)))
-		if _serverTimestampErr != nil {
-			return errors.Wrap(_serverTimestampErr, "Error serializing 'serverTimestamp' field")
-		}
+	if err := WriteOptionalField[int64](ctx, "serverTimestamp", m.GetServerTimestamp(), WriteSignedLong(writeBuffer, 64), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'serverTimestamp' field")
 	}
 
-	// Optional Field (serverPicoseconds) (Can be skipped, if the value is null)
-	var serverPicoseconds *uint16 = nil
-	if m.GetServerPicoseconds() != nil {
-		serverPicoseconds = m.GetServerPicoseconds()
-		_serverPicosecondsErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("serverPicoseconds", 16, uint16(*(serverPicoseconds)))
-		if _serverPicosecondsErr != nil {
-			return errors.Wrap(_serverPicosecondsErr, "Error serializing 'serverPicoseconds' field")
-		}
+	if err := WriteOptionalField[uint16](ctx, "serverPicoseconds", m.GetServerPicoseconds(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'serverPicoseconds' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DataValue"); popErr != nil {

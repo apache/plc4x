@@ -192,20 +192,8 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) SerializeWithWriteBu
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestGetEventInformation")
 		}
 
-		// Optional Field (lastReceivedObjectIdentifier) (Can be skipped, if the value is null)
-		var lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier = nil
-		if m.GetLastReceivedObjectIdentifier() != nil {
-			if pushErr := writeBuffer.PushContext("lastReceivedObjectIdentifier"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for lastReceivedObjectIdentifier")
-			}
-			lastReceivedObjectIdentifier = m.GetLastReceivedObjectIdentifier()
-			_lastReceivedObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, lastReceivedObjectIdentifier)
-			if popErr := writeBuffer.PopContext("lastReceivedObjectIdentifier"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for lastReceivedObjectIdentifier")
-			}
-			if _lastReceivedObjectIdentifierErr != nil {
-				return errors.Wrap(_lastReceivedObjectIdentifierErr, "Error serializing 'lastReceivedObjectIdentifier' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "lastReceivedObjectIdentifier", GetRef(m.GetLastReceivedObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastReceivedObjectIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestGetEventInformation"); popErr != nil {

@@ -616,14 +616,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_isUint8Err, "Error serializing 'isUint8' field")
 	}
 
-	// Optional Field (valueUint8) (Can be skipped, if the value is null)
-	var valueUint8 *uint8 = nil
-	if m.GetValueUint8() != nil {
-		valueUint8 = m.GetValueUint8()
-		_valueUint8Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("valueUint8", 8, uint8(*(valueUint8)))
-		if _valueUint8Err != nil {
-			return errors.Wrap(_valueUint8Err, "Error serializing 'valueUint8' field")
-		}
+	if err := WriteOptionalField[uint8](ctx, "valueUint8", m.GetValueUint8(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueUint8' field")
 	}
 	// Virtual field
 	isUint16 := m.GetIsUint16()
@@ -632,14 +626,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_isUint16Err, "Error serializing 'isUint16' field")
 	}
 
-	// Optional Field (valueUint16) (Can be skipped, if the value is null)
-	var valueUint16 *uint16 = nil
-	if m.GetValueUint16() != nil {
-		valueUint16 = m.GetValueUint16()
-		_valueUint16Err := /*TODO: migrate me*/ writeBuffer.WriteUint16("valueUint16", 16, uint16(*(valueUint16)))
-		if _valueUint16Err != nil {
-			return errors.Wrap(_valueUint16Err, "Error serializing 'valueUint16' field")
-		}
+	if err := WriteOptionalField[uint16](ctx, "valueUint16", m.GetValueUint16(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueUint16' field")
 	}
 	// Virtual field
 	isUint24 := m.GetIsUint24()
@@ -648,14 +636,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_isUint24Err, "Error serializing 'isUint24' field")
 	}
 
-	// Optional Field (valueUint24) (Can be skipped, if the value is null)
-	var valueUint24 *uint32 = nil
-	if m.GetValueUint24() != nil {
-		valueUint24 = m.GetValueUint24()
-		_valueUint24Err := /*TODO: migrate me*/ writeBuffer.WriteUint32("valueUint24", 24, uint32(*(valueUint24)))
-		if _valueUint24Err != nil {
-			return errors.Wrap(_valueUint24Err, "Error serializing 'valueUint24' field")
-		}
+	if err := WriteOptionalField[uint32](ctx, "valueUint24", m.GetValueUint24(), WriteUnsignedInt(writeBuffer, 24), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueUint24' field")
 	}
 	// Virtual field
 	isUint32 := m.GetIsUint32()
@@ -664,14 +646,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_isUint32Err, "Error serializing 'isUint32' field")
 	}
 
-	// Optional Field (valueUint32) (Can be skipped, if the value is null)
-	var valueUint32 *uint32 = nil
-	if m.GetValueUint32() != nil {
-		valueUint32 = m.GetValueUint32()
-		_valueUint32Err := /*TODO: migrate me*/ writeBuffer.WriteUint32("valueUint32", 32, uint32(*(valueUint32)))
-		if _valueUint32Err != nil {
-			return errors.Wrap(_valueUint32Err, "Error serializing 'valueUint32' field")
-		}
+	if err := WriteOptionalField[uint32](ctx, "valueUint32", m.GetValueUint32(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueUint32' field")
 	}
 	// Virtual field
 	isUint40 := m.GetIsUint40()
@@ -680,14 +656,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_isUint40Err, "Error serializing 'isUint40' field")
 	}
 
-	// Optional Field (valueUint40) (Can be skipped, if the value is null)
-	var valueUint40 *uint64 = nil
-	if m.GetValueUint40() != nil {
-		valueUint40 = m.GetValueUint40()
-		_valueUint40Err := /*TODO: migrate me*/ writeBuffer.WriteUint64("valueUint40", 40, uint64(*(valueUint40)))
-		if _valueUint40Err != nil {
-			return errors.Wrap(_valueUint40Err, "Error serializing 'valueUint40' field")
-		}
+	if err := WriteOptionalField[uint64](ctx, "valueUint40", m.GetValueUint40(), WriteUnsignedLong(writeBuffer, 40), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueUint40' field")
 	}
 	// Virtual field
 	isUint48 := m.GetIsUint48()
@@ -696,14 +666,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_isUint48Err, "Error serializing 'isUint48' field")
 	}
 
-	// Optional Field (valueUint48) (Can be skipped, if the value is null)
-	var valueUint48 *uint64 = nil
-	if m.GetValueUint48() != nil {
-		valueUint48 = m.GetValueUint48()
-		_valueUint48Err := /*TODO: migrate me*/ writeBuffer.WriteUint64("valueUint48", 48, uint64(*(valueUint48)))
-		if _valueUint48Err != nil {
-			return errors.Wrap(_valueUint48Err, "Error serializing 'valueUint48' field")
-		}
+	if err := WriteOptionalField[uint64](ctx, "valueUint48", m.GetValueUint48(), WriteUnsignedLong(writeBuffer, 48), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueUint48' field")
 	}
 	// Virtual field
 	isUint56 := m.GetIsUint56()
@@ -712,14 +676,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_isUint56Err, "Error serializing 'isUint56' field")
 	}
 
-	// Optional Field (valueUint56) (Can be skipped, if the value is null)
-	var valueUint56 *uint64 = nil
-	if m.GetValueUint56() != nil {
-		valueUint56 = m.GetValueUint56()
-		_valueUint56Err := /*TODO: migrate me*/ writeBuffer.WriteUint64("valueUint56", 56, uint64(*(valueUint56)))
-		if _valueUint56Err != nil {
-			return errors.Wrap(_valueUint56Err, "Error serializing 'valueUint56' field")
-		}
+	if err := WriteOptionalField[uint64](ctx, "valueUint56", m.GetValueUint56(), WriteUnsignedLong(writeBuffer, 56), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueUint56' field")
 	}
 	// Virtual field
 	isUint64 := m.GetIsUint64()
@@ -728,14 +686,8 @@ func (m *_BACnetTagPayloadUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_isUint64Err, "Error serializing 'isUint64' field")
 	}
 
-	// Optional Field (valueUint64) (Can be skipped, if the value is null)
-	var valueUint64 *uint64 = nil
-	if m.GetValueUint64() != nil {
-		valueUint64 = m.GetValueUint64()
-		_valueUint64Err := /*TODO: migrate me*/ writeBuffer.WriteUint64("valueUint64", 64, uint64(*(valueUint64)))
-		if _valueUint64Err != nil {
-			return errors.Wrap(_valueUint64Err, "Error serializing 'valueUint64' field")
-		}
+	if err := WriteOptionalField[uint64](ctx, "valueUint64", m.GetValueUint64(), WriteUnsignedLong(writeBuffer, 64), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueUint64' field")
 	}
 	// Virtual field
 	actualValue := m.GetActualValue()

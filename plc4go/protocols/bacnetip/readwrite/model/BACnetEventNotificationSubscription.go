@@ -230,20 +230,8 @@ func (m *_BACnetEventNotificationSubscription) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(_processIdentifierErr, "Error serializing 'processIdentifier' field")
 	}
 
-	// Optional Field (issueConfirmedNotifications) (Can be skipped, if the value is null)
-	var issueConfirmedNotifications BACnetContextTagBoolean = nil
-	if m.GetIssueConfirmedNotifications() != nil {
-		if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
-		}
-		issueConfirmedNotifications = m.GetIssueConfirmedNotifications()
-		_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(ctx, issueConfirmedNotifications)
-		if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
-		}
-		if _issueConfirmedNotificationsErr != nil {
-			return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", GetRef(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 	}
 
 	// Simple Field (timeRemaining)

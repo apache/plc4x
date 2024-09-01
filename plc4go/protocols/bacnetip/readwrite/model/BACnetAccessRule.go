@@ -240,20 +240,8 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(_timeRangeSpecifierErr, "Error serializing 'timeRangeSpecifier' field")
 	}
 
-	// Optional Field (timeRange) (Can be skipped, if the value is null)
-	var timeRange BACnetDeviceObjectPropertyReferenceEnclosed = nil
-	if m.GetTimeRange() != nil {
-		if pushErr := writeBuffer.PushContext("timeRange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeRange")
-		}
-		timeRange = m.GetTimeRange()
-		_timeRangeErr := writeBuffer.WriteSerializable(ctx, timeRange)
-		if popErr := writeBuffer.PopContext("timeRange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeRange")
-		}
-		if _timeRangeErr != nil {
-			return errors.Wrap(_timeRangeErr, "Error serializing 'timeRange' field")
-		}
+	if err := WriteOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "timeRange", GetRef(m.GetTimeRange()), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeRange' field")
 	}
 
 	// Simple Field (locationSpecifier)
@@ -268,20 +256,8 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(_locationSpecifierErr, "Error serializing 'locationSpecifier' field")
 	}
 
-	// Optional Field (location) (Can be skipped, if the value is null)
-	var location BACnetDeviceObjectReferenceEnclosed = nil
-	if m.GetLocation() != nil {
-		if pushErr := writeBuffer.PushContext("location"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for location")
-		}
-		location = m.GetLocation()
-		_locationErr := writeBuffer.WriteSerializable(ctx, location)
-		if popErr := writeBuffer.PopContext("location"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for location")
-		}
-		if _locationErr != nil {
-			return errors.Wrap(_locationErr, "Error serializing 'location' field")
-		}
+	if err := WriteOptionalField[BACnetDeviceObjectReferenceEnclosed](ctx, "location", GetRef(m.GetLocation()), WriteComplex[BACnetDeviceObjectReferenceEnclosed](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'location' field")
 	}
 
 	// Simple Field (enable)

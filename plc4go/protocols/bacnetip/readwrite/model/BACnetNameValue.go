@@ -186,20 +186,8 @@ func (m *_BACnetNameValue) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_nameErr, "Error serializing 'name' field")
 	}
 
-	// Optional Field (value) (Can be skipped, if the value is null)
-	var value BACnetConstructedData = nil
-	if m.GetValue() != nil {
-		if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		value = m.GetValue()
-		_valueErr := writeBuffer.WriteSerializable(ctx, value)
-		if popErr := writeBuffer.PopContext("value"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
-		}
-		if _valueErr != nil {
-			return errors.Wrap(_valueErr, "Error serializing 'value' field")
-		}
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "value", GetRef(m.GetValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetNameValue"); popErr != nil {

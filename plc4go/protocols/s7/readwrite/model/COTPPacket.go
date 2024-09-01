@@ -267,20 +267,8 @@ func (pm *_COTPPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(err, "Error serializing 'parameters' field")
 	}
 
-	// Optional Field (payload) (Can be skipped, if the value is null)
-	var payload S7Message = nil
-	if m.GetPayload() != nil {
-		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for payload")
-		}
-		payload = m.GetPayload()
-		_payloadErr := writeBuffer.WriteSerializable(ctx, payload)
-		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for payload")
-		}
-		if _payloadErr != nil {
-			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
-		}
+	if err := WriteOptionalField[S7Message](ctx, "payload", GetRef(m.GetPayload()), WriteComplex[S7Message](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'payload' field")
 	}
 
 	if popErr := writeBuffer.PopContext("COTPPacket"); popErr != nil {

@@ -209,14 +209,8 @@ func (m *_VariantUInt32) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for VariantUInt32")
 		}
 
-		// Optional Field (arrayLength) (Can be skipped, if the value is null)
-		var arrayLength *int32 = nil
-		if m.GetArrayLength() != nil {
-			arrayLength = m.GetArrayLength()
-			_arrayLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("arrayLength", 32, int32(*(arrayLength)))
-			if _arrayLengthErr != nil {
-				return errors.Wrap(_arrayLengthErr, "Error serializing 'arrayLength' field")
-			}
+		if err := WriteOptionalField[int32](ctx, "arrayLength", m.GetArrayLength(), WriteSignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'arrayLength' field")
 		}
 
 		if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteUnsignedInt(writeBuffer, 32)); err != nil {

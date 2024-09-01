@@ -231,24 +231,12 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(err, "Error serializing 'classId' field")
 	}
 
-	// Optional Field (numberAvailable) (Can be skipped, if the value is null)
-	var numberAvailable *uint16 = nil
-	if m.GetNumberAvailable() != nil {
-		numberAvailable = m.GetNumberAvailable()
-		_numberAvailableErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("numberAvailable", 16, uint16(*(numberAvailable)))
-		if _numberAvailableErr != nil {
-			return errors.Wrap(_numberAvailableErr, "Error serializing 'numberAvailable' field")
-		}
+	if err := WriteOptionalField[uint16](ctx, "numberAvailable", m.GetNumberAvailable(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberAvailable' field")
 	}
 
-	// Optional Field (numberActive) (Can be skipped, if the value is null)
-	var numberActive *uint16 = nil
-	if m.GetNumberActive() != nil {
-		numberActive = m.GetNumberActive()
-		_numberActiveErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("numberActive", 16, uint16(*(numberActive)))
-		if _numberActiveErr != nil {
-			return errors.Wrap(_numberActiveErr, "Error serializing 'numberActive' field")
-		}
+	if err := WriteOptionalField[uint16](ctx, "numberActive", m.GetNumberActive(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberActive' field")
 	}
 
 	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

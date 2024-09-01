@@ -526,7 +526,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataWriterCall(arrayTypeReference.getElementTypeReference(), fieldName);
         } else if (typeReference.isComplexTypeReference()) {
-            return "WriteComplex(writeBuffer)";
+            return "WriteComplex[" + getLanguageTypeNameForTypeReference(typeReference) + "](writeBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }

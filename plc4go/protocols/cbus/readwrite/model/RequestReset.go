@@ -236,36 +236,12 @@ func (m *_RequestReset) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for RequestReset")
 		}
 
-		// Optional Field (secondTilde) (Can be skipped, if the value is null)
-		var secondTilde *RequestType = nil
-		if m.GetSecondTilde() != nil {
-			if pushErr := writeBuffer.PushContext("secondTilde"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for secondTilde")
-			}
-			secondTilde = m.GetSecondTilde()
-			_secondTildeErr := writeBuffer.WriteSerializable(ctx, secondTilde)
-			if popErr := writeBuffer.PopContext("secondTilde"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for secondTilde")
-			}
-			if _secondTildeErr != nil {
-				return errors.Wrap(_secondTildeErr, "Error serializing 'secondTilde' field")
-			}
+		if err := WriteOptionalEnumField[RequestType](ctx, "secondTilde", "RequestType", m.GetSecondTilde(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetTildePeek()) == (RequestType_RESET))); err != nil {
+			return errors.Wrap(err, "Error serializing 'secondTilde' field")
 		}
 
-		// Optional Field (thirdTilde) (Can be skipped, if the value is null)
-		var thirdTilde *RequestType = nil
-		if m.GetThirdTilde() != nil {
-			if pushErr := writeBuffer.PushContext("thirdTilde"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for thirdTilde")
-			}
-			thirdTilde = m.GetThirdTilde()
-			_thirdTildeErr := writeBuffer.WriteSerializable(ctx, thirdTilde)
-			if popErr := writeBuffer.PopContext("thirdTilde"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for thirdTilde")
-			}
-			if _thirdTildeErr != nil {
-				return errors.Wrap(_thirdTildeErr, "Error serializing 'thirdTilde' field")
-			}
+		if err := WriteOptionalEnumField[RequestType](ctx, "thirdTilde", "RequestType", m.GetThirdTilde(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetTildePeek2()) == (RequestType_RESET))); err != nil {
+			return errors.Wrap(err, "Error serializing 'thirdTilde' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestReset"); popErr != nil {

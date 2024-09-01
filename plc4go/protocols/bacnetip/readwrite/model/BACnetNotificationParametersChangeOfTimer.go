@@ -371,52 +371,16 @@ func (m *_BACnetNotificationParametersChangeOfTimer) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_updateTimeErr, "Error serializing 'updateTime' field")
 		}
 
-		// Optional Field (lastStateChange) (Can be skipped, if the value is null)
-		var lastStateChange BACnetTimerTransitionTagged = nil
-		if m.GetLastStateChange() != nil {
-			if pushErr := writeBuffer.PushContext("lastStateChange"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for lastStateChange")
-			}
-			lastStateChange = m.GetLastStateChange()
-			_lastStateChangeErr := writeBuffer.WriteSerializable(ctx, lastStateChange)
-			if popErr := writeBuffer.PopContext("lastStateChange"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for lastStateChange")
-			}
-			if _lastStateChangeErr != nil {
-				return errors.Wrap(_lastStateChangeErr, "Error serializing 'lastStateChange' field")
-			}
+		if err := WriteOptionalField[BACnetTimerTransitionTagged](ctx, "lastStateChange", GetRef(m.GetLastStateChange()), WriteComplex[BACnetTimerTransitionTagged](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastStateChange' field")
 		}
 
-		// Optional Field (initialTimeout) (Can be skipped, if the value is null)
-		var initialTimeout BACnetContextTagUnsignedInteger = nil
-		if m.GetInitialTimeout() != nil {
-			if pushErr := writeBuffer.PushContext("initialTimeout"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for initialTimeout")
-			}
-			initialTimeout = m.GetInitialTimeout()
-			_initialTimeoutErr := writeBuffer.WriteSerializable(ctx, initialTimeout)
-			if popErr := writeBuffer.PopContext("initialTimeout"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for initialTimeout")
-			}
-			if _initialTimeoutErr != nil {
-				return errors.Wrap(_initialTimeoutErr, "Error serializing 'initialTimeout' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "initialTimeout", GetRef(m.GetInitialTimeout()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'initialTimeout' field")
 		}
 
-		// Optional Field (expirationTime) (Can be skipped, if the value is null)
-		var expirationTime BACnetDateTimeEnclosed = nil
-		if m.GetExpirationTime() != nil {
-			if pushErr := writeBuffer.PushContext("expirationTime"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for expirationTime")
-			}
-			expirationTime = m.GetExpirationTime()
-			_expirationTimeErr := writeBuffer.WriteSerializable(ctx, expirationTime)
-			if popErr := writeBuffer.PopContext("expirationTime"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for expirationTime")
-			}
-			if _expirationTimeErr != nil {
-				return errors.Wrap(_expirationTimeErr, "Error serializing 'expirationTime' field")
-			}
+		if err := WriteOptionalField[BACnetDateTimeEnclosed](ctx, "expirationTime", GetRef(m.GetExpirationTime()), WriteComplex[BACnetDateTimeEnclosed](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'expirationTime' field")
 		}
 
 		// Simple Field (innerClosingTag)

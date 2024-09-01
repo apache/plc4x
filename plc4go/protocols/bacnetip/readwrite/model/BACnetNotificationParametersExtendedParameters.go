@@ -664,228 +664,60 @@ func (m *_BACnetNotificationParametersExtendedParameters) SerializeWithWriteBuff
 		return errors.Wrap(_isClosingTagErr, "Error serializing 'isClosingTag' field")
 	}
 
-	// Optional Field (nullValue) (Can be skipped, if the value is null)
-	var nullValue BACnetApplicationTagNull = nil
-	if m.GetNullValue() != nil {
-		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nullValue")
-		}
-		nullValue = m.GetNullValue()
-		_nullValueErr := writeBuffer.WriteSerializable(ctx, nullValue)
-		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nullValue")
-		}
-		if _nullValueErr != nil {
-			return errors.Wrap(_nullValueErr, "Error serializing 'nullValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagNull](ctx, "nullValue", GetRef(m.GetNullValue()), WriteComplex[BACnetApplicationTagNull](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'nullValue' field")
 	}
 
-	// Optional Field (realValue) (Can be skipped, if the value is null)
-	var realValue BACnetApplicationTagReal = nil
-	if m.GetRealValue() != nil {
-		if pushErr := writeBuffer.PushContext("realValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for realValue")
-		}
-		realValue = m.GetRealValue()
-		_realValueErr := writeBuffer.WriteSerializable(ctx, realValue)
-		if popErr := writeBuffer.PopContext("realValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for realValue")
-		}
-		if _realValueErr != nil {
-			return errors.Wrap(_realValueErr, "Error serializing 'realValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagReal](ctx, "realValue", GetRef(m.GetRealValue()), WriteComplex[BACnetApplicationTagReal](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'realValue' field")
 	}
 
-	// Optional Field (unsignedValue) (Can be skipped, if the value is null)
-	var unsignedValue BACnetApplicationTagUnsignedInteger = nil
-	if m.GetUnsignedValue() != nil {
-		if pushErr := writeBuffer.PushContext("unsignedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for unsignedValue")
-		}
-		unsignedValue = m.GetUnsignedValue()
-		_unsignedValueErr := writeBuffer.WriteSerializable(ctx, unsignedValue)
-		if popErr := writeBuffer.PopContext("unsignedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for unsignedValue")
-		}
-		if _unsignedValueErr != nil {
-			return errors.Wrap(_unsignedValueErr, "Error serializing 'unsignedValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", GetRef(m.GetUnsignedValue()), WriteComplex[BACnetApplicationTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'unsignedValue' field")
 	}
 
-	// Optional Field (booleanValue) (Can be skipped, if the value is null)
-	var booleanValue BACnetApplicationTagBoolean = nil
-	if m.GetBooleanValue() != nil {
-		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for booleanValue")
-		}
-		booleanValue = m.GetBooleanValue()
-		_booleanValueErr := writeBuffer.WriteSerializable(ctx, booleanValue)
-		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for booleanValue")
-		}
-		if _booleanValueErr != nil {
-			return errors.Wrap(_booleanValueErr, "Error serializing 'booleanValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagBoolean](ctx, "booleanValue", GetRef(m.GetBooleanValue()), WriteComplex[BACnetApplicationTagBoolean](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'booleanValue' field")
 	}
 
-	// Optional Field (integerValue) (Can be skipped, if the value is null)
-	var integerValue BACnetApplicationTagSignedInteger = nil
-	if m.GetIntegerValue() != nil {
-		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for integerValue")
-		}
-		integerValue = m.GetIntegerValue()
-		_integerValueErr := writeBuffer.WriteSerializable(ctx, integerValue)
-		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for integerValue")
-		}
-		if _integerValueErr != nil {
-			return errors.Wrap(_integerValueErr, "Error serializing 'integerValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagSignedInteger](ctx, "integerValue", GetRef(m.GetIntegerValue()), WriteComplex[BACnetApplicationTagSignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'integerValue' field")
 	}
 
-	// Optional Field (doubleValue) (Can be skipped, if the value is null)
-	var doubleValue BACnetApplicationTagDouble = nil
-	if m.GetDoubleValue() != nil {
-		if pushErr := writeBuffer.PushContext("doubleValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for doubleValue")
-		}
-		doubleValue = m.GetDoubleValue()
-		_doubleValueErr := writeBuffer.WriteSerializable(ctx, doubleValue)
-		if popErr := writeBuffer.PopContext("doubleValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for doubleValue")
-		}
-		if _doubleValueErr != nil {
-			return errors.Wrap(_doubleValueErr, "Error serializing 'doubleValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagDouble](ctx, "doubleValue", GetRef(m.GetDoubleValue()), WriteComplex[BACnetApplicationTagDouble](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'doubleValue' field")
 	}
 
-	// Optional Field (octetStringValue) (Can be skipped, if the value is null)
-	var octetStringValue BACnetApplicationTagOctetString = nil
-	if m.GetOctetStringValue() != nil {
-		if pushErr := writeBuffer.PushContext("octetStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
-		}
-		octetStringValue = m.GetOctetStringValue()
-		_octetStringValueErr := writeBuffer.WriteSerializable(ctx, octetStringValue)
-		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for octetStringValue")
-		}
-		if _octetStringValueErr != nil {
-			return errors.Wrap(_octetStringValueErr, "Error serializing 'octetStringValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagOctetString](ctx, "octetStringValue", GetRef(m.GetOctetStringValue()), WriteComplex[BACnetApplicationTagOctetString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'octetStringValue' field")
 	}
 
-	// Optional Field (characterStringValue) (Can be skipped, if the value is null)
-	var characterStringValue BACnetApplicationTagCharacterString = nil
-	if m.GetCharacterStringValue() != nil {
-		if pushErr := writeBuffer.PushContext("characterStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for characterStringValue")
-		}
-		characterStringValue = m.GetCharacterStringValue()
-		_characterStringValueErr := writeBuffer.WriteSerializable(ctx, characterStringValue)
-		if popErr := writeBuffer.PopContext("characterStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for characterStringValue")
-		}
-		if _characterStringValueErr != nil {
-			return errors.Wrap(_characterStringValueErr, "Error serializing 'characterStringValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", GetRef(m.GetCharacterStringValue()), WriteComplex[BACnetApplicationTagCharacterString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'characterStringValue' field")
 	}
 
-	// Optional Field (bitStringValue) (Can be skipped, if the value is null)
-	var bitStringValue BACnetApplicationTagBitString = nil
-	if m.GetBitStringValue() != nil {
-		if pushErr := writeBuffer.PushContext("bitStringValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for bitStringValue")
-		}
-		bitStringValue = m.GetBitStringValue()
-		_bitStringValueErr := writeBuffer.WriteSerializable(ctx, bitStringValue)
-		if popErr := writeBuffer.PopContext("bitStringValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for bitStringValue")
-		}
-		if _bitStringValueErr != nil {
-			return errors.Wrap(_bitStringValueErr, "Error serializing 'bitStringValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagBitString](ctx, "bitStringValue", GetRef(m.GetBitStringValue()), WriteComplex[BACnetApplicationTagBitString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'bitStringValue' field")
 	}
 
-	// Optional Field (enumeratedValue) (Can be skipped, if the value is null)
-	var enumeratedValue BACnetApplicationTagEnumerated = nil
-	if m.GetEnumeratedValue() != nil {
-		if pushErr := writeBuffer.PushContext("enumeratedValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enumeratedValue")
-		}
-		enumeratedValue = m.GetEnumeratedValue()
-		_enumeratedValueErr := writeBuffer.WriteSerializable(ctx, enumeratedValue)
-		if popErr := writeBuffer.PopContext("enumeratedValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enumeratedValue")
-		}
-		if _enumeratedValueErr != nil {
-			return errors.Wrap(_enumeratedValueErr, "Error serializing 'enumeratedValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", GetRef(m.GetEnumeratedValue()), WriteComplex[BACnetApplicationTagEnumerated](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'enumeratedValue' field")
 	}
 
-	// Optional Field (dateValue) (Can be skipped, if the value is null)
-	var dateValue BACnetApplicationTagDate = nil
-	if m.GetDateValue() != nil {
-		if pushErr := writeBuffer.PushContext("dateValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dateValue")
-		}
-		dateValue = m.GetDateValue()
-		_dateValueErr := writeBuffer.WriteSerializable(ctx, dateValue)
-		if popErr := writeBuffer.PopContext("dateValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dateValue")
-		}
-		if _dateValueErr != nil {
-			return errors.Wrap(_dateValueErr, "Error serializing 'dateValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagDate](ctx, "dateValue", GetRef(m.GetDateValue()), WriteComplex[BACnetApplicationTagDate](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'dateValue' field")
 	}
 
-	// Optional Field (timeValue) (Can be skipped, if the value is null)
-	var timeValue BACnetApplicationTagTime = nil
-	if m.GetTimeValue() != nil {
-		if pushErr := writeBuffer.PushContext("timeValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeValue")
-		}
-		timeValue = m.GetTimeValue()
-		_timeValueErr := writeBuffer.WriteSerializable(ctx, timeValue)
-		if popErr := writeBuffer.PopContext("timeValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeValue")
-		}
-		if _timeValueErr != nil {
-			return errors.Wrap(_timeValueErr, "Error serializing 'timeValue' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagTime](ctx, "timeValue", GetRef(m.GetTimeValue()), WriteComplex[BACnetApplicationTagTime](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'timeValue' field")
 	}
 
-	// Optional Field (objectIdentifier) (Can be skipped, if the value is null)
-	var objectIdentifier BACnetApplicationTagObjectIdentifier = nil
-	if m.GetObjectIdentifier() != nil {
-		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-		}
-		objectIdentifier = m.GetObjectIdentifier()
-		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, objectIdentifier)
-		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectIdentifier")
-		}
-		if _objectIdentifierErr != nil {
-			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetApplicationTagObjectIdentifier](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 	}
 
-	// Optional Field (reference) (Can be skipped, if the value is null)
-	var reference BACnetDeviceObjectPropertyReferenceEnclosed = nil
-	if m.GetReference() != nil {
-		if pushErr := writeBuffer.PushContext("reference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for reference")
-		}
-		reference = m.GetReference()
-		_referenceErr := writeBuffer.WriteSerializable(ctx, reference)
-		if popErr := writeBuffer.PopContext("reference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for reference")
-		}
-		if _referenceErr != nil {
-			return errors.Wrap(_referenceErr, "Error serializing 'reference' field")
-		}
+	if err := WriteOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", GetRef(m.GetReference()), WriteComplex[BACnetDeviceObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'reference' field")
 	}
 
 	// Simple Field (closingTag)

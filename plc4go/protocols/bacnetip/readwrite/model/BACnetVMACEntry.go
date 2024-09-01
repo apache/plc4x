@@ -180,36 +180,12 @@ func (m *_BACnetVMACEntry) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for BACnetVMACEntry")
 	}
 
-	// Optional Field (virtualMacAddress) (Can be skipped, if the value is null)
-	var virtualMacAddress BACnetContextTagOctetString = nil
-	if m.GetVirtualMacAddress() != nil {
-		if pushErr := writeBuffer.PushContext("virtualMacAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for virtualMacAddress")
-		}
-		virtualMacAddress = m.GetVirtualMacAddress()
-		_virtualMacAddressErr := writeBuffer.WriteSerializable(ctx, virtualMacAddress)
-		if popErr := writeBuffer.PopContext("virtualMacAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for virtualMacAddress")
-		}
-		if _virtualMacAddressErr != nil {
-			return errors.Wrap(_virtualMacAddressErr, "Error serializing 'virtualMacAddress' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "virtualMacAddress", GetRef(m.GetVirtualMacAddress()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'virtualMacAddress' field")
 	}
 
-	// Optional Field (nativeMacAddress) (Can be skipped, if the value is null)
-	var nativeMacAddress BACnetContextTagOctetString = nil
-	if m.GetNativeMacAddress() != nil {
-		if pushErr := writeBuffer.PushContext("nativeMacAddress"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nativeMacAddress")
-		}
-		nativeMacAddress = m.GetNativeMacAddress()
-		_nativeMacAddressErr := writeBuffer.WriteSerializable(ctx, nativeMacAddress)
-		if popErr := writeBuffer.PopContext("nativeMacAddress"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nativeMacAddress")
-		}
-		if _nativeMacAddressErr != nil {
-			return errors.Wrap(_nativeMacAddressErr, "Error serializing 'nativeMacAddress' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "nativeMacAddress", GetRef(m.GetNativeMacAddress()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'nativeMacAddress' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetVMACEntry"); popErr != nil {

@@ -274,84 +274,24 @@ func (m *_BACnetLightingCommand) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(_lightningOperationErr, "Error serializing 'lightningOperation' field")
 	}
 
-	// Optional Field (targetLevel) (Can be skipped, if the value is null)
-	var targetLevel BACnetContextTagReal = nil
-	if m.GetTargetLevel() != nil {
-		if pushErr := writeBuffer.PushContext("targetLevel"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for targetLevel")
-		}
-		targetLevel = m.GetTargetLevel()
-		_targetLevelErr := writeBuffer.WriteSerializable(ctx, targetLevel)
-		if popErr := writeBuffer.PopContext("targetLevel"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for targetLevel")
-		}
-		if _targetLevelErr != nil {
-			return errors.Wrap(_targetLevelErr, "Error serializing 'targetLevel' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "targetLevel", GetRef(m.GetTargetLevel()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'targetLevel' field")
 	}
 
-	// Optional Field (rampRate) (Can be skipped, if the value is null)
-	var rampRate BACnetContextTagReal = nil
-	if m.GetRampRate() != nil {
-		if pushErr := writeBuffer.PushContext("rampRate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for rampRate")
-		}
-		rampRate = m.GetRampRate()
-		_rampRateErr := writeBuffer.WriteSerializable(ctx, rampRate)
-		if popErr := writeBuffer.PopContext("rampRate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for rampRate")
-		}
-		if _rampRateErr != nil {
-			return errors.Wrap(_rampRateErr, "Error serializing 'rampRate' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "rampRate", GetRef(m.GetRampRate()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'rampRate' field")
 	}
 
-	// Optional Field (stepIncrement) (Can be skipped, if the value is null)
-	var stepIncrement BACnetContextTagReal = nil
-	if m.GetStepIncrement() != nil {
-		if pushErr := writeBuffer.PushContext("stepIncrement"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for stepIncrement")
-		}
-		stepIncrement = m.GetStepIncrement()
-		_stepIncrementErr := writeBuffer.WriteSerializable(ctx, stepIncrement)
-		if popErr := writeBuffer.PopContext("stepIncrement"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for stepIncrement")
-		}
-		if _stepIncrementErr != nil {
-			return errors.Wrap(_stepIncrementErr, "Error serializing 'stepIncrement' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "stepIncrement", GetRef(m.GetStepIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'stepIncrement' field")
 	}
 
-	// Optional Field (fadeTime) (Can be skipped, if the value is null)
-	var fadeTime BACnetContextTagUnsignedInteger = nil
-	if m.GetFadeTime() != nil {
-		if pushErr := writeBuffer.PushContext("fadeTime"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fadeTime")
-		}
-		fadeTime = m.GetFadeTime()
-		_fadeTimeErr := writeBuffer.WriteSerializable(ctx, fadeTime)
-		if popErr := writeBuffer.PopContext("fadeTime"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fadeTime")
-		}
-		if _fadeTimeErr != nil {
-			return errors.Wrap(_fadeTimeErr, "Error serializing 'fadeTime' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "fadeTime", GetRef(m.GetFadeTime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'fadeTime' field")
 	}
 
-	// Optional Field (priority) (Can be skipped, if the value is null)
-	var priority BACnetContextTagUnsignedInteger = nil
-	if m.GetPriority() != nil {
-		if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for priority")
-		}
-		priority = m.GetPriority()
-		_priorityErr := writeBuffer.WriteSerializable(ctx, priority)
-		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for priority")
-		}
-		if _priorityErr != nil {
-			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", GetRef(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'priority' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetLightingCommand"); popErr != nil {

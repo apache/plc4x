@@ -219,20 +219,8 @@ func (m *_ReplyOrConfirmationConfirmation) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(_confirmationErr, "Error serializing 'confirmation' field")
 		}
 
-		// Optional Field (embeddedReply) (Can be skipped, if the value is null)
-		var embeddedReply ReplyOrConfirmation = nil
-		if m.GetEmbeddedReply() != nil {
-			if pushErr := writeBuffer.PushContext("embeddedReply"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for embeddedReply")
-			}
-			embeddedReply = m.GetEmbeddedReply()
-			_embeddedReplyErr := writeBuffer.WriteSerializable(ctx, embeddedReply)
-			if popErr := writeBuffer.PopContext("embeddedReply"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for embeddedReply")
-			}
-			if _embeddedReplyErr != nil {
-				return errors.Wrap(_embeddedReplyErr, "Error serializing 'embeddedReply' field")
-			}
+		if err := WriteOptionalField[ReplyOrConfirmation](ctx, "embeddedReply", GetRef(m.GetEmbeddedReply()), WriteComplex[ReplyOrConfirmation](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'embeddedReply' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ReplyOrConfirmationConfirmation"); popErr != nil {

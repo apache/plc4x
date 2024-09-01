@@ -277,34 +277,16 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(pushErr, "Error pushing for MonitoredSALShortFormBasicMode")
 		}
 
-		// Optional Field (bridgeCount) (Can be skipped, if the value is null)
-		var bridgeCount *uint8 = nil
-		if m.GetBridgeCount() != nil {
-			bridgeCount = m.GetBridgeCount()
-			_bridgeCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("bridgeCount", 8, uint8(*(bridgeCount)))
-			if _bridgeCountErr != nil {
-				return errors.Wrap(_bridgeCountErr, "Error serializing 'bridgeCount' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "bridgeCount", m.GetBridgeCount(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'bridgeCount' field")
 		}
 
-		// Optional Field (networkNumber) (Can be skipped, if the value is null)
-		var networkNumber *uint8 = nil
-		if m.GetNetworkNumber() != nil {
-			networkNumber = m.GetNetworkNumber()
-			_networkNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("networkNumber", 8, uint8(*(networkNumber)))
-			if _networkNumberErr != nil {
-				return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "networkNumber", m.GetNetworkNumber(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkNumber' field")
 		}
 
-		// Optional Field (noCounts) (Can be skipped, if the value is null)
-		var noCounts *byte = nil
-		if m.GetNoCounts() != nil {
-			noCounts = m.GetNoCounts()
-			_noCountsErr := /*TODO: migrate me*/ writeBuffer.WriteByte("noCounts", *(noCounts))
-			if _noCountsErr != nil {
-				return errors.Wrap(_noCountsErr, "Error serializing 'noCounts' field")
-			}
+		if err := WriteOptionalField[byte](ctx, "noCounts", m.GetNoCounts(), WriteByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'noCounts' field")
 		}
 
 		// Simple Field (application)
@@ -319,20 +301,8 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(_applicationErr, "Error serializing 'application' field")
 		}
 
-		// Optional Field (salData) (Can be skipped, if the value is null)
-		var salData SALData = nil
-		if m.GetSalData() != nil {
-			if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for salData")
-			}
-			salData = m.GetSalData()
-			_salDataErr := writeBuffer.WriteSerializable(ctx, salData)
-			if popErr := writeBuffer.PopContext("salData"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for salData")
-			}
-			if _salDataErr != nil {
-				return errors.Wrap(_salDataErr, "Error serializing 'salData' field")
-			}
+		if err := WriteOptionalField[SALData](ctx, "salData", GetRef(m.GetSalData()), WriteComplex[SALData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'salData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MonitoredSALShortFormBasicMode"); popErr != nil {

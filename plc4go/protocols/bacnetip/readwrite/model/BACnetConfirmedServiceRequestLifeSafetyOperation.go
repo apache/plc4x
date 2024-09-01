@@ -279,20 +279,8 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) SerializeWithWriteBu
 			return errors.Wrap(_requestErr, "Error serializing 'request' field")
 		}
 
-		// Optional Field (objectIdentifier) (Can be skipped, if the value is null)
-		var objectIdentifier BACnetContextTagObjectIdentifier = nil
-		if m.GetObjectIdentifier() != nil {
-			if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-			}
-			objectIdentifier = m.GetObjectIdentifier()
-			_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, objectIdentifier)
-			if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for objectIdentifier")
-			}
-			if _objectIdentifierErr != nil {
-				return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); popErr != nil {

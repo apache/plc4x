@@ -344,52 +344,16 @@ func (m *_AirConditioningDataSetPlantHumidityLevel) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(_humidityTypeErr, "Error serializing 'humidityType' field")
 		}
 
-		// Optional Field (level) (Can be skipped, if the value is null)
-		var level HVACHumidity = nil
-		if m.GetLevel() != nil {
-			if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for level")
-			}
-			level = m.GetLevel()
-			_levelErr := writeBuffer.WriteSerializable(ctx, level)
-			if popErr := writeBuffer.PopContext("level"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for level")
-			}
-			if _levelErr != nil {
-				return errors.Wrap(_levelErr, "Error serializing 'level' field")
-			}
+		if err := WriteOptionalField[HVACHumidity](ctx, "level", GetRef(m.GetLevel()), WriteComplex[HVACHumidity](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
-		// Optional Field (rawLevel) (Can be skipped, if the value is null)
-		var rawLevel HVACRawLevels = nil
-		if m.GetRawLevel() != nil {
-			if pushErr := writeBuffer.PushContext("rawLevel"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for rawLevel")
-			}
-			rawLevel = m.GetRawLevel()
-			_rawLevelErr := writeBuffer.WriteSerializable(ctx, rawLevel)
-			if popErr := writeBuffer.PopContext("rawLevel"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for rawLevel")
-			}
-			if _rawLevelErr != nil {
-				return errors.Wrap(_rawLevelErr, "Error serializing 'rawLevel' field")
-			}
+		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", GetRef(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'rawLevel' field")
 		}
 
-		// Optional Field (auxLevel) (Can be skipped, if the value is null)
-		var auxLevel HVACAuxiliaryLevel = nil
-		if m.GetAuxLevel() != nil {
-			if pushErr := writeBuffer.PushContext("auxLevel"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for auxLevel")
-			}
-			auxLevel = m.GetAuxLevel()
-			_auxLevelErr := writeBuffer.WriteSerializable(ctx, auxLevel)
-			if popErr := writeBuffer.PopContext("auxLevel"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for auxLevel")
-			}
-			if _auxLevelErr != nil {
-				return errors.Wrap(_auxLevelErr, "Error serializing 'auxLevel' field")
-			}
+		if err := WriteOptionalField[HVACAuxiliaryLevel](ctx, "auxLevel", GetRef(m.GetAuxLevel()), WriteComplex[HVACAuxiliaryLevel](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'auxLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataSetPlantHumidityLevel"); popErr != nil {

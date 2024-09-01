@@ -465,24 +465,12 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(_controlErr, "Error serializing 'control' field")
 	}
 
-	// Optional Field (destinationNetworkAddress) (Can be skipped, if the value is null)
-	var destinationNetworkAddress *uint16 = nil
-	if m.GetDestinationNetworkAddress() != nil {
-		destinationNetworkAddress = m.GetDestinationNetworkAddress()
-		_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16(*(destinationNetworkAddress)))
-		if _destinationNetworkAddressErr != nil {
-			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
-		}
+	if err := WriteOptionalField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 	}
 
-	// Optional Field (destinationLength) (Can be skipped, if the value is null)
-	var destinationLength *uint8 = nil
-	if m.GetDestinationLength() != nil {
-		destinationLength = m.GetDestinationLength()
-		_destinationLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("destinationLength", 8, uint8(*(destinationLength)))
-		if _destinationLengthErr != nil {
-			return errors.Wrap(_destinationLengthErr, "Error serializing 'destinationLength' field")
-		}
+	if err := WriteOptionalField[uint8](ctx, "destinationLength", m.GetDestinationLength(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'destinationLength' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "destinationAddress", m.GetDestinationAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
@@ -495,24 +483,12 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(_destinationLengthAddonErr, "Error serializing 'destinationLengthAddon' field")
 	}
 
-	// Optional Field (sourceNetworkAddress) (Can be skipped, if the value is null)
-	var sourceNetworkAddress *uint16 = nil
-	if m.GetSourceNetworkAddress() != nil {
-		sourceNetworkAddress = m.GetSourceNetworkAddress()
-		_sourceNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sourceNetworkAddress", 16, uint16(*(sourceNetworkAddress)))
-		if _sourceNetworkAddressErr != nil {
-			return errors.Wrap(_sourceNetworkAddressErr, "Error serializing 'sourceNetworkAddress' field")
-		}
+	if err := WriteOptionalField[uint16](ctx, "sourceNetworkAddress", m.GetSourceNetworkAddress(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceNetworkAddress' field")
 	}
 
-	// Optional Field (sourceLength) (Can be skipped, if the value is null)
-	var sourceLength *uint8 = nil
-	if m.GetSourceLength() != nil {
-		sourceLength = m.GetSourceLength()
-		_sourceLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sourceLength", 8, uint8(*(sourceLength)))
-		if _sourceLengthErr != nil {
-			return errors.Wrap(_sourceLengthErr, "Error serializing 'sourceLength' field")
-		}
+	if err := WriteOptionalField[uint8](ctx, "sourceLength", m.GetSourceLength(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceLength' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "sourceAddress", m.GetSourceAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
@@ -525,14 +501,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(_sourceLengthAddonErr, "Error serializing 'sourceLengthAddon' field")
 	}
 
-	// Optional Field (hopCount) (Can be skipped, if the value is null)
-	var hopCount *uint8 = nil
-	if m.GetHopCount() != nil {
-		hopCount = m.GetHopCount()
-		_hopCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("hopCount", 8, uint8(*(hopCount)))
-		if _hopCountErr != nil {
-			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
-		}
+	if err := WriteOptionalField[uint8](ctx, "hopCount", m.GetHopCount(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'hopCount' field")
 	}
 	// Virtual field
 	payloadSubtraction := m.GetPayloadSubtraction()
@@ -541,36 +511,12 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return errors.Wrap(_payloadSubtractionErr, "Error serializing 'payloadSubtraction' field")
 	}
 
-	// Optional Field (nlm) (Can be skipped, if the value is null)
-	var nlm NLM = nil
-	if m.GetNlm() != nil {
-		if pushErr := writeBuffer.PushContext("nlm"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nlm")
-		}
-		nlm = m.GetNlm()
-		_nlmErr := writeBuffer.WriteSerializable(ctx, nlm)
-		if popErr := writeBuffer.PopContext("nlm"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nlm")
-		}
-		if _nlmErr != nil {
-			return errors.Wrap(_nlmErr, "Error serializing 'nlm' field")
-		}
+	if err := WriteOptionalField[NLM](ctx, "nlm", GetRef(m.GetNlm()), WriteComplex[NLM](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'nlm' field")
 	}
 
-	// Optional Field (apdu) (Can be skipped, if the value is null)
-	var apdu APDU = nil
-	if m.GetApdu() != nil {
-		if pushErr := writeBuffer.PushContext("apdu"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for apdu")
-		}
-		apdu = m.GetApdu()
-		_apduErr := writeBuffer.WriteSerializable(ctx, apdu)
-		if popErr := writeBuffer.PopContext("apdu"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for apdu")
-		}
-		if _apduErr != nil {
-			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
-		}
+	if err := WriteOptionalField[APDU](ctx, "apdu", GetRef(m.GetApdu()), WriteComplex[APDU](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'apdu' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NPDU"); popErr != nil {

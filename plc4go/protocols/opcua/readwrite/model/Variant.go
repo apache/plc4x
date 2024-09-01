@@ -324,14 +324,8 @@ func (pm *_Variant) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Optional Field (noOfArrayDimensions) (Can be skipped, if the value is null)
-	var noOfArrayDimensions *int32 = nil
-	if m.GetNoOfArrayDimensions() != nil {
-		noOfArrayDimensions = m.GetNoOfArrayDimensions()
-		_noOfArrayDimensionsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfArrayDimensions", 32, int32(*(noOfArrayDimensions)))
-		if _noOfArrayDimensionsErr != nil {
-			return errors.Wrap(_noOfArrayDimensionsErr, "Error serializing 'noOfArrayDimensions' field")
-		}
+	if err := WriteOptionalField[int32](ctx, "noOfArrayDimensions", m.GetNoOfArrayDimensions(), WriteSignedInt(writeBuffer, 32), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'noOfArrayDimensions' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "arrayDimensions", m.GetArrayDimensions(), WriteBoolean(writeBuffer)); err != nil {

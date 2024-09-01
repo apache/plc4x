@@ -218,20 +218,8 @@ func (m *_VTCloseError) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(_errorTypeErr, "Error serializing 'errorType' field")
 		}
 
-		// Optional Field (listOfVtSessionIdentifiers) (Can be skipped, if the value is null)
-		var listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers = nil
-		if m.GetListOfVtSessionIdentifiers() != nil {
-			if pushErr := writeBuffer.PushContext("listOfVtSessionIdentifiers"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for listOfVtSessionIdentifiers")
-			}
-			listOfVtSessionIdentifiers = m.GetListOfVtSessionIdentifiers()
-			_listOfVtSessionIdentifiersErr := writeBuffer.WriteSerializable(ctx, listOfVtSessionIdentifiers)
-			if popErr := writeBuffer.PopContext("listOfVtSessionIdentifiers"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for listOfVtSessionIdentifiers")
-			}
-			if _listOfVtSessionIdentifiersErr != nil {
-				return errors.Wrap(_listOfVtSessionIdentifiersErr, "Error serializing 'listOfVtSessionIdentifiers' field")
-			}
+		if err := WriteOptionalField[VTCloseErrorListOfVTSessionIdentifiers](ctx, "listOfVtSessionIdentifiers", GetRef(m.GetListOfVtSessionIdentifiers()), WriteComplex[VTCloseErrorListOfVTSessionIdentifiers](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfVtSessionIdentifiers' field")
 		}
 
 		if popErr := writeBuffer.PopContext("VTCloseError"); popErr != nil {

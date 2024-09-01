@@ -35,3 +35,8 @@ func EnsureType[T any](r any, err error) func(context.Context) (T, error) {
 		return r.(T), nil
 	}
 }
+
+// GetRef returns a ref to T
+func GetRef[T any](v T) *T {
+	return &v
+}

@@ -347,36 +347,12 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Optional Field (parameter) (Can be skipped, if the value is null)
-	var parameter S7Parameter = nil
-	if m.GetParameter() != nil {
-		if pushErr := writeBuffer.PushContext("parameter"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parameter")
-		}
-		parameter = m.GetParameter()
-		_parameterErr := writeBuffer.WriteSerializable(ctx, parameter)
-		if popErr := writeBuffer.PopContext("parameter"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parameter")
-		}
-		if _parameterErr != nil {
-			return errors.Wrap(_parameterErr, "Error serializing 'parameter' field")
-		}
+	if err := WriteOptionalField[S7Parameter](ctx, "parameter", GetRef(m.GetParameter()), WriteComplex[S7Parameter](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'parameter' field")
 	}
 
-	// Optional Field (payload) (Can be skipped, if the value is null)
-	var payload S7Payload = nil
-	if m.GetPayload() != nil {
-		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for payload")
-		}
-		payload = m.GetPayload()
-		_payloadErr := writeBuffer.WriteSerializable(ctx, payload)
-		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for payload")
-		}
-		if _payloadErr != nil {
-			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
-		}
+	if err := WriteOptionalField[S7Payload](ctx, "payload", GetRef(m.GetPayload()), WriteComplex[S7Payload](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'payload' field")
 	}
 
 	if popErr := writeBuffer.PopContext("S7Message"); popErr != nil {

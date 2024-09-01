@@ -186,20 +186,8 @@ func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
 	}
 
-	// Optional Field (listOfResults) (Can be skipped, if the value is null)
-	var listOfResults BACnetReadAccessResultListOfResults = nil
-	if m.GetListOfResults() != nil {
-		if pushErr := writeBuffer.PushContext("listOfResults"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfResults")
-		}
-		listOfResults = m.GetListOfResults()
-		_listOfResultsErr := writeBuffer.WriteSerializable(ctx, listOfResults)
-		if popErr := writeBuffer.PopContext("listOfResults"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfResults")
-		}
-		if _listOfResultsErr != nil {
-			return errors.Wrap(_listOfResultsErr, "Error serializing 'listOfResults' field")
-		}
+	if err := WriteOptionalField[BACnetReadAccessResultListOfResults](ctx, "listOfResults", GetRef(m.GetListOfResults()), WriteComplex[BACnetReadAccessResultListOfResults](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfResults' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetReadAccessResult"); popErr != nil {

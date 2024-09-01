@@ -1370,28 +1370,64 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 					<#break>
 				<#case "optional">
 					<#assign optionalField = field.asOptionalField().orElseThrow()>
+					<#assign typedField = field.asTypedField().orElseThrow()>
+					<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
-	var ${optionalField.name} <#if !optionalField.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)} = nil
-	if m.Get${optionalField.name?cap_first}() != nil {
-					<#if optionalField.type.isSimpleTypeReference()>
-						<#assign simpleTypeReference = optionalField.type.asSimpleTypeReference().orElseThrow()>
-		${optionalField.name} = m.Get${optionalField.name?cap_first}()
-		_${optionalField.name}Err := ${helper.getWriteBufferWriteMethodCall(optionalField.name, simpleTypeReference, "*(" + optionalField.name + ")", optionalField)}
+					<@compress single_line=true>
+	if err :=
+					<#if optionalField.type.isEnumTypeReference()>
+	WriteOptionalEnumField[${helper.getLanguageTypeNameForField(field)}](
+						ctx,
+						"${optionalField.name}",
+						"${helper.getLanguageTypeNameForField(field)}",
+						<#if typedField.type.isComplexTypeReference()>GetRef(</#if>m.Get${optionalField.name?cap_first}()<#if typedField.type.isComplexTypeReference()>)</#if>,
+						${helper.getEnumDataWriterCall(optionalField.type, optionalField.name, "value")}
+						<#if optionalField.conditionExpression.present>
+							, ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}
+						</#if>
+						${helper.getFieldOptions(typedField, parserArguments)}
+					)
+					<#elseif optionalField.type.isDataIoTypeReference()>
+	WriteOptionalField(
+						ctx,
+						"${optionalField.name}",
+						<#if typedField.type.isComplexTypeReference()>GetRef(</#if>m.Get${optionalField.name?cap_first}()<#if typedField.type.isComplexTypeReference()>)</#if>,
+						WriteDataIO(writeBuffer,
+							func (wb utils.WriteBuffer, val any) error {
+						return ${optionalField.type.asComplexTypeReference().orElseThrow().name}.
+								StaticSerialize(wb, val
+						<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>
+							,
+							<#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>
+								${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}
+								<#sep>, </#sep>
+							</#list>
+						</#if>
+						}
+							)
+						)
+						<#if optionalField.conditionExpression.present>
+							,
+							${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}
+						</#if>
+						${helper.getFieldOptions(typedField, parserArguments)})
 					<#else>
-						<#assign complexTypeReference = optionalField.type>
-		if pushErr := writeBuffer.PushContext("${optionalField.name}"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
-		}
-		${optionalField.name} = m.Get${optionalField.name?cap_first}()
-		_${optionalField.name}Err := writeBuffer.WriteSerializable(ctx, ${optionalField.name})
-		if popErr := writeBuffer.PopContext("${optionalField.name}"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
-		}
+	WriteOptionalField[${helper.getLanguageTypeNameForField(field)}](
+						ctx,
+						"${optionalField.name}",
+						<#if typedField.type.isComplexTypeReference()>GetRef(</#if>m.Get${optionalField.name?cap_first}()<#if typedField.type.isComplexTypeReference()>)</#if>,
+						${helper.getDataWriterCall(typedField.type, optionalField.name)},
+						<#if helper.isGeneratePropertiesForParserArguments() && optionalField.conditionExpression.present>
+							${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}
+						<#else>
+							true
+						</#if>
+						${helper.getFieldOptions(typedField, parserArguments)})
 					</#if>
-		if _${optionalField.name}Err != nil {
-			return errors.Wrap(_${optionalField.name}Err, "Error serializing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
-		}
+						;err != nil {
+					</@compress>
+
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>
 				<#case "padding">

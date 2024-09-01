@@ -369,36 +369,12 @@ func (m *_AirConditioningDataHvacScheduleEntry) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(_startTimeErr, "Error serializing 'startTime' field")
 		}
 
-		// Optional Field (level) (Can be skipped, if the value is null)
-		var level HVACTemperature = nil
-		if m.GetLevel() != nil {
-			if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for level")
-			}
-			level = m.GetLevel()
-			_levelErr := writeBuffer.WriteSerializable(ctx, level)
-			if popErr := writeBuffer.PopContext("level"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for level")
-			}
-			if _levelErr != nil {
-				return errors.Wrap(_levelErr, "Error serializing 'level' field")
-			}
+		if err := WriteOptionalField[HVACTemperature](ctx, "level", GetRef(m.GetLevel()), WriteComplex[HVACTemperature](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'level' field")
 		}
 
-		// Optional Field (rawLevel) (Can be skipped, if the value is null)
-		var rawLevel HVACRawLevels = nil
-		if m.GetRawLevel() != nil {
-			if pushErr := writeBuffer.PushContext("rawLevel"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for rawLevel")
-			}
-			rawLevel = m.GetRawLevel()
-			_rawLevelErr := writeBuffer.WriteSerializable(ctx, rawLevel)
-			if popErr := writeBuffer.PopContext("rawLevel"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for rawLevel")
-			}
-			if _rawLevelErr != nil {
-				return errors.Wrap(_rawLevelErr, "Error serializing 'rawLevel' field")
-			}
+		if err := WriteOptionalField[HVACRawLevels](ctx, "rawLevel", GetRef(m.GetRawLevel()), WriteComplex[HVACRawLevels](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'rawLevel' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AirConditioningDataHvacScheduleEntry"); popErr != nil {

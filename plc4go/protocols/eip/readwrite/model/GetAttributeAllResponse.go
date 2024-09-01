@@ -274,20 +274,8 @@ func (m *_GetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(_extStatusErr, "Error serializing 'extStatus' field")
 		}
 
-		// Optional Field (attributes) (Can be skipped, if the value is null)
-		var attributes CIPAttributes = nil
-		if m.GetAttributes() != nil {
-			if pushErr := writeBuffer.PushContext("attributes"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for attributes")
-			}
-			attributes = m.GetAttributes()
-			_attributesErr := writeBuffer.WriteSerializable(ctx, attributes)
-			if popErr := writeBuffer.PopContext("attributes"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for attributes")
-			}
-			if _attributesErr != nil {
-				return errors.Wrap(_attributesErr, "Error serializing 'attributes' field")
-			}
+		if err := WriteOptionalField[CIPAttributes](ctx, "attributes", GetRef(m.GetAttributes()), WriteComplex[CIPAttributes](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'attributes' field")
 		}
 
 		if popErr := writeBuffer.PopContext("GetAttributeAllResponse"); popErr != nil {

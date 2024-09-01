@@ -202,20 +202,8 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 		return errors.Wrap(_monitoredPropertyErr, "Error serializing 'monitoredProperty' field")
 	}
 
-	// Optional Field (covIncrement) (Can be skipped, if the value is null)
-	var covIncrement BACnetContextTagReal = nil
-	if m.GetCovIncrement() != nil {
-		if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for covIncrement")
-		}
-		covIncrement = m.GetCovIncrement()
-		_covIncrementErr := writeBuffer.WriteSerializable(ctx, covIncrement)
-		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for covIncrement")
-		}
-		if _covIncrementErr != nil {
-			return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", GetRef(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'covIncrement' field")
 	}
 
 	// Simple Field (timestamped)

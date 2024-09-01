@@ -256,20 +256,8 @@ func (m *_TriggerControlDataLabel) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(_actionSelectorErr, "Error serializing 'actionSelector' field")
 		}
 
-		// Optional Field (language) (Can be skipped, if the value is null)
-		var language *Language = nil
-		if m.GetLanguage() != nil {
-			if pushErr := writeBuffer.PushContext("language"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for language")
-			}
-			language = m.GetLanguage()
-			_languageErr := writeBuffer.WriteSerializable(ctx, language)
-			if popErr := writeBuffer.PopContext("language"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for language")
-			}
-			if _languageErr != nil {
-				return errors.Wrap(_languageErr, "Error serializing 'language' field")
-			}
+		if err := WriteOptionalEnumField[Language](ctx, "language", "Language", m.GetLanguage(), WriteEnum[Language, uint8](Language.GetValue, Language.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetTriggerControlOptions().GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON))); err != nil {
+			return errors.Wrap(err, "Error serializing 'language' field")
 		}
 
 		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {

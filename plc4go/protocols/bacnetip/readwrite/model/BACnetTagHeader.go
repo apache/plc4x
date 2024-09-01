@@ -419,14 +419,8 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
 	}
 
-	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
-	var extTagNumber *uint8 = nil
-	if m.GetExtTagNumber() != nil {
-		extTagNumber = m.GetExtTagNumber()
-		_extTagNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("extTagNumber", 8, uint8(*(extTagNumber)))
-		if _extTagNumberErr != nil {
-			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
-		}
+	if err := WriteOptionalField[uint8](ctx, "extTagNumber", m.GetExtTagNumber(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'extTagNumber' field")
 	}
 	// Virtual field
 	actualTagNumber := m.GetActualTagNumber()
@@ -453,34 +447,16 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_isPrimitiveAndNotBooleanErr, "Error serializing 'isPrimitiveAndNotBoolean' field")
 	}
 
-	// Optional Field (extLength) (Can be skipped, if the value is null)
-	var extLength *uint8 = nil
-	if m.GetExtLength() != nil {
-		extLength = m.GetExtLength()
-		_extLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("extLength", 8, uint8(*(extLength)))
-		if _extLengthErr != nil {
-			return errors.Wrap(_extLengthErr, "Error serializing 'extLength' field")
-		}
+	if err := WriteOptionalField[uint8](ctx, "extLength", m.GetExtLength(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'extLength' field")
 	}
 
-	// Optional Field (extExtLength) (Can be skipped, if the value is null)
-	var extExtLength *uint16 = nil
-	if m.GetExtExtLength() != nil {
-		extExtLength = m.GetExtExtLength()
-		_extExtLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("extExtLength", 16, uint16(*(extExtLength)))
-		if _extExtLengthErr != nil {
-			return errors.Wrap(_extExtLengthErr, "Error serializing 'extExtLength' field")
-		}
+	if err := WriteOptionalField[uint16](ctx, "extExtLength", m.GetExtExtLength(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'extExtLength' field")
 	}
 
-	// Optional Field (extExtExtLength) (Can be skipped, if the value is null)
-	var extExtExtLength *uint32 = nil
-	if m.GetExtExtExtLength() != nil {
-		extExtExtLength = m.GetExtExtExtLength()
-		_extExtExtLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("extExtExtLength", 32, uint32(*(extExtExtLength)))
-		if _extExtExtLengthErr != nil {
-			return errors.Wrap(_extExtExtLengthErr, "Error serializing 'extExtExtLength' field")
-		}
+	if err := WriteOptionalField[uint32](ctx, "extExtExtLength", m.GetExtExtExtLength(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'extExtExtLength' field")
 	}
 	// Virtual field
 	actualLength := m.GetActualLength()

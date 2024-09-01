@@ -236,36 +236,12 @@ func (m *_BACnetDeviceObjectPropertyReference) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
 	}
 
-	// Optional Field (arrayIndex) (Can be skipped, if the value is null)
-	var arrayIndex BACnetContextTagUnsignedInteger = nil
-	if m.GetArrayIndex() != nil {
-		if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
-		}
-		arrayIndex = m.GetArrayIndex()
-		_arrayIndexErr := writeBuffer.WriteSerializable(ctx, arrayIndex)
-		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for arrayIndex")
-		}
-		if _arrayIndexErr != nil {
-			return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 	}
 
-	// Optional Field (deviceIdentifier) (Can be skipped, if the value is null)
-	var deviceIdentifier BACnetContextTagObjectIdentifier = nil
-	if m.GetDeviceIdentifier() != nil {
-		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
-		}
-		deviceIdentifier = m.GetDeviceIdentifier()
-		_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, deviceIdentifier)
-		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
-		}
-		if _deviceIdentifierErr != nil {
-			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "deviceIdentifier", GetRef(m.GetDeviceIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetDeviceObjectPropertyReference"); popErr != nil {

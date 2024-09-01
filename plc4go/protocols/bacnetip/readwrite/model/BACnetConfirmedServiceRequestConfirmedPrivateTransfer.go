@@ -250,20 +250,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) SerializeWithWr
 			return errors.Wrap(_serviceNumberErr, "Error serializing 'serviceNumber' field")
 		}
 
-		// Optional Field (serviceParameters) (Can be skipped, if the value is null)
-		var serviceParameters BACnetConstructedData = nil
-		if m.GetServiceParameters() != nil {
-			if pushErr := writeBuffer.PushContext("serviceParameters"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for serviceParameters")
-			}
-			serviceParameters = m.GetServiceParameters()
-			_serviceParametersErr := writeBuffer.WriteSerializable(ctx, serviceParameters)
-			if popErr := writeBuffer.PopContext("serviceParameters"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for serviceParameters")
-			}
-			if _serviceParametersErr != nil {
-				return errors.Wrap(_serviceParametersErr, "Error serializing 'serviceParameters' field")
-			}
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "serviceParameters", GetRef(m.GetServiceParameters()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'serviceParameters' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer"); popErr != nil {

@@ -174,20 +174,8 @@ func (m *_BACnetDeviceObjectReference) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for BACnetDeviceObjectReference")
 	}
 
-	// Optional Field (deviceIdentifier) (Can be skipped, if the value is null)
-	var deviceIdentifier BACnetContextTagObjectIdentifier = nil
-	if m.GetDeviceIdentifier() != nil {
-		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
-		}
-		deviceIdentifier = m.GetDeviceIdentifier()
-		_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, deviceIdentifier)
-		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
-		}
-		if _deviceIdentifierErr != nil {
-			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "deviceIdentifier", GetRef(m.GetDeviceIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 	}
 
 	// Simple Field (objectIdentifier)

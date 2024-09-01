@@ -273,36 +273,12 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
 		}
 
-		// Optional Field (issueConfirmed) (Can be skipped, if the value is null)
-		var issueConfirmed BACnetContextTagBoolean = nil
-		if m.GetIssueConfirmed() != nil {
-			if pushErr := writeBuffer.PushContext("issueConfirmed"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for issueConfirmed")
-			}
-			issueConfirmed = m.GetIssueConfirmed()
-			_issueConfirmedErr := writeBuffer.WriteSerializable(ctx, issueConfirmed)
-			if popErr := writeBuffer.PopContext("issueConfirmed"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for issueConfirmed")
-			}
-			if _issueConfirmedErr != nil {
-				return errors.Wrap(_issueConfirmedErr, "Error serializing 'issueConfirmed' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmed", GetRef(m.GetIssueConfirmed()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'issueConfirmed' field")
 		}
 
-		// Optional Field (lifetimeInSeconds) (Can be skipped, if the value is null)
-		var lifetimeInSeconds BACnetContextTagUnsignedInteger = nil
-		if m.GetLifetimeInSeconds() != nil {
-			if pushErr := writeBuffer.PushContext("lifetimeInSeconds"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for lifetimeInSeconds")
-			}
-			lifetimeInSeconds = m.GetLifetimeInSeconds()
-			_lifetimeInSecondsErr := writeBuffer.WriteSerializable(ctx, lifetimeInSeconds)
-			if popErr := writeBuffer.PopContext("lifetimeInSeconds"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for lifetimeInSeconds")
-			}
-			if _lifetimeInSecondsErr != nil {
-				return errors.Wrap(_lifetimeInSecondsErr, "Error serializing 'lifetimeInSeconds' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetimeInSeconds", GetRef(m.GetLifetimeInSeconds()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'lifetimeInSeconds' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestSubscribeCOV"); popErr != nil {

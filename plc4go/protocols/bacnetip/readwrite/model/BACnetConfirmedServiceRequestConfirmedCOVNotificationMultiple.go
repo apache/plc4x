@@ -296,20 +296,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Seriali
 			return errors.Wrap(_timeRemainingErr, "Error serializing 'timeRemaining' field")
 		}
 
-		// Optional Field (timestamp) (Can be skipped, if the value is null)
-		var timestamp BACnetTimeStampEnclosed = nil
-		if m.GetTimestamp() != nil {
-			if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for timestamp")
-			}
-			timestamp = m.GetTimestamp()
-			_timestampErr := writeBuffer.WriteSerializable(ctx, timestamp)
-			if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for timestamp")
-			}
-			if _timestampErr != nil {
-				return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
-			}
+		if err := WriteOptionalField[BACnetTimeStampEnclosed](ctx, "timestamp", GetRef(m.GetTimestamp()), WriteComplex[BACnetTimeStampEnclosed](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'timestamp' field")
 		}
 
 		// Simple Field (listOfCovNotifications)

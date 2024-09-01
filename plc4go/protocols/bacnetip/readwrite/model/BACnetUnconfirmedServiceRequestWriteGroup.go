@@ -279,20 +279,8 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_changeListErr, "Error serializing 'changeList' field")
 		}
 
-		// Optional Field (inhibitDelay) (Can be skipped, if the value is null)
-		var inhibitDelay BACnetContextTagUnsignedInteger = nil
-		if m.GetInhibitDelay() != nil {
-			if pushErr := writeBuffer.PushContext("inhibitDelay"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for inhibitDelay")
-			}
-			inhibitDelay = m.GetInhibitDelay()
-			_inhibitDelayErr := writeBuffer.WriteSerializable(ctx, inhibitDelay)
-			if popErr := writeBuffer.PopContext("inhibitDelay"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for inhibitDelay")
-			}
-			if _inhibitDelayErr != nil {
-				return errors.Wrap(_inhibitDelayErr, "Error serializing 'inhibitDelay' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", GetRef(m.GetInhibitDelay()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'inhibitDelay' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestWriteGroup"); popErr != nil {

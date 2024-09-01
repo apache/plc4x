@@ -21,7 +21,6 @@ package fields
 
 import (
 	"context"
-	"reflect"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -43,14 +42,14 @@ func NewFieldWriterOptionalEnum[T any](logger zerolog.Logger) *FieldWriterOption
 	}
 }
 
-func (f *FieldWriterOptionalEnum[T]) WriteOptionalEnumField(ctx context.Context, logicalName, innerName string, value T, dataWriter io.DataWriter[T], condition bool, writerArgs ...utils.WithWriterArgs) error {
+func (f *FieldWriterOptionalEnum[T]) WriteOptionalEnumField(ctx context.Context, logicalName, innerName string, value *T, dataWriter io.DataWriter[T], condition bool, writerArgs ...utils.WithWriterArgs) error {
 	f.log.Debug().Str("logicalName", logicalName).Msg("write field")
 	if err := dataWriter.PushContext(logicalName); err != nil {
 		return errors.Wrap(err, "error pushing context for "+logicalName)
 	}
-	if condition && reflect.ValueOf(value).IsNil() { // TODO: find a way to not use reflect
+	if condition && value != nil {
 		if err := f.SwitchParseByteOrderIfNecessarySerializeWrapped(ctx, func(ctx context.Context) error {
-			return dataWriter.Write(ctx, innerName, value, writerArgs...)
+			return dataWriter.Write(ctx, innerName, *value, writerArgs...)
 		}, dataWriter, f.ExtractByteOrder(utils.UpcastWriterArgs(writerArgs...)...)); err != nil {
 			return errors.Wrap(err, "error writing value for "+innerName)
 		}

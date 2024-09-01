@@ -255,20 +255,8 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) SerializeWithWr
 			return errors.Wrap(_textMessageSourceDeviceErr, "Error serializing 'textMessageSourceDevice' field")
 		}
 
-		// Optional Field (messageClass) (Can be skipped, if the value is null)
-		var messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass = nil
-		if m.GetMessageClass() != nil {
-			if pushErr := writeBuffer.PushContext("messageClass"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for messageClass")
-			}
-			messageClass = m.GetMessageClass()
-			_messageClassErr := writeBuffer.WriteSerializable(ctx, messageClass)
-			if popErr := writeBuffer.PopContext("messageClass"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for messageClass")
-			}
-			if _messageClassErr != nil {
-				return errors.Wrap(_messageClassErr, "Error serializing 'messageClass' field")
-			}
+		if err := WriteOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", GetRef(m.GetMessageClass()), WriteComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'messageClass' field")
 		}
 
 		// Simple Field (messagePriority)

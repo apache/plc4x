@@ -267,36 +267,12 @@ func (m *_ConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
-		// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
-		var hpaiDataEndpoint HPAIDataEndpoint = nil
-		if m.GetHpaiDataEndpoint() != nil {
-			if pushErr := writeBuffer.PushContext("hpaiDataEndpoint"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for hpaiDataEndpoint")
-			}
-			hpaiDataEndpoint = m.GetHpaiDataEndpoint()
-			_hpaiDataEndpointErr := writeBuffer.WriteSerializable(ctx, hpaiDataEndpoint)
-			if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for hpaiDataEndpoint")
-			}
-			if _hpaiDataEndpointErr != nil {
-				return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
-			}
+		if err := WriteOptionalField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", GetRef(m.GetHpaiDataEndpoint()), WriteComplex[HPAIDataEndpoint](writeBuffer), true, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'hpaiDataEndpoint' field")
 		}
 
-		// Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
-		var connectionResponseDataBlock ConnectionResponseDataBlock = nil
-		if m.GetConnectionResponseDataBlock() != nil {
-			if pushErr := writeBuffer.PushContext("connectionResponseDataBlock"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for connectionResponseDataBlock")
-			}
-			connectionResponseDataBlock = m.GetConnectionResponseDataBlock()
-			_connectionResponseDataBlockErr := writeBuffer.WriteSerializable(ctx, connectionResponseDataBlock)
-			if popErr := writeBuffer.PopContext("connectionResponseDataBlock"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for connectionResponseDataBlock")
-			}
-			if _connectionResponseDataBlockErr != nil {
-				return errors.Wrap(_connectionResponseDataBlockErr, "Error serializing 'connectionResponseDataBlock' field")
-			}
+		if err := WriteOptionalField[ConnectionResponseDataBlock](ctx, "connectionResponseDataBlock", GetRef(m.GetConnectionResponseDataBlock()), WriteComplex[ConnectionResponseDataBlock](writeBuffer), true, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionResponseDataBlock' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ConnectionResponse"); popErr != nil {

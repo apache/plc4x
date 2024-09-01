@@ -274,20 +274,8 @@ func (m *_CipReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(_extStatusErr, "Error serializing 'extStatus' field")
 		}
 
-		// Optional Field (data) (Can be skipped, if the value is null)
-		var data CIPData = nil
-		if m.GetData() != nil {
-			if pushErr := writeBuffer.PushContext("data"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for data")
-			}
-			data = m.GetData()
-			_dataErr := writeBuffer.WriteSerializable(ctx, data)
-			if popErr := writeBuffer.PopContext("data"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for data")
-			}
-			if _dataErr != nil {
-				return errors.Wrap(_dataErr, "Error serializing 'data' field")
-			}
+		if err := WriteOptionalField[CIPData](ctx, "data", GetRef(m.GetData()), WriteComplex[CIPData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipReadResponse"); popErr != nil {

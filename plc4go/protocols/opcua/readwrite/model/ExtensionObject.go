@@ -233,20 +233,8 @@ func (m *_ExtensionObject) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_typeIdErr, "Error serializing 'typeId' field")
 	}
 
-	// Optional Field (encodingMask) (Can be skipped, if the value is null)
-	var encodingMask ExtensionObjectEncodingMask = nil
-	if m.GetEncodingMask() != nil {
-		if pushErr := writeBuffer.PushContext("encodingMask"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for encodingMask")
-		}
-		encodingMask = m.GetEncodingMask()
-		_encodingMaskErr := writeBuffer.WriteSerializable(ctx, encodingMask)
-		if popErr := writeBuffer.PopContext("encodingMask"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for encodingMask")
-		}
-		if _encodingMaskErr != nil {
-			return errors.Wrap(_encodingMaskErr, "Error serializing 'encodingMask' field")
-		}
+	if err := WriteOptionalField[ExtensionObjectEncodingMask](ctx, "encodingMask", GetRef(m.GetEncodingMask()), WriteComplex[ExtensionObjectEncodingMask](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'encodingMask' field")
 	}
 	// Virtual field
 	identifier := m.GetIdentifier()

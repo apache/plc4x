@@ -212,36 +212,12 @@ func (m *_BACnetReadAccessProperty) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
 	}
 
-	// Optional Field (arrayIndex) (Can be skipped, if the value is null)
-	var arrayIndex BACnetContextTagUnsignedInteger = nil
-	if m.GetArrayIndex() != nil {
-		if pushErr := writeBuffer.PushContext("arrayIndex"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
-		}
-		arrayIndex = m.GetArrayIndex()
-		_arrayIndexErr := writeBuffer.WriteSerializable(ctx, arrayIndex)
-		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for arrayIndex")
-		}
-		if _arrayIndexErr != nil {
-			return errors.Wrap(_arrayIndexErr, "Error serializing 'arrayIndex' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", GetRef(m.GetArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'arrayIndex' field")
 	}
 
-	// Optional Field (readResult) (Can be skipped, if the value is null)
-	var readResult BACnetReadAccessPropertyReadResult = nil
-	if m.GetReadResult() != nil {
-		if pushErr := writeBuffer.PushContext("readResult"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for readResult")
-		}
-		readResult = m.GetReadResult()
-		_readResultErr := writeBuffer.WriteSerializable(ctx, readResult)
-		if popErr := writeBuffer.PopContext("readResult"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for readResult")
-		}
-		if _readResultErr != nil {
-			return errors.Wrap(_readResultErr, "Error serializing 'readResult' field")
-		}
+	if err := WriteOptionalField[BACnetReadAccessPropertyReadResult](ctx, "readResult", GetRef(m.GetReadResult()), WriteComplex[BACnetReadAccessPropertyReadResult](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'readResult' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetReadAccessProperty"); popErr != nil {

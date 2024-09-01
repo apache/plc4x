@@ -253,36 +253,12 @@ func (m *_LocalizedText) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(_localeSpecifiedErr, "Error serializing 'localeSpecified' field")
 	}
 
-	// Optional Field (locale) (Can be skipped, if the value is null)
-	var locale PascalString = nil
-	if m.GetLocale() != nil {
-		if pushErr := writeBuffer.PushContext("locale"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for locale")
-		}
-		locale = m.GetLocale()
-		_localeErr := writeBuffer.WriteSerializable(ctx, locale)
-		if popErr := writeBuffer.PopContext("locale"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for locale")
-		}
-		if _localeErr != nil {
-			return errors.Wrap(_localeErr, "Error serializing 'locale' field")
-		}
+	if err := WriteOptionalField[PascalString](ctx, "locale", GetRef(m.GetLocale()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'locale' field")
 	}
 
-	// Optional Field (text) (Can be skipped, if the value is null)
-	var text PascalString = nil
-	if m.GetText() != nil {
-		if pushErr := writeBuffer.PushContext("text"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for text")
-		}
-		text = m.GetText()
-		_textErr := writeBuffer.WriteSerializable(ctx, text)
-		if popErr := writeBuffer.PopContext("text"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for text")
-		}
-		if _textErr != nil {
-			return errors.Wrap(_textErr, "Error serializing 'text' field")
-		}
+	if err := WriteOptionalField[PascalString](ctx, "text", GetRef(m.GetText()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'text' field")
 	}
 
 	if popErr := writeBuffer.PopContext("LocalizedText"); popErr != nil {

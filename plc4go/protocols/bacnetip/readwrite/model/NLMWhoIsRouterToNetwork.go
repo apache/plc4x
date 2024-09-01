@@ -187,14 +187,8 @@ func (m *_NLMWhoIsRouterToNetwork) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for NLMWhoIsRouterToNetwork")
 		}
 
-		// Optional Field (destinationNetworkAddress) (Can be skipped, if the value is null)
-		var destinationNetworkAddress *uint16 = nil
-		if m.GetDestinationNetworkAddress() != nil {
-			destinationNetworkAddress = m.GetDestinationNetworkAddress()
-			_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16(*(destinationNetworkAddress)))
-			if _destinationNetworkAddressErr != nil {
-				return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
-			}
+		if err := WriteOptionalField[uint16](ctx, "destinationNetworkAddress", m.GetDestinationNetworkAddress(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationNetworkAddress' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMWhoIsRouterToNetwork"); popErr != nil {

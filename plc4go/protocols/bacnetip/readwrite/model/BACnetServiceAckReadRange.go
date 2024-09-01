@@ -329,20 +329,8 @@ func (m *_BACnetServiceAckReadRange) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
 		}
 
-		// Optional Field (propertyArrayIndex) (Can be skipped, if the value is null)
-		var propertyArrayIndex BACnetContextTagUnsignedInteger = nil
-		if m.GetPropertyArrayIndex() != nil {
-			if pushErr := writeBuffer.PushContext("propertyArrayIndex"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for propertyArrayIndex")
-			}
-			propertyArrayIndex = m.GetPropertyArrayIndex()
-			_propertyArrayIndexErr := writeBuffer.WriteSerializable(ctx, propertyArrayIndex)
-			if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for propertyArrayIndex")
-			}
-			if _propertyArrayIndexErr != nil {
-				return errors.Wrap(_propertyArrayIndexErr, "Error serializing 'propertyArrayIndex' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", GetRef(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'propertyArrayIndex' field")
 		}
 
 		// Simple Field (resultFlags)
@@ -369,36 +357,12 @@ func (m *_BACnetServiceAckReadRange) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_itemCountErr, "Error serializing 'itemCount' field")
 		}
 
-		// Optional Field (itemData) (Can be skipped, if the value is null)
-		var itemData BACnetConstructedData = nil
-		if m.GetItemData() != nil {
-			if pushErr := writeBuffer.PushContext("itemData"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for itemData")
-			}
-			itemData = m.GetItemData()
-			_itemDataErr := writeBuffer.WriteSerializable(ctx, itemData)
-			if popErr := writeBuffer.PopContext("itemData"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for itemData")
-			}
-			if _itemDataErr != nil {
-				return errors.Wrap(_itemDataErr, "Error serializing 'itemData' field")
-			}
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "itemData", GetRef(m.GetItemData()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemData' field")
 		}
 
-		// Optional Field (firstSequenceNumber) (Can be skipped, if the value is null)
-		var firstSequenceNumber BACnetContextTagUnsignedInteger = nil
-		if m.GetFirstSequenceNumber() != nil {
-			if pushErr := writeBuffer.PushContext("firstSequenceNumber"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for firstSequenceNumber")
-			}
-			firstSequenceNumber = m.GetFirstSequenceNumber()
-			_firstSequenceNumberErr := writeBuffer.WriteSerializable(ctx, firstSequenceNumber)
-			if popErr := writeBuffer.PopContext("firstSequenceNumber"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for firstSequenceNumber")
-			}
-			if _firstSequenceNumberErr != nil {
-				return errors.Wrap(_firstSequenceNumberErr, "Error serializing 'firstSequenceNumber' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "firstSequenceNumber", GetRef(m.GetFirstSequenceNumber()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'firstSequenceNumber' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckReadRange"); popErr != nil {

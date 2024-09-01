@@ -397,88 +397,40 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(_controlFlagsErr, "Error serializing 'controlFlags' field")
 		}
 
-		// Optional Field (set1KeyRevision) (Can be skipped, if the value is null)
-		var set1KeyRevision *byte = nil
-		if m.GetSet1KeyRevision() != nil {
-			set1KeyRevision = m.GetSet1KeyRevision()
-			_set1KeyRevisionErr := /*TODO: migrate me*/ writeBuffer.WriteByte("set1KeyRevision", *(set1KeyRevision))
-			if _set1KeyRevisionErr != nil {
-				return errors.Wrap(_set1KeyRevisionErr, "Error serializing 'set1KeyRevision' field")
-			}
+		if err := WriteOptionalField[byte](ctx, "set1KeyRevision", m.GetSet1KeyRevision(), WriteByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set1KeyRevision' field")
 		}
 
-		// Optional Field (set1ActivationTime) (Can be skipped, if the value is null)
-		var set1ActivationTime *uint32 = nil
-		if m.GetSet1ActivationTime() != nil {
-			set1ActivationTime = m.GetSet1ActivationTime()
-			_set1ActivationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set1ActivationTime", 32, uint32(*(set1ActivationTime)))
-			if _set1ActivationTimeErr != nil {
-				return errors.Wrap(_set1ActivationTimeErr, "Error serializing 'set1ActivationTime' field")
-			}
+		if err := WriteOptionalField[uint32](ctx, "set1ActivationTime", m.GetSet1ActivationTime(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set1ActivationTime' field")
 		}
 
-		// Optional Field (set1ExpirationTime) (Can be skipped, if the value is null)
-		var set1ExpirationTime *uint32 = nil
-		if m.GetSet1ExpirationTime() != nil {
-			set1ExpirationTime = m.GetSet1ExpirationTime()
-			_set1ExpirationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set1ExpirationTime", 32, uint32(*(set1ExpirationTime)))
-			if _set1ExpirationTimeErr != nil {
-				return errors.Wrap(_set1ExpirationTimeErr, "Error serializing 'set1ExpirationTime' field")
-			}
+		if err := WriteOptionalField[uint32](ctx, "set1ExpirationTime", m.GetSet1ExpirationTime(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set1ExpirationTime' field")
 		}
 
-		// Optional Field (set1KeyCount) (Can be skipped, if the value is null)
-		var set1KeyCount *uint8 = nil
-		if m.GetSet1KeyCount() != nil {
-			set1KeyCount = m.GetSet1KeyCount()
-			_set1KeyCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("set1KeyCount", 8, uint8(*(set1KeyCount)))
-			if _set1KeyCountErr != nil {
-				return errors.Wrap(_set1KeyCountErr, "Error serializing 'set1KeyCount' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "set1KeyCount", m.GetSet1KeyCount(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set1KeyCount' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "set1Keys", m.GetSet1Keys(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'set1Keys' field")
 		}
 
-		// Optional Field (set2KeyRevision) (Can be skipped, if the value is null)
-		var set2KeyRevision *byte = nil
-		if m.GetSet2KeyRevision() != nil {
-			set2KeyRevision = m.GetSet2KeyRevision()
-			_set2KeyRevisionErr := /*TODO: migrate me*/ writeBuffer.WriteByte("set2KeyRevision", *(set2KeyRevision))
-			if _set2KeyRevisionErr != nil {
-				return errors.Wrap(_set2KeyRevisionErr, "Error serializing 'set2KeyRevision' field")
-			}
+		if err := WriteOptionalField[byte](ctx, "set2KeyRevision", m.GetSet2KeyRevision(), WriteByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set2KeyRevision' field")
 		}
 
-		// Optional Field (set2ActivationTime) (Can be skipped, if the value is null)
-		var set2ActivationTime *uint32 = nil
-		if m.GetSet2ActivationTime() != nil {
-			set2ActivationTime = m.GetSet2ActivationTime()
-			_set2ActivationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set2ActivationTime", 32, uint32(*(set2ActivationTime)))
-			if _set2ActivationTimeErr != nil {
-				return errors.Wrap(_set2ActivationTimeErr, "Error serializing 'set2ActivationTime' field")
-			}
+		if err := WriteOptionalField[uint32](ctx, "set2ActivationTime", m.GetSet2ActivationTime(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set2ActivationTime' field")
 		}
 
-		// Optional Field (set2ExpirationTime) (Can be skipped, if the value is null)
-		var set2ExpirationTime *uint32 = nil
-		if m.GetSet2ExpirationTime() != nil {
-			set2ExpirationTime = m.GetSet2ExpirationTime()
-			_set2ExpirationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set2ExpirationTime", 32, uint32(*(set2ExpirationTime)))
-			if _set2ExpirationTimeErr != nil {
-				return errors.Wrap(_set2ExpirationTimeErr, "Error serializing 'set2ExpirationTime' field")
-			}
+		if err := WriteOptionalField[uint32](ctx, "set2ExpirationTime", m.GetSet2ExpirationTime(), WriteUnsignedInt(writeBuffer, 32), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set2ExpirationTime' field")
 		}
 
-		// Optional Field (set2KeyCount) (Can be skipped, if the value is null)
-		var set2KeyCount *uint8 = nil
-		if m.GetSet2KeyCount() != nil {
-			set2KeyCount = m.GetSet2KeyCount()
-			_set2KeyCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("set2KeyCount", 8, uint8(*(set2KeyCount)))
-			if _set2KeyCountErr != nil {
-				return errors.Wrap(_set2KeyCountErr, "Error serializing 'set2KeyCount' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "set2KeyCount", m.GetSet2KeyCount(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'set2KeyCount' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "set2Keys", m.GetSet2Keys(), writeBuffer); err != nil {

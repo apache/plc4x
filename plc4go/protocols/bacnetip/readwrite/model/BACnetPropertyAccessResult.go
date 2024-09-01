@@ -252,36 +252,12 @@ func (m *_BACnetPropertyAccessResult) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
 	}
 
-	// Optional Field (propertyArrayIndex) (Can be skipped, if the value is null)
-	var propertyArrayIndex BACnetContextTagUnsignedInteger = nil
-	if m.GetPropertyArrayIndex() != nil {
-		if pushErr := writeBuffer.PushContext("propertyArrayIndex"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyArrayIndex")
-		}
-		propertyArrayIndex = m.GetPropertyArrayIndex()
-		_propertyArrayIndexErr := writeBuffer.WriteSerializable(ctx, propertyArrayIndex)
-		if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyArrayIndex")
-		}
-		if _propertyArrayIndexErr != nil {
-			return errors.Wrap(_propertyArrayIndexErr, "Error serializing 'propertyArrayIndex' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", GetRef(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'propertyArrayIndex' field")
 	}
 
-	// Optional Field (deviceIdentifier) (Can be skipped, if the value is null)
-	var deviceIdentifier BACnetContextTagObjectIdentifier = nil
-	if m.GetDeviceIdentifier() != nil {
-		if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
-		}
-		deviceIdentifier = m.GetDeviceIdentifier()
-		_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, deviceIdentifier)
-		if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for deviceIdentifier")
-		}
-		if _deviceIdentifierErr != nil {
-			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "deviceIdentifier", GetRef(m.GetDeviceIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'deviceIdentifier' field")
 	}
 
 	// Simple Field (accessResult)

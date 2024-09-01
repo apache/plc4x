@@ -462,92 +462,32 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(_symbolicIdSpecifiedErr, "Error serializing 'symbolicIdSpecified' field")
 	}
 
-	// Optional Field (symbolicId) (Can be skipped, if the value is null)
-	var symbolicId *int32 = nil
-	if m.GetSymbolicId() != nil {
-		symbolicId = m.GetSymbolicId()
-		_symbolicIdErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("symbolicId", 32, int32(*(symbolicId)))
-		if _symbolicIdErr != nil {
-			return errors.Wrap(_symbolicIdErr, "Error serializing 'symbolicId' field")
-		}
+	if err := WriteOptionalField[int32](ctx, "symbolicId", m.GetSymbolicId(), WriteSignedInt(writeBuffer, 32), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'symbolicId' field")
 	}
 
-	// Optional Field (namespaceURI) (Can be skipped, if the value is null)
-	var namespaceURI *int32 = nil
-	if m.GetNamespaceURI() != nil {
-		namespaceURI = m.GetNamespaceURI()
-		_namespaceURIErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("namespaceURI", 32, int32(*(namespaceURI)))
-		if _namespaceURIErr != nil {
-			return errors.Wrap(_namespaceURIErr, "Error serializing 'namespaceURI' field")
-		}
+	if err := WriteOptionalField[int32](ctx, "namespaceURI", m.GetNamespaceURI(), WriteSignedInt(writeBuffer, 32), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'namespaceURI' field")
 	}
 
-	// Optional Field (locale) (Can be skipped, if the value is null)
-	var locale *int32 = nil
-	if m.GetLocale() != nil {
-		locale = m.GetLocale()
-		_localeErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("locale", 32, int32(*(locale)))
-		if _localeErr != nil {
-			return errors.Wrap(_localeErr, "Error serializing 'locale' field")
-		}
+	if err := WriteOptionalField[int32](ctx, "locale", m.GetLocale(), WriteSignedInt(writeBuffer, 32), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'locale' field")
 	}
 
-	// Optional Field (localizedText) (Can be skipped, if the value is null)
-	var localizedText *int32 = nil
-	if m.GetLocalizedText() != nil {
-		localizedText = m.GetLocalizedText()
-		_localizedTextErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("localizedText", 32, int32(*(localizedText)))
-		if _localizedTextErr != nil {
-			return errors.Wrap(_localizedTextErr, "Error serializing 'localizedText' field")
-		}
+	if err := WriteOptionalField[int32](ctx, "localizedText", m.GetLocalizedText(), WriteSignedInt(writeBuffer, 32), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'localizedText' field")
 	}
 
-	// Optional Field (additionalInfo) (Can be skipped, if the value is null)
-	var additionalInfo PascalString = nil
-	if m.GetAdditionalInfo() != nil {
-		if pushErr := writeBuffer.PushContext("additionalInfo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for additionalInfo")
-		}
-		additionalInfo = m.GetAdditionalInfo()
-		_additionalInfoErr := writeBuffer.WriteSerializable(ctx, additionalInfo)
-		if popErr := writeBuffer.PopContext("additionalInfo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for additionalInfo")
-		}
-		if _additionalInfoErr != nil {
-			return errors.Wrap(_additionalInfoErr, "Error serializing 'additionalInfo' field")
-		}
+	if err := WriteOptionalField[PascalString](ctx, "additionalInfo", GetRef(m.GetAdditionalInfo()), WriteComplex[PascalString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'additionalInfo' field")
 	}
 
-	// Optional Field (innerStatusCode) (Can be skipped, if the value is null)
-	var innerStatusCode StatusCode = nil
-	if m.GetInnerStatusCode() != nil {
-		if pushErr := writeBuffer.PushContext("innerStatusCode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for innerStatusCode")
-		}
-		innerStatusCode = m.GetInnerStatusCode()
-		_innerStatusCodeErr := writeBuffer.WriteSerializable(ctx, innerStatusCode)
-		if popErr := writeBuffer.PopContext("innerStatusCode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for innerStatusCode")
-		}
-		if _innerStatusCodeErr != nil {
-			return errors.Wrap(_innerStatusCodeErr, "Error serializing 'innerStatusCode' field")
-		}
+	if err := WriteOptionalField[StatusCode](ctx, "innerStatusCode", GetRef(m.GetInnerStatusCode()), WriteComplex[StatusCode](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'innerStatusCode' field")
 	}
 
-	// Optional Field (innerDiagnosticInfo) (Can be skipped, if the value is null)
-	var innerDiagnosticInfo DiagnosticInfo = nil
-	if m.GetInnerDiagnosticInfo() != nil {
-		if pushErr := writeBuffer.PushContext("innerDiagnosticInfo"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for innerDiagnosticInfo")
-		}
-		innerDiagnosticInfo = m.GetInnerDiagnosticInfo()
-		_innerDiagnosticInfoErr := writeBuffer.WriteSerializable(ctx, innerDiagnosticInfo)
-		if popErr := writeBuffer.PopContext("innerDiagnosticInfo"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for innerDiagnosticInfo")
-		}
-		if _innerDiagnosticInfoErr != nil {
-			return errors.Wrap(_innerDiagnosticInfoErr, "Error serializing 'innerDiagnosticInfo' field")
-		}
+	if err := WriteOptionalField[DiagnosticInfo](ctx, "innerDiagnosticInfo", GetRef(m.GetInnerDiagnosticInfo()), WriteComplex[DiagnosticInfo](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'innerDiagnosticInfo' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DiagnosticInfo"); popErr != nil {

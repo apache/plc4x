@@ -202,20 +202,8 @@ func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(_channelErr, "Error serializing 'channel' field")
 	}
 
-	// Optional Field (overridingPriority) (Can be skipped, if the value is null)
-	var overridingPriority BACnetContextTagUnsignedInteger = nil
-	if m.GetOverridingPriority() != nil {
-		if pushErr := writeBuffer.PushContext("overridingPriority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for overridingPriority")
-		}
-		overridingPriority = m.GetOverridingPriority()
-		_overridingPriorityErr := writeBuffer.WriteSerializable(ctx, overridingPriority)
-		if popErr := writeBuffer.PopContext("overridingPriority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for overridingPriority")
-		}
-		if _overridingPriorityErr != nil {
-			return errors.Wrap(_overridingPriorityErr, "Error serializing 'overridingPriority' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "overridingPriority", GetRef(m.GetOverridingPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'overridingPriority' field")
 	}
 
 	// Simple Field (value)

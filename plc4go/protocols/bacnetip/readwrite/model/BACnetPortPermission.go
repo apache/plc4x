@@ -186,20 +186,8 @@ func (m *_BACnetPortPermission) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_portErr, "Error serializing 'port' field")
 	}
 
-	// Optional Field (enable) (Can be skipped, if the value is null)
-	var enable BACnetContextTagBoolean = nil
-	if m.GetEnable() != nil {
-		if pushErr := writeBuffer.PushContext("enable"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enable")
-		}
-		enable = m.GetEnable()
-		_enableErr := writeBuffer.WriteSerializable(ctx, enable)
-		if popErr := writeBuffer.PopContext("enable"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enable")
-		}
-		if _enableErr != nil {
-			return errors.Wrap(_enableErr, "Error serializing 'enable' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "enable", GetRef(m.GetEnable()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'enable' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPortPermission"); popErr != nil {

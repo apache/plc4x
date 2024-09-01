@@ -249,20 +249,8 @@ func (pm *_SALData) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Optional Field (salData) (Can be skipped, if the value is null)
-	var salData SALData = nil
-	if m.GetSalData() != nil {
-		if pushErr := writeBuffer.PushContext("salData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for salData")
-		}
-		salData = m.GetSalData()
-		_salDataErr := writeBuffer.WriteSerializable(ctx, salData)
-		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for salData")
-		}
-		if _salDataErr != nil {
-			return errors.Wrap(_salDataErr, "Error serializing 'salData' field")
-		}
+	if err := WriteOptionalField[SALData](ctx, "salData", GetRef(m.GetSalData()), WriteComplex[SALData](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'salData' field")
 	}
 
 	if popErr := writeBuffer.PopContext("SALData"); popErr != nil {

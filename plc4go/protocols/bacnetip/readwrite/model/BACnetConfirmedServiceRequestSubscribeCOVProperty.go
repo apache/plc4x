@@ -313,36 +313,12 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) SerializeWithWriteB
 			return errors.Wrap(_monitoredObjectIdentifierErr, "Error serializing 'monitoredObjectIdentifier' field")
 		}
 
-		// Optional Field (issueConfirmedNotifications) (Can be skipped, if the value is null)
-		var issueConfirmedNotifications BACnetContextTagBoolean = nil
-		if m.GetIssueConfirmedNotifications() != nil {
-			if pushErr := writeBuffer.PushContext("issueConfirmedNotifications"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
-			}
-			issueConfirmedNotifications = m.GetIssueConfirmedNotifications()
-			_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(ctx, issueConfirmedNotifications)
-			if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
-			}
-			if _issueConfirmedNotificationsErr != nil {
-				return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", GetRef(m.GetIssueConfirmedNotifications()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'issueConfirmedNotifications' field")
 		}
 
-		// Optional Field (lifetime) (Can be skipped, if the value is null)
-		var lifetime BACnetContextTagUnsignedInteger = nil
-		if m.GetLifetime() != nil {
-			if pushErr := writeBuffer.PushContext("lifetime"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for lifetime")
-			}
-			lifetime = m.GetLifetime()
-			_lifetimeErr := writeBuffer.WriteSerializable(ctx, lifetime)
-			if popErr := writeBuffer.PopContext("lifetime"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for lifetime")
-			}
-			if _lifetimeErr != nil {
-				return errors.Wrap(_lifetimeErr, "Error serializing 'lifetime' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", GetRef(m.GetLifetime()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'lifetime' field")
 		}
 
 		// Simple Field (monitoredPropertyIdentifier)
@@ -357,20 +333,8 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) SerializeWithWriteB
 			return errors.Wrap(_monitoredPropertyIdentifierErr, "Error serializing 'monitoredPropertyIdentifier' field")
 		}
 
-		// Optional Field (covIncrement) (Can be skipped, if the value is null)
-		var covIncrement BACnetContextTagReal = nil
-		if m.GetCovIncrement() != nil {
-			if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for covIncrement")
-			}
-			covIncrement = m.GetCovIncrement()
-			_covIncrementErr := writeBuffer.WriteSerializable(ctx, covIncrement)
-			if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for covIncrement")
-			}
-			if _covIncrementErr != nil {
-				return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagReal](ctx, "covIncrement", GetRef(m.GetCovIncrement()), WriteComplex[BACnetContextTagReal](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'covIncrement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); popErr != nil {

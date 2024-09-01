@@ -222,14 +222,8 @@ func (m *_AnsiExtendedSymbolSegment) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_symbolErr, "Error serializing 'symbol' field")
 		}
 
-		// Optional Field (pad) (Can be skipped, if the value is null)
-		var pad *uint8 = nil
-		if m.GetPad() != nil {
-			pad = m.GetPad()
-			_padErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pad", 8, uint8(*(pad)))
-			if _padErr != nil {
-				return errors.Wrap(_padErr, "Error serializing 'pad' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "pad", m.GetPad(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'pad' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AnsiExtendedSymbolSegment"); popErr != nil {

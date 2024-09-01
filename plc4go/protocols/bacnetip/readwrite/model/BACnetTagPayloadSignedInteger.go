@@ -616,14 +616,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(_isInt8Err, "Error serializing 'isInt8' field")
 	}
 
-	// Optional Field (valueInt8) (Can be skipped, if the value is null)
-	var valueInt8 *int8 = nil
-	if m.GetValueInt8() != nil {
-		valueInt8 = m.GetValueInt8()
-		_valueInt8Err := /*TODO: migrate me*/ writeBuffer.WriteInt8("valueInt8", 8, int8(*(valueInt8)))
-		if _valueInt8Err != nil {
-			return errors.Wrap(_valueInt8Err, "Error serializing 'valueInt8' field")
-		}
+	if err := WriteOptionalField[int8](ctx, "valueInt8", m.GetValueInt8(), WriteSignedByte(writeBuffer, 8), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueInt8' field")
 	}
 	// Virtual field
 	isInt16 := m.GetIsInt16()
@@ -632,14 +626,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(_isInt16Err, "Error serializing 'isInt16' field")
 	}
 
-	// Optional Field (valueInt16) (Can be skipped, if the value is null)
-	var valueInt16 *int16 = nil
-	if m.GetValueInt16() != nil {
-		valueInt16 = m.GetValueInt16()
-		_valueInt16Err := /*TODO: migrate me*/ writeBuffer.WriteInt16("valueInt16", 16, int16(*(valueInt16)))
-		if _valueInt16Err != nil {
-			return errors.Wrap(_valueInt16Err, "Error serializing 'valueInt16' field")
-		}
+	if err := WriteOptionalField[int16](ctx, "valueInt16", m.GetValueInt16(), WriteSignedShort(writeBuffer, 16), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueInt16' field")
 	}
 	// Virtual field
 	isInt24 := m.GetIsInt24()
@@ -648,14 +636,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(_isInt24Err, "Error serializing 'isInt24' field")
 	}
 
-	// Optional Field (valueInt24) (Can be skipped, if the value is null)
-	var valueInt24 *int32 = nil
-	if m.GetValueInt24() != nil {
-		valueInt24 = m.GetValueInt24()
-		_valueInt24Err := /*TODO: migrate me*/ writeBuffer.WriteInt32("valueInt24", 24, int32(*(valueInt24)))
-		if _valueInt24Err != nil {
-			return errors.Wrap(_valueInt24Err, "Error serializing 'valueInt24' field")
-		}
+	if err := WriteOptionalField[int32](ctx, "valueInt24", m.GetValueInt24(), WriteSignedInt(writeBuffer, 24), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueInt24' field")
 	}
 	// Virtual field
 	isInt32 := m.GetIsInt32()
@@ -664,14 +646,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(_isInt32Err, "Error serializing 'isInt32' field")
 	}
 
-	// Optional Field (valueInt32) (Can be skipped, if the value is null)
-	var valueInt32 *int32 = nil
-	if m.GetValueInt32() != nil {
-		valueInt32 = m.GetValueInt32()
-		_valueInt32Err := /*TODO: migrate me*/ writeBuffer.WriteInt32("valueInt32", 32, int32(*(valueInt32)))
-		if _valueInt32Err != nil {
-			return errors.Wrap(_valueInt32Err, "Error serializing 'valueInt32' field")
-		}
+	if err := WriteOptionalField[int32](ctx, "valueInt32", m.GetValueInt32(), WriteSignedInt(writeBuffer, 32), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueInt32' field")
 	}
 	// Virtual field
 	isInt40 := m.GetIsInt40()
@@ -680,14 +656,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(_isInt40Err, "Error serializing 'isInt40' field")
 	}
 
-	// Optional Field (valueInt40) (Can be skipped, if the value is null)
-	var valueInt40 *int64 = nil
-	if m.GetValueInt40() != nil {
-		valueInt40 = m.GetValueInt40()
-		_valueInt40Err := /*TODO: migrate me*/ writeBuffer.WriteInt64("valueInt40", 40, int64(*(valueInt40)))
-		if _valueInt40Err != nil {
-			return errors.Wrap(_valueInt40Err, "Error serializing 'valueInt40' field")
-		}
+	if err := WriteOptionalField[int64](ctx, "valueInt40", m.GetValueInt40(), WriteSignedLong(writeBuffer, 40), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueInt40' field")
 	}
 	// Virtual field
 	isInt48 := m.GetIsInt48()
@@ -696,14 +666,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(_isInt48Err, "Error serializing 'isInt48' field")
 	}
 
-	// Optional Field (valueInt48) (Can be skipped, if the value is null)
-	var valueInt48 *int64 = nil
-	if m.GetValueInt48() != nil {
-		valueInt48 = m.GetValueInt48()
-		_valueInt48Err := /*TODO: migrate me*/ writeBuffer.WriteInt64("valueInt48", 48, int64(*(valueInt48)))
-		if _valueInt48Err != nil {
-			return errors.Wrap(_valueInt48Err, "Error serializing 'valueInt48' field")
-		}
+	if err := WriteOptionalField[int64](ctx, "valueInt48", m.GetValueInt48(), WriteSignedLong(writeBuffer, 48), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueInt48' field")
 	}
 	// Virtual field
 	isInt56 := m.GetIsInt56()
@@ -712,14 +676,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(_isInt56Err, "Error serializing 'isInt56' field")
 	}
 
-	// Optional Field (valueInt56) (Can be skipped, if the value is null)
-	var valueInt56 *int64 = nil
-	if m.GetValueInt56() != nil {
-		valueInt56 = m.GetValueInt56()
-		_valueInt56Err := /*TODO: migrate me*/ writeBuffer.WriteInt64("valueInt56", 56, int64(*(valueInt56)))
-		if _valueInt56Err != nil {
-			return errors.Wrap(_valueInt56Err, "Error serializing 'valueInt56' field")
-		}
+	if err := WriteOptionalField[int64](ctx, "valueInt56", m.GetValueInt56(), WriteSignedLong(writeBuffer, 56), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueInt56' field")
 	}
 	// Virtual field
 	isInt64 := m.GetIsInt64()
@@ -728,14 +686,8 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(_isInt64Err, "Error serializing 'isInt64' field")
 	}
 
-	// Optional Field (valueInt64) (Can be skipped, if the value is null)
-	var valueInt64 *int64 = nil
-	if m.GetValueInt64() != nil {
-		valueInt64 = m.GetValueInt64()
-		_valueInt64Err := /*TODO: migrate me*/ writeBuffer.WriteInt64("valueInt64", 64, int64(*(valueInt64)))
-		if _valueInt64Err != nil {
-			return errors.Wrap(_valueInt64Err, "Error serializing 'valueInt64' field")
-		}
+	if err := WriteOptionalField[int64](ctx, "valueInt64", m.GetValueInt64(), WriteSignedLong(writeBuffer, 64), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueInt64' field")
 	}
 	// Virtual field
 	actualValue := m.GetActualValue()

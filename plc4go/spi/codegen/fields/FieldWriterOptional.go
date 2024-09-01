@@ -21,7 +21,6 @@ package fields
 
 import (
 	"context"
-	"reflect"
 
 	"github.com/rs/zerolog"
 
@@ -42,11 +41,11 @@ func NewFieldWriterOptional[T any](logger zerolog.Logger) *FieldWriterOptional[T
 	}
 }
 
-func (f *FieldWriterOptional[T]) WriteOptionalField(ctx context.Context, logicalName string, value T, dataWriter io.DataWriter[T], condition bool, writerArgs ...utils.WithWriterArgs) error {
+func (f *FieldWriterOptional[T]) WriteOptionalField(ctx context.Context, logicalName string, value *T, dataWriter io.DataWriter[T], condition bool, writerArgs ...utils.WithWriterArgs) error {
 	f.log.Debug().Str("logicalName", logicalName).Msg("write field")
-	if condition && reflect.ValueOf(value).IsNil() { // TODO: find a way to not use reflect
+	if condition && value != nil {
 		return f.SwitchParseByteOrderIfNecessarySerializeWrapped(ctx, func(ctx context.Context) error {
-			return dataWriter.Write(ctx, logicalName, value, writerArgs...)
+			return dataWriter.Write(ctx, logicalName, *value, writerArgs...)
 		}, dataWriter, f.ExtractByteOrder(utils.UpcastWriterArgs(writerArgs...)...))
 	} else {
 		// TODO: add hex support

@@ -234,52 +234,16 @@ func (m *_BACnetPropertyValue) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(_propertyIdentifierErr, "Error serializing 'propertyIdentifier' field")
 	}
 
-	// Optional Field (propertyArrayIndex) (Can be skipped, if the value is null)
-	var propertyArrayIndex BACnetContextTagUnsignedInteger = nil
-	if m.GetPropertyArrayIndex() != nil {
-		if pushErr := writeBuffer.PushContext("propertyArrayIndex"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyArrayIndex")
-		}
-		propertyArrayIndex = m.GetPropertyArrayIndex()
-		_propertyArrayIndexErr := writeBuffer.WriteSerializable(ctx, propertyArrayIndex)
-		if popErr := writeBuffer.PopContext("propertyArrayIndex"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyArrayIndex")
-		}
-		if _propertyArrayIndexErr != nil {
-			return errors.Wrap(_propertyArrayIndexErr, "Error serializing 'propertyArrayIndex' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", GetRef(m.GetPropertyArrayIndex()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'propertyArrayIndex' field")
 	}
 
-	// Optional Field (propertyValue) (Can be skipped, if the value is null)
-	var propertyValue BACnetConstructedDataElement = nil
-	if m.GetPropertyValue() != nil {
-		if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyValue")
-		}
-		propertyValue = m.GetPropertyValue()
-		_propertyValueErr := writeBuffer.WriteSerializable(ctx, propertyValue)
-		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyValue")
-		}
-		if _propertyValueErr != nil {
-			return errors.Wrap(_propertyValueErr, "Error serializing 'propertyValue' field")
-		}
+	if err := WriteOptionalField[BACnetConstructedDataElement](ctx, "propertyValue", GetRef(m.GetPropertyValue()), WriteComplex[BACnetConstructedDataElement](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'propertyValue' field")
 	}
 
-	// Optional Field (priority) (Can be skipped, if the value is null)
-	var priority BACnetContextTagUnsignedInteger = nil
-	if m.GetPriority() != nil {
-		if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for priority")
-		}
-		priority = m.GetPriority()
-		_priorityErr := writeBuffer.WriteSerializable(ctx, priority)
-		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for priority")
-		}
-		if _priorityErr != nil {
-			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", GetRef(m.GetPriority()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'priority' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetPropertyValue"); popErr != nil {

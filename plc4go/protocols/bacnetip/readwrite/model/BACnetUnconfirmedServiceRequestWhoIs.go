@@ -215,36 +215,12 @@ func (m *_BACnetUnconfirmedServiceRequestWhoIs) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestWhoIs")
 		}
 
-		// Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if the value is null)
-		var deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger = nil
-		if m.GetDeviceInstanceRangeLowLimit() != nil {
-			if pushErr := writeBuffer.PushContext("deviceInstanceRangeLowLimit"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for deviceInstanceRangeLowLimit")
-			}
-			deviceInstanceRangeLowLimit = m.GetDeviceInstanceRangeLowLimit()
-			_deviceInstanceRangeLowLimitErr := writeBuffer.WriteSerializable(ctx, deviceInstanceRangeLowLimit)
-			if popErr := writeBuffer.PopContext("deviceInstanceRangeLowLimit"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for deviceInstanceRangeLowLimit")
-			}
-			if _deviceInstanceRangeLowLimitErr != nil {
-				return errors.Wrap(_deviceInstanceRangeLowLimitErr, "Error serializing 'deviceInstanceRangeLowLimit' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeLowLimit", GetRef(m.GetDeviceInstanceRangeLowLimit()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceInstanceRangeLowLimit' field")
 		}
 
-		// Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if the value is null)
-		var deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger = nil
-		if m.GetDeviceInstanceRangeHighLimit() != nil {
-			if pushErr := writeBuffer.PushContext("deviceInstanceRangeHighLimit"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for deviceInstanceRangeHighLimit")
-			}
-			deviceInstanceRangeHighLimit = m.GetDeviceInstanceRangeHighLimit()
-			_deviceInstanceRangeHighLimitErr := writeBuffer.WriteSerializable(ctx, deviceInstanceRangeHighLimit)
-			if popErr := writeBuffer.PopContext("deviceInstanceRangeHighLimit"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for deviceInstanceRangeHighLimit")
-			}
-			if _deviceInstanceRangeHighLimitErr != nil {
-				return errors.Wrap(_deviceInstanceRangeHighLimitErr, "Error serializing 'deviceInstanceRangeHighLimit' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeHighLimit", GetRef(m.GetDeviceInstanceRangeHighLimit()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'deviceInstanceRangeHighLimit' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetUnconfirmedServiceRequestWhoIs"); popErr != nil {

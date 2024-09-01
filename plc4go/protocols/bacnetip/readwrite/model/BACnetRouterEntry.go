@@ -242,20 +242,8 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
-	// Optional Field (performanceIndex) (Can be skipped, if the value is null)
-	var performanceIndex BACnetContextTagOctetString = nil
-	if m.GetPerformanceIndex() != nil {
-		if pushErr := writeBuffer.PushContext("performanceIndex"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for performanceIndex")
-		}
-		performanceIndex = m.GetPerformanceIndex()
-		_performanceIndexErr := writeBuffer.WriteSerializable(ctx, performanceIndex)
-		if popErr := writeBuffer.PopContext("performanceIndex"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for performanceIndex")
-		}
-		if _performanceIndexErr != nil {
-			return errors.Wrap(_performanceIndexErr, "Error serializing 'performanceIndex' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagOctetString](ctx, "performanceIndex", GetRef(m.GetPerformanceIndex()), WriteComplex[BACnetContextTagOctetString](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'performanceIndex' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetRouterEntry"); popErr != nil {

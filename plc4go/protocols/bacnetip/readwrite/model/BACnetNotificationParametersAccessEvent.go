@@ -383,20 +383,8 @@ func (m *_BACnetNotificationParametersAccessEvent) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(_accessCredentialErr, "Error serializing 'accessCredential' field")
 		}
 
-		// Optional Field (authenticationFactor) (Can be skipped, if the value is null)
-		var authenticationFactor BACnetAuthenticationFactorTypeTagged = nil
-		if m.GetAuthenticationFactor() != nil {
-			if pushErr := writeBuffer.PushContext("authenticationFactor"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for authenticationFactor")
-			}
-			authenticationFactor = m.GetAuthenticationFactor()
-			_authenticationFactorErr := writeBuffer.WriteSerializable(ctx, authenticationFactor)
-			if popErr := writeBuffer.PopContext("authenticationFactor"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for authenticationFactor")
-			}
-			if _authenticationFactorErr != nil {
-				return errors.Wrap(_authenticationFactorErr, "Error serializing 'authenticationFactor' field")
-			}
+		if err := WriteOptionalField[BACnetAuthenticationFactorTypeTagged](ctx, "authenticationFactor", GetRef(m.GetAuthenticationFactor()), WriteComplex[BACnetAuthenticationFactorTypeTagged](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'authenticationFactor' field")
 		}
 
 		// Simple Field (innerClosingTag)

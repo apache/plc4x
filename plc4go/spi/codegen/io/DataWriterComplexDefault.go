@@ -24,7 +24,6 @@ import (
 	"encoding/binary"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -32,16 +31,13 @@ import (
 
 type DataWriterComplexDefault[T spi.Message] struct {
 	writeBuffer utils.WriteBuffer
-
-	log zerolog.Logger
 }
 
 var _ DataWriterComplex[spi.Message] = (*DataWriterComplexDefault[spi.Message])(nil)
 
-func NewDataWriterComplexDefault[T spi.Message](writeBuffer utils.WriteBuffer, log zerolog.Logger) *DataWriterComplexDefault[T] {
+func NewDataWriterComplexDefault[T spi.Message](writeBuffer utils.WriteBuffer) *DataWriterComplexDefault[T] {
 	return &DataWriterComplexDefault[T]{
 		writeBuffer: writeBuffer,
-		log:         log,
 	}
 }
 

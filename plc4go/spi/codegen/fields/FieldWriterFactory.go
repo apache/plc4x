@@ -89,12 +89,12 @@ func WriteManualArrayField[T any](ctx context.Context, logicalName string, value
 	return NewFieldWriterManualArray[T](log).WriteManualArrayField(ctx, logicalName, values, runnable, writeBuffer, writerArgs...)
 }
 
-func WriteOptionalField[T any](ctx context.Context, logicalName string, value T, dataWriter io.DataWriter[T], condition bool, writerArgs ...utils.WithWriterArgs) error {
+func WriteOptionalField[T any](ctx context.Context, logicalName string, value *T, dataWriter io.DataWriter[T], condition bool, writerArgs ...utils.WithWriterArgs) error {
 	log := *zerolog.Ctx(ctx)
 	return NewFieldWriterOptional[T](log).WriteOptionalField(ctx, logicalName, value, dataWriter, condition, writerArgs...)
 }
 
-func WriteOptionalEnumField[T any](ctx context.Context, logicalName, innerName string, value T, dataWriter io.DataWriter[T], condition bool, writerArgs ...utils.WithWriterArgs) error {
+func WriteOptionalEnumField[T any](ctx context.Context, logicalName, innerName string, value *T, dataWriter io.DataWriter[T], condition bool, writerArgs ...utils.WithWriterArgs) error {
 	log := *zerolog.Ctx(ctx)
 	return NewFieldWriterOptionalEnum[T](log).WriteOptionalEnumField(ctx, logicalName, innerName, value, dataWriter, condition, writerArgs...)
 }

@@ -251,36 +251,12 @@ func (m *_BACnetReadAccessPropertyReadResult) SerializeWithWriteBuffer(ctx conte
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
-	// Optional Field (propertyValue) (Can be skipped, if the value is null)
-	var propertyValue BACnetConstructedData = nil
-	if m.GetPropertyValue() != nil {
-		if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyValue")
-		}
-		propertyValue = m.GetPropertyValue()
-		_propertyValueErr := writeBuffer.WriteSerializable(ctx, propertyValue)
-		if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyValue")
-		}
-		if _propertyValueErr != nil {
-			return errors.Wrap(_propertyValueErr, "Error serializing 'propertyValue' field")
-		}
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "propertyValue", GetRef(m.GetPropertyValue()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'propertyValue' field")
 	}
 
-	// Optional Field (propertyAccessError) (Can be skipped, if the value is null)
-	var propertyAccessError ErrorEnclosed = nil
-	if m.GetPropertyAccessError() != nil {
-		if pushErr := writeBuffer.PushContext("propertyAccessError"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for propertyAccessError")
-		}
-		propertyAccessError = m.GetPropertyAccessError()
-		_propertyAccessErrorErr := writeBuffer.WriteSerializable(ctx, propertyAccessError)
-		if popErr := writeBuffer.PopContext("propertyAccessError"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for propertyAccessError")
-		}
-		if _propertyAccessErrorErr != nil {
-			return errors.Wrap(_propertyAccessErrorErr, "Error serializing 'propertyAccessError' field")
-		}
+	if err := WriteOptionalField[ErrorEnclosed](ctx, "propertyAccessError", GetRef(m.GetPropertyAccessError()), WriteComplex[ErrorEnclosed](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'propertyAccessError' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetReadAccessPropertyReadResult"); popErr != nil {

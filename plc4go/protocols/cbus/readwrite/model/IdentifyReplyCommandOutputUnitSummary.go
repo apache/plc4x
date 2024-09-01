@@ -252,24 +252,12 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(_unitFlagsErr, "Error serializing 'unitFlags' field")
 		}
 
-		// Optional Field (gavStoreEnabledByte1) (Can be skipped, if the value is null)
-		var gavStoreEnabledByte1 *byte = nil
-		if m.GetGavStoreEnabledByte1() != nil {
-			gavStoreEnabledByte1 = m.GetGavStoreEnabledByte1()
-			_gavStoreEnabledByte1Err := /*TODO: migrate me*/ writeBuffer.WriteByte("gavStoreEnabledByte1", *(gavStoreEnabledByte1))
-			if _gavStoreEnabledByte1Err != nil {
-				return errors.Wrap(_gavStoreEnabledByte1Err, "Error serializing 'gavStoreEnabledByte1' field")
-			}
+		if err := WriteOptionalField[byte](ctx, "gavStoreEnabledByte1", m.GetGavStoreEnabledByte1(), WriteByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'gavStoreEnabledByte1' field")
 		}
 
-		// Optional Field (gavStoreEnabledByte2) (Can be skipped, if the value is null)
-		var gavStoreEnabledByte2 *byte = nil
-		if m.GetGavStoreEnabledByte2() != nil {
-			gavStoreEnabledByte2 = m.GetGavStoreEnabledByte2()
-			_gavStoreEnabledByte2Err := /*TODO: migrate me*/ writeBuffer.WriteByte("gavStoreEnabledByte2", *(gavStoreEnabledByte2))
-			if _gavStoreEnabledByte2Err != nil {
-				return errors.Wrap(_gavStoreEnabledByte2Err, "Error serializing 'gavStoreEnabledByte2' field")
-			}
+		if err := WriteOptionalField[byte](ctx, "gavStoreEnabledByte2", m.GetGavStoreEnabledByte2(), WriteByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'gavStoreEnabledByte2' field")
 		}
 
 		// Simple Field (timeFromLastRecoverOfMainsInSeconds)

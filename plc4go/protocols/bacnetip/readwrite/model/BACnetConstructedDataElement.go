@@ -354,52 +354,16 @@ func (m *_BACnetConstructedDataElement) SerializeWithWriteBuffer(ctx context.Con
 		return errors.Wrap(_isContextTagErr, "Error serializing 'isContextTag' field")
 	}
 
-	// Optional Field (applicationTag) (Can be skipped, if the value is null)
-	var applicationTag BACnetApplicationTag = nil
-	if m.GetApplicationTag() != nil {
-		if pushErr := writeBuffer.PushContext("applicationTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for applicationTag")
-		}
-		applicationTag = m.GetApplicationTag()
-		_applicationTagErr := writeBuffer.WriteSerializable(ctx, applicationTag)
-		if popErr := writeBuffer.PopContext("applicationTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for applicationTag")
-		}
-		if _applicationTagErr != nil {
-			return errors.Wrap(_applicationTagErr, "Error serializing 'applicationTag' field")
-		}
+	if err := WriteOptionalField[BACnetApplicationTag](ctx, "applicationTag", GetRef(m.GetApplicationTag()), WriteComplex[BACnetApplicationTag](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'applicationTag' field")
 	}
 
-	// Optional Field (contextTag) (Can be skipped, if the value is null)
-	var contextTag BACnetContextTag = nil
-	if m.GetContextTag() != nil {
-		if pushErr := writeBuffer.PushContext("contextTag"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for contextTag")
-		}
-		contextTag = m.GetContextTag()
-		_contextTagErr := writeBuffer.WriteSerializable(ctx, contextTag)
-		if popErr := writeBuffer.PopContext("contextTag"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for contextTag")
-		}
-		if _contextTagErr != nil {
-			return errors.Wrap(_contextTagErr, "Error serializing 'contextTag' field")
-		}
+	if err := WriteOptionalField[BACnetContextTag](ctx, "contextTag", GetRef(m.GetContextTag()), WriteComplex[BACnetContextTag](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'contextTag' field")
 	}
 
-	// Optional Field (constructedData) (Can be skipped, if the value is null)
-	var constructedData BACnetConstructedData = nil
-	if m.GetConstructedData() != nil {
-		if pushErr := writeBuffer.PushContext("constructedData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for constructedData")
-		}
-		constructedData = m.GetConstructedData()
-		_constructedDataErr := writeBuffer.WriteSerializable(ctx, constructedData)
-		if popErr := writeBuffer.PopContext("constructedData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for constructedData")
-		}
-		if _constructedDataErr != nil {
-			return errors.Wrap(_constructedDataErr, "Error serializing 'constructedData' field")
-		}
+	if err := WriteOptionalField[BACnetConstructedData](ctx, "constructedData", GetRef(m.GetConstructedData()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'constructedData' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConstructedDataElement"); popErr != nil {

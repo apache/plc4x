@@ -356,34 +356,16 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
-		// Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
-		var dataUnitReferenceNumber *uint8 = nil
-		if m.GetDataUnitReferenceNumber() != nil {
-			dataUnitReferenceNumber = m.GetDataUnitReferenceNumber()
-			_dataUnitReferenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dataUnitReferenceNumber", 8, uint8(*(dataUnitReferenceNumber)))
-			if _dataUnitReferenceNumberErr != nil {
-				return errors.Wrap(_dataUnitReferenceNumberErr, "Error serializing 'dataUnitReferenceNumber' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "dataUnitReferenceNumber", m.GetDataUnitReferenceNumber(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataUnitReferenceNumber' field")
 		}
 
-		// Optional Field (lastDataUnit) (Can be skipped, if the value is null)
-		var lastDataUnit *uint8 = nil
-		if m.GetLastDataUnit() != nil {
-			lastDataUnit = m.GetLastDataUnit()
-			_lastDataUnitErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("lastDataUnit", 8, uint8(*(lastDataUnit)))
-			if _lastDataUnitErr != nil {
-				return errors.Wrap(_lastDataUnitErr, "Error serializing 'lastDataUnit' field")
-			}
+		if err := WriteOptionalField[uint8](ctx, "lastDataUnit", m.GetLastDataUnit(), WriteUnsignedByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastDataUnit' field")
 		}
 
-		// Optional Field (errorCode) (Can be skipped, if the value is null)
-		var errorCode *uint16 = nil
-		if m.GetErrorCode() != nil {
-			errorCode = m.GetErrorCode()
-			_errorCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("errorCode", 16, uint16(*(errorCode)))
-			if _errorCodeErr != nil {
-				return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
-			}
+		if err := WriteOptionalField[uint16](ctx, "errorCode", m.GetErrorCode(), WriteUnsignedShort(writeBuffer, 16), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorCode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7ParameterUserDataItemCPUFunctions"); popErr != nil {

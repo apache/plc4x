@@ -278,20 +278,8 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 			return errors.Wrap(_deviceIdentifierErr, "Error serializing 'deviceIdentifier' field")
 		}
 
-		// Optional Field (openingTag) (Can be skipped, if the value is null)
-		var openingTag BACnetOpeningTag = nil
-		if m.GetOpeningTag() != nil {
-			if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for openingTag")
-			}
-			openingTag = m.GetOpeningTag()
-			_openingTagErr := writeBuffer.WriteSerializable(ctx, openingTag)
-			if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for openingTag")
-			}
-			if _openingTagErr != nil {
-				return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
-			}
+		if err := WriteOptionalField[BACnetOpeningTag](ctx, "openingTag", GetRef(m.GetOpeningTag()), WriteComplex[BACnetOpeningTag](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'openingTag' field")
 		}
 
 		// Simple Field (fileStartPosition)
@@ -318,20 +306,8 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 			return errors.Wrap(_fileDataErr, "Error serializing 'fileData' field")
 		}
 
-		// Optional Field (closingTag) (Can be skipped, if the value is null)
-		var closingTag BACnetClosingTag = nil
-		if m.GetClosingTag() != nil {
-			if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for closingTag")
-			}
-			closingTag = m.GetClosingTag()
-			_closingTagErr := writeBuffer.WriteSerializable(ctx, closingTag)
-			if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for closingTag")
-			}
-			if _closingTagErr != nil {
-				return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
-			}
+		if err := WriteOptionalField[BACnetClosingTag](ctx, "closingTag", GetRef(m.GetClosingTag()), WriteComplex[BACnetClosingTag](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'closingTag' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestAtomicWriteFile"); popErr != nil {

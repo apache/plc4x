@@ -232,20 +232,8 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestDeviceCommunicationControl")
 		}
 
-		// Optional Field (timeDuration) (Can be skipped, if the value is null)
-		var timeDuration BACnetContextTagUnsignedInteger = nil
-		if m.GetTimeDuration() != nil {
-			if pushErr := writeBuffer.PushContext("timeDuration"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for timeDuration")
-			}
-			timeDuration = m.GetTimeDuration()
-			_timeDurationErr := writeBuffer.WriteSerializable(ctx, timeDuration)
-			if popErr := writeBuffer.PopContext("timeDuration"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for timeDuration")
-			}
-			if _timeDurationErr != nil {
-				return errors.Wrap(_timeDurationErr, "Error serializing 'timeDuration' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagUnsignedInteger](ctx, "timeDuration", GetRef(m.GetTimeDuration()), WriteComplex[BACnetContextTagUnsignedInteger](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeDuration' field")
 		}
 
 		// Simple Field (enableDisable)
@@ -260,20 +248,8 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 			return errors.Wrap(_enableDisableErr, "Error serializing 'enableDisable' field")
 		}
 
-		// Optional Field (password) (Can be skipped, if the value is null)
-		var password BACnetContextTagCharacterString = nil
-		if m.GetPassword() != nil {
-			if pushErr := writeBuffer.PushContext("password"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for password")
-			}
-			password = m.GetPassword()
-			_passwordErr := writeBuffer.WriteSerializable(ctx, password)
-			if popErr := writeBuffer.PopContext("password"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for password")
-			}
-			if _passwordErr != nil {
-				return errors.Wrap(_passwordErr, "Error serializing 'password' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "password", GetRef(m.GetPassword()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'password' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); popErr != nil {

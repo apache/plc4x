@@ -158,20 +158,8 @@ func (m *_BACnetSetpointReference) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(pushErr, "Error pushing for BACnetSetpointReference")
 	}
 
-	// Optional Field (setPointReference) (Can be skipped, if the value is null)
-	var setPointReference BACnetObjectPropertyReferenceEnclosed = nil
-	if m.GetSetPointReference() != nil {
-		if pushErr := writeBuffer.PushContext("setPointReference"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for setPointReference")
-		}
-		setPointReference = m.GetSetPointReference()
-		_setPointReferenceErr := writeBuffer.WriteSerializable(ctx, setPointReference)
-		if popErr := writeBuffer.PopContext("setPointReference"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for setPointReference")
-		}
-		if _setPointReferenceErr != nil {
-			return errors.Wrap(_setPointReferenceErr, "Error serializing 'setPointReference' field")
-		}
+	if err := WriteOptionalField[BACnetObjectPropertyReferenceEnclosed](ctx, "setPointReference", GetRef(m.GetSetPointReference()), WriteComplex[BACnetObjectPropertyReferenceEnclosed](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'setPointReference' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetSetpointReference"); popErr != nil {

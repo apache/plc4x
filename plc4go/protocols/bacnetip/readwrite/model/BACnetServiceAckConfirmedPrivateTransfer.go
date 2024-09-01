@@ -249,20 +249,8 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(_serviceNumberErr, "Error serializing 'serviceNumber' field")
 		}
 
-		// Optional Field (resultBlock) (Can be skipped, if the value is null)
-		var resultBlock BACnetConstructedData = nil
-		if m.GetResultBlock() != nil {
-			if pushErr := writeBuffer.PushContext("resultBlock"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for resultBlock")
-			}
-			resultBlock = m.GetResultBlock()
-			_resultBlockErr := writeBuffer.WriteSerializable(ctx, resultBlock)
-			if popErr := writeBuffer.PopContext("resultBlock"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for resultBlock")
-			}
-			if _resultBlockErr != nil {
-				return errors.Wrap(_resultBlockErr, "Error serializing 'resultBlock' field")
-			}
+		if err := WriteOptionalField[BACnetConstructedData](ctx, "resultBlock", GetRef(m.GetResultBlock()), WriteComplex[BACnetConstructedData](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'resultBlock' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckConfirmedPrivateTransfer"); popErr != nil {

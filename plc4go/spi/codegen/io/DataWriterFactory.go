@@ -23,8 +23,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/rs/zerolog"
-
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -97,8 +96,12 @@ func WriteEnum[T any, I any](enumSerializer func(T) I, enumNamer func(T) string,
 	return NewDataWriterEnumDefault[T, I](enumSerializer, enumNamer, dataWriter)
 }
 
-func WriteComplex[T spi.Message](writeBuffer utils.WriteBuffer, log zerolog.Logger) *DataWriterComplexDefault[T] {
-	return NewDataWriterComplexDefault[T](writeBuffer, log)
+func WriteComplex[T spi.Message](writeBuffer utils.WriteBuffer) *DataWriterComplexDefault[T] {
+	return NewDataWriterComplexDefault[T](writeBuffer)
+}
+
+func WriteDataIO[T spi.Message](writeBuffer utils.WriteBuffer, serializer func(utils.WriteBuffer, values.PlcValue) error) *DataWriterDataIoDefault {
+	return NewDataWriterDataIoDefault(writeBuffer, serializer)
 }
 
 func WriteDate(writeBuffer utils.WriteBuffer) DataWriter[time.Time] {

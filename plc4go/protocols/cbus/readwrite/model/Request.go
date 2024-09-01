@@ -294,36 +294,12 @@ func (pm *_Request) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(pushErr, "Error pushing for Request")
 	}
 
-	// Optional Field (startingCR) (Can be skipped, if the value is null)
-	var startingCR *RequestType = nil
-	if m.GetStartingCR() != nil {
-		if pushErr := writeBuffer.PushContext("startingCR"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for startingCR")
-		}
-		startingCR = m.GetStartingCR()
-		_startingCRErr := writeBuffer.WriteSerializable(ctx, startingCR)
-		if popErr := writeBuffer.PopContext("startingCR"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for startingCR")
-		}
-		if _startingCRErr != nil {
-			return errors.Wrap(_startingCRErr, "Error serializing 'startingCR' field")
-		}
+	if err := WriteOptionalEnumField[RequestType](ctx, "startingCR", "RequestType", m.GetStartingCR(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetPeekedByte()) == (RequestType_EMPTY))); err != nil {
+		return errors.Wrap(err, "Error serializing 'startingCR' field")
 	}
 
-	// Optional Field (resetMode) (Can be skipped, if the value is null)
-	var resetMode *RequestType = nil
-	if m.GetResetMode() != nil {
-		if pushErr := writeBuffer.PushContext("resetMode"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for resetMode")
-		}
-		resetMode = m.GetResetMode()
-		_resetModeErr := writeBuffer.WriteSerializable(ctx, resetMode)
-		if popErr := writeBuffer.PopContext("resetMode"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for resetMode")
-		}
-		if _resetModeErr != nil {
-			return errors.Wrap(_resetModeErr, "Error serializing 'resetMode' field")
-		}
+	if err := WriteOptionalEnumField[RequestType](ctx, "resetMode", "RequestType", m.GetResetMode(), WriteEnum[RequestType, uint8](RequestType.GetValue, RequestType.PLC4XEnumName, WriteUnsignedByte(writeBuffer, 8)), bool((m.GetPeekedByte()) == (RequestType_RESET))); err != nil {
+		return errors.Wrap(err, "Error serializing 'resetMode' field")
 	}
 	// Virtual field
 	actualPeek := m.GetActualPeek()

@@ -314,20 +314,8 @@ func (pm *_CALData) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Optional Field (additionalData) (Can be skipped, if the value is null)
-	var additionalData CALData = nil
-	if m.GetAdditionalData() != nil {
-		if pushErr := writeBuffer.PushContext("additionalData"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for additionalData")
-		}
-		additionalData = m.GetAdditionalData()
-		_additionalDataErr := writeBuffer.WriteSerializable(ctx, additionalData)
-		if popErr := writeBuffer.PopContext("additionalData"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for additionalData")
-		}
-		if _additionalDataErr != nil {
-			return errors.Wrap(_additionalDataErr, "Error serializing 'additionalData' field")
-		}
+	if err := WriteOptionalField[CALData](ctx, "additionalData", GetRef(m.GetAdditionalData()), WriteComplex[CALData](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'additionalData' field")
 	}
 
 	if popErr := writeBuffer.PopContext("CALData"); popErr != nil {

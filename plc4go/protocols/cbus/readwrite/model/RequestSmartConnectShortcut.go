@@ -232,14 +232,8 @@ func (m *_RequestSmartConnectShortcut) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(err, "Error serializing 'pipe' field")
 		}
 
-		// Optional Field (secondPipe) (Can be skipped, if the value is null)
-		var secondPipe *byte = nil
-		if m.GetSecondPipe() != nil {
-			secondPipe = m.GetSecondPipe()
-			_secondPipeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("secondPipe", *(secondPipe))
-			if _secondPipeErr != nil {
-				return errors.Wrap(_secondPipeErr, "Error serializing 'secondPipe' field")
-			}
+		if err := WriteOptionalField[byte](ctx, "secondPipe", m.GetSecondPipe(), WriteByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'secondPipe' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestSmartConnectShortcut"); popErr != nil {

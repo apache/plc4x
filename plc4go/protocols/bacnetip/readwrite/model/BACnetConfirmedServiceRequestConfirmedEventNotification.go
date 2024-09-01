@@ -498,20 +498,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) SerializeWith
 			return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
 		}
 
-		// Optional Field (messageText) (Can be skipped, if the value is null)
-		var messageText BACnetContextTagCharacterString = nil
-		if m.GetMessageText() != nil {
-			if pushErr := writeBuffer.PushContext("messageText"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for messageText")
-			}
-			messageText = m.GetMessageText()
-			_messageTextErr := writeBuffer.WriteSerializable(ctx, messageText)
-			if popErr := writeBuffer.PopContext("messageText"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for messageText")
-			}
-			if _messageTextErr != nil {
-				return errors.Wrap(_messageTextErr, "Error serializing 'messageText' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagCharacterString](ctx, "messageText", GetRef(m.GetMessageText()), WriteComplex[BACnetContextTagCharacterString](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'messageText' field")
 		}
 
 		// Simple Field (notifyType)
@@ -526,36 +514,12 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) SerializeWith
 			return errors.Wrap(_notifyTypeErr, "Error serializing 'notifyType' field")
 		}
 
-		// Optional Field (ackRequired) (Can be skipped, if the value is null)
-		var ackRequired BACnetContextTagBoolean = nil
-		if m.GetAckRequired() != nil {
-			if pushErr := writeBuffer.PushContext("ackRequired"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for ackRequired")
-			}
-			ackRequired = m.GetAckRequired()
-			_ackRequiredErr := writeBuffer.WriteSerializable(ctx, ackRequired)
-			if popErr := writeBuffer.PopContext("ackRequired"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for ackRequired")
-			}
-			if _ackRequiredErr != nil {
-				return errors.Wrap(_ackRequiredErr, "Error serializing 'ackRequired' field")
-			}
+		if err := WriteOptionalField[BACnetContextTagBoolean](ctx, "ackRequired", GetRef(m.GetAckRequired()), WriteComplex[BACnetContextTagBoolean](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'ackRequired' field")
 		}
 
-		// Optional Field (fromState) (Can be skipped, if the value is null)
-		var fromState BACnetEventStateTagged = nil
-		if m.GetFromState() != nil {
-			if pushErr := writeBuffer.PushContext("fromState"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for fromState")
-			}
-			fromState = m.GetFromState()
-			_fromStateErr := writeBuffer.WriteSerializable(ctx, fromState)
-			if popErr := writeBuffer.PopContext("fromState"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for fromState")
-			}
-			if _fromStateErr != nil {
-				return errors.Wrap(_fromStateErr, "Error serializing 'fromState' field")
-			}
+		if err := WriteOptionalField[BACnetEventStateTagged](ctx, "fromState", GetRef(m.GetFromState()), WriteComplex[BACnetEventStateTagged](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'fromState' field")
 		}
 
 		// Simple Field (toState)
@@ -570,20 +534,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) SerializeWith
 			return errors.Wrap(_toStateErr, "Error serializing 'toState' field")
 		}
 
-		// Optional Field (eventValues) (Can be skipped, if the value is null)
-		var eventValues BACnetNotificationParameters = nil
-		if m.GetEventValues() != nil {
-			if pushErr := writeBuffer.PushContext("eventValues"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for eventValues")
-			}
-			eventValues = m.GetEventValues()
-			_eventValuesErr := writeBuffer.WriteSerializable(ctx, eventValues)
-			if popErr := writeBuffer.PopContext("eventValues"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for eventValues")
-			}
-			if _eventValuesErr != nil {
-				return errors.Wrap(_eventValuesErr, "Error serializing 'eventValues' field")
-			}
+		if err := WriteOptionalField[BACnetNotificationParameters](ctx, "eventValues", GetRef(m.GetEventValues()), WriteComplex[BACnetNotificationParameters](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestConfirmedEventNotification"); popErr != nil {

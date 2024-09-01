@@ -302,20 +302,8 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Optional Field (rawObjectType) (Can be skipped, if the value is null)
-	var rawObjectType BACnetContextTagEnumerated = nil
-	if m.GetRawObjectType() != nil {
-		if pushErr := writeBuffer.PushContext("rawObjectType"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for rawObjectType")
-		}
-		rawObjectType = m.GetRawObjectType()
-		_rawObjectTypeErr := writeBuffer.WriteSerializable(ctx, rawObjectType)
-		if popErr := writeBuffer.PopContext("rawObjectType"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for rawObjectType")
-		}
-		if _rawObjectTypeErr != nil {
-			return errors.Wrap(_rawObjectTypeErr, "Error serializing 'rawObjectType' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagEnumerated](ctx, "rawObjectType", GetRef(m.GetRawObjectType()), WriteComplex[BACnetContextTagEnumerated](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'rawObjectType' field")
 	}
 	// Virtual field
 	isObjectType := m.GetIsObjectType()
@@ -330,20 +318,8 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 		return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 	}
 
-	// Optional Field (objectIdentifier) (Can be skipped, if the value is null)
-	var objectIdentifier BACnetContextTagObjectIdentifier = nil
-	if m.GetObjectIdentifier() != nil {
-		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
-		}
-		objectIdentifier = m.GetObjectIdentifier()
-		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, objectIdentifier)
-		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectIdentifier")
-		}
-		if _objectIdentifierErr != nil {
-			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
-		}
+	if err := WriteOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", GetRef(m.GetObjectIdentifier()), WriteComplex[BACnetContextTagObjectIdentifier](writeBuffer), true); err != nil {
+		return errors.Wrap(err, "Error serializing 'objectIdentifier' field")
 	}
 	// Virtual field
 	isObjectIdentifier := m.GetIsObjectIdentifier()

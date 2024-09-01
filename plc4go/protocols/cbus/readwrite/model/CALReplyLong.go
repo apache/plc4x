@@ -358,36 +358,12 @@ func (m *_CALReplyLong) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(_isUnitAddressErr, "Error serializing 'isUnitAddress' field")
 		}
 
-		// Optional Field (unitAddress) (Can be skipped, if the value is null)
-		var unitAddress UnitAddress = nil
-		if m.GetUnitAddress() != nil {
-			if pushErr := writeBuffer.PushContext("unitAddress"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for unitAddress")
-			}
-			unitAddress = m.GetUnitAddress()
-			_unitAddressErr := writeBuffer.WriteSerializable(ctx, unitAddress)
-			if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for unitAddress")
-			}
-			if _unitAddressErr != nil {
-				return errors.Wrap(_unitAddressErr, "Error serializing 'unitAddress' field")
-			}
+		if err := WriteOptionalField[UnitAddress](ctx, "unitAddress", GetRef(m.GetUnitAddress()), WriteComplex[UnitAddress](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'unitAddress' field")
 		}
 
-		// Optional Field (bridgeAddress) (Can be skipped, if the value is null)
-		var bridgeAddress BridgeAddress = nil
-		if m.GetBridgeAddress() != nil {
-			if pushErr := writeBuffer.PushContext("bridgeAddress"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
-			}
-			bridgeAddress = m.GetBridgeAddress()
-			_bridgeAddressErr := writeBuffer.WriteSerializable(ctx, bridgeAddress)
-			if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for bridgeAddress")
-			}
-			if _bridgeAddressErr != nil {
-				return errors.Wrap(_bridgeAddressErr, "Error serializing 'bridgeAddress' field")
-			}
+		if err := WriteOptionalField[BridgeAddress](ctx, "bridgeAddress", GetRef(m.GetBridgeAddress()), WriteComplex[BridgeAddress](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'bridgeAddress' field")
 		}
 
 		// Simple Field (serialInterfaceAddress)
@@ -402,30 +378,12 @@ func (m *_CALReplyLong) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(_serialInterfaceAddressErr, "Error serializing 'serialInterfaceAddress' field")
 		}
 
-		// Optional Field (reservedByte) (Can be skipped, if the value is null)
-		var reservedByte *byte = nil
-		if m.GetReservedByte() != nil {
-			reservedByte = m.GetReservedByte()
-			_reservedByteErr := /*TODO: migrate me*/ writeBuffer.WriteByte("reservedByte", *(reservedByte))
-			if _reservedByteErr != nil {
-				return errors.Wrap(_reservedByteErr, "Error serializing 'reservedByte' field")
-			}
+		if err := WriteOptionalField[byte](ctx, "reservedByte", m.GetReservedByte(), WriteByte(writeBuffer, 8), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'reservedByte' field")
 		}
 
-		// Optional Field (replyNetwork) (Can be skipped, if the value is null)
-		var replyNetwork ReplyNetwork = nil
-		if m.GetReplyNetwork() != nil {
-			if pushErr := writeBuffer.PushContext("replyNetwork"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for replyNetwork")
-			}
-			replyNetwork = m.GetReplyNetwork()
-			_replyNetworkErr := writeBuffer.WriteSerializable(ctx, replyNetwork)
-			if popErr := writeBuffer.PopContext("replyNetwork"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for replyNetwork")
-			}
-			if _replyNetworkErr != nil {
-				return errors.Wrap(_replyNetworkErr, "Error serializing 'replyNetwork' field")
-			}
+		if err := WriteOptionalField[ReplyNetwork](ctx, "replyNetwork", GetRef(m.GetReplyNetwork()), WriteComplex[ReplyNetwork](writeBuffer), true); err != nil {
+			return errors.Wrap(err, "Error serializing 'replyNetwork' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALReplyLong"); popErr != nil {
