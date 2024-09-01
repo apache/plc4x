@@ -237,10 +237,8 @@ func (m *_ErrorClassTagged) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[ErrorClass](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 	// Virtual field
 	isProprietary := m.GetIsProprietary()
@@ -249,10 +247,10 @@ func (m *_ErrorClassTagged) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(_isProprietaryErr, "Error serializing 'isProprietary' field")
 	}
 
-	// Manual Field (proprietaryValue)
-	_proprietaryValueErr := WriteProprietaryEnumGeneric(ctx, writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
-	if _proprietaryValueErr != nil {
-		return errors.Wrap(_proprietaryValueErr, "Error serializing 'proprietaryValue' field")
+	if err := WriteManualField[uint32](ctx, "proprietaryValue", func(ctx context.Context) error {
+		return WriteProprietaryEnumGeneric(ctx, writeBuffer, m.GetProprietaryValue(), m.GetIsProprietary())
+	}, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'proprietaryValue' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ErrorClassTagged"); popErr != nil {

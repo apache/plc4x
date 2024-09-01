@@ -226,10 +226,8 @@ func (m *_AssociatedValueType) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
 
-	// Manual Field (valueLength)
-	_valueLengthErr := LeftShift3(ctx, writeBuffer, m.GetValueLength())
-	if _valueLengthErr != nil {
-		return errors.Wrap(_valueLengthErr, "Error serializing 'valueLength' field")
+	if err := WriteManualField[uint16](ctx, "valueLength", func(ctx context.Context) error { return LeftShift3(ctx, writeBuffer, m.GetValueLength()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'valueLength' field")
 	}
 
 	if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteUnsignedByte(writeBuffer, 8)); err != nil {

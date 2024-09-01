@@ -196,10 +196,8 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDev
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged"); popErr != nil {

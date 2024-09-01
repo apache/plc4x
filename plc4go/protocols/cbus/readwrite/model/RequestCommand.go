@@ -301,10 +301,8 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(err, "Error serializing 'initiator' field")
 		}
 
-		// Manual Field (cbusCommand)
-		_cbusCommandErr := WriteCBusCommand(ctx, writeBuffer, m.GetCbusCommand())
-		if _cbusCommandErr != nil {
-			return errors.Wrap(_cbusCommandErr, "Error serializing 'cbusCommand' field")
+		if err := WriteManualField[CBusCommand](ctx, "cbusCommand", func(ctx context.Context) error { return WriteCBusCommand(ctx, writeBuffer, m.GetCbusCommand()) }, writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'cbusCommand' field")
 		}
 		// Virtual field
 		cbusCommandDecoded := m.GetCbusCommandDecoded()
@@ -313,10 +311,10 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_cbusCommandDecodedErr, "Error serializing 'cbusCommandDecoded' field")
 		}
 
-		// Manual Field (chksum)
-		_chksumErr := CalculateChecksum(ctx, writeBuffer, m.GetCbusCommand(), m.CBusOptions.GetSrchk())
-		if _chksumErr != nil {
-			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
+		if err := WriteManualField[Checksum](ctx, "chksum", func(ctx context.Context) error {
+			return CalculateChecksum(ctx, writeBuffer, m.GetCbusCommand(), m.CBusOptions.GetSrchk())
+		}, writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'chksum' field")
 		}
 		// Virtual field
 		chksumDecoded := m.GetChksumDecoded()

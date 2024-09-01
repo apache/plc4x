@@ -79,7 +79,7 @@ func WriteImplicitField[T any](ctx context.Context, logicalName string, value T,
 	return NewFieldWriterImplicit[T](log).WriteImplicitField(ctx, logicalName, value, dataWriter, writerArgs...)
 }
 
-func WriteManualField[T any](ctx context.Context, logicalName string, runnable func(ctx context.Context) error, writeBuffer utils.WriteBuffer, writerArgs ...utils.WithWriterArgs) error {
+func WriteManualField[T any](ctx context.Context, logicalName string, runnable func(context.Context) error, writeBuffer utils.WriteBuffer, writerArgs ...utils.WithWriterArgs) error {
 	log := *zerolog.Ctx(ctx)
 	return NewFieldWriterManual[T](log).WriteManualField(ctx, logicalName, runnable, writeBuffer, writerArgs...)
 }

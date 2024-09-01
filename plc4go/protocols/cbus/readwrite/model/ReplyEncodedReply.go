@@ -241,10 +241,8 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ReplyEncodedReply")
 		}
 
-		// Manual Field (encodedReply)
-		_encodedReplyErr := WriteEncodedReply(ctx, writeBuffer, m.GetEncodedReply())
-		if _encodedReplyErr != nil {
-			return errors.Wrap(_encodedReplyErr, "Error serializing 'encodedReply' field")
+		if err := WriteManualField[EncodedReply](ctx, "encodedReply", func(ctx context.Context) error { return WriteEncodedReply(ctx, writeBuffer, m.GetEncodedReply()) }, writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'encodedReply' field")
 		}
 		// Virtual field
 		encodedReplyDecoded := m.GetEncodedReplyDecoded()
@@ -253,10 +251,10 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_encodedReplyDecodedErr, "Error serializing 'encodedReplyDecoded' field")
 		}
 
-		// Manual Field (chksum)
-		_chksumErr := CalculateChecksum(ctx, writeBuffer, m.GetEncodedReply(), m.CBusOptions.GetSrchk())
-		if _chksumErr != nil {
-			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
+		if err := WriteManualField[Checksum](ctx, "chksum", func(ctx context.Context) error {
+			return CalculateChecksum(ctx, writeBuffer, m.GetEncodedReply(), m.CBusOptions.GetSrchk())
+		}, writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'chksum' field")
 		}
 		// Virtual field
 		chksumDecoded := m.GetChksumDecoded()

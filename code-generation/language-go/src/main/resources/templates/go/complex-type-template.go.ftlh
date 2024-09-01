@@ -1338,12 +1338,13 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 					<@compress single_line=true>
 	if err := WriteManualArrayField[${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)}](
-						ctx, "${namedField.name}",
+						ctx,
+						"${namedField.name}",
 						m.Get${namedField.name?cap_first}(),
 						func(ctx context.Context, writeBuffer utils.WriteBuffer,m ${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)}) error {
 						  return ${helper.toSerializationExpression(manualArrayField, manualArrayField.type.elementTypeReference, manualArrayField.serializeExpression, parserArguments)}
 						},
-						writeBuffer${helper.getFieldOptions(typedField, parserArguments)});err != nil{
+						writeBuffer${helper.getFieldOptions(typedField, parserArguments)}); err != nil{
 					</@compress>
 
 		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -1351,11 +1352,20 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 					<#break>
 				<#case "manual">
 					<#assign manualField = field.asManualField().orElseThrow()>
+					<#assign typedField = field.asTypedField().orElseThrow()>
+					<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Manual Field (${manualField.name})
-	_${manualField.name}Err := ${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, parserArguments)}
-	if _${manualField.name}Err != nil {
-		return errors.Wrap(_${manualField.name}Err, "Error serializing '${manualField.name}' field")<@emitImport import="github.com/pkg/errors" />
+					<@compress single_line=true>
+	if err := WriteManualField[${helper.getLanguageTypeNameForField(typedField)}](
+						ctx,
+						"${namedField.name}",
+						func(ctx context.Context) error {
+							return ${helper.toSerializationExpression(manualField, typedField.type, manualField.serializeExpression, parserArguments)}
+						},
+						writeBuffer${helper.getFieldOptions(typedField, parserArguments)}); err != nil{
+					</@compress>
+
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>
 				<#case "optional">

@@ -237,10 +237,8 @@ func (m *_BACnetVendorIdTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 
-	// Manual Field (value)
-	_valueErr := WriteEnumGeneric(ctx, writeBuffer, m.GetValue())
-	if _valueErr != nil {
-		return errors.Wrap(_valueErr, "Error serializing 'value' field")
+	if err := WriteManualField[BACnetVendorId](ctx, "value", func(ctx context.Context) error { return WriteEnumGeneric(ctx, writeBuffer, m.GetValue()) }, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 	// Virtual field
 	isUnknownId := m.GetIsUnknownId()
@@ -249,10 +247,10 @@ func (m *_BACnetVendorIdTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_isUnknownIdErr, "Error serializing 'isUnknownId' field")
 	}
 
-	// Manual Field (unknownId)
-	_unknownIdErr := WriteProprietaryEnumGeneric(ctx, writeBuffer, m.GetUnknownId(), m.GetIsUnknownId())
-	if _unknownIdErr != nil {
-		return errors.Wrap(_unknownIdErr, "Error serializing 'unknownId' field")
+	if err := WriteManualField[uint32](ctx, "unknownId", func(ctx context.Context) error {
+		return WriteProprietaryEnumGeneric(ctx, writeBuffer, m.GetUnknownId(), m.GetIsUnknownId())
+	}, writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'unknownId' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetVendorIdTagged"); popErr != nil {

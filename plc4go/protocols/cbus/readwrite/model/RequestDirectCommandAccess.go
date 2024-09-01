@@ -266,10 +266,8 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(err, "Error serializing 'at' field")
 		}
 
-		// Manual Field (calData)
-		_calDataErr := WriteCALData(ctx, writeBuffer, m.GetCalData())
-		if _calDataErr != nil {
-			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
+		if err := WriteManualField[CALData](ctx, "calData", func(ctx context.Context) error { return WriteCALData(ctx, writeBuffer, m.GetCalData()) }, writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'calData' field")
 		}
 		// Virtual field
 		calDataDecoded := m.GetCalDataDecoded()
