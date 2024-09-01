@@ -1432,24 +1432,19 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 					<#break>
 				<#case "padding">
 					<#assign paddingField = field.asPaddingField().orElseThrow()>
-					<#assign simpleTypeReference = paddingField.type.asSimpleTypeReference().orElseThrow()>
+					<#assign typedField = field.asTypedField().orElseThrow()>
 
-	// Padding Field (padding)
-	{
-		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for padding")<@emitImport import="github.com/pkg/errors" />
-		}
-		_timesPadding := uint8(${helper.toSerializationExpression(paddingField, helper.intTypeReference, paddingField.paddingCondition, parserArguments)})
-		for ;_timesPadding > 0; _timesPadding-- {
-			_paddingValue := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(paddingField, paddingField.type, paddingField.paddingValue, parserArguments)})
-			_paddingErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "(_paddingValue)", paddingField)}
-			if _paddingErr != nil {
-				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")<@emitImport import="github.com/pkg/errors" />
-			}
-		}
-		if popErr := writeBuffer.PopContext("padding", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for padding")<@emitImport import="github.com/pkg/errors" />
-		}
+					<@compress single_line=true>
+	if err := WritePaddingField[${helper.getLanguageTypeNameForField(paddingField)}](
+						ctx,
+						"padding",
+						int(${helper.toSerializationExpression(paddingField, helper.intTypeReference, paddingField.paddingCondition, parserArguments)}),
+						${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(paddingField, paddingField.type, paddingField.paddingValue, parserArguments)}),
+						${helper.getDataWriterCall(typedField.type, "padding")}${helper.getFieldOptions(typedField, parserArguments)}
+						); err != nil {
+					</@compress>
+
+		return errors.Wrap(err, "Error serializing 'padding' field")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>
 				<#case "reserved">

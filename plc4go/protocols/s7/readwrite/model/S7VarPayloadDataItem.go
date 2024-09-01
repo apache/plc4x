@@ -240,22 +240,8 @@ func (m *_S7VarPayloadDataItem) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
-	// Padding Field (padding)
-	{
-		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for padding")
-		}
-		_timesPadding := uint8(utils.InlineIf((!(utils.GetLastItemFromContext(ctx))), func() any { return int32((int32(int32(len(m.GetData()))) % int32(int32(2)))) }, func() any { return int32(int32(0)) }).(int32))
-		for ; _timesPadding > 0; _timesPadding-- {
-			_paddingValue := uint8(0x00)
-			_paddingErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8((_paddingValue)))
-			if _paddingErr != nil {
-				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("padding", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for padding")
-		}
+	if err := WritePaddingField[uint8](ctx, "padding", int(utils.InlineIf((!(utils.GetLastItemFromContext(ctx))), func() any { return int32((int32(int32(len(m.GetData()))) % int32(int32(2)))) }, func() any { return int32(int32(0)) }).(int32)), uint8(0x00), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'padding' field")
 	}
 
 	if popErr := writeBuffer.PopContext("S7VarPayloadDataItem"); popErr != nil {
