@@ -77,6 +77,34 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
         return discoverWithHandler(discoveryRequest, null);
     }
 
+    public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
+        this.handler = handler;
+        sendPnDcpDiscoveryRequest();
+        return setDiscoveryEndTimer(discoveryRequest, 10000L);
+    }
+
+    public void sendPnDcpDiscoveryRequest() {
+        for (Map.Entry<MacAddress, PcapHandle> entry : channel.getOpenHandles().entrySet()) {
+            MacAddress localMacAddress = entry.getKey();
+            PcapHandle handle = entry.getValue();
+
+            // Construct and send the search request.
+            Ethernet_Frame identificationRequest = PnDcpPacketFactory.createIdentificationRequest(localMacAddress, PROFINET_BROADCAST_MAC_ADDRESS);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(identificationRequest.getLengthInBytes());
+            try {
+                identificationRequest.serialize(buffer);
+            } catch (SerializationException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                Packet packet = EthernetPacket.newPacket(buffer.getBytes(), 0, identificationRequest.getLengthInBytes());
+                handle.sendPacket(packet);
+            } catch (PcapNativeException | NotOpenException | IllegalRawDataException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public CompletableFuture<PlcDiscoveryResponse> setDiscoveryEndTimer(PlcDiscoveryRequest discoveryRequest, long delay) {
         CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
 
@@ -104,34 +132,6 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
         }, delay);
 
         return future;
-    }
-
-    public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
-        this.handler = handler;
-        sendPnDcpDiscoveryRequest();
-        return setDiscoveryEndTimer(discoveryRequest, 10000L);
-    }
-
-    public void sendPnDcpDiscoveryRequest() {
-        for (Map.Entry<MacAddress, PcapHandle> entry : channel.getOpenHandles().entrySet()) {
-            MacAddress localMacAddress = entry.getKey();
-            PcapHandle handle = entry.getValue();
-
-            // Construct and send the search request.
-            Ethernet_Frame identificationRequest = PnDcpPacketFactory.createIdentificationRequest(localMacAddress, PROFINET_BROADCAST_MAC_ADDRESS);
-            WriteBufferByteBased buffer = new WriteBufferByteBased(identificationRequest.getLengthInBytes());
-            try {
-                identificationRequest.serialize(buffer);
-            } catch (SerializationException e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                Packet packet = EthernetPacket.newPacket(buffer.getBytes(), 0, identificationRequest.getLengthInBytes());
-                handle.sendPacket(packet);
-            } catch (PcapNativeException | NotOpenException | IllegalRawDataException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     protected void handleIncomingPacket(Ethernet_FramePayload frame, EthernetPacket ethernetPacket) {
