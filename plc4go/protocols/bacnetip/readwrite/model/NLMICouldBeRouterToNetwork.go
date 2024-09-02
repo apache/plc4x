@@ -41,6 +41,8 @@ type NLMICouldBeRouterToNetwork interface {
 	GetDestinationNetworkAddress() uint16
 	// GetPerformanceIndex returns PerformanceIndex (property field)
 	GetPerformanceIndex() uint8
+	// IsNLMICouldBeRouterToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMICouldBeRouterToNetwork()
 }
 
 // _NLMICouldBeRouterToNetwork is the data-structure of this message

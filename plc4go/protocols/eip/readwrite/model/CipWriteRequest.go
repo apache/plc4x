@@ -45,6 +45,8 @@ type CipWriteRequest interface {
 	GetElementNb() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsCipWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipWriteRequest()
 }
 
 // _CipWriteRequest is the data-structure of this message

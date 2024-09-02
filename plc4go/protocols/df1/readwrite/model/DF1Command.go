@@ -38,6 +38,8 @@ type DF1Command interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsDF1Command is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1Command()
 }
 
 // DF1CommandContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type DF1CommandContract interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
-	// IsDF1Command() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsDF1Command is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1Command()
 }
 

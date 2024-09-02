@@ -43,6 +43,8 @@ type BACnetConstructedDataValueSourceArray interface {
 	GetVtClassesSupported() []BACnetValueSource
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataValueSourceArray is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataValueSourceArray()
 }
 
 // _BACnetConstructedDataValueSourceArray is the data-structure of this message

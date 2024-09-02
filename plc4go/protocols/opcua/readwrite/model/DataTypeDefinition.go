@@ -35,6 +35,8 @@ type DataTypeDefinition interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsDataTypeDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataTypeDefinition()
 }
 
 // _DataTypeDefinition is the data-structure of this message

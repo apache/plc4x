@@ -61,6 +61,8 @@ type SecurityGroupDataType interface {
 	GetNoOfGroupProperties() int32
 	// GetGroupProperties returns GroupProperties (property field)
 	GetGroupProperties() []ExtensionObjectDefinition
+	// IsSecurityGroupDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityGroupDataType()
 }
 
 // _SecurityGroupDataType is the data-structure of this message

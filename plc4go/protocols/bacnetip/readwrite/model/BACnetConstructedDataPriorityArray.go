@@ -41,6 +41,8 @@ type BACnetConstructedDataPriorityArray interface {
 	GetPriorityArray() BACnetPriorityArray
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetPriorityArray
+	// IsBACnetConstructedDataPriorityArray is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPriorityArray()
 }
 
 // _BACnetConstructedDataPriorityArray is the data-structure of this message

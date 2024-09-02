@@ -39,6 +39,8 @@ type BACnetPropertyStatesRestartReason interface {
 	BACnetPropertyStates
 	// GetRestartReason returns RestartReason (property field)
 	GetRestartReason() BACnetRestartReasonTagged
+	// IsBACnetPropertyStatesRestartReason is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesRestartReason()
 }
 
 // _BACnetPropertyStatesRestartReason is the data-structure of this message

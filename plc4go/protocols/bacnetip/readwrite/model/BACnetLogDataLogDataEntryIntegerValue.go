@@ -39,6 +39,8 @@ type BACnetLogDataLogDataEntryIntegerValue interface {
 	BACnetLogDataLogDataEntry
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetContextTagSignedInteger
+	// IsBACnetLogDataLogDataEntryIntegerValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogDataEntryIntegerValue()
 }
 
 // _BACnetLogDataLogDataEntryIntegerValue is the data-structure of this message

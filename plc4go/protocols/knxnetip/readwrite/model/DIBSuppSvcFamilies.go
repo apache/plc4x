@@ -40,6 +40,8 @@ type DIBSuppSvcFamilies interface {
 	GetDescriptionType() uint8
 	// GetServiceIds returns ServiceIds (property field)
 	GetServiceIds() []ServiceId
+	// IsDIBSuppSvcFamilies is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDIBSuppSvcFamilies()
 }
 
 // _DIBSuppSvcFamilies is the data-structure of this message

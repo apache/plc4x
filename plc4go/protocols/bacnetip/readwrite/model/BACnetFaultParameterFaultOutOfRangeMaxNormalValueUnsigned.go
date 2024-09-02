@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned interface {
 	BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned()
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned is the data-structure of this message

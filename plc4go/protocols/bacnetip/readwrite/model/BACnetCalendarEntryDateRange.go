@@ -39,6 +39,8 @@ type BACnetCalendarEntryDateRange interface {
 	BACnetCalendarEntry
 	// GetDateRange returns DateRange (property field)
 	GetDateRange() BACnetDateRangeEnclosed
+	// IsBACnetCalendarEntryDateRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCalendarEntryDateRange()
 }
 
 // _BACnetCalendarEntryDateRange is the data-structure of this message

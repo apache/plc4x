@@ -38,6 +38,8 @@ type BACnetEventParameter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetEventParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameter()
 }
 
 // BACnetEventParameterContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetEventParameterContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetEventParameter() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetEventParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameter()
 }
 

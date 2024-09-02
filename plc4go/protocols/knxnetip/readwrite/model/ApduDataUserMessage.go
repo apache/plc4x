@@ -35,6 +35,8 @@ type ApduDataUserMessage interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduData
+	// IsApduDataUserMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataUserMessage()
 }
 
 // _ApduDataUserMessage is the data-structure of this message

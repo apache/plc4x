@@ -41,6 +41,8 @@ type BACnetConstructedDataIntegerValueLowLimit interface {
 	GetLowLimit() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
+	// IsBACnetConstructedDataIntegerValueLowLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIntegerValueLowLimit()
 }
 
 // _BACnetConstructedDataIntegerValueLowLimit is the data-structure of this message

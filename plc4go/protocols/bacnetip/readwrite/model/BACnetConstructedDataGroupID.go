@@ -41,6 +41,8 @@ type BACnetConstructedDataGroupID interface {
 	GetGroupId() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataGroupID is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataGroupID()
 }
 
 // _BACnetConstructedDataGroupID is the data-structure of this message

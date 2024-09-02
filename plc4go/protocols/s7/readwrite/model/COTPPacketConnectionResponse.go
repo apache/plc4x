@@ -43,6 +43,8 @@ type COTPPacketConnectionResponse interface {
 	GetSourceReference() uint16
 	// GetProtocolClass returns ProtocolClass (property field)
 	GetProtocolClass() COTPProtocolClass
+	// IsCOTPPacketConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacketConnectionResponse()
 }
 
 // _COTPPacketConnectionResponse is the data-structure of this message

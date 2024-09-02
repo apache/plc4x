@@ -43,6 +43,8 @@ type HistoryReadResult interface {
 	GetContinuationPoint() PascalByteString
 	// GetHistoryData returns HistoryData (property field)
 	GetHistoryData() ExtensionObject
+	// IsHistoryReadResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryReadResult()
 }
 
 // _HistoryReadResult is the data-structure of this message

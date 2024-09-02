@@ -39,6 +39,8 @@ type KnxNetIpRouting interface {
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
+	// IsKnxNetIpRouting is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxNetIpRouting()
 }
 
 // _KnxNetIpRouting is the data-structure of this message

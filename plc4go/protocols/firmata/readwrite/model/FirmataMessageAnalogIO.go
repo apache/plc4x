@@ -43,6 +43,8 @@ type FirmataMessageAnalogIO interface {
 	GetPin() uint8
 	// GetData returns Data (property field)
 	GetData() []int8
+	// IsFirmataMessageAnalogIO is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataMessageAnalogIO()
 }
 
 // _FirmataMessageAnalogIO is the data-structure of this message

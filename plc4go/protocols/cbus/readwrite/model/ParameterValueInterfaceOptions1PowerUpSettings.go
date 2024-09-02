@@ -39,6 +39,8 @@ type ParameterValueInterfaceOptions1PowerUpSettings interface {
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() InterfaceOptions1PowerUpSettings
+	// IsParameterValueInterfaceOptions1PowerUpSettings is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueInterfaceOptions1PowerUpSettings()
 }
 
 // _ParameterValueInterfaceOptions1PowerUpSettings is the data-structure of this message

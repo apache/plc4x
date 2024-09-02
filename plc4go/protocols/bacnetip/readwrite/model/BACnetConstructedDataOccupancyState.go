@@ -41,6 +41,8 @@ type BACnetConstructedDataOccupancyState interface {
 	GetOccupancyState() BACnetAccessZoneOccupancyStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessZoneOccupancyStateTagged
+	// IsBACnetConstructedDataOccupancyState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataOccupancyState()
 }
 
 // _BACnetConstructedDataOccupancyState is the data-structure of this message

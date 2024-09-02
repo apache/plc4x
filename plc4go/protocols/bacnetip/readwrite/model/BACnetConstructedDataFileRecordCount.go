@@ -41,6 +41,8 @@ type BACnetConstructedDataFileRecordCount interface {
 	GetRecordCount() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataFileRecordCount is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFileRecordCount()
 }
 
 // _BACnetConstructedDataFileRecordCount is the data-structure of this message

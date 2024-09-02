@@ -41,6 +41,8 @@ type BACnetConstructedDataLoggingType interface {
 	GetLoggingType() BACnetLoggingTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLoggingTypeTagged
+	// IsBACnetConstructedDataLoggingType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLoggingType()
 }
 
 // _BACnetConstructedDataLoggingType is the data-structure of this message

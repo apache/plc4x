@@ -35,6 +35,8 @@ type S7PayloadUserDataItemClkFRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
+	// IsS7PayloadUserDataItemClkFRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemClkFRequest()
 }
 
 // _S7PayloadUserDataItemClkFRequest is the data-structure of this message

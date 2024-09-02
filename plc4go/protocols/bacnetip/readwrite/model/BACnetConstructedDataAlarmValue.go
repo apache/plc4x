@@ -41,6 +41,8 @@ type BACnetConstructedDataAlarmValue interface {
 	GetBinaryPv() BACnetBinaryPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryPVTagged
+	// IsBACnetConstructedDataAlarmValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAlarmValue()
 }
 
 // _BACnetConstructedDataAlarmValue is the data-structure of this message

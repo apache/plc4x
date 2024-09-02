@@ -42,6 +42,8 @@ type CEMIAdditionalInformationRelativeTimestamp interface {
 	CEMIAdditionalInformation
 	// GetRelativeTimestamp returns RelativeTimestamp (property field)
 	GetRelativeTimestamp() RelativeTimestamp
+	// IsCEMIAdditionalInformationRelativeTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCEMIAdditionalInformationRelativeTimestamp()
 }
 
 // _CEMIAdditionalInformationRelativeTimestamp is the data-structure of this message

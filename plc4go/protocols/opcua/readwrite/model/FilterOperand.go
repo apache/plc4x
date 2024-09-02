@@ -35,6 +35,8 @@ type FilterOperand interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsFilterOperand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFilterOperand()
 }
 
 // _FilterOperand is the data-structure of this message

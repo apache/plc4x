@@ -43,6 +43,8 @@ type CALDataStatus interface {
 	GetBlockStart() uint8
 	// GetStatusBytes returns StatusBytes (property field)
 	GetStatusBytes() []StatusByte
+	// IsCALDataStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataStatus()
 }
 
 // _CALDataStatus is the data-structure of this message

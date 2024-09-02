@@ -40,6 +40,8 @@ type BACnetAccessPassbackModeTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAccessPassbackMode
+	// IsBACnetAccessPassbackModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccessPassbackModeTagged()
 }
 
 // _BACnetAccessPassbackModeTagged is the data-structure of this message

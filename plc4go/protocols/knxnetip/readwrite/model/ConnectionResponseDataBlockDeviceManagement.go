@@ -35,6 +35,8 @@ type ConnectionResponseDataBlockDeviceManagement interface {
 	utils.LengthAware
 	utils.Serializable
 	ConnectionResponseDataBlock
+	// IsConnectionResponseDataBlockDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionResponseDataBlockDeviceManagement()
 }
 
 // _ConnectionResponseDataBlockDeviceManagement is the data-structure of this message

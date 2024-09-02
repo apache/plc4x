@@ -41,6 +41,8 @@ type VariantNodeId interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []NodeId
+	// IsVariantNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantNodeId()
 }
 
 // _VariantNodeId is the data-structure of this message

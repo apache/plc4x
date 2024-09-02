@@ -41,6 +41,8 @@ type BACnetUnconfirmedServiceRequestWhoIs interface {
 	GetDeviceInstanceRangeLowLimit() BACnetContextTagUnsignedInteger
 	// GetDeviceInstanceRangeHighLimit returns DeviceInstanceRangeHighLimit (property field)
 	GetDeviceInstanceRangeHighLimit() BACnetContextTagUnsignedInteger
+	// IsBACnetUnconfirmedServiceRequestWhoIs is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequestWhoIs()
 }
 
 // _BACnetUnconfirmedServiceRequestWhoIs is the data-structure of this message

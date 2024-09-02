@@ -39,6 +39,8 @@ type BACnetConstructedDataCredentials interface {
 	BACnetConstructedData
 	// GetCredentials returns Credentials (property field)
 	GetCredentials() []BACnetDeviceObjectReference
+	// IsBACnetConstructedDataCredentials is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCredentials()
 }
 
 // _BACnetConstructedDataCredentials is the data-structure of this message

@@ -43,6 +43,8 @@ type LDataCon interface {
 	GetAdditionalInformation() []CEMIAdditionalInformation
 	// GetDataFrame returns DataFrame (property field)
 	GetDataFrame() LDataFrame
+	// IsLDataCon is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLDataCon()
 }
 
 // _LDataCon is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetPropertyStatesSystemStatus interface {
 	BACnetPropertyStates
 	// GetSystemStatus returns SystemStatus (property field)
 	GetSystemStatus() BACnetDeviceStatusTagged
+	// IsBACnetPropertyStatesSystemStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesSystemStatus()
 }
 
 // _BACnetPropertyStatesSystemStatus is the data-structure of this message

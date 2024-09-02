@@ -39,6 +39,8 @@ type BACnetConfirmedServiceRequestRequestKey interface {
 	BACnetConfirmedServiceRequest
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
+	// IsBACnetConfirmedServiceRequestRequestKey is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestRequestKey()
 }
 
 // _BACnetConfirmedServiceRequestRequestKey is the data-structure of this message

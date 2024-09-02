@@ -41,6 +41,8 @@ type BACnetConstructedDataLightingCommandDefaultPriority interface {
 	GetLightingCommandDefaultPriority() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataLightingCommandDefaultPriority is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLightingCommandDefaultPriority()
 }
 
 // _BACnetConstructedDataLightingCommandDefaultPriority is the data-structure of this message

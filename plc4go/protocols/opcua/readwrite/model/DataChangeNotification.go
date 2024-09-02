@@ -45,6 +45,8 @@ type DataChangeNotification interface {
 	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
+	// IsDataChangeNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataChangeNotification()
 }
 
 // _DataChangeNotification is the data-structure of this message

@@ -46,6 +46,8 @@ type BACnetLogStatusTagged interface {
 	GetBufferPurged() bool
 	// GetLogInterrupted returns LogInterrupted (virtual field)
 	GetLogInterrupted() bool
+	// IsBACnetLogStatusTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogStatusTagged()
 }
 
 // _BACnetLogStatusTagged is the data-structure of this message

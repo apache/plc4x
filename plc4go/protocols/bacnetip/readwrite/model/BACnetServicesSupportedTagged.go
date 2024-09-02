@@ -60,6 +60,8 @@ type BACnetServicesSupportedTagged interface {
 	GetSubscribeCovProperty() bool
 	// GetGetEventInformation returns GetEventInformation (virtual field)
 	GetGetEventInformation() bool
+	// IsBACnetServicesSupportedTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServicesSupportedTagged()
 }
 
 // _BACnetServicesSupportedTagged is the data-structure of this message

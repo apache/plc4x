@@ -49,6 +49,8 @@ type LDataExtended interface {
 	GetDestinationAddress() []byte
 	// GetApdu returns Apdu (property field)
 	GetApdu() Apdu
+	// IsLDataExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLDataExtended()
 }
 
 // _LDataExtended is the data-structure of this message

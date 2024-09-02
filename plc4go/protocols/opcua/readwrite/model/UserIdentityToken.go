@@ -41,6 +41,8 @@ type UserIdentityToken interface {
 	GetPolicyId() PascalString
 	// GetUserIdentityTokenDefinition returns UserIdentityTokenDefinition (property field)
 	GetUserIdentityTokenDefinition() UserIdentityTokenDefinition
+	// IsUserIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUserIdentityToken()
 }
 
 // _UserIdentityToken is the data-structure of this message

@@ -43,6 +43,8 @@ type LDataInd interface {
 	GetAdditionalInformation() []CEMIAdditionalInformation
 	// GetDataFrame returns DataFrame (property field)
 	GetDataFrame() LDataFrame
+	// IsLDataInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLDataInd()
 }
 
 // _LDataInd is the data-structure of this message

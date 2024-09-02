@@ -41,6 +41,8 @@ type GenericAttributeValue interface {
 	GetAttributeId() uint32
 	// GetValue returns Value (property field)
 	GetValue() Variant
+	// IsGenericAttributeValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGenericAttributeValue()
 }
 
 // _GenericAttributeValue is the data-structure of this message

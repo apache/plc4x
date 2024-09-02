@@ -41,6 +41,8 @@ type OpcuaAcknowledgeResponse interface {
 	GetVersion() uint32
 	// GetLimits returns Limits (property field)
 	GetLimits() OpcuaProtocolLimits
+	// IsOpcuaAcknowledgeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaAcknowledgeResponse()
 }
 
 // _OpcuaAcknowledgeResponse is the data-structure of this message

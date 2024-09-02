@@ -39,6 +39,8 @@ type BACnetConstructedDataListOfObjectPropertyReferences interface {
 	BACnetConstructedData
 	// GetReferences returns References (property field)
 	GetReferences() []BACnetDeviceObjectPropertyReference
+	// IsBACnetConstructedDataListOfObjectPropertyReferences is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataListOfObjectPropertyReferences()
 }
 
 // _BACnetConstructedDataListOfObjectPropertyReferences is the data-structure of this message

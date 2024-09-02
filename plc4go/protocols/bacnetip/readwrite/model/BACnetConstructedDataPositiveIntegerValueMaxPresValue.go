@@ -41,6 +41,8 @@ type BACnetConstructedDataPositiveIntegerValueMaxPresValue interface {
 	GetMaxPresValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataPositiveIntegerValueMaxPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPositiveIntegerValueMaxPresValue()
 }
 
 // _BACnetConstructedDataPositiveIntegerValueMaxPresValue is the data-structure of this message

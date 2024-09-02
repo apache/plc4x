@@ -38,6 +38,8 @@ type ZoneStatus interface {
 	utils.Serializable
 	// GetValue returns Value (property field)
 	GetValue() ZoneStatusTemp
+	// IsZoneStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsZoneStatus()
 }
 
 // _ZoneStatus is the data-structure of this message

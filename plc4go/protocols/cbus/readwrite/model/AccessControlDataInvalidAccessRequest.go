@@ -41,6 +41,8 @@ type AccessControlDataInvalidAccessRequest interface {
 	GetAccessControlDirection() AccessControlDirection
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsAccessControlDataInvalidAccessRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlDataInvalidAccessRequest()
 }
 
 // _AccessControlDataInvalidAccessRequest is the data-structure of this message

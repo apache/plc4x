@@ -49,6 +49,8 @@ type BACnetConstructedDataEventMessageTexts interface {
 	GetToFaultText() BACnetOptionalCharacterString
 	// GetToNormalText returns ToNormalText (virtual field)
 	GetToNormalText() BACnetOptionalCharacterString
+	// IsBACnetConstructedDataEventMessageTexts is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventMessageTexts()
 }
 
 // _BACnetConstructedDataEventMessageTexts is the data-structure of this message

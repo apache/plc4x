@@ -42,6 +42,8 @@ type BACnetActionList interface {
 	GetAction() []BACnetActionCommand
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetActionList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetActionList()
 }
 
 // _BACnetActionList is the data-structure of this message

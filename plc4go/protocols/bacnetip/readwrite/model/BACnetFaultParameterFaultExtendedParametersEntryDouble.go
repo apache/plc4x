@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryDouble interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
+	// IsBACnetFaultParameterFaultExtendedParametersEntryDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryDouble()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryDouble is the data-structure of this message

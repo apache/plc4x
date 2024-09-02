@@ -35,6 +35,8 @@ type ApduDataExtGroupPropertyValueWrite interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtGroupPropertyValueWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtGroupPropertyValueWrite()
 }
 
 // _ApduDataExtGroupPropertyValueWrite is the data-structure of this message

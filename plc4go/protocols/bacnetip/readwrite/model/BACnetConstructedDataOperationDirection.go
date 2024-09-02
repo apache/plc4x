@@ -41,6 +41,8 @@ type BACnetConstructedDataOperationDirection interface {
 	GetOperationDirection() BACnetEscalatorOperationDirectionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEscalatorOperationDirectionTagged
+	// IsBACnetConstructedDataOperationDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataOperationDirection()
 }
 
 // _BACnetConstructedDataOperationDirection is the data-structure of this message

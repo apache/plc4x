@@ -51,6 +51,8 @@ type NLMRequestKeyUpdate interface {
 	GetSet2ExpirationTime() uint32
 	// GetDistributionKeyRevision returns DistributionKeyRevision (property field)
 	GetDistributionKeyRevision() byte
+	// IsNLMRequestKeyUpdate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMRequestKeyUpdate()
 }
 
 // _NLMRequestKeyUpdate is the data-structure of this message

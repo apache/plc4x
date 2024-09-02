@@ -38,6 +38,8 @@ type SecurityData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsSecurityData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityData()
 }
 
 // SecurityDataContract provides a set of functions which can be overwritten by a sub struct
@@ -48,7 +50,7 @@ type SecurityDataContract interface {
 	GetArgument() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() SecurityCommandType
-	// IsSecurityData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsSecurityData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityData()
 }
 

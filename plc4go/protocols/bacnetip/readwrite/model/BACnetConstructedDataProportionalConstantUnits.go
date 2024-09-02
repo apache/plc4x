@@ -41,6 +41,8 @@ type BACnetConstructedDataProportionalConstantUnits interface {
 	GetUnits() BACnetEngineeringUnitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEngineeringUnitsTagged
+	// IsBACnetConstructedDataProportionalConstantUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProportionalConstantUnits()
 }
 
 // _BACnetConstructedDataProportionalConstantUnits is the data-structure of this message

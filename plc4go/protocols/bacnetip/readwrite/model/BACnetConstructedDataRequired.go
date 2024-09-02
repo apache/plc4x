@@ -35,6 +35,8 @@ type BACnetConstructedDataRequired interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataRequired is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRequired()
 }
 
 // _BACnetConstructedDataRequired is the data-structure of this message

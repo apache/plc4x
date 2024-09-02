@@ -46,6 +46,8 @@ type BACnetResultFlagsTagged interface {
 	GetLastItem() bool
 	// GetMoreItems returns MoreItems (virtual field)
 	GetMoreItems() bool
+	// IsBACnetResultFlagsTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetResultFlagsTagged()
 }
 
 // _BACnetResultFlagsTagged is the data-structure of this message

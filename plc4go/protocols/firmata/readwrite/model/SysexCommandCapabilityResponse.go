@@ -35,6 +35,8 @@ type SysexCommandCapabilityResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
+	// IsSysexCommandCapabilityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandCapabilityResponse()
 }
 
 // _SysexCommandCapabilityResponse is the data-structure of this message

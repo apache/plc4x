@@ -41,6 +41,8 @@ type CancelResponse interface {
 	GetResponseHeader() ExtensionObjectDefinition
 	// GetCancelCount returns CancelCount (property field)
 	GetCancelCount() uint32
+	// IsCancelResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCancelResponse()
 }
 
 // _CancelResponse is the data-structure of this message

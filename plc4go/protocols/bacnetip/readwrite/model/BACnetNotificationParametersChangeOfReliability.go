@@ -47,6 +47,8 @@ type BACnetNotificationParametersChangeOfReliability interface {
 	GetPropertyValues() BACnetPropertyValues
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersChangeOfReliability is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfReliability()
 }
 
 // _BACnetNotificationParametersChangeOfReliability is the data-structure of this message

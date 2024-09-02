@@ -43,6 +43,8 @@ type DeleteNodesRequest interface {
 	GetNoOfNodesToDelete() int32
 	// GetNodesToDelete returns NodesToDelete (property field)
 	GetNodesToDelete() []ExtensionObjectDefinition
+	// IsDeleteNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteNodesRequest()
 }
 
 // _DeleteNodesRequest is the data-structure of this message

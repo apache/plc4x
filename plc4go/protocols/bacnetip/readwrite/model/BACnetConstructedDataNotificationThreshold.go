@@ -41,6 +41,8 @@ type BACnetConstructedDataNotificationThreshold interface {
 	GetNotificationThreshold() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataNotificationThreshold is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNotificationThreshold()
 }
 
 // _BACnetConstructedDataNotificationThreshold is the data-structure of this message

@@ -35,6 +35,8 @@ type ApduDataExtLinkResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtLinkResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtLinkResponse()
 }
 
 // _ApduDataExtLinkResponse is the data-structure of this message

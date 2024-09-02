@@ -39,6 +39,8 @@ type BACnetPropertyStatesProgramChange interface {
 	BACnetPropertyStates
 	// GetProgramState returns ProgramState (property field)
 	GetProgramState() BACnetProgramStateTagged
+	// IsBACnetPropertyStatesProgramChange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesProgramChange()
 }
 
 // _BACnetPropertyStatesProgramChange is the data-structure of this message

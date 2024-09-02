@@ -42,6 +42,8 @@ type BACnetAssignedLandingCallsLandingCallsList interface {
 	GetLandingCalls() []BACnetAssignedLandingCallsLandingCallsListEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetAssignedLandingCallsLandingCallsList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAssignedLandingCallsLandingCallsList()
 }
 
 // _BACnetAssignedLandingCallsLandingCallsList is the data-structure of this message

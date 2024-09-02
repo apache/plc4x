@@ -40,6 +40,8 @@ type Services interface {
 	GetOffsets() []uint16
 	// GetServices returns Services (property field)
 	GetServices() []CipService
+	// IsServices is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServices()
 }
 
 // _Services is the data-structure of this message

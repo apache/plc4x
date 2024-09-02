@@ -40,6 +40,8 @@ type TriggerControlLabelOptions interface {
 	GetLabelFlavour() TriggerControlLabelFlavour
 	// GetLabelType returns LabelType (property field)
 	GetLabelType() TriggerControlLabelType
+	// IsTriggerControlLabelOptions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTriggerControlLabelOptions()
 }
 
 // _TriggerControlLabelOptions is the data-structure of this message

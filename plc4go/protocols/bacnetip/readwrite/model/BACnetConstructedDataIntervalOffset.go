@@ -41,6 +41,8 @@ type BACnetConstructedDataIntervalOffset interface {
 	GetIntervalOffset() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataIntervalOffset is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIntervalOffset()
 }
 
 // _BACnetConstructedDataIntervalOffset is the data-structure of this message

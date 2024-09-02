@@ -38,6 +38,8 @@ type MeteringData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsMeteringData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringData()
 }
 
 // MeteringDataContract provides a set of functions which can be overwritten by a sub struct
@@ -48,7 +50,7 @@ type MeteringDataContract interface {
 	GetArgument() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() MeteringCommandType
-	// IsMeteringData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsMeteringData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringData()
 }
 

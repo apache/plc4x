@@ -35,6 +35,8 @@ type SecurityDataFireAlarmRaised interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataFireAlarmRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataFireAlarmRaised()
 }
 
 // _SecurityDataFireAlarmRaised is the data-structure of this message

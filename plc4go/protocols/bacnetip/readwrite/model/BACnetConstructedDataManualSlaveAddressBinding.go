@@ -39,6 +39,8 @@ type BACnetConstructedDataManualSlaveAddressBinding interface {
 	BACnetConstructedData
 	// GetManualSlaveAddressBinding returns ManualSlaveAddressBinding (property field)
 	GetManualSlaveAddressBinding() []BACnetAddressBinding
+	// IsBACnetConstructedDataManualSlaveAddressBinding is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataManualSlaveAddressBinding()
 }
 
 // _BACnetConstructedDataManualSlaveAddressBinding is the data-structure of this message

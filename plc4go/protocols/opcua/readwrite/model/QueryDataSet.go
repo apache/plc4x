@@ -45,6 +45,8 @@ type QueryDataSet interface {
 	GetNoOfValues() int32
 	// GetValues returns Values (property field)
 	GetValues() []Variant
+	// IsQueryDataSet is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsQueryDataSet()
 }
 
 // _QueryDataSet is the data-structure of this message

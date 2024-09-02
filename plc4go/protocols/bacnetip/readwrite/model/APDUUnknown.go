@@ -41,6 +41,8 @@ type APDUUnknown interface {
 	GetUnknownTypeRest() uint8
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
+	// IsAPDUUnknown is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUUnknown()
 }
 
 // _APDUUnknown is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedValue interface {
 	BACnetNotificationParametersChangeOfValueNewValue
 	// GetChangedValue returns ChangedValue (property field)
 	GetChangedValue() BACnetContextTagReal
+	// IsBACnetNotificationParametersChangeOfValueNewValueChangedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfValueNewValueChangedValue()
 }
 
 // _BACnetNotificationParametersChangeOfValueNewValueChangedValue is the data-structure of this message

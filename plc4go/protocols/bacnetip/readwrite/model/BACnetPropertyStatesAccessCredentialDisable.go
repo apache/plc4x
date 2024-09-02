@@ -39,6 +39,8 @@ type BACnetPropertyStatesAccessCredentialDisable interface {
 	BACnetPropertyStates
 	// GetAccessCredentialDisable returns AccessCredentialDisable (property field)
 	GetAccessCredentialDisable() BACnetAccessCredentialDisableTagged
+	// IsBACnetPropertyStatesAccessCredentialDisable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesAccessCredentialDisable()
 }
 
 // _BACnetPropertyStatesAccessCredentialDisable is the data-structure of this message

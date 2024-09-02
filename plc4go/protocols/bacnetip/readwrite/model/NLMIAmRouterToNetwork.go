@@ -39,6 +39,8 @@ type NLMIAmRouterToNetwork interface {
 	NLM
 	// GetDestinationNetworkAddresses returns DestinationNetworkAddresses (property field)
 	GetDestinationNetworkAddresses() []uint16
+	// IsNLMIAmRouterToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMIAmRouterToNetwork()
 }
 
 // _NLMIAmRouterToNetwork is the data-structure of this message

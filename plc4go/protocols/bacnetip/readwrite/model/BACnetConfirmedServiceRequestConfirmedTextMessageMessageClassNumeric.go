@@ -39,6 +39,8 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric interf
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetNumericValue returns NumericValue (property field)
 	GetNumericValue() BACnetContextTagUnsignedInteger
+	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric()
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric is the data-structure of this message

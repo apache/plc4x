@@ -34,6 +34,8 @@ type SessionAuthenticationToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsSessionAuthenticationToken is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSessionAuthenticationToken()
 }
 
 // _SessionAuthenticationToken is the data-structure of this message

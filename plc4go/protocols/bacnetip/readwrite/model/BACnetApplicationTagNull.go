@@ -35,6 +35,8 @@ type BACnetApplicationTagNull interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetApplicationTag
+	// IsBACnetApplicationTagNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTagNull()
 }
 
 // _BACnetApplicationTagNull is the data-structure of this message

@@ -47,6 +47,8 @@ type MPropReadReq interface {
 	GetNumberOfElements() uint8
 	// GetStartIndex returns StartIndex (property field)
 	GetStartIndex() uint16
+	// IsMPropReadReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMPropReadReq()
 }
 
 // _MPropReadReq is the data-structure of this message

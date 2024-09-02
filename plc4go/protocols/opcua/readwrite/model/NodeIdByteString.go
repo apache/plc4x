@@ -43,6 +43,8 @@ type NodeIdByteString interface {
 	GetId() PascalByteString
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
+	// IsNodeIdByteString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeIdByteString()
 }
 
 // _NodeIdByteString is the data-structure of this message

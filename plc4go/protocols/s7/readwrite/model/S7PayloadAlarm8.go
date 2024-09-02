@@ -39,6 +39,8 @@ type S7PayloadAlarm8 interface {
 	S7PayloadUserDataItem
 	// GetAlarmMessage returns AlarmMessage (property field)
 	GetAlarmMessage() AlarmMessagePushType
+	// IsS7PayloadAlarm8 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadAlarm8()
 }
 
 // _S7PayloadAlarm8 is the data-structure of this message

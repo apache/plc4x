@@ -41,6 +41,8 @@ type BACnetConstructedDataFileAccessMethod interface {
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetFileAccessMethodTagged
+	// IsBACnetConstructedDataFileAccessMethod is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFileAccessMethod()
 }
 
 // _BACnetConstructedDataFileAccessMethod is the data-structure of this message

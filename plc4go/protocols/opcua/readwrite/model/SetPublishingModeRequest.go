@@ -45,6 +45,8 @@ type SetPublishingModeRequest interface {
 	GetNoOfSubscriptionIds() int32
 	// GetSubscriptionIds returns SubscriptionIds (property field)
 	GetSubscriptionIds() []uint32
+	// IsSetPublishingModeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSetPublishingModeRequest()
 }
 
 // _SetPublishingModeRequest is the data-structure of this message

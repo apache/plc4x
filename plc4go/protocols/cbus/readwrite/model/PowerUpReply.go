@@ -39,6 +39,8 @@ type PowerUpReply interface {
 	Reply
 	// GetPowerUpIndicator returns PowerUpIndicator (property field)
 	GetPowerUpIndicator() PowerUp
+	// IsPowerUpReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPowerUpReply()
 }
 
 // _PowerUpReply is the data-structure of this message

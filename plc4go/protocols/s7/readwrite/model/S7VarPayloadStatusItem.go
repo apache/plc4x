@@ -38,6 +38,8 @@ type S7VarPayloadStatusItem interface {
 	utils.Serializable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
+	// IsS7VarPayloadStatusItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7VarPayloadStatusItem()
 }
 
 // _S7VarPayloadStatusItem is the data-structure of this message

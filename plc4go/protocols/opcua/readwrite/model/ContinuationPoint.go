@@ -34,6 +34,8 @@ type ContinuationPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsContinuationPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsContinuationPoint()
 }
 
 // _ContinuationPoint is the data-structure of this message

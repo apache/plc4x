@@ -69,6 +69,8 @@ type ProgramDiagnostic2DataType interface {
 	GetLastMethodCallTime() int64
 	// GetLastMethodReturnStatus returns LastMethodReturnStatus (property field)
 	GetLastMethodReturnStatus() StatusCode
+	// IsProgramDiagnostic2DataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsProgramDiagnostic2DataType()
 }
 
 // _ProgramDiagnostic2DataType is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger interface {
 	BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
+	// IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger()
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger is the data-structure of this message

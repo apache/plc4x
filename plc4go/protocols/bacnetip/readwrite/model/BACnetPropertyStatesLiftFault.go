@@ -39,6 +39,8 @@ type BACnetPropertyStatesLiftFault interface {
 	BACnetPropertyStates
 	// GetLiftFault returns LiftFault (property field)
 	GetLiftFault() BACnetLiftFaultTagged
+	// IsBACnetPropertyStatesLiftFault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLiftFault()
 }
 
 // _BACnetPropertyStatesLiftFault is the data-structure of this message

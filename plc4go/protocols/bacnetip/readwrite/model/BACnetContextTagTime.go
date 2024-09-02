@@ -39,6 +39,8 @@ type BACnetContextTagTime interface {
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadTime
+	// IsBACnetContextTagTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagTime()
 }
 
 // _BACnetContextTagTime is the data-structure of this message

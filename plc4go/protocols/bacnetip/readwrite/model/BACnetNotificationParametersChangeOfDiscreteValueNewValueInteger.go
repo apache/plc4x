@@ -39,6 +39,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger interface 
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger()
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger is the data-structure of this message

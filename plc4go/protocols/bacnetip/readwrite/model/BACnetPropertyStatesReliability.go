@@ -39,6 +39,8 @@ type BACnetPropertyStatesReliability interface {
 	BACnetPropertyStates
 	// GetReliability returns Reliability (property field)
 	GetReliability() BACnetReliabilityTagged
+	// IsBACnetPropertyStatesReliability is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesReliability()
 }
 
 // _BACnetPropertyStatesReliability is the data-structure of this message

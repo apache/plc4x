@@ -41,6 +41,8 @@ type S7PayloadUserDataItemCyclicServicesChangeDrivenPush interface {
 	GetItemsCount() uint16
 	// GetItems returns Items (property field)
 	GetItems() []AssociatedQueryValueType
+	// IsS7PayloadUserDataItemCyclicServicesChangeDrivenPush is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCyclicServicesChangeDrivenPush()
 }
 
 // _S7PayloadUserDataItemCyclicServicesChangeDrivenPush is the data-structure of this message

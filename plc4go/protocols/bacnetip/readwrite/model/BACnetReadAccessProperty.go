@@ -42,6 +42,8 @@ type BACnetReadAccessProperty interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 	// GetReadResult returns ReadResult (property field)
 	GetReadResult() BACnetReadAccessPropertyReadResult
+	// IsBACnetReadAccessProperty is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetReadAccessProperty()
 }
 
 // _BACnetReadAccessProperty is the data-structure of this message

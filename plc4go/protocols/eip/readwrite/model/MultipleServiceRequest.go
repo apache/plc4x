@@ -43,6 +43,8 @@ type MultipleServiceRequest interface {
 	CipService
 	// GetData returns Data (property field)
 	GetData() Services
+	// IsMultipleServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMultipleServiceRequest()
 }
 
 // _MultipleServiceRequest is the data-structure of this message

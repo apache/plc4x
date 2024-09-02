@@ -43,6 +43,8 @@ type EnumValueType interface {
 	GetDisplayName() LocalizedText
 	// GetDescription returns Description (property field)
 	GetDescription() LocalizedText
+	// IsEnumValueType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEnumValueType()
 }
 
 // _EnumValueType is the data-structure of this message

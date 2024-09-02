@@ -36,11 +36,13 @@ type ComObjectTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsComObjectTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsComObjectTable()
 }
 
 // ComObjectTableContract provides a set of functions which can be overwritten by a sub struct
 type ComObjectTableContract interface {
-	// IsComObjectTable() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsComObjectTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsComObjectTable()
 }
 

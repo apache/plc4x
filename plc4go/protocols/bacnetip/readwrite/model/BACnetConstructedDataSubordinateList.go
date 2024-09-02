@@ -43,6 +43,8 @@ type BACnetConstructedDataSubordinateList interface {
 	GetSubordinateList() []BACnetDeviceObjectReference
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataSubordinateList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSubordinateList()
 }
 
 // _BACnetConstructedDataSubordinateList is the data-structure of this message

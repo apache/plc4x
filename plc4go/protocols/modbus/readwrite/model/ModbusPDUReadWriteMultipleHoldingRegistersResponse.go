@@ -39,6 +39,8 @@ type ModbusPDUReadWriteMultipleHoldingRegistersResponse interface {
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
+	// IsModbusPDUReadWriteMultipleHoldingRegistersResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadWriteMultipleHoldingRegistersResponse()
 }
 
 // _ModbusPDUReadWriteMultipleHoldingRegistersResponse is the data-structure of this message

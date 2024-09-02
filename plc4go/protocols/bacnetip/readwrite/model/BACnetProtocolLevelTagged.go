@@ -40,6 +40,8 @@ type BACnetProtocolLevelTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetProtocolLevel
+	// IsBACnetProtocolLevelTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetProtocolLevelTagged()
 }
 
 // _BACnetProtocolLevelTagged is the data-structure of this message

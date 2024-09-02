@@ -39,6 +39,8 @@ type BACnetPropertyStatesLiftGroupMode interface {
 	BACnetPropertyStates
 	// GetLiftGroupMode returns LiftGroupMode (property field)
 	GetLiftGroupMode() BACnetLiftGroupModeTagged
+	// IsBACnetPropertyStatesLiftGroupMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLiftGroupMode()
 }
 
 // _BACnetPropertyStatesLiftGroupMode is the data-structure of this message

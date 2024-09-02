@@ -35,6 +35,8 @@ type SysexCommandAnalogMappingResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
+	// IsSysexCommandAnalogMappingResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandAnalogMappingResponse()
 }
 
 // _SysexCommandAnalogMappingResponse is the data-structure of this message

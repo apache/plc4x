@@ -44,6 +44,8 @@ type InterfaceOptions3 interface {
 	GetLocalSal() bool
 	// GetPcn returns Pcn (property field)
 	GetPcn() bool
+	// IsInterfaceOptions3 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsInterfaceOptions3()
 }
 
 // _InterfaceOptions3 is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetConstructedDataExitPoints interface {
 	BACnetConstructedData
 	// GetExitPoints returns ExitPoints (property field)
 	GetExitPoints() []BACnetDeviceObjectReference
+	// IsBACnetConstructedDataExitPoints is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataExitPoints()
 }
 
 // _BACnetConstructedDataExitPoints is the data-structure of this message

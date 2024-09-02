@@ -45,6 +45,8 @@ type BACnetEventParameterBufferReady interface {
 	GetPreviousNotificationCount() BACnetContextTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterBufferReady is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterBufferReady()
 }
 
 // _BACnetEventParameterBufferReady is the data-structure of this message

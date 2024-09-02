@@ -55,6 +55,8 @@ type TrustListDataType interface {
 	GetNoOfIssuerCrls() int32
 	// GetIssuerCrls returns IssuerCrls (property field)
 	GetIssuerCrls() []PascalByteString
+	// IsTrustListDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTrustListDataType()
 }
 
 // _TrustListDataType is the data-structure of this message

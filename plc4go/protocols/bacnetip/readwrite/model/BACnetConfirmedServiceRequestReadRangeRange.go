@@ -38,6 +38,8 @@ type BACnetConfirmedServiceRequestReadRangeRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetConfirmedServiceRequestReadRangeRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadRangeRange()
 }
 
 // BACnetConfirmedServiceRequestReadRangeRangeContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type BACnetConfirmedServiceRequestReadRangeRangeContract interface {
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetConfirmedServiceRequestReadRangeRange() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetConfirmedServiceRequestReadRangeRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReadRangeRange()
 }
 

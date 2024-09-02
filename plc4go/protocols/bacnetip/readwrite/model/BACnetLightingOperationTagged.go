@@ -44,6 +44,8 @@ type BACnetLightingOperationTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetLightingOperationTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLightingOperationTagged()
 }
 
 // _BACnetLightingOperationTagged is the data-structure of this message

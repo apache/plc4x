@@ -39,6 +39,8 @@ type BACnetChannelValueInteger interface {
 	BACnetChannelValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
+	// IsBACnetChannelValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueInteger()
 }
 
 // _BACnetChannelValueInteger is the data-structure of this message

@@ -50,6 +50,8 @@ type BACnetEventSummary interface {
 	GetEventEnable() BACnetEventTransitionBitsTagged
 	// GetEventPriorities returns EventPriorities (property field)
 	GetEventPriorities() BACnetEventPriorities
+	// IsBACnetEventSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventSummary()
 }
 
 // _BACnetEventSummary is the data-structure of this message

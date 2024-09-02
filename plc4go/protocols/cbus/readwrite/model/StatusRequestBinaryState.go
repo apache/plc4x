@@ -39,6 +39,8 @@ type StatusRequestBinaryState interface {
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
+	// IsStatusRequestBinaryState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusRequestBinaryState()
 }
 
 // _StatusRequestBinaryState is the data-structure of this message

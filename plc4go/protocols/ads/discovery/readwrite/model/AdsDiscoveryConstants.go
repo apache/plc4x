@@ -39,6 +39,8 @@ type AdsDiscoveryConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsAdsDiscoveryConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryConstants()
 }
 
 // _AdsDiscoveryConstants is the data-structure of this message

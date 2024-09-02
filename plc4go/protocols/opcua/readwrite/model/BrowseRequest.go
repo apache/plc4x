@@ -47,6 +47,8 @@ type BrowseRequest interface {
 	GetNoOfNodesToBrowse() int32
 	// GetNodesToBrowse returns NodesToBrowse (property field)
 	GetNodesToBrowse() []ExtensionObjectDefinition
+	// IsBrowseRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBrowseRequest()
 }
 
 // _BrowseRequest is the data-structure of this message

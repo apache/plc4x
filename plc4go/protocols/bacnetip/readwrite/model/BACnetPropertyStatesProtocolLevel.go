@@ -39,6 +39,8 @@ type BACnetPropertyStatesProtocolLevel interface {
 	BACnetPropertyStates
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
+	// IsBACnetPropertyStatesProtocolLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesProtocolLevel()
 }
 
 // _BACnetPropertyStatesProtocolLevel is the data-structure of this message

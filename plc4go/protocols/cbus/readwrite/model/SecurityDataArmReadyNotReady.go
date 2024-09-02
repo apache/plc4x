@@ -39,6 +39,8 @@ type SecurityDataArmReadyNotReady interface {
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
+	// IsSecurityDataArmReadyNotReady is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataArmReadyNotReady()
 }
 
 // _SecurityDataArmReadyNotReady is the data-structure of this message

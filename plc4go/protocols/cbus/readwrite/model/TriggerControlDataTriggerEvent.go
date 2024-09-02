@@ -39,6 +39,8 @@ type TriggerControlDataTriggerEvent interface {
 	TriggerControlData
 	// GetActionSelector returns ActionSelector (property field)
 	GetActionSelector() byte
+	// IsTriggerControlDataTriggerEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTriggerControlDataTriggerEvent()
 }
 
 // _TriggerControlDataTriggerEvent is the data-structure of this message

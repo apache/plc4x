@@ -41,6 +41,8 @@ type ModbusPDUGetComEventCounterResponse interface {
 	GetStatus() uint16
 	// GetEventCount returns EventCount (property field)
 	GetEventCount() uint16
+	// IsModbusPDUGetComEventCounterResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUGetComEventCounterResponse()
 }
 
 // _ModbusPDUGetComEventCounterResponse is the data-structure of this message

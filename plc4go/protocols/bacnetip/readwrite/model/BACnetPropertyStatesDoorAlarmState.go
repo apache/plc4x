@@ -39,6 +39,8 @@ type BACnetPropertyStatesDoorAlarmState interface {
 	BACnetPropertyStates
 	// GetDoorAlarmState returns DoorAlarmState (property field)
 	GetDoorAlarmState() BACnetDoorAlarmStateTagged
+	// IsBACnetPropertyStatesDoorAlarmState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesDoorAlarmState()
 }
 
 // _BACnetPropertyStatesDoorAlarmState is the data-structure of this message

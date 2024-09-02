@@ -41,6 +41,8 @@ type AdsAddDeviceNotificationResponse interface {
 	GetResult() ReturnCode
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
+	// IsAdsAddDeviceNotificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsAddDeviceNotificationResponse()
 }
 
 // _AdsAddDeviceNotificationResponse is the data-structure of this message

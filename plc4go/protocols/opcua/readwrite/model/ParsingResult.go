@@ -47,6 +47,8 @@ type ParsingResult interface {
 	GetNoOfDataDiagnosticInfos() int32
 	// GetDataDiagnosticInfos returns DataDiagnosticInfos (property field)
 	GetDataDiagnosticInfos() []DiagnosticInfo
+	// IsParsingResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParsingResult()
 }
 
 // _ParsingResult is the data-structure of this message

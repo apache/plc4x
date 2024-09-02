@@ -39,6 +39,8 @@ type DF1CommandRequestMessage interface {
 	DF1RequestMessage
 	// GetCommand returns Command (property field)
 	GetCommand() DF1RequestCommand
+	// IsDF1CommandRequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1CommandRequestMessage()
 }
 
 // _DF1CommandRequestMessage is the data-structure of this message

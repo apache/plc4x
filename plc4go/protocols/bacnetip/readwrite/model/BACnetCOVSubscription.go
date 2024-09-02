@@ -46,6 +46,8 @@ type BACnetCOVSubscription interface {
 	GetTimeRemaining() BACnetContextTagUnsignedInteger
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetContextTagReal
+	// IsBACnetCOVSubscription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCOVSubscription()
 }
 
 // _BACnetCOVSubscription is the data-structure of this message

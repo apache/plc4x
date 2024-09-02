@@ -39,6 +39,8 @@ type BACnetLogDataLogDataEntryUnsignedValue interface {
 	BACnetLogDataLogDataEntry
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetContextTagUnsignedInteger
+	// IsBACnetLogDataLogDataEntryUnsignedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogDataEntryUnsignedValue()
 }
 
 // _BACnetLogDataLogDataEntryUnsignedValue is the data-structure of this message

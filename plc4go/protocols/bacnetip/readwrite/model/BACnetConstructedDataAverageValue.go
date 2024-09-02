@@ -41,6 +41,8 @@ type BACnetConstructedDataAverageValue interface {
 	GetAverageValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataAverageValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAverageValue()
 }
 
 // _BACnetConstructedDataAverageValue is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetPropertyStatesAction interface {
 	BACnetPropertyStates
 	// GetAction returns Action (property field)
 	GetAction() BACnetActionTagged
+	// IsBACnetPropertyStatesAction is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesAction()
 }
 
 // _BACnetPropertyStatesAction is the data-structure of this message

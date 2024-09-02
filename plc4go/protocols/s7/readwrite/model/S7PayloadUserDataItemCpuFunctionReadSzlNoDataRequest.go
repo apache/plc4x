@@ -35,6 +35,8 @@ type S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
+	// IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest()
 }
 
 // _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest is the data-structure of this message

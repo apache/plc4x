@@ -41,6 +41,8 @@ type ParameterValueBaudRateSelector interface {
 	GetValue() BaudRateSelector
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsParameterValueBaudRateSelector is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueBaudRateSelector()
 }
 
 // _ParameterValueBaudRateSelector is the data-structure of this message

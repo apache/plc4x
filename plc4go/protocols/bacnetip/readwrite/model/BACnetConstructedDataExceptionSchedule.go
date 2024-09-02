@@ -43,6 +43,8 @@ type BACnetConstructedDataExceptionSchedule interface {
 	GetExceptionSchedule() []BACnetSpecialEvent
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataExceptionSchedule is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataExceptionSchedule()
 }
 
 // _BACnetConstructedDataExceptionSchedule is the data-structure of this message

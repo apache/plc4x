@@ -41,6 +41,8 @@ type BACnetConstructedDataDefaultSubordinateRelationship interface {
 	GetDefaultSubordinateRelationship() BACnetRelationshipTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetRelationshipTagged
+	// IsBACnetConstructedDataDefaultSubordinateRelationship is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDefaultSubordinateRelationship()
 }
 
 // _BACnetConstructedDataDefaultSubordinateRelationship is the data-structure of this message

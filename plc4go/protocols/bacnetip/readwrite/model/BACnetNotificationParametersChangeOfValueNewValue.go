@@ -38,6 +38,8 @@ type BACnetNotificationParametersChangeOfValueNewValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetNotificationParametersChangeOfValueNewValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfValueNewValue()
 }
 
 // BACnetNotificationParametersChangeOfValueNewValueContract provides a set of functions which can be overwritten by a sub struct
@@ -52,7 +54,7 @@ type BACnetNotificationParametersChangeOfValueNewValueContract interface {
 	GetPeekedTagNumber() uint8
 	// GetTagNumber() returns a parser argument
 	GetTagNumber() uint8
-	// IsBACnetNotificationParametersChangeOfValueNewValue() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetNotificationParametersChangeOfValueNewValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfValueNewValue()
 }
 

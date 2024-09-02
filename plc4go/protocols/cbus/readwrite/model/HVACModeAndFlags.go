@@ -62,6 +62,8 @@ type HVACModeAndFlags interface {
 	GetIsLevelTemperature() bool
 	// GetIsLevelRaw returns IsLevelRaw (virtual field)
 	GetIsLevelRaw() bool
+	// IsHVACModeAndFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACModeAndFlags()
 }
 
 // _HVACModeAndFlags is the data-structure of this message

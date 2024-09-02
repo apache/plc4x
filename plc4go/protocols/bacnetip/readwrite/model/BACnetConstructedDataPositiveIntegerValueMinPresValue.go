@@ -41,6 +41,8 @@ type BACnetConstructedDataPositiveIntegerValueMinPresValue interface {
 	GetMinPresValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataPositiveIntegerValueMinPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPositiveIntegerValueMinPresValue()
 }
 
 // _BACnetConstructedDataPositiveIntegerValueMinPresValue is the data-structure of this message

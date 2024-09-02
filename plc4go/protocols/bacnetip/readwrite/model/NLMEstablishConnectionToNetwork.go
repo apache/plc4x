@@ -41,6 +41,8 @@ type NLMEstablishConnectionToNetwork interface {
 	GetDestinationNetworkAddress() uint16
 	// GetTerminationTime returns TerminationTime (property field)
 	GetTerminationTime() uint8
+	// IsNLMEstablishConnectionToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMEstablishConnectionToNetwork()
 }
 
 // _NLMEstablishConnectionToNetwork is the data-structure of this message

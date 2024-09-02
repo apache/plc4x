@@ -38,6 +38,8 @@ type MonitoredSAL interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredSAL()
 }
 
 // MonitoredSALContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type MonitoredSALContract interface {
 	GetSalType() byte
 	// GetCBusOptions() returns a parser argument
 	GetCBusOptions() CBusOptions
-	// IsMonitoredSAL() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSAL()
 }
 

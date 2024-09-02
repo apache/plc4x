@@ -46,6 +46,8 @@ type NPDUControl interface {
 	GetExpectingReply() bool
 	// GetNetworkPriority returns NetworkPriority (property field)
 	GetNetworkPriority() NPDUNetworkPriority
+	// IsNPDUControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNPDUControl()
 }
 
 // _NPDUControl is the data-structure of this message

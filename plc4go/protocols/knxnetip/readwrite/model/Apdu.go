@@ -38,6 +38,8 @@ type Apdu interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsApdu is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApdu()
 }
 
 // ApduContract provides a set of functions which can be overwritten by a sub struct
@@ -48,7 +50,7 @@ type ApduContract interface {
 	GetCounter() uint8
 	// GetDataLength() returns a parser argument
 	GetDataLength() uint8
-	// IsApdu() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsApdu is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApdu()
 }
 

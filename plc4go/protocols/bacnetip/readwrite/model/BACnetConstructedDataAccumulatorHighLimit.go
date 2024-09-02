@@ -41,6 +41,8 @@ type BACnetConstructedDataAccumulatorHighLimit interface {
 	GetHighLimit() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataAccumulatorHighLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccumulatorHighLimit()
 }
 
 // _BACnetConstructedDataAccumulatorHighLimit is the data-structure of this message

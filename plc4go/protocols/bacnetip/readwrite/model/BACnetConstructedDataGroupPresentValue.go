@@ -39,6 +39,8 @@ type BACnetConstructedDataGroupPresentValue interface {
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() []BACnetReadAccessResult
+	// IsBACnetConstructedDataGroupPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataGroupPresentValue()
 }
 
 // _BACnetConstructedDataGroupPresentValue is the data-structure of this message

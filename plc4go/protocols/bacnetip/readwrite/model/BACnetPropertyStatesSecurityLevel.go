@@ -39,6 +39,8 @@ type BACnetPropertyStatesSecurityLevel interface {
 	BACnetPropertyStates
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() BACnetSecurityLevelTagged
+	// IsBACnetPropertyStatesSecurityLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesSecurityLevel()
 }
 
 // _BACnetPropertyStatesSecurityLevel is the data-structure of this message

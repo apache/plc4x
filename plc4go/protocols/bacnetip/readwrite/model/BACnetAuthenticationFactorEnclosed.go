@@ -42,6 +42,8 @@ type BACnetAuthenticationFactorEnclosed interface {
 	GetAuthenticationFactor() BACnetAuthenticationFactor
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetAuthenticationFactorEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAuthenticationFactorEnclosed()
 }
 
 // _BACnetAuthenticationFactorEnclosed is the data-structure of this message

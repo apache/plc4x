@@ -38,6 +38,8 @@ type BACnetTagPayloadDouble interface {
 	utils.Serializable
 	// GetValue returns Value (property field)
 	GetValue() float64
+	// IsBACnetTagPayloadDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadDouble()
 }
 
 // _BACnetTagPayloadDouble is the data-structure of this message

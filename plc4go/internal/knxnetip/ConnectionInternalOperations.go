@@ -472,7 +472,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 			if !ok {
 				return false
 			}
-			apduControlDisconnect := driverModel.ApduControlDisconnect(apduControlContainer.GetControlApdu())
+			apduControlDisconnect := apduControlContainer.GetControlApdu().(driverModel.ApduControlDisconnect)
 			return apduControlDisconnect != nil
 		},
 		func(message spi.Message) error {

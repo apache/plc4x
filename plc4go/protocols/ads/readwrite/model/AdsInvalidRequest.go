@@ -35,6 +35,8 @@ type AdsInvalidRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
+	// IsAdsInvalidRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsInvalidRequest()
 }
 
 // _AdsInvalidRequest is the data-structure of this message

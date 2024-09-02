@@ -41,6 +41,8 @@ type BACnetConstructedDataFaultType interface {
 	GetFaultType() BACnetFaultTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetFaultTypeTagged
+	// IsBACnetConstructedDataFaultType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFaultType()
 }
 
 // _BACnetConstructedDataFaultType is the data-structure of this message

@@ -41,6 +41,8 @@ type OptionSet interface {
 	GetValue() PascalByteString
 	// GetValidBits returns ValidBits (property field)
 	GetValidBits() PascalByteString
+	// IsOptionSet is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOptionSet()
 }
 
 // _OptionSet is the data-structure of this message

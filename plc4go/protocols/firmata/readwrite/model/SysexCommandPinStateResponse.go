@@ -43,6 +43,8 @@ type SysexCommandPinStateResponse interface {
 	GetPinMode() uint8
 	// GetPinState returns PinState (property field)
 	GetPinState() uint8
+	// IsSysexCommandPinStateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandPinStateResponse()
 }
 
 // _SysexCommandPinStateResponse is the data-structure of this message

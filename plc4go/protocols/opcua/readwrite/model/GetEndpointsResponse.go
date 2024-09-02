@@ -43,6 +43,8 @@ type GetEndpointsResponse interface {
 	GetNoOfEndpoints() int32
 	// GetEndpoints returns Endpoints (property field)
 	GetEndpoints() []ExtensionObjectDefinition
+	// IsGetEndpointsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGetEndpointsResponse()
 }
 
 // _GetEndpointsResponse is the data-structure of this message

@@ -51,6 +51,8 @@ type AlarmMessageAckObjectPushType interface {
 	GetAckStateGoing() State
 	// GetAckStateComing returns AckStateComing (property field)
 	GetAckStateComing() State
+	// IsAlarmMessageAckObjectPushType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarmMessageAckObjectPushType()
 }
 
 // _AlarmMessageAckObjectPushType is the data-structure of this message

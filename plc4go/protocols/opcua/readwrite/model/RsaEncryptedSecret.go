@@ -34,6 +34,8 @@ type RsaEncryptedSecret interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsRsaEncryptedSecret is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRsaEncryptedSecret()
 }
 
 // _RsaEncryptedSecret is the data-structure of this message

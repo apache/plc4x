@@ -40,6 +40,8 @@ type BACnetAccessRuleLocationSpecifierTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAccessRuleLocationSpecifier
+	// IsBACnetAccessRuleLocationSpecifierTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccessRuleLocationSpecifierTagged()
 }
 
 // _BACnetAccessRuleLocationSpecifierTagged is the data-structure of this message

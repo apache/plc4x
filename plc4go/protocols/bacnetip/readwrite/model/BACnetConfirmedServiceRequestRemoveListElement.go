@@ -45,6 +45,8 @@ type BACnetConfirmedServiceRequestRemoveListElement interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 	// GetListOfElements returns ListOfElements (property field)
 	GetListOfElements() BACnetConstructedData
+	// IsBACnetConfirmedServiceRequestRemoveListElement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestRemoveListElement()
 }
 
 // _BACnetConfirmedServiceRequestRemoveListElement is the data-structure of this message

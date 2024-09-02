@@ -42,6 +42,8 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	GetCovIncrement() BACnetContextTagReal
 	// GetTimestamped returns Timestamped (property field)
 	GetTimestamped() BACnetContextTagBoolean
+	// IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry()
 }
 
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry is the data-structure of this message

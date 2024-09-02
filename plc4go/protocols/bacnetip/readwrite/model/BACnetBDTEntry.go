@@ -40,6 +40,8 @@ type BACnetBDTEntry interface {
 	GetBbmdAddress() BACnetHostNPortEnclosed
 	// GetBroadcastMask returns BroadcastMask (property field)
 	GetBroadcastMask() BACnetContextTagOctetString
+	// IsBACnetBDTEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetBDTEntry()
 }
 
 // _BACnetBDTEntry is the data-structure of this message

@@ -45,6 +45,8 @@ type SearchResponse interface {
 	GetDibDeviceInfo() DIBDeviceInfo
 	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies (property field)
 	GetDibSuppSvcFamilies() DIBSuppSvcFamilies
+	// IsSearchResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSearchResponse()
 }
 
 // _SearchResponse is the data-structure of this message

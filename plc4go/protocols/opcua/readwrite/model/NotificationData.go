@@ -35,6 +35,8 @@ type NotificationData interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsNotificationData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNotificationData()
 }
 
 // _NotificationData is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetPropertyStatesBinaryValue interface {
 	BACnetPropertyStates
 	// GetBinaryValue returns BinaryValue (property field)
 	GetBinaryValue() BACnetBinaryPVTagged
+	// IsBACnetPropertyStatesBinaryValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesBinaryValue()
 }
 
 // _BACnetPropertyStatesBinaryValue is the data-structure of this message

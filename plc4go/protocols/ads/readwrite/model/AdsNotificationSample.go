@@ -42,6 +42,8 @@ type AdsNotificationSample interface {
 	GetSampleSize() uint32
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsAdsNotificationSample is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsNotificationSample()
 }
 
 // _AdsNotificationSample is the data-structure of this message

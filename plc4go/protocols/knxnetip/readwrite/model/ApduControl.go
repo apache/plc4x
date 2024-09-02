@@ -38,11 +38,13 @@ type ApduControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsApduControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduControl()
 }
 
 // ApduControlContract provides a set of functions which can be overwritten by a sub struct
 type ApduControlContract interface {
-	// IsApduControl() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsApduControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControl()
 }
 

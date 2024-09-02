@@ -39,6 +39,8 @@ type ErrorReportingSystemCategoryTypeClimateControllers interface {
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForClimateControllers
+	// IsErrorReportingSystemCategoryTypeClimateControllers is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorReportingSystemCategoryTypeClimateControllers()
 }
 
 // _ErrorReportingSystemCategoryTypeClimateControllers is the data-structure of this message

@@ -39,6 +39,8 @@ type AdsDiscoveryBlockPassword interface {
 	AdsDiscoveryBlock
 	// GetPassword returns Password (property field)
 	GetPassword() AmsString
+	// IsAdsDiscoveryBlockPassword is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockPassword()
 }
 
 // _AdsDiscoveryBlockPassword is the data-structure of this message

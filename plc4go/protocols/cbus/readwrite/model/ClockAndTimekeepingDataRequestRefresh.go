@@ -35,6 +35,8 @@ type ClockAndTimekeepingDataRequestRefresh interface {
 	utils.LengthAware
 	utils.Serializable
 	ClockAndTimekeepingData
+	// IsClockAndTimekeepingDataRequestRefresh is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsClockAndTimekeepingDataRequestRefresh()
 }
 
 // _ClockAndTimekeepingDataRequestRefresh is the data-structure of this message

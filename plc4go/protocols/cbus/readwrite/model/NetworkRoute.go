@@ -40,6 +40,8 @@ type NetworkRoute interface {
 	GetNetworkPCI() NetworkProtocolControlInformation
 	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
 	GetAdditionalBridgeAddresses() []BridgeAddress
+	// IsNetworkRoute is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNetworkRoute()
 }
 
 // _NetworkRoute is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetValueSourceNone interface {
 	BACnetValueSource
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
+	// IsBACnetValueSourceNone is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetValueSourceNone()
 }
 
 // _BACnetValueSourceNone is the data-structure of this message

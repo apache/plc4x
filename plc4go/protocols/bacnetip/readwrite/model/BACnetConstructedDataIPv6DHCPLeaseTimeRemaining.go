@@ -41,6 +41,8 @@ type BACnetConstructedDataIPv6DHCPLeaseTimeRemaining interface {
 	GetIpv6DhcpLeaseTimeRemaining() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataIPv6DHCPLeaseTimeRemaining is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPv6DHCPLeaseTimeRemaining()
 }
 
 // _BACnetConstructedDataIPv6DHCPLeaseTimeRemaining is the data-structure of this message

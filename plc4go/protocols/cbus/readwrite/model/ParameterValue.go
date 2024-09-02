@@ -36,13 +36,15 @@ type ParameterValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValue()
 }
 
 // ParameterValueContract provides a set of functions which can be overwritten by a sub struct
 type ParameterValueContract interface {
 	// GetNumBytes() returns a parser argument
 	GetNumBytes() uint8
-	// IsParameterValue() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValue()
 }
 

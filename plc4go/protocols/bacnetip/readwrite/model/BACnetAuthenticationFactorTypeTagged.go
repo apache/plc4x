@@ -40,6 +40,8 @@ type BACnetAuthenticationFactorTypeTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAuthenticationFactorType
+	// IsBACnetAuthenticationFactorTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAuthenticationFactorTypeTagged()
 }
 
 // _BACnetAuthenticationFactorTypeTagged is the data-structure of this message

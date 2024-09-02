@@ -41,6 +41,8 @@ type BACnetServiceAckAtomicReadFile interface {
 	GetEndOfFile() BACnetApplicationTagBoolean
 	// GetAccessMethod returns AccessMethod (property field)
 	GetAccessMethod() BACnetServiceAckAtomicReadFileStreamOrRecord
+	// IsBACnetServiceAckAtomicReadFile is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckAtomicReadFile()
 }
 
 // _BACnetServiceAckAtomicReadFile is the data-structure of this message

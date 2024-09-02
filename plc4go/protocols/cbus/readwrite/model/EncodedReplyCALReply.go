@@ -39,6 +39,8 @@ type EncodedReplyCALReply interface {
 	EncodedReply
 	// GetCalReply returns CalReply (property field)
 	GetCalReply() CALReply
+	// IsEncodedReplyCALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEncodedReplyCALReply()
 }
 
 // _EncodedReplyCALReply is the data-structure of this message

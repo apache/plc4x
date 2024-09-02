@@ -41,6 +41,8 @@ type SignedSoftwareCertificate interface {
 	GetCertificateData() PascalByteString
 	// GetSignature returns Signature (property field)
 	GetSignature() PascalByteString
+	// IsSignedSoftwareCertificate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSignedSoftwareCertificate()
 }
 
 // _SignedSoftwareCertificate is the data-structure of this message

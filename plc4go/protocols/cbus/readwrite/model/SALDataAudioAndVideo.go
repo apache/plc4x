@@ -39,6 +39,8 @@ type SALDataAudioAndVideo interface {
 	SALData
 	// GetAudioVideoData returns AudioVideoData (property field)
 	GetAudioVideoData() LightingData
+	// IsSALDataAudioAndVideo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataAudioAndVideo()
 }
 
 // _SALDataAudioAndVideo is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConfirmedServiceRequestAtomicReadFileRecord interface {
 	GetFileStartRecord() BACnetApplicationTagSignedInteger
 	// GetRequestRecordCount returns RequestRecordCount (property field)
 	GetRequestRecordCount() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConfirmedServiceRequestAtomicReadFileRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAtomicReadFileRecord()
 }
 
 // _BACnetConfirmedServiceRequestAtomicReadFileRecord is the data-structure of this message

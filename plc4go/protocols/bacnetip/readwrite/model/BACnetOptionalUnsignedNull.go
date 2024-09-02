@@ -39,6 +39,8 @@ type BACnetOptionalUnsignedNull interface {
 	BACnetOptionalUnsigned
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
+	// IsBACnetOptionalUnsignedNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalUnsignedNull()
 }
 
 // _BACnetOptionalUnsignedNull is the data-structure of this message

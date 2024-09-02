@@ -43,6 +43,8 @@ type ModelChangeStructureDataType interface {
 	GetAffectedType() NodeId
 	// GetVerb returns Verb (property field)
 	GetVerb() uint8
+	// IsModelChangeStructureDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModelChangeStructureDataType()
 }
 
 // _ModelChangeStructureDataType is the data-structure of this message

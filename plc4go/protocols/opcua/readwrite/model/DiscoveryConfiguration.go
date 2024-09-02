@@ -35,6 +35,8 @@ type DiscoveryConfiguration interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsDiscoveryConfiguration is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDiscoveryConfiguration()
 }
 
 // _DiscoveryConfiguration is the data-structure of this message

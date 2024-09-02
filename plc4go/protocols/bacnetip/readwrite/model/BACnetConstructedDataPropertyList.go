@@ -43,6 +43,8 @@ type BACnetConstructedDataPropertyList interface {
 	GetPropertyList() []BACnetPropertyIdentifierTagged
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataPropertyList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPropertyList()
 }
 
 // _BACnetConstructedDataPropertyList is the data-structure of this message

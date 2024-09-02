@@ -45,6 +45,8 @@ type BACnetEventParameterCommandFailure interface {
 	GetFeedbackPropertyReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterCommandFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterCommandFailure()
 }
 
 // _BACnetEventParameterCommandFailure is the data-structure of this message

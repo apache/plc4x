@@ -40,6 +40,8 @@ type NodeId interface {
 	GetNodeId() NodeIdTypeDefinition
 	// GetId returns Id (virtual field)
 	GetId() string
+	// IsNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeId()
 }
 
 // _NodeId is the data-structure of this message

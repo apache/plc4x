@@ -43,6 +43,8 @@ type MediaTransportControlDataSourcePowerControl interface {
 	GetIsShouldPowerOn() bool
 	// GetIsShouldPowerOff returns IsShouldPowerOff (virtual field)
 	GetIsShouldPowerOff() bool
+	// IsMediaTransportControlDataSourcePowerControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataSourcePowerControl()
 }
 
 // _MediaTransportControlDataSourcePowerControl is the data-structure of this message

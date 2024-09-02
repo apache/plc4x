@@ -35,6 +35,8 @@ type BACnetConstructedDataAnalogValueAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataAnalogValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAnalogValueAll()
 }
 
 // _BACnetConstructedDataAnalogValueAll is the data-structure of this message

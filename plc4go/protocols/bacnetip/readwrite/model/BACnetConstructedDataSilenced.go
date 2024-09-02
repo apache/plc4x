@@ -41,6 +41,8 @@ type BACnetConstructedDataSilenced interface {
 	GetSilenced() BACnetSilencedStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSilencedStateTagged
+	// IsBACnetConstructedDataSilenced is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSilenced()
 }
 
 // _BACnetConstructedDataSilenced is the data-structure of this message

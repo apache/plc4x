@@ -39,6 +39,8 @@ type BACnetConstructedDataBBMDForeignDeviceTable interface {
 	BACnetConstructedData
 	// GetBbmdForeignDeviceTable returns BbmdForeignDeviceTable (property field)
 	GetBbmdForeignDeviceTable() []BACnetBDTEntry
+	// IsBACnetConstructedDataBBMDForeignDeviceTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBBMDForeignDeviceTable()
 }
 
 // _BACnetConstructedDataBBMDForeignDeviceTable is the data-structure of this message

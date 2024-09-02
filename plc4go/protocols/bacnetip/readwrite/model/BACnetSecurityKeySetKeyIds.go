@@ -42,6 +42,8 @@ type BACnetSecurityKeySetKeyIds interface {
 	GetKeyIds() []BACnetKeyIdentifier
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetSecurityKeySetKeyIds is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetSecurityKeySetKeyIds()
 }
 
 // _BACnetSecurityKeySetKeyIds is the data-structure of this message

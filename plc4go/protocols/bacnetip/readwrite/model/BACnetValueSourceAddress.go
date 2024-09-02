@@ -39,6 +39,8 @@ type BACnetValueSourceAddress interface {
 	BACnetValueSource
 	// GetAddress returns Address (property field)
 	GetAddress() BACnetAddressEnclosed
+	// IsBACnetValueSourceAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetValueSourceAddress()
 }
 
 // _BACnetValueSourceAddress is the data-structure of this message

@@ -35,6 +35,8 @@ type MPropWriteReq interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsMPropWriteReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMPropWriteReq()
 }
 
 // _MPropWriteReq is the data-structure of this message

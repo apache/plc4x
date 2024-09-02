@@ -48,6 +48,8 @@ type AmsNetId interface {
 	GetOctet5() uint8
 	// GetOctet6 returns Octet6 (property field)
 	GetOctet6() uint8
+	// IsAmsNetId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAmsNetId()
 }
 
 // _AmsNetId is the data-structure of this message

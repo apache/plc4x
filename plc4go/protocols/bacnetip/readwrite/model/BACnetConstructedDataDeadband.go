@@ -41,6 +41,8 @@ type BACnetConstructedDataDeadband interface {
 	GetDeadband() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataDeadband is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDeadband()
 }
 
 // _BACnetConstructedDataDeadband is the data-structure of this message

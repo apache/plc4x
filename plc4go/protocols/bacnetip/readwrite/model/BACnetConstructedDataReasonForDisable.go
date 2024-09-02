@@ -39,6 +39,8 @@ type BACnetConstructedDataReasonForDisable interface {
 	BACnetConstructedData
 	// GetReasonForDisable returns ReasonForDisable (property field)
 	GetReasonForDisable() []BACnetAccessCredentialDisableReasonTagged
+	// IsBACnetConstructedDataReasonForDisable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataReasonForDisable()
 }
 
 // _BACnetConstructedDataReasonForDisable is the data-structure of this message

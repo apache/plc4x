@@ -41,6 +41,8 @@ type BACnetConstructedDataWindowInterval interface {
 	GetWindowInterval() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataWindowInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataWindowInterval()
 }
 
 // _BACnetConstructedDataWindowInterval is the data-structure of this message

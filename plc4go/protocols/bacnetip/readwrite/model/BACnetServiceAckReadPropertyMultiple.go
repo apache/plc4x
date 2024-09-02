@@ -39,6 +39,8 @@ type BACnetServiceAckReadPropertyMultiple interface {
 	BACnetServiceAck
 	// GetData returns Data (property field)
 	GetData() []BACnetReadAccessResult
+	// IsBACnetServiceAckReadPropertyMultiple is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckReadPropertyMultiple()
 }
 
 // _BACnetServiceAckReadPropertyMultiple is the data-structure of this message

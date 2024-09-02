@@ -35,6 +35,8 @@ type SysexCommandExtendedAnalog interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
+	// IsSysexCommandExtendedAnalog is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandExtendedAnalog()
 }
 
 // _SysexCommandExtendedAnalog is the data-structure of this message

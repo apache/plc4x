@@ -38,6 +38,8 @@ type Checksum interface {
 	utils.Serializable
 	// GetValue returns Value (property field)
 	GetValue() byte
+	// IsChecksum is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsChecksum()
 }
 
 // _Checksum is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetValueSourceObject interface {
 	BACnetValueSource
 	// GetObject returns Object (property field)
 	GetObject() BACnetDeviceObjectReferenceEnclosed
+	// IsBACnetValueSourceObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetValueSourceObject()
 }
 
 // _BACnetValueSourceObject is the data-structure of this message

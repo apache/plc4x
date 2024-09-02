@@ -36,6 +36,8 @@ type CBusMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCBusMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusMessage()
 }
 
 // CBusMessageContract provides a set of functions which can be overwritten by a sub struct
@@ -44,7 +46,7 @@ type CBusMessageContract interface {
 	GetRequestContext() RequestContext
 	// GetCBusOptions() returns a parser argument
 	GetCBusOptions() CBusOptions
-	// IsCBusMessage() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCBusMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusMessage()
 }
 

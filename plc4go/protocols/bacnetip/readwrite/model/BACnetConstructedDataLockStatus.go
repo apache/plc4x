@@ -41,6 +41,8 @@ type BACnetConstructedDataLockStatus interface {
 	GetLockStatus() BACnetLockStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLockStatusTagged
+	// IsBACnetConstructedDataLockStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLockStatus()
 }
 
 // _BACnetConstructedDataLockStatus is the data-structure of this message

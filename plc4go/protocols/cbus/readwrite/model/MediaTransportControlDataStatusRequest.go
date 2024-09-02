@@ -35,6 +35,8 @@ type MediaTransportControlDataStatusRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
+	// IsMediaTransportControlDataStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataStatusRequest()
 }
 
 // _MediaTransportControlDataStatusRequest is the data-structure of this message

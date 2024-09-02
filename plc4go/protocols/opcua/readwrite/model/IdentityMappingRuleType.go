@@ -41,6 +41,8 @@ type IdentityMappingRuleType interface {
 	GetCriteriaType() IdentityCriteriaType
 	// GetCriteria returns Criteria (property field)
 	GetCriteria() PascalString
+	// IsIdentityMappingRuleType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentityMappingRuleType()
 }
 
 // _IdentityMappingRuleType is the data-structure of this message

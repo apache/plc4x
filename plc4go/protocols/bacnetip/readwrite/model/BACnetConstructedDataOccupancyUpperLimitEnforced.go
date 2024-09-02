@@ -41,6 +41,8 @@ type BACnetConstructedDataOccupancyUpperLimitEnforced interface {
 	GetOccupancyUpperLimitEnforced() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataOccupancyUpperLimitEnforced is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataOccupancyUpperLimitEnforced()
 }
 
 // _BACnetConstructedDataOccupancyUpperLimitEnforced is the data-structure of this message

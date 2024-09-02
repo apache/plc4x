@@ -42,6 +42,8 @@ type BACnetAuthenticationPolicyList interface {
 	GetEntries() []BACnetAuthenticationPolicyListEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetAuthenticationPolicyList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAuthenticationPolicyList()
 }
 
 // _BACnetAuthenticationPolicyList is the data-structure of this message

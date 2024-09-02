@@ -40,6 +40,8 @@ type BACnetUnconfirmedServiceChoiceTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetUnconfirmedServiceChoice
+	// IsBACnetUnconfirmedServiceChoiceTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceChoiceTagged()
 }
 
 // _BACnetUnconfirmedServiceChoiceTagged is the data-structure of this message

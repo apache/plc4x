@@ -43,6 +43,8 @@ type BrowsePathResult interface {
 	GetNoOfTargets() int32
 	// GetTargets returns Targets (property field)
 	GetTargets() []ExtensionObjectDefinition
+	// IsBrowsePathResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBrowsePathResult()
 }
 
 // _BrowsePathResult is the data-structure of this message

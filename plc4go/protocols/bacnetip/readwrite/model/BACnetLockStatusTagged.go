@@ -40,6 +40,8 @@ type BACnetLockStatusTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetLockStatus
+	// IsBACnetLockStatusTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLockStatusTagged()
 }
 
 // _BACnetLockStatusTagged is the data-structure of this message

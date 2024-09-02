@@ -41,6 +41,8 @@ type BACnetConstructedDataNodeSubtype interface {
 	GetNodeSubType() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataNodeSubtype is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNodeSubtype()
 }
 
 // _BACnetConstructedDataNodeSubtype is the data-structure of this message

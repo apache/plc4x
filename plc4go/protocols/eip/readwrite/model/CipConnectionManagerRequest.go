@@ -73,6 +73,8 @@ type CipConnectionManagerRequest interface {
 	GetConnectionPathSize() uint8
 	// GetConnectionPaths returns ConnectionPaths (property field)
 	GetConnectionPaths() []PathSegment
+	// IsCipConnectionManagerRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipConnectionManagerRequest()
 }
 
 // _CipConnectionManagerRequest is the data-structure of this message

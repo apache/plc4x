@@ -46,6 +46,8 @@ type RequestDirectCommandAccess interface {
 	GetAlpha() Alpha
 	// GetCalDataDecoded returns CalDataDecoded (virtual field)
 	GetCalDataDecoded() CALData
+	// IsRequestDirectCommandAccess is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestDirectCommandAccess()
 }
 
 // _RequestDirectCommandAccess is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetSpecialEventPeriodCalendarEntry interface {
 	BACnetSpecialEventPeriod
 	// GetCalendarEntry returns CalendarEntry (property field)
 	GetCalendarEntry() BACnetCalendarEntryEnclosed
+	// IsBACnetSpecialEventPeriodCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetSpecialEventPeriodCalendarEntry()
 }
 
 // _BACnetSpecialEventPeriodCalendarEntry is the data-structure of this message

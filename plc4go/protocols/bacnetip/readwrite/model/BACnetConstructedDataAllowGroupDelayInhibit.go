@@ -41,6 +41,8 @@ type BACnetConstructedDataAllowGroupDelayInhibit interface {
 	GetAllowGroupDelayInhibit() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataAllowGroupDelayInhibit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAllowGroupDelayInhibit()
 }
 
 // _BACnetConstructedDataAllowGroupDelayInhibit is the data-structure of this message

@@ -39,6 +39,8 @@ type ApduDataOther interface {
 	ApduData
 	// GetExtendedApdu returns ExtendedApdu (property field)
 	GetExtendedApdu() ApduDataExt
+	// IsApduDataOther is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataOther()
 }
 
 // _ApduDataOther is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetAbortReasonTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetAbortReasonTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAbortReasonTagged()
 }
 
 // _BACnetAbortReasonTagged is the data-structure of this message

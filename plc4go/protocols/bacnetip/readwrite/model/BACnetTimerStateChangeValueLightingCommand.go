@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueLightingCommand interface {
 	BACnetTimerStateChangeValue
 	// GetLigthingCommandValue returns LigthingCommandValue (property field)
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
+	// IsBACnetTimerStateChangeValueLightingCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueLightingCommand()
 }
 
 // _BACnetTimerStateChangeValueLightingCommand is the data-structure of this message

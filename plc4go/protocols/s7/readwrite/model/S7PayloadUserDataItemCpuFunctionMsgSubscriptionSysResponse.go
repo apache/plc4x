@@ -41,6 +41,8 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse interface {
 	GetResult() uint8
 	// GetReserved01 returns Reserved01 (property field)
 	GetReserved01() uint8
+	// IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse()
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse is the data-structure of this message

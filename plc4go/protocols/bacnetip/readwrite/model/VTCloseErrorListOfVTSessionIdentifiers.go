@@ -42,6 +42,8 @@ type VTCloseErrorListOfVTSessionIdentifiers interface {
 	GetListOfVtSessionIdentifiers() []BACnetApplicationTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsVTCloseErrorListOfVTSessionIdentifiers is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVTCloseErrorListOfVTSessionIdentifiers()
 }
 
 // _VTCloseErrorListOfVTSessionIdentifiers is the data-structure of this message

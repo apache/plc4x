@@ -41,6 +41,8 @@ type BACnetConstructedDataLastUseTime interface {
 	GetLastUseTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
+	// IsBACnetConstructedDataLastUseTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastUseTime()
 }
 
 // _BACnetConstructedDataLastUseTime is the data-structure of this message

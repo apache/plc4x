@@ -35,6 +35,8 @@ type SetAttributeSingleResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	CipService
+	// IsSetAttributeSingleResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSetAttributeSingleResponse()
 }
 
 // _SetAttributeSingleResponse is the data-structure of this message

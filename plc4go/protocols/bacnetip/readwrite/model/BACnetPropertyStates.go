@@ -38,6 +38,8 @@ type BACnetPropertyStates interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetPropertyStates is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStates()
 }
 
 // BACnetPropertyStatesContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetPropertyStatesContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetPropertyStates() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetPropertyStates is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStates()
 }
 

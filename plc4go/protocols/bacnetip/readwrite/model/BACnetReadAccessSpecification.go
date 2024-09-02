@@ -44,6 +44,8 @@ type BACnetReadAccessSpecification interface {
 	GetListOfPropertyReferences() []BACnetPropertyReference
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetReadAccessSpecification is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetReadAccessSpecification()
 }
 
 // _BACnetReadAccessSpecification is the data-structure of this message

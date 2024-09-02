@@ -41,6 +41,8 @@ type BACnetConstructedDataScale interface {
 	GetScale() BACnetScale
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetScale
+	// IsBACnetConstructedDataScale is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataScale()
 }
 
 // _BACnetConstructedDataScale is the data-structure of this message

@@ -43,6 +43,8 @@ type AdsReadRequest interface {
 	GetIndexOffset() uint32
 	// GetLength returns Length (property field)
 	GetLength() uint32
+	// IsAdsReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsReadRequest()
 }
 
 // _AdsReadRequest is the data-structure of this message

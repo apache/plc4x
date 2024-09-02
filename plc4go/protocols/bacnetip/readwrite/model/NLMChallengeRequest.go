@@ -43,6 +43,8 @@ type NLMChallengeRequest interface {
 	GetOriginalMessageId() uint32
 	// GetOriginalTimestamp returns OriginalTimestamp (property field)
 	GetOriginalTimestamp() uint32
+	// IsNLMChallengeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMChallengeRequest()
 }
 
 // _NLMChallengeRequest is the data-structure of this message

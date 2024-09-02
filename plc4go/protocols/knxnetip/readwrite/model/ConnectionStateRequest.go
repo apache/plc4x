@@ -43,6 +43,8 @@ type ConnectionStateRequest interface {
 	GetCommunicationChannelId() uint8
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
+	// IsConnectionStateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionStateRequest()
 }
 
 // _ConnectionStateRequest is the data-structure of this message

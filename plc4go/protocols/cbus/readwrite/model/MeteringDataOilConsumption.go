@@ -39,6 +39,8 @@ type MeteringDataOilConsumption interface {
 	MeteringData
 	// GetL returns L (property field)
 	GetL() uint32
+	// IsMeteringDataOilConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataOilConsumption()
 }
 
 // _MeteringDataOilConsumption is the data-structure of this message

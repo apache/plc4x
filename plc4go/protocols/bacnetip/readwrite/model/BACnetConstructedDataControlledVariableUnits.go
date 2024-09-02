@@ -41,6 +41,8 @@ type BACnetConstructedDataControlledVariableUnits interface {
 	GetUnits() BACnetEngineeringUnitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEngineeringUnitsTagged
+	// IsBACnetConstructedDataControlledVariableUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataControlledVariableUnits()
 }
 
 // _BACnetConstructedDataControlledVariableUnits is the data-structure of this message

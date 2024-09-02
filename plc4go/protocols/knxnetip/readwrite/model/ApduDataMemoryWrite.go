@@ -35,6 +35,8 @@ type ApduDataMemoryWrite interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduData
+	// IsApduDataMemoryWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataMemoryWrite()
 }
 
 // _ApduDataMemoryWrite is the data-structure of this message

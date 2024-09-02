@@ -47,6 +47,8 @@ type DeleteReferencesResponse interface {
 	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
+	// IsDeleteReferencesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteReferencesResponse()
 }
 
 // _DeleteReferencesResponse is the data-structure of this message

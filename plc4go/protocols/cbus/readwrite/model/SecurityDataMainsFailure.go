@@ -35,6 +35,8 @@ type SecurityDataMainsFailure interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataMainsFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataMainsFailure()
 }
 
 // _SecurityDataMainsFailure is the data-structure of this message

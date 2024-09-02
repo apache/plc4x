@@ -40,6 +40,8 @@ type ChannelInformation interface {
 	GetNumChannels() uint8
 	// GetChannelCode returns ChannelCode (property field)
 	GetChannelCode() uint16
+	// IsChannelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsChannelInformation()
 }
 
 // _ChannelInformation is the data-structure of this message

@@ -38,13 +38,15 @@ type StatusRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusRequest()
 }
 
 // StatusRequestContract provides a set of functions which can be overwritten by a sub struct
 type StatusRequestContract interface {
 	// GetStatusType returns StatusType (property field)
 	GetStatusType() byte
-	// IsStatusRequest() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStatusRequest()
 }
 

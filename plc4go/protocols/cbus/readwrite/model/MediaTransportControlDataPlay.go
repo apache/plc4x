@@ -35,6 +35,8 @@ type MediaTransportControlDataPlay interface {
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
+	// IsMediaTransportControlDataPlay is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataPlay()
 }
 
 // _MediaTransportControlDataPlay is the data-structure of this message

@@ -52,6 +52,8 @@ type GroupObjectDescriptorRealisationType1 interface {
 	GetPriority() CEMIPriority
 	// GetValueType returns ValueType (property field)
 	GetValueType() ComObjectValueType
+	// IsGroupObjectDescriptorRealisationType1 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGroupObjectDescriptorRealisationType1()
 }
 
 // _GroupObjectDescriptorRealisationType1 is the data-structure of this message

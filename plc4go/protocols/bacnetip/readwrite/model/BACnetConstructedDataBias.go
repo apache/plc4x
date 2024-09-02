@@ -41,6 +41,8 @@ type BACnetConstructedDataBias interface {
 	GetBias() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataBias is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBias()
 }
 
 // _BACnetConstructedDataBias is the data-structure of this message

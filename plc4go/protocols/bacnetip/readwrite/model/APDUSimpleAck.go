@@ -41,6 +41,8 @@ type APDUSimpleAck interface {
 	GetOriginalInvokeId() uint8
 	// GetServiceChoice returns ServiceChoice (property field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
+	// IsAPDUSimpleAck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUSimpleAck()
 }
 
 // _APDUSimpleAck is the data-structure of this message

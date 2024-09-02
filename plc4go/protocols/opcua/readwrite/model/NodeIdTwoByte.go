@@ -41,6 +41,8 @@ type NodeIdTwoByte interface {
 	GetId() uint8
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
+	// IsNodeIdTwoByte is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeIdTwoByte()
 }
 
 // _NodeIdTwoByte is the data-structure of this message

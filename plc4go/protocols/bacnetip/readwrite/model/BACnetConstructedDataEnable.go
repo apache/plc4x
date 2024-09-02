@@ -41,6 +41,8 @@ type BACnetConstructedDataEnable interface {
 	GetEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEnable()
 }
 
 // _BACnetConstructedDataEnable is the data-structure of this message

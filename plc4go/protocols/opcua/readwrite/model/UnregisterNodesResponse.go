@@ -39,6 +39,8 @@ type UnregisterNodesResponse interface {
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
+	// IsUnregisterNodesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUnregisterNodesResponse()
 }
 
 // _UnregisterNodesResponse is the data-structure of this message

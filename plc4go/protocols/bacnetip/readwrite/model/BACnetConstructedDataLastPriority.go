@@ -41,6 +41,8 @@ type BACnetConstructedDataLastPriority interface {
 	GetLastPriority() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataLastPriority is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastPriority()
 }
 
 // _BACnetConstructedDataLastPriority is the data-structure of this message

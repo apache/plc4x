@@ -45,6 +45,8 @@ type ApduDataExtPropertyValueRead interface {
 	GetCount() uint8
 	// GetIndex returns Index (property field)
 	GetIndex() uint16
+	// IsApduDataExtPropertyValueRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtPropertyValueRead()
 }
 
 // _ApduDataExtPropertyValueRead is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetPropertyStatesZoneOccupanyState interface {
 	BACnetPropertyStates
 	// GetZoneOccupanyState returns ZoneOccupanyState (property field)
 	GetZoneOccupanyState() BACnetAccessZoneOccupancyStateTagged
+	// IsBACnetPropertyStatesZoneOccupanyState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesZoneOccupanyState()
 }
 
 // _BACnetPropertyStatesZoneOccupanyState is the data-structure of this message

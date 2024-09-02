@@ -39,6 +39,8 @@ type IdentifyReplyCommandManufacturer interface {
 	IdentifyReplyCommand
 	// GetManufacturerName returns ManufacturerName (property field)
 	GetManufacturerName() string
+	// IsIdentifyReplyCommandManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandManufacturer()
 }
 
 // _IdentifyReplyCommandManufacturer is the data-structure of this message

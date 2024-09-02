@@ -49,6 +49,8 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryRequest interface {
 	GetQueryType() QueryType
 	// GetAlarmType returns AlarmType (property field)
 	GetAlarmType() AlarmType
+	// IsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest()
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest is the data-structure of this message

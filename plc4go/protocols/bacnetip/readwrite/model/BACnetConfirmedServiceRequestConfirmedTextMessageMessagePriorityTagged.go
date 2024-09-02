@@ -40,6 +40,8 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged inte
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
+	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged()
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged is the data-structure of this message

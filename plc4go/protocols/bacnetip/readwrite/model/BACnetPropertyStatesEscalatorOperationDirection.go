@@ -39,6 +39,8 @@ type BACnetPropertyStatesEscalatorOperationDirection interface {
 	BACnetPropertyStates
 	// GetEscalatorOperationDirection returns EscalatorOperationDirection (property field)
 	GetEscalatorOperationDirection() BACnetEscalatorOperationDirectionTagged
+	// IsBACnetPropertyStatesEscalatorOperationDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesEscalatorOperationDirection()
 }
 
 // _BACnetPropertyStatesEscalatorOperationDirection is the data-structure of this message

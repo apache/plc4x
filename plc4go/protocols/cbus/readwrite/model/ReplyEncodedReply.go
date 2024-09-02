@@ -44,6 +44,8 @@ type ReplyEncodedReply interface {
 	GetEncodedReplyDecoded() EncodedReply
 	// GetChksumDecoded returns ChksumDecoded (virtual field)
 	GetChksumDecoded() Checksum
+	// IsReplyEncodedReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReplyEncodedReply()
 }
 
 // _ReplyEncodedReply is the data-structure of this message

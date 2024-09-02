@@ -42,6 +42,8 @@ type BACnetEventParameterChangeOfBitstringListOfBitstringValues interface {
 	GetListOfBitstringValues() []BACnetApplicationTagBitString
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterChangeOfBitstringListOfBitstringValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfBitstringListOfBitstringValues()
 }
 
 // _BACnetEventParameterChangeOfBitstringListOfBitstringValues is the data-structure of this message

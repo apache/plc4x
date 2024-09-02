@@ -41,6 +41,8 @@ type BACnetConstructedDataNodeType interface {
 	GetNodeType() BACnetNodeTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNodeTypeTagged
+	// IsBACnetConstructedDataNodeType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNodeType()
 }
 
 // _BACnetConstructedDataNodeType is the data-structure of this message

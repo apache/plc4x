@@ -35,6 +35,8 @@ type SALDataFreeUsage interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// IsSALDataFreeUsage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataFreeUsage()
 }
 
 // _SALDataFreeUsage is the data-structure of this message

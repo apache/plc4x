@@ -39,6 +39,8 @@ type BACnetOptionalBinaryPVNull interface {
 	BACnetOptionalBinaryPV
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
+	// IsBACnetOptionalBinaryPVNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalBinaryPVNull()
 }
 
 // _BACnetOptionalBinaryPVNull is the data-structure of this message

@@ -35,6 +35,8 @@ type ApduDataExtNetworkParameterResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtNetworkParameterResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtNetworkParameterResponse()
 }
 
 // _ApduDataExtNetworkParameterResponse is the data-structure of this message

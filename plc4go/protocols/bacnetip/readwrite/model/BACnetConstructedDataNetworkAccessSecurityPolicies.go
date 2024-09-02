@@ -43,6 +43,8 @@ type BACnetConstructedDataNetworkAccessSecurityPolicies interface {
 	GetNetworkAccessSecurityPolicies() []BACnetNetworkSecurityPolicy
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataNetworkAccessSecurityPolicies is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNetworkAccessSecurityPolicies()
 }
 
 // _BACnetConstructedDataNetworkAccessSecurityPolicies is the data-structure of this message

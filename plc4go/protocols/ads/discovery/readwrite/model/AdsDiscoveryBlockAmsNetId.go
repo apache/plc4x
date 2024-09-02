@@ -42,6 +42,8 @@ type AdsDiscoveryBlockAmsNetId interface {
 	AdsDiscoveryBlock
 	// GetAmsNetId returns AmsNetId (property field)
 	GetAmsNetId() AmsNetId
+	// IsAdsDiscoveryBlockAmsNetId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockAmsNetId()
 }
 
 // _AdsDiscoveryBlockAmsNetId is the data-structure of this message

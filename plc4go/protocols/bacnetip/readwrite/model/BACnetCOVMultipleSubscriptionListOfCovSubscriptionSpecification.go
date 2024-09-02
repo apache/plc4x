@@ -42,6 +42,8 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification interface {
 	GetListOfCovSubscriptionSpecificationEntry() []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification()
 }
 
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification is the data-structure of this message

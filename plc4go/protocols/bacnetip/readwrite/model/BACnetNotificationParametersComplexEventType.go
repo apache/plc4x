@@ -39,6 +39,8 @@ type BACnetNotificationParametersComplexEventType interface {
 	BACnetNotificationParameters
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() BACnetPropertyValues
+	// IsBACnetNotificationParametersComplexEventType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersComplexEventType()
 }
 
 // _BACnetNotificationParametersComplexEventType is the data-structure of this message

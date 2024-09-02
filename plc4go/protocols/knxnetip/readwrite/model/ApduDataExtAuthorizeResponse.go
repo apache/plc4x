@@ -39,6 +39,8 @@ type ApduDataExtAuthorizeResponse interface {
 	ApduDataExt
 	// GetLevel returns Level (property field)
 	GetLevel() uint8
+	// IsApduDataExtAuthorizeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtAuthorizeResponse()
 }
 
 // _ApduDataExtAuthorizeResponse is the data-structure of this message

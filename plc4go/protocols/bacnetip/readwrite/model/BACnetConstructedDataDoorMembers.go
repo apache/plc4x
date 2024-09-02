@@ -43,6 +43,8 @@ type BACnetConstructedDataDoorMembers interface {
 	GetDoorMembers() []BACnetDeviceObjectReference
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataDoorMembers is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDoorMembers()
 }
 
 // _BACnetConstructedDataDoorMembers is the data-structure of this message

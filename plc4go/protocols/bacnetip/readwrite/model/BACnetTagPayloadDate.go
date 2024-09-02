@@ -66,6 +66,8 @@ type BACnetTagPayloadDate interface {
 	GetEvenDayOfMonthWildcard() bool
 	// GetDayOfWeekIsWildcard returns DayOfWeekIsWildcard (virtual field)
 	GetDayOfWeekIsWildcard() bool
+	// IsBACnetTagPayloadDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadDate()
 }
 
 // _BACnetTagPayloadDate is the data-structure of this message

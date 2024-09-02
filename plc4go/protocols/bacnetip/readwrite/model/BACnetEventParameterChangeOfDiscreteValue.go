@@ -43,6 +43,8 @@ type BACnetEventParameterChangeOfDiscreteValue interface {
 	GetTimeDelay() BACnetContextTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterChangeOfDiscreteValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfDiscreteValue()
 }
 
 // _BACnetEventParameterChangeOfDiscreteValue is the data-structure of this message

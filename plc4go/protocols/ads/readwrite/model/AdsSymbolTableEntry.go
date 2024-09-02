@@ -87,6 +87,8 @@ type AdsSymbolTableEntry interface {
 	GetComment() string
 	// GetRest returns Rest (property field)
 	GetRest() []byte
+	// IsAdsSymbolTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsSymbolTableEntry()
 }
 
 // _AdsSymbolTableEntry is the data-structure of this message

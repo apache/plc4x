@@ -40,6 +40,8 @@ type PascalByteString interface {
 	GetStringLength() int32
 	// GetStringValue returns StringValue (property field)
 	GetStringValue() []byte
+	// IsPascalByteString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPascalByteString()
 }
 
 // _PascalByteString is the data-structure of this message

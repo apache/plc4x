@@ -39,6 +39,8 @@ type TelephonyDataDialOutFailure interface {
 	TelephonyData
 	// GetReason returns Reason (property field)
 	GetReason() DialOutFailureReason
+	// IsTelephonyDataDialOutFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataDialOutFailure()
 }
 
 // _TelephonyDataDialOutFailure is the data-structure of this message

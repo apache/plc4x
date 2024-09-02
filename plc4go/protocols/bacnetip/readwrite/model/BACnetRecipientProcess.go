@@ -40,6 +40,8 @@ type BACnetRecipientProcess interface {
 	GetRecipient() BACnetRecipientEnclosed
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
+	// IsBACnetRecipientProcess is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRecipientProcess()
 }
 
 // _BACnetRecipientProcess is the data-structure of this message

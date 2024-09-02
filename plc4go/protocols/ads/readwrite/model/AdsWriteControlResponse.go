@@ -39,6 +39,8 @@ type AdsWriteControlResponse interface {
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
+	// IsAdsWriteControlResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsWriteControlResponse()
 }
 
 // _AdsWriteControlResponse is the data-structure of this message

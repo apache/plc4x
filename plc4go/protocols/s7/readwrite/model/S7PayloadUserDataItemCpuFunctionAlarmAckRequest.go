@@ -42,6 +42,8 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckRequest interface {
 	S7PayloadUserDataItem
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectAckType
+	// IsS7PayloadUserDataItemCpuFunctionAlarmAckRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionAlarmAckRequest()
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmAckRequest is the data-structure of this message

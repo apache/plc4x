@@ -43,6 +43,8 @@ type BACnetConstructedDataFaultValues interface {
 	GetFaultValues() []BACnetLifeSafetyStateTagged
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFaultValues()
 }
 
 // _BACnetConstructedDataFaultValues is the data-structure of this message

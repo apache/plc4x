@@ -42,6 +42,8 @@ type KnxAddress interface {
 	GetMiddleGroup() uint8
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint8
+	// IsKnxAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxAddress()
 }
 
 // _KnxAddress is the data-structure of this message

@@ -37,6 +37,8 @@ type NullAddressItem interface {
 	utils.LengthAware
 	utils.Serializable
 	TypeId
+	// IsNullAddressItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNullAddressItem()
 }
 
 // _NullAddressItem is the data-structure of this message

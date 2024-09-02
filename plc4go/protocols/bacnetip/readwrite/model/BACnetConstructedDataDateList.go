@@ -39,6 +39,8 @@ type BACnetConstructedDataDateList interface {
 	BACnetConstructedData
 	// GetDateList returns DateList (property field)
 	GetDateList() []BACnetCalendarEntry
+	// IsBACnetConstructedDataDateList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDateList()
 }
 
 // _BACnetConstructedDataDateList is the data-structure of this message

@@ -39,6 +39,8 @@ type TelephonyDataDivert interface {
 	TelephonyData
 	// GetNumber returns Number (property field)
 	GetNumber() string
+	// IsTelephonyDataDivert is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataDivert()
 }
 
 // _TelephonyDataDivert is the data-structure of this message

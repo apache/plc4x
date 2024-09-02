@@ -41,6 +41,8 @@ type BACnetConstructedDataMode interface {
 	GetMode() BACnetLifeSafetyModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyModeTagged
+	// IsBACnetConstructedDataMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMode()
 }
 
 // _BACnetConstructedDataMode is the data-structure of this message

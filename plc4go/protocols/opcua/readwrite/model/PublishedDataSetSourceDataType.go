@@ -35,6 +35,8 @@ type PublishedDataSetSourceDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsPublishedDataSetSourceDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPublishedDataSetSourceDataType()
 }
 
 // _PublishedDataSetSourceDataType is the data-structure of this message

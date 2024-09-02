@@ -41,6 +41,8 @@ type VTCloseError interface {
 	GetErrorType() ErrorEnclosed
 	// GetListOfVtSessionIdentifiers returns ListOfVtSessionIdentifiers (property field)
 	GetListOfVtSessionIdentifiers() VTCloseErrorListOfVTSessionIdentifiers
+	// IsVTCloseError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVTCloseError()
 }
 
 // _VTCloseError is the data-structure of this message

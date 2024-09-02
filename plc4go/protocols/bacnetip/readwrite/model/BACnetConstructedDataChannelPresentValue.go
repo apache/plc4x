@@ -41,6 +41,8 @@ type BACnetConstructedDataChannelPresentValue interface {
 	GetPresentValue() BACnetChannelValue
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetChannelValue
+	// IsBACnetConstructedDataChannelPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataChannelPresentValue()
 }
 
 // _BACnetConstructedDataChannelPresentValue is the data-structure of this message

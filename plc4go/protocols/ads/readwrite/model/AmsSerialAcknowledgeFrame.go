@@ -48,6 +48,8 @@ type AmsSerialAcknowledgeFrame interface {
 	GetLength() int8
 	// GetCrc returns Crc (property field)
 	GetCrc() uint16
+	// IsAmsSerialAcknowledgeFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAmsSerialAcknowledgeFrame()
 }
 
 // _AmsSerialAcknowledgeFrame is the data-structure of this message

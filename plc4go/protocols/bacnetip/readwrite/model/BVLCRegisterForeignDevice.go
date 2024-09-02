@@ -41,6 +41,8 @@ type BVLCRegisterForeignDevice interface {
 	BVLC
 	// GetTtl returns Ttl (property field)
 	GetTtl() uint16
+	// IsBVLCRegisterForeignDevice is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCRegisterForeignDevice()
 }
 
 // _BVLCRegisterForeignDevice is the data-structure of this message

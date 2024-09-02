@@ -41,6 +41,8 @@ type BACnetConfirmedServiceRequestReadRangeRangeByPosition interface {
 	GetReferenceIndex() BACnetApplicationTagUnsignedInteger
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagSignedInteger
+	// IsBACnetConfirmedServiceRequestReadRangeRangeByPosition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadRangeRangeByPosition()
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeByPosition is the data-structure of this message

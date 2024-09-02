@@ -39,6 +39,8 @@ type BACnetLogRecordLogDatumLogStatus interface {
 	BACnetLogRecordLogDatum
 	// GetLogStatus returns LogStatus (property field)
 	GetLogStatus() BACnetLogStatusTagged
+	// IsBACnetLogRecordLogDatumLogStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumLogStatus()
 }
 
 // _BACnetLogRecordLogDatumLogStatus is the data-structure of this message

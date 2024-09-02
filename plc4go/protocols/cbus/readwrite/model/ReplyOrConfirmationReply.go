@@ -41,6 +41,8 @@ type ReplyOrConfirmationReply interface {
 	GetReply() Reply
 	// GetTermination returns Termination (property field)
 	GetTermination() ResponseTermination
+	// IsReplyOrConfirmationReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReplyOrConfirmationReply()
 }
 
 // _ReplyOrConfirmationReply is the data-structure of this message

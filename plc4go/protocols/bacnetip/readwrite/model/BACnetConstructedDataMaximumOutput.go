@@ -41,6 +41,8 @@ type BACnetConstructedDataMaximumOutput interface {
 	GetMaximumOutput() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataMaximumOutput is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMaximumOutput()
 }
 
 // _BACnetConstructedDataMaximumOutput is the data-structure of this message

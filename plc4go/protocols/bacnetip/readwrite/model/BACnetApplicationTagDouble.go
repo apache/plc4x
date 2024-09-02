@@ -41,6 +41,8 @@ type BACnetApplicationTagDouble interface {
 	GetPayload() BACnetTagPayloadDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() float64
+	// IsBACnetApplicationTagDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTagDouble()
 }
 
 // _BACnetApplicationTagDouble is the data-structure of this message

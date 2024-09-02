@@ -47,6 +47,8 @@ type AdsReadDeviceInfoResponse interface {
 	GetVersion() uint16
 	// GetDevice returns Device (property field)
 	GetDevice() []byte
+	// IsAdsReadDeviceInfoResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsReadDeviceInfoResponse()
 }
 
 // _AdsReadDeviceInfoResponse is the data-structure of this message

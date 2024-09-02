@@ -45,6 +45,8 @@ type TransferSubscriptionsRequest interface {
 	GetSubscriptionIds() []uint32
 	// GetSendInitialValues returns SendInitialValues (property field)
 	GetSendInitialValues() bool
+	// IsTransferSubscriptionsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTransferSubscriptionsRequest()
 }
 
 // _TransferSubscriptionsRequest is the data-structure of this message

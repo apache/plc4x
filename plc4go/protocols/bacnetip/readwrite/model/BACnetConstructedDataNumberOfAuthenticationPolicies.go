@@ -41,6 +41,8 @@ type BACnetConstructedDataNumberOfAuthenticationPolicies interface {
 	GetNumberOfAuthenticationPolicies() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataNumberOfAuthenticationPolicies is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNumberOfAuthenticationPolicies()
 }
 
 // _BACnetConstructedDataNumberOfAuthenticationPolicies is the data-structure of this message

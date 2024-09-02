@@ -43,6 +43,8 @@ type BACnetConstructedDataSupportedFormats interface {
 	GetSupportedFormats() []BACnetAuthenticationFactorFormat
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataSupportedFormats is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSupportedFormats()
 }
 
 // _BACnetConstructedDataSupportedFormats is the data-structure of this message

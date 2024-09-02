@@ -43,6 +43,8 @@ type TPKTPacket interface {
 	utils.Serializable
 	// GetPayload returns Payload (property field)
 	GetPayload() COTPPacket
+	// IsTPKTPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTPKTPacket()
 }
 
 // _TPKTPacket is the data-structure of this message

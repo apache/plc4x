@@ -51,6 +51,8 @@ type QueryFirstRequest interface {
 	GetMaxDataSetsToReturn() uint32
 	// GetMaxReferencesToReturn returns MaxReferencesToReturn (property field)
 	GetMaxReferencesToReturn() uint32
+	// IsQueryFirstRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsQueryFirstRequest()
 }
 
 // _QueryFirstRequest is the data-structure of this message

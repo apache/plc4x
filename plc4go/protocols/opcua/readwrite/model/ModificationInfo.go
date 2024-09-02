@@ -43,6 +43,8 @@ type ModificationInfo interface {
 	GetUpdateType() HistoryUpdateType
 	// GetUserName returns UserName (property field)
 	GetUserName() PascalString
+	// IsModificationInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModificationInfo()
 }
 
 // _ModificationInfo is the data-structure of this message

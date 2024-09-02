@@ -41,6 +41,8 @@ type BACnetConstructedDataTimerRunning interface {
 	GetTimerRunning() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataTimerRunning is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimerRunning()
 }
 
 // _BACnetConstructedDataTimerRunning is the data-structure of this message

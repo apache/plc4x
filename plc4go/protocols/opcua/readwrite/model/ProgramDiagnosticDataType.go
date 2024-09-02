@@ -61,6 +61,8 @@ type ProgramDiagnosticDataType interface {
 	GetLastMethodCallTime() int64
 	// GetLastMethodReturnStatus returns LastMethodReturnStatus (property field)
 	GetLastMethodReturnStatus() ExtensionObjectDefinition
+	// IsProgramDiagnosticDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsProgramDiagnosticDataType()
 }
 
 // _ProgramDiagnosticDataType is the data-structure of this message

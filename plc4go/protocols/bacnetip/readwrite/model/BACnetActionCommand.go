@@ -54,6 +54,8 @@ type BACnetActionCommand interface {
 	GetQuitOnFailure() BACnetContextTagBoolean
 	// GetWriteSuccessful returns WriteSuccessful (property field)
 	GetWriteSuccessful() BACnetContextTagBoolean
+	// IsBACnetActionCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetActionCommand()
 }
 
 // _BACnetActionCommand is the data-structure of this message

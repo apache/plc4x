@@ -38,6 +38,8 @@ type EncodedReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsEncodedReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEncodedReply()
 }
 
 // EncodedReplyContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type EncodedReplyContract interface {
 	GetCBusOptions() CBusOptions
 	// GetRequestContext() returns a parser argument
 	GetRequestContext() RequestContext
-	// IsEncodedReply() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsEncodedReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEncodedReply()
 }
 

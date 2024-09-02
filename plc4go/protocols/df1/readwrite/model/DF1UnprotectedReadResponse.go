@@ -38,6 +38,8 @@ type DF1UnprotectedReadResponse interface {
 	DF1Command
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsDF1UnprotectedReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1UnprotectedReadResponse()
 }
 
 // _DF1UnprotectedReadResponse is the data-structure of this message

@@ -35,6 +35,8 @@ type SetAttributeListRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	CipService
+	// IsSetAttributeListRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSetAttributeListRequest()
 }
 
 // _SetAttributeListRequest is the data-structure of this message

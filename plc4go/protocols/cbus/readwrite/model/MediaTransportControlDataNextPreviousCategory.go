@@ -43,6 +43,8 @@ type MediaTransportControlDataNextPreviousCategory interface {
 	GetIsSetThePreviousCategory() bool
 	// GetIsSetTheNextCategory returns IsSetTheNextCategory (virtual field)
 	GetIsSetTheNextCategory() bool
+	// IsMediaTransportControlDataNextPreviousCategory is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataNextPreviousCategory()
 }
 
 // _MediaTransportControlDataNextPreviousCategory is the data-structure of this message

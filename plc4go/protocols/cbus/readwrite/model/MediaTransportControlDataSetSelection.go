@@ -41,6 +41,8 @@ type MediaTransportControlDataSetSelection interface {
 	GetSelectionHi() byte
 	// GetSelectionLo returns SelectionLo (property field)
 	GetSelectionLo() byte
+	// IsMediaTransportControlDataSetSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataSetSelection()
 }
 
 // _MediaTransportControlDataSetSelection is the data-structure of this message

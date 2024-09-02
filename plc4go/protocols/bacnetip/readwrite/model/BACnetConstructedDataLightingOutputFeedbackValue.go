@@ -41,6 +41,8 @@ type BACnetConstructedDataLightingOutputFeedbackValue interface {
 	GetFeedbackValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataLightingOutputFeedbackValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLightingOutputFeedbackValue()
 }
 
 // _BACnetConstructedDataLightingOutputFeedbackValue is the data-structure of this message

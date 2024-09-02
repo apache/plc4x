@@ -40,6 +40,8 @@ type BACnetAssignedAccessRights interface {
 	GetAssignedAccessRights() BACnetDeviceObjectReferenceEnclosed
 	// GetEnable returns Enable (property field)
 	GetEnable() BACnetContextTagBoolean
+	// IsBACnetAssignedAccessRights is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAssignedAccessRights()
 }
 
 // _BACnetAssignedAccessRights is the data-structure of this message

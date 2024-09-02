@@ -41,6 +41,8 @@ type BACnetConstructedDataLargeAnalogValueMaxPresValue interface {
 	GetMaxPresValue() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
+	// IsBACnetConstructedDataLargeAnalogValueMaxPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLargeAnalogValueMaxPresValue()
 }
 
 // _BACnetConstructedDataLargeAnalogValueMaxPresValue is the data-structure of this message

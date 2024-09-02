@@ -39,6 +39,8 @@ type IdentifyReplyCommandGAVValuesStored interface {
 	IdentifyReplyCommand
 	// GetValues returns Values (property field)
 	GetValues() []byte
+	// IsIdentifyReplyCommandGAVValuesStored is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandGAVValuesStored()
 }
 
 // _IdentifyReplyCommandGAVValuesStored is the data-structure of this message

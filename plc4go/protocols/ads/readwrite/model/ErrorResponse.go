@@ -35,6 +35,8 @@ type ErrorResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
+	// IsErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorResponse()
 }
 
 // _ErrorResponse is the data-structure of this message

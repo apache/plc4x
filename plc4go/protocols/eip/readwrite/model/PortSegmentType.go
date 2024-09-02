@@ -38,11 +38,13 @@ type PortSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsPortSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPortSegmentType()
 }
 
 // PortSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
 type PortSegmentTypeContract interface {
-	// IsPortSegmentType() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsPortSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortSegmentType()
 }
 

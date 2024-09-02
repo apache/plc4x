@@ -41,6 +41,8 @@ type BACnetConstructedDataElevatorGroup interface {
 	GetElevatorGroup() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
+	// IsBACnetConstructedDataElevatorGroup is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataElevatorGroup()
 }
 
 // _BACnetConstructedDataElevatorGroup is the data-structure of this message

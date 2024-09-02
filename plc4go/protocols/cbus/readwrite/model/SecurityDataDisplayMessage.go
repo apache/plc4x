@@ -39,6 +39,8 @@ type SecurityDataDisplayMessage interface {
 	SecurityData
 	// GetMessage returns Message (property field)
 	GetMessage() string
+	// IsSecurityDataDisplayMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataDisplayMessage()
 }
 
 // _SecurityDataDisplayMessage is the data-structure of this message

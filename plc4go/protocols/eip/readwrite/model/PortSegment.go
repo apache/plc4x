@@ -39,6 +39,8 @@ type PortSegment interface {
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() PortSegmentType
+	// IsPortSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPortSegment()
 }
 
 // _PortSegment is the data-structure of this message

@@ -43,6 +43,8 @@ type AliasNameDataType interface {
 	GetNoOfReferencedNodes() int32
 	// GetReferencedNodes returns ReferencedNodes (property field)
 	GetReferencedNodes() []ExpandedNodeId
+	// IsAliasNameDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAliasNameDataType()
 }
 
 // _AliasNameDataType is the data-structure of this message

@@ -43,6 +43,8 @@ type BACnetConstructedDataPortFilter interface {
 	GetPortFilter() []BACnetPortPermission
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataPortFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPortFilter()
 }
 
 // _BACnetConstructedDataPortFilter is the data-structure of this message

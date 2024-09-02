@@ -43,6 +43,8 @@ type CipReadResponse interface {
 	GetExtStatus() uint8
 	// GetData returns Data (property field)
 	GetData() CIPData
+	// IsCipReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipReadResponse()
 }
 
 // _CipReadResponse is the data-structure of this message

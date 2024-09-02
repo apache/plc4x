@@ -41,6 +41,8 @@ type BACnetConstructedDataMultiStateOutputRelinquishDefault interface {
 	GetRelinquishDefault() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataMultiStateOutputRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMultiStateOutputRelinquishDefault()
 }
 
 // _BACnetConstructedDataMultiStateOutputRelinquishDefault is the data-structure of this message

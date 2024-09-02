@@ -39,6 +39,8 @@ type BACnetConstructedDataCOVURecipients interface {
 	BACnetConstructedData
 	// GetCovuRecipients returns CovuRecipients (property field)
 	GetCovuRecipients() []BACnetRecipient
+	// IsBACnetConstructedDataCOVURecipients is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCOVURecipients()
 }
 
 // _BACnetConstructedDataCOVURecipients is the data-structure of this message

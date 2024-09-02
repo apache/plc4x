@@ -41,6 +41,8 @@ type ApduDataGroupValueResponse interface {
 	GetDataFirstByte() int8
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsApduDataGroupValueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataGroupValueResponse()
 }
 
 // _ApduDataGroupValueResponse is the data-structure of this message

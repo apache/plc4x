@@ -57,6 +57,8 @@ type RegisteredServer interface {
 	GetSemaphoreFilePath() PascalString
 	// GetIsOnline returns IsOnline (property field)
 	GetIsOnline() bool
+	// IsRegisteredServer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRegisteredServer()
 }
 
 // _RegisteredServer is the data-structure of this message

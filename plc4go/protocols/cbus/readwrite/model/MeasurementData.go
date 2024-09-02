@@ -38,6 +38,8 @@ type MeasurementData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsMeasurementData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeasurementData()
 }
 
 // MeasurementDataContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type MeasurementDataContract interface {
 	GetCommandTypeContainer() MeasurementCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() MeasurementCommandType
-	// IsMeasurementData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsMeasurementData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeasurementData()
 }
 

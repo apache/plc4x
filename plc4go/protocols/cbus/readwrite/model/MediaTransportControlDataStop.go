@@ -35,6 +35,8 @@ type MediaTransportControlDataStop interface {
 	utils.LengthAware
 	utils.Serializable
 	MediaTransportControlData
+	// IsMediaTransportControlDataStop is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataStop()
 }
 
 // _MediaTransportControlDataStop is the data-structure of this message

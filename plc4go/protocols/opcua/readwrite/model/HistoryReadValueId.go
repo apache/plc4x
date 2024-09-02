@@ -45,6 +45,8 @@ type HistoryReadValueId interface {
 	GetDataEncoding() QualifiedName
 	// GetContinuationPoint returns ContinuationPoint (property field)
 	GetContinuationPoint() PascalByteString
+	// IsHistoryReadValueId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryReadValueId()
 }
 
 // _HistoryReadValueId is the data-structure of this message

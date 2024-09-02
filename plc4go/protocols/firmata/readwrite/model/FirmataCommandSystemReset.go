@@ -35,6 +35,8 @@ type FirmataCommandSystemReset interface {
 	utils.LengthAware
 	utils.Serializable
 	FirmataCommand
+	// IsFirmataCommandSystemReset is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataCommandSystemReset()
 }
 
 // _FirmataCommandSystemReset is the data-structure of this message

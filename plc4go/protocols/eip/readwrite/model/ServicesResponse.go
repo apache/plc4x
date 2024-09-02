@@ -45,6 +45,8 @@ type ServicesResponse interface {
 	GetSupportsUDP() bool
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsServicesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServicesResponse()
 }
 
 // _ServicesResponse is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueBoolean interface {
 	BACnetTimerStateChangeValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
+	// IsBACnetTimerStateChangeValueBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueBoolean()
 }
 
 // _BACnetTimerStateChangeValueBoolean is the data-structure of this message

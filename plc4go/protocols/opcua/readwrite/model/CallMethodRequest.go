@@ -45,6 +45,8 @@ type CallMethodRequest interface {
 	GetNoOfInputArguments() int32
 	// GetInputArguments returns InputArguments (property field)
 	GetInputArguments() []Variant
+	// IsCallMethodRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCallMethodRequest()
 }
 
 // _CallMethodRequest is the data-structure of this message

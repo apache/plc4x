@@ -39,6 +39,8 @@ type BACnetConstructedDataLifeSafetyZoneFaultValues interface {
 	BACnetConstructedData
 	// GetFaultValues returns FaultValues (property field)
 	GetFaultValues() []BACnetLifeSafetyStateTagged
+	// IsBACnetConstructedDataLifeSafetyZoneFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLifeSafetyZoneFaultValues()
 }
 
 // _BACnetConstructedDataLifeSafetyZoneFaultValues is the data-structure of this message

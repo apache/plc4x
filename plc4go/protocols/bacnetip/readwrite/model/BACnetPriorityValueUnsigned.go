@@ -39,6 +39,8 @@ type BACnetPriorityValueUnsigned interface {
 	BACnetPriorityValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetPriorityValueUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueUnsigned()
 }
 
 // _BACnetPriorityValueUnsigned is the data-structure of this message

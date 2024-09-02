@@ -38,11 +38,13 @@ type SysexCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsSysexCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommand()
 }
 
 // SysexCommandContract provides a set of functions which can be overwritten by a sub struct
 type SysexCommandContract interface {
-	// IsSysexCommand() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsSysexCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommand()
 }
 

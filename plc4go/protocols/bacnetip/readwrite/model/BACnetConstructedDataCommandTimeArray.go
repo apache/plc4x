@@ -43,6 +43,8 @@ type BACnetConstructedDataCommandTimeArray interface {
 	GetCommandTimeArray() []BACnetTimeStamp
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataCommandTimeArray is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCommandTimeArray()
 }
 
 // _BACnetConstructedDataCommandTimeArray is the data-structure of this message

@@ -39,6 +39,8 @@ type LogicalSegment interface {
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() LogicalSegmentType
+	// IsLogicalSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLogicalSegment()
 }
 
 // _LogicalSegment is the data-structure of this message

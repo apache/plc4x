@@ -38,6 +38,8 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord()
 }
 
 // BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract interface
 	GetClosingTag() BACnetClosingTag
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord()
 }
 

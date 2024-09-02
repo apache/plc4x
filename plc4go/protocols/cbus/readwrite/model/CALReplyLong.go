@@ -51,6 +51,8 @@ type CALReplyLong interface {
 	GetReplyNetwork() ReplyNetwork
 	// GetIsUnitAddress returns IsUnitAddress (virtual field)
 	GetIsUnitAddress() bool
+	// IsCALReplyLong is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALReplyLong()
 }
 
 // _CALReplyLong is the data-structure of this message

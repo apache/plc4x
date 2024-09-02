@@ -39,6 +39,8 @@ type BACnetServiceAckAtomicWriteFile interface {
 	BACnetServiceAck
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetContextTagSignedInteger
+	// IsBACnetServiceAckAtomicWriteFile is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckAtomicWriteFile()
 }
 
 // _BACnetServiceAckAtomicWriteFile is the data-structure of this message

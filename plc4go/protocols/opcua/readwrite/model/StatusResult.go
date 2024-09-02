@@ -41,6 +41,8 @@ type StatusResult interface {
 	GetStatusCode() StatusCode
 	// GetDiagnosticInfo returns DiagnosticInfo (property field)
 	GetDiagnosticInfo() DiagnosticInfo
+	// IsStatusResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusResult()
 }
 
 // _StatusResult is the data-structure of this message

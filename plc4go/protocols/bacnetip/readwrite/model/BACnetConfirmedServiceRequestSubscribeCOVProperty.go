@@ -49,6 +49,8 @@ type BACnetConfirmedServiceRequestSubscribeCOVProperty interface {
 	GetMonitoredPropertyIdentifier() BACnetPropertyReferenceEnclosed
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetContextTagReal
+	// IsBACnetConfirmedServiceRequestSubscribeCOVProperty is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestSubscribeCOVProperty()
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOVProperty is the data-structure of this message

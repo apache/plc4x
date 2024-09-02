@@ -41,6 +41,8 @@ type BACnetConstructedDataDeviceMaxMaster interface {
 	GetMaxMaster() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataDeviceMaxMaster is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDeviceMaxMaster()
 }
 
 // _BACnetConstructedDataDeviceMaxMaster is the data-structure of this message

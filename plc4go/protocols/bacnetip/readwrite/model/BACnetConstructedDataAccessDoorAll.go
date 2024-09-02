@@ -35,6 +35,8 @@ type BACnetConstructedDataAccessDoorAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataAccessDoorAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessDoorAll()
 }
 
 // _BACnetConstructedDataAccessDoorAll is the data-structure of this message

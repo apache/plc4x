@@ -39,6 +39,8 @@ type ModbusPDUReadInputRegistersResponse interface {
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
+	// IsModbusPDUReadInputRegistersResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadInputRegistersResponse()
 }
 
 // _ModbusPDUReadInputRegistersResponse is the data-structure of this message

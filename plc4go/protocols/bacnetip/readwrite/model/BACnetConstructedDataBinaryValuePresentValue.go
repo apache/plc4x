@@ -41,6 +41,8 @@ type BACnetConstructedDataBinaryValuePresentValue interface {
 	GetPresentValue() BACnetBinaryPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryPVTagged
+	// IsBACnetConstructedDataBinaryValuePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBinaryValuePresentValue()
 }
 
 // _BACnetConstructedDataBinaryValuePresentValue is the data-structure of this message

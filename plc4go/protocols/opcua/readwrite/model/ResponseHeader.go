@@ -51,6 +51,8 @@ type ResponseHeader interface {
 	GetStringTable() []PascalString
 	// GetAdditionalHeader returns AdditionalHeader (property field)
 	GetAdditionalHeader() ExtensionObject
+	// IsResponseHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsResponseHeader()
 }
 
 // _ResponseHeader is the data-structure of this message

@@ -42,6 +42,8 @@ type BACnetPropertyValues interface {
 	GetData() []BACnetPropertyValue
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetPropertyValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyValues()
 }
 
 // _BACnetPropertyValues is the data-structure of this message

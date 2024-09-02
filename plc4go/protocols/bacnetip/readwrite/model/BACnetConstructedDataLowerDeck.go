@@ -41,6 +41,8 @@ type BACnetConstructedDataLowerDeck interface {
 	GetLowerDeck() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
+	// IsBACnetConstructedDataLowerDeck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLowerDeck()
 }
 
 // _BACnetConstructedDataLowerDeck is the data-structure of this message

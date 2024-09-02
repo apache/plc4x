@@ -35,6 +35,8 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
+	// IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse()
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse is the data-structure of this message

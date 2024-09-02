@@ -40,6 +40,8 @@ type BACnetDateRange interface {
 	GetStartDate() BACnetApplicationTagDate
 	// GetEndDate returns EndDate (property field)
 	GetEndDate() BACnetApplicationTagDate
+	// IsBACnetDateRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetDateRange()
 }
 
 // _BACnetDateRange is the data-structure of this message

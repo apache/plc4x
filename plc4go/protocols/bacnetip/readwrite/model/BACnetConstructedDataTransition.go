@@ -41,6 +41,8 @@ type BACnetConstructedDataTransition interface {
 	GetTransition() BACnetLightingTransitionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLightingTransitionTagged
+	// IsBACnetConstructedDataTransition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTransition()
 }
 
 // _BACnetConstructedDataTransition is the data-structure of this message

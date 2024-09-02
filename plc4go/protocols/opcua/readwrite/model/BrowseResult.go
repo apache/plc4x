@@ -45,6 +45,8 @@ type BrowseResult interface {
 	GetNoOfReferences() int32
 	// GetReferences returns References (property field)
 	GetReferences() []ExtensionObjectDefinition
+	// IsBrowseResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBrowseResult()
 }
 
 // _BrowseResult is the data-structure of this message

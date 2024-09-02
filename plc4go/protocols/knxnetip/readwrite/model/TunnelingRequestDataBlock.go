@@ -40,6 +40,8 @@ type TunnelingRequestDataBlock interface {
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
 	GetSequenceCounter() uint8
+	// IsTunnelingRequestDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTunnelingRequestDataBlock()
 }
 
 // _TunnelingRequestDataBlock is the data-structure of this message

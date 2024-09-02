@@ -39,6 +39,8 @@ type StatusRequestBinaryStateDeprecated interface {
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
+	// IsStatusRequestBinaryStateDeprecated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusRequestBinaryStateDeprecated()
 }
 
 // _StatusRequestBinaryStateDeprecated is the data-structure of this message

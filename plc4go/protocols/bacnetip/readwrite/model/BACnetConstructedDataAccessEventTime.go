@@ -41,6 +41,8 @@ type BACnetConstructedDataAccessEventTime interface {
 	GetAccessEventTime() BACnetTimeStamp
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimeStamp
+	// IsBACnetConstructedDataAccessEventTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessEventTime()
 }
 
 // _BACnetConstructedDataAccessEventTime is the data-structure of this message

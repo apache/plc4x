@@ -39,6 +39,8 @@ type AmsString interface {
 	utils.Serializable
 	// GetText returns Text (property field)
 	GetText() string
+	// IsAmsString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAmsString()
 }
 
 // _AmsString is the data-structure of this message

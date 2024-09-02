@@ -55,6 +55,8 @@ type QueryFirstResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// GetFilterResult returns FilterResult (property field)
 	GetFilterResult() ExtensionObjectDefinition
+	// IsQueryFirstResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsQueryFirstResponse()
 }
 
 // _QueryFirstResponse is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataLandingCallControl interface {
 	GetLandingCallControl() BACnetLandingCallStatus
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLandingCallStatus
+	// IsBACnetConstructedDataLandingCallControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLandingCallControl()
 }
 
 // _BACnetConstructedDataLandingCallControl is the data-structure of this message

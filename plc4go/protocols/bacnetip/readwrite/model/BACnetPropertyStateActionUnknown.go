@@ -39,6 +39,8 @@ type BACnetPropertyStateActionUnknown interface {
 	BACnetPropertyStates
 	// GetUnknownValue returns UnknownValue (property field)
 	GetUnknownValue() BACnetContextTagUnknown
+	// IsBACnetPropertyStateActionUnknown is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStateActionUnknown()
 }
 
 // _BACnetPropertyStateActionUnknown is the data-structure of this message

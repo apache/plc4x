@@ -35,6 +35,8 @@ type ApduDataExtReadRouterMemoryResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtReadRouterMemoryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtReadRouterMemoryResponse()
 }
 
 // _ApduDataExtReadRouterMemoryResponse is the data-structure of this message

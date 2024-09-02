@@ -42,6 +42,8 @@ type BACnetEventTimestamps interface {
 	GetToFault() BACnetTimeStamp
 	// GetToNormal returns ToNormal (property field)
 	GetToNormal() BACnetTimeStamp
+	// IsBACnetEventTimestamps is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventTimestamps()
 }
 
 // _BACnetEventTimestamps is the data-structure of this message

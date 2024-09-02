@@ -43,6 +43,8 @@ type BACnetServiceAckGetAlarmSummary interface {
 	GetEventState() BACnetEventStateTagged
 	// GetAcknowledgedTransitions returns AcknowledgedTransitions (property field)
 	GetAcknowledgedTransitions() BACnetEventTransitionBitsTagged
+	// IsBACnetServiceAckGetAlarmSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckGetAlarmSummary()
 }
 
 // _BACnetServiceAckGetAlarmSummary is the data-structure of this message

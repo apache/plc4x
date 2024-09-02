@@ -42,6 +42,8 @@ type BACnetEventSummariesList interface {
 	GetListOfEventSummaries() []BACnetEventSummary
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventSummariesList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventSummariesList()
 }
 
 // _BACnetEventSummariesList is the data-structure of this message

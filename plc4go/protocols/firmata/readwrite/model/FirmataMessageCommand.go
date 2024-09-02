@@ -41,6 +41,8 @@ type FirmataMessageCommand interface {
 	FirmataMessage
 	// GetCommand returns Command (property field)
 	GetCommand() FirmataCommand
+	// IsFirmataMessageCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataMessageCommand()
 }
 
 // _FirmataMessageCommand is the data-structure of this message

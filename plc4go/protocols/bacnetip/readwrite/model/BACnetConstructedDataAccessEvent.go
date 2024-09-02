@@ -41,6 +41,8 @@ type BACnetConstructedDataAccessEvent interface {
 	GetAccessEvent() BACnetAccessEventTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessEventTagged
+	// IsBACnetConstructedDataAccessEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessEvent()
 }
 
 // _BACnetConstructedDataAccessEvent is the data-structure of this message

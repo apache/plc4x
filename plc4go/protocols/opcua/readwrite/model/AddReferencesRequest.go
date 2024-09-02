@@ -43,6 +43,8 @@ type AddReferencesRequest interface {
 	GetNoOfReferencesToAdd() int32
 	// GetReferencesToAdd returns ReferencesToAdd (property field)
 	GetReferencesToAdd() []ExtensionObjectDefinition
+	// IsAddReferencesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAddReferencesRequest()
 }
 
 // _AddReferencesRequest is the data-structure of this message

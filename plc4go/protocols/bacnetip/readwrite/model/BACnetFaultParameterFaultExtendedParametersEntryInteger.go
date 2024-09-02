@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryInteger interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
+	// IsBACnetFaultParameterFaultExtendedParametersEntryInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryInteger()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryInteger is the data-structure of this message

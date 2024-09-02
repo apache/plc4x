@@ -35,6 +35,8 @@ type S7MessageRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	S7Message
+	// IsS7MessageRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7MessageRequest()
 }
 
 // _S7MessageRequest is the data-structure of this message

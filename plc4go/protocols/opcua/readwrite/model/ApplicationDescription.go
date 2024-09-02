@@ -53,6 +53,8 @@ type ApplicationDescription interface {
 	GetNoOfDiscoveryUrls() int32
 	// GetDiscoveryUrls returns DiscoveryUrls (property field)
 	GetDiscoveryUrls() []PascalString
+	// IsApplicationDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApplicationDescription()
 }
 
 // _ApplicationDescription is the data-structure of this message

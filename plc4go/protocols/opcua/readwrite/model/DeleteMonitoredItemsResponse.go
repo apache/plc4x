@@ -47,6 +47,8 @@ type DeleteMonitoredItemsResponse interface {
 	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
+	// IsDeleteMonitoredItemsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteMonitoredItemsResponse()
 }
 
 // _DeleteMonitoredItemsResponse is the data-structure of this message

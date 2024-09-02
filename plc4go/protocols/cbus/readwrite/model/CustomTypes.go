@@ -38,6 +38,8 @@ type CustomTypes interface {
 	utils.Serializable
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string
+	// IsCustomTypes is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCustomTypes()
 }
 
 // _CustomTypes is the data-structure of this message

@@ -43,6 +43,8 @@ type UserNameIdentityToken interface {
 	GetPassword() PascalByteString
 	// GetEncryptionAlgorithm returns EncryptionAlgorithm (property field)
 	GetEncryptionAlgorithm() PascalString
+	// IsUserNameIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUserNameIdentityToken()
 }
 
 // _UserNameIdentityToken is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetTimeStampSequence interface {
 	BACnetTimeStamp
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() BACnetContextTagUnsignedInteger
+	// IsBACnetTimeStampSequence is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimeStampSequence()
 }
 
 // _BACnetTimeStampSequence is the data-structure of this message

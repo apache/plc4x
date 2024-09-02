@@ -43,6 +43,8 @@ type SecurityDataLowBatteryCharging interface {
 	GetChargeStopped() bool
 	// GetChargeStarted returns ChargeStarted (virtual field)
 	GetChargeStarted() bool
+	// IsSecurityDataLowBatteryCharging is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataLowBatteryCharging()
 }
 
 // _SecurityDataLowBatteryCharging is the data-structure of this message

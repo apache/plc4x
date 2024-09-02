@@ -41,6 +41,8 @@ type InstanceID interface {
 	GetFormat() uint8
 	// GetInstance returns Instance (property field)
 	GetInstance() uint8
+	// IsInstanceID is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsInstanceID()
 }
 
 // _InstanceID is the data-structure of this message

@@ -41,6 +41,8 @@ type GetAttributeAllRequest interface {
 	GetClassSegment() PathSegment
 	// GetInstanceSegment returns InstanceSegment (property field)
 	GetInstanceSegment() PathSegment
+	// IsGetAttributeAllRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGetAttributeAllRequest()
 }
 
 // _GetAttributeAllRequest is the data-structure of this message

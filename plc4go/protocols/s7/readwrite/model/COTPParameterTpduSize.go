@@ -39,6 +39,8 @@ type COTPParameterTpduSize interface {
 	COTPParameter
 	// GetTpduSize returns TpduSize (property field)
 	GetTpduSize() COTPTpduSize
+	// IsCOTPParameterTpduSize is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPParameterTpduSize()
 }
 
 // _COTPParameterTpduSize is the data-structure of this message

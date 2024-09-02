@@ -39,6 +39,8 @@ type IdentifyReplyCommandCurrentSenseLevels interface {
 	IdentifyReplyCommand
 	// GetCurrentSenseLevels returns CurrentSenseLevels (property field)
 	GetCurrentSenseLevels() []byte
+	// IsIdentifyReplyCommandCurrentSenseLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandCurrentSenseLevels()
 }
 
 // _IdentifyReplyCommandCurrentSenseLevels is the data-structure of this message

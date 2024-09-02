@@ -39,6 +39,8 @@ type BACnetPropertyStatesLifeSafetyOperations interface {
 	BACnetPropertyStates
 	// GetLifeSafetyOperations returns LifeSafetyOperations (property field)
 	GetLifeSafetyOperations() BACnetLifeSafetyOperationTagged
+	// IsBACnetPropertyStatesLifeSafetyOperations is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLifeSafetyOperations()
 }
 
 // _BACnetPropertyStatesLifeSafetyOperations is the data-structure of this message

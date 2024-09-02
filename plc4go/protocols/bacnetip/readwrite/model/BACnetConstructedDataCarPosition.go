@@ -41,6 +41,8 @@ type BACnetConstructedDataCarPosition interface {
 	GetCarPosition() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataCarPosition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarPosition()
 }
 
 // _BACnetConstructedDataCarPosition is the data-structure of this message

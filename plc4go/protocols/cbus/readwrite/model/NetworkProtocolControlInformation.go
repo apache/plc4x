@@ -40,6 +40,8 @@ type NetworkProtocolControlInformation interface {
 	GetStackCounter() uint8
 	// GetStackDepth returns StackDepth (property field)
 	GetStackDepth() uint8
+	// IsNetworkProtocolControlInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNetworkProtocolControlInformation()
 }
 
 // _NetworkProtocolControlInformation is the data-structure of this message

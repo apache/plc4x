@@ -39,6 +39,8 @@ type ApduDataDeviceDescriptorRead interface {
 	ApduData
 	// GetDescriptorType returns DescriptorType (property field)
 	GetDescriptorType() uint8
+	// IsApduDataDeviceDescriptorRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataDeviceDescriptorRead()
 }
 
 // _ApduDataDeviceDescriptorRead is the data-structure of this message

@@ -35,6 +35,8 @@ type ReaderGroupTransportDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsReaderGroupTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReaderGroupTransportDataType()
 }
 
 // _ReaderGroupTransportDataType is the data-structure of this message

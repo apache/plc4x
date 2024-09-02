@@ -43,6 +43,8 @@ type ModbusPDUWriteMultipleCoilsRequest interface {
 	GetQuantity() uint16
 	// GetValue returns Value (property field)
 	GetValue() []byte
+	// IsModbusPDUWriteMultipleCoilsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUWriteMultipleCoilsRequest()
 }
 
 // _ModbusPDUWriteMultipleCoilsRequest is the data-structure of this message

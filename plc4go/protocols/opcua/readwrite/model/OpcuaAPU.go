@@ -40,6 +40,8 @@ type OpcuaAPU interface {
 	utils.Serializable
 	// GetMessage returns Message (property field)
 	GetMessage() MessagePDU
+	// IsOpcuaAPU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaAPU()
 }
 
 // _OpcuaAPU is the data-structure of this message

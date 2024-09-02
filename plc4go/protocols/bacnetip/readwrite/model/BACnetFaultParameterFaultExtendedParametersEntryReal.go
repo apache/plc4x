@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryReal interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
+	// IsBACnetFaultParameterFaultExtendedParametersEntryReal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryReal()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryReal is the data-structure of this message

@@ -51,6 +51,8 @@ type AddNodesItem interface {
 	GetNodeAttributes() ExtensionObject
 	// GetTypeDefinition returns TypeDefinition (property field)
 	GetTypeDefinition() ExpandedNodeId
+	// IsAddNodesItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAddNodesItem()
 }
 
 // _AddNodesItem is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble interface {
 	BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
+	// IsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble()
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble is the data-structure of this message

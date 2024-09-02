@@ -41,6 +41,8 @@ type BACnetConstructedDataLastCredentialAddedTime interface {
 	GetLastCredentialAddedTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
+	// IsBACnetConstructedDataLastCredentialAddedTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastCredentialAddedTime()
 }
 
 // _BACnetConstructedDataLastCredentialAddedTime is the data-structure of this message

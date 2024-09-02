@@ -41,6 +41,8 @@ type VariantQualifiedName interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []QualifiedName
+	// IsVariantQualifiedName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantQualifiedName()
 }
 
 // _VariantQualifiedName is the data-structure of this message

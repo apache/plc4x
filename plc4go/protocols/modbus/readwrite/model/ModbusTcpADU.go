@@ -48,6 +48,8 @@ type ModbusTcpADU interface {
 	GetUnitIdentifier() uint8
 	// GetPdu returns Pdu (property field)
 	GetPdu() ModbusPDU
+	// IsModbusTcpADU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusTcpADU()
 }
 
 // _ModbusTcpADU is the data-structure of this message

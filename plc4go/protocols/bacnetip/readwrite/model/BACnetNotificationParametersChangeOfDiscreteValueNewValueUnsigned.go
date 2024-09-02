@@ -39,6 +39,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned interface
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned()
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned is the data-structure of this message

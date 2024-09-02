@@ -44,6 +44,8 @@ type SendUnitData interface {
 	GetTimeout() uint16
 	// GetTypeIds returns TypeIds (property field)
 	GetTypeIds() []TypeId
+	// IsSendUnitData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSendUnitData()
 }
 
 // _SendUnitData is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataSchedulePresentValue interface {
 	GetPresentValue() BACnetConstructedDataElement
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetConstructedDataElement
+	// IsBACnetConstructedDataSchedulePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSchedulePresentValue()
 }
 
 // _BACnetConstructedDataSchedulePresentValue is the data-structure of this message

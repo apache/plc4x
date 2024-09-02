@@ -41,6 +41,8 @@ type OpcuaMessageError interface {
 	GetError() OpcuaStatusCode
 	// GetReason returns Reason (property field)
 	GetReason() PascalString
+	// IsOpcuaMessageError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaMessageError()
 }
 
 // _OpcuaMessageError is the data-structure of this message

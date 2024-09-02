@@ -41,6 +41,8 @@ type CIPEncapsulationReadResponse interface {
 	CIPEncapsulationPacket
 	// GetResponse returns Response (property field)
 	GetResponse() DF1ResponseMessage
+	// IsCIPEncapsulationReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPEncapsulationReadResponse()
 }
 
 // _CIPEncapsulationReadResponse is the data-structure of this message

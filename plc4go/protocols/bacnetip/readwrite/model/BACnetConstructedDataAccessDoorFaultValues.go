@@ -39,6 +39,8 @@ type BACnetConstructedDataAccessDoorFaultValues interface {
 	BACnetConstructedData
 	// GetFaultValues returns FaultValues (property field)
 	GetFaultValues() []BACnetDoorAlarmStateTagged
+	// IsBACnetConstructedDataAccessDoorFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessDoorFaultValues()
 }
 
 // _BACnetConstructedDataAccessDoorFaultValues is the data-structure of this message

@@ -44,6 +44,8 @@ type BACnetPropertyValue interface {
 	GetPropertyValue() BACnetConstructedDataElement
 	// GetPriority returns Priority (property field)
 	GetPriority() BACnetContextTagUnsignedInteger
+	// IsBACnetPropertyValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyValue()
 }
 
 // _BACnetPropertyValue is the data-structure of this message

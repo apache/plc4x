@@ -35,6 +35,8 @@ type SysexCommandAnalogMappingQueryRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
+	// IsSysexCommandAnalogMappingQueryRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandAnalogMappingQueryRequest()
 }
 
 // _SysexCommandAnalogMappingQueryRequest is the data-structure of this message

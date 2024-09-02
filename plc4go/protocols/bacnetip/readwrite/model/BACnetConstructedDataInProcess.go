@@ -41,6 +41,8 @@ type BACnetConstructedDataInProcess interface {
 	GetInProcess() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataInProcess is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataInProcess()
 }
 
 // _BACnetConstructedDataInProcess is the data-structure of this message

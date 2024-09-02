@@ -39,6 +39,8 @@ type BACnetConstructedDataActiveCOVSubscriptions interface {
 	BACnetConstructedData
 	// GetActiveCOVSubscriptions returns ActiveCOVSubscriptions (property field)
 	GetActiveCOVSubscriptions() []BACnetCOVSubscription
+	// IsBACnetConstructedDataActiveCOVSubscriptions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataActiveCOVSubscriptions()
 }
 
 // _BACnetConstructedDataActiveCOVSubscriptions is the data-structure of this message

@@ -44,6 +44,8 @@ type LocalizedText interface {
 	GetLocale() PascalString
 	// GetText returns Text (property field)
 	GetText() PascalString
+	// IsLocalizedText is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLocalizedText()
 }
 
 // _LocalizedText is the data-structure of this message

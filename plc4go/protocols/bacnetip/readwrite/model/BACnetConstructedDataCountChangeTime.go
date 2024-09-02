@@ -41,6 +41,8 @@ type BACnetConstructedDataCountChangeTime interface {
 	GetCountChangeTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
+	// IsBACnetConstructedDataCountChangeTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCountChangeTime()
 }
 
 // _BACnetConstructedDataCountChangeTime is the data-structure of this message

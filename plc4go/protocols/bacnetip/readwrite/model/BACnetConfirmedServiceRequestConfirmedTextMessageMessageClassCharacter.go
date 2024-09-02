@@ -39,6 +39,8 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter inte
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetCharacterValue returns CharacterValue (property field)
 	GetCharacterValue() BACnetContextTagCharacterString
+	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter()
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter is the data-structure of this message

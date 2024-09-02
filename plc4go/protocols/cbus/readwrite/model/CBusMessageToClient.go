@@ -39,6 +39,8 @@ type CBusMessageToClient interface {
 	CBusMessage
 	// GetReply returns Reply (property field)
 	GetReply() ReplyOrConfirmation
+	// IsCBusMessageToClient is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusMessageToClient()
 }
 
 // _CBusMessageToClient is the data-structure of this message

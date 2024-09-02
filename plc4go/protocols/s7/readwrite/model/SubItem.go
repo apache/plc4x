@@ -42,6 +42,8 @@ type SubItem interface {
 	GetDbNumber() uint16
 	// GetStartAddress returns StartAddress (property field)
 	GetStartAddress() uint16
+	// IsSubItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSubItem()
 }
 
 // _SubItem is the data-structure of this message

@@ -39,6 +39,8 @@ type MeteringDataDrinkingWaterConsumption interface {
 	MeteringData
 	// GetKL returns KL (property field)
 	GetKL() uint32
+	// IsMeteringDataDrinkingWaterConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataDrinkingWaterConsumption()
 }
 
 // _MeteringDataDrinkingWaterConsumption is the data-structure of this message

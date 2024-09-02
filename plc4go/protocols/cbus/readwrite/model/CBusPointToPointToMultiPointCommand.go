@@ -38,6 +38,8 @@ type CBusPointToPointToMultiPointCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCBusPointToPointToMultiPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToPointToMultiPointCommand()
 }
 
 // CBusPointToPointToMultiPointCommandContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type CBusPointToPointToMultiPointCommandContract interface {
 	GetPeekedApplication() byte
 	// GetCBusOptions() returns a parser argument
 	GetCBusOptions() CBusOptions
-	// IsCBusPointToPointToMultiPointCommand() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCBusPointToPointToMultiPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointToMultiPointCommand()
 }
 

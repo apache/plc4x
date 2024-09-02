@@ -40,6 +40,8 @@ type CIPEncapsulationPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCIPEncapsulationPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPEncapsulationPacket()
 }
 
 // CIPEncapsulationPacketContract provides a set of functions which can be overwritten by a sub struct
@@ -52,7 +54,7 @@ type CIPEncapsulationPacketContract interface {
 	GetSenderContext() []uint8
 	// GetOptions returns Options (property field)
 	GetOptions() uint32
-	// IsCIPEncapsulationPacket() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCIPEncapsulationPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationPacket()
 }
 

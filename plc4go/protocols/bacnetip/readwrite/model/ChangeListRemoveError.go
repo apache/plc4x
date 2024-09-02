@@ -41,6 +41,8 @@ type ChangeListRemoveError interface {
 	GetErrorType() ErrorEnclosed
 	// GetFirstFailedElementNumber returns FirstFailedElementNumber (property field)
 	GetFirstFailedElementNumber() BACnetContextTagUnsignedInteger
+	// IsChangeListRemoveError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsChangeListRemoveError()
 }
 
 // _ChangeListRemoveError is the data-structure of this message

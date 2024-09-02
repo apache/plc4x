@@ -43,6 +43,8 @@ type COTPPacketDisconnectRequest interface {
 	GetSourceReference() uint16
 	// GetProtocolClass returns ProtocolClass (property field)
 	GetProtocolClass() COTPProtocolClass
+	// IsCOTPPacketDisconnectRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacketDisconnectRequest()
 }
 
 // _COTPPacketDisconnectRequest is the data-structure of this message

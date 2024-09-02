@@ -34,6 +34,8 @@ type NormalizedString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsNormalizedString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNormalizedString()
 }
 
 // _NormalizedString is the data-structure of this message

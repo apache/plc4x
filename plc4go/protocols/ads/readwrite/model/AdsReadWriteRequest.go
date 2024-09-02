@@ -47,6 +47,8 @@ type AdsReadWriteRequest interface {
 	GetItems() []AdsMultiRequestItem
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsAdsReadWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsReadWriteRequest()
 }
 
 // _AdsReadWriteRequest is the data-structure of this message

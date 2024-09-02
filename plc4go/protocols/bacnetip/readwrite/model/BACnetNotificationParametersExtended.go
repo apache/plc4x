@@ -47,6 +47,8 @@ type BACnetNotificationParametersExtended interface {
 	GetParameters() BACnetNotificationParametersExtendedParameters
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersExtended()
 }
 
 // _BACnetNotificationParametersExtended is the data-structure of this message

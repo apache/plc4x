@@ -35,6 +35,8 @@ type Union interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsUnion is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUnion()
 }
 
 // _Union is the data-structure of this message

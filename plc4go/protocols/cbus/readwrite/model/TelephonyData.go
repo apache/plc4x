@@ -38,6 +38,8 @@ type TelephonyData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsTelephonyData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyData()
 }
 
 // TelephonyDataContract provides a set of functions which can be overwritten by a sub struct
@@ -48,7 +50,7 @@ type TelephonyDataContract interface {
 	GetArgument() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() TelephonyCommandType
-	// IsTelephonyData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsTelephonyData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyData()
 }
 

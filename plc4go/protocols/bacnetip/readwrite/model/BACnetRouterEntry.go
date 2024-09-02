@@ -44,6 +44,8 @@ type BACnetRouterEntry interface {
 	GetStatus() BACnetRouterEntryStatusTagged
 	// GetPerformanceIndex returns PerformanceIndex (property field)
 	GetPerformanceIndex() BACnetContextTagOctetString
+	// IsBACnetRouterEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRouterEntry()
 }
 
 // _BACnetRouterEntry is the data-structure of this message

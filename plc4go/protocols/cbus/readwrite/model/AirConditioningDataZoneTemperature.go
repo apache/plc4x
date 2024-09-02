@@ -45,6 +45,8 @@ type AirConditioningDataZoneTemperature interface {
 	GetTemperature() HVACTemperature
 	// GetSensorStatus returns SensorStatus (property field)
 	GetSensorStatus() HVACSensorStatus
+	// IsAirConditioningDataZoneTemperature is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataZoneTemperature()
 }
 
 // _AirConditioningDataZoneTemperature is the data-structure of this message

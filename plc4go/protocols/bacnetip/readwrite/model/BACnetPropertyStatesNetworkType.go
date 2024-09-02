@@ -39,6 +39,8 @@ type BACnetPropertyStatesNetworkType interface {
 	BACnetPropertyStates
 	// GetNetworkType returns NetworkType (property field)
 	GetNetworkType() BACnetNetworkTypeTagged
+	// IsBACnetPropertyStatesNetworkType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesNetworkType()
 }
 
 // _BACnetPropertyStatesNetworkType is the data-structure of this message

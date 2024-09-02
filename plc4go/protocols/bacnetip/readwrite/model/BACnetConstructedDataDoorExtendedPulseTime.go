@@ -41,6 +41,8 @@ type BACnetConstructedDataDoorExtendedPulseTime interface {
 	GetDoorExtendedPulseTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataDoorExtendedPulseTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDoorExtendedPulseTime()
 }
 
 // _BACnetConstructedDataDoorExtendedPulseTime is the data-structure of this message

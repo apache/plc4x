@@ -41,6 +41,8 @@ type BACnetConstructedDataCarDriveStatus interface {
 	GetCarDriveStatus() BACnetLiftCarDriveStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftCarDriveStatusTagged
+	// IsBACnetConstructedDataCarDriveStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarDriveStatus()
 }
 
 // _BACnetConstructedDataCarDriveStatus is the data-structure of this message

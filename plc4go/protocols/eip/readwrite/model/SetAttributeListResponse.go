@@ -35,6 +35,8 @@ type SetAttributeListResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	CipService
+	// IsSetAttributeListResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSetAttributeListResponse()
 }
 
 // _SetAttributeListResponse is the data-structure of this message

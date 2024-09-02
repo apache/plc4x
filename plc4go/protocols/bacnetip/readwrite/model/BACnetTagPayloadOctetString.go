@@ -38,6 +38,8 @@ type BACnetTagPayloadOctetString interface {
 	utils.Serializable
 	// GetOctets returns Octets (property field)
 	GetOctets() []byte
+	// IsBACnetTagPayloadOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadOctetString()
 }
 
 // _BACnetTagPayloadOctetString is the data-structure of this message

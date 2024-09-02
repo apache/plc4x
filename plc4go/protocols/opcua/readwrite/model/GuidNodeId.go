@@ -40,6 +40,8 @@ type GuidNodeId interface {
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() GuidValue
+	// IsGuidNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGuidNodeId()
 }
 
 // _GuidNodeId is the data-structure of this message

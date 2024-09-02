@@ -38,6 +38,8 @@ type AirConditioningData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsAirConditioningData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningData()
 }
 
 // AirConditioningDataContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type AirConditioningDataContract interface {
 	GetCommandTypeContainer() AirConditioningCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() AirConditioningCommandType
-	// IsAirConditioningData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsAirConditioningData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAirConditioningData()
 }
 

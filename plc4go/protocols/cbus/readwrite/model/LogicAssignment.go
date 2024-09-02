@@ -48,6 +48,8 @@ type LogicAssignment interface {
 	GetAssignedToGav14() bool
 	// GetAssignedToGav13 returns AssignedToGav13 (property field)
 	GetAssignedToGav13() bool
+	// IsLogicAssignment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLogicAssignment()
 }
 
 // _LogicAssignment is the data-structure of this message

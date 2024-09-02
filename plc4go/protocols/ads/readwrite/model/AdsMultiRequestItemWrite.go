@@ -43,6 +43,8 @@ type AdsMultiRequestItemWrite interface {
 	GetItemIndexOffset() uint32
 	// GetItemWriteLength returns ItemWriteLength (property field)
 	GetItemWriteLength() uint32
+	// IsAdsMultiRequestItemWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsMultiRequestItemWrite()
 }
 
 // _AdsMultiRequestItemWrite is the data-structure of this message

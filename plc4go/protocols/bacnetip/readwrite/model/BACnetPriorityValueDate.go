@@ -39,6 +39,8 @@ type BACnetPriorityValueDate interface {
 	BACnetPriorityValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
+	// IsBACnetPriorityValueDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueDate()
 }
 
 // _BACnetPriorityValueDate is the data-structure of this message

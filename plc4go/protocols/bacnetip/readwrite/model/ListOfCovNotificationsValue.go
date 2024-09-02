@@ -44,6 +44,8 @@ type ListOfCovNotificationsValue interface {
 	GetPropertyValue() BACnetConstructedData
 	// GetTimeOfChange returns TimeOfChange (property field)
 	GetTimeOfChange() BACnetContextTagTime
+	// IsListOfCovNotificationsValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsListOfCovNotificationsValue()
 }
 
 // _ListOfCovNotificationsValue is the data-structure of this message

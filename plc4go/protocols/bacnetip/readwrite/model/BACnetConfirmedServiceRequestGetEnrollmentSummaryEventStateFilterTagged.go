@@ -40,6 +40,8 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged int
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter
+	// IsBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged()
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged is the data-structure of this message

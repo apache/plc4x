@@ -38,13 +38,15 @@ type BACnetUnconfirmedServiceRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetUnconfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequest()
 }
 
 // BACnetUnconfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
 type BACnetUnconfirmedServiceRequestContract interface {
 	// GetServiceRequestLength() returns a parser argument
 	GetServiceRequestLength() uint16
-	// IsBACnetUnconfirmedServiceRequest() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetUnconfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequest()
 }
 

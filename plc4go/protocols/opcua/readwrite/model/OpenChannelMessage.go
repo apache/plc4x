@@ -36,11 +36,13 @@ type OpenChannelMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsOpenChannelMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpenChannelMessage()
 }
 
 // OpenChannelMessageContract provides a set of functions which can be overwritten by a sub struct
 type OpenChannelMessageContract interface {
-	// IsOpenChannelMessage() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsOpenChannelMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpenChannelMessage()
 }
 

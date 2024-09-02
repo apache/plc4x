@@ -49,6 +49,8 @@ type BACnetEventParameterSignedOutOfRange interface {
 	GetDeadband() BACnetContextTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterSignedOutOfRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterSignedOutOfRange()
 }
 
 // _BACnetEventParameterSignedOutOfRange is the data-structure of this message

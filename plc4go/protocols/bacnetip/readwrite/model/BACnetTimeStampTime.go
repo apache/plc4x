@@ -39,6 +39,8 @@ type BACnetTimeStampTime interface {
 	BACnetTimeStamp
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetContextTagTime
+	// IsBACnetTimeStampTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimeStampTime()
 }
 
 // _BACnetTimeStampTime is the data-structure of this message

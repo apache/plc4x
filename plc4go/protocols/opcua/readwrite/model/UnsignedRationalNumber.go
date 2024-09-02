@@ -41,6 +41,8 @@ type UnsignedRationalNumber interface {
 	GetNumerator() uint32
 	// GetDenominator returns Denominator (property field)
 	GetDenominator() uint32
+	// IsUnsignedRationalNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUnsignedRationalNumber()
 }
 
 // _UnsignedRationalNumber is the data-structure of this message

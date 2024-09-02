@@ -41,6 +41,8 @@ type EndpointUrlListDataType interface {
 	GetNoOfEndpointUrlList() int32
 	// GetEndpointUrlList returns EndpointUrlList (property field)
 	GetEndpointUrlList() []PascalString
+	// IsEndpointUrlListDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEndpointUrlListDataType()
 }
 
 // _EndpointUrlListDataType is the data-structure of this message

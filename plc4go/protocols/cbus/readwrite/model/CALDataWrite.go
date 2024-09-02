@@ -43,6 +43,8 @@ type CALDataWrite interface {
 	GetCode() byte
 	// GetParameterValue returns ParameterValue (property field)
 	GetParameterValue() ParameterValue
+	// IsCALDataWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataWrite()
 }
 
 // _CALDataWrite is the data-structure of this message

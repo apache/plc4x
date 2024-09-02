@@ -40,6 +40,8 @@ type BACnetProgramRequestTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetProgramRequest
+	// IsBACnetProgramRequestTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetProgramRequestTagged()
 }
 
 // _BACnetProgramRequestTagged is the data-structure of this message

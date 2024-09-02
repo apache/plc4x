@@ -41,6 +41,8 @@ type BACnetConstructedDataEgressTime interface {
 	GetEgressTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataEgressTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEgressTime()
 }
 
 // _BACnetConstructedDataEgressTime is the data-structure of this message

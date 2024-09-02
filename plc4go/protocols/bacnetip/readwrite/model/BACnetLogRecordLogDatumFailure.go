@@ -39,6 +39,8 @@ type BACnetLogRecordLogDatumFailure interface {
 	BACnetLogRecordLogDatum
 	// GetFailure returns Failure (property field)
 	GetFailure() ErrorEnclosed
+	// IsBACnetLogRecordLogDatumFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumFailure()
 }
 
 // _BACnetLogRecordLogDatumFailure is the data-structure of this message

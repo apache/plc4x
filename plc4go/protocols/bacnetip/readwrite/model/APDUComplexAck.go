@@ -57,6 +57,8 @@ type APDUComplexAck interface {
 	GetApduHeaderReduction() uint16
 	// GetSegmentReduction returns SegmentReduction (virtual field)
 	GetSegmentReduction() uint16
+	// IsAPDUComplexAck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUComplexAck()
 }
 
 // _APDUComplexAck is the data-structure of this message

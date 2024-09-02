@@ -41,6 +41,8 @@ type RepublishResponse interface {
 	GetResponseHeader() ExtensionObjectDefinition
 	// GetNotificationMessage returns NotificationMessage (property field)
 	GetNotificationMessage() ExtensionObjectDefinition
+	// IsRepublishResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRepublishResponse()
 }
 
 // _RepublishResponse is the data-structure of this message

@@ -45,6 +45,8 @@ type MonitoredItemModifyResult interface {
 	GetRevisedQueueSize() uint32
 	// GetFilterResult returns FilterResult (property field)
 	GetFilterResult() ExtensionObject
+	// IsMonitoredItemModifyResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredItemModifyResult()
 }
 
 // _MonitoredItemModifyResult is the data-structure of this message

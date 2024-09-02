@@ -44,6 +44,8 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
 	GetMaxPriority() BACnetContextTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter()
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is the data-structure of this message

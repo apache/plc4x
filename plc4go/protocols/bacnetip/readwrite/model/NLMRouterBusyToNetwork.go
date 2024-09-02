@@ -39,6 +39,8 @@ type NLMRouterBusyToNetwork interface {
 	NLM
 	// GetDestinationNetworkAddresses returns DestinationNetworkAddresses (property field)
 	GetDestinationNetworkAddresses() []uint16
+	// IsNLMRouterBusyToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMRouterBusyToNetwork()
 }
 
 // _NLMRouterBusyToNetwork is the data-structure of this message

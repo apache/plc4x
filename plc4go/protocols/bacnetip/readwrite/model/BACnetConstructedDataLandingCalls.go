@@ -39,6 +39,8 @@ type BACnetConstructedDataLandingCalls interface {
 	BACnetConstructedData
 	// GetLandingCallStatus returns LandingCallStatus (property field)
 	GetLandingCallStatus() []BACnetLandingCallStatus
+	// IsBACnetConstructedDataLandingCalls is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLandingCalls()
 }
 
 // _BACnetConstructedDataLandingCalls is the data-structure of this message

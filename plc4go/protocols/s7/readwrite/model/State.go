@@ -52,6 +52,8 @@ type State interface {
 	GetSIG_2() bool
 	// GetSIG_1 returns SIG_1 (property field)
 	GetSIG_1() bool
+	// IsState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsState()
 }
 
 // _State is the data-structure of this message

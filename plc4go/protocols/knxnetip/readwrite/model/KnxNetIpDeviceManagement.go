@@ -39,6 +39,8 @@ type KnxNetIpDeviceManagement interface {
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
+	// IsKnxNetIpDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxNetIpDeviceManagement()
 }
 
 // _KnxNetIpDeviceManagement is the data-structure of this message

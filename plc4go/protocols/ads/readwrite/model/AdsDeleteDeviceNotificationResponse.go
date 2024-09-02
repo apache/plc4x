@@ -39,6 +39,8 @@ type AdsDeleteDeviceNotificationResponse interface {
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
+	// IsAdsDeleteDeviceNotificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDeleteDeviceNotificationResponse()
 }
 
 // _AdsDeleteDeviceNotificationResponse is the data-structure of this message

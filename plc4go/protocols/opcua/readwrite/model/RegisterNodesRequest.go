@@ -43,6 +43,8 @@ type RegisterNodesRequest interface {
 	GetNoOfNodesToRegister() int32
 	// GetNodesToRegister returns NodesToRegister (property field)
 	GetNodesToRegister() []NodeId
+	// IsRegisterNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRegisterNodesRequest()
 }
 
 // _RegisterNodesRequest is the data-structure of this message

@@ -39,6 +39,8 @@ type COTPParameterDisconnectAdditionalInformation interface {
 	COTPParameter
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsCOTPParameterDisconnectAdditionalInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPParameterDisconnectAdditionalInformation()
 }
 
 // _COTPParameterDisconnectAdditionalInformation is the data-structure of this message

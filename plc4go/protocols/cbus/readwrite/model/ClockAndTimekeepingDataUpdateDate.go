@@ -47,6 +47,8 @@ type ClockAndTimekeepingDataUpdateDate interface {
 	GetDay() uint8
 	// GetDayOfWeek returns DayOfWeek (property field)
 	GetDayOfWeek() uint8
+	// IsClockAndTimekeepingDataUpdateDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsClockAndTimekeepingDataUpdateDate()
 }
 
 // _ClockAndTimekeepingDataUpdateDate is the data-structure of this message

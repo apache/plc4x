@@ -64,6 +64,8 @@ type NPDU interface {
 	GetSourceLengthAddon() uint16
 	// GetPayloadSubtraction returns PayloadSubtraction (virtual field)
 	GetPayloadSubtraction() uint16
+	// IsNPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNPDU()
 }
 
 // _NPDU is the data-structure of this message

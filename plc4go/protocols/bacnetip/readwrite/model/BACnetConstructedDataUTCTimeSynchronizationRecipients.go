@@ -39,6 +39,8 @@ type BACnetConstructedDataUTCTimeSynchronizationRecipients interface {
 	BACnetConstructedData
 	// GetUtcTimeSynchronizationRecipients returns UtcTimeSynchronizationRecipients (property field)
 	GetUtcTimeSynchronizationRecipients() []BACnetRecipient
+	// IsBACnetConstructedDataUTCTimeSynchronizationRecipients is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataUTCTimeSynchronizationRecipients()
 }
 
 // _BACnetConstructedDataUTCTimeSynchronizationRecipients is the data-structure of this message

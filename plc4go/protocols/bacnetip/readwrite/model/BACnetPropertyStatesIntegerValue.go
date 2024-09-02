@@ -39,6 +39,8 @@ type BACnetPropertyStatesIntegerValue interface {
 	BACnetPropertyStates
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetContextTagSignedInteger
+	// IsBACnetPropertyStatesIntegerValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesIntegerValue()
 }
 
 // _BACnetPropertyStatesIntegerValue is the data-structure of this message

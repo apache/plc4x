@@ -45,6 +45,8 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest interface {
 	GetAlarmtype() *AlarmStateType
 	// GetReserve returns Reserve (property field)
 	GetReserve() *uint8
+	// IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest()
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest is the data-structure of this message

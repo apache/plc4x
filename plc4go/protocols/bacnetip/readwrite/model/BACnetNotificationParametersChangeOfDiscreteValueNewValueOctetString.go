@@ -39,6 +39,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString interf
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString()
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString is the data-structure of this message

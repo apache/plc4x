@@ -39,6 +39,8 @@ type ListServicesResponse interface {
 	EipPacket
 	// GetTypeIds returns TypeIds (property field)
 	GetTypeIds() []TypeId
+	// IsListServicesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsListServicesResponse()
 }
 
 // _ListServicesResponse is the data-structure of this message

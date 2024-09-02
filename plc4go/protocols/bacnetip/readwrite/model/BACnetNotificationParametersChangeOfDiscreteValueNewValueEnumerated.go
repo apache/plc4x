@@ -39,6 +39,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated interfa
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated()
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated is the data-structure of this message

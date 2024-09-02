@@ -41,6 +41,8 @@ type BACnetConstructedDataCarAssignedDirection interface {
 	GetAssignedDirection() BACnetLiftCarDirectionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftCarDirectionTagged
+	// IsBACnetConstructedDataCarAssignedDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarAssignedDirection()
 }
 
 // _BACnetConstructedDataCarAssignedDirection is the data-structure of this message

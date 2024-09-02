@@ -41,6 +41,8 @@ type BACnetConstructedDataMinActualValue interface {
 	GetMinActualValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataMinActualValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMinActualValue()
 }
 
 // _BACnetConstructedDataMinActualValue is the data-structure of this message

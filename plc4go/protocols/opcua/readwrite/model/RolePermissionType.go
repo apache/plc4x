@@ -41,6 +41,8 @@ type RolePermissionType interface {
 	GetRoleId() NodeId
 	// GetPermissions returns Permissions (property field)
 	GetPermissions() PermissionType
+	// IsRolePermissionType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRolePermissionType()
 }
 
 // _RolePermissionType is the data-structure of this message

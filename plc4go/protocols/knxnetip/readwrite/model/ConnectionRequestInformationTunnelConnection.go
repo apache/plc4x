@@ -39,6 +39,8 @@ type ConnectionRequestInformationTunnelConnection interface {
 	ConnectionRequestInformation
 	// GetKnxLayer returns KnxLayer (property field)
 	GetKnxLayer() KnxLayer
+	// IsConnectionRequestInformationTunnelConnection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionRequestInformationTunnelConnection()
 }
 
 // _ConnectionRequestInformationTunnelConnection is the data-structure of this message

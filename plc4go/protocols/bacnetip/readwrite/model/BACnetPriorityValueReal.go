@@ -39,6 +39,8 @@ type BACnetPriorityValueReal interface {
 	BACnetPriorityValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
+	// IsBACnetPriorityValueReal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueReal()
 }
 
 // _BACnetPriorityValueReal is the data-structure of this message

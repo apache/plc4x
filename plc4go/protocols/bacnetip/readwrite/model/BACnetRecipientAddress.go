@@ -39,6 +39,8 @@ type BACnetRecipientAddress interface {
 	BACnetRecipient
 	// GetAddressValue returns AddressValue (property field)
 	GetAddressValue() BACnetAddressEnclosed
+	// IsBACnetRecipientAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRecipientAddress()
 }
 
 // _BACnetRecipientAddress is the data-structure of this message

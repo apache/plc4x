@@ -40,6 +40,8 @@ type BACnetCredentialAuthenticationFactor interface {
 	GetDisable() BACnetAccessAuthenticationFactorDisableTagged
 	// GetAuthenticationFactor returns AuthenticationFactor (property field)
 	GetAuthenticationFactor() BACnetAuthenticationFactorEnclosed
+	// IsBACnetCredentialAuthenticationFactor is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCredentialAuthenticationFactor()
 }
 
 // _BACnetCredentialAuthenticationFactor is the data-structure of this message

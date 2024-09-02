@@ -41,6 +41,8 @@ type BACnetConstructedDataPolarity interface {
 	GetPolarity() BACnetPolarityTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetPolarityTagged
+	// IsBACnetConstructedDataPolarity is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPolarity()
 }
 
 // _BACnetConstructedDataPolarity is the data-structure of this message

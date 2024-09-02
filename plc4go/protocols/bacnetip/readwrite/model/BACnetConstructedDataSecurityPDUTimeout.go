@@ -41,6 +41,8 @@ type BACnetConstructedDataSecurityPDUTimeout interface {
 	GetSecurityPduTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataSecurityPDUTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSecurityPDUTimeout()
 }
 
 // _BACnetConstructedDataSecurityPDUTimeout is the data-structure of this message

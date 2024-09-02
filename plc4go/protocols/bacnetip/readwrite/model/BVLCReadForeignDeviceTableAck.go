@@ -41,6 +41,8 @@ type BVLCReadForeignDeviceTableAck interface {
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCForeignDeviceTableEntry
+	// IsBVLCReadForeignDeviceTableAck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCReadForeignDeviceTableAck()
 }
 
 // _BVLCReadForeignDeviceTableAck is the data-structure of this message

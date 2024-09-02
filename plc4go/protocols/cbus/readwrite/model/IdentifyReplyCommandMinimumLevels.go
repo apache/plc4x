@@ -39,6 +39,8 @@ type IdentifyReplyCommandMinimumLevels interface {
 	IdentifyReplyCommand
 	// GetMinimumLevels returns MinimumLevels (property field)
 	GetMinimumLevels() []byte
+	// IsIdentifyReplyCommandMinimumLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandMinimumLevels()
 }
 
 // _IdentifyReplyCommandMinimumLevels is the data-structure of this message

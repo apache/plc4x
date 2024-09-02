@@ -39,6 +39,8 @@ type AdsDiscoveryBlockUserName interface {
 	AdsDiscoveryBlock
 	// GetUserName returns UserName (property field)
 	GetUserName() AmsString
+	// IsAdsDiscoveryBlockUserName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockUserName()
 }
 
 // _AdsDiscoveryBlockUserName is the data-structure of this message

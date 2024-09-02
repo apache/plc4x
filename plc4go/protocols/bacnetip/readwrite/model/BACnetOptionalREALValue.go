@@ -39,6 +39,8 @@ type BACnetOptionalREALValue interface {
 	BACnetOptionalREAL
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
+	// IsBACnetOptionalREALValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalREALValue()
 }
 
 // _BACnetOptionalREALValue is the data-structure of this message

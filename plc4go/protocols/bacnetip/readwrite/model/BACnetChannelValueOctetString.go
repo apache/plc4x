@@ -39,6 +39,8 @@ type BACnetChannelValueOctetString interface {
 	BACnetChannelValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
+	// IsBACnetChannelValueOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueOctetString()
 }
 
 // _BACnetChannelValueOctetString is the data-structure of this message

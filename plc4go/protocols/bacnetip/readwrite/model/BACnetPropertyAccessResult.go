@@ -46,6 +46,8 @@ type BACnetPropertyAccessResult interface {
 	GetDeviceIdentifier() BACnetContextTagObjectIdentifier
 	// GetAccessResult returns AccessResult (property field)
 	GetAccessResult() BACnetPropertyAccessResultAccessResult
+	// IsBACnetPropertyAccessResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyAccessResult()
 }
 
 // _BACnetPropertyAccessResult is the data-structure of this message

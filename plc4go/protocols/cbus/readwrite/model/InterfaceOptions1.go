@@ -48,6 +48,8 @@ type InterfaceOptions1 interface {
 	GetXonXoff() bool
 	// GetConnect returns Connect (property field)
 	GetConnect() bool
+	// IsInterfaceOptions1 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsInterfaceOptions1()
 }
 
 // _InterfaceOptions1 is the data-structure of this message

@@ -45,6 +45,8 @@ type AirConditioningDataZoneHumidity interface {
 	GetHumidity() HVACHumidity
 	// GetSensorStatus returns SensorStatus (property field)
 	GetSensorStatus() HVACSensorStatus
+	// IsAirConditioningDataZoneHumidity is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataZoneHumidity()
 }
 
 // _AirConditioningDataZoneHumidity is the data-structure of this message

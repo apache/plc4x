@@ -39,6 +39,8 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 	S7PayloadUserDataItem
 	// GetItems returns Items (property field)
 	GetItems() []byte
+	// IsS7PayloadUserDataItemCpuFunctionReadSzlResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionReadSzlResponse()
 }
 
 // _S7PayloadUserDataItemCpuFunctionReadSzlResponse is the data-structure of this message

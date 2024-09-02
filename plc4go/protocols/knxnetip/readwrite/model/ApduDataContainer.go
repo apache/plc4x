@@ -39,6 +39,8 @@ type ApduDataContainer interface {
 	Apdu
 	// GetDataApdu returns DataApdu (property field)
 	GetDataApdu() ApduData
+	// IsApduDataContainer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataContainer()
 }
 
 // _ApduDataContainer is the data-structure of this message

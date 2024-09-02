@@ -39,6 +39,8 @@ type NLMWhoIsRouterToNetwork interface {
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() *uint16
+	// IsNLMWhoIsRouterToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMWhoIsRouterToNetwork()
 }
 
 // _NLMWhoIsRouterToNetwork is the data-structure of this message

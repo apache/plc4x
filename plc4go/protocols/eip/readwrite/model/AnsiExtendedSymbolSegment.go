@@ -41,6 +41,8 @@ type AnsiExtendedSymbolSegment interface {
 	GetSymbol() string
 	// GetPad returns Pad (property field)
 	GetPad() *uint8
+	// IsAnsiExtendedSymbolSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAnsiExtendedSymbolSegment()
 }
 
 // _AnsiExtendedSymbolSegment is the data-structure of this message

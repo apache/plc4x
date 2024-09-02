@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueBitString interface {
 	BACnetTimerStateChangeValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
+	// IsBACnetTimerStateChangeValueBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueBitString()
 }
 
 // _BACnetTimerStateChangeValueBitString is the data-structure of this message

@@ -48,6 +48,8 @@ type BACnetStatusFlagsTagged interface {
 	GetOverridden() bool
 	// GetOutOfService returns OutOfService (virtual field)
 	GetOutOfService() bool
+	// IsBACnetStatusFlagsTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetStatusFlagsTagged()
 }
 
 // _BACnetStatusFlagsTagged is the data-structure of this message

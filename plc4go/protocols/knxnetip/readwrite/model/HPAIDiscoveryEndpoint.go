@@ -42,6 +42,8 @@ type HPAIDiscoveryEndpoint interface {
 	GetIpAddress() IPAddress
 	// GetIpPort returns IpPort (property field)
 	GetIpPort() uint16
+	// IsHPAIDiscoveryEndpoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHPAIDiscoveryEndpoint()
 }
 
 // _HPAIDiscoveryEndpoint is the data-structure of this message

@@ -39,6 +39,8 @@ type IdentifyReplyCommandType interface {
 	IdentifyReplyCommand
 	// GetUnitType returns UnitType (property field)
 	GetUnitType() string
+	// IsIdentifyReplyCommandType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandType()
 }
 
 // _IdentifyReplyCommandType is the data-structure of this message

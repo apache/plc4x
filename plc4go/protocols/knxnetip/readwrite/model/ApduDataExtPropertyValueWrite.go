@@ -47,6 +47,8 @@ type ApduDataExtPropertyValueWrite interface {
 	GetIndex() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsApduDataExtPropertyValueWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtPropertyValueWrite()
 }
 
 // _ApduDataExtPropertyValueWrite is the data-structure of this message

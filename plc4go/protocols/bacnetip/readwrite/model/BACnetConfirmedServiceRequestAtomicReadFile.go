@@ -41,6 +41,8 @@ type BACnetConfirmedServiceRequestAtomicReadFile interface {
 	GetFileIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetAccessMethod returns AccessMethod (property field)
 	GetAccessMethod() BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+	// IsBACnetConfirmedServiceRequestAtomicReadFile is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAtomicReadFile()
 }
 
 // _BACnetConfirmedServiceRequestAtomicReadFile is the data-structure of this message

@@ -40,6 +40,8 @@ type ModbusDeviceInformationObject interface {
 	GetObjectId() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsModbusDeviceInformationObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusDeviceInformationObject()
 }
 
 // _ModbusDeviceInformationObject is the data-structure of this message

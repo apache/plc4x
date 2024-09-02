@@ -47,6 +47,8 @@ type BACnetNotificationParametersBufferReady interface {
 	GetCurrentNotification() BACnetContextTagUnsignedInteger
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersBufferReady is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersBufferReady()
 }
 
 // _BACnetNotificationParametersBufferReady is the data-structure of this message

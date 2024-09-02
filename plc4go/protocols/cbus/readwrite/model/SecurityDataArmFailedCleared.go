@@ -35,6 +35,8 @@ type SecurityDataArmFailedCleared interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataArmFailedCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataArmFailedCleared()
 }
 
 // _SecurityDataArmFailedCleared is the data-structure of this message

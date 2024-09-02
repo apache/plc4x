@@ -43,13 +43,15 @@ type BVLC interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBVLC is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLC()
 }
 
 // BVLCContract provides a set of functions which can be overwritten by a sub struct
 type BVLCContract interface {
 	// GetBvlcPayloadLength returns BvlcPayloadLength (virtual field)
 	GetBvlcPayloadLength() uint16
-	// IsBVLC() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBVLC is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLC()
 }
 

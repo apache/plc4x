@@ -39,6 +39,8 @@ type FirmataCommandSysex interface {
 	FirmataCommand
 	// GetCommand returns Command (property field)
 	GetCommand() SysexCommand
+	// IsFirmataCommandSysex is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataCommandSysex()
 }
 
 // _FirmataCommandSysex is the data-structure of this message

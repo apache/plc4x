@@ -41,6 +41,8 @@ type CipReadRequest interface {
 	GetTag() []byte
 	// GetElementNb returns ElementNb (property field)
 	GetElementNb() uint16
+	// IsCipReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipReadRequest()
 }
 
 // _CipReadRequest is the data-structure of this message

@@ -43,6 +43,8 @@ type QueryNextRequest interface {
 	GetReleaseContinuationPoint() bool
 	// GetContinuationPoint returns ContinuationPoint (property field)
 	GetContinuationPoint() PascalByteString
+	// IsQueryNextRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsQueryNextRequest()
 }
 
 // _QueryNextRequest is the data-structure of this message

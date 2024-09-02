@@ -42,6 +42,8 @@ type BACnetAuthenticationPolicy interface {
 	GetOrderEnforced() BACnetContextTagBoolean
 	// GetTimeout returns Timeout (property field)
 	GetTimeout() BACnetContextTagUnsignedInteger
+	// IsBACnetAuthenticationPolicy is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAuthenticationPolicy()
 }
 
 // _BACnetAuthenticationPolicy is the data-structure of this message

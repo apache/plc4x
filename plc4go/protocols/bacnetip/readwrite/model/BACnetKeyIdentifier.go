@@ -40,6 +40,8 @@ type BACnetKeyIdentifier interface {
 	GetAlgorithm() BACnetContextTagUnsignedInteger
 	// GetKeyId returns KeyId (property field)
 	GetKeyId() BACnetContextTagUnsignedInteger
+	// IsBACnetKeyIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetKeyIdentifier()
 }
 
 // _BACnetKeyIdentifier is the data-structure of this message

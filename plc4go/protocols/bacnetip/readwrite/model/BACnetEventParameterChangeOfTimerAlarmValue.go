@@ -42,6 +42,8 @@ type BACnetEventParameterChangeOfTimerAlarmValue interface {
 	GetAlarmValues() []BACnetTimerStateTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterChangeOfTimerAlarmValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfTimerAlarmValue()
 }
 
 // _BACnetEventParameterChangeOfTimerAlarmValue is the data-structure of this message

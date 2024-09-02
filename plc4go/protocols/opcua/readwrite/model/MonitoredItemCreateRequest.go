@@ -43,6 +43,8 @@ type MonitoredItemCreateRequest interface {
 	GetMonitoringMode() MonitoringMode
 	// GetRequestedParameters returns RequestedParameters (property field)
 	GetRequestedParameters() ExtensionObjectDefinition
+	// IsMonitoredItemCreateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredItemCreateRequest()
 }
 
 // _MonitoredItemCreateRequest is the data-structure of this message

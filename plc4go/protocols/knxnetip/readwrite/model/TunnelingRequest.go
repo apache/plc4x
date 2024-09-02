@@ -43,6 +43,8 @@ type TunnelingRequest interface {
 	GetTunnelingRequestDataBlock() TunnelingRequestDataBlock
 	// GetCemi returns Cemi (property field)
 	GetCemi() CEMI
+	// IsTunnelingRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTunnelingRequest()
 }
 
 // _TunnelingRequest is the data-structure of this message

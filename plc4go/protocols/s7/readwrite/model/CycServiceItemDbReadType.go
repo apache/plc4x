@@ -41,6 +41,8 @@ type CycServiceItemDbReadType interface {
 	GetNumberOfAreas() uint8
 	// GetItems returns Items (property field)
 	GetItems() []SubItem
+	// IsCycServiceItemDbReadType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCycServiceItemDbReadType()
 }
 
 // _CycServiceItemDbReadType is the data-structure of this message

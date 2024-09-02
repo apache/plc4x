@@ -40,6 +40,8 @@ type BACnetAddressBinding interface {
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetDeviceAddress returns DeviceAddress (property field)
 	GetDeviceAddress() BACnetAddress
+	// IsBACnetAddressBinding is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAddressBinding()
 }
 
 // _BACnetAddressBinding is the data-structure of this message

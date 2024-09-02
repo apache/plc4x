@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueConstructedValue interface {
 	BACnetTimerStateChangeValue
 	// GetConstructedValue returns ConstructedValue (property field)
 	GetConstructedValue() BACnetConstructedData
+	// IsBACnetTimerStateChangeValueConstructedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueConstructedValue()
 }
 
 // _BACnetTimerStateChangeValueConstructedValue is the data-structure of this message

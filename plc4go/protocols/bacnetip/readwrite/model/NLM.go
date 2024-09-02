@@ -38,6 +38,8 @@ type NLM interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsNLM is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLM()
 }
 
 // NLMContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type NLMContract interface {
 	GetIsVendorProprietaryMessage() bool
 	// GetApduLength() returns a parser argument
 	GetApduLength() uint16
-	// IsNLM() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsNLM is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLM()
 }
 

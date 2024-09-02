@@ -47,6 +47,8 @@ type BACnetConfirmedServiceRequestAtomicWriteFile interface {
 	GetFileData() BACnetApplicationTagOctetString
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetConfirmedServiceRequestAtomicWriteFile is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAtomicWriteFile()
 }
 
 // _BACnetConfirmedServiceRequestAtomicWriteFile is the data-structure of this message

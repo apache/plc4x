@@ -41,6 +41,8 @@ type BACnetConstructedDataIntegralConstant interface {
 	GetIntegralConstant() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataIntegralConstant is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIntegralConstant()
 }
 
 // _BACnetConstructedDataIntegralConstant is the data-structure of this message

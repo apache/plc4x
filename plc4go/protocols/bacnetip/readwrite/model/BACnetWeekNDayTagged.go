@@ -72,6 +72,8 @@ type BACnetWeekNDayTagged interface {
 	GetAnyWeekOfthisMonth() bool
 	// GetAnyDayOfWeek returns AnyDayOfWeek (virtual field)
 	GetAnyDayOfWeek() bool
+	// IsBACnetWeekNDayTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetWeekNDayTagged()
 }
 
 // _BACnetWeekNDayTagged is the data-structure of this message

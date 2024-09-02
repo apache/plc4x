@@ -41,6 +41,8 @@ type BACnetConstructedDataValueSource interface {
 	GetValueSource() BACnetValueSource
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetValueSource
+	// IsBACnetConstructedDataValueSource is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataValueSource()
 }
 
 // _BACnetConstructedDataValueSource is the data-structure of this message

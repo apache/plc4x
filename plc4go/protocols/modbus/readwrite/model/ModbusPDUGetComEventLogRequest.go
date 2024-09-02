@@ -35,6 +35,8 @@ type ModbusPDUGetComEventLogRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
+	// IsModbusPDUGetComEventLogRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUGetComEventLogRequest()
 }
 
 // _ModbusPDUGetComEventLogRequest is the data-structure of this message

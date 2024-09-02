@@ -53,6 +53,8 @@ type ActivateSessionRequest interface {
 	GetUserIdentityToken() ExtensionObject
 	// GetUserTokenSignature returns UserTokenSignature (property field)
 	GetUserTokenSignature() ExtensionObjectDefinition
+	// IsActivateSessionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsActivateSessionRequest()
 }
 
 // _ActivateSessionRequest is the data-structure of this message

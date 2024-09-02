@@ -51,6 +51,8 @@ type SetTriggeringRequest interface {
 	GetNoOfLinksToRemove() int32
 	// GetLinksToRemove returns LinksToRemove (property field)
 	GetLinksToRemove() []uint32
+	// IsSetTriggeringRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSetTriggeringRequest()
 }
 
 // _SetTriggeringRequest is the data-structure of this message

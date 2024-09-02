@@ -40,6 +40,8 @@ type ProjectInstallationIdentifier interface {
 	GetProjectNumber() uint8
 	// GetInstallationNumber returns InstallationNumber (property field)
 	GetInstallationNumber() uint8
+	// IsProjectInstallationIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsProjectInstallationIdentifier()
 }
 
 // _ProjectInstallationIdentifier is the data-structure of this message

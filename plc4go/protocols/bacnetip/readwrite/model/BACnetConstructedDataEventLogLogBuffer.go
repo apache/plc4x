@@ -39,6 +39,8 @@ type BACnetConstructedDataEventLogLogBuffer interface {
 	BACnetConstructedData
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetEventLogRecord
+	// IsBACnetConstructedDataEventLogLogBuffer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventLogLogBuffer()
 }
 
 // _BACnetConstructedDataEventLogLogBuffer is the data-structure of this message

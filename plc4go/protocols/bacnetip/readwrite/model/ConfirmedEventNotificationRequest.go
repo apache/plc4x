@@ -62,6 +62,8 @@ type ConfirmedEventNotificationRequest interface {
 	GetToState() BACnetEventStateTagged
 	// GetEventValues returns EventValues (property field)
 	GetEventValues() BACnetNotificationParameters
+	// IsConfirmedEventNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConfirmedEventNotificationRequest()
 }
 
 // _ConfirmedEventNotificationRequest is the data-structure of this message

@@ -43,6 +43,8 @@ type ConnectionStateResponse interface {
 	GetCommunicationChannelId() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() Status
+	// IsConnectionStateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionStateResponse()
 }
 
 // _ConnectionStateResponse is the data-structure of this message

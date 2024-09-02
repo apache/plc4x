@@ -45,6 +45,8 @@ type BACnetNotificationParametersChangeOfBitString interface {
 	GetStatusFlags() BACnetStatusFlagsTagged
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersChangeOfBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfBitString()
 }
 
 // _BACnetNotificationParametersChangeOfBitString is the data-structure of this message

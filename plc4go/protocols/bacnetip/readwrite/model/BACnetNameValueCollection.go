@@ -42,6 +42,8 @@ type BACnetNameValueCollection interface {
 	GetMembers() []BACnetNameValue
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetNameValueCollection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNameValueCollection()
 }
 
 // _BACnetNameValueCollection is the data-structure of this message

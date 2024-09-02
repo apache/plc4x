@@ -39,6 +39,8 @@ type BACnetServiceAckVTOpen interface {
 	BACnetServiceAck
 	// GetRemoteVtSessionIdentifier returns RemoteVtSessionIdentifier (property field)
 	GetRemoteVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
+	// IsBACnetServiceAckVTOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckVTOpen()
 }
 
 // _BACnetServiceAckVTOpen is the data-structure of this message

@@ -40,6 +40,8 @@ type HVACTemperature interface {
 	GetTemperatureValue() int16
 	// GetTemperatureInCelcius returns TemperatureInCelcius (virtual field)
 	GetTemperatureInCelcius() float32
+	// IsHVACTemperature is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACTemperature()
 }
 
 // _HVACTemperature is the data-structure of this message

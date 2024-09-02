@@ -47,6 +47,8 @@ type ModifyMonitoredItemsRequest interface {
 	GetNoOfItemsToModify() int32
 	// GetItemsToModify returns ItemsToModify (property field)
 	GetItemsToModify() []ExtensionObjectDefinition
+	// IsModifyMonitoredItemsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModifyMonitoredItemsRequest()
 }
 
 // _ModifyMonitoredItemsRequest is the data-structure of this message

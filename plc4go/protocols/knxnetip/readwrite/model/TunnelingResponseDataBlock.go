@@ -42,6 +42,8 @@ type TunnelingResponseDataBlock interface {
 	GetSequenceCounter() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() Status
+	// IsTunnelingResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTunnelingResponseDataBlock()
 }
 
 // _TunnelingResponseDataBlock is the data-structure of this message

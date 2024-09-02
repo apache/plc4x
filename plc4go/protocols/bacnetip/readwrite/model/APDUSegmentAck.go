@@ -47,6 +47,8 @@ type APDUSegmentAck interface {
 	GetSequenceNumber() uint8
 	// GetActualWindowSize returns ActualWindowSize (property field)
 	GetActualWindowSize() uint8
+	// IsAPDUSegmentAck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUSegmentAck()
 }
 
 // _APDUSegmentAck is the data-structure of this message

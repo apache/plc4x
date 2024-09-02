@@ -51,6 +51,8 @@ type S7PayloadDiagnosticMessage interface {
 	GetInfo2() uint32
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
+	// IsS7PayloadDiagnosticMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadDiagnosticMessage()
 }
 
 // _S7PayloadDiagnosticMessage is the data-structure of this message

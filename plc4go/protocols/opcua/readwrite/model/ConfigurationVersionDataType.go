@@ -41,6 +41,8 @@ type ConfigurationVersionDataType interface {
 	GetMajorVersion() uint32
 	// GetMinorVersion returns MinorVersion (property field)
 	GetMinorVersion() uint32
+	// IsConfigurationVersionDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConfigurationVersionDataType()
 }
 
 // _ConfigurationVersionDataType is the data-structure of this message

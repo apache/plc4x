@@ -41,6 +41,8 @@ type BACnetConstructedDataAutoSlaveDiscovery interface {
 	GetAutoSlaveDiscovery() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataAutoSlaveDiscovery is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAutoSlaveDiscovery()
 }
 
 // _BACnetConstructedDataAutoSlaveDiscovery is the data-structure of this message

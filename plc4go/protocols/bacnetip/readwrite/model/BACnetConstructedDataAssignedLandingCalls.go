@@ -43,6 +43,8 @@ type BACnetConstructedDataAssignedLandingCalls interface {
 	GetAssignedLandingCalls() []BACnetAssignedLandingCalls
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataAssignedLandingCalls is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAssignedLandingCalls()
 }
 
 // _BACnetConstructedDataAssignedLandingCalls is the data-structure of this message

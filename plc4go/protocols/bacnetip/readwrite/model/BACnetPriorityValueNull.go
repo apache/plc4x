@@ -39,6 +39,8 @@ type BACnetPriorityValueNull interface {
 	BACnetPriorityValue
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
+	// IsBACnetPriorityValueNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueNull()
 }
 
 // _BACnetPriorityValueNull is the data-structure of this message

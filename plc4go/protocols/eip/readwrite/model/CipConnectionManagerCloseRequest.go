@@ -59,6 +59,8 @@ type CipConnectionManagerCloseRequest interface {
 	GetConnectionPathSize() uint8
 	// GetConnectionPaths returns ConnectionPaths (property field)
 	GetConnectionPaths() []PathSegment
+	// IsCipConnectionManagerCloseRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipConnectionManagerCloseRequest()
 }
 
 // _CipConnectionManagerCloseRequest is the data-structure of this message

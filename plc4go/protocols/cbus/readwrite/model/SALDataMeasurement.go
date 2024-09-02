@@ -39,6 +39,8 @@ type SALDataMeasurement interface {
 	SALData
 	// GetMeasurementData returns MeasurementData (property field)
 	GetMeasurementData() MeasurementData
+	// IsSALDataMeasurement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataMeasurement()
 }
 
 // _SALDataMeasurement is the data-structure of this message

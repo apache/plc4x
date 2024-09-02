@@ -51,6 +51,8 @@ type CallMethodResult interface {
 	GetNoOfOutputArguments() int32
 	// GetOutputArguments returns OutputArguments (property field)
 	GetOutputArguments() []Variant
+	// IsCallMethodResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCallMethodResult()
 }
 
 // _CallMethodResult is the data-structure of this message

@@ -41,6 +41,8 @@ type CreateObjectError interface {
 	GetErrorType() ErrorEnclosed
 	// GetFirstFailedElementNumber returns FirstFailedElementNumber (property field)
 	GetFirstFailedElementNumber() BACnetContextTagUnsignedInteger
+	// IsCreateObjectError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCreateObjectError()
 }
 
 // _CreateObjectError is the data-structure of this message

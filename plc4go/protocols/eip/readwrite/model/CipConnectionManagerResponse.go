@@ -51,6 +51,8 @@ type CipConnectionManagerResponse interface {
 	GetOtApi() uint32
 	// GetToApi returns ToApi (property field)
 	GetToApi() uint32
+	// IsCipConnectionManagerResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipConnectionManagerResponse()
 }
 
 // _CipConnectionManagerResponse is the data-structure of this message

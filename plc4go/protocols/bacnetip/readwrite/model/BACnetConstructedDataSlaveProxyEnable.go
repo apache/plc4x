@@ -41,6 +41,8 @@ type BACnetConstructedDataSlaveProxyEnable interface {
 	GetSlaveProxyEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataSlaveProxyEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSlaveProxyEnable()
 }
 
 // _BACnetConstructedDataSlaveProxyEnable is the data-structure of this message

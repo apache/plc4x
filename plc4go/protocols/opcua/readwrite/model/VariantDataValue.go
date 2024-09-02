@@ -41,6 +41,8 @@ type VariantDataValue interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []DataValue
+	// IsVariantDataValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantDataValue()
 }
 
 // _VariantDataValue is the data-structure of this message

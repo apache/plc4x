@@ -41,6 +41,8 @@ type BACnetConstructedDataCarLoad interface {
 	GetCarLoad() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataCarLoad is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarLoad()
 }
 
 // _BACnetConstructedDataCarLoad is the data-structure of this message

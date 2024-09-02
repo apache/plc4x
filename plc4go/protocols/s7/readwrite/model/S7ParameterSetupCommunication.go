@@ -43,6 +43,8 @@ type S7ParameterSetupCommunication interface {
 	GetMaxAmqCallee() uint16
 	// GetPduLength returns PduLength (property field)
 	GetPduLength() uint16
+	// IsS7ParameterSetupCommunication is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterSetupCommunication()
 }
 
 // _S7ParameterSetupCommunication is the data-structure of this message

@@ -35,6 +35,8 @@ type ApduDataExtNetworkParameterWrite interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtNetworkParameterWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtNetworkParameterWrite()
 }
 
 // _ApduDataExtNetworkParameterWrite is the data-structure of this message

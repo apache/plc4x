@@ -43,6 +43,8 @@ type TransactionErrorType interface {
 	GetError() StatusCode
 	// GetMessage returns Message (property field)
 	GetMessage() LocalizedText
+	// IsTransactionErrorType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTransactionErrorType()
 }
 
 // _TransactionErrorType is the data-structure of this message

@@ -45,6 +45,8 @@ type S7PayloadUserDataItemCyclicServicesSubscribeRequest interface {
 	GetTimeFactor() uint8
 	// GetItem returns Item (property field)
 	GetItem() []CycServiceItemType
+	// IsS7PayloadUserDataItemCyclicServicesSubscribeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCyclicServicesSubscribeRequest()
 }
 
 // _S7PayloadUserDataItemCyclicServicesSubscribeRequest is the data-structure of this message

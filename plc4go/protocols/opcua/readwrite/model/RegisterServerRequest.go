@@ -41,6 +41,8 @@ type RegisterServerRequest interface {
 	GetRequestHeader() ExtensionObjectDefinition
 	// GetServer returns Server (property field)
 	GetServer() ExtensionObjectDefinition
+	// IsRegisterServerRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRegisterServerRequest()
 }
 
 // _RegisterServerRequest is the data-structure of this message

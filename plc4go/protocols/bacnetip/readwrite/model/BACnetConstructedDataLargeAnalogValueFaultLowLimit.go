@@ -41,6 +41,8 @@ type BACnetConstructedDataLargeAnalogValueFaultLowLimit interface {
 	GetFaultLowLimit() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
+	// IsBACnetConstructedDataLargeAnalogValueFaultLowLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLargeAnalogValueFaultLowLimit()
 }
 
 // _BACnetConstructedDataLargeAnalogValueFaultLowLimit is the data-structure of this message

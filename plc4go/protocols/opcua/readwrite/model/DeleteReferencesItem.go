@@ -47,6 +47,8 @@ type DeleteReferencesItem interface {
 	GetTargetNodeId() ExpandedNodeId
 	// GetDeleteBidirectional returns DeleteBidirectional (property field)
 	GetDeleteBidirectional() bool
+	// IsDeleteReferencesItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteReferencesItem()
 }
 
 // _DeleteReferencesItem is the data-structure of this message

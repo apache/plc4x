@@ -51,6 +51,8 @@ type AirConditioningDataSetPlantHumidityLevel interface {
 	GetRawLevel() HVACRawLevels
 	// GetAuxLevel returns AuxLevel (property field)
 	GetAuxLevel() HVACAuxiliaryLevel
+	// IsAirConditioningDataSetPlantHumidityLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataSetPlantHumidityLevel()
 }
 
 // _AirConditioningDataSetPlantHumidityLevel is the data-structure of this message

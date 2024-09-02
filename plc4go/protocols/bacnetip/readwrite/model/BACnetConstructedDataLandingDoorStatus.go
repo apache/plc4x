@@ -43,6 +43,8 @@ type BACnetConstructedDataLandingDoorStatus interface {
 	GetLandingDoorStatus() []BACnetLandingDoorStatus
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataLandingDoorStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLandingDoorStatus()
 }
 
 // _BACnetConstructedDataLandingDoorStatus is the data-structure of this message

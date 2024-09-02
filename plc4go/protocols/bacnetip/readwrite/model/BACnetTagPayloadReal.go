@@ -38,6 +38,8 @@ type BACnetTagPayloadReal interface {
 	utils.Serializable
 	// GetValue returns Value (property field)
 	GetValue() float32
+	// IsBACnetTagPayloadReal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadReal()
 }
 
 // _BACnetTagPayloadReal is the data-structure of this message

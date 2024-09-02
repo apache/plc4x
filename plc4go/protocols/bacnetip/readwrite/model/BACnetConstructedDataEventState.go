@@ -41,6 +41,8 @@ type BACnetConstructedDataEventState interface {
 	GetEventState() BACnetEventStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventStateTagged
+	// IsBACnetConstructedDataEventState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventState()
 }
 
 // _BACnetConstructedDataEventState is the data-structure of this message

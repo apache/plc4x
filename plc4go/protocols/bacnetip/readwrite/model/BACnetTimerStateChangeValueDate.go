@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueDate interface {
 	BACnetTimerStateChangeValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
+	// IsBACnetTimerStateChangeValueDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueDate()
 }
 
 // _BACnetTimerStateChangeValueDate is the data-structure of this message

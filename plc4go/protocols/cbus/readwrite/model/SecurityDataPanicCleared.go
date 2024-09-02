@@ -35,6 +35,8 @@ type SecurityDataPanicCleared interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataPanicCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataPanicCleared()
 }
 
 // _SecurityDataPanicCleared is the data-structure of this message

@@ -44,6 +44,8 @@ type OpcuaProtocolLimits interface {
 	GetMaxMessageSize() uint32
 	// GetMaxChunkCount returns MaxChunkCount (property field)
 	GetMaxChunkCount() uint32
+	// IsOpcuaProtocolLimits is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaProtocolLimits()
 }
 
 // _OpcuaProtocolLimits is the data-structure of this message

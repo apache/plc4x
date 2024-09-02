@@ -41,6 +41,8 @@ type OpcuaCloseRequest interface {
 	GetSecurityHeader() SecurityHeader
 	// GetMessage returns Message (property field)
 	GetMessage() Payload
+	// IsOpcuaCloseRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaCloseRequest()
 }
 
 // _OpcuaCloseRequest is the data-structure of this message

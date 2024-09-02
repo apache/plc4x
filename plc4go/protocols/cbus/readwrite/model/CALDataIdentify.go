@@ -39,6 +39,8 @@ type CALDataIdentify interface {
 	CALData
 	// GetAttribute returns Attribute (property field)
 	GetAttribute() Attribute
+	// IsCALDataIdentify is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataIdentify()
 }
 
 // _CALDataIdentify is the data-structure of this message

@@ -34,6 +34,8 @@ type TrimmedString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsTrimmedString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTrimmedString()
 }
 
 // _TrimmedString is the data-structure of this message

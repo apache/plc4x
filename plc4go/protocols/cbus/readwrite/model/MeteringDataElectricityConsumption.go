@@ -39,6 +39,8 @@ type MeteringDataElectricityConsumption interface {
 	MeteringData
 	// GetKWhr returns KWhr (property field)
 	GetKWhr() uint32
+	// IsMeteringDataElectricityConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataElectricityConsumption()
 }
 
 // _MeteringDataElectricityConsumption is the data-structure of this message

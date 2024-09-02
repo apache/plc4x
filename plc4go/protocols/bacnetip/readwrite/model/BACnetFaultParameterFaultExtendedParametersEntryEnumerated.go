@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryEnumerated interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
+	// IsBACnetFaultParameterFaultExtendedParametersEntryEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryEnumerated()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryEnumerated is the data-structure of this message

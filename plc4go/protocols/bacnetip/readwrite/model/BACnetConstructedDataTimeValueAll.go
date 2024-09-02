@@ -35,6 +35,8 @@ type BACnetConstructedDataTimeValueAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataTimeValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimeValueAll()
 }
 
 // _BACnetConstructedDataTimeValueAll is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataFullDutyBaseline interface {
 	GetFullDutyBaseLine() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataFullDutyBaseline is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFullDutyBaseline()
 }
 
 // _BACnetConstructedDataFullDutyBaseline is the data-structure of this message

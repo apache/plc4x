@@ -35,6 +35,8 @@ type ModbusPDUGetComEventCounterRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
+	// IsModbusPDUGetComEventCounterRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUGetComEventCounterRequest()
 }
 
 // _ModbusPDUGetComEventCounterRequest is the data-structure of this message

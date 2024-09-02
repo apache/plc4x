@@ -45,6 +45,8 @@ type SamplingIntervalDiagnosticsDataType interface {
 	GetMaxMonitoredItemCount() uint32
 	// GetDisabledMonitoredItemCount returns DisabledMonitoredItemCount (property field)
 	GetDisabledMonitoredItemCount() uint32
+	// IsSamplingIntervalDiagnosticsDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSamplingIntervalDiagnosticsDataType()
 }
 
 // _SamplingIntervalDiagnosticsDataType is the data-structure of this message

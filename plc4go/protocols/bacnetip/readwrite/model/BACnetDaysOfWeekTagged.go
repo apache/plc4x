@@ -54,6 +54,8 @@ type BACnetDaysOfWeekTagged interface {
 	GetSaturday() bool
 	// GetSunday returns Sunday (virtual field)
 	GetSunday() bool
+	// IsBACnetDaysOfWeekTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetDaysOfWeekTagged()
 }
 
 // _BACnetDaysOfWeekTagged is the data-structure of this message

@@ -43,6 +43,8 @@ type APDUError interface {
 	GetErrorChoice() BACnetConfirmedServiceChoice
 	// GetError returns Error (property field)
 	GetError() BACnetError
+	// IsAPDUError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUError()
 }
 
 // _APDUError is the data-structure of this message

@@ -35,6 +35,8 @@ type BACnetConstructedDataAccessUserAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataAccessUserAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessUserAll()
 }
 
 // _BACnetConstructedDataAccessUserAll is the data-structure of this message

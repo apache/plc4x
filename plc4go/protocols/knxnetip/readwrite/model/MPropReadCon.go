@@ -49,6 +49,8 @@ type MPropReadCon interface {
 	GetStartIndex() uint16
 	// GetData returns Data (property field)
 	GetData() uint16
+	// IsMPropReadCon is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMPropReadCon()
 }
 
 // _MPropReadCon is the data-structure of this message

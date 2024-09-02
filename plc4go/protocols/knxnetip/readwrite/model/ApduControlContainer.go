@@ -39,6 +39,8 @@ type ApduControlContainer interface {
 	Apdu
 	// GetControlApdu returns ControlApdu (property field)
 	GetControlApdu() ApduControl
+	// IsApduControlContainer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduControlContainer()
 }
 
 // _ApduControlContainer is the data-structure of this message

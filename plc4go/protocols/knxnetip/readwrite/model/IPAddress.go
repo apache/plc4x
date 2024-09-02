@@ -38,6 +38,8 @@ type IPAddress interface {
 	utils.Serializable
 	// GetAddr returns Addr (property field)
 	GetAddr() []byte
+	// IsIPAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIPAddress()
 }
 
 // _IPAddress is the data-structure of this message

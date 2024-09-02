@@ -41,6 +41,8 @@ type BACnetServiceAckAtomicReadFileStream interface {
 	GetFileStartPosition() BACnetApplicationTagSignedInteger
 	// GetFileData returns FileData (property field)
 	GetFileData() BACnetApplicationTagOctetString
+	// IsBACnetServiceAckAtomicReadFileStream is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckAtomicReadFileStream()
 }
 
 // _BACnetServiceAckAtomicReadFileStream is the data-structure of this message

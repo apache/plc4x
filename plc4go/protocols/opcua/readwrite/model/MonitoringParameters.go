@@ -47,6 +47,8 @@ type MonitoringParameters interface {
 	GetQueueSize() uint32
 	// GetDiscardOldest returns DiscardOldest (property field)
 	GetDiscardOldest() bool
+	// IsMonitoringParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoringParameters()
 }
 
 // _MonitoringParameters is the data-structure of this message

@@ -35,6 +35,8 @@ type AccessControlDataAccessPointLeftOpen interface {
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
+	// IsAccessControlDataAccessPointLeftOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlDataAccessPointLeftOpen()
 }
 
 // _AccessControlDataAccessPointLeftOpen is the data-structure of this message

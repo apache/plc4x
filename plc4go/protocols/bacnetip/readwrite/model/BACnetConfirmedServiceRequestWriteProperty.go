@@ -47,6 +47,8 @@ type BACnetConfirmedServiceRequestWriteProperty interface {
 	GetPropertyValue() BACnetConstructedData
 	// GetPriority returns Priority (property field)
 	GetPriority() BACnetContextTagUnsignedInteger
+	// IsBACnetConfirmedServiceRequestWriteProperty is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestWriteProperty()
 }
 
 // _BACnetConfirmedServiceRequestWriteProperty is the data-structure of this message

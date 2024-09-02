@@ -46,6 +46,8 @@ type NetworkConnectionParameters interface {
 	GetPriority() uint8
 	// GetConnectionSizeType returns ConnectionSizeType (property field)
 	GetConnectionSizeType() bool
+	// IsNetworkConnectionParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNetworkConnectionParameters()
 }
 
 // _NetworkConnectionParameters is the data-structure of this message

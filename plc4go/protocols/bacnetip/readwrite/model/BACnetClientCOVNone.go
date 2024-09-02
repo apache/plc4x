@@ -39,6 +39,8 @@ type BACnetClientCOVNone interface {
 	BACnetClientCOV
 	// GetDefaultIncrement returns DefaultIncrement (property field)
 	GetDefaultIncrement() BACnetApplicationTagNull
+	// IsBACnetClientCOVNone is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetClientCOVNone()
 }
 
 // _BACnetClientCOVNone is the data-structure of this message

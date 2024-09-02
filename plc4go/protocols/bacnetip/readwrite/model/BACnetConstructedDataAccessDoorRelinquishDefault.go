@@ -41,6 +41,8 @@ type BACnetConstructedDataAccessDoorRelinquishDefault interface {
 	GetRelinquishDefault() BACnetDoorValueTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorValueTagged
+	// IsBACnetConstructedDataAccessDoorRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessDoorRelinquishDefault()
 }
 
 // _BACnetConstructedDataAccessDoorRelinquishDefault is the data-structure of this message

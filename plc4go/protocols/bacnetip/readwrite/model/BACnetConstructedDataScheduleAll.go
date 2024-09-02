@@ -35,6 +35,8 @@ type BACnetConstructedDataScheduleAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataScheduleAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataScheduleAll()
 }
 
 // _BACnetConstructedDataScheduleAll is the data-structure of this message

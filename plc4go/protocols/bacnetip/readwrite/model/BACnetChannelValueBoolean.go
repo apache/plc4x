@@ -39,6 +39,8 @@ type BACnetChannelValueBoolean interface {
 	BACnetChannelValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
+	// IsBACnetChannelValueBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueBoolean()
 }
 
 // _BACnetChannelValueBoolean is the data-structure of this message

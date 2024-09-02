@@ -39,6 +39,8 @@ type BACnetPropertyStatesLightningInProgress interface {
 	BACnetPropertyStates
 	// GetLightningInProgress returns LightningInProgress (property field)
 	GetLightningInProgress() BACnetLightingInProgressTagged
+	// IsBACnetPropertyStatesLightningInProgress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLightningInProgress()
 }
 
 // _BACnetPropertyStatesLightningInProgress is the data-structure of this message

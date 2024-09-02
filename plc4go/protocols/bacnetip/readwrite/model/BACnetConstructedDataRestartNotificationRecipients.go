@@ -39,6 +39,8 @@ type BACnetConstructedDataRestartNotificationRecipients interface {
 	BACnetConstructedData
 	// GetRestartNotificationRecipients returns RestartNotificationRecipients (property field)
 	GetRestartNotificationRecipients() []BACnetRecipient
+	// IsBACnetConstructedDataRestartNotificationRecipients is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRestartNotificationRecipients()
 }
 
 // _BACnetConstructedDataRestartNotificationRecipients is the data-structure of this message

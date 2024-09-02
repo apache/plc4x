@@ -39,6 +39,8 @@ type BACnetServiceAckReadPropertyConditional interface {
 	BACnetServiceAck
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
+	// IsBACnetServiceAckReadPropertyConditional is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckReadPropertyConditional()
 }
 
 // _BACnetServiceAckReadPropertyConditional is the data-structure of this message

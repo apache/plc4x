@@ -35,6 +35,8 @@ type EipListIdentityRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
+	// IsEipListIdentityRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEipListIdentityRequest()
 }
 
 // _EipListIdentityRequest is the data-structure of this message

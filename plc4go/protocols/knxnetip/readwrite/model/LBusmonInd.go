@@ -45,6 +45,8 @@ type LBusmonInd interface {
 	GetDataFrame() LDataFrame
 	// GetCrc returns Crc (property field)
 	GetCrc() *uint8
+	// IsLBusmonInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLBusmonInd()
 }
 
 // _LBusmonInd is the data-structure of this message

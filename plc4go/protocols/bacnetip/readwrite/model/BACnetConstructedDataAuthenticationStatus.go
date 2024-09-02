@@ -41,6 +41,8 @@ type BACnetConstructedDataAuthenticationStatus interface {
 	GetAuthenticationStatus() BACnetAuthenticationStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAuthenticationStatusTagged
+	// IsBACnetConstructedDataAuthenticationStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAuthenticationStatus()
 }
 
 // _BACnetConstructedDataAuthenticationStatus is the data-structure of this message

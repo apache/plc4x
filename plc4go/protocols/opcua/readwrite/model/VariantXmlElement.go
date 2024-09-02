@@ -41,6 +41,8 @@ type VariantXmlElement interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []PascalString
+	// IsVariantXmlElement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantXmlElement()
 }
 
 // _VariantXmlElement is the data-structure of this message

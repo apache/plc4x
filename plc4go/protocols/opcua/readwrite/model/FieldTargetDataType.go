@@ -51,6 +51,8 @@ type FieldTargetDataType interface {
 	GetOverrideValueHandling() OverrideValueHandling
 	// GetOverrideValue returns OverrideValue (property field)
 	GetOverrideValue() Variant
+	// IsFieldTargetDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFieldTargetDataType()
 }
 
 // _FieldTargetDataType is the data-structure of this message

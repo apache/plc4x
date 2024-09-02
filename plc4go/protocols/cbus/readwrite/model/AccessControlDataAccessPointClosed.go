@@ -35,6 +35,8 @@ type AccessControlDataAccessPointClosed interface {
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
+	// IsAccessControlDataAccessPointClosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlDataAccessPointClosed()
 }
 
 // _AccessControlDataAccessPointClosed is the data-structure of this message

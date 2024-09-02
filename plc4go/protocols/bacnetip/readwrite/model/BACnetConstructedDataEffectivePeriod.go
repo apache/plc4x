@@ -41,6 +41,8 @@ type BACnetConstructedDataEffectivePeriod interface {
 	GetDateRange() BACnetDateRange
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateRange
+	// IsBACnetConstructedDataEffectivePeriod is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEffectivePeriod()
 }
 
 // _BACnetConstructedDataEffectivePeriod is the data-structure of this message

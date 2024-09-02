@@ -41,6 +41,8 @@ type BACnetConstructedDataReliability interface {
 	GetReliability() BACnetReliabilityTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetReliabilityTagged
+	// IsBACnetConstructedDataReliability is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataReliability()
 }
 
 // _BACnetConstructedDataReliability is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetContextTagOctetString interface {
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadOctetString
+	// IsBACnetContextTagOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagOctetString()
 }
 
 // _BACnetContextTagOctetString is the data-structure of this message

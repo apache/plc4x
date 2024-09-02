@@ -41,6 +41,8 @@ type BACnetConstructedDataBufferSize interface {
 	GetBufferSize() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataBufferSize is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBufferSize()
 }
 
 // _BACnetConstructedDataBufferSize is the data-structure of this message

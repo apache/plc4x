@@ -41,6 +41,8 @@ type BACnetConstructedDataAccompanimentTime interface {
 	GetAccompanimentTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataAccompanimentTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccompanimentTime()
 }
 
 // _BACnetConstructedDataAccompanimentTime is the data-structure of this message

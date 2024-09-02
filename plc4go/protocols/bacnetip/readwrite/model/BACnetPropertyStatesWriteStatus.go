@@ -39,6 +39,8 @@ type BACnetPropertyStatesWriteStatus interface {
 	BACnetPropertyStates
 	// GetWriteStatus returns WriteStatus (property field)
 	GetWriteStatus() BACnetWriteStatusTagged
+	// IsBACnetPropertyStatesWriteStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesWriteStatus()
 }
 
 // _BACnetPropertyStatesWriteStatus is the data-structure of this message

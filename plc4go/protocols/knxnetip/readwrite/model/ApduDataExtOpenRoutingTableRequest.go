@@ -35,6 +35,8 @@ type ApduDataExtOpenRoutingTableRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtOpenRoutingTableRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtOpenRoutingTableRequest()
 }
 
 // _ApduDataExtOpenRoutingTableRequest is the data-structure of this message

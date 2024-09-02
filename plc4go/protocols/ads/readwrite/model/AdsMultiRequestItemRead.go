@@ -43,6 +43,8 @@ type AdsMultiRequestItemRead interface {
 	GetItemIndexOffset() uint32
 	// GetItemReadLength returns ItemReadLength (property field)
 	GetItemReadLength() uint32
+	// IsAdsMultiRequestItemRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsMultiRequestItemRead()
 }
 
 // _AdsMultiRequestItemRead is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetConstructedDataMembers interface {
 	BACnetConstructedData
 	// GetMembers returns Members (property field)
 	GetMembers() []BACnetDeviceObjectReference
+	// IsBACnetConstructedDataMembers is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMembers()
 }
 
 // _BACnetConstructedDataMembers is the data-structure of this message

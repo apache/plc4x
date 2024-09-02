@@ -49,6 +49,8 @@ type AxisInformation interface {
 	GetNoOfAxisSteps() int32
 	// GetAxisSteps returns AxisSteps (property field)
 	GetAxisSteps() []float64
+	// IsAxisInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAxisInformation()
 }
 
 // _AxisInformation is the data-structure of this message

@@ -51,6 +51,8 @@ type CreateSubscriptionRequest interface {
 	GetPublishingEnabled() bool
 	// GetPriority returns Priority (property field)
 	GetPriority() uint8
+	// IsCreateSubscriptionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCreateSubscriptionRequest()
 }
 
 // _CreateSubscriptionRequest is the data-structure of this message

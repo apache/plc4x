@@ -43,6 +43,8 @@ type BACnetConstructedDataSupportedFormatClasses interface {
 	GetSupportedFormats() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataSupportedFormatClasses is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSupportedFormatClasses()
 }
 
 // _BACnetConstructedDataSupportedFormatClasses is the data-structure of this message

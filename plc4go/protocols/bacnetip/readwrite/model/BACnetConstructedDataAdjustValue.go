@@ -41,6 +41,8 @@ type BACnetConstructedDataAdjustValue interface {
 	GetAdjustValue() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
+	// IsBACnetConstructedDataAdjustValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAdjustValue()
 }
 
 // _BACnetConstructedDataAdjustValue is the data-structure of this message

@@ -35,6 +35,8 @@ type MeteringDataMeasureGas interface {
 	utils.LengthAware
 	utils.Serializable
 	MeteringData
+	// IsMeteringDataMeasureGas is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataMeasureGas()
 }
 
 // _MeteringDataMeasureGas is the data-structure of this message

@@ -43,6 +43,8 @@ type CBusPointToPointCommandIndirect interface {
 	GetNetworkRoute() NetworkRoute
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
+	// IsCBusPointToPointCommandIndirect is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToPointCommandIndirect()
 }
 
 // _CBusPointToPointCommandIndirect is the data-structure of this message

@@ -53,6 +53,8 @@ type QuantityDimension interface {
 	GetAbsoluteTemperatureExponent() int8
 	// GetDimensionlessExponent returns DimensionlessExponent (property field)
 	GetDimensionlessExponent() int8
+	// IsQuantityDimension is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsQuantityDimension()
 }
 
 // _QuantityDimension is the data-structure of this message

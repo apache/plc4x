@@ -40,6 +40,8 @@ type BACnetLightingInProgressTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetLightingInProgress
+	// IsBACnetLightingInProgressTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLightingInProgressTagged()
 }
 
 // _BACnetLightingInProgressTagged is the data-structure of this message

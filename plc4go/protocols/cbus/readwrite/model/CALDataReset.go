@@ -35,6 +35,8 @@ type CALDataReset interface {
 	utils.LengthAware
 	utils.Serializable
 	CALData
+	// IsCALDataReset is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataReset()
 }
 
 // _CALDataReset is the data-structure of this message

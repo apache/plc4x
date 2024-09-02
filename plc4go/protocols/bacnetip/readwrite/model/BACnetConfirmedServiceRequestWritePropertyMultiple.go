@@ -39,6 +39,8 @@ type BACnetConfirmedServiceRequestWritePropertyMultiple interface {
 	BACnetConfirmedServiceRequest
 	// GetData returns Data (property field)
 	GetData() []BACnetWriteAccessSpecification
+	// IsBACnetConfirmedServiceRequestWritePropertyMultiple is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestWritePropertyMultiple()
 }
 
 // _BACnetConfirmedServiceRequestWritePropertyMultiple is the data-structure of this message

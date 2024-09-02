@@ -35,6 +35,8 @@ type BACnetConstructedDataMultiStateOutputAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataMultiStateOutputAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMultiStateOutputAll()
 }
 
 // _BACnetConstructedDataMultiStateOutputAll is the data-structure of this message

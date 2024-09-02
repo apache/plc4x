@@ -39,6 +39,8 @@ type SALDataTelephonyStatusAndControl interface {
 	SALData
 	// GetTelephonyData returns TelephonyData (property field)
 	GetTelephonyData() TelephonyData
+	// IsSALDataTelephonyStatusAndControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataTelephonyStatusAndControl()
 }
 
 // _SALDataTelephonyStatusAndControl is the data-structure of this message

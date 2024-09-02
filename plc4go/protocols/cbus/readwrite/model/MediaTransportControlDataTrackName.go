@@ -39,6 +39,8 @@ type MediaTransportControlDataTrackName interface {
 	MediaTransportControlData
 	// GetTrackName returns TrackName (property field)
 	GetTrackName() string
+	// IsMediaTransportControlDataTrackName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataTrackName()
 }
 
 // _MediaTransportControlDataTrackName is the data-structure of this message

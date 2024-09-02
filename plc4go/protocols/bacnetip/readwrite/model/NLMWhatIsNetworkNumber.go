@@ -35,6 +35,8 @@ type NLMWhatIsNetworkNumber interface {
 	utils.LengthAware
 	utils.Serializable
 	NLM
+	// IsNLMWhatIsNetworkNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMWhatIsNetworkNumber()
 }
 
 // _NLMWhatIsNetworkNumber is the data-structure of this message

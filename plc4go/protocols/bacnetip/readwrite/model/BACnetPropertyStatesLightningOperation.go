@@ -39,6 +39,8 @@ type BACnetPropertyStatesLightningOperation interface {
 	BACnetPropertyStates
 	// GetLightningOperation returns LightningOperation (property field)
 	GetLightningOperation() BACnetLightingOperationTagged
+	// IsBACnetPropertyStatesLightningOperation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLightningOperation()
 }
 
 // _BACnetPropertyStatesLightningOperation is the data-structure of this message

@@ -39,6 +39,8 @@ type MonitoredSALReply interface {
 	EncodedReply
 	// GetMonitoredSAL returns MonitoredSAL (property field)
 	GetMonitoredSAL() MonitoredSAL
+	// IsMonitoredSALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredSALReply()
 }
 
 // _MonitoredSALReply is the data-structure of this message

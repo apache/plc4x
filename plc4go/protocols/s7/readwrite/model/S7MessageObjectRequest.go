@@ -47,6 +47,8 @@ type S7MessageObjectRequest interface {
 	GetQueryType() QueryType
 	// GetAlarmType returns AlarmType (property field)
 	GetAlarmType() AlarmType
+	// IsS7MessageObjectRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7MessageObjectRequest()
 }
 
 // _S7MessageObjectRequest is the data-structure of this message

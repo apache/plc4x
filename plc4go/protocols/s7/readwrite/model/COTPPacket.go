@@ -38,6 +38,8 @@ type COTPPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCOTPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacket()
 }
 
 // COTPPacketContract provides a set of functions which can be overwritten by a sub struct
@@ -48,7 +50,7 @@ type COTPPacketContract interface {
 	GetPayload() S7Message
 	// GetCotpLen() returns a parser argument
 	GetCotpLen() uint16
-	// IsCOTPPacket() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCOTPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacket()
 }
 

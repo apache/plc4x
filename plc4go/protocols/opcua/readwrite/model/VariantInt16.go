@@ -41,6 +41,8 @@ type VariantInt16 interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []int16
+	// IsVariantInt16 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantInt16()
 }
 
 // _VariantInt16 is the data-structure of this message

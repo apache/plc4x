@@ -39,6 +39,8 @@ type BACnetConstructedDataVirtualMACAddressTable interface {
 	BACnetConstructedData
 	// GetVirtualMacAddressTable returns VirtualMacAddressTable (property field)
 	GetVirtualMacAddressTable() []BACnetVMACEntry
+	// IsBACnetConstructedDataVirtualMACAddressTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataVirtualMACAddressTable()
 }
 
 // _BACnetConstructedDataVirtualMACAddressTable is the data-structure of this message

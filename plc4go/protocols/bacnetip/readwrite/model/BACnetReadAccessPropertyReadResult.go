@@ -44,6 +44,8 @@ type BACnetReadAccessPropertyReadResult interface {
 	GetPropertyAccessError() ErrorEnclosed
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
+	// IsBACnetReadAccessPropertyReadResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetReadAccessPropertyReadResult()
 }
 
 // _BACnetReadAccessPropertyReadResult is the data-structure of this message

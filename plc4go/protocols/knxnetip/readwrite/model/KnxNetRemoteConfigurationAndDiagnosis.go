@@ -39,6 +39,8 @@ type KnxNetRemoteConfigurationAndDiagnosis interface {
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
+	// IsKnxNetRemoteConfigurationAndDiagnosis is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxNetRemoteConfigurationAndDiagnosis()
 }
 
 // _KnxNetRemoteConfigurationAndDiagnosis is the data-structure of this message

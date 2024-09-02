@@ -41,6 +41,8 @@ type BACnetApplicationTagBoolean interface {
 	GetPayload() BACnetTagPayloadBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() bool
+	// IsBACnetApplicationTagBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTagBoolean()
 }
 
 // _BACnetApplicationTagBoolean is the data-structure of this message

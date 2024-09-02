@@ -35,6 +35,8 @@ type SecurityDataLineCutAlarmCleared interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataLineCutAlarmCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataLineCutAlarmCleared()
 }
 
 // _SecurityDataLineCutAlarmCleared is the data-structure of this message

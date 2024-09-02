@@ -41,6 +41,8 @@ type BACnetConstructedDataCharacterStringValueRelinquishDefault interface {
 	GetRelinquishDefault() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataCharacterStringValueRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCharacterStringValueRelinquishDefault()
 }
 
 // _BACnetConstructedDataCharacterStringValueRelinquishDefault is the data-structure of this message

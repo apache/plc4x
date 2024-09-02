@@ -43,6 +43,8 @@ type AdsReadStateResponse interface {
 	GetAdsState() uint16
 	// GetDeviceState returns DeviceState (property field)
 	GetDeviceState() uint16
+	// IsAdsReadStateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsReadStateResponse()
 }
 
 // _AdsReadStateResponse is the data-structure of this message

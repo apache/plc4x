@@ -41,6 +41,8 @@ type BACnetConstructedDataProportionalConstant interface {
 	GetProportionalConstant() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataProportionalConstant is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProportionalConstant()
 }
 
 // _BACnetConstructedDataProportionalConstant is the data-structure of this message

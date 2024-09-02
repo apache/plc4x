@@ -41,6 +41,8 @@ type BACnetConstructedDataWindowSamples interface {
 	GetWindowSamples() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataWindowSamples is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataWindowSamples()
 }
 
 // _BACnetConstructedDataWindowSamples is the data-structure of this message

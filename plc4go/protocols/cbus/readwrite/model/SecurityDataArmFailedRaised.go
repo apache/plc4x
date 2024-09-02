@@ -35,6 +35,8 @@ type SecurityDataArmFailedRaised interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataArmFailedRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataArmFailedRaised()
 }
 
 // _SecurityDataArmFailedRaised is the data-structure of this message

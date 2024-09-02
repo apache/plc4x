@@ -55,6 +55,8 @@ type PubSubGroupDataType interface {
 	GetNoOfGroupProperties() int32
 	// GetGroupProperties returns GroupProperties (property field)
 	GetGroupProperties() []ExtensionObjectDefinition
+	// IsPubSubGroupDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPubSubGroupDataType()
 }
 
 // _PubSubGroupDataType is the data-structure of this message

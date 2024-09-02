@@ -47,6 +47,8 @@ type ApduDataExtPropertyValueResponse interface {
 	GetIndex() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsApduDataExtPropertyValueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtPropertyValueResponse()
 }
 
 // _ApduDataExtPropertyValueResponse is the data-structure of this message

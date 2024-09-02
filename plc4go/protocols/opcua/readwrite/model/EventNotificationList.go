@@ -41,6 +41,8 @@ type EventNotificationList interface {
 	GetNoOfEvents() int32
 	// GetEvents returns Events (property field)
 	GetEvents() []ExtensionObjectDefinition
+	// IsEventNotificationList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEventNotificationList()
 }
 
 // _EventNotificationList is the data-structure of this message

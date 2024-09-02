@@ -35,6 +35,8 @@ type BACnetConstructedDataBinaryOutputAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataBinaryOutputAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBinaryOutputAll()
 }
 
 // _BACnetConstructedDataBinaryOutputAll is the data-structure of this message

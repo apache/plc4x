@@ -40,6 +40,8 @@ type BACnetAccessRuleTimeRangeSpecifierTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAccessRuleTimeRangeSpecifier
+	// IsBACnetAccessRuleTimeRangeSpecifierTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccessRuleTimeRangeSpecifierTagged()
 }
 
 // _BACnetAccessRuleTimeRangeSpecifierTagged is the data-structure of this message

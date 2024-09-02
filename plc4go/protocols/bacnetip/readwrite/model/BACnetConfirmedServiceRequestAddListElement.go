@@ -45,6 +45,8 @@ type BACnetConfirmedServiceRequestAddListElement interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 	// GetListOfElements returns ListOfElements (property field)
 	GetListOfElements() BACnetConstructedData
+	// IsBACnetConfirmedServiceRequestAddListElement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAddListElement()
 }
 
 // _BACnetConfirmedServiceRequestAddListElement is the data-structure of this message

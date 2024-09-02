@@ -39,6 +39,8 @@ type SALDataEnableControl interface {
 	SALData
 	// GetEnableControlData returns EnableControlData (property field)
 	GetEnableControlData() EnableControlData
+	// IsSALDataEnableControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataEnableControl()
 }
 
 // _SALDataEnableControl is the data-structure of this message

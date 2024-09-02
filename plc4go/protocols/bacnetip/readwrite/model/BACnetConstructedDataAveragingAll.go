@@ -35,6 +35,8 @@ type BACnetConstructedDataAveragingAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataAveragingAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAveragingAll()
 }
 
 // _BACnetConstructedDataAveragingAll is the data-structure of this message

@@ -43,6 +43,8 @@ type BACnetContextTagBoolean interface {
 	GetPayload() BACnetTagPayloadBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() bool
+	// IsBACnetContextTagBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagBoolean()
 }
 
 // _BACnetContextTagBoolean is the data-structure of this message

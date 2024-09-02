@@ -41,6 +41,8 @@ type BACnetConstructedDataSystemStatus interface {
 	GetSystemStatus() BACnetDeviceStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceStatusTagged
+	// IsBACnetConstructedDataSystemStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSystemStatus()
 }
 
 // _BACnetConstructedDataSystemStatus is the data-structure of this message

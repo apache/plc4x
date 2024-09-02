@@ -39,6 +39,8 @@ type BACnetShedLevelPercent interface {
 	BACnetShedLevel
 	// GetPercent returns Percent (property field)
 	GetPercent() BACnetContextTagUnsignedInteger
+	// IsBACnetShedLevelPercent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetShedLevelPercent()
 }
 
 // _BACnetShedLevelPercent is the data-structure of this message

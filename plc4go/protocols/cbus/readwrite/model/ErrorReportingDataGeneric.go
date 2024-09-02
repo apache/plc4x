@@ -59,6 +59,8 @@ type ErrorReportingDataGeneric interface {
 	GetIsMostRecentError() bool
 	// GetIsMostRecentAndMostSevere returns IsMostRecentAndMostSevere (virtual field)
 	GetIsMostRecentAndMostSevere() bool
+	// IsErrorReportingDataGeneric is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorReportingDataGeneric()
 }
 
 // _ErrorReportingDataGeneric is the data-structure of this message

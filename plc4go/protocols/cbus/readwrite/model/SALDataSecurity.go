@@ -39,6 +39,8 @@ type SALDataSecurity interface {
 	SALData
 	// GetSecurityData returns SecurityData (property field)
 	GetSecurityData() SecurityData
+	// IsSALDataSecurity is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataSecurity()
 }
 
 // _SALDataSecurity is the data-structure of this message

@@ -45,6 +45,8 @@ type PubSubConfigurationRefDataType interface {
 	GetConnectionIndex() uint16
 	// GetGroupIndex returns GroupIndex (property field)
 	GetGroupIndex() uint16
+	// IsPubSubConfigurationRefDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPubSubConfigurationRefDataType()
 }
 
 // _PubSubConfigurationRefDataType is the data-structure of this message

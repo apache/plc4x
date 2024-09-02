@@ -38,6 +38,8 @@ type BACnetPriorityValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetPriorityValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValue()
 }
 
 // BACnetPriorityValueContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type BACnetPriorityValueContract interface {
 	GetPeekedIsContextTag() bool
 	// GetObjectTypeArgument() returns a parser argument
 	GetObjectTypeArgument() BACnetObjectType
-	// IsBACnetPriorityValue() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetPriorityValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValue()
 }
 

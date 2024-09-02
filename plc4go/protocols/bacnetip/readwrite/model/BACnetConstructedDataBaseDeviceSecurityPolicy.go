@@ -41,6 +41,8 @@ type BACnetConstructedDataBaseDeviceSecurityPolicy interface {
 	GetBaseDeviceSecurityPolicy() BACnetSecurityLevelTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSecurityLevelTagged
+	// IsBACnetConstructedDataBaseDeviceSecurityPolicy is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBaseDeviceSecurityPolicy()
 }
 
 // _BACnetConstructedDataBaseDeviceSecurityPolicy is the data-structure of this message

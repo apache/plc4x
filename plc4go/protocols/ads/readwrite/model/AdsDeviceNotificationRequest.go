@@ -43,6 +43,8 @@ type AdsDeviceNotificationRequest interface {
 	GetStamps() uint32
 	// GetAdsStampHeaders returns AdsStampHeaders (property field)
 	GetAdsStampHeaders() []AdsStampHeader
+	// IsAdsDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDeviceNotificationRequest()
 }
 
 // _AdsDeviceNotificationRequest is the data-structure of this message

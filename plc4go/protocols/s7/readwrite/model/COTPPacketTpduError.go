@@ -41,6 +41,8 @@ type COTPPacketTpduError interface {
 	GetDestinationReference() uint16
 	// GetRejectCause returns RejectCause (property field)
 	GetRejectCause() uint8
+	// IsCOTPPacketTpduError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacketTpduError()
 }
 
 // _COTPPacketTpduError is the data-structure of this message

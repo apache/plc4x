@@ -39,6 +39,8 @@ type ParameterValueRaw interface {
 	ParameterValue
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsParameterValueRaw is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueRaw()
 }
 
 // _ParameterValueRaw is the data-structure of this message

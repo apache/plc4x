@@ -63,6 +63,8 @@ type APDUConfirmedRequest interface {
 	GetApduHeaderReduction() uint16
 	// GetSegmentReduction returns SegmentReduction (virtual field)
 	GetSegmentReduction() uint16
+	// IsAPDUConfirmedRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUConfirmedRequest()
 }
 
 // _APDUConfirmedRequest is the data-structure of this message

@@ -41,6 +41,8 @@ type ChangeListAddError interface {
 	GetErrorType() ErrorEnclosed
 	// GetFirstFailedElementNumber returns FirstFailedElementNumber (property field)
 	GetFirstFailedElementNumber() BACnetContextTagUnsignedInteger
+	// IsChangeListAddError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsChangeListAddError()
 }
 
 // _ChangeListAddError is the data-structure of this message

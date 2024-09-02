@@ -41,6 +41,8 @@ type BACnetConstructedDataLastStateChange interface {
 	GetLastStateChange() BACnetTimerTransitionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimerTransitionTagged
+	// IsBACnetConstructedDataLastStateChange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastStateChange()
 }
 
 // _BACnetConstructedDataLastStateChange is the data-structure of this message

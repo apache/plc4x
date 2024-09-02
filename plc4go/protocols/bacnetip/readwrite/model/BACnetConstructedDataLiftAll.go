@@ -35,6 +35,8 @@ type BACnetConstructedDataLiftAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataLiftAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLiftAll()
 }
 
 // _BACnetConstructedDataLiftAll is the data-structure of this message

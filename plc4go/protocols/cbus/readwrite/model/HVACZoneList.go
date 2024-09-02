@@ -54,6 +54,8 @@ type HVACZoneList interface {
 	GetZone0() bool
 	// GetUnswitchedZone returns UnswitchedZone (virtual field)
 	GetUnswitchedZone() bool
+	// IsHVACZoneList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACZoneList()
 }
 
 // _HVACZoneList is the data-structure of this message

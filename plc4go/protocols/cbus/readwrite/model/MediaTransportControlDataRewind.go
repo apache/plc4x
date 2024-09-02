@@ -55,6 +55,8 @@ type MediaTransportControlDataRewind interface {
 	GetIs64x() bool
 	// GetIsReserved returns IsReserved (virtual field)
 	GetIsReserved() bool
+	// IsMediaTransportControlDataRewind is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataRewind()
 }
 
 // _MediaTransportControlDataRewind is the data-structure of this message

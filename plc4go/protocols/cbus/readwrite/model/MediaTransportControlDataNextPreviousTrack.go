@@ -43,6 +43,8 @@ type MediaTransportControlDataNextPreviousTrack interface {
 	GetIsSetThePreviousTrack() bool
 	// GetIsSetTheNextTrack returns IsSetTheNextTrack (virtual field)
 	GetIsSetTheNextTrack() bool
+	// IsMediaTransportControlDataNextPreviousTrack is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataNextPreviousTrack()
 }
 
 // _MediaTransportControlDataNextPreviousTrack is the data-structure of this message

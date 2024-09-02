@@ -41,6 +41,8 @@ type BACnetConstructedDataStatusFlags interface {
 	GetStatusFlags() BACnetStatusFlagsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetStatusFlagsTagged
+	// IsBACnetConstructedDataStatusFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataStatusFlags()
 }
 
 // _BACnetConstructedDataStatusFlags is the data-structure of this message

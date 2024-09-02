@@ -39,6 +39,8 @@ type S7PayloadWriteVarRequest interface {
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7VarPayloadDataItem
+	// IsS7PayloadWriteVarRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadWriteVarRequest()
 }
 
 // _S7PayloadWriteVarRequest is the data-structure of this message

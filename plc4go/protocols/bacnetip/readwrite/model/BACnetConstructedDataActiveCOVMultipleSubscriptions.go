@@ -39,6 +39,8 @@ type BACnetConstructedDataActiveCOVMultipleSubscriptions interface {
 	BACnetConstructedData
 	// GetActiveCOVMultipleSubscriptions returns ActiveCOVMultipleSubscriptions (property field)
 	GetActiveCOVMultipleSubscriptions() []BACnetCOVMultipleSubscription
+	// IsBACnetConstructedDataActiveCOVMultipleSubscriptions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataActiveCOVMultipleSubscriptions()
 }
 
 // _BACnetConstructedDataActiveCOVMultipleSubscriptions is the data-structure of this message

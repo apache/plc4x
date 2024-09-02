@@ -41,6 +41,8 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckResponse interface {
 	GetFunctionId() uint8
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []uint8
+	// IsS7PayloadUserDataItemCpuFunctionAlarmAckResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionAlarmAckResponse()
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmAckResponse is the data-structure of this message

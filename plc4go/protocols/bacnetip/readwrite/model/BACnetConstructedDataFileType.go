@@ -41,6 +41,8 @@ type BACnetConstructedDataFileType interface {
 	GetFileType() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataFileType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFileType()
 }
 
 // _BACnetConstructedDataFileType is the data-structure of this message

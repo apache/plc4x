@@ -49,6 +49,8 @@ type MediaTransportControlDataEnumerateCategoriesSelectionTracks interface {
 	GetIsListTracks() bool
 	// GetIsReserved returns IsReserved (virtual field)
 	GetIsReserved() bool
+	// IsMediaTransportControlDataEnumerateCategoriesSelectionTracks is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataEnumerateCategoriesSelectionTracks()
 }
 
 // _MediaTransportControlDataEnumerateCategoriesSelectionTracks is the data-structure of this message

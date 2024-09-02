@@ -45,6 +45,8 @@ type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
 	GetRequest() BACnetLifeSafetyOperationTagged
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
+	// IsBACnetConfirmedServiceRequestLifeSafetyOperation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestLifeSafetyOperation()
 }
 
 // _BACnetConfirmedServiceRequestLifeSafetyOperation is the data-structure of this message

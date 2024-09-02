@@ -43,6 +43,8 @@ type BACnetConstructedDataGlobalGroupPresentValue interface {
 	GetPresentValue() []BACnetPropertyAccessResult
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataGlobalGroupPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataGlobalGroupPresentValue()
 }
 
 // _BACnetConstructedDataGlobalGroupPresentValue is the data-structure of this message

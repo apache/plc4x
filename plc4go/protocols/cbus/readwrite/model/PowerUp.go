@@ -40,6 +40,8 @@ type PowerUp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsPowerUp is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPowerUp()
 }
 
 // _PowerUp is the data-structure of this message

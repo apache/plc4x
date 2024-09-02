@@ -39,6 +39,8 @@ type BACnetPriorityValueBoolean interface {
 	BACnetPriorityValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
+	// IsBACnetPriorityValueBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueBoolean()
 }
 
 // _BACnetPriorityValueBoolean is the data-structure of this message

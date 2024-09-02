@@ -39,6 +39,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean interface 
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean()
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean is the data-structure of this message

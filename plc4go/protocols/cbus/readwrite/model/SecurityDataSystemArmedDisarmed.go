@@ -39,6 +39,8 @@ type SecurityDataSystemArmedDisarmed interface {
 	SecurityData
 	// GetArmCodeType returns ArmCodeType (property field)
 	GetArmCodeType() SecurityArmCode
+	// IsSecurityDataSystemArmedDisarmed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataSystemArmedDisarmed()
 }
 
 // _SecurityDataSystemArmedDisarmed is the data-structure of this message

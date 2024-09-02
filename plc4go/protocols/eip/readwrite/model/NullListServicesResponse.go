@@ -35,6 +35,8 @@ type NullListServicesResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
+	// IsNullListServicesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNullListServicesResponse()
 }
 
 // _NullListServicesResponse is the data-structure of this message

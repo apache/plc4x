@@ -44,6 +44,8 @@ type BACnetPropertyIdentifierTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetPropertyIdentifierTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyIdentifierTagged()
 }
 
 // _BACnetPropertyIdentifierTagged is the data-structure of this message

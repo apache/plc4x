@@ -35,6 +35,8 @@ type ApduDataRestart interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduData
+	// IsApduDataRestart is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataRestart()
 }
 
 // _ApduDataRestart is the data-structure of this message

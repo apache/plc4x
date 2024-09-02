@@ -47,6 +47,8 @@ type S7ParameterModeTransition interface {
 	GetCurrentMode() uint8
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
+	// IsS7ParameterModeTransition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterModeTransition()
 }
 
 // _S7ParameterModeTransition is the data-structure of this message

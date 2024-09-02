@@ -45,6 +45,8 @@ type CurrencyUnitType interface {
 	GetAlphabeticCode() PascalString
 	// GetCurrency returns Currency (property field)
 	GetCurrency() LocalizedText
+	// IsCurrencyUnitType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCurrencyUnitType()
 }
 
 // _CurrencyUnitType is the data-structure of this message

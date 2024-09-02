@@ -35,6 +35,8 @@ type SysexCommandStringData interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
+	// IsSysexCommandStringData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandStringData()
 }
 
 // _SysexCommandStringData is the data-structure of this message

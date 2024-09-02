@@ -50,6 +50,8 @@ type AlarmMessageObjectAckType interface {
 	GetAckStateGoing() State
 	// GetAckStateComing returns AckStateComing (property field)
 	GetAckStateComing() State
+	// IsAlarmMessageObjectAckType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarmMessageObjectAckType()
 }
 
 // _AlarmMessageObjectAckType is the data-structure of this message

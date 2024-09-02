@@ -39,6 +39,8 @@ type BACnetPropertyStatesEscalatorFault interface {
 	BACnetPropertyStates
 	// GetEscalatorFault returns EscalatorFault (property field)
 	GetEscalatorFault() BACnetEscalatorFaultTagged
+	// IsBACnetPropertyStatesEscalatorFault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesEscalatorFault()
 }
 
 // _BACnetPropertyStatesEscalatorFault is the data-structure of this message

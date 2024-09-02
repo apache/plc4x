@@ -39,6 +39,8 @@ type BACnetPropertyStatesShedState interface {
 	BACnetPropertyStates
 	// GetShedState returns ShedState (property field)
 	GetShedState() BACnetShedStateTagged
+	// IsBACnetPropertyStatesShedState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesShedState()
 }
 
 // _BACnetPropertyStatesShedState is the data-structure of this message

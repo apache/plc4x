@@ -47,6 +47,8 @@ type SessionlessInvokeResponseType interface {
 	GetServerUris() []PascalString
 	// GetServiceId returns ServiceId (property field)
 	GetServiceId() uint32
+	// IsSessionlessInvokeResponseType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSessionlessInvokeResponseType()
 }
 
 // _SessionlessInvokeResponseType is the data-structure of this message

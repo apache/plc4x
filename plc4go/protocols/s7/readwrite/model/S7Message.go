@@ -41,6 +41,8 @@ type S7Message interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsS7Message is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7Message()
 }
 
 // S7MessageContract provides a set of functions which can be overwritten by a sub struct
@@ -51,7 +53,7 @@ type S7MessageContract interface {
 	GetParameter() S7Parameter
 	// GetPayload returns Payload (property field)
 	GetPayload() S7Payload
-	// IsS7Message() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsS7Message is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Message()
 }
 

@@ -43,6 +43,8 @@ type BACnetTagPayloadCharacterString interface {
 	GetValue() string
 	// GetActualLengthInBit returns ActualLengthInBit (virtual field)
 	GetActualLengthInBit() uint16
+	// IsBACnetTagPayloadCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadCharacterString()
 }
 
 // _BACnetTagPayloadCharacterString is the data-structure of this message

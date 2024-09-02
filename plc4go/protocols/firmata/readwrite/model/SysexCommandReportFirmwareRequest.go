@@ -35,6 +35,8 @@ type SysexCommandReportFirmwareRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
+	// IsSysexCommandReportFirmwareRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandReportFirmwareRequest()
 }
 
 // _SysexCommandReportFirmwareRequest is the data-structure of this message

@@ -41,6 +41,8 @@ type EphemeralKeyType interface {
 	GetPublicKey() PascalByteString
 	// GetSignature returns Signature (property field)
 	GetSignature() PascalByteString
+	// IsEphemeralKeyType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEphemeralKeyType()
 }
 
 // _EphemeralKeyType is the data-structure of this message

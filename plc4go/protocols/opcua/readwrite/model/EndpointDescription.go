@@ -55,6 +55,8 @@ type EndpointDescription interface {
 	GetTransportProfileUri() PascalString
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() uint8
+	// IsEndpointDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEndpointDescription()
 }
 
 // _EndpointDescription is the data-structure of this message

@@ -52,6 +52,8 @@ type NLMUpdateKeyUpdateControlFlags interface {
 	GetMoreMessagesToBeExpected() bool
 	// GetRemoveAllKeys returns RemoveAllKeys (property field)
 	GetRemoveAllKeys() bool
+	// IsNLMUpdateKeyUpdateControlFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMUpdateKeyUpdateControlFlags()
 }
 
 // _NLMUpdateKeyUpdateControlFlags is the data-structure of this message

@@ -43,6 +43,8 @@ type ContentFilterElement interface {
 	GetNoOfFilterOperands() int32
 	// GetFilterOperands returns FilterOperands (property field)
 	GetFilterOperands() []ExtensionObject
+	// IsContentFilterElement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsContentFilterElement()
 }
 
 // _ContentFilterElement is the data-structure of this message

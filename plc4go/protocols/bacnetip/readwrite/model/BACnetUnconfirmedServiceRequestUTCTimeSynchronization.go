@@ -41,6 +41,8 @@ type BACnetUnconfirmedServiceRequestUTCTimeSynchronization interface {
 	GetSynchronizedDate() BACnetApplicationTagDate
 	// GetSynchronizedTime returns SynchronizedTime (property field)
 	GetSynchronizedTime() BACnetApplicationTagTime
+	// IsBACnetUnconfirmedServiceRequestUTCTimeSynchronization is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequestUTCTimeSynchronization()
 }
 
 // _BACnetUnconfirmedServiceRequestUTCTimeSynchronization is the data-structure of this message

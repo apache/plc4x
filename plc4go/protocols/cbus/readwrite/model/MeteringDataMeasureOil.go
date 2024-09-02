@@ -35,6 +35,8 @@ type MeteringDataMeasureOil interface {
 	utils.LengthAware
 	utils.Serializable
 	MeteringData
+	// IsMeteringDataMeasureOil is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataMeasureOil()
 }
 
 // _MeteringDataMeasureOil is the data-structure of this message

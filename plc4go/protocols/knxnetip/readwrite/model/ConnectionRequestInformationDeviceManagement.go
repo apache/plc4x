@@ -35,6 +35,8 @@ type ConnectionRequestInformationDeviceManagement interface {
 	utils.LengthAware
 	utils.Serializable
 	ConnectionRequestInformation
+	// IsConnectionRequestInformationDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionRequestInformationDeviceManagement()
 }
 
 // _ConnectionRequestInformationDeviceManagement is the data-structure of this message

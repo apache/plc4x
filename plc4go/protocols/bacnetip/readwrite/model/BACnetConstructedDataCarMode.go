@@ -41,6 +41,8 @@ type BACnetConstructedDataCarMode interface {
 	GetCarMode() BACnetLiftCarModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftCarModeTagged
+	// IsBACnetConstructedDataCarMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarMode()
 }
 
 // _BACnetConstructedDataCarMode is the data-structure of this message

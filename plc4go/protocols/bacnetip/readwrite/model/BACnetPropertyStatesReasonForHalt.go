@@ -39,6 +39,8 @@ type BACnetPropertyStatesReasonForHalt interface {
 	BACnetPropertyStates
 	// GetReasonForHalt returns ReasonForHalt (property field)
 	GetReasonForHalt() BACnetProgramErrorTagged
+	// IsBACnetPropertyStatesReasonForHalt is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesReasonForHalt()
 }
 
 // _BACnetPropertyStatesReasonForHalt is the data-structure of this message

@@ -40,6 +40,8 @@ type BACnetVMACEntry interface {
 	GetVirtualMacAddress() BACnetContextTagOctetString
 	// GetNativeMacAddress returns NativeMacAddress (property field)
 	GetNativeMacAddress() BACnetContextTagOctetString
+	// IsBACnetVMACEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetVMACEntry()
 }
 
 // _BACnetVMACEntry is the data-structure of this message

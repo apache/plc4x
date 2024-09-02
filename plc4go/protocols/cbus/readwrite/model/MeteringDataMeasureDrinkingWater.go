@@ -35,6 +35,8 @@ type MeteringDataMeasureDrinkingWater interface {
 	utils.LengthAware
 	utils.Serializable
 	MeteringData
+	// IsMeteringDataMeasureDrinkingWater is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataMeasureDrinkingWater()
 }
 
 // _MeteringDataMeasureDrinkingWater is the data-structure of this message

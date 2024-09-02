@@ -38,6 +38,8 @@ type BACnetCalendarEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCalendarEntry()
 }
 
 // BACnetCalendarEntryContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetCalendarEntryContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetCalendarEntry() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCalendarEntry()
 }
 

@@ -41,6 +41,8 @@ type BACnetConstructedDataBitMask interface {
 	GetBitString() BACnetApplicationTagBitString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBitString
+	// IsBACnetConstructedDataBitMask is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBitMask()
 }
 
 // _BACnetConstructedDataBitMask is the data-structure of this message

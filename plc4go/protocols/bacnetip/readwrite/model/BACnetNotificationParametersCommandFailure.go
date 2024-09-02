@@ -47,6 +47,8 @@ type BACnetNotificationParametersCommandFailure interface {
 	GetFeedbackValue() BACnetConstructedData
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersCommandFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersCommandFailure()
 }
 
 // _BACnetNotificationParametersCommandFailure is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetScaleFloatScale interface {
 	BACnetScale
 	// GetFloatScale returns FloatScale (property field)
 	GetFloatScale() BACnetContextTagReal
+	// IsBACnetScaleFloatScale is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetScaleFloatScale()
 }
 
 // _BACnetScaleFloatScale is the data-structure of this message

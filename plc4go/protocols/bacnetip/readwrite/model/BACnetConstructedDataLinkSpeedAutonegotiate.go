@@ -41,6 +41,8 @@ type BACnetConstructedDataLinkSpeedAutonegotiate interface {
 	GetLinkSpeedAutonegotiate() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataLinkSpeedAutonegotiate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLinkSpeedAutonegotiate()
 }
 
 // _BACnetConstructedDataLinkSpeedAutonegotiate is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueOctetString interface {
 	BACnetTimerStateChangeValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
+	// IsBACnetTimerStateChangeValueOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueOctetString()
 }
 
 // _BACnetTimerStateChangeValueOctetString is the data-structure of this message

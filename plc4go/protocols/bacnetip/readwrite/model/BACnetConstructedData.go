@@ -38,6 +38,8 @@ type BACnetConstructedData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetConstructedData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedData()
 }
 
 // BACnetConstructedDataContract provides a set of functions which can be overwritten by a sub struct
@@ -54,7 +56,7 @@ type BACnetConstructedDataContract interface {
 	GetTagNumber() uint8
 	// GetArrayIndexArgument() returns a parser argument
 	GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger
-	// IsBACnetConstructedData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetConstructedData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedData()
 }
 

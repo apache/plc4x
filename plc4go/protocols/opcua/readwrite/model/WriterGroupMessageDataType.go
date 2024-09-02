@@ -35,6 +35,8 @@ type WriterGroupMessageDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsWriterGroupMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsWriterGroupMessageDataType()
 }
 
 // _WriterGroupMessageDataType is the data-structure of this message

@@ -43,6 +43,8 @@ type BACnetConstructedDataBitStringValueAlarmValues interface {
 	GetAlarmValues() []BACnetApplicationTagBitString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataBitStringValueAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBitStringValueAlarmValues()
 }
 
 // _BACnetConstructedDataBitStringValueAlarmValues is the data-structure of this message

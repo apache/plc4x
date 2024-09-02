@@ -48,6 +48,8 @@ type SecurityArmCode interface {
 	GetIsArmSubtype() bool
 	// GetIsReserved returns IsReserved (virtual field)
 	GetIsReserved() bool
+	// IsSecurityArmCode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityArmCode()
 }
 
 // _SecurityArmCode is the data-structure of this message

@@ -41,6 +41,8 @@ type VariantExtensionObject interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []ExtensionObject
+	// IsVariantExtensionObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantExtensionObject()
 }
 
 // _VariantExtensionObject is the data-structure of this message

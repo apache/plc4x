@@ -41,6 +41,8 @@ type BACnetTagPayloadBoolean interface {
 	GetIsTrue() bool
 	// GetIsFalse returns IsFalse (virtual field)
 	GetIsFalse() bool
+	// IsBACnetTagPayloadBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadBoolean()
 }
 
 // _BACnetTagPayloadBoolean is the data-structure of this message

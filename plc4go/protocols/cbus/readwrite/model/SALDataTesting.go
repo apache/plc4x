@@ -35,6 +35,8 @@ type SALDataTesting interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// IsSALDataTesting is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataTesting()
 }
 
 // _SALDataTesting is the data-structure of this message

@@ -43,6 +43,8 @@ type NetworkGroupDataType interface {
 	GetNoOfNetworkPaths() int32
 	// GetNetworkPaths returns NetworkPaths (property field)
 	GetNetworkPaths() []ExtensionObjectDefinition
+	// IsNetworkGroupDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNetworkGroupDataType()
 }
 
 // _NetworkGroupDataType is the data-structure of this message

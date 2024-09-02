@@ -39,6 +39,8 @@ type BACnetConstructedDataListOfGroupMembers interface {
 	BACnetConstructedData
 	// GetListOfGroupMembers returns ListOfGroupMembers (property field)
 	GetListOfGroupMembers() []BACnetReadAccessSpecification
+	// IsBACnetConstructedDataListOfGroupMembers is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataListOfGroupMembers()
 }
 
 // _BACnetConstructedDataListOfGroupMembers is the data-structure of this message

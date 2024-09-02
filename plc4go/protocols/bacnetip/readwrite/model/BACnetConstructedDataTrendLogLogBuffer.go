@@ -39,6 +39,8 @@ type BACnetConstructedDataTrendLogLogBuffer interface {
 	BACnetConstructedData
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetLogRecord
+	// IsBACnetConstructedDataTrendLogLogBuffer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTrendLogLogBuffer()
 }
 
 // _BACnetConstructedDataTrendLogLogBuffer is the data-structure of this message

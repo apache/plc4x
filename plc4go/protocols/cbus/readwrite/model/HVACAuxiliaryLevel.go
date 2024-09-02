@@ -48,6 +48,8 @@ type HVACAuxiliaryLevel interface {
 	GetIsFanSpeedAtDefaultSpeed() bool
 	// GetSpeedSettings returns SpeedSettings (virtual field)
 	GetSpeedSettings() uint8
+	// IsHVACAuxiliaryLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACAuxiliaryLevel()
 }
 
 // _HVACAuxiliaryLevel is the data-structure of this message

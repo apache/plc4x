@@ -43,6 +43,8 @@ type BACnetConstructedDataPriority interface {
 	GetPriority() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataPriority is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPriority()
 }
 
 // _BACnetConstructedDataPriority is the data-structure of this message

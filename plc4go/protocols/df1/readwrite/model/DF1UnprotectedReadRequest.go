@@ -41,6 +41,8 @@ type DF1UnprotectedReadRequest interface {
 	GetAddress() uint16
 	// GetSize returns Size (property field)
 	GetSize() uint8
+	// IsDF1UnprotectedReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1UnprotectedReadRequest()
 }
 
 // _DF1UnprotectedReadRequest is the data-structure of this message

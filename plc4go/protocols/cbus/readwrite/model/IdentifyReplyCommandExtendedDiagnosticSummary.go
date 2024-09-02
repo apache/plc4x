@@ -77,6 +77,8 @@ type IdentifyReplyCommandExtendedDiagnosticSummary interface {
 	GetMicroPowerReset() bool
 	// GetNetworkVoltageInVolts returns NetworkVoltageInVolts (virtual field)
 	GetNetworkVoltageInVolts() float32
+	// IsIdentifyReplyCommandExtendedDiagnosticSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandExtendedDiagnosticSummary()
 }
 
 // _IdentifyReplyCommandExtendedDiagnosticSummary is the data-structure of this message

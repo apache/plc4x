@@ -44,6 +44,8 @@ type StatusByte interface {
 	GetGav1() GAVState
 	// GetGav0 returns Gav0 (property field)
 	GetGav0() GAVState
+	// IsStatusByte is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusByte()
 }
 
 // _StatusByte is the data-structure of this message

@@ -38,6 +38,8 @@ type CALData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCALData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALData()
 }
 
 // CALDataContract provides a set of functions which can be overwritten by a sub struct
@@ -52,7 +54,7 @@ type CALDataContract interface {
 	GetSendIdentifyRequestBefore() bool
 	// GetRequestContext() returns a parser argument
 	GetRequestContext() RequestContext
-	// IsCALData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCALData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALData()
 }
 

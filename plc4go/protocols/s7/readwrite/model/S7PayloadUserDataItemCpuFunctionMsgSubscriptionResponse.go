@@ -35,6 +35,8 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
+	// IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse()
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse is the data-structure of this message

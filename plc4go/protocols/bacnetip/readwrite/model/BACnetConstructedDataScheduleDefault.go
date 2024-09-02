@@ -41,6 +41,8 @@ type BACnetConstructedDataScheduleDefault interface {
 	GetScheduleDefault() BACnetConstructedDataElement
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetConstructedDataElement
+	// IsBACnetConstructedDataScheduleDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataScheduleDefault()
 }
 
 // _BACnetConstructedDataScheduleDefault is the data-structure of this message

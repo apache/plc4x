@@ -60,6 +60,8 @@ type DataValue interface {
 	GetServerTimestamp() *int64
 	// GetServerPicoseconds returns ServerPicoseconds (property field)
 	GetServerPicoseconds() *uint16
+	// IsDataValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataValue()
 }
 
 // _DataValue is the data-structure of this message

@@ -49,6 +49,8 @@ type GetEndpointsRequest interface {
 	GetNoOfProfileUris() int32
 	// GetProfileUris returns ProfileUris (property field)
 	GetProfileUris() []PascalString
+	// IsGetEndpointsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGetEndpointsRequest()
 }
 
 // _GetEndpointsRequest is the data-structure of this message

@@ -49,6 +49,8 @@ type FindServersRequest interface {
 	GetNoOfServerUris() int32
 	// GetServerUris returns ServerUris (property field)
 	GetServerUris() []PascalString
+	// IsFindServersRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFindServersRequest()
 }
 
 // _FindServersRequest is the data-structure of this message

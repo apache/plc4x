@@ -39,6 +39,8 @@ type NLMReserved interface {
 	NLM
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
+	// IsNLMReserved is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMReserved()
 }
 
 // _NLMReserved is the data-structure of this message

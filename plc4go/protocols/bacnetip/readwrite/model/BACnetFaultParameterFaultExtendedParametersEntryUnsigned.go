@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryUnsigned interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetFaultParameterFaultExtendedParametersEntryUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryUnsigned()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryUnsigned is the data-structure of this message

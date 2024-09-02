@@ -42,6 +42,8 @@ type NLMUpdateKeyUpdateKeyEntry interface {
 	GetKeySize() uint8
 	// GetKey returns Key (property field)
 	GetKey() []byte
+	// IsNLMUpdateKeyUpdateKeyEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMUpdateKeyUpdateKeyEntry()
 }
 
 // _NLMUpdateKeyUpdateKeyEntry is the data-structure of this message

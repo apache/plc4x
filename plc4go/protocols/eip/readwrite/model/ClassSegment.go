@@ -44,6 +44,8 @@ type ClassSegment interface {
 	GetLogicalSegmentFormat() uint8
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() uint8
+	// IsClassSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsClassSegment()
 }
 
 // _ClassSegment is the data-structure of this message

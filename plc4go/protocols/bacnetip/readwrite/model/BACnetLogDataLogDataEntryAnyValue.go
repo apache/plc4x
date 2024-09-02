@@ -39,6 +39,8 @@ type BACnetLogDataLogDataEntryAnyValue interface {
 	BACnetLogDataLogDataEntry
 	// GetAnyValue returns AnyValue (property field)
 	GetAnyValue() BACnetConstructedData
+	// IsBACnetLogDataLogDataEntryAnyValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogDataEntryAnyValue()
 }
 
 // _BACnetLogDataLogDataEntryAnyValue is the data-structure of this message

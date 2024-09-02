@@ -42,6 +42,8 @@ type BACnetPropertyStatesEnclosed interface {
 	GetPropertyState() BACnetPropertyStates
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetPropertyStatesEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesEnclosed()
 }
 
 // _BACnetPropertyStatesEnclosed is the data-structure of this message

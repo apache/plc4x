@@ -35,6 +35,8 @@ type ApduDataAdcResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduData
+	// IsApduDataAdcResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataAdcResponse()
 }
 
 // _ApduDataAdcResponse is the data-structure of this message

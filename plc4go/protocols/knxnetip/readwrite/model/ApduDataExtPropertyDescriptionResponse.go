@@ -53,6 +53,8 @@ type ApduDataExtPropertyDescriptionResponse interface {
 	GetReadLevel() AccessLevel
 	// GetWriteLevel returns WriteLevel (property field)
 	GetWriteLevel() AccessLevel
+	// IsApduDataExtPropertyDescriptionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtPropertyDescriptionResponse()
 }
 
 // _ApduDataExtPropertyDescriptionResponse is the data-structure of this message

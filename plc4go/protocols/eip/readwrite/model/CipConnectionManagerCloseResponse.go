@@ -49,6 +49,8 @@ type CipConnectionManagerCloseResponse interface {
 	GetOriginatorSerialNumber() uint32
 	// GetApplicationReplySize returns ApplicationReplySize (property field)
 	GetApplicationReplySize() uint8
+	// IsCipConnectionManagerCloseResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipConnectionManagerCloseResponse()
 }
 
 // _CipConnectionManagerCloseResponse is the data-structure of this message

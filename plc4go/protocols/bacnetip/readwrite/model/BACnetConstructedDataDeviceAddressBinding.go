@@ -39,6 +39,8 @@ type BACnetConstructedDataDeviceAddressBinding interface {
 	BACnetConstructedData
 	// GetDeviceAddressBinding returns DeviceAddressBinding (property field)
 	GetDeviceAddressBinding() []BACnetAddressBinding
+	// IsBACnetConstructedDataDeviceAddressBinding is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDeviceAddressBinding()
 }
 
 // _BACnetConstructedDataDeviceAddressBinding is the data-structure of this message

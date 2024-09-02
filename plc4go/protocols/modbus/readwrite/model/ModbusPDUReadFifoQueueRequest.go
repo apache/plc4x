@@ -39,6 +39,8 @@ type ModbusPDUReadFifoQueueRequest interface {
 	ModbusPDU
 	// GetFifoPointerAddress returns FifoPointerAddress (property field)
 	GetFifoPointerAddress() uint16
+	// IsModbusPDUReadFifoQueueRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadFifoQueueRequest()
 }
 
 // _ModbusPDUReadFifoQueueRequest is the data-structure of this message

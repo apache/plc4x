@@ -45,6 +45,8 @@ type BACnetConfirmedServiceRequestReadRange interface {
 	GetPropertyArrayIndex() BACnetContextTagUnsignedInteger
 	// GetReadRange returns ReadRange (property field)
 	GetReadRange() BACnetConfirmedServiceRequestReadRangeRange
+	// IsBACnetConfirmedServiceRequestReadRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadRange()
 }
 
 // _BACnetConfirmedServiceRequestReadRange is the data-structure of this message

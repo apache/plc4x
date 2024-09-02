@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal interface {
 	BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
+	// IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal()
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal is the data-structure of this message

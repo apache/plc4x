@@ -41,6 +41,8 @@ type ApduDataMemoryResponse interface {
 	GetAddress() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsApduDataMemoryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataMemoryResponse()
 }
 
 // _ApduDataMemoryResponse is the data-structure of this message

@@ -39,6 +39,8 @@ type ModbusPDUReadCoilsResponse interface {
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
+	// IsModbusPDUReadCoilsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadCoilsResponse()
 }
 
 // _ModbusPDUReadCoilsResponse is the data-structure of this message

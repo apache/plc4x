@@ -43,6 +43,8 @@ type BACnetConstructedDataUnspecified interface {
 	GetData() []BACnetConstructedDataElement
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataUnspecified is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataUnspecified()
 }
 
 // _BACnetConstructedDataUnspecified is the data-structure of this message

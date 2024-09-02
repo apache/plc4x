@@ -35,6 +35,8 @@ type TelephonyDataClearDiversion interface {
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
+	// IsTelephonyDataClearDiversion is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataClearDiversion()
 }
 
 // _TelephonyDataClearDiversion is the data-structure of this message

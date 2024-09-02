@@ -43,6 +43,8 @@ type CallRequest interface {
 	GetNoOfMethodsToCall() int32
 	// GetMethodsToCall returns MethodsToCall (property field)
 	GetMethodsToCall() []ExtensionObjectDefinition
+	// IsCallRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCallRequest()
 }
 
 // _CallRequest is the data-structure of this message

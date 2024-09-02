@@ -41,6 +41,8 @@ type BACnetConstructedDataAuthorizationMode interface {
 	GetAuthorizationMode() BACnetAuthorizationModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAuthorizationModeTagged
+	// IsBACnetConstructedDataAuthorizationMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAuthorizationMode()
 }
 
 // _BACnetConstructedDataAuthorizationMode is the data-structure of this message

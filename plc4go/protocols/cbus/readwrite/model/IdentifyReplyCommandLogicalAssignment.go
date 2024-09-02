@@ -39,6 +39,8 @@ type IdentifyReplyCommandLogicalAssignment interface {
 	IdentifyReplyCommand
 	// GetLogicAssigment returns LogicAssigment (property field)
 	GetLogicAssigment() []LogicAssignment
+	// IsIdentifyReplyCommandLogicalAssignment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandLogicalAssignment()
 }
 
 // _IdentifyReplyCommandLogicalAssignment is the data-structure of this message

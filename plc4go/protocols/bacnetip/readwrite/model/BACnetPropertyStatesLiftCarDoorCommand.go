@@ -39,6 +39,8 @@ type BACnetPropertyStatesLiftCarDoorCommand interface {
 	BACnetPropertyStates
 	// GetLiftCarDoorCommand returns LiftCarDoorCommand (property field)
 	GetLiftCarDoorCommand() BACnetLiftCarDoorCommandTagged
+	// IsBACnetPropertyStatesLiftCarDoorCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLiftCarDoorCommand()
 }
 
 // _BACnetPropertyStatesLiftCarDoorCommand is the data-structure of this message

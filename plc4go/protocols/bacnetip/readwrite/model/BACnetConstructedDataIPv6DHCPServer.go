@@ -41,6 +41,8 @@ type BACnetConstructedDataIPv6DHCPServer interface {
 	GetDhcpServer() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
+	// IsBACnetConstructedDataIPv6DHCPServer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPv6DHCPServer()
 }
 
 // _BACnetConstructedDataIPv6DHCPServer is the data-structure of this message

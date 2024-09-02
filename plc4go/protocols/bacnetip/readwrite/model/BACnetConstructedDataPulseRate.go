@@ -41,6 +41,8 @@ type BACnetConstructedDataPulseRate interface {
 	GetPulseRate() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataPulseRate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPulseRate()
 }
 
 // _BACnetConstructedDataPulseRate is the data-structure of this message

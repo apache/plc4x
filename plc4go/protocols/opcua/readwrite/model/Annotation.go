@@ -43,6 +43,8 @@ type Annotation interface {
 	GetUserName() PascalString
 	// GetAnnotationTime returns AnnotationTime (property field)
 	GetAnnotationTime() int64
+	// IsAnnotation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAnnotation()
 }
 
 // _Annotation is the data-structure of this message

@@ -41,6 +41,8 @@ type CloseSessionRequest interface {
 	GetRequestHeader() ExtensionObjectDefinition
 	// GetDeleteSubscriptions returns DeleteSubscriptions (property field)
 	GetDeleteSubscriptions() bool
+	// IsCloseSessionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCloseSessionRequest()
 }
 
 // _CloseSessionRequest is the data-structure of this message

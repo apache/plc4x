@@ -41,6 +41,8 @@ type BACnetConstructedDataSecurityTimeWindow interface {
 	GetSecurityTimeWindow() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataSecurityTimeWindow is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSecurityTimeWindow()
 }
 
 // _BACnetConstructedDataSecurityTimeWindow is the data-structure of this message

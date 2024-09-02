@@ -75,6 +75,8 @@ type AdsDataTypeTableChildEntry interface {
 	GetChildren() []AdsDataTypeTableEntry
 	// GetRest returns Rest (property field)
 	GetRest() []byte
+	// IsAdsDataTypeTableChildEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDataTypeTableChildEntry()
 }
 
 // _AdsDataTypeTableChildEntry is the data-structure of this message

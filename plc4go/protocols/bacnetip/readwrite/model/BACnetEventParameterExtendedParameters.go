@@ -76,6 +76,8 @@ type BACnetEventParameterExtendedParameters interface {
 	GetIsOpeningTag() bool
 	// GetIsClosingTag returns IsClosingTag (virtual field)
 	GetIsClosingTag() bool
+	// IsBACnetEventParameterExtendedParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterExtendedParameters()
 }
 
 // _BACnetEventParameterExtendedParameters is the data-structure of this message

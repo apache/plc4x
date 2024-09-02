@@ -53,6 +53,8 @@ type DataTypeSchemaHeader interface {
 	GetNoOfSimpleDataTypes() int32
 	// GetSimpleDataTypes returns SimpleDataTypes (property field)
 	GetSimpleDataTypes() []DataTypeDescription
+	// IsDataTypeSchemaHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataTypeSchemaHeader()
 }
 
 // _DataTypeSchemaHeader is the data-structure of this message

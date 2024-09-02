@@ -43,6 +43,8 @@ type BACnetLogDataLogData interface {
 	GetLogData() []BACnetLogDataLogDataEntry
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetLogDataLogData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogData()
 }
 
 // _BACnetLogDataLogData is the data-structure of this message

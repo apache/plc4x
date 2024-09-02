@@ -64,6 +64,8 @@ type DiagnosticInfo interface {
 	GetInnerStatusCode() StatusCode
 	// GetInnerDiagnosticInfo returns InnerDiagnosticInfo (property field)
 	GetInnerDiagnosticInfo() DiagnosticInfo
+	// IsDiagnosticInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDiagnosticInfo()
 }
 
 // _DiagnosticInfo is the data-structure of this message

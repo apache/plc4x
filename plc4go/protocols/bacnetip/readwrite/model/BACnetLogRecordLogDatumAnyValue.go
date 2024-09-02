@@ -39,6 +39,8 @@ type BACnetLogRecordLogDatumAnyValue interface {
 	BACnetLogRecordLogDatum
 	// GetAnyValue returns AnyValue (property field)
 	GetAnyValue() BACnetConstructedData
+	// IsBACnetLogRecordLogDatumAnyValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumAnyValue()
 }
 
 // _BACnetLogRecordLogDatumAnyValue is the data-structure of this message

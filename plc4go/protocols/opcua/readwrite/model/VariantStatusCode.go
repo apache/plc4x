@@ -41,6 +41,8 @@ type VariantStatusCode interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []StatusCode
+	// IsVariantStatusCode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantStatusCode()
 }
 
 // _VariantStatusCode is the data-structure of this message

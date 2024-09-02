@@ -38,6 +38,8 @@ type BACnetFaultParameter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetFaultParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameter()
 }
 
 // BACnetFaultParameterContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetFaultParameterContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetFaultParameter() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetFaultParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameter()
 }
 

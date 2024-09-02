@@ -39,6 +39,8 @@ type AirConditioningDataRefresh interface {
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
+	// IsAirConditioningDataRefresh is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataRefresh()
 }
 
 // _AirConditioningDataRefresh is the data-structure of this message

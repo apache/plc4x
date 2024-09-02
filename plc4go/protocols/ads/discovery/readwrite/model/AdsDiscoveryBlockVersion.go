@@ -39,6 +39,8 @@ type AdsDiscoveryBlockVersion interface {
 	AdsDiscoveryBlock
 	// GetVersionData returns VersionData (property field)
 	GetVersionData() []byte
+	// IsAdsDiscoveryBlockVersion is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockVersion()
 }
 
 // _AdsDiscoveryBlockVersion is the data-structure of this message

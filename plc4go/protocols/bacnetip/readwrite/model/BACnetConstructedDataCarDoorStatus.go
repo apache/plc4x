@@ -43,6 +43,8 @@ type BACnetConstructedDataCarDoorStatus interface {
 	GetCarDoorStatus() []BACnetDoorStatusTagged
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataCarDoorStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarDoorStatus()
 }
 
 // _BACnetConstructedDataCarDoorStatus is the data-structure of this message

@@ -41,6 +41,8 @@ type ModbusPDUWriteSingleCoilResponse interface {
 	GetAddress() uint16
 	// GetValue returns Value (property field)
 	GetValue() uint16
+	// IsModbusPDUWriteSingleCoilResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUWriteSingleCoilResponse()
 }
 
 // _ModbusPDUWriteSingleCoilResponse is the data-structure of this message

@@ -49,6 +49,8 @@ type MonitoredSALShortFormBasicMode interface {
 	GetApplication() ApplicationIdContainer
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData
+	// IsMonitoredSALShortFormBasicMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredSALShortFormBasicMode()
 }
 
 // _MonitoredSALShortFormBasicMode is the data-structure of this message

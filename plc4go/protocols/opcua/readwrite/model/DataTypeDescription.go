@@ -41,6 +41,8 @@ type DataTypeDescription interface {
 	GetDataTypeId() NodeId
 	// GetName returns Name (property field)
 	GetName() QualifiedName
+	// IsDataTypeDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataTypeDescription()
 }
 
 // _DataTypeDescription is the data-structure of this message

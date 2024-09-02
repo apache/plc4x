@@ -40,6 +40,8 @@ type BACnetNodeTypeTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetNodeType
+	// IsBACnetNodeTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNodeTypeTagged()
 }
 
 // _BACnetNodeTypeTagged is the data-structure of this message

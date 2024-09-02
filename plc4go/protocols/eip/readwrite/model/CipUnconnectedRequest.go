@@ -50,6 +50,8 @@ type CipUnconnectedRequest interface {
 	GetBackPlane() int8
 	// GetSlot returns Slot (property field)
 	GetSlot() int8
+	// IsCipUnconnectedRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipUnconnectedRequest()
 }
 
 // _CipUnconnectedRequest is the data-structure of this message

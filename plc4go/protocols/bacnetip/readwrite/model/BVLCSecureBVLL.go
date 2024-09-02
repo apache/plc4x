@@ -41,6 +41,8 @@ type BVLCSecureBVLL interface {
 	BVLC
 	// GetSecurityWrapper returns SecurityWrapper (property field)
 	GetSecurityWrapper() []byte
+	// IsBVLCSecureBVLL is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCSecureBVLL()
 }
 
 // _BVLCSecureBVLL is the data-structure of this message

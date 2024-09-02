@@ -40,6 +40,8 @@ type BACnetFaultTypeTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetFaultType
+	// IsBACnetFaultTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultTypeTagged()
 }
 
 // _BACnetFaultTypeTagged is the data-structure of this message

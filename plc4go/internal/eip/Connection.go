@@ -282,8 +282,8 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 			uint32(0),
 		),
 		func(message spi.Message) bool {
-			eipPacket := message.(readWriteModel.EipPacket)
-			return eipPacket != nil
+			_, ok := message.(readWriteModel.EipPacket)
+			return ok
 		},
 		func(message spi.Message) error {
 			eipPacket := message.(readWriteModel.EipPacket)

@@ -40,6 +40,8 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged 
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
+	// IsBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged()
 }
 
 // _BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged is the data-structure of this message

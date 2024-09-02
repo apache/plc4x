@@ -34,6 +34,8 @@ type GroupObjectDescriptorRealisationType6 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsGroupObjectDescriptorRealisationType6 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGroupObjectDescriptorRealisationType6()
 }
 
 // _GroupObjectDescriptorRealisationType6 is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetLogRecordLogDatumTimeChange interface {
 	BACnetLogRecordLogDatum
 	// GetTimeChange returns TimeChange (property field)
 	GetTimeChange() BACnetContextTagReal
+	// IsBACnetLogRecordLogDatumTimeChange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumTimeChange()
 }
 
 // _BACnetLogRecordLogDatumTimeChange is the data-structure of this message

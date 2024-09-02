@@ -43,6 +43,8 @@ type HistoryUpdateRequest interface {
 	GetNoOfHistoryUpdateDetails() int32
 	// GetHistoryUpdateDetails returns HistoryUpdateDetails (property field)
 	GetHistoryUpdateDetails() []ExtensionObject
+	// IsHistoryUpdateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryUpdateRequest()
 }
 
 // _HistoryUpdateRequest is the data-structure of this message

@@ -41,6 +41,8 @@ type SignatureData interface {
 	GetAlgorithm() PascalString
 	// GetSignature returns Signature (property field)
 	GetSignature() PascalByteString
+	// IsSignatureData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSignatureData()
 }
 
 // _SignatureData is the data-structure of this message

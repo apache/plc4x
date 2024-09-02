@@ -44,6 +44,8 @@ type BACnetProgramErrorTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetProgramErrorTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetProgramErrorTagged()
 }
 
 // _BACnetProgramErrorTagged is the data-structure of this message

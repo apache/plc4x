@@ -39,6 +39,8 @@ type ParameterChangeReply interface {
 	Reply
 	// GetParameterChange returns ParameterChange (property field)
 	GetParameterChange() ParameterChange
+	// IsParameterChangeReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterChangeReply()
 }
 
 // _ParameterChangeReply is the data-structure of this message

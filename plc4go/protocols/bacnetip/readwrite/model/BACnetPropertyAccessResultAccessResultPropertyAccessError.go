@@ -39,6 +39,8 @@ type BACnetPropertyAccessResultAccessResultPropertyAccessError interface {
 	BACnetPropertyAccessResultAccessResult
 	// GetPropertyAccessError returns PropertyAccessError (property field)
 	GetPropertyAccessError() ErrorEnclosed
+	// IsBACnetPropertyAccessResultAccessResultPropertyAccessError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyAccessResultAccessResultPropertyAccessError()
 }
 
 // _BACnetPropertyAccessResultAccessResultPropertyAccessError is the data-structure of this message

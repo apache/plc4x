@@ -41,6 +41,8 @@ type BACnetConstructedDataNetworkNumberQuality interface {
 	GetNetworkNumberQuality() BACnetNetworkNumberQualityTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNetworkNumberQualityTagged
+	// IsBACnetConstructedDataNetworkNumberQuality is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNetworkNumberQuality()
 }
 
 // _BACnetConstructedDataNetworkNumberQuality is the data-structure of this message

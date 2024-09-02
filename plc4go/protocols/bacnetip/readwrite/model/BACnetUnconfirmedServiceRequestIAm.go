@@ -45,6 +45,8 @@ type BACnetUnconfirmedServiceRequestIAm interface {
 	GetSegmentationSupported() BACnetSegmentationTagged
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
+	// IsBACnetUnconfirmedServiceRequestIAm is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequestIAm()
 }
 
 // _BACnetUnconfirmedServiceRequestIAm is the data-structure of this message

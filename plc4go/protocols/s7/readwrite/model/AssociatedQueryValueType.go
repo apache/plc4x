@@ -44,6 +44,8 @@ type AssociatedQueryValueType interface {
 	GetValueLength() uint16
 	// GetData returns Data (property field)
 	GetData() []uint8
+	// IsAssociatedQueryValueType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAssociatedQueryValueType()
 }
 
 // _AssociatedQueryValueType is the data-structure of this message

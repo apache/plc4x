@@ -41,6 +41,8 @@ type BACnetConstructedDataLargeAnalogValueMinPresValue interface {
 	GetMinPresValue() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
+	// IsBACnetConstructedDataLargeAnalogValueMinPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLargeAnalogValueMinPresValue()
 }
 
 // _BACnetConstructedDataLargeAnalogValueMinPresValue is the data-structure of this message

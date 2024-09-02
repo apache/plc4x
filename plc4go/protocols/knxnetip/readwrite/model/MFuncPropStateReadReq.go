@@ -35,6 +35,8 @@ type MFuncPropStateReadReq interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsMFuncPropStateReadReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMFuncPropStateReadReq()
 }
 
 // _MFuncPropStateReadReq is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataEventParameters interface {
 	GetEventParameter() BACnetEventParameter
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventParameter
+	// IsBACnetConstructedDataEventParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventParameters()
 }
 
 // _BACnetConstructedDataEventParameters is the data-structure of this message

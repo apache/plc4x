@@ -41,6 +41,8 @@ type BACnetConstructedDataRestoreCompletionTime interface {
 	GetCompletionTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataRestoreCompletionTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRestoreCompletionTime()
 }
 
 // _BACnetConstructedDataRestoreCompletionTime is the data-structure of this message

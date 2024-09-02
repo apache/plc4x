@@ -39,6 +39,8 @@ type S7ParameterReadVarRequest interface {
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7VarRequestParameterItem
+	// IsS7ParameterReadVarRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterReadVarRequest()
 }
 
 // _S7ParameterReadVarRequest is the data-structure of this message

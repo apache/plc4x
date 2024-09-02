@@ -35,6 +35,8 @@ type GetAttributeSingleRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	CipService
+	// IsGetAttributeSingleRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGetAttributeSingleRequest()
 }
 
 // _GetAttributeSingleRequest is the data-structure of this message

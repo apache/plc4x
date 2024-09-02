@@ -40,6 +40,8 @@ type Dummy interface {
 	utils.Serializable
 	// GetDummy returns Dummy (property field)
 	GetDummy() uint16
+	// IsDummy is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDummy()
 }
 
 // _Dummy is the data-structure of this message

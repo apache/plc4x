@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryOctetString interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
+	// IsBACnetFaultParameterFaultExtendedParametersEntryOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryOctetString()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryOctetString is the data-structure of this message

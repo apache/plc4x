@@ -46,6 +46,8 @@ type TemperatureBroadcastData interface {
 	GetCommandType() TemperatureBroadcastCommandType
 	// GetTemperatureInCelsius returns TemperatureInCelsius (virtual field)
 	GetTemperatureInCelsius() float32
+	// IsTemperatureBroadcastData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTemperatureBroadcastData()
 }
 
 // _TemperatureBroadcastData is the data-structure of this message

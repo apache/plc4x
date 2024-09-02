@@ -41,6 +41,8 @@ type BACnetConstructedDataCredentialDataInputPresentValue interface {
 	GetPresentValue() BACnetAuthenticationFactor
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAuthenticationFactor
+	// IsBACnetConstructedDataCredentialDataInputPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCredentialDataInputPresentValue()
 }
 
 // _BACnetConstructedDataCredentialDataInputPresentValue is the data-structure of this message

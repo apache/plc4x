@@ -51,6 +51,8 @@ type AirConditioningDataSetZoneHvacMode interface {
 	GetRawLevel() HVACRawLevels
 	// GetAuxLevel returns AuxLevel (property field)
 	GetAuxLevel() HVACAuxiliaryLevel
+	// IsAirConditioningDataSetZoneHvacMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataSetZoneHvacMode()
 }
 
 // _AirConditioningDataSetZoneHvacMode is the data-structure of this message

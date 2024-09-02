@@ -42,6 +42,8 @@ type BACnetLiftCarCallListFloorList interface {
 	GetFloorNumbers() []BACnetApplicationTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetLiftCarCallListFloorList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLiftCarCallListFloorList()
 }
 
 // _BACnetLiftCarCallListFloorList is the data-structure of this message

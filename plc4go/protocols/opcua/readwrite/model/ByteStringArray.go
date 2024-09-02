@@ -40,6 +40,8 @@ type ByteStringArray interface {
 	GetArrayLength() int32
 	// GetValue returns Value (property field)
 	GetValue() []uint8
+	// IsByteStringArray is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsByteStringArray()
 }
 
 // _ByteStringArray is the data-structure of this message

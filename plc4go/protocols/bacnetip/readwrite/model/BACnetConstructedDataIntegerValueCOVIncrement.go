@@ -41,6 +41,8 @@ type BACnetConstructedDataIntegerValueCOVIncrement interface {
 	GetCovIncrement() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataIntegerValueCOVIncrement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIntegerValueCOVIncrement()
 }
 
 // _BACnetConstructedDataIntegerValueCOVIncrement is the data-structure of this message

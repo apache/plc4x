@@ -41,6 +41,8 @@ type BACnetConstructedDataEventAlgorithmInhibit interface {
 	GetEventAlgorithmInhibit() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataEventAlgorithmInhibit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventAlgorithmInhibit()
 }
 
 // _BACnetConstructedDataEventAlgorithmInhibit is the data-structure of this message

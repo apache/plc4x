@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueInteger interface {
 	BACnetTimerStateChangeValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
+	// IsBACnetTimerStateChangeValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueInteger()
 }
 
 // _BACnetTimerStateChangeValueInteger is the data-structure of this message

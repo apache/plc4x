@@ -34,6 +34,8 @@ type Handle interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsHandle is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHandle()
 }
 
 // _Handle is the data-structure of this message

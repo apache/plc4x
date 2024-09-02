@@ -42,6 +42,8 @@ type BACnetDateTimeEnclosed interface {
 	GetDateTimeValue() BACnetDateTime
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetDateTimeEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetDateTimeEnclosed()
 }
 
 // _BACnetDateTimeEnclosed is the data-structure of this message

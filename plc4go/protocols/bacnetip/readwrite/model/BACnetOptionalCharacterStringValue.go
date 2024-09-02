@@ -39,6 +39,8 @@ type BACnetOptionalCharacterStringValue interface {
 	BACnetOptionalCharacterString
 	// GetCharacterstring returns Characterstring (property field)
 	GetCharacterstring() BACnetApplicationTagCharacterString
+	// IsBACnetOptionalCharacterStringValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalCharacterStringValue()
 }
 
 // _BACnetOptionalCharacterStringValue is the data-structure of this message

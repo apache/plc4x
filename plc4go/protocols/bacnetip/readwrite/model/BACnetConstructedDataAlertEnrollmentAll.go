@@ -35,6 +35,8 @@ type BACnetConstructedDataAlertEnrollmentAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataAlertEnrollmentAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAlertEnrollmentAll()
 }
 
 // _BACnetConstructedDataAlertEnrollmentAll is the data-structure of this message

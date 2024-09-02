@@ -39,6 +39,8 @@ type BACnetChannelValueObjectidentifier interface {
 	BACnetChannelValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
+	// IsBACnetChannelValueObjectidentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueObjectidentifier()
 }
 
 // _BACnetChannelValueObjectidentifier is the data-structure of this message

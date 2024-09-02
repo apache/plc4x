@@ -41,6 +41,8 @@ type SecurityDataZoneName interface {
 	GetZoneNumber() uint8
 	// GetZoneName returns ZoneName (property field)
 	GetZoneName() string
+	// IsSecurityDataZoneName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataZoneName()
 }
 
 // _SecurityDataZoneName is the data-structure of this message

@@ -44,6 +44,8 @@ type PanicStatus interface {
 	GetIsReserved() bool
 	// GetIsPanicCurrentlyActive returns IsPanicCurrentlyActive (virtual field)
 	GetIsPanicCurrentlyActive() bool
+	// IsPanicStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPanicStatus()
 }
 
 // _PanicStatus is the data-structure of this message

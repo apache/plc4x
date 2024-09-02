@@ -41,6 +41,8 @@ type BACnetConstructedDataNotifyType interface {
 	GetNotifyType() BACnetNotifyTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNotifyTypeTagged
+	// IsBACnetConstructedDataNotifyType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNotifyType()
 }
 
 // _BACnetConstructedDataNotifyType is the data-structure of this message

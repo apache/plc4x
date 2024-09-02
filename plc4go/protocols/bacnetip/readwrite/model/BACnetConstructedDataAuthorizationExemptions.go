@@ -39,6 +39,8 @@ type BACnetConstructedDataAuthorizationExemptions interface {
 	BACnetConstructedData
 	// GetAuthorizationExemption returns AuthorizationExemption (property field)
 	GetAuthorizationExemption() []BACnetAuthorizationExemptionTagged
+	// IsBACnetConstructedDataAuthorizationExemptions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAuthorizationExemptions()
 }
 
 // _BACnetConstructedDataAuthorizationExemptions is the data-structure of this message

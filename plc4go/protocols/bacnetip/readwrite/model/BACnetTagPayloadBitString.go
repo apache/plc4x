@@ -42,6 +42,8 @@ type BACnetTagPayloadBitString interface {
 	GetData() []bool
 	// GetUnused returns Unused (property field)
 	GetUnused() []bool
+	// IsBACnetTagPayloadBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadBitString()
 }
 
 // _BACnetTagPayloadBitString is the data-structure of this message

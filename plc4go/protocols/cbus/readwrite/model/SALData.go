@@ -38,13 +38,15 @@ type SALData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsSALData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALData()
 }
 
 // SALDataContract provides a set of functions which can be overwritten by a sub struct
 type SALDataContract interface {
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData
-	// IsSALData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsSALData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALData()
 }
 

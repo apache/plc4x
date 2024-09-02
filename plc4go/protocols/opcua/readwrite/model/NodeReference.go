@@ -47,6 +47,8 @@ type NodeReference interface {
 	GetNoOfReferencedNodeIds() int32
 	// GetReferencedNodeIds returns ReferencedNodeIds (property field)
 	GetReferencedNodeIds() []NodeId
+	// IsNodeReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeReference()
 }
 
 // _NodeReference is the data-structure of this message

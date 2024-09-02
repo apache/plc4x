@@ -39,6 +39,8 @@ type BACnetPropertyStatesLockStatus interface {
 	BACnetPropertyStates
 	// GetLockStatus returns LockStatus (property field)
 	GetLockStatus() BACnetLockStatusTagged
+	// IsBACnetPropertyStatesLockStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLockStatus()
 }
 
 // _BACnetPropertyStatesLockStatus is the data-structure of this message

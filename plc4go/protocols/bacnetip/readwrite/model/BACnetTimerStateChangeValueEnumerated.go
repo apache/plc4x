@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueEnumerated interface {
 	BACnetTimerStateChangeValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
+	// IsBACnetTimerStateChangeValueEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueEnumerated()
 }
 
 // _BACnetTimerStateChangeValueEnumerated is the data-structure of this message

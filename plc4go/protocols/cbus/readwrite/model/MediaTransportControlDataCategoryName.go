@@ -39,6 +39,8 @@ type MediaTransportControlDataCategoryName interface {
 	MediaTransportControlData
 	// GetCategoryName returns CategoryName (property field)
 	GetCategoryName() string
+	// IsMediaTransportControlDataCategoryName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataCategoryName()
 }
 
 // _MediaTransportControlDataCategoryName is the data-structure of this message

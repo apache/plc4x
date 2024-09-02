@@ -41,6 +41,8 @@ type DeleteNodesItem interface {
 	GetNodeId() NodeId
 	// GetDeleteTargetReferences returns DeleteTargetReferences (property field)
 	GetDeleteTargetReferences() bool
+	// IsDeleteNodesItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteNodesItem()
 }
 
 // _DeleteNodesItem is the data-structure of this message

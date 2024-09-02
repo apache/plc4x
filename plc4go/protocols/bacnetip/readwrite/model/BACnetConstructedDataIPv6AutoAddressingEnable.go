@@ -41,6 +41,8 @@ type BACnetConstructedDataIPv6AutoAddressingEnable interface {
 	GetAutoAddressingEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataIPv6AutoAddressingEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPv6AutoAddressingEnable()
 }
 
 // _BACnetConstructedDataIPv6AutoAddressingEnable is the data-structure of this message

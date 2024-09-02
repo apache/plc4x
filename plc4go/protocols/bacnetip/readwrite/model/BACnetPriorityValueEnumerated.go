@@ -39,6 +39,8 @@ type BACnetPriorityValueEnumerated interface {
 	BACnetPriorityValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
+	// IsBACnetPriorityValueEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueEnumerated()
 }
 
 // _BACnetPriorityValueEnumerated is the data-structure of this message

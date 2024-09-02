@@ -39,6 +39,8 @@ type BACnetConfirmedServiceRequestDeleteObject interface {
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
+	// IsBACnetConfirmedServiceRequestDeleteObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestDeleteObject()
 }
 
 // _BACnetConfirmedServiceRequestDeleteObject is the data-structure of this message

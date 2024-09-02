@@ -41,6 +41,8 @@ type BACnetConstructedDataBackupAndRestoreState interface {
 	GetBackupAndRestoreState() BACnetBackupStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBackupStateTagged
+	// IsBACnetConstructedDataBackupAndRestoreState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBackupAndRestoreState()
 }
 
 // _BACnetConstructedDataBackupAndRestoreState is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetPropertyStatesUnits interface {
 	BACnetPropertyStates
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
+	// IsBACnetPropertyStatesUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesUnits()
 }
 
 // _BACnetPropertyStatesUnits is the data-structure of this message

@@ -41,6 +41,8 @@ type BrowsePath interface {
 	GetStartingNode() NodeId
 	// GetRelativePath returns RelativePath (property field)
 	GetRelativePath() ExtensionObjectDefinition
+	// IsBrowsePath is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBrowsePath()
 }
 
 // _BrowsePath is the data-structure of this message

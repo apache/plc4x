@@ -39,6 +39,8 @@ type SALDataIrrigationControl interface {
 	SALData
 	// GetIrrigationControlData returns IrrigationControlData (property field)
 	GetIrrigationControlData() LightingData
+	// IsSALDataIrrigationControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataIrrigationControl()
 }
 
 // _SALDataIrrigationControl is the data-structure of this message

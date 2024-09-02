@@ -43,6 +43,8 @@ type DescriptionResponse interface {
 	GetDibDeviceInfo() DIBDeviceInfo
 	// GetDibSuppSvcFamilies returns DibSuppSvcFamilies (property field)
 	GetDibSuppSvcFamilies() DIBSuppSvcFamilies
+	// IsDescriptionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDescriptionResponse()
 }
 
 // _DescriptionResponse is the data-structure of this message

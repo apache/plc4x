@@ -40,6 +40,8 @@ type SequenceHeader interface {
 	GetSequenceNumber() int32
 	// GetRequestId returns RequestId (property field)
 	GetRequestId() int32
+	// IsSequenceHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSequenceHeader()
 }
 
 // _SequenceHeader is the data-structure of this message

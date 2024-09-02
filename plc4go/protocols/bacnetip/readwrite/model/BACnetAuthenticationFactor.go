@@ -42,6 +42,8 @@ type BACnetAuthenticationFactor interface {
 	GetFormatClass() BACnetContextTagUnsignedInteger
 	// GetValue returns Value (property field)
 	GetValue() BACnetContextTagOctetString
+	// IsBACnetAuthenticationFactor is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAuthenticationFactor()
 }
 
 // _BACnetAuthenticationFactor is the data-structure of this message

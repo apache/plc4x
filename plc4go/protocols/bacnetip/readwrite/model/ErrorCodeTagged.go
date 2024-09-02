@@ -44,6 +44,8 @@ type ErrorCodeTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsErrorCodeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorCodeTagged()
 }
 
 // _ErrorCodeTagged is the data-structure of this message

@@ -38,6 +38,8 @@ type BridgeAddress interface {
 	utils.Serializable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
+	// IsBridgeAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBridgeAddress()
 }
 
 // _BridgeAddress is the data-structure of this message

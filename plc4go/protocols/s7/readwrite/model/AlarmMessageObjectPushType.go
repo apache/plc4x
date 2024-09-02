@@ -57,6 +57,8 @@ type AlarmMessageObjectPushType interface {
 	GetAckStateComing() State
 	// GetAssociatedValues returns AssociatedValues (property field)
 	GetAssociatedValues() []AssociatedValueType
+	// IsAlarmMessageObjectPushType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarmMessageObjectPushType()
 }
 
 // _AlarmMessageObjectPushType is the data-structure of this message

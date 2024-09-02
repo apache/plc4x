@@ -40,6 +40,8 @@ type SecurityHeader interface {
 	GetSecureChannelId() uint32
 	// GetSecureTokenId returns SecureTokenId (property field)
 	GetSecureTokenId() uint32
+	// IsSecurityHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityHeader()
 }
 
 // _SecurityHeader is the data-structure of this message

@@ -43,6 +43,8 @@ type AnnotationDataType interface {
 	GetDiscipline() PascalString
 	// GetUri returns Uri (property field)
 	GetUri() PascalString
+	// IsAnnotationDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAnnotationDataType()
 }
 
 // _AnnotationDataType is the data-structure of this message

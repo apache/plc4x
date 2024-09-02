@@ -50,6 +50,8 @@ type RequestCommand interface {
 	GetCbusCommandDecoded() CBusCommand
 	// GetChksumDecoded returns ChksumDecoded (virtual field)
 	GetChksumDecoded() Checksum
+	// IsRequestCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestCommand()
 }
 
 // _RequestCommand is the data-structure of this message

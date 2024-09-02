@@ -55,6 +55,8 @@ type CreateSessionRequest interface {
 	GetRequestedSessionTimeout() float64
 	// GetMaxResponseMessageSize returns MaxResponseMessageSize (property field)
 	GetMaxResponseMessageSize() uint32
+	// IsCreateSessionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCreateSessionRequest()
 }
 
 // _CreateSessionRequest is the data-structure of this message

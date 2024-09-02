@@ -41,6 +41,8 @@ type CBusPointToMultiPointCommandNormal interface {
 	GetApplication() ApplicationIdContainer
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData
+	// IsCBusPointToMultiPointCommandNormal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToMultiPointCommandNormal()
 }
 
 // _CBusPointToMultiPointCommandNormal is the data-structure of this message

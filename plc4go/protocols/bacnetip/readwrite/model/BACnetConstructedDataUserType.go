@@ -41,6 +41,8 @@ type BACnetConstructedDataUserType interface {
 	GetUserType() BACnetAccessUserTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessUserTypeTagged
+	// IsBACnetConstructedDataUserType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataUserType()
 }
 
 // _BACnetConstructedDataUserType is the data-structure of this message

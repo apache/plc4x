@@ -41,6 +41,8 @@ type BACnetConstructedDataCharacterStringValuePresentValue interface {
 	GetPresentValue() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataCharacterStringValuePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCharacterStringValuePresentValue()
 }
 
 // _BACnetConstructedDataCharacterStringValuePresentValue is the data-structure of this message

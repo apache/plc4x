@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueUnsigned interface {
 	BACnetTimerStateChangeValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetTimerStateChangeValueUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueUnsigned()
 }
 
 // _BACnetTimerStateChangeValueUnsigned is the data-structure of this message

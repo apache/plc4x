@@ -42,6 +42,8 @@ type BACnetSpecialEvent interface {
 	GetListOfTimeValues() BACnetSpecialEventListOfTimeValues
 	// GetEventPriority returns EventPriority (property field)
 	GetEventPriority() BACnetContextTagUnsignedInteger
+	// IsBACnetSpecialEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetSpecialEvent()
 }
 
 // _BACnetSpecialEvent is the data-structure of this message

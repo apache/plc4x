@@ -38,6 +38,8 @@ type CBusPointToPointCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCBusPointToPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToPointCommand()
 }
 
 // CBusPointToPointCommandContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type CBusPointToPointCommandContract interface {
 	GetIsDirect() bool
 	// GetCBusOptions() returns a parser argument
 	GetCBusOptions() CBusOptions
-	// IsCBusPointToPointCommand() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCBusPointToPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointCommand()
 }
 

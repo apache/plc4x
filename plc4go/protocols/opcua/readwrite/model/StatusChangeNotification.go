@@ -41,6 +41,8 @@ type StatusChangeNotification interface {
 	GetStatus() StatusCode
 	// GetDiagnosticInfo returns DiagnosticInfo (property field)
 	GetDiagnosticInfo() DiagnosticInfo
+	// IsStatusChangeNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusChangeNotification()
 }
 
 // _StatusChangeNotification is the data-structure of this message

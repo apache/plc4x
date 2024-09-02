@@ -50,6 +50,8 @@ type AdsTableSizes interface {
 	GetExtraCount() uint32
 	// GetExtraLength returns ExtraLength (property field)
 	GetExtraLength() uint32
+	// IsAdsTableSizes is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsTableSizes()
 }
 
 // _AdsTableSizes is the data-structure of this message

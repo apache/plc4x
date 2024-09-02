@@ -38,6 +38,8 @@ type ClockAndTimekeepingData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsClockAndTimekeepingData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsClockAndTimekeepingData()
 }
 
 // ClockAndTimekeepingDataContract provides a set of functions which can be overwritten by a sub struct
@@ -48,7 +50,7 @@ type ClockAndTimekeepingDataContract interface {
 	GetArgument() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() ClockAndTimekeepingCommandType
-	// IsClockAndTimekeepingData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsClockAndTimekeepingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsClockAndTimekeepingData()
 }
 

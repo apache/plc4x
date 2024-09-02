@@ -41,6 +41,8 @@ type BACnetConstructedDataDescriptionOfHalt interface {
 	GetDescriptionForHalt() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataDescriptionOfHalt is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDescriptionOfHalt()
 }
 
 // _BACnetConstructedDataDescriptionOfHalt is the data-structure of this message

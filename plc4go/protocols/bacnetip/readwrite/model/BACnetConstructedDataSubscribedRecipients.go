@@ -39,6 +39,8 @@ type BACnetConstructedDataSubscribedRecipients interface {
 	BACnetConstructedData
 	// GetSubscribedRecipients returns SubscribedRecipients (property field)
 	GetSubscribedRecipients() []BACnetEventNotificationSubscription
+	// IsBACnetConstructedDataSubscribedRecipients is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSubscribedRecipients()
 }
 
 // _BACnetConstructedDataSubscribedRecipients is the data-structure of this message

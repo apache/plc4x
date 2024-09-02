@@ -41,6 +41,8 @@ type BACnetConstructedDataControlledVariableReference interface {
 	GetControlledVariableReference() BACnetObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetObjectPropertyReference
+	// IsBACnetConstructedDataControlledVariableReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataControlledVariableReference()
 }
 
 // _BACnetConstructedDataControlledVariableReference is the data-structure of this message

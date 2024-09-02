@@ -41,6 +41,8 @@ type BACnetConstructedDataChangeOfStateTime interface {
 	GetChangeOfStateTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
+	// IsBACnetConstructedDataChangeOfStateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataChangeOfStateTime()
 }
 
 // _BACnetConstructedDataChangeOfStateTime is the data-structure of this message

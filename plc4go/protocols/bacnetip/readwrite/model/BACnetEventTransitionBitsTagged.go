@@ -46,6 +46,8 @@ type BACnetEventTransitionBitsTagged interface {
 	GetToFault() bool
 	// GetToNormal returns ToNormal (virtual field)
 	GetToNormal() bool
+	// IsBACnetEventTransitionBitsTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventTransitionBitsTagged()
 }
 
 // _BACnetEventTransitionBitsTagged is the data-structure of this message

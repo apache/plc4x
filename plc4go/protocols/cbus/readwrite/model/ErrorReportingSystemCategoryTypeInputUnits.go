@@ -39,6 +39,8 @@ type ErrorReportingSystemCategoryTypeInputUnits interface {
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForInputUnits
+	// IsErrorReportingSystemCategoryTypeInputUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorReportingSystemCategoryTypeInputUnits()
 }
 
 // _ErrorReportingSystemCategoryTypeInputUnits is the data-structure of this message

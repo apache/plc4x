@@ -35,6 +35,8 @@ type TDataIndividualReq interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsTDataIndividualReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTDataIndividualReq()
 }
 
 // _TDataIndividualReq is the data-structure of this message

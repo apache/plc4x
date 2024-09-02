@@ -39,6 +39,8 @@ type BACnetConstructedDataRecipientList interface {
 	BACnetConstructedData
 	// GetRecipientList returns RecipientList (property field)
 	GetRecipientList() []BACnetDestination
+	// IsBACnetConstructedDataRecipientList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRecipientList()
 }
 
 // _BACnetConstructedDataRecipientList is the data-structure of this message

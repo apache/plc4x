@@ -41,6 +41,8 @@ type VariantString interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []PascalString
+	// IsVariantString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantString()
 }
 
 // _VariantString is the data-structure of this message

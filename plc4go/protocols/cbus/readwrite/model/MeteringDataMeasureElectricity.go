@@ -35,6 +35,8 @@ type MeteringDataMeasureElectricity interface {
 	utils.LengthAware
 	utils.Serializable
 	MeteringData
+	// IsMeteringDataMeasureElectricity is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataMeasureElectricity()
 }
 
 // _MeteringDataMeasureElectricity is the data-structure of this message

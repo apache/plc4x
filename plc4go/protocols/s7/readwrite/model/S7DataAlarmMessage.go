@@ -42,11 +42,13 @@ type S7DataAlarmMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsS7DataAlarmMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7DataAlarmMessage()
 }
 
 // S7DataAlarmMessageContract provides a set of functions which can be overwritten by a sub struct
 type S7DataAlarmMessageContract interface {
-	// IsS7DataAlarmMessage() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsS7DataAlarmMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7DataAlarmMessage()
 }
 

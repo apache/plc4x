@@ -41,6 +41,8 @@ type ReplyOrConfirmationConfirmation interface {
 	GetConfirmation() Confirmation
 	// GetEmbeddedReply returns EmbeddedReply (property field)
 	GetEmbeddedReply() ReplyOrConfirmation
+	// IsReplyOrConfirmationConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReplyOrConfirmationConfirmation()
 }
 
 // _ReplyOrConfirmationConfirmation is the data-structure of this message

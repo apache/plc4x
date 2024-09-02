@@ -36,13 +36,15 @@ type IdentifyReplyCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsIdentifyReplyCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommand()
 }
 
 // IdentifyReplyCommandContract provides a set of functions which can be overwritten by a sub struct
 type IdentifyReplyCommandContract interface {
 	// GetNumBytes() returns a parser argument
 	GetNumBytes() uint8
-	// IsIdentifyReplyCommand() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsIdentifyReplyCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommand()
 }
 

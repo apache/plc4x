@@ -44,6 +44,8 @@ type BACnetVendorIdTagged interface {
 	GetUnknownId() uint32
 	// GetIsUnknownId returns IsUnknownId (virtual field)
 	GetIsUnknownId() bool
+	// IsBACnetVendorIdTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetVendorIdTagged()
 }
 
 // _BACnetVendorIdTagged is the data-structure of this message

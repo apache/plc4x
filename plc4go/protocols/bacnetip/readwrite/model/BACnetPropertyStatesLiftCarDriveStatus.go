@@ -39,6 +39,8 @@ type BACnetPropertyStatesLiftCarDriveStatus interface {
 	BACnetPropertyStates
 	// GetLiftCarDriveStatus returns LiftCarDriveStatus (property field)
 	GetLiftCarDriveStatus() BACnetLiftCarDriveStatusTagged
+	// IsBACnetPropertyStatesLiftCarDriveStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLiftCarDriveStatus()
 }
 
 // _BACnetPropertyStatesLiftCarDriveStatus is the data-structure of this message

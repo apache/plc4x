@@ -42,6 +42,8 @@ type TransportType interface {
 	GetTrigger() uint8
 	// GetClassTransport returns ClassTransport (property field)
 	GetClassTransport() uint8
+	// IsTransportType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTransportType()
 }
 
 // _TransportType is the data-structure of this message

@@ -45,6 +45,8 @@ type NotificationMessage interface {
 	GetNoOfNotificationData() int32
 	// GetNotificationData returns NotificationData (property field)
 	GetNotificationData() []ExtensionObject
+	// IsNotificationMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNotificationMessage()
 }
 
 // _NotificationMessage is the data-structure of this message

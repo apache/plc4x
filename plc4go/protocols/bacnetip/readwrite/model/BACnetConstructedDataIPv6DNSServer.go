@@ -43,6 +43,8 @@ type BACnetConstructedDataIPv6DNSServer interface {
 	GetIpv6DnsServer() []BACnetApplicationTagOctetString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataIPv6DNSServer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPv6DNSServer()
 }
 
 // _BACnetConstructedDataIPv6DNSServer is the data-structure of this message

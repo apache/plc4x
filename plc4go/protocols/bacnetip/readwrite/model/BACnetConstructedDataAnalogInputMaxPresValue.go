@@ -41,6 +41,8 @@ type BACnetConstructedDataAnalogInputMaxPresValue interface {
 	GetMaxPresValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataAnalogInputMaxPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAnalogInputMaxPresValue()
 }
 
 // _BACnetConstructedDataAnalogInputMaxPresValue is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetConstructedDataTimeSynchronizationRecipients interface {
 	BACnetConstructedData
 	// GetTimeSynchronizationRecipients returns TimeSynchronizationRecipients (property field)
 	GetTimeSynchronizationRecipients() []BACnetRecipient
+	// IsBACnetConstructedDataTimeSynchronizationRecipients is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimeSynchronizationRecipients()
 }
 
 // _BACnetConstructedDataTimeSynchronizationRecipients is the data-structure of this message

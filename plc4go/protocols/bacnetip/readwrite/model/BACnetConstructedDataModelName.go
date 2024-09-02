@@ -41,6 +41,8 @@ type BACnetConstructedDataModelName interface {
 	GetModelName() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataModelName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataModelName()
 }
 
 // _BACnetConstructedDataModelName is the data-structure of this message

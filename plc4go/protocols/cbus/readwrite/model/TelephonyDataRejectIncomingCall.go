@@ -35,6 +35,8 @@ type TelephonyDataRejectIncomingCall interface {
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
+	// IsTelephonyDataRejectIncomingCall is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataRejectIncomingCall()
 }
 
 // _TelephonyDataRejectIncomingCall is the data-structure of this message

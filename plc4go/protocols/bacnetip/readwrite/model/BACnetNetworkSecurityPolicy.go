@@ -40,6 +40,8 @@ type BACnetNetworkSecurityPolicy interface {
 	GetPortId() BACnetContextTagUnsignedInteger
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() BACnetSecurityPolicyTagged
+	// IsBACnetNetworkSecurityPolicy is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNetworkSecurityPolicy()
 }
 
 // _BACnetNetworkSecurityPolicy is the data-structure of this message

@@ -43,6 +43,8 @@ type SysexCommandReportFirmwareResponse interface {
 	GetMinorVersion() uint8
 	// GetFileName returns FileName (property field)
 	GetFileName() []byte
+	// IsSysexCommandReportFirmwareResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandReportFirmwareResponse()
 }
 
 // _SysexCommandReportFirmwareResponse is the data-structure of this message

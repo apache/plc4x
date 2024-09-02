@@ -41,6 +41,8 @@ type BACnetConstructedDataReasonForHalt interface {
 	GetProgramError() BACnetProgramErrorTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProgramErrorTagged
+	// IsBACnetConstructedDataReasonForHalt is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataReasonForHalt()
 }
 
 // _BACnetConstructedDataReasonForHalt is the data-structure of this message

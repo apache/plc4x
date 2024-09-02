@@ -35,6 +35,8 @@ type BACnetConstructedDataStructuredViewAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataStructuredViewAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataStructuredViewAll()
 }
 
 // _BACnetConstructedDataStructuredViewAll is the data-structure of this message

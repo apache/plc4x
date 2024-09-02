@@ -41,6 +41,8 @@ type BACnetConstructedDataIPv6PrefixLength interface {
 	GetIpv6PrefixLength() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataIPv6PrefixLength is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPv6PrefixLength()
 }
 
 // _BACnetConstructedDataIPv6PrefixLength is the data-structure of this message

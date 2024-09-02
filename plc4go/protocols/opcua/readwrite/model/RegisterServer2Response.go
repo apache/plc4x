@@ -47,6 +47,8 @@ type RegisterServer2Response interface {
 	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
+	// IsRegisterServer2Response is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRegisterServer2Response()
 }
 
 // _RegisterServer2Response is the data-structure of this message

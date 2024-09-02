@@ -41,6 +41,8 @@ type ModbusPDUReadInputRegistersRequest interface {
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity (property field)
 	GetQuantity() uint16
+	// IsModbusPDUReadInputRegistersRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadInputRegistersRequest()
 }
 
 // _ModbusPDUReadInputRegistersRequest is the data-structure of this message

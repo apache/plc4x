@@ -38,6 +38,8 @@ type ReplyOrConfirmation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsReplyOrConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReplyOrConfirmation()
 }
 
 // ReplyOrConfirmationContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type ReplyOrConfirmationContract interface {
 	GetCBusOptions() CBusOptions
 	// GetRequestContext() returns a parser argument
 	GetRequestContext() RequestContext
-	// IsReplyOrConfirmation() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsReplyOrConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReplyOrConfirmation()
 }
 

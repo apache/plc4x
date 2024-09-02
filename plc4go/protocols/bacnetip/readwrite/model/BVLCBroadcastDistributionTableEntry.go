@@ -42,6 +42,8 @@ type BVLCBroadcastDistributionTableEntry interface {
 	GetPort() uint16
 	// GetBroadcastDistributionMap returns BroadcastDistributionMap (property field)
 	GetBroadcastDistributionMap() []uint8
+	// IsBVLCBroadcastDistributionTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCBroadcastDistributionTableEntry()
 }
 
 // _BVLCBroadcastDistributionTableEntry is the data-structure of this message

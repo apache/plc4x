@@ -35,6 +35,8 @@ type MFuncPropCon interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsMFuncPropCon is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMFuncPropCon()
 }
 
 // _MFuncPropCon is the data-structure of this message

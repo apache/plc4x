@@ -41,6 +41,8 @@ type NLMRejectMessageToNetwork interface {
 	GetRejectReason() NLMRejectMessageToNetworkRejectReason
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
+	// IsNLMRejectMessageToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMRejectMessageToNetwork()
 }
 
 // _NLMRejectMessageToNetwork is the data-structure of this message

@@ -39,6 +39,8 @@ type DF1CommandResponseMessageProtectedTypedLogicalRead interface {
 	DF1ResponseMessage
 	// GetData returns Data (property field)
 	GetData() []uint8
+	// IsDF1CommandResponseMessageProtectedTypedLogicalRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1CommandResponseMessageProtectedTypedLogicalRead()
 }
 
 // _DF1CommandResponseMessageProtectedTypedLogicalRead is the data-structure of this message

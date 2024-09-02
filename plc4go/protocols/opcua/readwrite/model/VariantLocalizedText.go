@@ -41,6 +41,8 @@ type VariantLocalizedText interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []LocalizedText
+	// IsVariantLocalizedText is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantLocalizedText()
 }
 
 // _VariantLocalizedText is the data-structure of this message

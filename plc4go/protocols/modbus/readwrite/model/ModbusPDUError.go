@@ -39,6 +39,8 @@ type ModbusPDUError interface {
 	ModbusPDU
 	// GetExceptionCode returns ExceptionCode (property field)
 	GetExceptionCode() ModbusErrorCode
+	// IsModbusPDUError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUError()
 }
 
 // _ModbusPDUError is the data-structure of this message

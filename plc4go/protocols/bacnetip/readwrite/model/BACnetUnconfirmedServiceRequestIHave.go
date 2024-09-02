@@ -43,6 +43,8 @@ type BACnetUnconfirmedServiceRequestIHave interface {
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetObjectName returns ObjectName (property field)
 	GetObjectName() BACnetApplicationTagCharacterString
+	// IsBACnetUnconfirmedServiceRequestIHave is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequestIHave()
 }
 
 // _BACnetUnconfirmedServiceRequestIHave is the data-structure of this message

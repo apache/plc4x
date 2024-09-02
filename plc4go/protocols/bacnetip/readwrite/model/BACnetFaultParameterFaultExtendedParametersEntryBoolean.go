@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryBoolean interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
+	// IsBACnetFaultParameterFaultExtendedParametersEntryBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryBoolean()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryBoolean is the data-structure of this message

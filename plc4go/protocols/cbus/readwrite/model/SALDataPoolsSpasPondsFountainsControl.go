@@ -39,6 +39,8 @@ type SALDataPoolsSpasPondsFountainsControl interface {
 	SALData
 	// GetPoolsSpaPondsFountainsData returns PoolsSpaPondsFountainsData (property field)
 	GetPoolsSpaPondsFountainsData() LightingData
+	// IsSALDataPoolsSpasPondsFountainsControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataPoolsSpasPondsFountainsControl()
 }
 
 // _SALDataPoolsSpasPondsFountainsControl is the data-structure of this message

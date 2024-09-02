@@ -39,6 +39,8 @@ type UnConnectedDataItem interface {
 	TypeId
 	// GetService returns Service (property field)
 	GetService() CipService
+	// IsUnConnectedDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUnConnectedDataItem()
 }
 
 // _UnConnectedDataItem is the data-structure of this message

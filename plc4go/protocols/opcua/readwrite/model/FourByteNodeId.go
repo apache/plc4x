@@ -40,6 +40,8 @@ type FourByteNodeId interface {
 	GetNamespaceIndex() uint8
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() uint16
+	// IsFourByteNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFourByteNodeId()
 }
 
 // _FourByteNodeId is the data-structure of this message

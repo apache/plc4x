@@ -53,6 +53,8 @@ type BACnetNotificationParametersAccessEvent interface {
 	GetAuthenticationFactor() BACnetAuthenticationFactorTypeTagged
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersAccessEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersAccessEvent()
 }
 
 // _BACnetNotificationParametersAccessEvent is the data-structure of this message

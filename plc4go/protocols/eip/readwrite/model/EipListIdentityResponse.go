@@ -39,6 +39,8 @@ type EipListIdentityResponse interface {
 	EipPacket
 	// GetItems returns Items (property field)
 	GetItems() []CommandSpecificDataItem
+	// IsEipListIdentityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEipListIdentityResponse()
 }
 
 // _EipListIdentityResponse is the data-structure of this message

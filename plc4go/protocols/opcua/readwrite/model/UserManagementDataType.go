@@ -43,6 +43,8 @@ type UserManagementDataType interface {
 	GetUserConfiguration() UserConfigurationMask
 	// GetDescription returns Description (property field)
 	GetDescription() PascalString
+	// IsUserManagementDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUserManagementDataType()
 }
 
 // _UserManagementDataType is the data-structure of this message

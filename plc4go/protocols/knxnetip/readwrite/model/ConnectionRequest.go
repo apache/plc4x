@@ -45,6 +45,8 @@ type ConnectionRequest interface {
 	GetHpaiDataEndpoint() HPAIDataEndpoint
 	// GetConnectionRequestInformation returns ConnectionRequestInformation (property field)
 	GetConnectionRequestInformation() ConnectionRequestInformation
+	// IsConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionRequest()
 }
 
 // _ConnectionRequest is the data-structure of this message

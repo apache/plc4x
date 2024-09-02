@@ -39,6 +39,8 @@ type BACnetChannelValueLightingCommand interface {
 	BACnetChannelValue
 	// GetLigthingCommandValue returns LigthingCommandValue (property field)
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
+	// IsBACnetChannelValueLightingCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueLightingCommand()
 }
 
 // _BACnetChannelValueLightingCommand is the data-structure of this message

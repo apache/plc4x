@@ -43,6 +43,8 @@ type BACnetConstructedDataTags interface {
 	GetTags() []BACnetNameValue
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataTags is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTags()
 }
 
 // _BACnetConstructedDataTags is the data-structure of this message

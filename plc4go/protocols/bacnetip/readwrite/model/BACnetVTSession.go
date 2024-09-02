@@ -42,6 +42,8 @@ type BACnetVTSession interface {
 	GetRemoveVtSessionId() BACnetApplicationTagUnsignedInteger
 	// GetRemoteVtAddress returns RemoteVtAddress (property field)
 	GetRemoteVtAddress() BACnetAddress
+	// IsBACnetVTSession is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetVTSession()
 }
 
 // _BACnetVTSession is the data-structure of this message

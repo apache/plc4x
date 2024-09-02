@@ -43,6 +43,8 @@ type BACnetConstructedDataBitText interface {
 	GetBitText() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataBitText is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBitText()
 }
 
 // _BACnetConstructedDataBitText is the data-structure of this message

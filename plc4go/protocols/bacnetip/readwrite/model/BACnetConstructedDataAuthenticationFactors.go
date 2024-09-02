@@ -43,6 +43,8 @@ type BACnetConstructedDataAuthenticationFactors interface {
 	GetAuthenticationFactors() []BACnetCredentialAuthenticationFactor
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataAuthenticationFactors is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAuthenticationFactors()
 }
 
 // _BACnetConstructedDataAuthenticationFactors is the data-structure of this message

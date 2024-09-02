@@ -41,6 +41,8 @@ type NLMRequestMasterKey interface {
 	GetNumberOfSupportedKeyAlgorithms() uint8
 	// GetEncryptionAndSignatureAlgorithms returns EncryptionAndSignatureAlgorithms (property field)
 	GetEncryptionAndSignatureAlgorithms() []byte
+	// IsNLMRequestMasterKey is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMRequestMasterKey()
 }
 
 // _NLMRequestMasterKey is the data-structure of this message

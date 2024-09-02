@@ -43,6 +43,8 @@ type BACnetServiceAckVTData interface {
 	GetVtNewData() BACnetApplicationTagOctetString
 	// GetVtDataFlag returns VtDataFlag (property field)
 	GetVtDataFlag() BACnetApplicationTagUnsignedInteger
+	// IsBACnetServiceAckVTData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckVTData()
 }
 
 // _BACnetServiceAckVTData is the data-structure of this message

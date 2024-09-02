@@ -43,6 +43,8 @@ type BACnetConstructedDataChannelListOfObjectPropertyReferences interface {
 	GetReferences() []BACnetDeviceObjectPropertyReference
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataChannelListOfObjectPropertyReferences is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataChannelListOfObjectPropertyReferences()
 }
 
 // _BACnetConstructedDataChannelListOfObjectPropertyReferences is the data-structure of this message

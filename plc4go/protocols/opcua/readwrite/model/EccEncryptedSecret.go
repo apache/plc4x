@@ -34,6 +34,8 @@ type EccEncryptedSecret interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsEccEncryptedSecret is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEccEncryptedSecret()
 }
 
 // _EccEncryptedSecret is the data-structure of this message

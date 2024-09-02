@@ -45,6 +45,8 @@ type MediaTransportControlDataRepeatOnOff interface {
 	GetIsRepeatCurrent() bool
 	// GetIsRepeatTracks returns IsRepeatTracks (virtual field)
 	GetIsRepeatTracks() bool
+	// IsMediaTransportControlDataRepeatOnOff is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataRepeatOnOff()
 }
 
 // _MediaTransportControlDataRepeatOnOff is the data-structure of this message

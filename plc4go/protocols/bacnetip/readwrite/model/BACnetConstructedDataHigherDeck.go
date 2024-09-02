@@ -41,6 +41,8 @@ type BACnetConstructedDataHigherDeck interface {
 	GetHigherDeck() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
+	// IsBACnetConstructedDataHigherDeck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataHigherDeck()
 }
 
 // _BACnetConstructedDataHigherDeck is the data-structure of this message

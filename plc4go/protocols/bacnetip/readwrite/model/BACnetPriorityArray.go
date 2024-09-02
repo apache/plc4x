@@ -78,6 +78,8 @@ type BACnetPriorityArray interface {
 	GetIsIndexedAccess() bool
 	// GetIndexEntry returns IndexEntry (virtual field)
 	GetIndexEntry() BACnetPriorityValue
+	// IsBACnetPriorityArray is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityArray()
 }
 
 // _BACnetPriorityArray is the data-structure of this message

@@ -41,6 +41,8 @@ type VariantDateTime interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []int64
+	// IsVariantDateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantDateTime()
 }
 
 // _VariantDateTime is the data-structure of this message

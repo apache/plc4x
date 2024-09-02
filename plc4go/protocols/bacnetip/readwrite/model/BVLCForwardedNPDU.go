@@ -45,6 +45,8 @@ type BVLCForwardedNPDU interface {
 	GetPort() uint16
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
+	// IsBVLCForwardedNPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCForwardedNPDU()
 }
 
 // _BVLCForwardedNPDU is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataDeviceMaxInfoFrames interface {
 	GetMaxInfoFrames() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataDeviceMaxInfoFrames is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDeviceMaxInfoFrames()
 }
 
 // _BACnetConstructedDataDeviceMaxInfoFrames is the data-structure of this message

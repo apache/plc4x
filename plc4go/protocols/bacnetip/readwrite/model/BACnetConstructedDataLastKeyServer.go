@@ -41,6 +41,8 @@ type BACnetConstructedDataLastKeyServer interface {
 	GetLastKeyServer() BACnetAddressBinding
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAddressBinding
+	// IsBACnetConstructedDataLastKeyServer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastKeyServer()
 }
 
 // _BACnetConstructedDataLastKeyServer is the data-structure of this message

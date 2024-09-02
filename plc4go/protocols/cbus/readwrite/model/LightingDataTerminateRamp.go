@@ -39,6 +39,8 @@ type LightingDataTerminateRamp interface {
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
+	// IsLightingDataTerminateRamp is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLightingDataTerminateRamp()
 }
 
 // _LightingDataTerminateRamp is the data-structure of this message

@@ -38,6 +38,8 @@ type BACnetUnconfirmedServiceRequestWhoHasObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetUnconfirmedServiceRequestWhoHasObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequestWhoHasObject()
 }
 
 // BACnetUnconfirmedServiceRequestWhoHasObjectContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetUnconfirmedServiceRequestWhoHasObject() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetUnconfirmedServiceRequestWhoHasObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestWhoHasObject()
 }
 

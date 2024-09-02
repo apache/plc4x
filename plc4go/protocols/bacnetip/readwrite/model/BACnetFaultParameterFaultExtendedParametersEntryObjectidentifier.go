@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier interface 
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
+	// IsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier is the data-structure of this message

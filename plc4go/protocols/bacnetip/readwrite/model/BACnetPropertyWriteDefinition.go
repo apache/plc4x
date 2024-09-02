@@ -44,6 +44,8 @@ type BACnetPropertyWriteDefinition interface {
 	GetPropertyValue() BACnetConstructedData
 	// GetPriority returns Priority (property field)
 	GetPriority() BACnetContextTagUnsignedInteger
+	// IsBACnetPropertyWriteDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyWriteDefinition()
 }
 
 // _BACnetPropertyWriteDefinition is the data-structure of this message

@@ -40,6 +40,8 @@ type ReplyNetwork interface {
 	GetNetworkRoute() NetworkRoute
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
+	// IsReplyNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReplyNetwork()
 }
 
 // _ReplyNetwork is the data-structure of this message

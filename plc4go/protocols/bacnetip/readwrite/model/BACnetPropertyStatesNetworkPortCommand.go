@@ -39,6 +39,8 @@ type BACnetPropertyStatesNetworkPortCommand interface {
 	BACnetPropertyStates
 	// GetNetworkPortCommand returns NetworkPortCommand (property field)
 	GetNetworkPortCommand() BACnetNetworkPortCommandTagged
+	// IsBACnetPropertyStatesNetworkPortCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesNetworkPortCommand()
 }
 
 // _BACnetPropertyStatesNetworkPortCommand is the data-structure of this message

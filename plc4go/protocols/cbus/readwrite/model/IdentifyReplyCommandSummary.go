@@ -43,6 +43,8 @@ type IdentifyReplyCommandSummary interface {
 	GetUnitServiceType() byte
 	// GetVersion returns Version (property field)
 	GetVersion() string
+	// IsIdentifyReplyCommandSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandSummary()
 }
 
 // _IdentifyReplyCommandSummary is the data-structure of this message

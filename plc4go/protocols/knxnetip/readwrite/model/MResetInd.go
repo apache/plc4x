@@ -35,6 +35,8 @@ type MResetInd interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsMResetInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMResetInd()
 }
 
 // _MResetInd is the data-structure of this message

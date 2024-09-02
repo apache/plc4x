@@ -47,6 +47,8 @@ type MultipleServiceResponse interface {
 	GetOffsets() []uint16
 	// GetServicesData returns ServicesData (property field)
 	GetServicesData() []byte
+	// IsMultipleServiceResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMultipleServiceResponse()
 }
 
 // _MultipleServiceResponse is the data-structure of this message

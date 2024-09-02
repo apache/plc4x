@@ -45,6 +45,8 @@ type ReferenceDescriptionDataType interface {
 	GetIsForward() bool
 	// GetTargetNode returns TargetNode (property field)
 	GetTargetNode() ExpandedNodeId
+	// IsReferenceDescriptionDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReferenceDescriptionDataType()
 }
 
 // _ReferenceDescriptionDataType is the data-structure of this message

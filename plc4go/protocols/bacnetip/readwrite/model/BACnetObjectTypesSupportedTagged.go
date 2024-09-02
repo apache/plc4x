@@ -60,6 +60,8 @@ type BACnetObjectTypesSupportedTagged interface {
 	GetEscalator() bool
 	// GetLift returns Lift (virtual field)
 	GetLift() bool
+	// IsBACnetObjectTypesSupportedTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetObjectTypesSupportedTagged()
 }
 
 // _BACnetObjectTypesSupportedTagged is the data-structure of this message

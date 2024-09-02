@@ -35,6 +35,8 @@ type SecurityDataExitDelayStarted interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataExitDelayStarted is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataExitDelayStarted()
 }
 
 // _SecurityDataExitDelayStarted is the data-structure of this message

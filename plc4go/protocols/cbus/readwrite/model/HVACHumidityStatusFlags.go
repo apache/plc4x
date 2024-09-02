@@ -54,6 +54,8 @@ type HVACHumidityStatusFlags interface {
 	GetIsDamperStateClosed() bool
 	// GetIsDamperStateOpen returns IsDamperStateOpen (virtual field)
 	GetIsDamperStateOpen() bool
+	// IsHVACHumidityStatusFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACHumidityStatusFlags()
 }
 
 // _HVACHumidityStatusFlags is the data-structure of this message

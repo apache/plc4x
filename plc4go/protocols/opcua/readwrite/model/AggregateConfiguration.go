@@ -47,6 +47,8 @@ type AggregateConfiguration interface {
 	GetPercentDataGood() uint8
 	// GetUseSlopedExtrapolation returns UseSlopedExtrapolation (property field)
 	GetUseSlopedExtrapolation() bool
+	// IsAggregateConfiguration is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAggregateConfiguration()
 }
 
 // _AggregateConfiguration is the data-structure of this message

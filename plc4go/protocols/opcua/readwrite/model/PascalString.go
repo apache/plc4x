@@ -40,6 +40,8 @@ type PascalString interface {
 	GetStringValue() string
 	// GetStringLength returns StringLength (virtual field)
 	GetStringLength() int32
+	// IsPascalString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPascalString()
 }
 
 // _PascalString is the data-structure of this message

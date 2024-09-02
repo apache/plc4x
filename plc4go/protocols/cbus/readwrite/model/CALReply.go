@@ -38,6 +38,8 @@ type CALReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALReply()
 }
 
 // CALReplyContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type CALReplyContract interface {
 	GetCBusOptions() CBusOptions
 	// GetRequestContext() returns a parser argument
 	GetRequestContext() RequestContext
-	// IsCALReply() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALReply()
 }
 

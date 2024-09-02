@@ -55,6 +55,8 @@ type AlarmMessageObjectQueryType interface {
 	GetTimeGoing() DateAndTime
 	// GetValueGoing returns ValueGoing (property field)
 	GetValueGoing() AssociatedValueType
+	// IsAlarmMessageObjectQueryType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarmMessageObjectQueryType()
 }
 
 // _AlarmMessageObjectQueryType is the data-structure of this message

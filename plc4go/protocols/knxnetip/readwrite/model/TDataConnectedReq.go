@@ -35,6 +35,8 @@ type TDataConnectedReq interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsTDataConnectedReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTDataConnectedReq()
 }
 
 // _TDataConnectedReq is the data-structure of this message

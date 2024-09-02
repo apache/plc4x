@@ -37,13 +37,15 @@ type ModbusADU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsModbusADU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusADU()
 }
 
 // ModbusADUContract provides a set of functions which can be overwritten by a sub struct
 type ModbusADUContract interface {
 	// GetResponse() returns a parser argument
 	GetResponse() bool
-	// IsModbusADU() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsModbusADU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusADU()
 }
 

@@ -49,6 +49,8 @@ type BACnetConstructedDataEventMessageTextsConfig interface {
 	GetToFaultTextConfig() BACnetOptionalCharacterString
 	// GetToNormalTextConfig returns ToNormalTextConfig (virtual field)
 	GetToNormalTextConfig() BACnetOptionalCharacterString
+	// IsBACnetConstructedDataEventMessageTextsConfig is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventMessageTextsConfig()
 }
 
 // _BACnetConstructedDataEventMessageTextsConfig is the data-structure of this message

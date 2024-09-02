@@ -41,6 +41,8 @@ type CipWriteResponse interface {
 	GetStatus() uint8
 	// GetExtStatus returns ExtStatus (property field)
 	GetExtStatus() uint8
+	// IsCipWriteResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipWriteResponse()
 }
 
 // _CipWriteResponse is the data-structure of this message

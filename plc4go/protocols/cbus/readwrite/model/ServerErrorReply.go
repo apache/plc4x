@@ -40,6 +40,8 @@ type ServerErrorReply interface {
 	utils.LengthAware
 	utils.Serializable
 	ReplyOrConfirmation
+	// IsServerErrorReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServerErrorReply()
 }
 
 // _ServerErrorReply is the data-structure of this message

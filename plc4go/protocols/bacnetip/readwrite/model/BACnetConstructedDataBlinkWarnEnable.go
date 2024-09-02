@@ -41,6 +41,8 @@ type BACnetConstructedDataBlinkWarnEnable interface {
 	GetBlinkWarnEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataBlinkWarnEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBlinkWarnEnable()
 }
 
 // _BACnetConstructedDataBlinkWarnEnable is the data-structure of this message

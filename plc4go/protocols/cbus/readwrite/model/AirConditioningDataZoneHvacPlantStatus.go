@@ -47,6 +47,8 @@ type AirConditioningDataZoneHvacPlantStatus interface {
 	GetHvacStatus() HVACStatusFlags
 	// GetHvacErrorCode returns HvacErrorCode (property field)
 	GetHvacErrorCode() HVACError
+	// IsAirConditioningDataZoneHvacPlantStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataZoneHvacPlantStatus()
 }
 
 // _AirConditioningDataZoneHvacPlantStatus is the data-structure of this message

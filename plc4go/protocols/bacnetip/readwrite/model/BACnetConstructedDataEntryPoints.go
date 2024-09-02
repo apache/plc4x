@@ -39,6 +39,8 @@ type BACnetConstructedDataEntryPoints interface {
 	BACnetConstructedData
 	// GetEntryPoints returns EntryPoints (property field)
 	GetEntryPoints() []BACnetDeviceObjectReference
+	// IsBACnetConstructedDataEntryPoints is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEntryPoints()
 }
 
 // _BACnetConstructedDataEntryPoints is the data-structure of this message

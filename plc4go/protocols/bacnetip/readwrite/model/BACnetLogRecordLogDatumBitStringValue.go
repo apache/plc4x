@@ -39,6 +39,8 @@ type BACnetLogRecordLogDatumBitStringValue interface {
 	BACnetLogRecordLogDatum
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetContextTagBitString
+	// IsBACnetLogRecordLogDatumBitStringValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumBitStringValue()
 }
 
 // _BACnetLogRecordLogDatumBitStringValue is the data-structure of this message

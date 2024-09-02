@@ -41,6 +41,8 @@ type BACnetConstructedDataMachineRoomID interface {
 	GetMachineRoomId() BACnetApplicationTagObjectIdentifier
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagObjectIdentifier
+	// IsBACnetConstructedDataMachineRoomID is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMachineRoomID()
 }
 
 // _BACnetConstructedDataMachineRoomID is the data-structure of this message

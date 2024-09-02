@@ -41,6 +41,8 @@ type BACnetConstructedDataValueBeforeChange interface {
 	GetValuesBeforeChange() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataValueBeforeChange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataValueBeforeChange()
 }
 
 // _BACnetConstructedDataValueBeforeChange is the data-structure of this message

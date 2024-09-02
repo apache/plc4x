@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryDate interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
+	// IsBACnetFaultParameterFaultExtendedParametersEntryDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryDate()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryDate is the data-structure of this message

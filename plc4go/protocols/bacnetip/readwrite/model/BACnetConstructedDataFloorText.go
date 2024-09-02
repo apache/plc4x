@@ -43,6 +43,8 @@ type BACnetConstructedDataFloorText interface {
 	GetFloorText() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataFloorText is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFloorText()
 }
 
 // _BACnetConstructedDataFloorText is the data-structure of this message

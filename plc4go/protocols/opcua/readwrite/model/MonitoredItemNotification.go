@@ -41,6 +41,8 @@ type MonitoredItemNotification interface {
 	GetClientHandle() uint32
 	// GetValue returns Value (property field)
 	GetValue() DataValue
+	// IsMonitoredItemNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredItemNotification()
 }
 
 // _MonitoredItemNotification is the data-structure of this message

@@ -43,11 +43,13 @@ type KnxNetIpMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsKnxNetIpMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxNetIpMessage()
 }
 
 // KnxNetIpMessageContract provides a set of functions which can be overwritten by a sub struct
 type KnxNetIpMessageContract interface {
-	// IsKnxNetIpMessage() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsKnxNetIpMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetIpMessage()
 }
 

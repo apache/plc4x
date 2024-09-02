@@ -35,6 +35,8 @@ type LRawReq interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsLRawReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLRawReq()
 }
 
 // _LRawReq is the data-structure of this message

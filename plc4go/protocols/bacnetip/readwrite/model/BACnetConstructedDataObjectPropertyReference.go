@@ -41,6 +41,8 @@ type BACnetConstructedDataObjectPropertyReference interface {
 	GetPropertyReference() BACnetDeviceObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectPropertyReference
+	// IsBACnetConstructedDataObjectPropertyReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataObjectPropertyReference()
 }
 
 // _BACnetConstructedDataObjectPropertyReference is the data-structure of this message

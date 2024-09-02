@@ -39,6 +39,8 @@ type BACnetErrorGeneral interface {
 	BACnetError
 	// GetError returns Error (property field)
 	GetError() Error
+	// IsBACnetErrorGeneral is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetErrorGeneral()
 }
 
 // _BACnetErrorGeneral is the data-structure of this message

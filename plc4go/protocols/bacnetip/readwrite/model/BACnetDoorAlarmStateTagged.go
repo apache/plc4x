@@ -44,6 +44,8 @@ type BACnetDoorAlarmStateTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetDoorAlarmStateTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetDoorAlarmStateTagged()
 }
 
 // _BACnetDoorAlarmStateTagged is the data-structure of this message

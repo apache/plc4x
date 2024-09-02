@@ -52,6 +52,8 @@ type IdentifyReplyCommandUnitSummary interface {
 	GetClockGenerationEnabled() bool
 	// GetUnitGeneratingClock returns UnitGeneratingClock (property field)
 	GetUnitGeneratingClock() bool
+	// IsIdentifyReplyCommandUnitSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandUnitSummary()
 }
 
 // _IdentifyReplyCommandUnitSummary is the data-structure of this message

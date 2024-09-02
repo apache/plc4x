@@ -39,6 +39,8 @@ type BACnetPropertyStatesBoolean interface {
 	BACnetPropertyStates
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
+	// IsBACnetPropertyStatesBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesBoolean()
 }
 
 // _BACnetPropertyStatesBoolean is the data-structure of this message

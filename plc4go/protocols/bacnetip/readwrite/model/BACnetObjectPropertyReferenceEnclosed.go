@@ -42,6 +42,8 @@ type BACnetObjectPropertyReferenceEnclosed interface {
 	GetObjectPropertyReference() BACnetObjectPropertyReference
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetObjectPropertyReferenceEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetObjectPropertyReferenceEnclosed()
 }
 
 // _BACnetObjectPropertyReferenceEnclosed is the data-structure of this message

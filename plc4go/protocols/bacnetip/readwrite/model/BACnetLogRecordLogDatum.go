@@ -38,6 +38,8 @@ type BACnetLogRecordLogDatum interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetLogRecordLogDatum is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatum()
 }
 
 // BACnetLogRecordLogDatumContract provides a set of functions which can be overwritten by a sub struct
@@ -52,7 +54,7 @@ type BACnetLogRecordLogDatumContract interface {
 	GetPeekedTagNumber() uint8
 	// GetTagNumber() returns a parser argument
 	GetTagNumber() uint8
-	// IsBACnetLogRecordLogDatum() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetLogRecordLogDatum is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogRecordLogDatum()
 }
 

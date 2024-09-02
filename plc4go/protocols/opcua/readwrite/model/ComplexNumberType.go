@@ -41,6 +41,8 @@ type ComplexNumberType interface {
 	GetReal() float32
 	// GetImaginary returns Imaginary (property field)
 	GetImaginary() float32
+	// IsComplexNumberType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsComplexNumberType()
 }
 
 // _ComplexNumberType is the data-structure of this message

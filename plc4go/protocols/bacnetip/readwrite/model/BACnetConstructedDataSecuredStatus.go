@@ -41,6 +41,8 @@ type BACnetConstructedDataSecuredStatus interface {
 	GetSecuredStatus() BACnetDoorSecuredStatusTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorSecuredStatusTagged
+	// IsBACnetConstructedDataSecuredStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSecuredStatus()
 }
 
 // _BACnetConstructedDataSecuredStatus is the data-structure of this message

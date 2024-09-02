@@ -46,6 +46,8 @@ type BACnetAccessRule interface {
 	GetLocation() BACnetDeviceObjectReferenceEnclosed
 	// GetEnable returns Enable (property field)
 	GetEnable() BACnetContextTagBoolean
+	// IsBACnetAccessRule is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccessRule()
 }
 
 // _BACnetAccessRule is the data-structure of this message

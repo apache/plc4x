@@ -41,6 +41,8 @@ type BACnetConstructedDataExpectedShedLevel interface {
 	GetExpectedShedLevel() BACnetShedLevel
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetShedLevel
+	// IsBACnetConstructedDataExpectedShedLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataExpectedShedLevel()
 }
 
 // _BACnetConstructedDataExpectedShedLevel is the data-structure of this message

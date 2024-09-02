@@ -39,6 +39,8 @@ type BACnetHostAddressIpAddress interface {
 	BACnetHostAddress
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() BACnetContextTagOctetString
+	// IsBACnetHostAddressIpAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetHostAddressIpAddress()
 }
 
 // _BACnetHostAddressIpAddress is the data-structure of this message

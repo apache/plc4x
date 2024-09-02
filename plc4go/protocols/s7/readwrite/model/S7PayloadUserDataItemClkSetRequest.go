@@ -39,6 +39,8 @@ type S7PayloadUserDataItemClkSetRequest interface {
 	S7PayloadUserDataItem
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
+	// IsS7PayloadUserDataItemClkSetRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemClkSetRequest()
 }
 
 // _S7PayloadUserDataItemClkSetRequest is the data-structure of this message

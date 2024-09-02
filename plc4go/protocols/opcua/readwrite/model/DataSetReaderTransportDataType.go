@@ -35,6 +35,8 @@ type DataSetReaderTransportDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsDataSetReaderTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataSetReaderTransportDataType()
 }
 
 // _DataSetReaderTransportDataType is the data-structure of this message

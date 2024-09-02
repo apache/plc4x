@@ -48,6 +48,8 @@ type BACnetLightingCommand interface {
 	GetFadeTime() BACnetContextTagUnsignedInteger
 	// GetPriority returns Priority (property field)
 	GetPriority() BACnetContextTagUnsignedInteger
+	// IsBACnetLightingCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLightingCommand()
 }
 
 // _BACnetLightingCommand is the data-structure of this message

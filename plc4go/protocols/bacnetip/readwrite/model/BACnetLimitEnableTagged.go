@@ -44,6 +44,8 @@ type BACnetLimitEnableTagged interface {
 	GetLowLimitEnable() bool
 	// GetHighLimitEnable returns HighLimitEnable (virtual field)
 	GetHighLimitEnable() bool
+	// IsBACnetLimitEnableTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLimitEnableTagged()
 }
 
 // _BACnetLimitEnableTagged is the data-structure of this message

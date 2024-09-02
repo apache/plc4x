@@ -35,6 +35,8 @@ type SysexCommandSamplingInterval interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
+	// IsSysexCommandSamplingInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandSamplingInterval()
 }
 
 // _SysexCommandSamplingInterval is the data-structure of this message

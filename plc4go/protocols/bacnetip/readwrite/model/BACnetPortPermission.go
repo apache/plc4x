@@ -40,6 +40,8 @@ type BACnetPortPermission interface {
 	GetPort() BACnetContextTagUnsignedInteger
 	// GetEnable returns Enable (property field)
 	GetEnable() BACnetContextTagBoolean
+	// IsBACnetPortPermission is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPortPermission()
 }
 
 // _BACnetPortPermission is the data-structure of this message

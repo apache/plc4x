@@ -39,6 +39,8 @@ type BACnetPropertyStatesAccessEvent interface {
 	BACnetPropertyStates
 	// GetAccessEvent returns AccessEvent (property field)
 	GetAccessEvent() BACnetAccessEventTagged
+	// IsBACnetPropertyStatesAccessEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesAccessEvent()
 }
 
 // _BACnetPropertyStatesAccessEvent is the data-structure of this message

@@ -38,11 +38,13 @@ type S7ParameterUserDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsS7ParameterUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterUserDataItem()
 }
 
 // S7ParameterUserDataItemContract provides a set of functions which can be overwritten by a sub struct
 type S7ParameterUserDataItemContract interface {
-	// IsS7ParameterUserDataItem() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsS7ParameterUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7ParameterUserDataItem()
 }
 

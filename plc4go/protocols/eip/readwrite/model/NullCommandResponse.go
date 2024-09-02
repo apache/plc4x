@@ -35,6 +35,8 @@ type NullCommandResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
+	// IsNullCommandResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNullCommandResponse()
 }
 
 // _NullCommandResponse is the data-structure of this message

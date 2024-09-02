@@ -41,6 +41,8 @@ type VariantExpandedNodeId interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []ExpandedNodeId
+	// IsVariantExpandedNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantExpandedNodeId()
 }
 
 // _VariantExpandedNodeId is the data-structure of this message

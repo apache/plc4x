@@ -39,6 +39,8 @@ type X509IdentityToken interface {
 	UserIdentityTokenDefinition
 	// GetCertificateData returns CertificateData (property field)
 	GetCertificateData() PascalByteString
+	// IsX509IdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsX509IdentityToken()
 }
 
 // _X509IdentityToken is the data-structure of this message

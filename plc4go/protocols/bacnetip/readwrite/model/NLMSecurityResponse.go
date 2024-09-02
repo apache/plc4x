@@ -45,6 +45,8 @@ type NLMSecurityResponse interface {
 	GetOriginalTimestamp() uint32
 	// GetVariableParameters returns VariableParameters (property field)
 	GetVariableParameters() []byte
+	// IsNLMSecurityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMSecurityResponse()
 }
 
 // _NLMSecurityResponse is the data-structure of this message

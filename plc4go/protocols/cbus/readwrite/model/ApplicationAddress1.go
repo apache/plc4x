@@ -40,6 +40,8 @@ type ApplicationAddress1 interface {
 	GetAddress() byte
 	// GetIsWildcard returns IsWildcard (virtual field)
 	GetIsWildcard() bool
+	// IsApplicationAddress1 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApplicationAddress1()
 }
 
 // _ApplicationAddress1 is the data-structure of this message

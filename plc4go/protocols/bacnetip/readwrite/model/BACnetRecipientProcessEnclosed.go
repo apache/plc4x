@@ -42,6 +42,8 @@ type BACnetRecipientProcessEnclosed interface {
 	GetRecipientProcess() BACnetRecipientProcess
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetRecipientProcessEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRecipientProcessEnclosed()
 }
 
 // _BACnetRecipientProcessEnclosed is the data-structure of this message

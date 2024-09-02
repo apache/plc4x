@@ -44,6 +44,8 @@ type BACnetEventNotificationSubscription interface {
 	GetIssueConfirmedNotifications() BACnetContextTagBoolean
 	// GetTimeRemaining returns TimeRemaining (property field)
 	GetTimeRemaining() BACnetContextTagUnsignedInteger
+	// IsBACnetEventNotificationSubscription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventNotificationSubscription()
 }
 
 // _BACnetEventNotificationSubscription is the data-structure of this message

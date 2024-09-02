@@ -44,6 +44,8 @@ type TamperStatus interface {
 	GetIsReserved() bool
 	// GetIsTamperActive returns IsTamperActive (virtual field)
 	GetIsTamperActive() bool
+	// IsTamperStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTamperStatus()
 }
 
 // _TamperStatus is the data-structure of this message

@@ -41,6 +41,8 @@ type SearchRequest interface {
 	KnxNetIpMessage
 	// GetHpaiIDiscoveryEndpoint returns HpaiIDiscoveryEndpoint (property field)
 	GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint
+	// IsSearchRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSearchRequest()
 }
 
 // _SearchRequest is the data-structure of this message

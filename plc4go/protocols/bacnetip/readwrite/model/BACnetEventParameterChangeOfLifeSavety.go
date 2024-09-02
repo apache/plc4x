@@ -49,6 +49,8 @@ type BACnetEventParameterChangeOfLifeSavety interface {
 	GetModePropertyReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterChangeOfLifeSavety is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfLifeSavety()
 }
 
 // _BACnetEventParameterChangeOfLifeSavety is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetChannelValueNull interface {
 	BACnetChannelValue
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
+	// IsBACnetChannelValueNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueNull()
 }
 
 // _BACnetChannelValueNull is the data-structure of this message

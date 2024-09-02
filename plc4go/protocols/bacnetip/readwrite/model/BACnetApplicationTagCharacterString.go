@@ -41,6 +41,8 @@ type BACnetApplicationTagCharacterString interface {
 	GetPayload() BACnetTagPayloadCharacterString
 	// GetValue returns Value (virtual field)
 	GetValue() string
+	// IsBACnetApplicationTagCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTagCharacterString()
 }
 
 // _BACnetApplicationTagCharacterString is the data-structure of this message

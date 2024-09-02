@@ -35,6 +35,8 @@ type ApduDataExtGroupPropertyValueInfoReport interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtGroupPropertyValueInfoReport is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtGroupPropertyValueInfoReport()
 }
 
 // _ApduDataExtGroupPropertyValueInfoReport is the data-structure of this message

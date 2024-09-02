@@ -43,6 +43,8 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 	GetEnableDisable() BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
 	// GetPassword returns Password (property field)
 	GetPassword() BACnetContextTagCharacterString
+	// IsBACnetConfirmedServiceRequestDeviceCommunicationControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestDeviceCommunicationControl()
 }
 
 // _BACnetConfirmedServiceRequestDeviceCommunicationControl is the data-structure of this message

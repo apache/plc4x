@@ -39,6 +39,8 @@ type ModbusPDUReadExceptionStatusResponse interface {
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() uint8
+	// IsModbusPDUReadExceptionStatusResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadExceptionStatusResponse()
 }
 
 // _ModbusPDUReadExceptionStatusResponse is the data-structure of this message

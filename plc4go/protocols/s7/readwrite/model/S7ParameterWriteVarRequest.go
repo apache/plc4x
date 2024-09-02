@@ -39,6 +39,8 @@ type S7ParameterWriteVarRequest interface {
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7VarRequestParameterItem
+	// IsS7ParameterWriteVarRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterWriteVarRequest()
 }
 
 // _S7ParameterWriteVarRequest is the data-structure of this message

@@ -43,6 +43,8 @@ type BACnetConstructedDataAccessDoors interface {
 	GetAccessDoors() []BACnetDeviceObjectReference
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataAccessDoors is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessDoors()
 }
 
 // _BACnetConstructedDataAccessDoors is the data-structure of this message

@@ -48,6 +48,8 @@ type ExpandedNodeId interface {
 	GetServerIndex() *uint32
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
+	// IsExpandedNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsExpandedNodeId()
 }
 
 // _ExpandedNodeId is the data-structure of this message

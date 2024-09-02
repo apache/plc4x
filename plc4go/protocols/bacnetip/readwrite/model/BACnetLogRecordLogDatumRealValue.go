@@ -39,6 +39,8 @@ type BACnetLogRecordLogDatumRealValue interface {
 	BACnetLogRecordLogDatum
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetContextTagReal
+	// IsBACnetLogRecordLogDatumRealValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumRealValue()
 }
 
 // _BACnetLogRecordLogDatumRealValue is the data-structure of this message

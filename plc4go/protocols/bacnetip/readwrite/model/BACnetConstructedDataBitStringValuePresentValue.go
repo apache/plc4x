@@ -41,6 +41,8 @@ type BACnetConstructedDataBitStringValuePresentValue interface {
 	GetPresentValue() BACnetApplicationTagBitString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBitString
+	// IsBACnetConstructedDataBitStringValuePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBitStringValuePresentValue()
 }
 
 // _BACnetConstructedDataBitStringValuePresentValue is the data-structure of this message

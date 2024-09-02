@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueObjectidentifier interface {
 	BACnetTimerStateChangeValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
+	// IsBACnetTimerStateChangeValueObjectidentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueObjectidentifier()
 }
 
 // _BACnetTimerStateChangeValueObjectidentifier is the data-structure of this message

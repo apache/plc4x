@@ -43,6 +43,8 @@ type ModbusAsciiADU interface {
 	GetAddress() uint8
 	// GetPdu returns Pdu (property field)
 	GetPdu() ModbusPDU
+	// IsModbusAsciiADU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusAsciiADU()
 }
 
 // _ModbusAsciiADU is the data-structure of this message

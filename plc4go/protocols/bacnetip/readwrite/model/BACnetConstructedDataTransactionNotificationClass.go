@@ -41,6 +41,8 @@ type BACnetConstructedDataTransactionNotificationClass interface {
 	GetTransactionNotificationClass() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataTransactionNotificationClass is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTransactionNotificationClass()
 }
 
 // _BACnetConstructedDataTransactionNotificationClass is the data-structure of this message

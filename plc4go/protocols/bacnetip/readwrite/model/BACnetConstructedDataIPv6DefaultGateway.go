@@ -41,6 +41,8 @@ type BACnetConstructedDataIPv6DefaultGateway interface {
 	GetIpv6DefaultGateway() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
+	// IsBACnetConstructedDataIPv6DefaultGateway is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPv6DefaultGateway()
 }
 
 // _BACnetConstructedDataIPv6DefaultGateway is the data-structure of this message

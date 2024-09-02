@@ -39,6 +39,8 @@ type BACnetConfirmedServiceRequestReadPropertyConditional interface {
 	BACnetConfirmedServiceRequest
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
+	// IsBACnetConfirmedServiceRequestReadPropertyConditional is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadPropertyConditional()
 }
 
 // _BACnetConfirmedServiceRequestReadPropertyConditional is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataLoadControlPresentValue interface {
 	GetPresentValue() BACnetShedStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetShedStateTagged
+	// IsBACnetConstructedDataLoadControlPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLoadControlPresentValue()
 }
 
 // _BACnetConstructedDataLoadControlPresentValue is the data-structure of this message

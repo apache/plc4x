@@ -34,6 +34,8 @@ type TimeString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsTimeString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTimeString()
 }
 
 // _TimeString is the data-structure of this message

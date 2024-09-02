@@ -43,6 +43,8 @@ type UnregisterNodesRequest interface {
 	GetNoOfNodesToUnregister() int32
 	// GetNodesToUnregister returns NodesToUnregister (property field)
 	GetNodesToUnregister() []NodeId
+	// IsUnregisterNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUnregisterNodesRequest()
 }
 
 // _UnregisterNodesRequest is the data-structure of this message

@@ -51,6 +51,8 @@ type RequestHeader interface {
 	GetTimeoutHint() uint32
 	// GetAdditionalHeader returns AdditionalHeader (property field)
 	GetAdditionalHeader() ExtensionObject
+	// IsRequestHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestHeader()
 }
 
 // _RequestHeader is the data-structure of this message

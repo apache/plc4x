@@ -35,6 +35,8 @@ type HistoryReadDetails interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsHistoryReadDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryReadDetails()
 }
 
 // _HistoryReadDetails is the data-structure of this message

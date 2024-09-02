@@ -35,6 +35,8 @@ type NullExtension interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsNullExtension is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNullExtension()
 }
 
 // _NullExtension is the data-structure of this message

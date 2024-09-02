@@ -41,6 +41,8 @@ type BACnetConstructedDataIPSubnetMask interface {
 	GetIpSubnetMask() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
+	// IsBACnetConstructedDataIPSubnetMask is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPSubnetMask()
 }
 
 // _BACnetConstructedDataIPSubnetMask is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataMultiStateOutputFeedbackValue interface {
 	GetFeedbackValue() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataMultiStateOutputFeedbackValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMultiStateOutputFeedbackValue()
 }
 
 // _BACnetConstructedDataMultiStateOutputFeedbackValue is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetConfirmedServiceRequestAuthenticate interface {
 	BACnetConfirmedServiceRequest
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
+	// IsBACnetConfirmedServiceRequestAuthenticate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAuthenticate()
 }
 
 // _BACnetConfirmedServiceRequestAuthenticate is the data-structure of this message

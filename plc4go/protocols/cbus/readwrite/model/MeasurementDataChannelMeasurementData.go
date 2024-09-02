@@ -53,6 +53,8 @@ type MeasurementDataChannelMeasurementData interface {
 	GetRawValue() uint16
 	// GetValue returns Value (virtual field)
 	GetValue() float64
+	// IsMeasurementDataChannelMeasurementData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeasurementDataChannelMeasurementData()
 }
 
 // _MeasurementDataChannelMeasurementData is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataBelongsTo interface {
 	GetBelongsTo() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
+	// IsBACnetConstructedDataBelongsTo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBelongsTo()
 }
 
 // _BACnetConstructedDataBelongsTo is the data-structure of this message

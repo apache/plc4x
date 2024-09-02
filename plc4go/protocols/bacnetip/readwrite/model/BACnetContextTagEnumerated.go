@@ -41,6 +41,8 @@ type BACnetContextTagEnumerated interface {
 	GetPayload() BACnetTagPayloadEnumerated
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint32
+	// IsBACnetContextTagEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagEnumerated()
 }
 
 // _BACnetContextTagEnumerated is the data-structure of this message

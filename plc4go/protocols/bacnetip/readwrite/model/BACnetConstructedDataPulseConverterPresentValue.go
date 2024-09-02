@@ -41,6 +41,8 @@ type BACnetConstructedDataPulseConverterPresentValue interface {
 	GetPresentValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataPulseConverterPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPulseConverterPresentValue()
 }
 
 // _BACnetConstructedDataPulseConverterPresentValue is the data-structure of this message

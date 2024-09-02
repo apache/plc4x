@@ -35,6 +35,8 @@ type ApduDataExtWriteRouterStatusRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtWriteRouterStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtWriteRouterStatusRequest()
 }
 
 // _ApduDataExtWriteRouterStatusRequest is the data-structure of this message

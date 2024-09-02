@@ -38,6 +38,8 @@ type BACnetApplicationTag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetApplicationTag is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTag()
 }
 
 // BACnetApplicationTagContract provides a set of functions which can be overwritten by a sub struct
@@ -48,7 +50,7 @@ type BACnetApplicationTagContract interface {
 	GetActualTagNumber() uint8
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
-	// IsBACnetApplicationTag() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetApplicationTag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetApplicationTag()
 }
 

@@ -39,6 +39,8 @@ type SALDataMediaTransport interface {
 	SALData
 	// GetMediaTransportControlData returns MediaTransportControlData (property field)
 	GetMediaTransportControlData() MediaTransportControlData
+	// IsSALDataMediaTransport is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataMediaTransport()
 }
 
 // _SALDataMediaTransport is the data-structure of this message

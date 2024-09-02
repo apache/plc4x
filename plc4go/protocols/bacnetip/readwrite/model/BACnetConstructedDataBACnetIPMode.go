@@ -41,6 +41,8 @@ type BACnetConstructedDataBACnetIPMode interface {
 	GetBacnetIpMode() BACnetIPModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetIPModeTagged
+	// IsBACnetConstructedDataBACnetIPMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBACnetIPMode()
 }
 
 // _BACnetConstructedDataBACnetIPMode is the data-structure of this message

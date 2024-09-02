@@ -41,6 +41,8 @@ type BACnetConstructedDataLowDiffLimit interface {
 	GetLowDiffLimit() BACnetOptionalREAL
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetOptionalREAL
+	// IsBACnetConstructedDataLowDiffLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLowDiffLimit()
 }
 
 // _BACnetConstructedDataLowDiffLimit is the data-structure of this message

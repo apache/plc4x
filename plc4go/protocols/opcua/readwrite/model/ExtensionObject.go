@@ -44,6 +44,8 @@ type ExtensionObject interface {
 	GetBody() ExtensionObjectDefinition
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
+	// IsExtensionObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsExtensionObject()
 }
 
 // _ExtensionObject is the data-structure of this message

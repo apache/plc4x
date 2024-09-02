@@ -38,6 +38,8 @@ type DF1RequestMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsDF1RequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1RequestMessage()
 }
 
 // DF1RequestMessageContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type DF1RequestMessageContract interface {
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
 	GetTransactionCounter() uint16
-	// IsDF1RequestMessage() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsDF1RequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestMessage()
 }
 

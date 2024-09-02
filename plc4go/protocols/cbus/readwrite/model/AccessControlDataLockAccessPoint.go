@@ -35,6 +35,8 @@ type AccessControlDataLockAccessPoint interface {
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
+	// IsAccessControlDataLockAccessPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlDataLockAccessPoint()
 }
 
 // _AccessControlDataLockAccessPoint is the data-structure of this message

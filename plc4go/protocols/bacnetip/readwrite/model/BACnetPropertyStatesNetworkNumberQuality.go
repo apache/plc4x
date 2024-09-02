@@ -39,6 +39,8 @@ type BACnetPropertyStatesNetworkNumberQuality interface {
 	BACnetPropertyStates
 	// GetNetworkNumberQuality returns NetworkNumberQuality (property field)
 	GetNetworkNumberQuality() BACnetNetworkNumberQualityTagged
+	// IsBACnetPropertyStatesNetworkNumberQuality is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesNetworkNumberQuality()
 }
 
 // _BACnetPropertyStatesNetworkNumberQuality is the data-structure of this message

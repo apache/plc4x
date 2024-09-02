@@ -41,6 +41,8 @@ type DeviceConfigurationAck interface {
 	KnxNetIpMessage
 	// GetDeviceConfigurationAckDataBlock returns DeviceConfigurationAckDataBlock (property field)
 	GetDeviceConfigurationAckDataBlock() DeviceConfigurationAckDataBlock
+	// IsDeviceConfigurationAck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeviceConfigurationAck()
 }
 
 // _DeviceConfigurationAck is the data-structure of this message

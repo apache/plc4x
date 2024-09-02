@@ -41,6 +41,8 @@ type BACnetConstructedDataLightingCommand interface {
 	GetLightingCommand() BACnetLightingCommand
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLightingCommand
+	// IsBACnetConstructedDataLightingCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLightingCommand()
 }
 
 // _BACnetConstructedDataLightingCommand is the data-structure of this message

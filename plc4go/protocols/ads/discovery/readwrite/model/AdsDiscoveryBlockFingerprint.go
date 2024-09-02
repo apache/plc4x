@@ -39,6 +39,8 @@ type AdsDiscoveryBlockFingerprint interface {
 	AdsDiscoveryBlock
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsAdsDiscoveryBlockFingerprint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockFingerprint()
 }
 
 // _AdsDiscoveryBlockFingerprint is the data-structure of this message

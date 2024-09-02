@@ -35,6 +35,8 @@ type ApduDataExtGroupPropertyValueRead interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtGroupPropertyValueRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtGroupPropertyValueRead()
 }
 
 // _ApduDataExtGroupPropertyValueRead is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetPropertyStatesState interface {
 	BACnetPropertyStates
 	// GetState returns State (property field)
 	GetState() BACnetEventStateTagged
+	// IsBACnetPropertyStatesState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesState()
 }
 
 // _BACnetPropertyStatesState is the data-structure of this message

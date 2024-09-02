@@ -41,6 +41,8 @@ type BACnetConstructedDataAnalogInputFaultHighLimit interface {
 	GetFaultHighLimit() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataAnalogInputFaultHighLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAnalogInputFaultHighLimit()
 }
 
 // _BACnetConstructedDataAnalogInputFaultHighLimit is the data-structure of this message

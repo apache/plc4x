@@ -35,6 +35,8 @@ type SecurityDataStatus1Request interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataStatus1Request is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataStatus1Request()
 }
 
 // _SecurityDataStatus1Request is the data-structure of this message

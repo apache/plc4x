@@ -39,6 +39,8 @@ type BACnetPropertyStatesMaintenance interface {
 	BACnetPropertyStates
 	// GetMaintenance returns Maintenance (property field)
 	GetMaintenance() BACnetMaintenanceTagged
+	// IsBACnetPropertyStatesMaintenance is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesMaintenance()
 }
 
 // _BACnetPropertyStatesMaintenance is the data-structure of this message

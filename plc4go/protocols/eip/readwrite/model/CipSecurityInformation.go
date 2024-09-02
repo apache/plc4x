@@ -39,6 +39,8 @@ type CipSecurityInformation interface {
 	CommandSpecificDataItem
 	// GetTodoImplement returns TodoImplement (property field)
 	GetTodoImplement() []uint8
+	// IsCipSecurityInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipSecurityInformation()
 }
 
 // _CipSecurityInformation is the data-structure of this message

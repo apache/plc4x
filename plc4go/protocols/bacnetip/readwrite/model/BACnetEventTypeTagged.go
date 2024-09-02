@@ -44,6 +44,8 @@ type BACnetEventTypeTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetEventTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventTypeTagged()
 }
 
 // _BACnetEventTypeTagged is the data-structure of this message

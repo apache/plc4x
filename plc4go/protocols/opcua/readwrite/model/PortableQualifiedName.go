@@ -41,6 +41,8 @@ type PortableQualifiedName interface {
 	GetNamespaceUri() PascalString
 	// GetName returns Name (property field)
 	GetName() PascalString
+	// IsPortableQualifiedName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPortableQualifiedName()
 }
 
 // _PortableQualifiedName is the data-structure of this message

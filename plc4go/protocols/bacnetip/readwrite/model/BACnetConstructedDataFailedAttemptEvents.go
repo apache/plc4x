@@ -39,6 +39,8 @@ type BACnetConstructedDataFailedAttemptEvents interface {
 	BACnetConstructedData
 	// GetFailedAttemptEvents returns FailedAttemptEvents (property field)
 	GetFailedAttemptEvents() []BACnetAccessEventTagged
+	// IsBACnetConstructedDataFailedAttemptEvents is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFailedAttemptEvents()
 }
 
 // _BACnetConstructedDataFailedAttemptEvents is the data-structure of this message

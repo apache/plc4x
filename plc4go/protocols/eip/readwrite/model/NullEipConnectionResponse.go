@@ -35,6 +35,8 @@ type NullEipConnectionResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
+	// IsNullEipConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNullEipConnectionResponse()
 }
 
 // _NullEipConnectionResponse is the data-structure of this message

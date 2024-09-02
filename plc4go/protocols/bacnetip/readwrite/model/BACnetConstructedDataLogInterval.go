@@ -41,6 +41,8 @@ type BACnetConstructedDataLogInterval interface {
 	GetLogInterval() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataLogInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLogInterval()
 }
 
 // _BACnetConstructedDataLogInterval is the data-structure of this message

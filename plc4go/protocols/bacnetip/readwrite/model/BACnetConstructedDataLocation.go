@@ -41,6 +41,8 @@ type BACnetConstructedDataLocation interface {
 	GetLocation() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataLocation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLocation()
 }
 
 // _BACnetConstructedDataLocation is the data-structure of this message

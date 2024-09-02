@@ -41,6 +41,8 @@ type ModbusPDUWriteSingleRegisterRequest interface {
 	GetAddress() uint16
 	// GetValue returns Value (property field)
 	GetValue() uint16
+	// IsModbusPDUWriteSingleRegisterRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUWriteSingleRegisterRequest()
 }
 
 // _ModbusPDUWriteSingleRegisterRequest is the data-structure of this message

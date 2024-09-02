@@ -45,6 +45,8 @@ type ReadValueId interface {
 	GetIndexRange() PascalString
 	// GetDataEncoding returns DataEncoding (property field)
 	GetDataEncoding() QualifiedName
+	// IsReadValueId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReadValueId()
 }
 
 // _ReadValueId is the data-structure of this message

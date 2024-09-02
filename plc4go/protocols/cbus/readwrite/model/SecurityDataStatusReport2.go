@@ -39,6 +39,8 @@ type SecurityDataStatusReport2 interface {
 	SecurityData
 	// GetZoneStatus returns ZoneStatus (property field)
 	GetZoneStatus() []ZoneStatus
+	// IsSecurityDataStatusReport2 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataStatusReport2()
 }
 
 // _SecurityDataStatusReport2 is the data-structure of this message

@@ -41,6 +41,8 @@ type ModbusPDUWriteSingleCoilRequest interface {
 	GetAddress() uint16
 	// GetValue returns Value (property field)
 	GetValue() uint16
+	// IsModbusPDUWriteSingleCoilRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUWriteSingleCoilRequest()
 }
 
 // _ModbusPDUWriteSingleCoilRequest is the data-structure of this message

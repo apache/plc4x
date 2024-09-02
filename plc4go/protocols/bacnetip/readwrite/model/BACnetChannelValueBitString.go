@@ -39,6 +39,8 @@ type BACnetChannelValueBitString interface {
 	BACnetChannelValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
+	// IsBACnetChannelValueBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueBitString()
 }
 
 // _BACnetChannelValueBitString is the data-structure of this message

@@ -43,6 +43,8 @@ type BACnetConstructedDataStateText interface {
 	GetStateText() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataStateText is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataStateText()
 }
 
 // _BACnetConstructedDataStateText is the data-structure of this message

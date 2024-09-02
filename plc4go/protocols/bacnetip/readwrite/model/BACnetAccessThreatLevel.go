@@ -38,6 +38,8 @@ type BACnetAccessThreatLevel interface {
 	utils.Serializable
 	// GetThreatLevel returns ThreatLevel (property field)
 	GetThreatLevel() BACnetApplicationTagUnsignedInteger
+	// IsBACnetAccessThreatLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccessThreatLevel()
 }
 
 // _BACnetAccessThreatLevel is the data-structure of this message

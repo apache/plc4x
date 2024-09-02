@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryBitString interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
+	// IsBACnetFaultParameterFaultExtendedParametersEntryBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryBitString()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryBitString is the data-structure of this message

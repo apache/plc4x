@@ -38,11 +38,13 @@ type S7VarRequestParameterItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsS7VarRequestParameterItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7VarRequestParameterItem()
 }
 
 // S7VarRequestParameterItemContract provides a set of functions which can be overwritten by a sub struct
 type S7VarRequestParameterItemContract interface {
-	// IsS7VarRequestParameterItem() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsS7VarRequestParameterItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7VarRequestParameterItem()
 }
 

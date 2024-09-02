@@ -39,6 +39,8 @@ type CBusCommandPointToPointToMultiPoint interface {
 	CBusCommand
 	// GetCommand returns Command (property field)
 	GetCommand() CBusPointToPointToMultiPointCommand
+	// IsCBusCommandPointToPointToMultiPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusCommandPointToPointToMultiPoint()
 }
 
 // _CBusCommandPointToPointToMultiPoint is the data-structure of this message

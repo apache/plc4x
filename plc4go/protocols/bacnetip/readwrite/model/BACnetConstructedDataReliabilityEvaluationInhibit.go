@@ -41,6 +41,8 @@ type BACnetConstructedDataReliabilityEvaluationInhibit interface {
 	GetReliabilityEvaluationInhibit() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataReliabilityEvaluationInhibit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataReliabilityEvaluationInhibit()
 }
 
 // _BACnetConstructedDataReliabilityEvaluationInhibit is the data-structure of this message

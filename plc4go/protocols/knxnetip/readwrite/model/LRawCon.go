@@ -35,6 +35,8 @@ type LRawCon interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsLRawCon is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLRawCon()
 }
 
 // _LRawCon is the data-structure of this message

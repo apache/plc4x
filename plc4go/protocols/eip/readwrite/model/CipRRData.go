@@ -43,6 +43,8 @@ type CipRRData interface {
 	GetTimeout() uint16
 	// GetTypeIds returns TypeIds (property field)
 	GetTypeIds() []TypeId
+	// IsCipRRData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipRRData()
 }
 
 // _CipRRData is the data-structure of this message

@@ -51,6 +51,8 @@ type ReferenceDescription interface {
 	GetNodeClass() NodeClass
 	// GetTypeDefinition returns TypeDefinition (property field)
 	GetTypeDefinition() ExpandedNodeId
+	// IsReferenceDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReferenceDescription()
 }
 
 // _ReferenceDescription is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataIPv6ZoneIndex interface {
 	GetIpv6ZoneIndex() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataIPv6ZoneIndex is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPv6ZoneIndex()
 }
 
 // _BACnetConstructedDataIPv6ZoneIndex is the data-structure of this message

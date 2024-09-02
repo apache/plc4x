@@ -42,6 +42,8 @@ type BACnetRecipientEnclosed interface {
 	GetRecipient() BACnetRecipient
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetRecipientEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRecipientEnclosed()
 }
 
 // _BACnetRecipientEnclosed is the data-structure of this message

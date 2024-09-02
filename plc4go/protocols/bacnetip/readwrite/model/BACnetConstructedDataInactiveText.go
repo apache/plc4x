@@ -41,6 +41,8 @@ type BACnetConstructedDataInactiveText interface {
 	GetInactiveText() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataInactiveText is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataInactiveText()
 }
 
 // _BACnetConstructedDataInactiveText is the data-structure of this message

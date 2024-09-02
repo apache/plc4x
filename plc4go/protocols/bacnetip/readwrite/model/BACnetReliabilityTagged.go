@@ -44,6 +44,8 @@ type BACnetReliabilityTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetReliabilityTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetReliabilityTagged()
 }
 
 // _BACnetReliabilityTagged is the data-structure of this message

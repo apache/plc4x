@@ -47,6 +47,8 @@ type BACnetEventParameterExtended interface {
 	GetParameters() BACnetEventParameterExtendedParameters
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterExtended()
 }
 
 // _BACnetEventParameterExtended is the data-structure of this message

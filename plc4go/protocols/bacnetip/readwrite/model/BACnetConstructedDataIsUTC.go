@@ -41,6 +41,8 @@ type BACnetConstructedDataIsUTC interface {
 	GetIsUtc() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataIsUTC is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIsUTC()
 }
 
 // _BACnetConstructedDataIsUTC is the data-structure of this message

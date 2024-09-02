@@ -45,6 +45,8 @@ type BACnetNotificationParametersChangeOfStatusFlags interface {
 	GetReferencedFlags() BACnetStatusFlagsTagged
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersChangeOfStatusFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfStatusFlags()
 }
 
 // _BACnetNotificationParametersChangeOfStatusFlags is the data-structure of this message

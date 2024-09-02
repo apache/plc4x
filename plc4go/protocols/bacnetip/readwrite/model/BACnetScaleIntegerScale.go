@@ -39,6 +39,8 @@ type BACnetScaleIntegerScale interface {
 	BACnetScale
 	// GetIntegerScale returns IntegerScale (property field)
 	GetIntegerScale() BACnetContextTagSignedInteger
+	// IsBACnetScaleIntegerScale is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetScaleIntegerScale()
 }
 
 // _BACnetScaleIntegerScale is the data-structure of this message

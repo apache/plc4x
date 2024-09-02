@@ -53,6 +53,8 @@ type MonitoredSALLongFormSmartMode interface {
 	GetSalData() SALData
 	// GetIsUnitAddress returns IsUnitAddress (virtual field)
 	GetIsUnitAddress() bool
+	// IsMonitoredSALLongFormSmartMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredSALLongFormSmartMode()
 }
 
 // _MonitoredSALLongFormSmartMode is the data-structure of this message

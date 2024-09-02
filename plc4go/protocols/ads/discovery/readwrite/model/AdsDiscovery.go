@@ -51,6 +51,8 @@ type AdsDiscovery interface {
 	GetPortNumber() AdsPortNumbers
 	// GetBlocks returns Blocks (property field)
 	GetBlocks() []AdsDiscoveryBlock
+	// IsAdsDiscovery is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscovery()
 }
 
 // _AdsDiscovery is the data-structure of this message

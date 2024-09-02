@@ -49,6 +49,8 @@ type BACnetNotificationParametersDoubleOutOfRange interface {
 	GetExceededLimit() BACnetContextTagDouble
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersDoubleOutOfRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersDoubleOutOfRange()
 }
 
 // _BACnetNotificationParametersDoubleOutOfRange is the data-structure of this message

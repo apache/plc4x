@@ -43,6 +43,8 @@ type BACnetConstructedDataGlobalGroupGroupMembers interface {
 	GetGroupMembers() []BACnetDeviceObjectPropertyReference
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataGlobalGroupGroupMembers is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataGlobalGroupGroupMembers()
 }
 
 // _BACnetConstructedDataGlobalGroupGroupMembers is the data-structure of this message

@@ -60,6 +60,8 @@ type BACnetTagHeader interface {
 	GetIsPrimitiveAndNotBoolean() bool
 	// GetActualLength returns ActualLength (virtual field)
 	GetActualLength() uint32
+	// IsBACnetTagHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagHeader()
 }
 
 // _BACnetTagHeader is the data-structure of this message

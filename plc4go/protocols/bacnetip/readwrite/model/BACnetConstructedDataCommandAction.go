@@ -43,6 +43,8 @@ type BACnetConstructedDataCommandAction interface {
 	GetActionLists() []BACnetActionList
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataCommandAction is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCommandAction()
 }
 
 // _BACnetConstructedDataCommandAction is the data-structure of this message

@@ -35,6 +35,8 @@ type ApduDataExtGroupPropertyValueResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtGroupPropertyValueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtGroupPropertyValueResponse()
 }
 
 // _ApduDataExtGroupPropertyValueResponse is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber interface {
 	GetReferenceSequenceNumber() BACnetApplicationTagUnsignedInteger
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagSignedInteger
+	// IsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber()
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is the data-structure of this message

@@ -39,6 +39,8 @@ type SALDataTemperatureBroadcast interface {
 	SALData
 	// GetTemperatureBroadcastData returns TemperatureBroadcastData (property field)
 	GetTemperatureBroadcastData() TemperatureBroadcastData
+	// IsSALDataTemperatureBroadcast is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataTemperatureBroadcast()
 }
 
 // _SALDataTemperatureBroadcast is the data-structure of this message

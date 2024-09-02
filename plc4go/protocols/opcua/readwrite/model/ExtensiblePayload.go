@@ -39,6 +39,8 @@ type ExtensiblePayload interface {
 	Payload
 	// GetPayload returns Payload (property field)
 	GetPayload() ExtensionObject
+	// IsExtensiblePayload is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsExtensiblePayload()
 }
 
 // _ExtensiblePayload is the data-structure of this message

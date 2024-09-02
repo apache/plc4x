@@ -38,6 +38,8 @@ type EipPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsEipPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEipPacket()
 }
 
 // EipPacketContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type EipPacketContract interface {
 	GetSenderContext() []byte
 	// GetOptions returns Options (property field)
 	GetOptions() uint32
-	// IsEipPacket() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsEipPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipPacket()
 }
 

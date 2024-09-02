@@ -35,6 +35,8 @@ type TDataConnectedInd interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsTDataConnectedInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTDataConnectedInd()
 }
 
 // _TDataConnectedInd is the data-structure of this message

@@ -39,6 +39,8 @@ type S7VarRequestParameterItemAddress interface {
 	S7VarRequestParameterItem
 	// GetAddress returns Address (property field)
 	GetAddress() S7Address
+	// IsS7VarRequestParameterItemAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7VarRequestParameterItemAddress()
 }
 
 // _S7VarRequestParameterItemAddress is the data-structure of this message

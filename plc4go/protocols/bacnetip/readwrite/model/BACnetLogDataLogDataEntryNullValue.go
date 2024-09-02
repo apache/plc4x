@@ -39,6 +39,8 @@ type BACnetLogDataLogDataEntryNullValue interface {
 	BACnetLogDataLogDataEntry
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetContextTagNull
+	// IsBACnetLogDataLogDataEntryNullValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogDataEntryNullValue()
 }
 
 // _BACnetLogDataLogDataEntryNullValue is the data-structure of this message

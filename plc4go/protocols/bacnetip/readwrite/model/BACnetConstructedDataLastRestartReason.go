@@ -41,6 +41,8 @@ type BACnetConstructedDataLastRestartReason interface {
 	GetLastRestartReason() BACnetRestartReasonTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetRestartReasonTagged
+	// IsBACnetConstructedDataLastRestartReason is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastRestartReason()
 }
 
 // _BACnetConstructedDataLastRestartReason is the data-structure of this message

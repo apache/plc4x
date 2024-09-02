@@ -39,6 +39,8 @@ type BACnetOptionalBinaryPVValue interface {
 	BACnetOptionalBinaryPV
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
+	// IsBACnetOptionalBinaryPVValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalBinaryPVValue()
 }
 
 // _BACnetOptionalBinaryPVValue is the data-structure of this message

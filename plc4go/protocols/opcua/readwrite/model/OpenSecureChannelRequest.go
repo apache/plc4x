@@ -49,6 +49,8 @@ type OpenSecureChannelRequest interface {
 	GetClientNonce() PascalByteString
 	// GetRequestedLifetime returns RequestedLifetime (property field)
 	GetRequestedLifetime() uint32
+	// IsOpenSecureChannelRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpenSecureChannelRequest()
 }
 
 // _OpenSecureChannelRequest is the data-structure of this message

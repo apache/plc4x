@@ -39,6 +39,8 @@ type BACnetPropertyStatesLightningTransition interface {
 	BACnetPropertyStates
 	// GetLightningTransition returns LightningTransition (property field)
 	GetLightningTransition() BACnetLightingTransitionTagged
+	// IsBACnetPropertyStatesLightningTransition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesLightningTransition()
 }
 
 // _BACnetPropertyStatesLightningTransition is the data-structure of this message

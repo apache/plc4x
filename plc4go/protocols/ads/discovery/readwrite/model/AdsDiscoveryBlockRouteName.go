@@ -39,6 +39,8 @@ type AdsDiscoveryBlockRouteName interface {
 	AdsDiscoveryBlock
 	// GetRouteName returns RouteName (property field)
 	GetRouteName() AmsString
+	// IsAdsDiscoveryBlockRouteName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockRouteName()
 }
 
 // _AdsDiscoveryBlockRouteName is the data-structure of this message

@@ -43,6 +43,8 @@ type BACnetConstructedDataAssignedAccessRights interface {
 	GetAssignedAccessRights() []BACnetAssignedAccessRights
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataAssignedAccessRights is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAssignedAccessRights()
 }
 
 // _BACnetConstructedDataAssignedAccessRights is the data-structure of this message

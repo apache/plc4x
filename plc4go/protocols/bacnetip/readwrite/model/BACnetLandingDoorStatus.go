@@ -38,6 +38,8 @@ type BACnetLandingDoorStatus interface {
 	utils.Serializable
 	// GetLandingDoors returns LandingDoors (property field)
 	GetLandingDoors() BACnetLandingDoorStatusLandingDoorsList
+	// IsBACnetLandingDoorStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingDoorStatus()
 }
 
 // _BACnetLandingDoorStatus is the data-structure of this message

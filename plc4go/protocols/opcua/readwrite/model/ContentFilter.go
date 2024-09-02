@@ -41,6 +41,8 @@ type ContentFilter interface {
 	GetNoOfElements() int32
 	// GetElements returns Elements (property field)
 	GetElements() []ExtensionObjectDefinition
+	// IsContentFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsContentFilter()
 }
 
 // _ContentFilter is the data-structure of this message

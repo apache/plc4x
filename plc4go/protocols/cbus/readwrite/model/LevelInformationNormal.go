@@ -45,6 +45,8 @@ type LevelInformationNormal interface {
 	GetActualLevel() uint8
 	// GetActualLevelInPercent returns ActualLevelInPercent (virtual field)
 	GetActualLevelInPercent() float32
+	// IsLevelInformationNormal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLevelInformationNormal()
 }
 
 // _LevelInformationNormal is the data-structure of this message

@@ -43,6 +43,8 @@ type GetAttributeAllResponse interface {
 	GetExtStatus() uint8
 	// GetAttributes returns Attributes (property field)
 	GetAttributes() CIPAttributes
+	// IsGetAttributeAllResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGetAttributeAllResponse()
 }
 
 // _GetAttributeAllResponse is the data-structure of this message

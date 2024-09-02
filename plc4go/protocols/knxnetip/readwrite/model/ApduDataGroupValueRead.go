@@ -37,6 +37,8 @@ type ApduDataGroupValueRead interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduData
+	// IsApduDataGroupValueRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataGroupValueRead()
 }
 
 // _ApduDataGroupValueRead is the data-structure of this message

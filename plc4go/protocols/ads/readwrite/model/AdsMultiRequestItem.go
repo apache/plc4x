@@ -36,11 +36,13 @@ type AdsMultiRequestItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsAdsMultiRequestItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsMultiRequestItem()
 }
 
 // AdsMultiRequestItemContract provides a set of functions which can be overwritten by a sub struct
 type AdsMultiRequestItemContract interface {
-	// IsAdsMultiRequestItem() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsAdsMultiRequestItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsMultiRequestItem()
 }
 

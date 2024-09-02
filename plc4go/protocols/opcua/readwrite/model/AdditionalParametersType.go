@@ -41,6 +41,8 @@ type AdditionalParametersType interface {
 	GetNoOfParameters() int32
 	// GetParameters returns Parameters (property field)
 	GetParameters() []ExtensionObjectDefinition
+	// IsAdditionalParametersType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdditionalParametersType()
 }
 
 // _AdditionalParametersType is the data-structure of this message

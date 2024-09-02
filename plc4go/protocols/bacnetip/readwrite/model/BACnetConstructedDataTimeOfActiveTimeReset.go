@@ -41,6 +41,8 @@ type BACnetConstructedDataTimeOfActiveTimeReset interface {
 	GetTimeOfActiveTimeReset() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
+	// IsBACnetConstructedDataTimeOfActiveTimeReset is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimeOfActiveTimeReset()
 }
 
 // _BACnetConstructedDataTimeOfActiveTimeReset is the data-structure of this message

@@ -41,6 +41,8 @@ type TimeZoneDataType interface {
 	GetOffset() int16
 	// GetDaylightSavingInOffset returns DaylightSavingInOffset (property field)
 	GetDaylightSavingInOffset() bool
+	// IsTimeZoneDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTimeZoneDataType()
 }
 
 // _TimeZoneDataType is the data-structure of this message

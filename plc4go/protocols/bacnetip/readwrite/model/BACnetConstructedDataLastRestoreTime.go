@@ -41,6 +41,8 @@ type BACnetConstructedDataLastRestoreTime interface {
 	GetLastRestoreTime() BACnetTimeStamp
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimeStamp
+	// IsBACnetConstructedDataLastRestoreTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastRestoreTime()
 }
 
 // _BACnetConstructedDataLastRestoreTime is the data-structure of this message

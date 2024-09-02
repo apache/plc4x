@@ -41,6 +41,8 @@ type BACnetConstructedDataVarianceValue interface {
 	GetVarianceValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataVarianceValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataVarianceValue()
 }
 
 // _BACnetConstructedDataVarianceValue is the data-structure of this message

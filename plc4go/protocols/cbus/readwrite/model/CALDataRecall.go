@@ -41,6 +41,8 @@ type CALDataRecall interface {
 	GetParamNo() Parameter
 	// GetCount returns Count (property field)
 	GetCount() uint8
+	// IsCALDataRecall is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataRecall()
 }
 
 // _CALDataRecall is the data-structure of this message

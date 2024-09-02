@@ -39,6 +39,8 @@ type BACnetServiceAckAuthenticate interface {
 	BACnetServiceAck
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
+	// IsBACnetServiceAckAuthenticate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckAuthenticate()
 }
 
 // _BACnetServiceAckAuthenticate is the data-structure of this message

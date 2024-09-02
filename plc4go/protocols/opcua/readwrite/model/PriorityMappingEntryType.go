@@ -45,6 +45,8 @@ type PriorityMappingEntryType interface {
 	GetPriorityValue_PCP() uint8
 	// GetPriorityValue_DSCP returns PriorityValue_DSCP (property field)
 	GetPriorityValue_DSCP() uint32
+	// IsPriorityMappingEntryType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPriorityMappingEntryType()
 }
 
 // _PriorityMappingEntryType is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetOptionalREALNull interface {
 	BACnetOptionalREAL
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
+	// IsBACnetOptionalREALNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalREALNull()
 }
 
 // _BACnetOptionalREALNull is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetContextTagUnknown interface {
 	BACnetContextTag
 	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
+	// IsBACnetContextTagUnknown is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagUnknown()
 }
 
 // _BACnetContextTagUnknown is the data-structure of this message

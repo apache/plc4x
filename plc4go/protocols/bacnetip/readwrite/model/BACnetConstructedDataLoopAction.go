@@ -41,6 +41,8 @@ type BACnetConstructedDataLoopAction interface {
 	GetAction() BACnetActionTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetActionTagged
+	// IsBACnetConstructedDataLoopAction is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLoopAction()
 }
 
 // _BACnetConstructedDataLoopAction is the data-structure of this message

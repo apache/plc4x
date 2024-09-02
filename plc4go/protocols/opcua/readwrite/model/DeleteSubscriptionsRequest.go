@@ -43,6 +43,8 @@ type DeleteSubscriptionsRequest interface {
 	GetNoOfSubscriptionIds() int32
 	// GetSubscriptionIds returns SubscriptionIds (property field)
 	GetSubscriptionIds() []uint32
+	// IsDeleteSubscriptionsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteSubscriptionsRequest()
 }
 
 // _DeleteSubscriptionsRequest is the data-structure of this message

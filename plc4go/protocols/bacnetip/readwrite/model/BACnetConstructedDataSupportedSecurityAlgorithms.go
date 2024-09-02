@@ -39,6 +39,8 @@ type BACnetConstructedDataSupportedSecurityAlgorithms interface {
 	BACnetConstructedData
 	// GetSupportedSecurityAlgorithms returns SupportedSecurityAlgorithms (property field)
 	GetSupportedSecurityAlgorithms() []BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataSupportedSecurityAlgorithms is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSupportedSecurityAlgorithms()
 }
 
 // _BACnetConstructedDataSupportedSecurityAlgorithms is the data-structure of this message

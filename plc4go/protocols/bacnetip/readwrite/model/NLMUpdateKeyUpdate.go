@@ -59,6 +59,8 @@ type NLMUpdateKeyUpdate interface {
 	GetSet2KeyCount() *uint8
 	// GetSet2Keys returns Set2Keys (property field)
 	GetSet2Keys() []NLMUpdateKeyUpdateKeyEntry
+	// IsNLMUpdateKeyUpdate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMUpdateKeyUpdate()
 }
 
 // _NLMUpdateKeyUpdate is the data-structure of this message

@@ -43,6 +43,8 @@ type NodeIdNumeric interface {
 	GetId() uint32
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
+	// IsNodeIdNumeric is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeIdNumeric()
 }
 
 // _NodeIdNumeric is the data-structure of this message

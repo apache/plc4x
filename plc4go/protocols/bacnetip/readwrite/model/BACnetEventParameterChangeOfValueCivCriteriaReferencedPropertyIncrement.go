@@ -39,6 +39,8 @@ type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement int
 	BACnetEventParameterChangeOfValueCivCriteria
 	// GetReferencedPropertyIncrement returns ReferencedPropertyIncrement (property field)
 	GetReferencedPropertyIncrement() BACnetContextTagReal
+	// IsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement()
 }
 
 // _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement is the data-structure of this message

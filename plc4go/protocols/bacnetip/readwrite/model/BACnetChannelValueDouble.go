@@ -39,6 +39,8 @@ type BACnetChannelValueDouble interface {
 	BACnetChannelValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
+	// IsBACnetChannelValueDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueDouble()
 }
 
 // _BACnetChannelValueDouble is the data-structure of this message

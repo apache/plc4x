@@ -41,6 +41,8 @@ type BACnetConstructedDataApplicationSoftwareVersion interface {
 	GetApplicationSoftwareVersion() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataApplicationSoftwareVersion is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataApplicationSoftwareVersion()
 }
 
 // _BACnetConstructedDataApplicationSoftwareVersion is the data-structure of this message

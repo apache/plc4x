@@ -41,6 +41,8 @@ type BACnetConstructedDataTimeOfDeviceRestart interface {
 	GetTimeOfDeviceRestart() BACnetTimeStamp
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimeStamp
+	// IsBACnetConstructedDataTimeOfDeviceRestart is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimeOfDeviceRestart()
 }
 
 // _BACnetConstructedDataTimeOfDeviceRestart is the data-structure of this message

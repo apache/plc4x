@@ -41,6 +41,8 @@ type BACnetConstructedDataArchive interface {
 	GetArchive() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataArchive is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataArchive()
 }
 
 // _BACnetConstructedDataArchive is the data-structure of this message

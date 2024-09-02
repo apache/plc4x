@@ -38,6 +38,8 @@ type BACnetSetpointReference interface {
 	utils.Serializable
 	// GetSetPointReference returns SetPointReference (property field)
 	GetSetPointReference() BACnetObjectPropertyReferenceEnclosed
+	// IsBACnetSetpointReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetSetpointReference()
 }
 
 // _BACnetSetpointReference is the data-structure of this message

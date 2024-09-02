@@ -45,6 +45,8 @@ type ConfirmedPrivateTransferError interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetErrorParameters returns ErrorParameters (property field)
 	GetErrorParameters() BACnetConstructedData
+	// IsConfirmedPrivateTransferError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConfirmedPrivateTransferError()
 }
 
 // _ConfirmedPrivateTransferError is the data-structure of this message

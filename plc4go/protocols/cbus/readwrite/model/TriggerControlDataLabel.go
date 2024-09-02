@@ -45,6 +45,8 @@ type TriggerControlDataLabel interface {
 	GetLanguage() *Language
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsTriggerControlDataLabel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTriggerControlDataLabel()
 }
 
 // _TriggerControlDataLabel is the data-structure of this message

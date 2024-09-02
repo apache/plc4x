@@ -43,6 +43,8 @@ type TelephonyDataIsolateSecondaryOutlet interface {
 	GetIsBehaveNormal() bool
 	// GetIsToBeIsolated returns IsToBeIsolated (virtual field)
 	GetIsToBeIsolated() bool
+	// IsTelephonyDataIsolateSecondaryOutlet is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataIsolateSecondaryOutlet()
 }
 
 // _TelephonyDataIsolateSecondaryOutlet is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataMaxAPDULengthAccepted interface {
 	GetMaxApduLengthAccepted() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataMaxAPDULengthAccepted is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMaxAPDULengthAccepted()
 }
 
 // _BACnetConstructedDataMaxAPDULengthAccepted is the data-structure of this message

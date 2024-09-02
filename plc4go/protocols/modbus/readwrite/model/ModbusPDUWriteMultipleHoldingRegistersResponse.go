@@ -41,6 +41,8 @@ type ModbusPDUWriteMultipleHoldingRegistersResponse interface {
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity (property field)
 	GetQuantity() uint16
+	// IsModbusPDUWriteMultipleHoldingRegistersResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUWriteMultipleHoldingRegistersResponse()
 }
 
 // _ModbusPDUWriteMultipleHoldingRegistersResponse is the data-structure of this message

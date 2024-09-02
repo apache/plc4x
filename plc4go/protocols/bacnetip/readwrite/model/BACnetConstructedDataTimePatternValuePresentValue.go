@@ -41,6 +41,8 @@ type BACnetConstructedDataTimePatternValuePresentValue interface {
 	GetPresentValue() BACnetApplicationTagTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagTime
+	// IsBACnetConstructedDataTimePatternValuePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimePatternValuePresentValue()
 }
 
 // _BACnetConstructedDataTimePatternValuePresentValue is the data-structure of this message

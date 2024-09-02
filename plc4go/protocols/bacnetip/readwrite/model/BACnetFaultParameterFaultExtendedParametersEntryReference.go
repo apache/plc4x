@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryReference interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetReference returns Reference (property field)
 	GetReference() BACnetDeviceObjectPropertyReferenceEnclosed
+	// IsBACnetFaultParameterFaultExtendedParametersEntryReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryReference()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryReference is the data-structure of this message

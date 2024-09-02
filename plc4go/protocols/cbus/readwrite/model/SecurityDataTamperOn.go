@@ -35,6 +35,8 @@ type SecurityDataTamperOn interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataTamperOn is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataTamperOn()
 }
 
 // _SecurityDataTamperOn is the data-structure of this message

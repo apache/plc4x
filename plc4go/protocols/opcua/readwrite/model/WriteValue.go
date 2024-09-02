@@ -45,6 +45,8 @@ type WriteValue interface {
 	GetIndexRange() PascalString
 	// GetValue returns Value (property field)
 	GetValue() DataValue
+	// IsWriteValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsWriteValue()
 }
 
 // _WriteValue is the data-structure of this message

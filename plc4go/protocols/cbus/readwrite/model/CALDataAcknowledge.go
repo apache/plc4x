@@ -41,6 +41,8 @@ type CALDataAcknowledge interface {
 	GetParamNo() Parameter
 	// GetCode returns Code (property field)
 	GetCode() uint8
+	// IsCALDataAcknowledge is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataAcknowledge()
 }
 
 // _CALDataAcknowledge is the data-structure of this message

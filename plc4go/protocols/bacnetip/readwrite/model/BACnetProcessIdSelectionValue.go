@@ -39,6 +39,8 @@ type BACnetProcessIdSelectionValue interface {
 	BACnetProcessIdSelection
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetApplicationTagUnsignedInteger
+	// IsBACnetProcessIdSelectionValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetProcessIdSelectionValue()
 }
 
 // _BACnetProcessIdSelectionValue is the data-structure of this message

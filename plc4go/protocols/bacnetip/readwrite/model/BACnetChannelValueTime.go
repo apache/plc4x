@@ -39,6 +39,8 @@ type BACnetChannelValueTime interface {
 	BACnetChannelValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
+	// IsBACnetChannelValueTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueTime()
 }
 
 // _BACnetChannelValueTime is the data-structure of this message

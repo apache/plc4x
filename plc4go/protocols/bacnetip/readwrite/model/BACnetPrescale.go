@@ -40,6 +40,8 @@ type BACnetPrescale interface {
 	GetMultiplier() BACnetContextTagUnsignedInteger
 	// GetModuloDivide returns ModuloDivide (property field)
 	GetModuloDivide() BACnetContextTagUnsignedInteger
+	// IsBACnetPrescale is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPrescale()
 }
 
 // _BACnetPrescale is the data-structure of this message

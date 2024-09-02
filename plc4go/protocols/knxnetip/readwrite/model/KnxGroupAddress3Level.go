@@ -43,6 +43,8 @@ type KnxGroupAddress3Level interface {
 	GetMiddleGroup() uint8
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint8
+	// IsKnxGroupAddress3Level is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxGroupAddress3Level()
 }
 
 // _KnxGroupAddress3Level is the data-structure of this message

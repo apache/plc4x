@@ -43,6 +43,8 @@ type ViewDescription interface {
 	GetTimestamp() int64
 	// GetViewVersion returns ViewVersion (property field)
 	GetViewVersion() uint32
+	// IsViewDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsViewDescription()
 }
 
 // _ViewDescription is the data-structure of this message

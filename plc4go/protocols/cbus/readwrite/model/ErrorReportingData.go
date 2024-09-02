@@ -38,6 +38,8 @@ type ErrorReportingData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsErrorReportingData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorReportingData()
 }
 
 // ErrorReportingDataContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type ErrorReportingDataContract interface {
 	GetCommandTypeContainer() ErrorReportingCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() ErrorReportingCommandType
-	// IsErrorReportingData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsErrorReportingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingData()
 }
 

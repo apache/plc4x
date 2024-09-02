@@ -39,6 +39,8 @@ type SALDataErrorReporting interface {
 	SALData
 	// GetErrorReportingData returns ErrorReportingData (property field)
 	GetErrorReportingData() ErrorReportingData
+	// IsSALDataErrorReporting is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataErrorReporting()
 }
 
 // _SALDataErrorReporting is the data-structure of this message

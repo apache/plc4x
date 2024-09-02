@@ -41,6 +41,8 @@ type BACnetConstructedDataCarLoadUnits interface {
 	GetUnits() BACnetEngineeringUnitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEngineeringUnitsTagged
+	// IsBACnetConstructedDataCarLoadUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarLoadUnits()
 }
 
 // _BACnetConstructedDataCarLoadUnits is the data-structure of this message

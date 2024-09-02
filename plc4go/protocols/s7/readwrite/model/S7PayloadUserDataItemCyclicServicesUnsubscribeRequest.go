@@ -41,6 +41,8 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeRequest interface {
 	GetFunction() uint8
 	// GetJobId returns JobId (property field)
 	GetJobId() uint8
+	// IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest()
 }
 
 // _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest is the data-structure of this message

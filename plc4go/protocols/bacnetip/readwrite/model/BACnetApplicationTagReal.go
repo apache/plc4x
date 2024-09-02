@@ -41,6 +41,8 @@ type BACnetApplicationTagReal interface {
 	GetPayload() BACnetTagPayloadReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() float32
+	// IsBACnetApplicationTagReal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetApplicationTagReal()
 }
 
 // _BACnetApplicationTagReal is the data-structure of this message

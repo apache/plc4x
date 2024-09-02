@@ -49,6 +49,8 @@ type BACnetNotificationParametersOutOfRange interface {
 	GetExceededLimit() BACnetContextTagReal
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersOutOfRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersOutOfRange()
 }
 
 // _BACnetNotificationParametersOutOfRange is the data-structure of this message

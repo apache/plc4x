@@ -39,6 +39,8 @@ type BACnetFaultParameterNone interface {
 	BACnetFaultParameter
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
+	// IsBACnetFaultParameterNone is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterNone()
 }
 
 // _BACnetFaultParameterNone is the data-structure of this message

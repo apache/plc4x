@@ -42,6 +42,8 @@ type ErrorEnclosed interface {
 	GetError() Error
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsErrorEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorEnclosed()
 }
 
 // _ErrorEnclosed is the data-structure of this message

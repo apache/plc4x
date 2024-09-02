@@ -39,6 +39,8 @@ type AirConditioningDataSetZoneGroupOff interface {
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
+	// IsAirConditioningDataSetZoneGroupOff is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataSetZoneGroupOff()
 }
 
 // _AirConditioningDataSetZoneGroupOff is the data-structure of this message

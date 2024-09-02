@@ -39,6 +39,8 @@ type MeteringDataGasConsumption interface {
 	MeteringData
 	// GetMJ returns MJ (property field)
 	GetMJ() uint32
+	// IsMeteringDataGasConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataGasConsumption()
 }
 
 // _MeteringDataGasConsumption is the data-structure of this message

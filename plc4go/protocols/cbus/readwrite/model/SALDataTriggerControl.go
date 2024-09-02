@@ -39,6 +39,8 @@ type SALDataTriggerControl interface {
 	SALData
 	// GetTriggerControlData returns TriggerControlData (property field)
 	GetTriggerControlData() TriggerControlData
+	// IsSALDataTriggerControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataTriggerControl()
 }
 
 // _SALDataTriggerControl is the data-structure of this message

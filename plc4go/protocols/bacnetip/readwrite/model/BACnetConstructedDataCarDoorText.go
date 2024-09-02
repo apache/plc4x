@@ -43,6 +43,8 @@ type BACnetConstructedDataCarDoorText interface {
 	GetCarDoorText() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataCarDoorText is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarDoorText()
 }
 
 // _BACnetConstructedDataCarDoorText is the data-structure of this message

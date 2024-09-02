@@ -39,6 +39,8 @@ type BACnetConstructedDataSlaveAddressBinding interface {
 	BACnetConstructedData
 	// GetSlaveAddressBinding returns SlaveAddressBinding (property field)
 	GetSlaveAddressBinding() []BACnetAddressBinding
+	// IsBACnetConstructedDataSlaveAddressBinding is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSlaveAddressBinding()
 }
 
 // _BACnetConstructedDataSlaveAddressBinding is the data-structure of this message

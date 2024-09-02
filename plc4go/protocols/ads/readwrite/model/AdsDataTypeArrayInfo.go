@@ -44,6 +44,8 @@ type AdsDataTypeArrayInfo interface {
 	GetNumElements() uint32
 	// GetUpperBound returns UpperBound (virtual field)
 	GetUpperBound() uint32
+	// IsAdsDataTypeArrayInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDataTypeArrayInfo()
 }
 
 // _AdsDataTypeArrayInfo is the data-structure of this message

@@ -41,6 +41,8 @@ type HistoryEventFieldList interface {
 	GetNoOfEventFields() int32
 	// GetEventFields returns EventFields (property field)
 	GetEventFields() []Variant
+	// IsHistoryEventFieldList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryEventFieldList()
 }
 
 // _HistoryEventFieldList is the data-structure of this message

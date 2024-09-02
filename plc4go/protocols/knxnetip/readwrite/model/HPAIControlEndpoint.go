@@ -42,6 +42,8 @@ type HPAIControlEndpoint interface {
 	GetIpAddress() IPAddress
 	// GetIpPort returns IpPort (property field)
 	GetIpPort() uint16
+	// IsHPAIControlEndpoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHPAIControlEndpoint()
 }
 
 // _HPAIControlEndpoint is the data-structure of this message

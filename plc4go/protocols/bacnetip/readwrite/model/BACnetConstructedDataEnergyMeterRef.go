@@ -41,6 +41,8 @@ type BACnetConstructedDataEnergyMeterRef interface {
 	GetEnergyMeterRef() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
+	// IsBACnetConstructedDataEnergyMeterRef is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEnergyMeterRef()
 }
 
 // _BACnetConstructedDataEnergyMeterRef is the data-structure of this message

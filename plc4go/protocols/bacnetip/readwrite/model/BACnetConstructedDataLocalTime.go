@@ -41,6 +41,8 @@ type BACnetConstructedDataLocalTime interface {
 	GetLocalTime() BACnetApplicationTagTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagTime
+	// IsBACnetConstructedDataLocalTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLocalTime()
 }
 
 // _BACnetConstructedDataLocalTime is the data-structure of this message

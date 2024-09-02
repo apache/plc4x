@@ -39,6 +39,8 @@ type LightingDataOn interface {
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
+	// IsLightingDataOn is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLightingDataOn()
 }
 
 // _LightingDataOn is the data-structure of this message

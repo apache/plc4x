@@ -43,6 +43,8 @@ type COTPPacketConnectionRequest interface {
 	GetSourceReference() uint16
 	// GetProtocolClass returns ProtocolClass (property field)
 	GetProtocolClass() COTPProtocolClass
+	// IsCOTPPacketConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacketConnectionRequest()
 }
 
 // _COTPPacketConnectionRequest is the data-structure of this message

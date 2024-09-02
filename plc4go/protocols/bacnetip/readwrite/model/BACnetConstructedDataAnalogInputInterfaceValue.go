@@ -41,6 +41,8 @@ type BACnetConstructedDataAnalogInputInterfaceValue interface {
 	GetInterfaceValue() BACnetOptionalREAL
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetOptionalREAL
+	// IsBACnetConstructedDataAnalogInputInterfaceValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAnalogInputInterfaceValue()
 }
 
 // _BACnetConstructedDataAnalogInputInterfaceValue is the data-structure of this message

@@ -48,6 +48,8 @@ type Alarm8MessageQueryType interface {
 	GetByteCount() uint16
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectQueryType
+	// IsAlarm8MessageQueryType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarm8MessageQueryType()
 }
 
 // _Alarm8MessageQueryType is the data-structure of this message

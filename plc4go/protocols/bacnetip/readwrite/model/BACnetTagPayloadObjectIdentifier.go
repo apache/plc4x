@@ -44,6 +44,8 @@ type BACnetTagPayloadObjectIdentifier interface {
 	GetInstanceNumber() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetTagPayloadObjectIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadObjectIdentifier()
 }
 
 // _BACnetTagPayloadObjectIdentifier is the data-structure of this message

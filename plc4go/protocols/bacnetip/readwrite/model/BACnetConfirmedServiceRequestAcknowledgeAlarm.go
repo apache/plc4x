@@ -49,6 +49,8 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	GetAcknowledgmentSource() BACnetContextTagCharacterString
 	// GetTimeOfAcknowledgment returns TimeOfAcknowledgment (property field)
 	GetTimeOfAcknowledgment() BACnetTimeStampEnclosed
+	// IsBACnetConfirmedServiceRequestAcknowledgeAlarm is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestAcknowledgeAlarm()
 }
 
 // _BACnetConfirmedServiceRequestAcknowledgeAlarm is the data-structure of this message

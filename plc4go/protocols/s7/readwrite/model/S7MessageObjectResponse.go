@@ -41,6 +41,8 @@ type S7MessageObjectResponse interface {
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() DataTransportSize
+	// IsS7MessageObjectResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7MessageObjectResponse()
 }
 
 // _S7MessageObjectResponse is the data-structure of this message

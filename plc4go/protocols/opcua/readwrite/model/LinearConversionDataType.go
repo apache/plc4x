@@ -45,6 +45,8 @@ type LinearConversionDataType interface {
 	GetDivisor() float32
 	// GetFinalAddend returns FinalAddend (property field)
 	GetFinalAddend() float32
+	// IsLinearConversionDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLinearConversionDataType()
 }
 
 // _LinearConversionDataType is the data-structure of this message

@@ -47,6 +47,8 @@ type BACnetServiceAckGetEnrollmentSummary interface {
 	GetPriority() BACnetApplicationTagUnsignedInteger
 	// GetNotificationClass returns NotificationClass (property field)
 	GetNotificationClass() BACnetApplicationTagUnsignedInteger
+	// IsBACnetServiceAckGetEnrollmentSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckGetEnrollmentSummary()
 }
 
 // _BACnetServiceAckGetEnrollmentSummary is the data-structure of this message

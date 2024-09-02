@@ -41,6 +41,8 @@ type BACnetConstructedDataDateTimeValueRelinquishDefault interface {
 	GetRelinquishDefault() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
+	// IsBACnetConstructedDataDateTimeValueRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDateTimeValueRelinquishDefault()
 }
 
 // _BACnetConstructedDataDateTimeValueRelinquishDefault is the data-structure of this message

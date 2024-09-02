@@ -43,6 +43,8 @@ type BACnetServiceAckConfirmedPrivateTransfer interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetResultBlock returns ResultBlock (property field)
 	GetResultBlock() BACnetConstructedData
+	// IsBACnetServiceAckConfirmedPrivateTransfer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckConfirmedPrivateTransfer()
 }
 
 // _BACnetServiceAckConfirmedPrivateTransfer is the data-structure of this message

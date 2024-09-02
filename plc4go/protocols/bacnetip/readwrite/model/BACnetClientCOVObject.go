@@ -39,6 +39,8 @@ type BACnetClientCOVObject interface {
 	BACnetClientCOV
 	// GetRealIncrement returns RealIncrement (property field)
 	GetRealIncrement() BACnetApplicationTagReal
+	// IsBACnetClientCOVObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetClientCOVObject()
 }
 
 // _BACnetClientCOVObject is the data-structure of this message

@@ -43,6 +43,8 @@ type NodeIdGuid interface {
 	GetId() []byte
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
+	// IsNodeIdGuid is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeIdGuid()
 }
 
 // _NodeIdGuid is the data-structure of this message

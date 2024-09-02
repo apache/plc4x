@@ -39,6 +39,8 @@ type BACnetPropertyStatesTimerState interface {
 	BACnetPropertyStates
 	// GetTimerState returns TimerState (property field)
 	GetTimerState() BACnetTimerStateTagged
+	// IsBACnetPropertyStatesTimerState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesTimerState()
 }
 
 // _BACnetPropertyStatesTimerState is the data-structure of this message

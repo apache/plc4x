@@ -44,6 +44,8 @@ type RequestSmartConnectShortcut interface {
 	GetPipePeek() RequestType
 	// GetSecondPipe returns SecondPipe (property field)
 	GetSecondPipe() *byte
+	// IsRequestSmartConnectShortcut is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestSmartConnectShortcut()
 }
 
 // _RequestSmartConnectShortcut is the data-structure of this message

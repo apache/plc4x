@@ -40,6 +40,8 @@ type HVACHumidity interface {
 	GetHumidityValue() uint16
 	// GetHumidityInPercent returns HumidityInPercent (virtual field)
 	GetHumidityInPercent() float32
+	// IsHVACHumidity is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACHumidity()
 }
 
 // _HVACHumidity is the data-structure of this message

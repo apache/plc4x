@@ -40,6 +40,8 @@ type RequestNull interface {
 	utils.LengthAware
 	utils.Serializable
 	Request
+	// IsRequestNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestNull()
 }
 
 // _RequestNull is the data-structure of this message

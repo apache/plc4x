@@ -35,6 +35,8 @@ type ConnectionTransportDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsConnectionTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionTransportDataType()
 }
 
 // _ConnectionTransportDataType is the data-structure of this message

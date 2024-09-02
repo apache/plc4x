@@ -49,6 +49,8 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummary interface {
 	GetPriorityFilter() BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 	// GetNotificationClassFilter returns NotificationClassFilter (property field)
 	GetNotificationClassFilter() BACnetContextTagUnsignedInteger
+	// IsBACnetConfirmedServiceRequestGetEnrollmentSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestGetEnrollmentSummary()
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummary is the data-structure of this message

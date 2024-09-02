@@ -41,6 +41,8 @@ type BACnetConstructedDataClientCOVIncrement interface {
 	GetCovIncrement() BACnetClientCOV
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetClientCOV
+	// IsBACnetConstructedDataClientCOVIncrement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataClientCOVIncrement()
 }
 
 // _BACnetConstructedDataClientCOVIncrement is the data-structure of this message

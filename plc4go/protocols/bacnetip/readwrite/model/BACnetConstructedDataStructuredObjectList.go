@@ -43,6 +43,8 @@ type BACnetConstructedDataStructuredObjectList interface {
 	GetStructuredObjectList() []BACnetApplicationTagObjectIdentifier
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataStructuredObjectList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataStructuredObjectList()
 }
 
 // _BACnetConstructedDataStructuredObjectList is the data-structure of this message

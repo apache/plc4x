@@ -38,13 +38,15 @@ type NodeIdTypeDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsNodeIdTypeDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeIdTypeDefinition()
 }
 
 // NodeIdTypeDefinitionContract provides a set of functions which can be overwritten by a sub struct
 type NodeIdTypeDefinitionContract interface {
 	// GetIdentifier returns Identifier (abstract field)
 	GetIdentifier() string
-	// IsNodeIdTypeDefinition() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsNodeIdTypeDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdTypeDefinition()
 }
 

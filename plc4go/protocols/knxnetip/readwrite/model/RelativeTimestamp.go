@@ -38,6 +38,8 @@ type RelativeTimestamp interface {
 	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() uint16
+	// IsRelativeTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRelativeTimestamp()
 }
 
 // _RelativeTimestamp is the data-structure of this message

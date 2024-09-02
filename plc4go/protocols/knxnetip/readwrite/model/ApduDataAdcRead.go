@@ -35,6 +35,8 @@ type ApduDataAdcRead interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduData
+	// IsApduDataAdcRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataAdcRead()
 }
 
 // _ApduDataAdcRead is the data-structure of this message

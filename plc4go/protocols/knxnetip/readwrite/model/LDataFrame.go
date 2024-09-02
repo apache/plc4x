@@ -38,6 +38,8 @@ type LDataFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsLDataFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLDataFrame()
 }
 
 // LDataFrameContract provides a set of functions which can be overwritten by a sub struct
@@ -52,7 +54,7 @@ type LDataFrameContract interface {
 	GetAcknowledgeRequested() bool
 	// GetErrorFlag returns ErrorFlag (property field)
 	GetErrorFlag() bool
-	// IsLDataFrame() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsLDataFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataFrame()
 }
 

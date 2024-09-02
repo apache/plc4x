@@ -41,6 +41,8 @@ type ApduDataDeviceDescriptorResponse interface {
 	GetDescriptorType() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsApduDataDeviceDescriptorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataDeviceDescriptorResponse()
 }
 
 // _ApduDataDeviceDescriptorResponse is the data-structure of this message

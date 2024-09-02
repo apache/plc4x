@@ -35,6 +35,8 @@ type OpcuaVector interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsOpcuaVector is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaVector()
 }
 
 // _OpcuaVector is the data-structure of this message

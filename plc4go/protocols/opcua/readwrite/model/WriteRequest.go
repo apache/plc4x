@@ -43,6 +43,8 @@ type WriteRequest interface {
 	GetNoOfNodesToWrite() int32
 	// GetNodesToWrite returns NodesToWrite (property field)
 	GetNodesToWrite() []ExtensionObjectDefinition
+	// IsWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsWriteRequest()
 }
 
 // _WriteRequest is the data-structure of this message

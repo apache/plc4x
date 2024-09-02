@@ -51,6 +51,8 @@ type SecurityDataArmSystem interface {
 	GetIsArmToVacationMode() bool
 	// GetIsArmToHighestLevelOfProtection returns IsArmToHighestLevelOfProtection (virtual field)
 	GetIsArmToHighestLevelOfProtection() bool
+	// IsSecurityDataArmSystem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataArmSystem()
 }
 
 // _SecurityDataArmSystem is the data-structure of this message

@@ -38,6 +38,8 @@ type BACnetPropertyAccessResultAccessResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetPropertyAccessResultAccessResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyAccessResultAccessResult()
 }
 
 // BACnetPropertyAccessResultAccessResultContract provides a set of functions which can be overwritten by a sub struct
@@ -52,7 +54,7 @@ type BACnetPropertyAccessResultAccessResultContract interface {
 	GetPropertyIdentifierArgument() BACnetPropertyIdentifier
 	// GetPropertyArrayIndexArgument() returns a parser argument
 	GetPropertyArrayIndexArgument() BACnetTagPayloadUnsignedInteger
-	// IsBACnetPropertyAccessResultAccessResult() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetPropertyAccessResultAccessResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyAccessResultAccessResult()
 }
 

@@ -43,6 +43,8 @@ type BACnetServiceAckAtomicReadFileRecord interface {
 	GetReturnedRecordCount() BACnetApplicationTagUnsignedInteger
 	// GetFileRecordData returns FileRecordData (property field)
 	GetFileRecordData() []BACnetApplicationTagOctetString
+	// IsBACnetServiceAckAtomicReadFileRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckAtomicReadFileRecord()
 }
 
 // _BACnetServiceAckAtomicReadFileRecord is the data-structure of this message

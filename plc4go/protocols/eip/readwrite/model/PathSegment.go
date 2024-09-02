@@ -38,11 +38,13 @@ type PathSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsPathSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPathSegment()
 }
 
 // PathSegmentContract provides a set of functions which can be overwritten by a sub struct
 type PathSegmentContract interface {
-	// IsPathSegment() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsPathSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPathSegment()
 }
 

@@ -47,6 +47,8 @@ type BACnetEventParameterChangeOfTimer interface {
 	GetUpdateTimeReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterChangeOfTimer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfTimer()
 }
 
 // _BACnetEventParameterChangeOfTimer is the data-structure of this message

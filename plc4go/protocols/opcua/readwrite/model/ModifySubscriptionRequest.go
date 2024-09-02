@@ -51,6 +51,8 @@ type ModifySubscriptionRequest interface {
 	GetMaxNotificationsPerPublish() uint32
 	// GetPriority returns Priority (property field)
 	GetPriority() uint8
+	// IsModifySubscriptionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModifySubscriptionRequest()
 }
 
 // _ModifySubscriptionRequest is the data-structure of this message

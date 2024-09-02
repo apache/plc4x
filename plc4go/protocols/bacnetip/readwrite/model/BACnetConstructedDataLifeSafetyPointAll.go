@@ -35,6 +35,8 @@ type BACnetConstructedDataLifeSafetyPointAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataLifeSafetyPointAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLifeSafetyPointAll()
 }
 
 // _BACnetConstructedDataLifeSafetyPointAll is the data-structure of this message

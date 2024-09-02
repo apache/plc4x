@@ -41,6 +41,8 @@ type BACnetConstructedDataIPv6Address interface {
 	GetIpv6Address() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
+	// IsBACnetConstructedDataIPv6Address is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPv6Address()
 }
 
 // _BACnetConstructedDataIPv6Address is the data-structure of this message

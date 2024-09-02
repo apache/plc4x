@@ -40,6 +40,8 @@ type ByteStringNodeId interface {
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() PascalByteString
+	// IsByteStringNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsByteStringNodeId()
 }
 
 // _ByteStringNodeId is the data-structure of this message

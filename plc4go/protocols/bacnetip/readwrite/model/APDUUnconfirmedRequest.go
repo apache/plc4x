@@ -39,6 +39,8 @@ type APDUUnconfirmedRequest interface {
 	APDU
 	// GetServiceRequest returns ServiceRequest (property field)
 	GetServiceRequest() BACnetUnconfirmedServiceRequest
+	// IsAPDUUnconfirmedRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUUnconfirmedRequest()
 }
 
 // _APDUUnconfirmedRequest is the data-structure of this message

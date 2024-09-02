@@ -41,6 +41,8 @@ type S7PayloadUserDataItemCyclicServicesSubscribeResponse interface {
 	GetItemsCount() uint16
 	// GetItems returns Items (property field)
 	GetItems() []AssociatedValueType
+	// IsS7PayloadUserDataItemCyclicServicesSubscribeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCyclicServicesSubscribeResponse()
 }
 
 // _S7PayloadUserDataItemCyclicServicesSubscribeResponse is the data-structure of this message

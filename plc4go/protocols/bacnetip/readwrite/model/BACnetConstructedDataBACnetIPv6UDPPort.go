@@ -41,6 +41,8 @@ type BACnetConstructedDataBACnetIPv6UDPPort interface {
 	GetIpv6UdpPort() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataBACnetIPv6UDPPort is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBACnetIPv6UDPPort()
 }
 
 // _BACnetConstructedDataBACnetIPv6UDPPort is the data-structure of this message

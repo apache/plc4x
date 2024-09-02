@@ -38,6 +38,8 @@ type TriggerControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsTriggerControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTriggerControlData()
 }
 
 // TriggerControlDataContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type TriggerControlDataContract interface {
 	GetCommandType() TriggerControlCommandType
 	// GetIsUnused returns IsUnused (virtual field)
 	GetIsUnused() bool
-	// IsTriggerControlData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsTriggerControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlData()
 }
 

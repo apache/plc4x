@@ -34,6 +34,8 @@ type LocaleId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsLocaleId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLocaleId()
 }
 
 // _LocaleId is the data-structure of this message

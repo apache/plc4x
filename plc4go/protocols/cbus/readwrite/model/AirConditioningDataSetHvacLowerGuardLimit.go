@@ -45,6 +45,8 @@ type AirConditioningDataSetHvacLowerGuardLimit interface {
 	GetLimit() HVACTemperature
 	// GetHvacModeAndFlags returns HvacModeAndFlags (property field)
 	GetHvacModeAndFlags() HVACModeAndFlags
+	// IsAirConditioningDataSetHvacLowerGuardLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataSetHvacLowerGuardLimit()
 }
 
 // _AirConditioningDataSetHvacLowerGuardLimit is the data-structure of this message

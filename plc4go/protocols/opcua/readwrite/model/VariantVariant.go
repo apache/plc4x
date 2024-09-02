@@ -41,6 +41,8 @@ type VariantVariant interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []Variant
+	// IsVariantVariant is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantVariant()
 }
 
 // _VariantVariant is the data-structure of this message

@@ -45,6 +45,8 @@ type OpenChannelMessageResponse interface {
 	GetSenderCertificate() PascalByteString
 	// GetReceiverCertificateThumbprint returns ReceiverCertificateThumbprint (property field)
 	GetReceiverCertificateThumbprint() PascalByteString
+	// IsOpenChannelMessageResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpenChannelMessageResponse()
 }
 
 // _OpenChannelMessageResponse is the data-structure of this message

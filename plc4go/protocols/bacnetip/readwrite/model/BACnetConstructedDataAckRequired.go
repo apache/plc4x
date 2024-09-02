@@ -41,6 +41,8 @@ type BACnetConstructedDataAckRequired interface {
 	GetAckRequired() BACnetEventTransitionBitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventTransitionBitsTagged
+	// IsBACnetConstructedDataAckRequired is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAckRequired()
 }
 
 // _BACnetConstructedDataAckRequired is the data-structure of this message

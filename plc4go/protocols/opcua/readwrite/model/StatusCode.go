@@ -38,6 +38,8 @@ type StatusCode interface {
 	utils.Serializable
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() uint32
+	// IsStatusCode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusCode()
 }
 
 // _StatusCode is the data-structure of this message

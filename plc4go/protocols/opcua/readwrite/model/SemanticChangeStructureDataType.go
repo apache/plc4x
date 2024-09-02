@@ -41,6 +41,8 @@ type SemanticChangeStructureDataType interface {
 	GetAffected() NodeId
 	// GetAffectedType returns AffectedType (property field)
 	GetAffectedType() NodeId
+	// IsSemanticChangeStructureDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSemanticChangeStructureDataType()
 }
 
 // _SemanticChangeStructureDataType is the data-structure of this message

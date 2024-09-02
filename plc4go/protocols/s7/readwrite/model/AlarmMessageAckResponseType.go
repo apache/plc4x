@@ -42,6 +42,8 @@ type AlarmMessageAckResponseType interface {
 	GetNumberOfObjects() uint8
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []uint8
+	// IsAlarmMessageAckResponseType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarmMessageAckResponseType()
 }
 
 // _AlarmMessageAckResponseType is the data-structure of this message

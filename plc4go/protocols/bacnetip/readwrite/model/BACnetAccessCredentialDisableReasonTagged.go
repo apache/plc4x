@@ -44,6 +44,8 @@ type BACnetAccessCredentialDisableReasonTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetAccessCredentialDisableReasonTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccessCredentialDisableReasonTagged()
 }
 
 // _BACnetAccessCredentialDisableReasonTagged is the data-structure of this message

@@ -39,6 +39,8 @@ type SALDataLighting interface {
 	SALData
 	// GetLightingData returns LightingData (property field)
 	GetLightingData() LightingData
+	// IsSALDataLighting is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataLighting()
 }
 
 // _SALDataLighting is the data-structure of this message

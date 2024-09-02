@@ -38,6 +38,8 @@ type BACnetAssignedLandingCalls interface {
 	utils.Serializable
 	// GetLandingCalls returns LandingCalls (property field)
 	GetLandingCalls() BACnetAssignedLandingCallsLandingCallsList
+	// IsBACnetAssignedLandingCalls is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAssignedLandingCalls()
 }
 
 // _BACnetAssignedLandingCalls is the data-structure of this message

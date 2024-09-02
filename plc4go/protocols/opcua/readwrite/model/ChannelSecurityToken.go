@@ -45,6 +45,8 @@ type ChannelSecurityToken interface {
 	GetCreatedAt() int64
 	// GetRevisedLifetime returns RevisedLifetime (property field)
 	GetRevisedLifetime() uint32
+	// IsChannelSecurityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsChannelSecurityToken()
 }
 
 // _ChannelSecurityToken is the data-structure of this message

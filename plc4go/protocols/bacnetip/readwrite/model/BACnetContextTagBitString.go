@@ -39,6 +39,8 @@ type BACnetContextTagBitString interface {
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadBitString
+	// IsBACnetContextTagBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagBitString()
 }
 
 // _BACnetContextTagBitString is the data-structure of this message

@@ -43,6 +43,8 @@ type BACnetConstructedDataSubordinateNodeTypes interface {
 	GetSubordinateNodeTypes() []BACnetNodeTypeTagged
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataSubordinateNodeTypes is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSubordinateNodeTypes()
 }
 
 // _BACnetConstructedDataSubordinateNodeTypes is the data-structure of this message

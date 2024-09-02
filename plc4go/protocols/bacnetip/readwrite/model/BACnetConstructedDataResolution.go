@@ -41,6 +41,8 @@ type BACnetConstructedDataResolution interface {
 	GetResolution() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataResolution is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataResolution()
 }
 
 // _BACnetConstructedDataResolution is the data-structure of this message

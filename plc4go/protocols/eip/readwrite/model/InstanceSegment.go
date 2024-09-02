@@ -44,6 +44,8 @@ type InstanceSegment interface {
 	GetLogicalSegmentFormat() uint8
 	// GetInstance returns Instance (property field)
 	GetInstance() uint8
+	// IsInstanceSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsInstanceSegment()
 }
 
 // _InstanceSegment is the data-structure of this message

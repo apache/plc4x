@@ -39,6 +39,8 @@ type BACnetConstructedDataActiveVTSessions interface {
 	BACnetConstructedData
 	// GetActiveVTSession returns ActiveVTSession (property field)
 	GetActiveVTSession() []BACnetVTSession
+	// IsBACnetConstructedDataActiveVTSessions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataActiveVTSessions()
 }
 
 // _BACnetConstructedDataActiveVTSessions is the data-structure of this message

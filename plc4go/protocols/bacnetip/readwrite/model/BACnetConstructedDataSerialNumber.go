@@ -41,6 +41,8 @@ type BACnetConstructedDataSerialNumber interface {
 	GetSerialNumber() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataSerialNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSerialNumber()
 }
 
 // _BACnetConstructedDataSerialNumber is the data-structure of this message

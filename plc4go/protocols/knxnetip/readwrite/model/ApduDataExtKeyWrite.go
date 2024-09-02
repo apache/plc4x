@@ -35,6 +35,8 @@ type ApduDataExtKeyWrite interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtKeyWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtKeyWrite()
 }
 
 // _ApduDataExtKeyWrite is the data-structure of this message

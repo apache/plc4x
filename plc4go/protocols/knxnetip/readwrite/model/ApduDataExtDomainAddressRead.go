@@ -35,6 +35,8 @@ type ApduDataExtDomainAddressRead interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtDomainAddressRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtDomainAddressRead()
 }
 
 // _ApduDataExtDomainAddressRead is the data-structure of this message

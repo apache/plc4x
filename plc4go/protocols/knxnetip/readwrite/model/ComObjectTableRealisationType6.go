@@ -39,6 +39,8 @@ type ComObjectTableRealisationType6 interface {
 	ComObjectTable
 	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() GroupObjectDescriptorRealisationType6
+	// IsComObjectTableRealisationType6 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsComObjectTableRealisationType6()
 }
 
 // _ComObjectTableRealisationType6 is the data-structure of this message

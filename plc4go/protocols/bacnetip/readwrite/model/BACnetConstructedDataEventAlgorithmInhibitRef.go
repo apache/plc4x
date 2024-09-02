@@ -41,6 +41,8 @@ type BACnetConstructedDataEventAlgorithmInhibitRef interface {
 	GetEventAlgorithmInhibitRef() BACnetObjectPropertyReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetObjectPropertyReference
+	// IsBACnetConstructedDataEventAlgorithmInhibitRef is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventAlgorithmInhibitRef()
 }
 
 // _BACnetConstructedDataEventAlgorithmInhibitRef is the data-structure of this message

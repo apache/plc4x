@@ -41,6 +41,8 @@ type BACnetConstructedDataLargeAnalogValueDeadband interface {
 	GetDeadband() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
+	// IsBACnetConstructedDataLargeAnalogValueDeadband is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLargeAnalogValueDeadband()
 }
 
 // _BACnetConstructedDataLargeAnalogValueDeadband is the data-structure of this message

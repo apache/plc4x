@@ -41,6 +41,8 @@ type BACnetConstructedDataSegmentationSupported interface {
 	GetSegmentationSupported() BACnetSegmentationTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetSegmentationTagged
+	// IsBACnetConstructedDataSegmentationSupported is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSegmentationSupported()
 }
 
 // _BACnetConstructedDataSegmentationSupported is the data-structure of this message

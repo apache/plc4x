@@ -44,6 +44,8 @@ type BACnetSecurityKeySet interface {
 	GetExpirationTime() BACnetDateTimeEnclosed
 	// GetKeyIds returns KeyIds (property field)
 	GetKeyIds() BACnetSecurityKeySetKeyIds
+	// IsBACnetSecurityKeySet is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetSecurityKeySet()
 }
 
 // _BACnetSecurityKeySet is the data-structure of this message

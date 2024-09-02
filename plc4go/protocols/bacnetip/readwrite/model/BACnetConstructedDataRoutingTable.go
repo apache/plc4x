@@ -39,6 +39,8 @@ type BACnetConstructedDataRoutingTable interface {
 	BACnetConstructedData
 	// GetRoutingTable returns RoutingTable (property field)
 	GetRoutingTable() []BACnetRouterEntry
+	// IsBACnetConstructedDataRoutingTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRoutingTable()
 }
 
 // _BACnetConstructedDataRoutingTable is the data-structure of this message

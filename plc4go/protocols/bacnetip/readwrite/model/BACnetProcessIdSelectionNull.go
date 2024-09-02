@@ -39,6 +39,8 @@ type BACnetProcessIdSelectionNull interface {
 	BACnetProcessIdSelection
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
+	// IsBACnetProcessIdSelectionNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetProcessIdSelectionNull()
 }
 
 // _BACnetProcessIdSelectionNull is the data-structure of this message

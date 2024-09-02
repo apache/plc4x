@@ -39,6 +39,8 @@ type SALDataVentilation interface {
 	SALData
 	// GetVentilationData returns VentilationData (property field)
 	GetVentilationData() LightingData
+	// IsSALDataVentilation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataVentilation()
 }
 
 // _SALDataVentilation is the data-structure of this message

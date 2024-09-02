@@ -54,6 +54,8 @@ type HVACStatusFlags interface {
 	GetIsDamperStateClosed() bool
 	// GetIsDamperStateOpen returns IsDamperStateOpen (virtual field)
 	GetIsDamperStateOpen() bool
+	// IsHVACStatusFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACStatusFlags()
 }
 
 // _HVACStatusFlags is the data-structure of this message

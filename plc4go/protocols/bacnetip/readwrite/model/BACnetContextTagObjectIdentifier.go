@@ -43,6 +43,8 @@ type BACnetContextTagObjectIdentifier interface {
 	GetObjectType() BACnetObjectType
 	// GetInstanceNumber returns InstanceNumber (virtual field)
 	GetInstanceNumber() uint32
+	// IsBACnetContextTagObjectIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagObjectIdentifier()
 }
 
 // _BACnetContextTagObjectIdentifier is the data-structure of this message

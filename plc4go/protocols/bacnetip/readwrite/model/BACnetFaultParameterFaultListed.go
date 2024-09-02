@@ -43,6 +43,8 @@ type BACnetFaultParameterFaultListed interface {
 	GetFaultListReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetFaultParameterFaultListed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultListed()
 }
 
 // _BACnetFaultParameterFaultListed is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataLargeAnalogValuePresentValue interface {
 	GetPresentValue() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
+	// IsBACnetConstructedDataLargeAnalogValuePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLargeAnalogValuePresentValue()
 }
 
 // _BACnetConstructedDataLargeAnalogValuePresentValue is the data-structure of this message

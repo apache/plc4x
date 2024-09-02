@@ -48,6 +48,8 @@ type HVACStartTime interface {
 	GetHour() uint8
 	// GetMinute returns Minute (virtual field)
 	GetMinute() uint8
+	// IsHVACStartTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACStartTime()
 }
 
 // _HVACStartTime is the data-structure of this message

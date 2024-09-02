@@ -41,6 +41,8 @@ type BACnetConstructedDataVerificationTime interface {
 	GetVerificationTime() BACnetApplicationTagSignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagSignedInteger
+	// IsBACnetConstructedDataVerificationTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataVerificationTime()
 }
 
 // _BACnetConstructedDataVerificationTime is the data-structure of this message

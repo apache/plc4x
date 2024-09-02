@@ -35,6 +35,8 @@ type NullCommandRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
+	// IsNullCommandRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNullCommandRequest()
 }
 
 // _NullCommandRequest is the data-structure of this message

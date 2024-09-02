@@ -45,6 +45,8 @@ type EndpointType interface {
 	GetSecurityPolicyUri() PascalString
 	// GetTransportProfileUri returns TransportProfileUri (property field)
 	GetTransportProfileUri() PascalString
+	// IsEndpointType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEndpointType()
 }
 
 // _EndpointType is the data-structure of this message

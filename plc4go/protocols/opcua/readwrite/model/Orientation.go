@@ -35,6 +35,8 @@ type Orientation interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsOrientation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOrientation()
 }
 
 // _Orientation is the data-structure of this message

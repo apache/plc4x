@@ -38,11 +38,13 @@ type LogicalSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsLogicalSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLogicalSegmentType()
 }
 
 // LogicalSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
 type LogicalSegmentTypeContract interface {
-	// IsLogicalSegmentType() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsLogicalSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLogicalSegmentType()
 }
 

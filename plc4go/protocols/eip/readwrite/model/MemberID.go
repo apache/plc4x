@@ -41,6 +41,8 @@ type MemberID interface {
 	GetFormat() uint8
 	// GetInstance returns Instance (property field)
 	GetInstance() uint8
+	// IsMemberID is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMemberID()
 }
 
 // _MemberID is the data-structure of this message

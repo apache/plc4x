@@ -39,6 +39,8 @@ type BACnetPropertyStatesExtendedValue interface {
 	BACnetPropertyStates
 	// GetExtendedValue returns ExtendedValue (property field)
 	GetExtendedValue() BACnetContextTagUnsignedInteger
+	// IsBACnetPropertyStatesExtendedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesExtendedValue()
 }
 
 // _BACnetPropertyStatesExtendedValue is the data-structure of this message

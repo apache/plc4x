@@ -40,6 +40,8 @@ type NumericNodeId interface {
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() uint32
+	// IsNumericNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNumericNodeId()
 }
 
 // _NumericNodeId is the data-structure of this message

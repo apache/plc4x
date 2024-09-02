@@ -41,6 +41,8 @@ type BACnetConstructedDataLocalForwardingOnly interface {
 	GetLocalForwardingOnly() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataLocalForwardingOnly is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLocalForwardingOnly()
 }
 
 // _BACnetConstructedDataLocalForwardingOnly is the data-structure of this message

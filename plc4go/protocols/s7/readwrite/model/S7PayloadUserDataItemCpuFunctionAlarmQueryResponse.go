@@ -39,6 +39,8 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
 	S7PayloadUserDataItem
 	// GetItems returns Items (property field)
 	GetItems() []byte
+	// IsS7PayloadUserDataItemCpuFunctionAlarmQueryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionAlarmQueryResponse()
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse is the data-structure of this message

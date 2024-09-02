@@ -39,6 +39,8 @@ type NetworkAddressDataType interface {
 	ExtensionObjectDefinition
 	// GetNetworkInterface returns NetworkInterface (property field)
 	GetNetworkInterface() PascalString
+	// IsNetworkAddressDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNetworkAddressDataType()
 }
 
 // _NetworkAddressDataType is the data-structure of this message

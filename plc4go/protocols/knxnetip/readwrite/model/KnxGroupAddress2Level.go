@@ -41,6 +41,8 @@ type KnxGroupAddress2Level interface {
 	GetMainGroup() uint8
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint16
+	// IsKnxGroupAddress2Level is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxGroupAddress2Level()
 }
 
 // _KnxGroupAddress2Level is the data-structure of this message

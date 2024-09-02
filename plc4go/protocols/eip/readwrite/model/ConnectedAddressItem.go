@@ -39,6 +39,8 @@ type ConnectedAddressItem interface {
 	TypeId
 	// GetConnectionId returns ConnectionId (property field)
 	GetConnectionId() uint32
+	// IsConnectedAddressItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectedAddressItem()
 }
 
 // _ConnectedAddressItem is the data-structure of this message

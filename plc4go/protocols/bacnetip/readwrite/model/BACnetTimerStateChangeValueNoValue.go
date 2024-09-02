@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueNoValue interface {
 	BACnetTimerStateChangeValue
 	// GetNoValue returns NoValue (property field)
 	GetNoValue() BACnetContextTagNull
+	// IsBACnetTimerStateChangeValueNoValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueNoValue()
 }
 
 // _BACnetTimerStateChangeValueNoValue is the data-structure of this message

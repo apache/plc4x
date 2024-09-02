@@ -41,6 +41,8 @@ type BACnetConstructedDataVendorIdentifier interface {
 	GetVendorIdentifier() BACnetVendorIdTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetVendorIdTagged
+	// IsBACnetConstructedDataVendorIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataVendorIdentifier()
 }
 
 // _BACnetConstructedDataVendorIdentifier is the data-structure of this message

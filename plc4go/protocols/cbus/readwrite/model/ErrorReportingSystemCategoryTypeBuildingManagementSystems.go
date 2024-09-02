@@ -39,6 +39,8 @@ type ErrorReportingSystemCategoryTypeBuildingManagementSystems interface {
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForBuildingManagementSystems
+	// IsErrorReportingSystemCategoryTypeBuildingManagementSystems is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorReportingSystemCategoryTypeBuildingManagementSystems()
 }
 
 // _ErrorReportingSystemCategoryTypeBuildingManagementSystems is the data-structure of this message

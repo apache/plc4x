@@ -40,6 +40,8 @@ type BACnetLandingDoorStatusLandingDoorsListEntry interface {
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetDoorStatus returns DoorStatus (property field)
 	GetDoorStatus() BACnetDoorStatusTagged
+	// IsBACnetLandingDoorStatusLandingDoorsListEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingDoorStatusLandingDoorsListEntry()
 }
 
 // _BACnetLandingDoorStatusLandingDoorsListEntry is the data-structure of this message

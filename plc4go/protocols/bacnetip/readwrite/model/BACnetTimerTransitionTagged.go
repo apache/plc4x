@@ -40,6 +40,8 @@ type BACnetTimerTransitionTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetTimerTransition
+	// IsBACnetTimerTransitionTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerTransitionTagged()
 }
 
 // _BACnetTimerTransitionTagged is the data-structure of this message

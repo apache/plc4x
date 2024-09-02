@@ -35,6 +35,8 @@ type AdsReadDeviceInfoRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
+	// IsAdsReadDeviceInfoRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsReadDeviceInfoRequest()
 }
 
 // _AdsReadDeviceInfoRequest is the data-structure of this message

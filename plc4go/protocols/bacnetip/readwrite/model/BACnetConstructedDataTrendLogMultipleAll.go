@@ -35,6 +35,8 @@ type BACnetConstructedDataTrendLogMultipleAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataTrendLogMultipleAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTrendLogMultipleAll()
 }
 
 // _BACnetConstructedDataTrendLogMultipleAll is the data-structure of this message

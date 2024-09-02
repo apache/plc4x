@@ -43,6 +43,8 @@ type BACnetConstructedDataExecutionDelay interface {
 	GetExecutionDelay() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataExecutionDelay is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataExecutionDelay()
 }
 
 // _BACnetConstructedDataExecutionDelay is the data-structure of this message

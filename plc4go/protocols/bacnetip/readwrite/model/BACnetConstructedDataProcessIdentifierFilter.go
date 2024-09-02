@@ -41,6 +41,8 @@ type BACnetConstructedDataProcessIdentifierFilter interface {
 	GetProcessIdentifierFilter() BACnetProcessIdSelection
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProcessIdSelection
+	// IsBACnetConstructedDataProcessIdentifierFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProcessIdentifierFilter()
 }
 
 // _BACnetConstructedDataProcessIdentifierFilter is the data-structure of this message

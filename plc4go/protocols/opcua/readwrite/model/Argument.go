@@ -49,6 +49,8 @@ type Argument interface {
 	GetArrayDimensions() []uint32
 	// GetDescription returns Description (property field)
 	GetDescription() LocalizedText
+	// IsArgument is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsArgument()
 }
 
 // _Argument is the data-structure of this message

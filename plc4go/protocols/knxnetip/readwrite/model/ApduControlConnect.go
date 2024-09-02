@@ -35,6 +35,8 @@ type ApduControlConnect interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduControl
+	// IsApduControlConnect is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduControlConnect()
 }
 
 // _ApduControlConnect is the data-structure of this message

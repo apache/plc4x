@@ -41,6 +41,8 @@ type BACnetConstructedDataCredentialDisable interface {
 	GetCredentialDisable() BACnetAccessCredentialDisableTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessCredentialDisableTagged
+	// IsBACnetConstructedDataCredentialDisable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCredentialDisable()
 }
 
 // _BACnetConstructedDataCredentialDisable is the data-structure of this message

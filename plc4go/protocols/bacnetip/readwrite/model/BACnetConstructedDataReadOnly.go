@@ -41,6 +41,8 @@ type BACnetConstructedDataReadOnly interface {
 	GetReadOnly() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataReadOnly is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataReadOnly()
 }
 
 // _BACnetConstructedDataReadOnly is the data-structure of this message

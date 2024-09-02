@@ -41,6 +41,8 @@ type BACnetConstructedDataAccessEventCredential interface {
 	GetAccessEventCredential() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
+	// IsBACnetConstructedDataAccessEventCredential is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessEventCredential()
 }
 
 // _BACnetConstructedDataAccessEventCredential is the data-structure of this message

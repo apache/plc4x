@@ -47,6 +47,8 @@ type ServerOnNetwork interface {
 	GetNoOfServerCapabilities() int32
 	// GetServerCapabilities returns ServerCapabilities (property field)
 	GetServerCapabilities() []PascalString
+	// IsServerOnNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServerOnNetwork()
 }
 
 // _ServerOnNetwork is the data-structure of this message

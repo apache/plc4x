@@ -45,6 +45,8 @@ type NodeTypeDescription interface {
 	GetNoOfDataToReturn() int32
 	// GetDataToReturn returns DataToReturn (property field)
 	GetDataToReturn() []ExtensionObjectDefinition
+	// IsNodeTypeDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeTypeDescription()
 }
 
 // _NodeTypeDescription is the data-structure of this message

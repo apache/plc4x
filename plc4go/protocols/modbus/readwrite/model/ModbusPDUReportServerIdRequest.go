@@ -35,6 +35,8 @@ type ModbusPDUReportServerIdRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
+	// IsModbusPDUReportServerIdRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReportServerIdRequest()
 }
 
 // _ModbusPDUReportServerIdRequest is the data-structure of this message

@@ -41,6 +41,8 @@ type SubscriptionAcknowledgement interface {
 	GetSubscriptionId() uint32
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint32
+	// IsSubscriptionAcknowledgement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSubscriptionAcknowledgement()
 }
 
 // _SubscriptionAcknowledgement is the data-structure of this message

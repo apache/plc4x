@@ -39,6 +39,8 @@ type BACnetPropertyAccessResultAccessResultPropertyValue interface {
 	BACnetPropertyAccessResultAccessResult
 	// GetPropertyValue returns PropertyValue (property field)
 	GetPropertyValue() BACnetConstructedData
+	// IsBACnetPropertyAccessResultAccessResultPropertyValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyAccessResultAccessResultPropertyValue()
 }
 
 // _BACnetPropertyAccessResultAccessResultPropertyValue is the data-structure of this message

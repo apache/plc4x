@@ -41,6 +41,8 @@ type CancelRequest interface {
 	GetRequestHeader() ExtensionObjectDefinition
 	// GetRequestHandle returns RequestHandle (property field)
 	GetRequestHandle() uint32
+	// IsCancelRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCancelRequest()
 }
 
 // _CancelRequest is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetConstructedDataAccessZoneAlarmValues interface {
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetAccessZoneOccupancyStateTagged
+	// IsBACnetConstructedDataAccessZoneAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessZoneAlarmValues()
 }
 
 // _BACnetConstructedDataAccessZoneAlarmValues is the data-structure of this message

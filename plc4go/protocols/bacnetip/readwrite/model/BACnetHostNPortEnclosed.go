@@ -42,6 +42,8 @@ type BACnetHostNPortEnclosed interface {
 	GetBacnetHostNPort() BACnetHostNPort
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetHostNPortEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetHostNPortEnclosed()
 }
 
 // _BACnetHostNPortEnclosed is the data-structure of this message

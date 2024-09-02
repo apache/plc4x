@@ -40,6 +40,8 @@ type BACnetPolarityTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetPolarity
+	// IsBACnetPolarityTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPolarityTagged()
 }
 
 // _BACnetPolarityTagged is the data-structure of this message

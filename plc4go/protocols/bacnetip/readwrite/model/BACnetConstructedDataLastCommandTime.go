@@ -41,6 +41,8 @@ type BACnetConstructedDataLastCommandTime interface {
 	GetLastCommandTime() BACnetTimeStamp
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimeStamp
+	// IsBACnetConstructedDataLastCommandTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastCommandTime()
 }
 
 // _BACnetConstructedDataLastCommandTime is the data-structure of this message

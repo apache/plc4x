@@ -43,6 +43,8 @@ type BACnetConstructedDataCharacterStringValueAlarmValues interface {
 	GetAlarmValues() []BACnetOptionalCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataCharacterStringValueAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCharacterStringValueAlarmValues()
 }
 
 // _BACnetConstructedDataCharacterStringValueAlarmValues is the data-structure of this message

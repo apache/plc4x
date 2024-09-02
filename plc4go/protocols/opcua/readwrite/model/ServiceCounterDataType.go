@@ -41,6 +41,8 @@ type ServiceCounterDataType interface {
 	GetTotalCount() uint32
 	// GetErrorCount returns ErrorCount (property field)
 	GetErrorCount() uint32
+	// IsServiceCounterDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServiceCounterDataType()
 }
 
 // _ServiceCounterDataType is the data-structure of this message

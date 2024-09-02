@@ -39,6 +39,8 @@ type SALDataAccessControl interface {
 	SALData
 	// GetAccessControlData returns AccessControlData (property field)
 	GetAccessControlData() AccessControlData
+	// IsSALDataAccessControl is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataAccessControl()
 }
 
 // _SALDataAccessControl is the data-structure of this message

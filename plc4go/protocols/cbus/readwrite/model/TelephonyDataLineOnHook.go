@@ -35,6 +35,8 @@ type TelephonyDataLineOnHook interface {
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
+	// IsTelephonyDataLineOnHook is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataLineOnHook()
 }
 
 // _TelephonyDataLineOnHook is the data-structure of this message

@@ -41,6 +41,8 @@ type ApduDataGroupValueWrite interface {
 	GetDataFirstByte() int8
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsApduDataGroupValueWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataGroupValueWrite()
 }
 
 // _ApduDataGroupValueWrite is the data-structure of this message

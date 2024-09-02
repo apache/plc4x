@@ -45,6 +45,8 @@ type BitFieldDefinition interface {
 	GetStartingBitPosition() uint32
 	// GetEndingBitPosition returns EndingBitPosition (property field)
 	GetEndingBitPosition() uint32
+	// IsBitFieldDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBitFieldDefinition()
 }
 
 // _BitFieldDefinition is the data-structure of this message

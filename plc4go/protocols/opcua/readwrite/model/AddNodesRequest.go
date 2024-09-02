@@ -43,6 +43,8 @@ type AddNodesRequest interface {
 	GetNoOfNodesToAdd() int32
 	// GetNodesToAdd returns NodesToAdd (property field)
 	GetNodesToAdd() []ExtensionObjectDefinition
+	// IsAddNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAddNodesRequest()
 }
 
 // _AddNodesRequest is the data-structure of this message

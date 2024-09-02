@@ -39,6 +39,8 @@ type S7PayloadUserData interface {
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7PayloadUserDataItem
+	// IsS7PayloadUserData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserData()
 }
 
 // _S7PayloadUserData is the data-structure of this message

@@ -42,6 +42,8 @@ type BACnetAuthenticationFactorFormat interface {
 	GetVendorId() BACnetVendorIdTagged
 	// GetVendorFormat returns VendorFormat (property field)
 	GetVendorFormat() BACnetContextTagUnsignedInteger
+	// IsBACnetAuthenticationFactorFormat is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAuthenticationFactorFormat()
 }
 
 // _BACnetAuthenticationFactorFormat is the data-structure of this message

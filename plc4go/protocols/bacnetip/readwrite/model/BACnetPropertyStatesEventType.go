@@ -39,6 +39,8 @@ type BACnetPropertyStatesEventType interface {
 	BACnetPropertyStates
 	// GetEventType returns EventType (property field)
 	GetEventType() BACnetEventTypeTagged
+	// IsBACnetPropertyStatesEventType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesEventType()
 }
 
 // _BACnetPropertyStatesEventType is the data-structure of this message

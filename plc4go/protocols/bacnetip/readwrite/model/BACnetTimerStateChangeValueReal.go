@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueReal interface {
 	BACnetTimerStateChangeValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
+	// IsBACnetTimerStateChangeValueReal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueReal()
 }
 
 // _BACnetTimerStateChangeValueReal is the data-structure of this message

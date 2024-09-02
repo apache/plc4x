@@ -41,6 +41,8 @@ type BACnetConstructedDataPowerMode interface {
 	GetPowerMode() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataPowerMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPowerMode()
 }
 
 // _BACnetConstructedDataPowerMode is the data-structure of this message

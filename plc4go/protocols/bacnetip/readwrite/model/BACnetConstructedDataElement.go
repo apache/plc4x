@@ -52,6 +52,8 @@ type BACnetConstructedDataElement interface {
 	GetIsConstructedData() bool
 	// GetIsContextTag returns IsContextTag (virtual field)
 	GetIsContextTag() bool
+	// IsBACnetConstructedDataElement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataElement()
 }
 
 // _BACnetConstructedDataElement is the data-structure of this message

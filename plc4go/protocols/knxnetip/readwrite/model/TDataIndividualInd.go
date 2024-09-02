@@ -35,6 +35,8 @@ type TDataIndividualInd interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsTDataIndividualInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTDataIndividualInd()
 }
 
 // _TDataIndividualInd is the data-structure of this message

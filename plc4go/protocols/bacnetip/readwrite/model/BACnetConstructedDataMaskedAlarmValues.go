@@ -39,6 +39,8 @@ type BACnetConstructedDataMaskedAlarmValues interface {
 	BACnetConstructedData
 	// GetMaskedAlarmValues returns MaskedAlarmValues (property field)
 	GetMaskedAlarmValues() []BACnetDoorAlarmStateTagged
+	// IsBACnetConstructedDataMaskedAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMaskedAlarmValues()
 }
 
 // _BACnetConstructedDataMaskedAlarmValues is the data-structure of this message

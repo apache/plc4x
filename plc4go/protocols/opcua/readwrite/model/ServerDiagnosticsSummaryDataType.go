@@ -61,6 +61,8 @@ type ServerDiagnosticsSummaryDataType interface {
 	GetSecurityRejectedRequestsCount() uint32
 	// GetRejectedRequestsCount returns RejectedRequestsCount (property field)
 	GetRejectedRequestsCount() uint32
+	// IsServerDiagnosticsSummaryDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServerDiagnosticsSummaryDataType()
 }
 
 // _ServerDiagnosticsSummaryDataType is the data-structure of this message

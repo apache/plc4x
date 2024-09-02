@@ -44,6 +44,8 @@ type BACnetLoggingTypeTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetLoggingTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLoggingTypeTagged()
 }
 
 // _BACnetLoggingTypeTagged is the data-structure of this message

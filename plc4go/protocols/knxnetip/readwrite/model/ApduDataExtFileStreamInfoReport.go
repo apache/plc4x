@@ -35,6 +35,8 @@ type ApduDataExtFileStreamInfoReport interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtFileStreamInfoReport is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtFileStreamInfoReport()
 }
 
 // _ApduDataExtFileStreamInfoReport is the data-structure of this message

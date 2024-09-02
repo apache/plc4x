@@ -54,6 +54,8 @@ type DIBDeviceInfo interface {
 	GetKnxNetIpDeviceMacAddress() MACAddress
 	// GetDeviceFriendlyName returns DeviceFriendlyName (property field)
 	GetDeviceFriendlyName() []byte
+	// IsDIBDeviceInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDIBDeviceInfo()
 }
 
 // _DIBDeviceInfo is the data-structure of this message

@@ -47,6 +47,8 @@ type DF1RequestProtectedTypedLogicalRead interface {
 	GetElementNumber() uint8
 	// GetSubElementNumber returns SubElementNumber (property field)
 	GetSubElementNumber() uint8
+	// IsDF1RequestProtectedTypedLogicalRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1RequestProtectedTypedLogicalRead()
 }
 
 // _DF1RequestProtectedTypedLogicalRead is the data-structure of this message

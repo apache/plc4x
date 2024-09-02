@@ -35,6 +35,8 @@ type MonitoringFilterResult interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsMonitoringFilterResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoringFilterResult()
 }
 
 // _MonitoringFilterResult is the data-structure of this message

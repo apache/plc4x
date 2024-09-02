@@ -35,6 +35,8 @@ type TelephonyDataInternetConnectionRequestMade interface {
 	utils.LengthAware
 	utils.Serializable
 	TelephonyData
+	// IsTelephonyDataInternetConnectionRequestMade is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataInternetConnectionRequestMade()
 }
 
 // _TelephonyDataInternetConnectionRequestMade is the data-structure of this message

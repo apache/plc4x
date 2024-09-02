@@ -34,6 +34,8 @@ type BACnetWeekNDay interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetWeekNDay is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetWeekNDay()
 }
 
 // _BACnetWeekNDay is the data-structure of this message

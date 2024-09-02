@@ -39,6 +39,8 @@ type BACnetShedLevelLevel interface {
 	BACnetShedLevel
 	// GetLevel returns Level (property field)
 	GetLevel() BACnetContextTagUnsignedInteger
+	// IsBACnetShedLevelLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetShedLevelLevel()
 }
 
 // _BACnetShedLevelLevel is the data-structure of this message

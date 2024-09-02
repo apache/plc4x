@@ -42,6 +42,8 @@ type AdsStampHeader interface {
 	GetSamples() uint32
 	// GetAdsNotificationSamples returns AdsNotificationSamples (property field)
 	GetAdsNotificationSamples() []AdsNotificationSample
+	// IsAdsStampHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsStampHeader()
 }
 
 // _AdsStampHeader is the data-structure of this message

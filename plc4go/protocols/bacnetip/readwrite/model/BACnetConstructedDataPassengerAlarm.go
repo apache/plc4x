@@ -41,6 +41,8 @@ type BACnetConstructedDataPassengerAlarm interface {
 	GetPassengerAlarm() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataPassengerAlarm is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPassengerAlarm()
 }
 
 // _BACnetConstructedDataPassengerAlarm is the data-structure of this message

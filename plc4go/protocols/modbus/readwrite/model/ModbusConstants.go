@@ -39,6 +39,8 @@ type ModbusConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsModbusConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusConstants()
 }
 
 // _ModbusConstants is the data-structure of this message

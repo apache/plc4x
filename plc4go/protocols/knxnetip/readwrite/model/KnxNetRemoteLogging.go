@@ -39,6 +39,8 @@ type KnxNetRemoteLogging interface {
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
+	// IsKnxNetRemoteLogging is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxNetRemoteLogging()
 }
 
 // _KnxNetRemoteLogging is the data-structure of this message

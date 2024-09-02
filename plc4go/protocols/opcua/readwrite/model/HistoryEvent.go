@@ -41,6 +41,8 @@ type HistoryEvent interface {
 	GetNoOfEvents() int32
 	// GetEvents returns Events (property field)
 	GetEvents() []ExtensionObjectDefinition
+	// IsHistoryEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryEvent()
 }
 
 // _HistoryEvent is the data-structure of this message

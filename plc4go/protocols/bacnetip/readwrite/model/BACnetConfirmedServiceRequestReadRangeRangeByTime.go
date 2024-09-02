@@ -41,6 +41,8 @@ type BACnetConfirmedServiceRequestReadRangeRangeByTime interface {
 	GetReferenceTime() BACnetDateTime
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagSignedInteger
+	// IsBACnetConfirmedServiceRequestReadRangeRangeByTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReadRangeRangeByTime()
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeByTime is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataTrackingValue interface {
 	GetTrackingValue() BACnetLifeSafetyStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyStateTagged
+	// IsBACnetConstructedDataTrackingValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTrackingValue()
 }
 
 // _BACnetConstructedDataTrackingValue is the data-structure of this message

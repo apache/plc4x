@@ -41,6 +41,8 @@ type BACnetConstructedDataChangesPending interface {
 	GetChangesPending() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataChangesPending is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataChangesPending()
 }
 
 // _BACnetConstructedDataChangesPending is the data-structure of this message

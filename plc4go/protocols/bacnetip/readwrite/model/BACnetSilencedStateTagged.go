@@ -44,6 +44,8 @@ type BACnetSilencedStateTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetSilencedStateTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetSilencedStateTagged()
 }
 
 // _BACnetSilencedStateTagged is the data-structure of this message

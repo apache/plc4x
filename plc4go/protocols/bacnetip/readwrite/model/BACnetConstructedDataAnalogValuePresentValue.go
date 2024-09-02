@@ -41,6 +41,8 @@ type BACnetConstructedDataAnalogValuePresentValue interface {
 	GetPresentValue() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataAnalogValuePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAnalogValuePresentValue()
 }
 
 // _BACnetConstructedDataAnalogValuePresentValue is the data-structure of this message

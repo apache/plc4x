@@ -41,6 +41,8 @@ type BACnetConstructedDataCarDoorZone interface {
 	GetCarDoorZone() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataCarDoorZone is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCarDoorZone()
 }
 
 // _BACnetConstructedDataCarDoorZone is the data-structure of this message

@@ -42,6 +42,8 @@ type BACnetLandingCallStatus interface {
 	GetCommand() BACnetLandingCallStatusCommand
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() BACnetContextTagCharacterString
+	// IsBACnetLandingCallStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingCallStatus()
 }
 
 // _BACnetLandingCallStatus is the data-structure of this message

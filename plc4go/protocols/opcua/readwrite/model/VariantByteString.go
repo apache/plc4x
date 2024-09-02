@@ -41,6 +41,8 @@ type VariantByteString interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []ByteStringArray
+	// IsVariantByteString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantByteString()
 }
 
 // _VariantByteString is the data-structure of this message

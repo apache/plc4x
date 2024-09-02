@@ -40,6 +40,8 @@ type BACnetAssignedLandingCallsLandingCallsListEntry interface {
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetDirection returns Direction (property field)
 	GetDirection() BACnetLiftCarDirectionTagged
+	// IsBACnetAssignedLandingCallsLandingCallsListEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAssignedLandingCallsLandingCallsListEntry()
 }
 
 // _BACnetAssignedLandingCallsLandingCallsListEntry is the data-structure of this message

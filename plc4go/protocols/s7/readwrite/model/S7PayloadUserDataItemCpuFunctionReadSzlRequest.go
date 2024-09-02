@@ -41,6 +41,8 @@ type S7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
 	GetSzlId() SzlId
 	// GetSzlIndex returns SzlIndex (property field)
 	GetSzlIndex() uint16
+	// IsS7PayloadUserDataItemCpuFunctionReadSzlRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCpuFunctionReadSzlRequest()
 }
 
 // _S7PayloadUserDataItemCpuFunctionReadSzlRequest is the data-structure of this message

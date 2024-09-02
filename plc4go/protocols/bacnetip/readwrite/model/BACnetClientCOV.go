@@ -38,6 +38,8 @@ type BACnetClientCOV interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetClientCOV is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetClientCOV()
 }
 
 // BACnetClientCOVContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetClientCOVContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetClientCOV() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetClientCOV is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetClientCOV()
 }
 

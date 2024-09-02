@@ -47,6 +47,8 @@ type UserTokenPolicy interface {
 	GetIssuerEndpointUrl() PascalString
 	// GetSecurityPolicyUri returns SecurityPolicyUri (property field)
 	GetSecurityPolicyUri() PascalString
+	// IsUserTokenPolicy is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUserTokenPolicy()
 }
 
 // _UserTokenPolicy is the data-structure of this message

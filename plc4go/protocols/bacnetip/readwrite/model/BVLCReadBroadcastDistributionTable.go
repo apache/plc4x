@@ -36,6 +36,8 @@ type BVLCReadBroadcastDistributionTable interface {
 	utils.LengthAware
 	utils.Serializable
 	BVLC
+	// IsBVLCReadBroadcastDistributionTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCReadBroadcastDistributionTable()
 }
 
 // _BVLCReadBroadcastDistributionTable is the data-structure of this message

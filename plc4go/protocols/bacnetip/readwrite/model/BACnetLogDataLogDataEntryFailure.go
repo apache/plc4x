@@ -39,6 +39,8 @@ type BACnetLogDataLogDataEntryFailure interface {
 	BACnetLogDataLogDataEntry
 	// GetFailure returns Failure (property field)
 	GetFailure() ErrorEnclosed
+	// IsBACnetLogDataLogDataEntryFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogDataLogDataEntryFailure()
 }
 
 // _BACnetLogDataLogDataEntryFailure is the data-structure of this message

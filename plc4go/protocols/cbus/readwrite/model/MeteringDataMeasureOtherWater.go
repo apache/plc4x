@@ -35,6 +35,8 @@ type MeteringDataMeasureOtherWater interface {
 	utils.LengthAware
 	utils.Serializable
 	MeteringData
+	// IsMeteringDataMeasureOtherWater is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMeteringDataMeasureOtherWater()
 }
 
 // _MeteringDataMeasureOtherWater is the data-structure of this message

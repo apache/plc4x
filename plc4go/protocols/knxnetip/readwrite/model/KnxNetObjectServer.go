@@ -39,6 +39,8 @@ type KnxNetObjectServer interface {
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
+	// IsKnxNetObjectServer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxNetObjectServer()
 }
 
 // _KnxNetObjectServer is the data-structure of this message

@@ -35,6 +35,8 @@ type S7PayloadUserDataItemClkSetResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
+	// IsS7PayloadUserDataItemClkSetResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemClkSetResponse()
 }
 
 // _S7PayloadUserDataItemClkSetResponse is the data-structure of this message

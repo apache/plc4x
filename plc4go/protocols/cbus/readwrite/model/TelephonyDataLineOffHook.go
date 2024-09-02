@@ -41,6 +41,8 @@ type TelephonyDataLineOffHook interface {
 	GetReason() LineOffHookReason
 	// GetNumber returns Number (property field)
 	GetNumber() string
+	// IsTelephonyDataLineOffHook is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataLineOffHook()
 }
 
 // _TelephonyDataLineOffHook is the data-structure of this message

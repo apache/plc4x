@@ -41,6 +41,8 @@ type BACnetConstructedDataOperationExpected interface {
 	GetLifeSafetyOperations() BACnetLifeSafetyOperationTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyOperationTagged
+	// IsBACnetConstructedDataOperationExpected is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataOperationExpected()
 }
 
 // _BACnetConstructedDataOperationExpected is the data-structure of this message

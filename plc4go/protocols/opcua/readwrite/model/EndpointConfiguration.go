@@ -55,6 +55,8 @@ type EndpointConfiguration interface {
 	GetChannelLifetime() int32
 	// GetSecurityTokenLifetime returns SecurityTokenLifetime (property field)
 	GetSecurityTokenLifetime() int32
+	// IsEndpointConfiguration is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEndpointConfiguration()
 }
 
 // _EndpointConfiguration is the data-structure of this message

@@ -35,6 +35,8 @@ type ApduDataExtLinkRead interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtLinkRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtLinkRead()
 }
 
 // _ApduDataExtLinkRead is the data-structure of this message

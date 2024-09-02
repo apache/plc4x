@@ -41,6 +41,8 @@ type ConnectedDataItem interface {
 	GetSequenceCount() uint16
 	// GetService returns Service (property field)
 	GetService() CipService
+	// IsConnectedDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectedDataItem()
 }
 
 // _ConnectedDataItem is the data-structure of this message

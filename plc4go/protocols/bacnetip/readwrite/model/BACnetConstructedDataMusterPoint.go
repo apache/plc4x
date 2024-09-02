@@ -41,6 +41,8 @@ type BACnetConstructedDataMusterPoint interface {
 	GetMusterPoint() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataMusterPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMusterPoint()
 }
 
 // _BACnetConstructedDataMusterPoint is the data-structure of this message

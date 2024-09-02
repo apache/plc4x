@@ -41,6 +41,8 @@ type BACnetConstructedDataUserExternalIdentifier interface {
 	GetUserExternalIdentifier() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataUserExternalIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataUserExternalIdentifier()
 }
 
 // _BACnetConstructedDataUserExternalIdentifier is the data-structure of this message

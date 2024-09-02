@@ -41,6 +41,8 @@ type WritePropertyMultipleError interface {
 	GetErrorType() ErrorEnclosed
 	// GetFirstFailedWriteAttempt returns FirstFailedWriteAttempt (property field)
 	GetFirstFailedWriteAttempt() BACnetObjectPropertyReferenceEnclosed
+	// IsWritePropertyMultipleError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsWritePropertyMultipleError()
 }
 
 // _WritePropertyMultipleError is the data-structure of this message

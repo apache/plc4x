@@ -42,6 +42,8 @@ type BACnetEventParameterChangeOfStateListOfValues interface {
 	GetListOfValues() []BACnetPropertyStates
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterChangeOfStateListOfValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfStateListOfValues()
 }
 
 // _BACnetEventParameterChangeOfStateListOfValues is the data-structure of this message

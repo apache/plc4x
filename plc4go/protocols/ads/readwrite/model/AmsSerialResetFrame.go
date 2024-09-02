@@ -48,6 +48,8 @@ type AmsSerialResetFrame interface {
 	GetLength() int8
 	// GetCrc returns Crc (property field)
 	GetCrc() uint16
+	// IsAmsSerialResetFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAmsSerialResetFrame()
 }
 
 // _AmsSerialResetFrame is the data-structure of this message

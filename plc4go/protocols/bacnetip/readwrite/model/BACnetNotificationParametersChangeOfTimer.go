@@ -53,6 +53,8 @@ type BACnetNotificationParametersChangeOfTimer interface {
 	GetExpirationTime() BACnetDateTimeEnclosed
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersChangeOfTimer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfTimer()
 }
 
 // _BACnetNotificationParametersChangeOfTimer is the data-structure of this message

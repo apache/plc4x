@@ -39,6 +39,8 @@ type S7ParameterUserData interface {
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7ParameterUserDataItem
+	// IsS7ParameterUserData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterUserData()
 }
 
 // _S7ParameterUserData is the data-structure of this message

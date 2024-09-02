@@ -35,6 +35,8 @@ type SecurityDataGasAlarmCleared interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataGasAlarmCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataGasAlarmCleared()
 }
 
 // _SecurityDataGasAlarmCleared is the data-structure of this message

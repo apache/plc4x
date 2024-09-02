@@ -41,6 +41,8 @@ type BACnetConstructedDataBackupFailureTimeout interface {
 	GetBackupFailureTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataBackupFailureTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBackupFailureTimeout()
 }
 
 // _BACnetConstructedDataBackupFailureTimeout is the data-structure of this message

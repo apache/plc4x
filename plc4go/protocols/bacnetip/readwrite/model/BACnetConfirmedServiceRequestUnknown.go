@@ -39,6 +39,8 @@ type BACnetConfirmedServiceRequestUnknown interface {
 	BACnetConfirmedServiceRequest
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
+	// IsBACnetConfirmedServiceRequestUnknown is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestUnknown()
 }
 
 // _BACnetConfirmedServiceRequestUnknown is the data-structure of this message

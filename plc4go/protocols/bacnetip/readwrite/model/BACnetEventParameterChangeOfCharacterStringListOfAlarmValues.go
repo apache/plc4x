@@ -42,6 +42,8 @@ type BACnetEventParameterChangeOfCharacterStringListOfAlarmValues interface {
 	GetListOfAlarmValues() []BACnetApplicationTagCharacterString
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterChangeOfCharacterStringListOfAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfCharacterStringListOfAlarmValues()
 }
 
 // _BACnetEventParameterChangeOfCharacterStringListOfAlarmValues is the data-structure of this message

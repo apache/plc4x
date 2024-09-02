@@ -39,6 +39,8 @@ type MediaTransportControlDataSelectionName interface {
 	MediaTransportControlData
 	// GetSelectionName returns SelectionName (property field)
 	GetSelectionName() string
+	// IsMediaTransportControlDataSelectionName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataSelectionName()
 }
 
 // _MediaTransportControlDataSelectionName is the data-structure of this message

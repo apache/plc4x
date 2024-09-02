@@ -35,6 +35,8 @@ type BACnetConstructedDataPulseConverterAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataPulseConverterAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPulseConverterAll()
 }
 
 // _BACnetConstructedDataPulseConverterAll is the data-structure of this message

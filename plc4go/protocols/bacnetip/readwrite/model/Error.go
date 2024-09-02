@@ -40,6 +40,8 @@ type Error interface {
 	GetErrorClass() ErrorClassTagged
 	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() ErrorCodeTagged
+	// IsError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsError()
 }
 
 // _Error is the data-structure of this message

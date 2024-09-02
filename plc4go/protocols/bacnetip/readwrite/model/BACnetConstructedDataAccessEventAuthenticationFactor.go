@@ -41,6 +41,8 @@ type BACnetConstructedDataAccessEventAuthenticationFactor interface {
 	GetAccessEventAuthenticationFactor() BACnetAuthenticationFactor
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAuthenticationFactor
+	// IsBACnetConstructedDataAccessEventAuthenticationFactor is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessEventAuthenticationFactor()
 }
 
 // _BACnetConstructedDataAccessEventAuthenticationFactor is the data-structure of this message

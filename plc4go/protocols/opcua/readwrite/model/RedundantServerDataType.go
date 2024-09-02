@@ -43,6 +43,8 @@ type RedundantServerDataType interface {
 	GetServiceLevel() uint8
 	// GetServerState returns ServerState (property field)
 	GetServerState() ServerState
+	// IsRedundantServerDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRedundantServerDataType()
 }
 
 // _RedundantServerDataType is the data-structure of this message

@@ -43,6 +43,8 @@ type S7PayloadUserDataItemClkFResponse interface {
 	GetYear1() uint8
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
+	// IsS7PayloadUserDataItemClkFResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemClkFResponse()
 }
 
 // _S7PayloadUserDataItemClkFResponse is the data-structure of this message

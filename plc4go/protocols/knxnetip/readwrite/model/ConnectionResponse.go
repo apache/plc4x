@@ -47,6 +47,8 @@ type ConnectionResponse interface {
 	GetHpaiDataEndpoint() HPAIDataEndpoint
 	// GetConnectionResponseDataBlock returns ConnectionResponseDataBlock (property field)
 	GetConnectionResponseDataBlock() ConnectionResponseDataBlock
+	// IsConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionResponse()
 }
 
 // _ConnectionResponse is the data-structure of this message

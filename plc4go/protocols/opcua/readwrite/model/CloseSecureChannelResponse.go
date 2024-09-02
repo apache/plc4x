@@ -39,6 +39,8 @@ type CloseSecureChannelResponse interface {
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
+	// IsCloseSecureChannelResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCloseSecureChannelResponse()
 }
 
 // _CloseSecureChannelResponse is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetServiceAckGetEventInformation interface {
 	GetListOfEventSummaries() BACnetEventSummariesList
 	// GetMoreEvents returns MoreEvents (property field)
 	GetMoreEvents() BACnetContextTagBoolean
+	// IsBACnetServiceAckGetEventInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckGetEventInformation()
 }
 
 // _BACnetServiceAckGetEventInformation is the data-structure of this message

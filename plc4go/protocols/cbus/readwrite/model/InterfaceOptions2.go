@@ -40,6 +40,8 @@ type InterfaceOptions2 interface {
 	GetBurden() bool
 	// GetClockGen returns ClockGen (property field)
 	GetClockGen() bool
+	// IsInterfaceOptions2 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsInterfaceOptions2()
 }
 
 // _InterfaceOptions2 is the data-structure of this message

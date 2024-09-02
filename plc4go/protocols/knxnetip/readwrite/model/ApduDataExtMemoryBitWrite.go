@@ -35,6 +35,8 @@ type ApduDataExtMemoryBitWrite interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtMemoryBitWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtMemoryBitWrite()
 }
 
 // _ApduDataExtMemoryBitWrite is the data-structure of this message

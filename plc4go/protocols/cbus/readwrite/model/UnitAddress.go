@@ -38,6 +38,8 @@ type UnitAddress interface {
 	utils.Serializable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
+	// IsUnitAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUnitAddress()
 }
 
 // _UnitAddress is the data-structure of this message

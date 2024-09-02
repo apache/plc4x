@@ -39,6 +39,8 @@ type BACnetPropertyStatesPolarity interface {
 	BACnetPropertyStates
 	// GetPolarity returns Polarity (property field)
 	GetPolarity() BACnetPolarityTagged
+	// IsBACnetPropertyStatesPolarity is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesPolarity()
 }
 
 // _BACnetPropertyStatesPolarity is the data-structure of this message

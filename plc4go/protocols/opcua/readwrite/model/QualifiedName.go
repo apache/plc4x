@@ -40,6 +40,8 @@ type QualifiedName interface {
 	GetNamespaceIndex() uint16
 	// GetName returns Name (property field)
 	GetName() PascalString
+	// IsQualifiedName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsQualifiedName()
 }
 
 // _QualifiedName is the data-structure of this message

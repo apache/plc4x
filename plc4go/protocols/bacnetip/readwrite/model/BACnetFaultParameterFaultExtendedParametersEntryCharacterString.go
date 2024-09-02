@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryCharacterString interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
+	// IsBACnetFaultParameterFaultExtendedParametersEntryCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryCharacterString()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryCharacterString is the data-structure of this message

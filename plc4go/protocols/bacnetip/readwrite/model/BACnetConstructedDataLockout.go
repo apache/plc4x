@@ -41,6 +41,8 @@ type BACnetConstructedDataLockout interface {
 	GetLockout() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataLockout is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLockout()
 }
 
 // _BACnetConstructedDataLockout is the data-structure of this message

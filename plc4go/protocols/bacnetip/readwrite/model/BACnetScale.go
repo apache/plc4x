@@ -38,6 +38,8 @@ type BACnetScale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetScale is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetScale()
 }
 
 // BACnetScaleContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetScaleContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetScale() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetScale is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetScale()
 }
 

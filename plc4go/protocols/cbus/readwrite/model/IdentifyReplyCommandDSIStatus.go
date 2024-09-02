@@ -57,6 +57,8 @@ type IdentifyReplyCommandDSIStatus interface {
 	GetUnitStatus() UnitStatus
 	// GetDimmingUCRevisionNumber returns DimmingUCRevisionNumber (property field)
 	GetDimmingUCRevisionNumber() byte
+	// IsIdentifyReplyCommandDSIStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandDSIStatus()
 }
 
 // _IdentifyReplyCommandDSIStatus is the data-structure of this message

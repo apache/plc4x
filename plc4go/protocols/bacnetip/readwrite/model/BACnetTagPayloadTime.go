@@ -54,6 +54,8 @@ type BACnetTagPayloadTime interface {
 	GetSecondIsWildcard() bool
 	// GetFractionalIsWildcard returns FractionalIsWildcard (virtual field)
 	GetFractionalIsWildcard() bool
+	// IsBACnetTagPayloadTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadTime()
 }
 
 // _BACnetTagPayloadTime is the data-structure of this message

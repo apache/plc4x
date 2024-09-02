@@ -43,6 +43,8 @@ type LPollData interface {
 	GetTargetAddress() []byte
 	// GetNumberExpectedPollData returns NumberExpectedPollData (property field)
 	GetNumberExpectedPollData() uint8
+	// IsLPollData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLPollData()
 }
 
 // _LPollData is the data-structure of this message

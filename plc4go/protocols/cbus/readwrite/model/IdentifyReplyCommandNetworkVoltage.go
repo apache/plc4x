@@ -45,6 +45,8 @@ type IdentifyReplyCommandNetworkVoltage interface {
 	GetVolts() string
 	// GetVoltsDecimalPlace returns VoltsDecimalPlace (property field)
 	GetVoltsDecimalPlace() string
+	// IsIdentifyReplyCommandNetworkVoltage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandNetworkVoltage()
 }
 
 // _IdentifyReplyCommandNetworkVoltage is the data-structure of this message

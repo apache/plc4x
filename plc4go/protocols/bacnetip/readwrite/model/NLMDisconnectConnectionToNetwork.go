@@ -39,6 +39,8 @@ type NLMDisconnectConnectionToNetwork interface {
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
+	// IsNLMDisconnectConnectionToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMDisconnectConnectionToNetwork()
 }
 
 // _NLMDisconnectConnectionToNetwork is the data-structure of this message

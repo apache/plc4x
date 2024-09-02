@@ -38,6 +38,8 @@ type CustomManufacturer interface {
 	utils.Serializable
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string
+	// IsCustomManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCustomManufacturer()
 }
 
 // _CustomManufacturer is the data-structure of this message

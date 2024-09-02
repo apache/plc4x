@@ -39,6 +39,8 @@ type SecurityDataEvent interface {
 	SecurityData
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsSecurityDataEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataEvent()
 }
 
 // _SecurityDataEvent is the data-structure of this message

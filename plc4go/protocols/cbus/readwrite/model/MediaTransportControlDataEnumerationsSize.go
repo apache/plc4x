@@ -51,6 +51,8 @@ type MediaTransportControlDataEnumerationsSize interface {
 	GetIsListTracks() bool
 	// GetIsReserved returns IsReserved (virtual field)
 	GetIsReserved() bool
+	// IsMediaTransportControlDataEnumerationsSize is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataEnumerationsSize()
 }
 
 // _MediaTransportControlDataEnumerationsSize is the data-structure of this message

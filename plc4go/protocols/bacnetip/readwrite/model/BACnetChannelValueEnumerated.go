@@ -39,6 +39,8 @@ type BACnetChannelValueEnumerated interface {
 	BACnetChannelValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
+	// IsBACnetChannelValueEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueEnumerated()
 }
 
 // _BACnetChannelValueEnumerated is the data-structure of this message

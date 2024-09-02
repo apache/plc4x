@@ -47,6 +47,8 @@ type ReadRequest interface {
 	GetNoOfNodesToRead() int32
 	// GetNodesToRead returns NodesToRead (property field)
 	GetNodesToRead() []ExtensionObjectDefinition
+	// IsReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReadRequest()
 }
 
 // _ReadRequest is the data-structure of this message

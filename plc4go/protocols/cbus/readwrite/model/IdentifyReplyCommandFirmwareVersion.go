@@ -39,6 +39,8 @@ type IdentifyReplyCommandFirmwareVersion interface {
 	IdentifyReplyCommand
 	// GetFirmwareVersion returns FirmwareVersion (property field)
 	GetFirmwareVersion() string
+	// IsIdentifyReplyCommandFirmwareVersion is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandFirmwareVersion()
 }
 
 // _IdentifyReplyCommandFirmwareVersion is the data-structure of this message

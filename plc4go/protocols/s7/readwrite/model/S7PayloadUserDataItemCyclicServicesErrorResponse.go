@@ -35,6 +35,8 @@ type S7PayloadUserDataItemCyclicServicesErrorResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
+	// IsS7PayloadUserDataItemCyclicServicesErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCyclicServicesErrorResponse()
 }
 
 // _S7PayloadUserDataItemCyclicServicesErrorResponse is the data-structure of this message

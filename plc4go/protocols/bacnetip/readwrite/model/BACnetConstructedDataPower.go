@@ -41,6 +41,8 @@ type BACnetConstructedDataPower interface {
 	GetPower() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataPower is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPower()
 }
 
 // _BACnetConstructedDataPower is the data-structure of this message

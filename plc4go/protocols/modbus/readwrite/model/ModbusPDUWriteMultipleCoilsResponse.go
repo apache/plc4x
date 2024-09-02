@@ -41,6 +41,8 @@ type ModbusPDUWriteMultipleCoilsResponse interface {
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity (property field)
 	GetQuantity() uint16
+	// IsModbusPDUWriteMultipleCoilsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUWriteMultipleCoilsResponse()
 }
 
 // _ModbusPDUWriteMultipleCoilsResponse is the data-structure of this message

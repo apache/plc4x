@@ -38,11 +38,13 @@ type CommandSpecificDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCommandSpecificDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCommandSpecificDataItem()
 }
 
 // CommandSpecificDataItemContract provides a set of functions which can be overwritten by a sub struct
 type CommandSpecificDataItemContract interface {
-	// IsCommandSpecificDataItem() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCommandSpecificDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCommandSpecificDataItem()
 }
 

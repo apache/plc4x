@@ -43,6 +43,8 @@ type MediaTransportControlDataNextPreviousSelection interface {
 	GetIsSetThePreviousSelection() bool
 	// GetIsSetTheNextSelection returns IsSetTheNextSelection (virtual field)
 	GetIsSetTheNextSelection() bool
+	// IsMediaTransportControlDataNextPreviousSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataNextPreviousSelection()
 }
 
 // _MediaTransportControlDataNextPreviousSelection is the data-structure of this message

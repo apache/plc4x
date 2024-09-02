@@ -35,6 +35,8 @@ type BACnetConstructedDataLargeAnalogValueAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataLargeAnalogValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLargeAnalogValueAll()
 }
 
 // _BACnetConstructedDataLargeAnalogValueAll is the data-structure of this message

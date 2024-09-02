@@ -38,6 +38,8 @@ type BACnetClosingTag interface {
 	utils.Serializable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
+	// IsBACnetClosingTag is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetClosingTag()
 }
 
 // _BACnetClosingTag is the data-structure of this message

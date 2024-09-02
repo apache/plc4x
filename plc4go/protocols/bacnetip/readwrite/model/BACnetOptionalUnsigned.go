@@ -38,6 +38,8 @@ type BACnetOptionalUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetOptionalUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalUnsigned()
 }
 
 // BACnetOptionalUnsignedContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetOptionalUnsignedContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetOptionalUnsigned() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetOptionalUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalUnsigned()
 }
 

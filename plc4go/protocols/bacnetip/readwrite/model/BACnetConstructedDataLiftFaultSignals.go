@@ -39,6 +39,8 @@ type BACnetConstructedDataLiftFaultSignals interface {
 	BACnetConstructedData
 	// GetFaultSignals returns FaultSignals (property field)
 	GetFaultSignals() []BACnetLiftFaultTagged
+	// IsBACnetConstructedDataLiftFaultSignals is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLiftFaultSignals()
 }
 
 // _BACnetConstructedDataLiftFaultSignals is the data-structure of this message

@@ -36,11 +36,13 @@ type UserIdentityTokenDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsUserIdentityTokenDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUserIdentityTokenDefinition()
 }
 
 // UserIdentityTokenDefinitionContract provides a set of functions which can be overwritten by a sub struct
 type UserIdentityTokenDefinitionContract interface {
-	// IsUserIdentityTokenDefinition() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsUserIdentityTokenDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUserIdentityTokenDefinition()
 }
 

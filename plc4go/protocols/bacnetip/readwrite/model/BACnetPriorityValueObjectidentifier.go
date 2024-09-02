@@ -39,6 +39,8 @@ type BACnetPriorityValueObjectidentifier interface {
 	BACnetPriorityValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
+	// IsBACnetPriorityValueObjectidentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueObjectidentifier()
 }
 
 // _BACnetPriorityValueObjectidentifier is the data-structure of this message

@@ -51,6 +51,8 @@ type BACnetEventParameterFloatingLimit interface {
 	GetDeadband() BACnetContextTagReal
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterFloatingLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterFloatingLimit()
 }
 
 // _BACnetEventParameterFloatingLimit is the data-structure of this message

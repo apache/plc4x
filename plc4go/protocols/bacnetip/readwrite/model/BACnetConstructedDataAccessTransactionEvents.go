@@ -39,6 +39,8 @@ type BACnetConstructedDataAccessTransactionEvents interface {
 	BACnetConstructedData
 	// GetAccessTransactionEvents returns AccessTransactionEvents (property field)
 	GetAccessTransactionEvents() []BACnetAccessEventTagged
+	// IsBACnetConstructedDataAccessTransactionEvents is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessTransactionEvents()
 }
 
 // _BACnetConstructedDataAccessTransactionEvents is the data-structure of this message

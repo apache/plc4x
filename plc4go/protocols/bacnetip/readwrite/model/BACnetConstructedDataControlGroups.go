@@ -43,6 +43,8 @@ type BACnetConstructedDataControlGroups interface {
 	GetControlGroups() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataControlGroups is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataControlGroups()
 }
 
 // _BACnetConstructedDataControlGroups is the data-structure of this message

@@ -41,6 +41,8 @@ type MonitoredItemModifyRequest interface {
 	GetMonitoredItemId() uint32
 	// GetRequestedParameters returns RequestedParameters (property field)
 	GetRequestedParameters() ExtensionObjectDefinition
+	// IsMonitoredItemModifyRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredItemModifyRequest()
 }
 
 // _MonitoredItemModifyRequest is the data-structure of this message

@@ -47,6 +47,8 @@ type CreateSubscriptionResponse interface {
 	GetRevisedLifetimeCount() uint32
 	// GetRevisedMaxKeepAliveCount returns RevisedMaxKeepAliveCount (property field)
 	GetRevisedMaxKeepAliveCount() uint32
+	// IsCreateSubscriptionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCreateSubscriptionResponse()
 }
 
 // _CreateSubscriptionResponse is the data-structure of this message

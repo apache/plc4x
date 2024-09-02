@@ -44,6 +44,8 @@ type BVLCForeignDeviceTableEntry interface {
 	GetTtl() uint16
 	// GetSecondRemainingBeforePurge returns SecondRemainingBeforePurge (property field)
 	GetSecondRemainingBeforePurge() uint16
+	// IsBVLCForeignDeviceTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCForeignDeviceTableEntry()
 }
 
 // _BVLCForeignDeviceTableEntry is the data-structure of this message

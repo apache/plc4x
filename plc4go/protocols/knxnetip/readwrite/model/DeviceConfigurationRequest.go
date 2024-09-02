@@ -43,6 +43,8 @@ type DeviceConfigurationRequest interface {
 	GetDeviceConfigurationRequestDataBlock() DeviceConfigurationRequestDataBlock
 	// GetCemi returns Cemi (property field)
 	GetCemi() CEMI
+	// IsDeviceConfigurationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeviceConfigurationRequest()
 }
 
 // _DeviceConfigurationRequest is the data-structure of this message

@@ -38,6 +38,8 @@ type Variant interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsVariant is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariant()
 }
 
 // VariantContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type VariantContract interface {
 	GetNoOfArrayDimensions() *int32
 	// GetArrayDimensions returns ArrayDimensions (property field)
 	GetArrayDimensions() []bool
-	// IsVariant() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsVariant is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariant()
 }
 

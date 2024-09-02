@@ -35,6 +35,8 @@ type SysexCommandSysexNonRealtime interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
+	// IsSysexCommandSysexNonRealtime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandSysexNonRealtime()
 }
 
 // _SysexCommandSysexNonRealtime is the data-structure of this message

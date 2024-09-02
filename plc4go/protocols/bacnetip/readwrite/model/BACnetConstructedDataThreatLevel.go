@@ -41,6 +41,8 @@ type BACnetConstructedDataThreatLevel interface {
 	GetThreatLevel() BACnetAccessThreatLevel
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessThreatLevel
+	// IsBACnetConstructedDataThreatLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataThreatLevel()
 }
 
 // _BACnetConstructedDataThreatLevel is the data-structure of this message

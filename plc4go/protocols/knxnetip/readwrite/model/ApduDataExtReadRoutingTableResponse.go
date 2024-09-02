@@ -35,6 +35,8 @@ type ApduDataExtReadRoutingTableResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtReadRoutingTableResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtReadRoutingTableResponse()
 }
 
 // _ApduDataExtReadRoutingTableResponse is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataMinimumOutput interface {
 	GetMinimumOutput() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataMinimumOutput is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMinimumOutput()
 }
 
 // _BACnetConstructedDataMinimumOutput is the data-structure of this message

@@ -43,6 +43,8 @@ type BACnetConstructedDataSubordinateTags interface {
 	GetSubordinateList() []BACnetNameValueCollection
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataSubordinateTags is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSubordinateTags()
 }
 
 // _BACnetConstructedDataSubordinateTags is the data-structure of this message

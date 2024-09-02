@@ -39,6 +39,8 @@ type ParameterValueCustomManufacturer interface {
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() CustomManufacturer
+	// IsParameterValueCustomManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueCustomManufacturer()
 }
 
 // _ParameterValueCustomManufacturer is the data-structure of this message

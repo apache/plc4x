@@ -42,6 +42,8 @@ type ListOfCovNotificationsList interface {
 	GetSpecifications() []ListOfCovNotifications
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsListOfCovNotificationsList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsListOfCovNotificationsList()
 }
 
 // _ListOfCovNotificationsList is the data-structure of this message

@@ -41,6 +41,8 @@ type IssuedIdentityToken interface {
 	GetTokenData() PascalByteString
 	// GetEncryptionAlgorithm returns EncryptionAlgorithm (property field)
 	GetEncryptionAlgorithm() PascalString
+	// IsIssuedIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIssuedIdentityToken()
 }
 
 // _IssuedIdentityToken is the data-structure of this message

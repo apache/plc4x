@@ -41,6 +41,8 @@ type BACnetConstructedDataVendorName interface {
 	GetVendorName() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataVendorName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataVendorName()
 }
 
 // _BACnetConstructedDataVendorName is the data-structure of this message

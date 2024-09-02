@@ -35,6 +35,8 @@ type AdsDeviceNotificationResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
+	// IsAdsDeviceNotificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDeviceNotificationResponse()
 }
 
 // _AdsDeviceNotificationResponse is the data-structure of this message

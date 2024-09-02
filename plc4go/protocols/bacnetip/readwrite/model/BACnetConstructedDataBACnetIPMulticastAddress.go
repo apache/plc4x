@@ -41,6 +41,8 @@ type BACnetConstructedDataBACnetIPMulticastAddress interface {
 	GetIpMulticastAddress() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
+	// IsBACnetConstructedDataBACnetIPMulticastAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBACnetIPMulticastAddress()
 }
 
 // _BACnetConstructedDataBACnetIPMulticastAddress is the data-structure of this message

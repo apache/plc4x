@@ -45,6 +45,8 @@ type BrowseNextRequest interface {
 	GetNoOfContinuationPoints() int32
 	// GetContinuationPoints returns ContinuationPoints (property field)
 	GetContinuationPoints() []PascalByteString
+	// IsBrowseNextRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBrowseNextRequest()
 }
 
 // _BrowseNextRequest is the data-structure of this message

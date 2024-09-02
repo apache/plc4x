@@ -39,6 +39,8 @@ type BACnetPriorityValueCharacterString interface {
 	BACnetPriorityValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
+	// IsBACnetPriorityValueCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueCharacterString()
 }
 
 // _BACnetPriorityValueCharacterString is the data-structure of this message

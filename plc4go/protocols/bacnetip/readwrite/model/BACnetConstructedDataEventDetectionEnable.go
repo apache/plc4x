@@ -41,6 +41,8 @@ type BACnetConstructedDataEventDetectionEnable interface {
 	GetEventDetectionEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataEventDetectionEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventDetectionEnable()
 }
 
 // _BACnetConstructedDataEventDetectionEnable is the data-structure of this message

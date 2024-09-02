@@ -46,6 +46,8 @@ type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription interface {
 	GetErrorType() ErrorEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsSubscribeCOVPropertyMultipleErrorFirstFailedSubscription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSubscribeCOVPropertyMultipleErrorFirstFailedSubscription()
 }
 
 // _SubscribeCOVPropertyMultipleErrorFirstFailedSubscription is the data-structure of this message

@@ -43,6 +43,8 @@ type TransferResult interface {
 	GetNoOfAvailableSequenceNumbers() int32
 	// GetAvailableSequenceNumbers returns AvailableSequenceNumbers (property field)
 	GetAvailableSequenceNumbers() []uint32
+	// IsTransferResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTransferResult()
 }
 
 // _TransferResult is the data-structure of this message

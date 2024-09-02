@@ -40,6 +40,8 @@ type BACnetReadAccessResult interface {
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetListOfResults returns ListOfResults (property field)
 	GetListOfResults() BACnetReadAccessResultListOfResults
+	// IsBACnetReadAccessResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetReadAccessResult()
 }
 
 // _BACnetReadAccessResult is the data-structure of this message

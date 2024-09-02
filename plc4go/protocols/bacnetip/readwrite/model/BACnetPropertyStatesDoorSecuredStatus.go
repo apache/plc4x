@@ -39,6 +39,8 @@ type BACnetPropertyStatesDoorSecuredStatus interface {
 	BACnetPropertyStates
 	// GetDoorSecuredStatus returns DoorSecuredStatus (property field)
 	GetDoorSecuredStatus() BACnetDoorSecuredStatusTagged
+	// IsBACnetPropertyStatesDoorSecuredStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesDoorSecuredStatus()
 }
 
 // _BACnetPropertyStatesDoorSecuredStatus is the data-structure of this message

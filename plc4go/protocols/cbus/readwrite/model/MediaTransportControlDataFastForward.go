@@ -55,6 +55,8 @@ type MediaTransportControlDataFastForward interface {
 	GetIs64x() bool
 	// GetIsReserved returns IsReserved (virtual field)
 	GetIsReserved() bool
+	// IsMediaTransportControlDataFastForward is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataFastForward()
 }
 
 // _MediaTransportControlDataFastForward is the data-structure of this message

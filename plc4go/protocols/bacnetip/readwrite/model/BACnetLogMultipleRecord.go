@@ -40,6 +40,8 @@ type BACnetLogMultipleRecord interface {
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetLogData returns LogData (property field)
 	GetLogData() BACnetLogData
+	// IsBACnetLogMultipleRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogMultipleRecord()
 }
 
 // _BACnetLogMultipleRecord is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataDefaultRampRate interface {
 	GetDefaultRampRate() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataDefaultRampRate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDefaultRampRate()
 }
 
 // _BACnetConstructedDataDefaultRampRate is the data-structure of this message

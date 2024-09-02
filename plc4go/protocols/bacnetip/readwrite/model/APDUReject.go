@@ -41,6 +41,8 @@ type APDUReject interface {
 	GetOriginalInvokeId() uint8
 	// GetRejectReason returns RejectReason (property field)
 	GetRejectReason() BACnetRejectReasonTagged
+	// IsAPDUReject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUReject()
 }
 
 // _APDUReject is the data-structure of this message

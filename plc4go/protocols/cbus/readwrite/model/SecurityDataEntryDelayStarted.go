@@ -35,6 +35,8 @@ type SecurityDataEntryDelayStarted interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataEntryDelayStarted is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataEntryDelayStarted()
 }
 
 // _SecurityDataEntryDelayStarted is the data-structure of this message

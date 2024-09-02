@@ -39,6 +39,8 @@ type BACnetPropertyStatesSilencedState interface {
 	BACnetPropertyStates
 	// GetSilencedState returns SilencedState (property field)
 	GetSilencedState() BACnetSilencedStateTagged
+	// IsBACnetPropertyStatesSilencedState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesSilencedState()
 }
 
 // _BACnetPropertyStatesSilencedState is the data-structure of this message

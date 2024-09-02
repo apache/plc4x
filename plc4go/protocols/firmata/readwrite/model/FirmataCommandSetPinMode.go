@@ -41,6 +41,8 @@ type FirmataCommandSetPinMode interface {
 	GetPin() uint8
 	// GetMode returns Mode (property field)
 	GetMode() PinMode
+	// IsFirmataCommandSetPinMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataCommandSetPinMode()
 }
 
 // _FirmataCommandSetPinMode is the data-structure of this message

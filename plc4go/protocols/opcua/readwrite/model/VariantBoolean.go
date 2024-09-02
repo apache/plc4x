@@ -41,6 +41,8 @@ type VariantBoolean interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []byte
+	// IsVariantBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantBoolean()
 }
 
 // _VariantBoolean is the data-structure of this message

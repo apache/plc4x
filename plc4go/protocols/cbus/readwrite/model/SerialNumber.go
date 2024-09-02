@@ -44,6 +44,8 @@ type SerialNumber interface {
 	GetOctet3() byte
 	// GetOctet4 returns Octet4 (property field)
 	GetOctet4() byte
+	// IsSerialNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSerialNumber()
 }
 
 // _SerialNumber is the data-structure of this message

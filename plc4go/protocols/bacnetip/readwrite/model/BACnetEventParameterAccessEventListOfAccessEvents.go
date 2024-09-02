@@ -42,6 +42,8 @@ type BACnetEventParameterAccessEventListOfAccessEvents interface {
 	GetListOfAccessEvents() []BACnetDeviceObjectPropertyReference
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterAccessEventListOfAccessEvents is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterAccessEventListOfAccessEvents()
 }
 
 // _BACnetEventParameterAccessEventListOfAccessEvents is the data-structure of this message

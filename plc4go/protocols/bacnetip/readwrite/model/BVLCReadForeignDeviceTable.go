@@ -36,6 +36,8 @@ type BVLCReadForeignDeviceTable interface {
 	utils.LengthAware
 	utils.Serializable
 	BVLC
+	// IsBVLCReadForeignDeviceTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCReadForeignDeviceTable()
 }
 
 // _BVLCReadForeignDeviceTable is the data-structure of this message

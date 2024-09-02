@@ -41,6 +41,8 @@ type BACnetConstructedDataIPDHCPEnable interface {
 	GetIpDhcpEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataIPDHCPEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPDHCPEnable()
 }
 
 // _BACnetConstructedDataIPDHCPEnable is the data-structure of this message

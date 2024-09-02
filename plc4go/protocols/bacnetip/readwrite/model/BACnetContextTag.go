@@ -38,6 +38,8 @@ type BACnetContextTag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetContextTag is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTag()
 }
 
 // BACnetContextTagContract provides a set of functions which can be overwritten by a sub struct
@@ -50,7 +52,7 @@ type BACnetContextTagContract interface {
 	GetActualLength() uint32
 	// GetTagNumberArgument() returns a parser argument
 	GetTagNumberArgument() uint8
-	// IsBACnetContextTag() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetContextTag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTag()
 }
 

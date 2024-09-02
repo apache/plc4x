@@ -39,6 +39,8 @@ type BACnetCalendarEntryDate interface {
 	BACnetCalendarEntry
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetContextTagDate
+	// IsBACnetCalendarEntryDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCalendarEntryDate()
 }
 
 // _BACnetCalendarEntryDate is the data-structure of this message

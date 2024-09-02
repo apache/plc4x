@@ -38,11 +38,13 @@ type ModbusPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsModbusPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDU()
 }
 
 // ModbusPDUContract provides a set of functions which can be overwritten by a sub struct
 type ModbusPDUContract interface {
-	// IsModbusPDU() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsModbusPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDU()
 }
 

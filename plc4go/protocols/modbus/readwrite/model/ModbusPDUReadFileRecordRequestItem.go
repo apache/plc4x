@@ -44,6 +44,8 @@ type ModbusPDUReadFileRecordRequestItem interface {
 	GetRecordNumber() uint16
 	// GetRecordLength returns RecordLength (property field)
 	GetRecordLength() uint16
+	// IsModbusPDUReadFileRecordRequestItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadFileRecordRequestItem()
 }
 
 // _ModbusPDUReadFileRecordRequestItem is the data-structure of this message

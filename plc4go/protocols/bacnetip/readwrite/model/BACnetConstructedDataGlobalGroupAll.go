@@ -35,6 +35,8 @@ type BACnetConstructedDataGlobalGroupAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataGlobalGroupAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataGlobalGroupAll()
 }
 
 // _BACnetConstructedDataGlobalGroupAll is the data-structure of this message

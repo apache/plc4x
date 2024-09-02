@@ -35,6 +35,8 @@ type AdsReadStateRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	AmsPacket
+	// IsAdsReadStateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsReadStateRequest()
 }
 
 // _AdsReadStateRequest is the data-structure of this message

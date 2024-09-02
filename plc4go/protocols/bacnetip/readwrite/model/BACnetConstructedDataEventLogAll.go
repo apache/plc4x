@@ -35,6 +35,8 @@ type BACnetConstructedDataEventLogAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataEventLogAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventLogAll()
 }
 
 // _BACnetConstructedDataEventLogAll is the data-structure of this message

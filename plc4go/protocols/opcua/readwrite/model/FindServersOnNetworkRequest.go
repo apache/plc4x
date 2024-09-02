@@ -47,6 +47,8 @@ type FindServersOnNetworkRequest interface {
 	GetNoOfServerCapabilityFilter() int32
 	// GetServerCapabilityFilter returns ServerCapabilityFilter (property field)
 	GetServerCapabilityFilter() []PascalString
+	// IsFindServersOnNetworkRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFindServersOnNetworkRequest()
 }
 
 // _FindServersOnNetworkRequest is the data-structure of this message

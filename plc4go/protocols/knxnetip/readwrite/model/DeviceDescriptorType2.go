@@ -56,6 +56,8 @@ type DeviceDescriptorType2 interface {
 	GetChannelInfo3() ChannelInformation
 	// GetChannelInfo4 returns ChannelInfo4 (property field)
 	GetChannelInfo4() ChannelInformation
+	// IsDeviceDescriptorType2 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeviceDescriptorType2()
 }
 
 // _DeviceDescriptorType2 is the data-structure of this message

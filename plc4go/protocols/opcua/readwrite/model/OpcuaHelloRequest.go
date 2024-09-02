@@ -43,6 +43,8 @@ type OpcuaHelloRequest interface {
 	GetLimits() OpcuaProtocolLimits
 	// GetEndpoint returns Endpoint (property field)
 	GetEndpoint() PascalString
+	// IsOpcuaHelloRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaHelloRequest()
 }
 
 // _OpcuaHelloRequest is the data-structure of this message

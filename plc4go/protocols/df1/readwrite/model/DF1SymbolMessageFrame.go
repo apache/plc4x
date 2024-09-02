@@ -49,6 +49,8 @@ type DF1SymbolMessageFrame interface {
 	GetSourceAddress() uint8
 	// GetCommand returns Command (property field)
 	GetCommand() DF1Command
+	// IsDF1SymbolMessageFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1SymbolMessageFrame()
 }
 
 // _DF1SymbolMessageFrame is the data-structure of this message

@@ -38,6 +38,8 @@ type RequestContext interface {
 	utils.Serializable
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (property field)
 	GetSendIdentifyRequestBefore() bool
+	// IsRequestContext is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestContext()
 }
 
 // _RequestContext is the data-structure of this message

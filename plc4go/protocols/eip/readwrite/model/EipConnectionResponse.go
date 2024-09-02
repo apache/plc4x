@@ -41,6 +41,8 @@ type EipConnectionResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
+	// IsEipConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEipConnectionResponse()
 }
 
 // _EipConnectionResponse is the data-structure of this message

@@ -53,6 +53,8 @@ type S7ParameterUserDataItemCPUFunctions interface {
 	GetLastDataUnit() *uint8
 	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() *uint16
+	// IsS7ParameterUserDataItemCPUFunctions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterUserDataItemCPUFunctions()
 }
 
 // _S7ParameterUserDataItemCPUFunctions is the data-structure of this message

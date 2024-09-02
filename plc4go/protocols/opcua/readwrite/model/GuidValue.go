@@ -46,6 +46,8 @@ type GuidValue interface {
 	GetData4() []byte
 	// GetData5 returns Data5 (property field)
 	GetData5() []byte
+	// IsGuidValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGuidValue()
 }
 
 // _GuidValue is the data-structure of this message

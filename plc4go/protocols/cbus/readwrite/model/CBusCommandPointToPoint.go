@@ -39,6 +39,8 @@ type CBusCommandPointToPoint interface {
 	CBusCommand
 	// GetCommand returns Command (property field)
 	GetCommand() CBusPointToPointCommand
+	// IsCBusCommandPointToPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusCommandPointToPoint()
 }
 
 // _CBusCommandPointToPoint is the data-structure of this message

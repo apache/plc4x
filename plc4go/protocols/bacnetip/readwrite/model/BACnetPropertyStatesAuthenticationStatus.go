@@ -39,6 +39,8 @@ type BACnetPropertyStatesAuthenticationStatus interface {
 	BACnetPropertyStates
 	// GetAuthenticationStatus returns AuthenticationStatus (property field)
 	GetAuthenticationStatus() BACnetAuthenticationStatusTagged
+	// IsBACnetPropertyStatesAuthenticationStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesAuthenticationStatus()
 }
 
 // _BACnetPropertyStatesAuthenticationStatus is the data-structure of this message

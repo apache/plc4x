@@ -41,6 +41,8 @@ type FirmataCommandSetDigitalPinValue interface {
 	GetPin() uint8
 	// GetOn returns On (property field)
 	GetOn() bool
+	// IsFirmataCommandSetDigitalPinValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataCommandSetDigitalPinValue()
 }
 
 // _FirmataCommandSetDigitalPinValue is the data-structure of this message

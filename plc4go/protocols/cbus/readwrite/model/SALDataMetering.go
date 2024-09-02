@@ -39,6 +39,8 @@ type SALDataMetering interface {
 	SALData
 	// GetMeteringData returns MeteringData (property field)
 	GetMeteringData() MeteringData
+	// IsSALDataMetering is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataMetering()
 }
 
 // _SALDataMetering is the data-structure of this message

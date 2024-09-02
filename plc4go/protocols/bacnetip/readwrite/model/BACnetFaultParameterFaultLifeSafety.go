@@ -45,6 +45,8 @@ type BACnetFaultParameterFaultLifeSafety interface {
 	GetModePropertyReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetFaultParameterFaultLifeSafety is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultLifeSafety()
 }
 
 // _BACnetFaultParameterFaultLifeSafety is the data-structure of this message

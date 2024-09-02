@@ -39,6 +39,8 @@ type ModbusPDUReadFifoQueueResponse interface {
 	ModbusPDU
 	// GetFifoValue returns FifoValue (property field)
 	GetFifoValue() []uint16
+	// IsModbusPDUReadFifoQueueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadFifoQueueResponse()
 }
 
 // _ModbusPDUReadFifoQueueResponse is the data-structure of this message

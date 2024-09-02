@@ -43,6 +43,8 @@ type MediaTransportControlDataPauseResume interface {
 	GetIsPause() bool
 	// GetIsResume returns IsResume (virtual field)
 	GetIsResume() bool
+	// IsMediaTransportControlDataPauseResume is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataPauseResume()
 }
 
 // _MediaTransportControlDataPauseResume is the data-structure of this message

@@ -43,6 +43,8 @@ type FirmataMessageDigitalIO interface {
 	GetPinBlock() uint8
 	// GetData returns Data (property field)
 	GetData() []int8
+	// IsFirmataMessageDigitalIO is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataMessageDigitalIO()
 }
 
 // _FirmataMessageDigitalIO is the data-structure of this message

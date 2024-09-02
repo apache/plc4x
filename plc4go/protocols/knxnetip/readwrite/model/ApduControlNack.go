@@ -35,6 +35,8 @@ type ApduControlNack interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduControl
+	// IsApduControlNack is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduControlNack()
 }
 
 // _ApduControlNack is the data-structure of this message

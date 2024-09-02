@@ -38,6 +38,8 @@ type Payload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPayload()
 }
 
 // PayloadContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type PayloadContract interface {
 	GetSequenceHeader() SequenceHeader
 	// GetByteCount() returns a parser argument
 	GetByteCount() uint32
-	// IsPayload() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPayload()
 }
 

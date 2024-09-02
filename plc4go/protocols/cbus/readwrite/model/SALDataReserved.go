@@ -35,6 +35,8 @@ type SALDataReserved interface {
 	utils.LengthAware
 	utils.Serializable
 	SALData
+	// IsSALDataReserved is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataReserved()
 }
 
 // _SALDataReserved is the data-structure of this message

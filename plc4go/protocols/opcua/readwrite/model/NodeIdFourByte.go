@@ -43,6 +43,8 @@ type NodeIdFourByte interface {
 	GetId() uint16
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
+	// IsNodeIdFourByte is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeIdFourByte()
 }
 
 // _NodeIdFourByte is the data-structure of this message

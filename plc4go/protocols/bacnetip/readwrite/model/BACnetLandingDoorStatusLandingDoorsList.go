@@ -42,6 +42,8 @@ type BACnetLandingDoorStatusLandingDoorsList interface {
 	GetLandingDoors() []BACnetLandingDoorStatusLandingDoorsListEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetLandingDoorStatusLandingDoorsList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingDoorStatusLandingDoorsList()
 }
 
 // _BACnetLandingDoorStatusLandingDoorsList is the data-structure of this message

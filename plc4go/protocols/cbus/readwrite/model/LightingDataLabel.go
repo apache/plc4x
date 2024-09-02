@@ -45,6 +45,8 @@ type LightingDataLabel interface {
 	GetLanguage() *Language
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsLightingDataLabel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLightingDataLabel()
 }
 
 // _LightingDataLabel is the data-structure of this message

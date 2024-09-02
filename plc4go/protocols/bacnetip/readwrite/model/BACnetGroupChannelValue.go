@@ -42,6 +42,8 @@ type BACnetGroupChannelValue interface {
 	GetOverridingPriority() BACnetContextTagUnsignedInteger
 	// GetValue returns Value (property field)
 	GetValue() BACnetChannelValue
+	// IsBACnetGroupChannelValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetGroupChannelValue()
 }
 
 // _BACnetGroupChannelValue is the data-structure of this message

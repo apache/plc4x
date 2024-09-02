@@ -38,6 +38,8 @@ type DF1ResponseMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsDF1ResponseMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1ResponseMessage()
 }
 
 // DF1ResponseMessageContract provides a set of functions which can be overwritten by a sub struct
@@ -52,7 +54,7 @@ type DF1ResponseMessageContract interface {
 	GetTransactionCounter() uint16
 	// GetPayloadLength() returns a parser argument
 	GetPayloadLength() uint16
-	// IsDF1ResponseMessage() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsDF1ResponseMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1ResponseMessage()
 }
 

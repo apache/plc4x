@@ -41,6 +41,8 @@ type BACnetConstructedDataLargeAnalogValueCOVIncrement interface {
 	GetCovIncrement() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
+	// IsBACnetConstructedDataLargeAnalogValueCOVIncrement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLargeAnalogValueCOVIncrement()
 }
 
 // _BACnetConstructedDataLargeAnalogValueCOVIncrement is the data-structure of this message

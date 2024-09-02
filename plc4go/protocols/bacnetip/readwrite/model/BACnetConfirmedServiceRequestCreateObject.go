@@ -41,6 +41,8 @@ type BACnetConfirmedServiceRequestCreateObject interface {
 	GetObjectSpecifier() BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() BACnetPropertyValues
+	// IsBACnetConfirmedServiceRequestCreateObject is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestCreateObject()
 }
 
 // _BACnetConfirmedServiceRequestCreateObject is the data-structure of this message

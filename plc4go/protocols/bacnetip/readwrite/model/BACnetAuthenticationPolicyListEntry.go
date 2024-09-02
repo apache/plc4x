@@ -40,6 +40,8 @@ type BACnetAuthenticationPolicyListEntry interface {
 	GetCredentialDataInput() BACnetDeviceObjectReferenceEnclosed
 	// GetIndex returns Index (property field)
 	GetIndex() BACnetContextTagUnsignedInteger
+	// IsBACnetAuthenticationPolicyListEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAuthenticationPolicyListEntry()
 }
 
 // _BACnetAuthenticationPolicyListEntry is the data-structure of this message

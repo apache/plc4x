@@ -49,6 +49,8 @@ type AlarmMessageQueryType interface {
 	GetTransportSize() DataTransportSize
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectQueryType
+	// IsAlarmMessageQueryType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAlarmMessageQueryType()
 }
 
 // _AlarmMessageQueryType is the data-structure of this message

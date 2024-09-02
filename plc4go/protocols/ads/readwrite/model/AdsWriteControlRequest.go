@@ -43,6 +43,8 @@ type AdsWriteControlRequest interface {
 	GetDeviceState() uint16
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsAdsWriteControlRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsWriteControlRequest()
 }
 
 // _AdsWriteControlRequest is the data-structure of this message

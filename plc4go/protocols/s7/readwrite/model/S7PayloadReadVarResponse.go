@@ -39,6 +39,8 @@ type S7PayloadReadVarResponse interface {
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7VarPayloadDataItem
+	// IsS7PayloadReadVarResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadReadVarResponse()
 }
 
 // _S7PayloadReadVarResponse is the data-structure of this message

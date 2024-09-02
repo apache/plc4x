@@ -41,6 +41,8 @@ type BACnetConstructedDataMinimumOffTime interface {
 	GetMinimumOffTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataMinimumOffTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMinimumOffTime()
 }
 
 // _BACnetConstructedDataMinimumOffTime is the data-structure of this message

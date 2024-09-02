@@ -41,6 +41,8 @@ type BACnetConstructedDataLocalDate interface {
 	GetLocalDate() BACnetApplicationTagDate
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDate
+	// IsBACnetConstructedDataLocalDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLocalDate()
 }
 
 // _BACnetConstructedDataLocalDate is the data-structure of this message

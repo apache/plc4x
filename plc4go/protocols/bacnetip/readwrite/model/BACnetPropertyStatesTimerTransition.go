@@ -39,6 +39,8 @@ type BACnetPropertyStatesTimerTransition interface {
 	BACnetPropertyStates
 	// GetTimerTransition returns TimerTransition (property field)
 	GetTimerTransition() BACnetTimerTransitionTagged
+	// IsBACnetPropertyStatesTimerTransition is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesTimerTransition()
 }
 
 // _BACnetPropertyStatesTimerTransition is the data-structure of this message

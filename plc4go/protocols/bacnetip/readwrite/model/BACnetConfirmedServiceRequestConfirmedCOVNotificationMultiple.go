@@ -47,6 +47,8 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
 	GetTimestamp() BACnetTimeStampEnclosed
 	// GetListOfCovNotifications returns ListOfCovNotifications (property field)
 	GetListOfCovNotifications() ListOfCovNotificationsList
+	// IsBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple()
 }
 
 // _BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple is the data-structure of this message

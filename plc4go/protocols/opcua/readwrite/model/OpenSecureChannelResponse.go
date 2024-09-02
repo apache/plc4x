@@ -45,6 +45,8 @@ type OpenSecureChannelResponse interface {
 	GetSecurityToken() ExtensionObjectDefinition
 	// GetServerNonce returns ServerNonce (property field)
 	GetServerNonce() PascalByteString
+	// IsOpenSecureChannelResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpenSecureChannelResponse()
 }
 
 // _OpenSecureChannelResponse is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedBits interface {
 	BACnetNotificationParametersChangeOfValueNewValue
 	// GetChangedBits returns ChangedBits (property field)
 	GetChangedBits() BACnetContextTagBitString
+	// IsBACnetNotificationParametersChangeOfValueNewValueChangedBits is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfValueNewValueChangedBits()
 }
 
 // _BACnetNotificationParametersChangeOfValueNewValueChangedBits is the data-structure of this message

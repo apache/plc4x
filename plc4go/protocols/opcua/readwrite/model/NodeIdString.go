@@ -43,6 +43,8 @@ type NodeIdString interface {
 	GetId() PascalString
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
+	// IsNodeIdString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeIdString()
 }
 
 // _NodeIdString is the data-structure of this message

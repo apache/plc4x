@@ -47,6 +47,8 @@ type MonitoredItemCreateResult interface {
 	GetRevisedQueueSize() uint32
 	// GetFilterResult returns FilterResult (property field)
 	GetFilterResult() ExtensionObject
+	// IsMonitoredItemCreateResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMonitoredItemCreateResult()
 }
 
 // _MonitoredItemCreateResult is the data-structure of this message

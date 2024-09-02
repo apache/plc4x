@@ -47,6 +47,8 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 	GetLifetimeInSeconds() BACnetContextTagUnsignedInteger
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() BACnetPropertyValues
+	// IsBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification()
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification is the data-structure of this message

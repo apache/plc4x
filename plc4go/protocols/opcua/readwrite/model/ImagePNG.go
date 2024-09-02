@@ -34,6 +34,8 @@ type ImagePNG interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsImagePNG is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsImagePNG()
 }
 
 // _ImagePNG is the data-structure of this message

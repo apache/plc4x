@@ -39,6 +39,8 @@ type BACnetOptionalUnsignedValue interface {
 	BACnetOptionalUnsigned
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetOptionalUnsignedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalUnsignedValue()
 }
 
 // _BACnetOptionalUnsignedValue is the data-structure of this message

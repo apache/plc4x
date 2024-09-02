@@ -41,6 +41,8 @@ type BACnetConfirmedServiceRequestReinitializeDevice interface {
 	GetReinitializedStateOfDevice() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
 	// GetPassword returns Password (property field)
 	GetPassword() BACnetContextTagCharacterString
+	// IsBACnetConfirmedServiceRequestReinitializeDevice is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReinitializeDevice()
 }
 
 // _BACnetConfirmedServiceRequestReinitializeDevice is the data-structure of this message

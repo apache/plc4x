@@ -47,6 +47,8 @@ type CallResponse interface {
 	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
+	// IsCallResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCallResponse()
 }
 
 // _CallResponse is the data-structure of this message

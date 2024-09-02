@@ -45,6 +45,8 @@ type TelephonyDataRecallLastNumber interface {
 	GetIsNumberOfLastOutgoingCall() bool
 	// GetIsNumberOfLastIncomingCall returns IsNumberOfLastIncomingCall (virtual field)
 	GetIsNumberOfLastIncomingCall() bool
+	// IsTelephonyDataRecallLastNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTelephonyDataRecallLastNumber()
 }
 
 // _TelephonyDataRecallLastNumber is the data-structure of this message

@@ -61,6 +61,8 @@ type FieldMetaData interface {
 	GetNoOfProperties() int32
 	// GetProperties returns Properties (property field)
 	GetProperties() []ExtensionObjectDefinition
+	// IsFieldMetaData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFieldMetaData()
 }
 
 // _FieldMetaData is the data-structure of this message

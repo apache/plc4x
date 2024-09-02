@@ -41,6 +41,8 @@ type BACnetConstructedDataAccompaniment interface {
 	GetAccompaniment() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
+	// IsBACnetConstructedDataAccompaniment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccompaniment()
 }
 
 // _BACnetConstructedDataAccompaniment is the data-structure of this message

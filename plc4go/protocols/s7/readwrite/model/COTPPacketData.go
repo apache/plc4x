@@ -41,6 +41,8 @@ type COTPPacketData interface {
 	GetEot() bool
 	// GetTpduRef returns TpduRef (property field)
 	GetTpduRef() uint8
+	// IsCOTPPacketData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacketData()
 }
 
 // _COTPPacketData is the data-structure of this message

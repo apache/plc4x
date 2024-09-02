@@ -39,6 +39,8 @@ type COTPParameterChecksum interface {
 	COTPParameter
 	// GetCrc returns Crc (property field)
 	GetCrc() uint8
+	// IsCOTPParameterChecksum is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPParameterChecksum()
 }
 
 // _COTPParameterChecksum is the data-structure of this message

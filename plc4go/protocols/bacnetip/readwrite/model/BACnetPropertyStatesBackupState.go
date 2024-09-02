@@ -39,6 +39,8 @@ type BACnetPropertyStatesBackupState interface {
 	BACnetPropertyStates
 	// GetBackupState returns BackupState (property field)
 	GetBackupState() BACnetBackupStateTagged
+	// IsBACnetPropertyStatesBackupState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesBackupState()
 }
 
 // _BACnetPropertyStatesBackupState is the data-structure of this message

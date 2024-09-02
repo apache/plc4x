@@ -41,6 +41,8 @@ type COTPPacketDisconnectResponse interface {
 	GetDestinationReference() uint16
 	// GetSourceReference returns SourceReference (property field)
 	GetSourceReference() uint16
+	// IsCOTPPacketDisconnectResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPPacketDisconnectResponse()
 }
 
 // _COTPPacketDisconnectResponse is the data-structure of this message

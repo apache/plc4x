@@ -41,6 +41,8 @@ type BACnetConstructedDataTimerState interface {
 	GetTimerState() BACnetTimerStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetTimerStateTagged
+	// IsBACnetConstructedDataTimerState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimerState()
 }
 
 // _BACnetConstructedDataTimerState is the data-structure of this message

@@ -45,6 +45,8 @@ type BACnetServiceAckReadProperty interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 	// GetValues returns Values (property field)
 	GetValues() BACnetConstructedData
+	// IsBACnetServiceAckReadProperty is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckReadProperty()
 }
 
 // _BACnetServiceAckReadProperty is the data-structure of this message

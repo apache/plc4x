@@ -41,6 +41,8 @@ type BACnetConstructedDataEnergyMeter interface {
 	GetEnergyMeter() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataEnergyMeter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEnergyMeter()
 }
 
 // _BACnetConstructedDataEnergyMeter is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger interface {
 	BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
+	// IsBACnetFaultParameterFaultOutOfRangeMinNormalValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultOutOfRangeMinNormalValueInteger()
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger is the data-structure of this message

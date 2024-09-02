@@ -41,6 +41,8 @@ type ParameterValueInterfaceOptions2 interface {
 	GetValue() InterfaceOptions2
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsParameterValueInterfaceOptions2 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueInterfaceOptions2()
 }
 
 // _ParameterValueInterfaceOptions2 is the data-structure of this message

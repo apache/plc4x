@@ -52,6 +52,8 @@ type ModbusPDUReadDeviceIdentificationResponse interface {
 	GetNextObjectId() uint8
 	// GetObjects returns Objects (property field)
 	GetObjects() []ModbusDeviceInformationObject
+	// IsModbusPDUReadDeviceIdentificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadDeviceIdentificationResponse()
 }
 
 // _ModbusPDUReadDeviceIdentificationResponse is the data-structure of this message

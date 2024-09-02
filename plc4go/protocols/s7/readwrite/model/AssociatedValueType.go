@@ -44,6 +44,8 @@ type AssociatedValueType interface {
 	GetValueLength() uint16
 	// GetData returns Data (property field)
 	GetData() []uint8
+	// IsAssociatedValueType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAssociatedValueType()
 }
 
 // _AssociatedValueType is the data-structure of this message

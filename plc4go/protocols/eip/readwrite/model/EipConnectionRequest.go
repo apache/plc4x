@@ -41,6 +41,8 @@ type EipConnectionRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
+	// IsEipConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEipConnectionRequest()
 }
 
 // _EipConnectionRequest is the data-structure of this message

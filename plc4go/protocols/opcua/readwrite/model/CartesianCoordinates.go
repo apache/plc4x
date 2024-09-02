@@ -35,6 +35,8 @@ type CartesianCoordinates interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsCartesianCoordinates is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCartesianCoordinates()
 }
 
 // _CartesianCoordinates is the data-structure of this message

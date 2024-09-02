@@ -36,6 +36,8 @@ type RoutingIndication interface {
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
+	// IsRoutingIndication is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRoutingIndication()
 }
 
 // _RoutingIndication is the data-structure of this message

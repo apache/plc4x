@@ -41,6 +41,8 @@ type BACnetConstructedDataDescription interface {
 	GetDescription() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDescription()
 }
 
 // _BACnetConstructedDataDescription is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataBACnetIPGlobalAddress interface {
 	GetBacnetIpGlobalAddress() BACnetHostNPort
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetHostNPort
+	// IsBACnetConstructedDataBACnetIPGlobalAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBACnetIPGlobalAddress()
 }
 
 // _BACnetConstructedDataBACnetIPGlobalAddress is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataDoorUnlockDelayTime interface {
 	GetDoorUnlockDelayTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataDoorUnlockDelayTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDoorUnlockDelayTime()
 }
 
 // _BACnetConstructedDataDoorUnlockDelayTime is the data-structure of this message

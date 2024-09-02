@@ -38,6 +38,8 @@ type BACnetOptionalCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetOptionalCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalCharacterString()
 }
 
 // BACnetOptionalCharacterStringContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetOptionalCharacterStringContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetOptionalCharacterString() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetOptionalCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalCharacterString()
 }
 

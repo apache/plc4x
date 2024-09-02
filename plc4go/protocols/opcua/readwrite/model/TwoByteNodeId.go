@@ -38,6 +38,8 @@ type TwoByteNodeId interface {
 	utils.Serializable
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() uint8
+	// IsTwoByteNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTwoByteNodeId()
 }
 
 // _TwoByteNodeId is the data-structure of this message

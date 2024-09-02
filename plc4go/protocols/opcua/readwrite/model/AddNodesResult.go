@@ -41,6 +41,8 @@ type AddNodesResult interface {
 	GetStatusCode() StatusCode
 	// GetAddedNodeId returns AddedNodeId (property field)
 	GetAddedNodeId() NodeId
+	// IsAddNodesResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAddNodesResult()
 }
 
 // _AddNodesResult is the data-structure of this message

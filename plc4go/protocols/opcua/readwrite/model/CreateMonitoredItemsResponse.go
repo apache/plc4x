@@ -47,6 +47,8 @@ type CreateMonitoredItemsResponse interface {
 	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
+	// IsCreateMonitoredItemsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCreateMonitoredItemsResponse()
 }
 
 // _CreateMonitoredItemsResponse is the data-structure of this message

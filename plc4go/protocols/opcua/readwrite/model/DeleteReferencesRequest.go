@@ -43,6 +43,8 @@ type DeleteReferencesRequest interface {
 	GetNoOfReferencesToDelete() int32
 	// GetReferencesToDelete returns ReferencesToDelete (property field)
 	GetReferencesToDelete() []ExtensionObjectDefinition
+	// IsDeleteReferencesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteReferencesRequest()
 }
 
 // _DeleteReferencesRequest is the data-structure of this message

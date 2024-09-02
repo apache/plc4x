@@ -41,6 +41,8 @@ type CIPEncapsulationReadRequest interface {
 	CIPEncapsulationPacket
 	// GetRequest returns Request (property field)
 	GetRequest() DF1RequestMessage
+	// IsCIPEncapsulationReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPEncapsulationReadRequest()
 }
 
 // _CIPEncapsulationReadRequest is the data-structure of this message

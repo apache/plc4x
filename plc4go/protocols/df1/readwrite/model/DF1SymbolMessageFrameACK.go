@@ -36,6 +36,8 @@ type DF1SymbolMessageFrameACK interface {
 	utils.LengthAware
 	utils.Serializable
 	DF1Symbol
+	// IsDF1SymbolMessageFrameACK is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDF1SymbolMessageFrameACK()
 }
 
 // _DF1SymbolMessageFrameACK is the data-structure of this message

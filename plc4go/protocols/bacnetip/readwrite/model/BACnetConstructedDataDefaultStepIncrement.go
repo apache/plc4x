@@ -41,6 +41,8 @@ type BACnetConstructedDataDefaultStepIncrement interface {
 	GetDefaultStepIncrement() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataDefaultStepIncrement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDefaultStepIncrement()
 }
 
 // _BACnetConstructedDataDefaultStepIncrement is the data-structure of this message

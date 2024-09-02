@@ -35,6 +35,8 @@ type MPropInfoInd interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsMPropInfoInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMPropInfoInd()
 }
 
 // _MPropInfoInd is the data-structure of this message

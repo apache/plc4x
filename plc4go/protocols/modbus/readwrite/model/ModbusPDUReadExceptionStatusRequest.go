@@ -35,6 +35,8 @@ type ModbusPDUReadExceptionStatusRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU
+	// IsModbusPDUReadExceptionStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadExceptionStatusRequest()
 }
 
 // _ModbusPDUReadExceptionStatusRequest is the data-structure of this message

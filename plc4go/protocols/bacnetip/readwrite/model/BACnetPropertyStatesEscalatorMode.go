@@ -39,6 +39,8 @@ type BACnetPropertyStatesEscalatorMode interface {
 	BACnetPropertyStates
 	// GetEscalatorMode returns EscalatorMode (property field)
 	GetEscalatorMode() BACnetEscalatorModeTagged
+	// IsBACnetPropertyStatesEscalatorMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesEscalatorMode()
 }
 
 // _BACnetPropertyStatesEscalatorMode is the data-structure of this message

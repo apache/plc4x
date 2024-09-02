@@ -43,6 +43,8 @@ type TranslateBrowsePathsToNodeIdsRequest interface {
 	GetNoOfBrowsePaths() int32
 	// GetBrowsePaths returns BrowsePaths (property field)
 	GetBrowsePaths() []ExtensionObjectDefinition
+	// IsTranslateBrowsePathsToNodeIdsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTranslateBrowsePathsToNodeIdsRequest()
 }
 
 // _TranslateBrowsePathsToNodeIdsRequest is the data-structure of this message

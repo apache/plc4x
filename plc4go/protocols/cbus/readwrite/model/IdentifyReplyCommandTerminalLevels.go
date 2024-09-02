@@ -39,6 +39,8 @@ type IdentifyReplyCommandTerminalLevels interface {
 	IdentifyReplyCommand
 	// GetTerminalLevels returns TerminalLevels (property field)
 	GetTerminalLevels() []byte
+	// IsIdentifyReplyCommandTerminalLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandTerminalLevels()
 }
 
 // _IdentifyReplyCommandTerminalLevels is the data-structure of this message

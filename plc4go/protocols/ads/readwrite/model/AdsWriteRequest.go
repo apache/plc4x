@@ -43,6 +43,8 @@ type AdsWriteRequest interface {
 	GetIndexOffset() uint32
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsAdsWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsWriteRequest()
 }
 
 // _AdsWriteRequest is the data-structure of this message

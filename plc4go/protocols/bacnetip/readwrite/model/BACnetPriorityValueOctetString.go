@@ -39,6 +39,8 @@ type BACnetPriorityValueOctetString interface {
 	BACnetPriorityValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
+	// IsBACnetPriorityValueOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueOctetString()
 }
 
 // _BACnetPriorityValueOctetString is the data-structure of this message

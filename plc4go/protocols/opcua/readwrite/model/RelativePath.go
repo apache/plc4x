@@ -41,6 +41,8 @@ type RelativePath interface {
 	GetNoOfElements() int32
 	// GetElements returns Elements (property field)
 	GetElements() []ExtensionObjectDefinition
+	// IsRelativePath is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRelativePath()
 }
 
 // _RelativePath is the data-structure of this message

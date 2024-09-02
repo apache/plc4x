@@ -41,6 +41,8 @@ type BACnetConstructedDataProtocolServicesSupported interface {
 	GetProtocolServicesSupported() BACnetServicesSupportedTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetServicesSupportedTagged
+	// IsBACnetConstructedDataProtocolServicesSupported is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProtocolServicesSupported()
 }
 
 // _BACnetConstructedDataProtocolServicesSupported is the data-structure of this message

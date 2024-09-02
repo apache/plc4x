@@ -51,6 +51,8 @@ type CALDataStatusExtended interface {
 	GetNumberOfStatusBytes() uint8
 	// GetNumberOfLevelInformation returns NumberOfLevelInformation (virtual field)
 	GetNumberOfLevelInformation() uint8
+	// IsCALDataStatusExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataStatusExtended()
 }
 
 // _CALDataStatusExtended is the data-structure of this message

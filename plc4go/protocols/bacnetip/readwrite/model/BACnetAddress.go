@@ -46,6 +46,8 @@ type BACnetAddress interface {
 	GetIsLocalNetwork() bool
 	// GetIsBroadcast returns IsBroadcast (virtual field)
 	GetIsBroadcast() bool
+	// IsBACnetAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAddress()
 }
 
 // _BACnetAddress is the data-structure of this message

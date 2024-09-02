@@ -41,6 +41,8 @@ type BACnetConstructedDataInstanceOf interface {
 	GetInstanceOf() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataInstanceOf is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataInstanceOf()
 }
 
 // _BACnetConstructedDataInstanceOf is the data-structure of this message

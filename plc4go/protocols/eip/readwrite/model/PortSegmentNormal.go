@@ -41,6 +41,8 @@ type PortSegmentNormal interface {
 	GetPort() uint8
 	// GetLinkAddress returns LinkAddress (property field)
 	GetLinkAddress() uint8
+	// IsPortSegmentNormal is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPortSegmentNormal()
 }
 
 // _PortSegmentNormal is the data-structure of this message

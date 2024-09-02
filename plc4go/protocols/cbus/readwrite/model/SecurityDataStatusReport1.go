@@ -45,6 +45,8 @@ type SecurityDataStatusReport1 interface {
 	GetPanicStatus() PanicStatus
 	// GetZoneStatus returns ZoneStatus (property field)
 	GetZoneStatus() []ZoneStatus
+	// IsSecurityDataStatusReport1 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataStatusReport1()
 }
 
 // _SecurityDataStatusReport1 is the data-structure of this message

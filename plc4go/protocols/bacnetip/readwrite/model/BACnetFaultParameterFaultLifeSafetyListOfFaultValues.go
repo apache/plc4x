@@ -42,6 +42,8 @@ type BACnetFaultParameterFaultLifeSafetyListOfFaultValues interface {
 	GetListIfFaultValues() []BACnetLifeSafetyStateTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetFaultParameterFaultLifeSafetyListOfFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultLifeSafetyListOfFaultValues()
 }
 
 // _BACnetFaultParameterFaultLifeSafetyListOfFaultValues is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetConstructedDataAcceptedModes interface {
 	BACnetConstructedData
 	// GetAcceptedModes returns AcceptedModes (property field)
 	GetAcceptedModes() []BACnetLifeSafetyModeTagged
+	// IsBACnetConstructedDataAcceptedModes is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAcceptedModes()
 }
 
 // _BACnetConstructedDataAcceptedModes is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataRestorePreparationTime interface {
 	GetRestorePreparationTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataRestorePreparationTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRestorePreparationTime()
 }
 
 // _BACnetConstructedDataRestorePreparationTime is the data-structure of this message

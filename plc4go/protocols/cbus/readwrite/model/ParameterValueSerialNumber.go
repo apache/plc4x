@@ -41,6 +41,8 @@ type ParameterValueSerialNumber interface {
 	GetValue() SerialNumber
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsParameterValueSerialNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueSerialNumber()
 }
 
 // _ParameterValueSerialNumber is the data-structure of this message

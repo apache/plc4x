@@ -38,6 +38,8 @@ type BACnetOptionalREAL interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetOptionalREAL is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalREAL()
 }
 
 // BACnetOptionalREALContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetOptionalREALContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetOptionalREAL() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetOptionalREAL is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalREAL()
 }
 

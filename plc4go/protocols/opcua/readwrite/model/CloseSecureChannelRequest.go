@@ -39,6 +39,8 @@ type CloseSecureChannelRequest interface {
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
+	// IsCloseSecureChannelRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCloseSecureChannelRequest()
 }
 
 // _CloseSecureChannelRequest is the data-structure of this message

@@ -43,6 +43,8 @@ type ComObjectTableRealisationType1 interface {
 	GetRamFlagsTablePointer() uint8
 	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() []GroupObjectDescriptorRealisationType1
+	// IsComObjectTableRealisationType1 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsComObjectTableRealisationType1()
 }
 
 // _ComObjectTableRealisationType1 is the data-structure of this message

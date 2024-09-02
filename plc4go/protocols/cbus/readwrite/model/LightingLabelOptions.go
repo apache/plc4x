@@ -40,6 +40,8 @@ type LightingLabelOptions interface {
 	GetLabelFlavour() LightingLabelFlavour
 	// GetLabelType returns LabelType (property field)
 	GetLabelType() LightingLabelType
+	// IsLightingLabelOptions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLightingLabelOptions()
 }
 
 // _LightingLabelOptions is the data-structure of this message

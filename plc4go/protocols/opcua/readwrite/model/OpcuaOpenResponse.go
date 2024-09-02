@@ -41,6 +41,8 @@ type OpcuaOpenResponse interface {
 	GetOpenResponse() OpenChannelMessage
 	// GetMessage returns Message (property field)
 	GetMessage() Payload
+	// IsOpcuaOpenResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaOpenResponse()
 }
 
 // _OpcuaOpenResponse is the data-structure of this message

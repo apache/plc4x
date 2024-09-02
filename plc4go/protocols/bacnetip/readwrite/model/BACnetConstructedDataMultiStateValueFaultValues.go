@@ -39,6 +39,8 @@ type BACnetConstructedDataMultiStateValueFaultValues interface {
 	BACnetConstructedData
 	// GetFaultValues returns FaultValues (property field)
 	GetFaultValues() []BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataMultiStateValueFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMultiStateValueFaultValues()
 }
 
 // _BACnetConstructedDataMultiStateValueFaultValues is the data-structure of this message

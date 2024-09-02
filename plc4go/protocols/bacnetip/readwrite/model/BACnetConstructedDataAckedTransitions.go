@@ -41,6 +41,8 @@ type BACnetConstructedDataAckedTransitions interface {
 	GetAckedTransitions() BACnetEventTransitionBitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventTransitionBitsTagged
+	// IsBACnetConstructedDataAckedTransitions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAckedTransitions()
 }
 
 // _BACnetConstructedDataAckedTransitions is the data-structure of this message

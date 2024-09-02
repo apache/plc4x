@@ -35,6 +35,8 @@ type LDataFrameACK interface {
 	utils.LengthAware
 	utils.Serializable
 	LDataFrame
+	// IsLDataFrameACK is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLDataFrameACK()
 }
 
 // _LDataFrameACK is the data-structure of this message

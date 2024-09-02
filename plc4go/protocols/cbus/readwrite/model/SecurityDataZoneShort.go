@@ -39,6 +39,8 @@ type SecurityDataZoneShort interface {
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
+	// IsSecurityDataZoneShort is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataZoneShort()
 }
 
 // _SecurityDataZoneShort is the data-structure of this message

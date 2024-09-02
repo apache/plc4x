@@ -35,6 +35,8 @@ type TriggerControlDataTriggerMax interface {
 	utils.LengthAware
 	utils.Serializable
 	TriggerControlData
+	// IsTriggerControlDataTriggerMax is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTriggerControlDataTriggerMax()
 }
 
 // _TriggerControlDataTriggerMax is the data-structure of this message

@@ -41,6 +41,8 @@ type S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse interface 
 	GetItemsCount() uint16
 	// GetItems returns Items (property field)
 	GetItems() []AssociatedQueryValueType
+	// IsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse()
 }
 
 // _S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse is the data-structure of this message

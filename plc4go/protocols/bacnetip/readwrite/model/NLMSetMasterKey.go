@@ -39,6 +39,8 @@ type NLMSetMasterKey interface {
 	NLM
 	// GetKey returns Key (property field)
 	GetKey() NLMUpdateKeyUpdateKeyEntry
+	// IsNLMSetMasterKey is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMSetMasterKey()
 }
 
 // _NLMSetMasterKey is the data-structure of this message

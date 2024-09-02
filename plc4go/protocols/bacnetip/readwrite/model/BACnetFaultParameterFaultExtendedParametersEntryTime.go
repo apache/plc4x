@@ -39,6 +39,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryTime interface {
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
+	// IsBACnetFaultParameterFaultExtendedParametersEntryTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParametersEntryTime()
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryTime is the data-structure of this message

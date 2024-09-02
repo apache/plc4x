@@ -38,13 +38,15 @@ type COTPParameter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCOTPParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPParameter()
 }
 
 // COTPParameterContract provides a set of functions which can be overwritten by a sub struct
 type COTPParameterContract interface {
 	// GetRest() returns a parser argument
 	GetRest() uint8
-	// IsCOTPParameter() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCOTPParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPParameter()
 }
 

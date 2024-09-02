@@ -35,6 +35,8 @@ type SecurityDataFireAlarmCleared interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataFireAlarmCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataFireAlarmCleared()
 }
 
 // _SecurityDataFireAlarmCleared is the data-structure of this message

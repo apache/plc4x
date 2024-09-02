@@ -38,6 +38,8 @@ type BACnetNotificationParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetNotificationParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParameters()
 }
 
 // BACnetNotificationParametersContract provides a set of functions which can be overwritten by a sub struct
@@ -54,7 +56,7 @@ type BACnetNotificationParametersContract interface {
 	GetTagNumber() uint8
 	// GetObjectTypeArgument() returns a parser argument
 	GetObjectTypeArgument() BACnetObjectType
-	// IsBACnetNotificationParameters() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetNotificationParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParameters()
 }
 

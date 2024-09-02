@@ -47,6 +47,8 @@ type ContentFilterElementResult interface {
 	GetNoOfOperandDiagnosticInfos() int32
 	// GetOperandDiagnosticInfos returns OperandDiagnosticInfos (property field)
 	GetOperandDiagnosticInfos() []DiagnosticInfo
+	// IsContentFilterElementResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsContentFilterElementResult()
 }
 
 // _ContentFilterElementResult is the data-structure of this message

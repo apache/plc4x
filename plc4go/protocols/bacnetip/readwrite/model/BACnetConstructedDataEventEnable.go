@@ -41,6 +41,8 @@ type BACnetConstructedDataEventEnable interface {
 	GetEventEnable() BACnetEventTransitionBitsTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetEventTransitionBitsTagged
+	// IsBACnetConstructedDataEventEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEventEnable()
 }
 
 // _BACnetConstructedDataEventEnable is the data-structure of this message

@@ -39,6 +39,8 @@ type SecurityDataZoneSealed interface {
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
+	// IsSecurityDataZoneSealed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataZoneSealed()
 }
 
 // _SecurityDataZoneSealed is the data-structure of this message

@@ -43,6 +43,8 @@ type BACnetConstructedDataStateChangeValues interface {
 	GetStateChangeValues() []BACnetTimerStateChangeValue
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataStateChangeValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataStateChangeValues()
 }
 
 // _BACnetConstructedDataStateChangeValues is the data-structure of this message

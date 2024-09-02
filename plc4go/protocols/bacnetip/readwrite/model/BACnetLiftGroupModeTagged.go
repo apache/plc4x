@@ -40,6 +40,8 @@ type BACnetLiftGroupModeTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetLiftGroupMode
+	// IsBACnetLiftGroupModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLiftGroupModeTagged()
 }
 
 // _BACnetLiftGroupModeTagged is the data-structure of this message

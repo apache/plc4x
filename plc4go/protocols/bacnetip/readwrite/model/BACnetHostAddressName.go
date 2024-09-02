@@ -39,6 +39,8 @@ type BACnetHostAddressName interface {
 	BACnetHostAddress
 	// GetName returns Name (property field)
 	GetName() BACnetContextTagCharacterString
+	// IsBACnetHostAddressName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetHostAddressName()
 }
 
 // _BACnetHostAddressName is the data-structure of this message

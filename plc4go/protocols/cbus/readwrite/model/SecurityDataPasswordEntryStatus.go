@@ -49,6 +49,8 @@ type SecurityDataPasswordEntryStatus interface {
 	GetIsPasswordEntryEnabledAgain() bool
 	// GetIsReserved returns IsReserved (virtual field)
 	GetIsReserved() bool
+	// IsSecurityDataPasswordEntryStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataPasswordEntryStatus()
 }
 
 // _SecurityDataPasswordEntryStatus is the data-structure of this message

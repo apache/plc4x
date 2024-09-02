@@ -39,6 +39,8 @@ type BACnetChannelValueDate interface {
 	BACnetChannelValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
+	// IsBACnetChannelValueDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueDate()
 }
 
 // _BACnetChannelValueDate is the data-structure of this message

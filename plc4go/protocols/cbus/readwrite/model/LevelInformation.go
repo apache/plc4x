@@ -38,6 +38,8 @@ type LevelInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsLevelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLevelInformation()
 }
 
 // LevelInformationContract provides a set of functions which can be overwritten by a sub struct
@@ -60,7 +62,7 @@ type LevelInformationContract interface {
 	GetIsCorruptedByNoiseOrLevelsDiffer() bool
 	// GetIsCorrupted returns IsCorrupted (virtual field)
 	GetIsCorrupted() bool
-	// IsLevelInformation() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsLevelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLevelInformation()
 }
 

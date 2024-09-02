@@ -35,6 +35,8 @@ type SecurityDataLowBatteryCorrected interface {
 	utils.LengthAware
 	utils.Serializable
 	SecurityData
+	// IsSecurityDataLowBatteryCorrected is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSecurityDataLowBatteryCorrected()
 }
 
 // _SecurityDataLowBatteryCorrected is the data-structure of this message

@@ -49,6 +49,8 @@ type ServerStatusDataType interface {
 	GetSecondsTillShutdown() uint32
 	// GetShutdownReason returns ShutdownReason (property field)
 	GetShutdownReason() LocalizedText
+	// IsServerStatusDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServerStatusDataType()
 }
 
 // _ServerStatusDataType is the data-structure of this message

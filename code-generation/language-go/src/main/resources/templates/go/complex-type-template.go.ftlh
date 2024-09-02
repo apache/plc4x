@@ -114,6 +114,8 @@ type ${type.name} interface {
 	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
 	</#list>
 </#if>
+	// Is${type.name} is a marker method to prevent unintentional type checks (interfaces of same signature)
+	Is${type.name}()
 }
 
 <#if parserArguments?has_content>
@@ -148,7 +150,7 @@ type ${type.name}Contract interface {
 	Get${parserArgument.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
 		</#list>
 	</#if>
-	// Is${type.name}() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// Is${type.name} is a marker method to prevent unintentional type checks (interfaces of same signature)
 	Is${type.name}()
 }
 

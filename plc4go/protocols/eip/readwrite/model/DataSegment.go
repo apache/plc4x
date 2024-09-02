@@ -39,6 +39,8 @@ type DataSegment interface {
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() DataSegmentType
+	// IsDataSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataSegment()
 }
 
 // _DataSegment is the data-structure of this message

@@ -45,6 +45,8 @@ type RelativePathElement interface {
 	GetIsInverse() bool
 	// GetTargetName returns TargetName (property field)
 	GetTargetName() QualifiedName
+	// IsRelativePathElement is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRelativePathElement()
 }
 
 // _RelativePathElement is the data-structure of this message

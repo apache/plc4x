@@ -41,6 +41,8 @@ type BACnetConstructedDataGroupMode interface {
 	GetGroupMode() BACnetLiftGroupModeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLiftGroupModeTagged
+	// IsBACnetConstructedDataGroupMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataGroupMode()
 }
 
 // _BACnetConstructedDataGroupMode is the data-structure of this message

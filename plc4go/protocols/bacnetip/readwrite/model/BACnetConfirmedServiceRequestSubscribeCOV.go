@@ -45,6 +45,8 @@ type BACnetConfirmedServiceRequestSubscribeCOV interface {
 	GetIssueConfirmed() BACnetContextTagBoolean
 	// GetLifetimeInSeconds returns LifetimeInSeconds (property field)
 	GetLifetimeInSeconds() BACnetContextTagUnsignedInteger
+	// IsBACnetConfirmedServiceRequestSubscribeCOV is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestSubscribeCOV()
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOV is the data-structure of this message

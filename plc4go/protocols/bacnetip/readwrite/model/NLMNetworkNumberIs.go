@@ -41,6 +41,8 @@ type NLMNetworkNumberIs interface {
 	GetNetworkNumber() uint16
 	// GetNetworkNumberConfigured returns NetworkNumberConfigured (property field)
 	GetNetworkNumberConfigured() bool
+	// IsNLMNetworkNumberIs is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMNetworkNumberIs()
 }
 
 // _NLMNetworkNumberIs is the data-structure of this message

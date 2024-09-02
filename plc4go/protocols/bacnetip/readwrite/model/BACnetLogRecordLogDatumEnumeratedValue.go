@@ -39,6 +39,8 @@ type BACnetLogRecordLogDatumEnumeratedValue interface {
 	BACnetLogRecordLogDatum
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetContextTagEnumerated
+	// IsBACnetLogRecordLogDatumEnumeratedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumEnumeratedValue()
 }
 
 // _BACnetLogRecordLogDatumEnumeratedValue is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataLargeAnalogValueResolution interface {
 	GetResolution() BACnetApplicationTagDouble
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagDouble
+	// IsBACnetConstructedDataLargeAnalogValueResolution is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLargeAnalogValueResolution()
 }
 
 // _BACnetConstructedDataLargeAnalogValueResolution is the data-structure of this message

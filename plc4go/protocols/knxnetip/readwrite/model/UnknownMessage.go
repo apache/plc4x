@@ -41,6 +41,8 @@ type UnknownMessage interface {
 	KnxNetIpMessage
 	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
+	// IsUnknownMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUnknownMessage()
 }
 
 // _UnknownMessage is the data-structure of this message

@@ -42,6 +42,8 @@ type AdsDiscoveryBlockStatus interface {
 	AdsDiscoveryBlock
 	// GetStatus returns Status (property field)
 	GetStatus() Status
+	// IsAdsDiscoveryBlockStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockStatus()
 }
 
 // _AdsDiscoveryBlockStatus is the data-structure of this message

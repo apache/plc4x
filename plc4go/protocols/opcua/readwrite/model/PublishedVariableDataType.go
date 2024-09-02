@@ -55,6 +55,8 @@ type PublishedVariableDataType interface {
 	GetNoOfMetaDataProperties() int32
 	// GetMetaDataProperties returns MetaDataProperties (property field)
 	GetMetaDataProperties() []QualifiedName
+	// IsPublishedVariableDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPublishedVariableDataType()
 }
 
 // _PublishedVariableDataType is the data-structure of this message

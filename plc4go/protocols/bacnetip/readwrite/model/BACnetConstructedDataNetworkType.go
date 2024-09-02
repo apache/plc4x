@@ -41,6 +41,8 @@ type BACnetConstructedDataNetworkType interface {
 	GetNetworkType() BACnetNetworkTypeTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetNetworkTypeTagged
+	// IsBACnetConstructedDataNetworkType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataNetworkType()
 }
 
 // _BACnetConstructedDataNetworkType is the data-structure of this message

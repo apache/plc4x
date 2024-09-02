@@ -44,6 +44,8 @@ type BACnetLifeSafetyStateTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetLifeSafetyStateTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLifeSafetyStateTagged()
 }
 
 // _BACnetLifeSafetyStateTagged is the data-structure of this message

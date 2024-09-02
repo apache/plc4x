@@ -39,6 +39,8 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectName interface {
 	BACnetUnconfirmedServiceRequestWhoHasObject
 	// GetObjectName returns ObjectName (property field)
 	GetObjectName() BACnetContextTagCharacterString
+	// IsBACnetUnconfirmedServiceRequestWhoHasObjectName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequestWhoHasObjectName()
 }
 
 // _BACnetUnconfirmedServiceRequestWhoHasObjectName is the data-structure of this message

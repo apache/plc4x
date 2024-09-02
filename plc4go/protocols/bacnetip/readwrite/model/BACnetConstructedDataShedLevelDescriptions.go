@@ -43,6 +43,8 @@ type BACnetConstructedDataShedLevelDescriptions interface {
 	GetShedLevelDescriptions() []BACnetApplicationTagCharacterString
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataShedLevelDescriptions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataShedLevelDescriptions()
 }
 
 // _BACnetConstructedDataShedLevelDescriptions is the data-structure of this message

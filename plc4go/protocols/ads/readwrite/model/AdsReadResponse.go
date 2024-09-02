@@ -41,6 +41,8 @@ type AdsReadResponse interface {
 	GetResult() ReturnCode
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsAdsReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsReadResponse()
 }
 
 // _AdsReadResponse is the data-structure of this message

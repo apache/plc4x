@@ -43,6 +43,8 @@ type RepublishRequest interface {
 	GetSubscriptionId() uint32
 	// GetRetransmitSequenceNumber returns RetransmitSequenceNumber (property field)
 	GetRetransmitSequenceNumber() uint32
+	// IsRepublishRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRepublishRequest()
 }
 
 // _RepublishRequest is the data-structure of this message

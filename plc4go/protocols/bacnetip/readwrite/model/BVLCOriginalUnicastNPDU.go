@@ -41,6 +41,8 @@ type BVLCOriginalUnicastNPDU interface {
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
+	// IsBVLCOriginalUnicastNPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCOriginalUnicastNPDU()
 }
 
 // _BVLCOriginalUnicastNPDU is the data-structure of this message

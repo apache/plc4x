@@ -44,6 +44,8 @@ type CBusHeader interface {
 	GetRc() uint8
 	// GetDestinationAddressType returns DestinationAddressType (property field)
 	GetDestinationAddressType() DestinationAddressType
+	// IsCBusHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusHeader()
 }
 
 // _CBusHeader is the data-structure of this message

@@ -45,6 +45,8 @@ type ModbusPDUGetComEventLogResponse interface {
 	GetMessageCount() uint16
 	// GetEvents returns Events (property field)
 	GetEvents() []byte
+	// IsModbusPDUGetComEventLogResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUGetComEventLogResponse()
 }
 
 // _ModbusPDUGetComEventLogResponse is the data-structure of this message

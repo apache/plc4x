@@ -46,6 +46,8 @@ type SzlDataTreeItem interface {
 	GetAusbg() uint16
 	// GetAusbe returns Ausbe (property field)
 	GetAusbe() uint16
+	// IsSzlDataTreeItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSzlDataTreeItem()
 }
 
 // _SzlDataTreeItem is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataErrorLimit interface {
 	GetErrorLimit() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataErrorLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataErrorLimit()
 }
 
 // _BACnetConstructedDataErrorLimit is the data-structure of this message

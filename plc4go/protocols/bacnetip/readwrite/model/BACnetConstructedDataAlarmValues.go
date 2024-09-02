@@ -43,6 +43,8 @@ type BACnetConstructedDataAlarmValues interface {
 	GetAlarmValues() []BACnetLifeSafetyStateTagged
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAlarmValues()
 }
 
 // _BACnetConstructedDataAlarmValues is the data-structure of this message

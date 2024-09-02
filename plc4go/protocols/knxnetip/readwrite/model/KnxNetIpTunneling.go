@@ -39,6 +39,8 @@ type KnxNetIpTunneling interface {
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
+	// IsKnxNetIpTunneling is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxNetIpTunneling()
 }
 
 // _KnxNetIpTunneling is the data-structure of this message

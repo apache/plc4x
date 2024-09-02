@@ -49,6 +49,8 @@ type BACnetEventParameterDoubleOutOfRange interface {
 	GetDeadband() BACnetContextTagDouble
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterDoubleOutOfRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterDoubleOutOfRange()
 }
 
 // _BACnetEventParameterDoubleOutOfRange is the data-structure of this message

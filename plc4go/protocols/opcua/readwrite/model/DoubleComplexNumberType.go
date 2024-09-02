@@ -41,6 +41,8 @@ type DoubleComplexNumberType interface {
 	GetReal() float64
 	// GetImaginary returns Imaginary (property field)
 	GetImaginary() float64
+	// IsDoubleComplexNumberType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDoubleComplexNumberType()
 }
 
 // _DoubleComplexNumberType is the data-structure of this message

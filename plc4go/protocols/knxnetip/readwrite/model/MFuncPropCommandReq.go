@@ -35,6 +35,8 @@ type MFuncPropCommandReq interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsMFuncPropCommandReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMFuncPropCommandReq()
 }
 
 // _MFuncPropCommandReq is the data-structure of this message

@@ -47,6 +47,8 @@ type PubSubConfigurationDataType interface {
 	GetConnections() []ExtensionObjectDefinition
 	// GetEnabled returns Enabled (property field)
 	GetEnabled() bool
+	// IsPubSubConfigurationDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPubSubConfigurationDataType()
 }
 
 // _PubSubConfigurationDataType is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataProgramChange interface {
 	GetProgramChange() BACnetProgramRequestTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProgramRequestTagged
+	// IsBACnetConstructedDataProgramChange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProgramChange()
 }
 
 // _BACnetConstructedDataProgramChange is the data-structure of this message

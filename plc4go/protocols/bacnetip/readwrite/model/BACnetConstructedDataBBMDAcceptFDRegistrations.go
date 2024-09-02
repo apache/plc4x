@@ -41,6 +41,8 @@ type BACnetConstructedDataBBMDAcceptFDRegistrations interface {
 	GetBbmdAcceptFDRegistrations() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataBBMDAcceptFDRegistrations is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBBMDAcceptFDRegistrations()
 }
 
 // _BACnetConstructedDataBBMDAcceptFDRegistrations is the data-structure of this message

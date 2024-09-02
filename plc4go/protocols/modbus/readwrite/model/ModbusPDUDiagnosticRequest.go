@@ -41,6 +41,8 @@ type ModbusPDUDiagnosticRequest interface {
 	GetSubFunction() uint16
 	// GetData returns Data (property field)
 	GetData() uint16
+	// IsModbusPDUDiagnosticRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUDiagnosticRequest()
 }
 
 // _ModbusPDUDiagnosticRequest is the data-structure of this message

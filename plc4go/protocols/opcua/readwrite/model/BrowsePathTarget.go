@@ -41,6 +41,8 @@ type BrowsePathTarget interface {
 	GetTargetId() ExpandedNodeId
 	// GetRemainingPathIndex returns RemainingPathIndex (property field)
 	GetRemainingPathIndex() uint32
+	// IsBrowsePathTarget is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBrowsePathTarget()
 }
 
 // _BrowsePathTarget is the data-structure of this message

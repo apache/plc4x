@@ -38,6 +38,8 @@ type BACnetLiftCarCallList interface {
 	utils.Serializable
 	// GetFloorNumbers returns FloorNumbers (property field)
 	GetFloorNumbers() BACnetLiftCarCallListFloorList
+	// IsBACnetLiftCarCallList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLiftCarCallList()
 }
 
 // _BACnetLiftCarCallList is the data-structure of this message

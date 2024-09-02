@@ -39,6 +39,8 @@ type BACnetLogRecordLogDatumBooleanValue interface {
 	BACnetLogRecordLogDatum
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
+	// IsBACnetLogRecordLogDatumBooleanValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLogRecordLogDatumBooleanValue()
 }
 
 // _BACnetLogRecordLogDatumBooleanValue is the data-structure of this message

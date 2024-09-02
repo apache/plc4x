@@ -39,6 +39,8 @@ type BACnetSpecialEventPeriodCalendarReference interface {
 	BACnetSpecialEventPeriod
 	// GetCalendarReference returns CalendarReference (property field)
 	GetCalendarReference() BACnetContextTagObjectIdentifier
+	// IsBACnetSpecialEventPeriodCalendarReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetSpecialEventPeriodCalendarReference()
 }
 
 // _BACnetSpecialEventPeriodCalendarReference is the data-structure of this message

@@ -40,6 +40,8 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry interf
 	GetMonitoredObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetListOfCovReferences returns ListOfCovReferences (property field)
 	GetListOfCovReferences() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
+	// IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry()
 }
 
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry is the data-structure of this message

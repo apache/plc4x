@@ -41,6 +41,8 @@ type BACnetConstructedDataFDBBMDAddress interface {
 	GetFDBBMDAddress() BACnetHostNPort
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetHostNPort
+	// IsBACnetConstructedDataFDBBMDAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataFDBBMDAddress()
 }
 
 // _BACnetConstructedDataFDBBMDAddress is the data-structure of this message

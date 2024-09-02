@@ -40,6 +40,8 @@ type DeviceConfigurationRequestDataBlock interface {
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
 	GetSequenceCounter() uint8
+	// IsDeviceConfigurationRequestDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeviceConfigurationRequestDataBlock()
 }
 
 // _DeviceConfigurationRequestDataBlock is the data-structure of this message

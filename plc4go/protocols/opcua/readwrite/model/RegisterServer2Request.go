@@ -45,6 +45,8 @@ type RegisterServer2Request interface {
 	GetNoOfDiscoveryConfiguration() int32
 	// GetDiscoveryConfiguration returns DiscoveryConfiguration (property field)
 	GetDiscoveryConfiguration() []ExtensionObject
+	// IsRegisterServer2Request is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRegisterServer2Request()
 }
 
 // _RegisterServer2Request is the data-structure of this message

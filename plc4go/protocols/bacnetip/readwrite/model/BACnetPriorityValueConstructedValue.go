@@ -39,6 +39,8 @@ type BACnetPriorityValueConstructedValue interface {
 	BACnetPriorityValue
 	// GetConstructedValue returns ConstructedValue (property field)
 	GetConstructedValue() BACnetConstructedData
+	// IsBACnetPriorityValueConstructedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueConstructedValue()
 }
 
 // _BACnetPriorityValueConstructedValue is the data-structure of this message

@@ -35,6 +35,8 @@ type BACnetConstructedDataCharacterstringValueAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataCharacterstringValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCharacterstringValueAll()
 }
 
 // _BACnetConstructedDataCharacterstringValueAll is the data-structure of this message

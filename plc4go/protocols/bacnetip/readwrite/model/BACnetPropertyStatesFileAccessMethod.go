@@ -39,6 +39,8 @@ type BACnetPropertyStatesFileAccessMethod interface {
 	BACnetPropertyStates
 	// GetFileAccessMethod returns FileAccessMethod (property field)
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
+	// IsBACnetPropertyStatesFileAccessMethod is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesFileAccessMethod()
 }
 
 // _BACnetPropertyStatesFileAccessMethod is the data-structure of this message

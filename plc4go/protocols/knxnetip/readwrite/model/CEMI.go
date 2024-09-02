@@ -38,13 +38,15 @@ type CEMI interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCEMI is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCEMI()
 }
 
 // CEMIContract provides a set of functions which can be overwritten by a sub struct
 type CEMIContract interface {
 	// GetSize() returns a parser argument
 	GetSize() uint16
-	// IsCEMI() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCEMI is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMI()
 }
 

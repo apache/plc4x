@@ -39,6 +39,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString in
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString()
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString is the data-structure of this message

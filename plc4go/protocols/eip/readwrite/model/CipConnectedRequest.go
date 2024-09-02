@@ -39,6 +39,8 @@ type CipConnectedRequest interface {
 	CipService
 	// GetPathSegments returns PathSegments (property field)
 	GetPathSegments() []byte
+	// IsCipConnectedRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipConnectedRequest()
 }
 
 // _CipConnectedRequest is the data-structure of this message

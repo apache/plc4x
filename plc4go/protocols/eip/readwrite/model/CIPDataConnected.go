@@ -40,6 +40,8 @@ type CIPDataConnected interface {
 	GetValue() uint32
 	// GetTagStatus returns TagStatus (property field)
 	GetTagStatus() uint16
+	// IsCIPDataConnected is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPDataConnected()
 }
 
 // _CIPDataConnected is the data-structure of this message

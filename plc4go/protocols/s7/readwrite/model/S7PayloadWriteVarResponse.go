@@ -39,6 +39,8 @@ type S7PayloadWriteVarResponse interface {
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7VarPayloadStatusItem
+	// IsS7PayloadWriteVarResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadWriteVarResponse()
 }
 
 // _S7PayloadWriteVarResponse is the data-structure of this message

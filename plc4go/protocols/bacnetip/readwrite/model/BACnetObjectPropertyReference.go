@@ -42,6 +42,8 @@ type BACnetObjectPropertyReference interface {
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
 	GetArrayIndex() BACnetContextTagUnsignedInteger
+	// IsBACnetObjectPropertyReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetObjectPropertyReference()
 }
 
 // _BACnetObjectPropertyReference is the data-structure of this message

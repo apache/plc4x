@@ -41,6 +41,8 @@ type BACnetConstructedDataElapsedActiveTime interface {
 	GetElapsedActiveTime() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataElapsedActiveTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataElapsedActiveTime()
 }
 
 // _BACnetConstructedDataElapsedActiveTime is the data-structure of this message

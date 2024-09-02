@@ -40,6 +40,8 @@ type BACnetTimeValue interface {
 	GetTimeValue() BACnetApplicationTagTime
 	// GetValue returns Value (property field)
 	GetValue() BACnetConstructedDataElement
+	// IsBACnetTimeValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimeValue()
 }
 
 // _BACnetTimeValue is the data-structure of this message

@@ -45,6 +45,8 @@ type RequestReset interface {
 	GetTildePeek2() RequestType
 	// GetThirdTilde returns ThirdTilde (property field)
 	GetThirdTilde() *RequestType
+	// IsRequestReset is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestReset()
 }
 
 // _RequestReset is the data-structure of this message

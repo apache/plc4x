@@ -44,6 +44,8 @@ type BACnetWriteAccessSpecification interface {
 	GetListOfPropertyWriteDefinition() []BACnetPropertyWriteDefinition
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetWriteAccessSpecification is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetWriteAccessSpecification()
 }
 
 // _BACnetWriteAccessSpecification is the data-structure of this message

@@ -41,6 +41,8 @@ type HistoryData interface {
 	GetNoOfDataValues() int32
 	// GetDataValues returns DataValues (property field)
 	GetDataValues() []DataValue
+	// IsHistoryData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryData()
 }
 
 // _HistoryData is the data-structure of this message

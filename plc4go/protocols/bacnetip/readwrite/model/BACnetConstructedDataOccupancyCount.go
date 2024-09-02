@@ -41,6 +41,8 @@ type BACnetConstructedDataOccupancyCount interface {
 	GetOccupancyCount() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataOccupancyCount is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataOccupancyCount()
 }
 
 // _BACnetConstructedDataOccupancyCount is the data-structure of this message

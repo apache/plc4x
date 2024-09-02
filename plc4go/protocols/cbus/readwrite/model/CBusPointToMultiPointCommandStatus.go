@@ -39,6 +39,8 @@ type CBusPointToMultiPointCommandStatus interface {
 	CBusPointToMultiPointCommand
 	// GetStatusRequest returns StatusRequest (property field)
 	GetStatusRequest() StatusRequest
+	// IsCBusPointToMultiPointCommandStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToMultiPointCommandStatus()
 }
 
 // _CBusPointToMultiPointCommandStatus is the data-structure of this message

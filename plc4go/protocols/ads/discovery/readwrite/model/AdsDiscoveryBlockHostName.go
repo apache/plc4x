@@ -39,6 +39,8 @@ type AdsDiscoveryBlockHostName interface {
 	AdsDiscoveryBlock
 	// GetHostName returns HostName (property field)
 	GetHostName() AmsString
+	// IsAdsDiscoveryBlockHostName is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockHostName()
 }
 
 // _AdsDiscoveryBlockHostName is the data-structure of this message

@@ -39,6 +39,8 @@ type ErrorReportingSystemCategoryTypeReserved interface {
 	ErrorReportingSystemCategoryType
 	// GetReservedValue returns ReservedValue (property field)
 	GetReservedValue() uint8
+	// IsErrorReportingSystemCategoryTypeReserved is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorReportingSystemCategoryTypeReserved()
 }
 
 // _ErrorReportingSystemCategoryTypeReserved is the data-structure of this message

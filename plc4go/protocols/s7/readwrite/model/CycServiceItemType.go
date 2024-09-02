@@ -41,6 +41,8 @@ type CycServiceItemType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsCycServiceItemType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCycServiceItemType()
 }
 
 // CycServiceItemTypeContract provides a set of functions which can be overwritten by a sub struct
@@ -49,7 +51,7 @@ type CycServiceItemTypeContract interface {
 	GetByteLength() uint8
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() uint8
-	// IsCycServiceItemType() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsCycServiceItemType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCycServiceItemType()
 }
 

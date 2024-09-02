@@ -34,6 +34,8 @@ type VersionTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsVersionTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVersionTime()
 }
 
 // _VersionTime is the data-structure of this message

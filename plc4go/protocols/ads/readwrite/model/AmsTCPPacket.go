@@ -40,6 +40,8 @@ type AmsTCPPacket interface {
 	utils.Serializable
 	// GetUserdata returns Userdata (property field)
 	GetUserdata() AmsPacket
+	// IsAmsTCPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAmsTCPPacket()
 }
 
 // _AmsTCPPacket is the data-structure of this message

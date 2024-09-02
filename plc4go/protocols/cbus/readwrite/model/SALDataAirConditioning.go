@@ -39,6 +39,8 @@ type SALDataAirConditioning interface {
 	SALData
 	// GetAirConditioningData returns AirConditioningData (property field)
 	GetAirConditioningData() AirConditioningData
+	// IsSALDataAirConditioning is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataAirConditioning()
 }
 
 // _SALDataAirConditioning is the data-structure of this message

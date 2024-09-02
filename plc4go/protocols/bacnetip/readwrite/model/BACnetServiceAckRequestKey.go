@@ -39,6 +39,8 @@ type BACnetServiceAckRequestKey interface {
 	BACnetServiceAck
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
+	// IsBACnetServiceAckRequestKey is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckRequestKey()
 }
 
 // _BACnetServiceAckRequestKey is the data-structure of this message

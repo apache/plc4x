@@ -51,6 +51,8 @@ type BACnetServiceAckReadRange interface {
 	GetItemData() BACnetConstructedData
 	// GetFirstSequenceNumber returns FirstSequenceNumber (property field)
 	GetFirstSequenceNumber() BACnetContextTagUnsignedInteger
+	// IsBACnetServiceAckReadRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAckReadRange()
 }
 
 // _BACnetServiceAckReadRange is the data-structure of this message

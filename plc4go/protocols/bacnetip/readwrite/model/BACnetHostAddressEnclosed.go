@@ -42,6 +42,8 @@ type BACnetHostAddressEnclosed interface {
 	GetHostAddress() BACnetHostAddress
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetHostAddressEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetHostAddressEnclosed()
 }
 
 // _BACnetHostAddressEnclosed is the data-structure of this message

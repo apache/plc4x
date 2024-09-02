@@ -35,6 +35,8 @@ type BACnetConstructedDataEscalatorAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataEscalatorAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEscalatorAll()
 }
 
 // _BACnetConstructedDataEscalatorAll is the data-structure of this message

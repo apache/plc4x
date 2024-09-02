@@ -41,6 +41,8 @@ type OpcuaMessageRequest interface {
 	GetSecurityHeader() SecurityHeader
 	// GetMessage returns Message (property field)
 	GetMessage() Payload
+	// IsOpcuaMessageRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsOpcuaMessageRequest()
 }
 
 // _OpcuaMessageRequest is the data-structure of this message

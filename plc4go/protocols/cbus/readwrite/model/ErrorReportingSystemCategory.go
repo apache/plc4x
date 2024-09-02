@@ -42,6 +42,8 @@ type ErrorReportingSystemCategory interface {
 	GetSystemCategoryType() ErrorReportingSystemCategoryType
 	// GetSystemCategoryVariant returns SystemCategoryVariant (property field)
 	GetSystemCategoryVariant() ErrorReportingSystemCategoryVariant
+	// IsErrorReportingSystemCategory is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsErrorReportingSystemCategory()
 }
 
 // _ErrorReportingSystemCategory is the data-structure of this message

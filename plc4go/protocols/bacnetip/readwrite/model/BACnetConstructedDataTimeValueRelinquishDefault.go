@@ -41,6 +41,8 @@ type BACnetConstructedDataTimeValueRelinquishDefault interface {
 	GetRelinquishDefault() BACnetApplicationTagTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagTime
+	// IsBACnetConstructedDataTimeValueRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimeValueRelinquishDefault()
 }
 
 // _BACnetConstructedDataTimeValueRelinquishDefault is the data-structure of this message

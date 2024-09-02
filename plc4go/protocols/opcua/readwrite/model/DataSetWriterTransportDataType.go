@@ -35,6 +35,8 @@ type DataSetWriterTransportDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsDataSetWriterTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataSetWriterTransportDataType()
 }
 
 // _DataSetWriterTransportDataType is the data-structure of this message

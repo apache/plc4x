@@ -41,6 +41,8 @@ type VariantDouble interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []float64
+	// IsVariantDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantDouble()
 }
 
 // _VariantDouble is the data-structure of this message

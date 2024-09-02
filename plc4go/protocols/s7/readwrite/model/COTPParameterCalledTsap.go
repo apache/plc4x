@@ -39,6 +39,8 @@ type COTPParameterCalledTsap interface {
 	COTPParameter
 	// GetTsapId returns TsapId (property field)
 	GetTsapId() uint16
+	// IsCOTPParameterCalledTsap is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCOTPParameterCalledTsap()
 }
 
 // _COTPParameterCalledTsap is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataExtendedTimeEnable interface {
 	GetExtendedTimeEnable() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataExtendedTimeEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataExtendedTimeEnable()
 }
 
 // _BACnetConstructedDataExtendedTimeEnable is the data-structure of this message

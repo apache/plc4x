@@ -41,6 +41,8 @@ type BVLCResult interface {
 	BVLC
 	// GetCode returns Code (property field)
 	GetCode() BVLCResultCode
+	// IsBVLCResult is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCResult()
 }
 
 // _BVLCResult is the data-structure of this message

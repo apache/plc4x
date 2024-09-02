@@ -35,6 +35,8 @@ type VariantNull interface {
 	utils.LengthAware
 	utils.Serializable
 	Variant
+	// IsVariantNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantNull()
 }
 
 // _VariantNull is the data-structure of this message

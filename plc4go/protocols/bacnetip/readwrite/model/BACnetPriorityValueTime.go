@@ -39,6 +39,8 @@ type BACnetPriorityValueTime interface {
 	BACnetPriorityValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
+	// IsBACnetPriorityValueTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPriorityValueTime()
 }
 
 // _BACnetPriorityValueTime is the data-structure of this message

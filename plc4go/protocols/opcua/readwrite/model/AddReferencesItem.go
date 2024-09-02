@@ -49,6 +49,8 @@ type AddReferencesItem interface {
 	GetTargetNodeId() ExpandedNodeId
 	// GetTargetNodeClass returns TargetNodeClass (property field)
 	GetTargetNodeClass() NodeClass
+	// IsAddReferencesItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAddReferencesItem()
 }
 
 // _AddReferencesItem is the data-structure of this message

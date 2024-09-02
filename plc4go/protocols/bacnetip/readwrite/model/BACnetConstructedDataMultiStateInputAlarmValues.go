@@ -39,6 +39,8 @@ type BACnetConstructedDataMultiStateInputAlarmValues interface {
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataMultiStateInputAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMultiStateInputAlarmValues()
 }
 
 // _BACnetConstructedDataMultiStateInputAlarmValues is the data-structure of this message

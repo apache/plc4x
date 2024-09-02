@@ -38,6 +38,8 @@ type BACnetEventParameterChangeOfValueCivCriteria interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetEventParameterChangeOfValueCivCriteria is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfValueCivCriteria()
 }
 
 // BACnetEventParameterChangeOfValueCivCriteriaContract provides a set of functions which can be overwritten by a sub struct
@@ -52,7 +54,7 @@ type BACnetEventParameterChangeOfValueCivCriteriaContract interface {
 	GetPeekedTagNumber() uint8
 	// GetTagNumber() returns a parser argument
 	GetTagNumber() uint8
-	// IsBACnetEventParameterChangeOfValueCivCriteria() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetEventParameterChangeOfValueCivCriteria is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterChangeOfValueCivCriteria()
 }
 

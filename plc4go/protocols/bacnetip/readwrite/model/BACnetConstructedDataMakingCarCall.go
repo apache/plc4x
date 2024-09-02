@@ -43,6 +43,8 @@ type BACnetConstructedDataMakingCarCall interface {
 	GetMakingCarCall() []BACnetApplicationTagUnsignedInteger
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataMakingCarCall is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMakingCarCall()
 }
 
 // _BACnetConstructedDataMakingCarCall is the data-structure of this message

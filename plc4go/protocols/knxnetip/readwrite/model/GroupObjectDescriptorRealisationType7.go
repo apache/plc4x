@@ -54,6 +54,8 @@ type GroupObjectDescriptorRealisationType7 interface {
 	GetPriority() CEMIPriority
 	// GetValueType returns ValueType (property field)
 	GetValueType() ComObjectValueType
+	// IsGroupObjectDescriptorRealisationType7 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsGroupObjectDescriptorRealisationType7()
 }
 
 // _GroupObjectDescriptorRealisationType7 is the data-structure of this message

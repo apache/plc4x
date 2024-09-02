@@ -49,6 +49,8 @@ type BACnetNotificationParametersChangeOfLifeSafety interface {
 	GetOperationExpected() BACnetLifeSafetyOperationTagged
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersChangeOfLifeSafety is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfLifeSafety()
 }
 
 // _BACnetNotificationParametersChangeOfLifeSafety is the data-structure of this message

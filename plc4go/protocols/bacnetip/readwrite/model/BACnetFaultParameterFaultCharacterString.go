@@ -43,6 +43,8 @@ type BACnetFaultParameterFaultCharacterString interface {
 	GetListOfFaultValues() BACnetFaultParameterFaultCharacterStringListOfFaultValues
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetFaultParameterFaultCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultCharacterString()
 }
 
 // _BACnetFaultParameterFaultCharacterString is the data-structure of this message

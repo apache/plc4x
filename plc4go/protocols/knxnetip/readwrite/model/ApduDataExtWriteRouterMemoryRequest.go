@@ -35,6 +35,8 @@ type ApduDataExtWriteRouterMemoryRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtWriteRouterMemoryRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtWriteRouterMemoryRequest()
 }
 
 // _ApduDataExtWriteRouterMemoryRequest is the data-structure of this message

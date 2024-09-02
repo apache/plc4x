@@ -38,13 +38,15 @@ type MessagePDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsMessagePDU is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMessagePDU()
 }
 
 // MessagePDUContract provides a set of functions which can be overwritten by a sub struct
 type MessagePDUContract interface {
 	// GetChunk returns Chunk (property field)
 	GetChunk() ChunkType
-	// IsMessagePDU() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsMessagePDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMessagePDU()
 }
 

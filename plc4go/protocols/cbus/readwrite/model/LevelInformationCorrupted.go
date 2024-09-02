@@ -45,6 +45,8 @@ type LevelInformationCorrupted interface {
 	GetCorruptedNibble3() uint8
 	// GetCorruptedNibble4 returns CorruptedNibble4 (property field)
 	GetCorruptedNibble4() uint8
+	// IsLevelInformationCorrupted is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLevelInformationCorrupted()
 }
 
 // _LevelInformationCorrupted is the data-structure of this message

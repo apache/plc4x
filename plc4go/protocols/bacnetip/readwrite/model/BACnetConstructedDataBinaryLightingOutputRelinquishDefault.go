@@ -41,6 +41,8 @@ type BACnetConstructedDataBinaryLightingOutputRelinquishDefault interface {
 	GetRelinquishDefault() BACnetBinaryLightingPVTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetBinaryLightingPVTagged
+	// IsBACnetConstructedDataBinaryLightingOutputRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBinaryLightingOutputRelinquishDefault()
 }
 
 // _BACnetConstructedDataBinaryLightingOutputRelinquishDefault is the data-structure of this message

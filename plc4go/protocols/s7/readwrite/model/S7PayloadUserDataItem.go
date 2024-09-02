@@ -38,6 +38,8 @@ type S7PayloadUserDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsS7PayloadUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadUserDataItem()
 }
 
 // S7PayloadUserDataItemContract provides a set of functions which can be overwritten by a sub struct
@@ -48,7 +50,7 @@ type S7PayloadUserDataItemContract interface {
 	GetTransportSize() DataTransportSize
 	// GetDataLength returns DataLength (property field)
 	GetDataLength() uint16
-	// IsS7PayloadUserDataItem() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsS7PayloadUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItem()
 }
 

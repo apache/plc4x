@@ -40,6 +40,8 @@ type BACnetDeviceObjectReference interface {
 	GetDeviceIdentifier() BACnetContextTagObjectIdentifier
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
+	// IsBACnetDeviceObjectReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetDeviceObjectReference()
 }
 
 // _BACnetDeviceObjectReference is the data-structure of this message

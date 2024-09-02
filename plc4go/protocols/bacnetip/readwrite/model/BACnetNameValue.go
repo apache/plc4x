@@ -40,6 +40,8 @@ type BACnetNameValue interface {
 	GetName() BACnetContextTagCharacterString
 	// GetValue returns Value (property field)
 	GetValue() BACnetConstructedData
+	// IsBACnetNameValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNameValue()
 }
 
 // _BACnetNameValue is the data-structure of this message

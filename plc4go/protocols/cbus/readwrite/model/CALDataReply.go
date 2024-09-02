@@ -41,6 +41,8 @@ type CALDataReply interface {
 	GetParamNo() Parameter
 	// GetParameterValue returns ParameterValue (property field)
 	GetParameterValue() ParameterValue
+	// IsCALDataReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataReply()
 }
 
 // _CALDataReply is the data-structure of this message

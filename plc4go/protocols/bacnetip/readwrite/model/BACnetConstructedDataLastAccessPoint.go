@@ -41,6 +41,8 @@ type BACnetConstructedDataLastAccessPoint interface {
 	GetLastAccessPoint() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
+	// IsBACnetConstructedDataLastAccessPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastAccessPoint()
 }
 
 // _BACnetConstructedDataLastAccessPoint is the data-structure of this message

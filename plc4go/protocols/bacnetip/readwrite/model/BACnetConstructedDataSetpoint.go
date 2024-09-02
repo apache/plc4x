@@ -41,6 +41,8 @@ type BACnetConstructedDataSetpoint interface {
 	GetSetpoint() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataSetpoint is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataSetpoint()
 }
 
 // _BACnetConstructedDataSetpoint is the data-structure of this message

@@ -54,6 +54,8 @@ type CBusOptions interface {
 	GetPcn() bool
 	// GetSrchk returns Srchk (property field)
 	GetSrchk() bool
+	// IsCBusOptions is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusOptions()
 }
 
 // _CBusOptions is the data-structure of this message

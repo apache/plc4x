@@ -39,6 +39,8 @@ type SysexCommandAnalogMappingQueryResponse interface {
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
+	// IsSysexCommandAnalogMappingQueryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandAnalogMappingQueryResponse()
 }
 
 // _SysexCommandAnalogMappingQueryResponse is the data-structure of this message

@@ -39,6 +39,8 @@ type IdentifyReplyCommandGAVPhysicalAddresses interface {
 	IdentifyReplyCommand
 	// GetValues returns Values (property field)
 	GetValues() []byte
+	// IsIdentifyReplyCommandGAVPhysicalAddresses is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandGAVPhysicalAddresses()
 }
 
 // _IdentifyReplyCommandGAVPhysicalAddresses is the data-structure of this message

@@ -36,6 +36,8 @@ type CIPEncapsulationConnectionResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	CIPEncapsulationPacket
+	// IsCIPEncapsulationConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPEncapsulationConnectionResponse()
 }
 
 // _CIPEncapsulationConnectionResponse is the data-structure of this message

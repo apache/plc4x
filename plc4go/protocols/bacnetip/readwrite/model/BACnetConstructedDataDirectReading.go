@@ -41,6 +41,8 @@ type BACnetConstructedDataDirectReading interface {
 	GetDirectReading() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataDirectReading is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDirectReading()
 }
 
 // _BACnetConstructedDataDirectReading is the data-structure of this message

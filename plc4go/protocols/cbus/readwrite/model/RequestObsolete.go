@@ -43,6 +43,8 @@ type RequestObsolete interface {
 	GetAlpha() Alpha
 	// GetCalDataDecoded returns CalDataDecoded (virtual field)
 	GetCalDataDecoded() CALData
+	// IsRequestObsolete is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRequestObsolete()
 }
 
 // _RequestObsolete is the data-structure of this message

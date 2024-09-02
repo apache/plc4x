@@ -41,6 +41,8 @@ type BACnetConstructedDataLastAccessEvent interface {
 	GetLastAccessEvent() BACnetAccessEventTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetAccessEventTagged
+	// IsBACnetConstructedDataLastAccessEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastAccessEvent()
 }
 
 // _BACnetConstructedDataLastAccessEvent is the data-structure of this message

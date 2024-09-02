@@ -43,6 +43,8 @@ type MediaTransportControlDataShuffleOnOff interface {
 	GetIsOff() bool
 	// GetIsOn returns IsOn (virtual field)
 	GetIsOn() bool
+	// IsMediaTransportControlDataShuffleOnOff is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataShuffleOnOff()
 }
 
 // _MediaTransportControlDataShuffleOnOff is the data-structure of this message

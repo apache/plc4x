@@ -41,6 +41,8 @@ type BVLCWriteBroadcastDistributionTable interface {
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCBroadcastDistributionTableEntry
+	// IsBVLCWriteBroadcastDistributionTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCWriteBroadcastDistributionTable()
 }
 
 // _BVLCWriteBroadcastDistributionTable is the data-structure of this message

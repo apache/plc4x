@@ -53,6 +53,8 @@ type AirConditioningDataHvacScheduleEntry interface {
 	GetLevel() HVACTemperature
 	// GetRawLevel returns RawLevel (property field)
 	GetRawLevel() HVACRawLevels
+	// IsAirConditioningDataHvacScheduleEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataHvacScheduleEntry()
 }
 
 // _AirConditioningDataHvacScheduleEntry is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetEventParameterNone interface {
 	BACnetEventParameter
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
+	// IsBACnetEventParameterNone is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterNone()
 }
 
 // _BACnetEventParameterNone is the data-structure of this message

@@ -41,6 +41,8 @@ type ModbusPDUReadCoilsRequest interface {
 	GetStartingAddress() uint16
 	// GetQuantity returns Quantity (property field)
 	GetQuantity() uint16
+	// IsModbusPDUReadCoilsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadCoilsRequest()
 }
 
 // _ModbusPDUReadCoilsRequest is the data-structure of this message

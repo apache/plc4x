@@ -38,6 +38,8 @@ type BACnetTimeStamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetTimeStamp is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimeStamp()
 }
 
 // BACnetTimeStampContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetTimeStampContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetTimeStamp() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetTimeStamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimeStamp()
 }
 

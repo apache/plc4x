@@ -39,6 +39,8 @@ type AdsDeleteDeviceNotificationRequest interface {
 	AmsPacket
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
+	// IsAdsDeleteDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDeleteDeviceNotificationRequest()
 }
 
 // _AdsDeleteDeviceNotificationRequest is the data-structure of this message

@@ -35,6 +35,8 @@ type BACnetContextTagNull interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetContextTag
+	// IsBACnetContextTagNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetContextTagNull()
 }
 
 // _BACnetContextTagNull is the data-structure of this message

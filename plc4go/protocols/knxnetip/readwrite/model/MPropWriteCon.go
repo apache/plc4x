@@ -35,6 +35,8 @@ type MPropWriteCon interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsMPropWriteCon is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMPropWriteCon()
 }
 
 // _MPropWriteCon is the data-structure of this message

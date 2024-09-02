@@ -39,6 +39,8 @@ type BACnetConstructedDataBBMDBroadcastDistributionTable interface {
 	BACnetConstructedData
 	// GetBbmdBroadcastDistributionTable returns BbmdBroadcastDistributionTable (property field)
 	GetBbmdBroadcastDistributionTable() []BACnetBDTEntry
+	// IsBACnetConstructedDataBBMDBroadcastDistributionTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataBBMDBroadcastDistributionTable()
 }
 
 // _BACnetConstructedDataBBMDBroadcastDistributionTable is the data-structure of this message

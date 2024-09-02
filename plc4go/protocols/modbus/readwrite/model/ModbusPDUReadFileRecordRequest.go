@@ -39,6 +39,8 @@ type ModbusPDUReadFileRecordRequest interface {
 	ModbusPDU
 	// GetItems returns Items (property field)
 	GetItems() []ModbusPDUReadFileRecordRequestItem
+	// IsModbusPDUReadFileRecordRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadFileRecordRequest()
 }
 
 // _ModbusPDUReadFileRecordRequest is the data-structure of this message

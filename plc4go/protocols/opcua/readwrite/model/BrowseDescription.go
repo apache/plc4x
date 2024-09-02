@@ -49,6 +49,8 @@ type BrowseDescription interface {
 	GetNodeClassMask() uint32
 	// GetResultMask returns ResultMask (property field)
 	GetResultMask() uint32
+	// IsBrowseDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBrowseDescription()
 }
 
 // _BrowseDescription is the data-structure of this message

@@ -43,6 +43,8 @@ type APDUAbort interface {
 	GetOriginalInvokeId() uint8
 	// GetAbortReason returns AbortReason (property field)
 	GetAbortReason() BACnetAbortReasonTagged
+	// IsAPDUAbort is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAPDUAbort()
 }
 
 // _APDUAbort is the data-structure of this message

@@ -40,6 +40,8 @@ type CIPData interface {
 	GetDataType() CIPDataTypeCode
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsCIPData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCIPData()
 }
 
 // _CIPData is the data-structure of this message

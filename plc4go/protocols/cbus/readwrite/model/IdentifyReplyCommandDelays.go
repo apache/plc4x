@@ -41,6 +41,8 @@ type IdentifyReplyCommandDelays interface {
 	GetTerminalLevels() []byte
 	// GetReStrikeDelay returns ReStrikeDelay (property field)
 	GetReStrikeDelay() byte
+	// IsIdentifyReplyCommandDelays is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandDelays()
 }
 
 // _IdentifyReplyCommandDelays is the data-structure of this message

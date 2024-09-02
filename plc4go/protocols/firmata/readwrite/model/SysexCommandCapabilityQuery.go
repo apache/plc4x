@@ -35,6 +35,8 @@ type SysexCommandCapabilityQuery interface {
 	utils.LengthAware
 	utils.Serializable
 	SysexCommand
+	// IsSysexCommandCapabilityQuery is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandCapabilityQuery()
 }
 
 // _SysexCommandCapabilityQuery is the data-structure of this message

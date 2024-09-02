@@ -61,6 +61,8 @@ type PubSubConnectionDataType interface {
 	GetNoOfReaderGroups() int32
 	// GetReaderGroups returns ReaderGroups (property field)
 	GetReaderGroups() []PubSubGroupDataType
+	// IsPubSubConnectionDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPubSubConnectionDataType()
 }
 
 // _PubSubConnectionDataType is the data-structure of this message

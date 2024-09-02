@@ -99,6 +99,8 @@ type SubscriptionDiagnosticsDataType interface {
 	GetNextSequenceNumber() uint32
 	// GetEventQueueOverFlowCount returns EventQueueOverFlowCount (property field)
 	GetEventQueueOverFlowCount() uint32
+	// IsSubscriptionDiagnosticsDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSubscriptionDiagnosticsDataType()
 }
 
 // _SubscriptionDiagnosticsDataType is the data-structure of this message

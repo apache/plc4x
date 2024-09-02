@@ -41,6 +41,8 @@ type BACnetConstructedDataProgramState interface {
 	GetProgramState() BACnetProgramStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProgramStateTagged
+	// IsBACnetConstructedDataProgramState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProgramState()
 }
 
 // _BACnetConstructedDataProgramState is the data-structure of this message

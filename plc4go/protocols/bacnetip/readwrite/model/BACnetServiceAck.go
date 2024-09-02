@@ -38,6 +38,8 @@ type BACnetServiceAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetServiceAck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetServiceAck()
 }
 
 // BACnetServiceAckContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetServiceAckContract interface {
 	GetServiceAckPayloadLength() uint32
 	// GetServiceAckLength() returns a parser argument
 	GetServiceAckLength() uint32
-	// IsBACnetServiceAck() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetServiceAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAck()
 }
 

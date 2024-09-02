@@ -39,6 +39,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate interfac
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate()
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate is the data-structure of this message

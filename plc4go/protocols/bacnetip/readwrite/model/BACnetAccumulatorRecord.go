@@ -44,6 +44,8 @@ type BACnetAccumulatorRecord interface {
 	GetAccumulatedValue() BACnetContextTagSignedInteger
 	// GetAccumulatorStatus returns AccumulatorStatus (property field)
 	GetAccumulatorStatus() BACnetAccumulatorRecordAccumulatorStatusTagged
+	// IsBACnetAccumulatorRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccumulatorRecord()
 }
 
 // _BACnetAccumulatorRecord is the data-structure of this message

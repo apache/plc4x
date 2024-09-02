@@ -43,6 +43,8 @@ type ReferenceListEntryDataType interface {
 	GetIsForward() bool
 	// GetTargetNode returns TargetNode (property field)
 	GetTargetNode() ExpandedNodeId
+	// IsReferenceListEntryDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsReferenceListEntryDataType()
 }
 
 // _ReferenceListEntryDataType is the data-structure of this message

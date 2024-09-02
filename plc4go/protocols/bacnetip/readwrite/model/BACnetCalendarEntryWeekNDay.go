@@ -39,6 +39,8 @@ type BACnetCalendarEntryWeekNDay interface {
 	BACnetCalendarEntry
 	// GetWeekNDay returns WeekNDay (property field)
 	GetWeekNDay() BACnetWeekNDayTagged
+	// IsBACnetCalendarEntryWeekNDay is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCalendarEntryWeekNDay()
 }
 
 // _BACnetCalendarEntryWeekNDay is the data-structure of this message

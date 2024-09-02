@@ -41,6 +41,8 @@ type BACnetConstructedDataScaleFactor interface {
 	GetScaleFactor() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataScaleFactor is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataScaleFactor()
 }
 
 // _BACnetConstructedDataScaleFactor is the data-structure of this message

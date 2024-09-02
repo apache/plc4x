@@ -38,11 +38,13 @@ type S7Parameter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsS7Parameter is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7Parameter()
 }
 
 // S7ParameterContract provides a set of functions which can be overwritten by a sub struct
 type S7ParameterContract interface {
-	// IsS7Parameter() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsS7Parameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Parameter()
 }
 

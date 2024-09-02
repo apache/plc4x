@@ -52,6 +52,8 @@ type CEMIAdditionalInformationBusmonitorInfo interface {
 	GetLostFlag() bool
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint8
+	// IsCEMIAdditionalInformationBusmonitorInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCEMIAdditionalInformationBusmonitorInfo()
 }
 
 // _CEMIAdditionalInformationBusmonitorInfo is the data-structure of this message

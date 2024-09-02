@@ -45,6 +45,8 @@ type IdentifyReplyCommandOutputUnitSummary interface {
 	GetGavStoreEnabledByte2() *byte
 	// GetTimeFromLastRecoverOfMainsInSeconds returns TimeFromLastRecoverOfMainsInSeconds (property field)
 	GetTimeFromLastRecoverOfMainsInSeconds() uint8
+	// IsIdentifyReplyCommandOutputUnitSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandOutputUnitSummary()
 }
 
 // _IdentifyReplyCommandOutputUnitSummary is the data-structure of this message

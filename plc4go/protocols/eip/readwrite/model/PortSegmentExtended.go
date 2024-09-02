@@ -45,6 +45,8 @@ type PortSegmentExtended interface {
 	GetAddress() string
 	// GetPaddingByte returns PaddingByte (virtual field)
 	GetPaddingByte() uint8
+	// IsPortSegmentExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPortSegmentExtended()
 }
 
 // _PortSegmentExtended is the data-structure of this message

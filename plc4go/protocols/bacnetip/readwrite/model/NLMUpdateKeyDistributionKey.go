@@ -41,6 +41,8 @@ type NLMUpdateKeyDistributionKey interface {
 	GetKeyRevision() byte
 	// GetKey returns Key (property field)
 	GetKey() NLMUpdateKeyUpdateKeyEntry
+	// IsNLMUpdateKeyDistributionKey is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMUpdateKeyDistributionKey()
 }
 
 // _NLMUpdateKeyDistributionKey is the data-structure of this message

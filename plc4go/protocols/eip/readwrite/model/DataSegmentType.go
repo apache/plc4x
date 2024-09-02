@@ -38,11 +38,13 @@ type DataSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsDataSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataSegmentType()
 }
 
 // DataSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
 type DataSegmentTypeContract interface {
-	// IsDataSegmentType() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsDataSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSegmentType()
 }
 

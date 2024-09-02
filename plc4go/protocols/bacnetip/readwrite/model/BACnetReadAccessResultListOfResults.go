@@ -42,6 +42,8 @@ type BACnetReadAccessResultListOfResults interface {
 	GetListOfReadAccessProperty() []BACnetReadAccessProperty
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetReadAccessResultListOfResults is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetReadAccessResultListOfResults()
 }
 
 // _BACnetReadAccessResultListOfResults is the data-structure of this message

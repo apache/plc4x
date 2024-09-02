@@ -41,6 +41,8 @@ type VariantInt64 interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []int64
+	// IsVariantInt64 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantInt64()
 }
 
 // _VariantInt64 is the data-structure of this message

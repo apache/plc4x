@@ -43,6 +43,8 @@ type ApduDataExtPropertyDescriptionRead interface {
 	GetPropertyId() uint8
 	// GetIndex returns Index (property field)
 	GetIndex() uint8
+	// IsApduDataExtPropertyDescriptionRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtPropertyDescriptionRead()
 }
 
 // _ApduDataExtPropertyDescriptionRead is the data-structure of this message

@@ -44,6 +44,8 @@ type EnableControlData interface {
 	GetValue() byte
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() EnableControlCommandType
+	// IsEnableControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEnableControlData()
 }
 
 // _EnableControlData is the data-structure of this message

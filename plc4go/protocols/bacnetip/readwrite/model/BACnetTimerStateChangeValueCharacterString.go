@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueCharacterString interface {
 	BACnetTimerStateChangeValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
+	// IsBACnetTimerStateChangeValueCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueCharacterString()
 }
 
 // _BACnetTimerStateChangeValueCharacterString is the data-structure of this message

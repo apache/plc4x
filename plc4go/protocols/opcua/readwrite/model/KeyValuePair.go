@@ -41,6 +41,8 @@ type KeyValuePair interface {
 	GetKey() QualifiedName
 	// GetValue returns Value (property field)
 	GetValue() Variant
+	// IsKeyValuePair is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKeyValuePair()
 }
 
 // _KeyValuePair is the data-structure of this message

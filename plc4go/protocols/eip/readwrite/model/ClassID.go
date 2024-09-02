@@ -41,6 +41,8 @@ type ClassID interface {
 	GetFormat() uint8
 	// GetSegmentClass returns SegmentClass (property field)
 	GetSegmentClass() uint8
+	// IsClassID is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsClassID()
 }
 
 // _ClassID is the data-structure of this message

@@ -43,6 +43,8 @@ type BACnetConstructedDataLogBuffer interface {
 	GetFloorText() []BACnetLogRecord
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataLogBuffer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLogBuffer()
 }
 
 // _BACnetConstructedDataLogBuffer is the data-structure of this message

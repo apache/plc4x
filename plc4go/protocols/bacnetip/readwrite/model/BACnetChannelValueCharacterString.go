@@ -39,6 +39,8 @@ type BACnetChannelValueCharacterString interface {
 	BACnetChannelValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
+	// IsBACnetChannelValueCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueCharacterString()
 }
 
 // _BACnetChannelValueCharacterString is the data-structure of this message

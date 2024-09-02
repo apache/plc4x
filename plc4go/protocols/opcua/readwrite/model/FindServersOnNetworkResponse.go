@@ -45,6 +45,8 @@ type FindServersOnNetworkResponse interface {
 	GetNoOfServers() int32
 	// GetServers returns Servers (property field)
 	GetServers() []ExtensionObjectDefinition
+	// IsFindServersOnNetworkResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFindServersOnNetworkResponse()
 }
 
 // _FindServersOnNetworkResponse is the data-structure of this message

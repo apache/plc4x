@@ -42,6 +42,8 @@ type BACnetFaultParameterFaultExtendedParameters interface {
 	GetParameters() []BACnetFaultParameterFaultExtendedParametersEntry
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetFaultParameterFaultExtendedParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultExtendedParameters()
 }
 
 // _BACnetFaultParameterFaultExtendedParameters is the data-structure of this message

@@ -41,6 +41,8 @@ type CALDataIdentifyReply interface {
 	GetAttribute() Attribute
 	// GetIdentifyReplyCommand returns IdentifyReplyCommand (property field)
 	GetIdentifyReplyCommand() IdentifyReplyCommand
+	// IsCALDataIdentifyReply is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCALDataIdentifyReply()
 }
 
 // _CALDataIdentifyReply is the data-structure of this message

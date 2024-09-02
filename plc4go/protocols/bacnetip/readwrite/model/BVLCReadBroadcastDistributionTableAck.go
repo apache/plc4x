@@ -41,6 +41,8 @@ type BVLCReadBroadcastDistributionTableAck interface {
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCBroadcastDistributionTableEntry
+	// IsBVLCReadBroadcastDistributionTableAck is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCReadBroadcastDistributionTableAck()
 }
 
 // _BVLCReadBroadcastDistributionTableAck is the data-structure of this message

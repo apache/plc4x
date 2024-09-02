@@ -38,6 +38,8 @@ type DeviceStatus interface {
 	utils.Serializable
 	// GetProgramMode returns ProgramMode (property field)
 	GetProgramMode() bool
+	// IsDeviceStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeviceStatus()
 }
 
 // _DeviceStatus is the data-structure of this message

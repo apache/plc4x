@@ -43,6 +43,8 @@ type BACnetConstructedDataGroupMembers interface {
 	GetGroupMembers() []BACnetApplicationTagObjectIdentifier
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataGroupMembers is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataGroupMembers()
 }
 
 // _BACnetConstructedDataGroupMembers is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataInProgress interface {
 	GetInProgress() BACnetLightingInProgressTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLightingInProgressTagged
+	// IsBACnetConstructedDataInProgress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataInProgress()
 }
 
 // _BACnetConstructedDataInProgress is the data-structure of this message

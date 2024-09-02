@@ -42,6 +42,8 @@ type BACnetGroupChannelValueList interface {
 	GetListOfEventSummaries() []BACnetEventSummary
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetGroupChannelValueList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetGroupChannelValueList()
 }
 
 // _BACnetGroupChannelValueList is the data-structure of this message

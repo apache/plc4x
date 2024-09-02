@@ -47,6 +47,8 @@ type CreateMonitoredItemsRequest interface {
 	GetNoOfItemsToCreate() int32
 	// GetItemsToCreate returns ItemsToCreate (property field)
 	GetItemsToCreate() []ExtensionObjectDefinition
+	// IsCreateMonitoredItemsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCreateMonitoredItemsRequest()
 }
 
 // _CreateMonitoredItemsRequest is the data-structure of this message

@@ -40,6 +40,8 @@ type BACnetHostNPort interface {
 	GetHost() BACnetHostAddressEnclosed
 	// GetPort returns Port (property field)
 	GetPort() BACnetContextTagUnsignedInteger
+	// IsBACnetHostNPort is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetHostNPort()
 }
 
 // _BACnetHostNPort is the data-structure of this message

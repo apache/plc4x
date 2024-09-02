@@ -39,6 +39,8 @@ type BACnetEventParameterChangeOfValueCivCriteriaBitmask interface {
 	BACnetEventParameterChangeOfValueCivCriteria
 	// GetBitmask returns Bitmask (property field)
 	GetBitmask() BACnetContextTagBitString
+	// IsBACnetEventParameterChangeOfValueCivCriteriaBitmask is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfValueCivCriteriaBitmask()
 }
 
 // _BACnetEventParameterChangeOfValueCivCriteriaBitmask is the data-structure of this message

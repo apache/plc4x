@@ -41,6 +41,8 @@ type BACnetConstructedDataShedDuration interface {
 	GetShedDuration() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataShedDuration is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataShedDuration()
 }
 
 // _BACnetConstructedDataShedDuration is the data-structure of this message

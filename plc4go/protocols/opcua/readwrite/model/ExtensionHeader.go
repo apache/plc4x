@@ -40,6 +40,8 @@ type ExtensionHeader interface {
 	GetXmlbody() bool
 	// GetBinaryBody returns BinaryBody (property field)
 	GetBinaryBody() bool
+	// IsExtensionHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsExtensionHeader()
 }
 
 // _ExtensionHeader is the data-structure of this message

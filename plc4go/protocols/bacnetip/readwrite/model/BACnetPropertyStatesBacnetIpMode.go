@@ -39,6 +39,8 @@ type BACnetPropertyStatesBacnetIpMode interface {
 	BACnetPropertyStates
 	// GetBacnetIpMode returns BacnetIpMode (property field)
 	GetBacnetIpMode() BACnetIPModeTagged
+	// IsBACnetPropertyStatesBacnetIpMode is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesBacnetIpMode()
 }
 
 // _BACnetPropertyStatesBacnetIpMode is the data-structure of this message

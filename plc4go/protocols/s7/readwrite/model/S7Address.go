@@ -38,11 +38,13 @@ type S7Address interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsS7Address is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7Address()
 }
 
 // S7AddressContract provides a set of functions which can be overwritten by a sub struct
 type S7AddressContract interface {
-	// IsS7Address() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsS7Address is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Address()
 }
 

@@ -55,6 +55,8 @@ type SetTriggeringResponse interface {
 	GetNoOfRemoveDiagnosticInfos() int32
 	// GetRemoveDiagnosticInfos returns RemoveDiagnosticInfos (property field)
 	GetRemoveDiagnosticInfos() []DiagnosticInfo
+	// IsSetTriggeringResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSetTriggeringResponse()
 }
 
 // _SetTriggeringResponse is the data-structure of this message

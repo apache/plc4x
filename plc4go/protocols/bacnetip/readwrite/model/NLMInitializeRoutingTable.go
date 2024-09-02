@@ -41,6 +41,8 @@ type NLMInitializeRoutingTable interface {
 	GetNumberOfPorts() uint8
 	// GetPortMappings returns PortMappings (property field)
 	GetPortMappings() []NLMInitializeRoutingTablePortMapping
+	// IsNLMInitializeRoutingTable is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMInitializeRoutingTable()
 }
 
 // _NLMInitializeRoutingTable is the data-structure of this message

@@ -47,6 +47,8 @@ type BACnetEventParameterUnsignedRange interface {
 	GetHighLimit() BACnetContextTagUnsignedInteger
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterUnsignedRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterUnsignedRange()
 }
 
 // _BACnetEventParameterUnsignedRange is the data-structure of this message

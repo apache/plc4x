@@ -43,6 +43,8 @@ type DisconnectResponse interface {
 	GetCommunicationChannelId() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() Status
+	// IsDisconnectResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDisconnectResponse()
 }
 
 // _DisconnectResponse is the data-structure of this message

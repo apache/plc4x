@@ -42,6 +42,8 @@ type ExtensionObjectEncodingMask interface {
 	GetXmlbody() bool
 	// GetBinaryBody returns BinaryBody (property field)
 	GetBinaryBody() bool
+	// IsExtensionObjectEncodingMask is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsExtensionObjectEncodingMask()
 }
 
 // _ExtensionObjectEncodingMask is the data-structure of this message

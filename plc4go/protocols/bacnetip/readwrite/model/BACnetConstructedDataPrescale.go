@@ -41,6 +41,8 @@ type BACnetConstructedDataPrescale interface {
 	GetPrescale() BACnetPrescale
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetPrescale
+	// IsBACnetConstructedDataPrescale is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPrescale()
 }
 
 // _BACnetConstructedDataPrescale is the data-structure of this message

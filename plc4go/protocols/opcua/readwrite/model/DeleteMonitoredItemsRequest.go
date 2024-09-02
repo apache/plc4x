@@ -45,6 +45,8 @@ type DeleteMonitoredItemsRequest interface {
 	GetNoOfMonitoredItemIds() int32
 	// GetMonitoredItemIds returns MonitoredItemIds (property field)
 	GetMonitoredItemIds() []uint32
+	// IsDeleteMonitoredItemsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeleteMonitoredItemsRequest()
 }
 
 // _DeleteMonitoredItemsRequest is the data-structure of this message

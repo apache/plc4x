@@ -39,6 +39,8 @@ type AdsDiscoveryBlockOsData interface {
 	AdsDiscoveryBlock
 	// GetOsData returns OsData (property field)
 	GetOsData() []byte
+	// IsAdsDiscoveryBlockOsData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsDiscoveryBlockOsData()
 }
 
 // _AdsDiscoveryBlockOsData is the data-structure of this message

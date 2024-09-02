@@ -47,6 +47,8 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
 	GetWriteQuantity() uint16
 	// GetValue returns Value (property field)
 	GetValue() []byte
+	// IsModbusPDUReadWriteMultipleHoldingRegistersRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadWriteMultipleHoldingRegistersRequest()
 }
 
 // _ModbusPDUReadWriteMultipleHoldingRegistersRequest is the data-structure of this message

@@ -35,6 +35,8 @@ type ApduDataExtIndividualAddressSerialNumberResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtIndividualAddressSerialNumberResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtIndividualAddressSerialNumberResponse()
 }
 
 // _ApduDataExtIndividualAddressSerialNumberResponse is the data-structure of this message

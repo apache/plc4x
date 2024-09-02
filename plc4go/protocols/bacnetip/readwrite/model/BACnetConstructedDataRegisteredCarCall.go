@@ -43,6 +43,8 @@ type BACnetConstructedDataRegisteredCarCall interface {
 	GetRegisteredCarCall() []BACnetLiftCarCallList
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataRegisteredCarCall is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRegisteredCarCall()
 }
 
 // _BACnetConstructedDataRegisteredCarCall is the data-structure of this message

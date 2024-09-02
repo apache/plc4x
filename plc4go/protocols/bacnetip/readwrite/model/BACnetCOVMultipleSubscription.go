@@ -46,6 +46,8 @@ type BACnetCOVMultipleSubscription interface {
 	GetMaxNotificationDelay() BACnetContextTagUnsignedInteger
 	// GetListOfCovSubscriptionSpecification returns ListOfCovSubscriptionSpecification (property field)
 	GetListOfCovSubscriptionSpecification() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification
+	// IsBACnetCOVMultipleSubscription is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetCOVMultipleSubscription()
 }
 
 // _BACnetCOVMultipleSubscription is the data-structure of this message

@@ -49,6 +49,8 @@ type BACnetNotificationParametersSignedOutOfRange interface {
 	GetExceededLimit() BACnetContextTagSignedInteger
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersSignedOutOfRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersSignedOutOfRange()
 }
 
 // _BACnetNotificationParametersSignedOutOfRange is the data-structure of this message

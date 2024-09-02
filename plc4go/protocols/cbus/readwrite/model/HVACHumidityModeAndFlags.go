@@ -62,6 +62,8 @@ type HVACHumidityModeAndFlags interface {
 	GetIsLevelHumidity() bool
 	// GetIsLevelRaw returns IsLevelRaw (virtual field)
 	GetIsLevelRaw() bool
+	// IsHVACHumidityModeAndFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACHumidityModeAndFlags()
 }
 
 // _HVACHumidityModeAndFlags is the data-structure of this message

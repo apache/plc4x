@@ -41,6 +41,8 @@ type StatusRequestLevel interface {
 	GetApplication() ApplicationIdContainer
 	// GetStartingGroupAddressLabel returns StartingGroupAddressLabel (property field)
 	GetStartingGroupAddressLabel() byte
+	// IsStatusRequestLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStatusRequestLevel()
 }
 
 // _StatusRequestLevel is the data-structure of this message

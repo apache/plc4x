@@ -39,6 +39,8 @@ type S7PayloadAlarmAckInd interface {
 	S7PayloadUserDataItem
 	// GetAlarmMessage returns AlarmMessage (property field)
 	GetAlarmMessage() AlarmMessageAckPushType
+	// IsS7PayloadAlarmAckInd is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7PayloadAlarmAckInd()
 }
 
 // _S7PayloadAlarmAckInd is the data-structure of this message

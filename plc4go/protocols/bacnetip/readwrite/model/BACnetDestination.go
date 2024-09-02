@@ -50,6 +50,8 @@ type BACnetDestination interface {
 	GetIssueConfirmedNotifications() BACnetApplicationTagBoolean
 	// GetTransitions returns Transitions (property field)
 	GetTransitions() BACnetEventTransitionBitsTagged
+	// IsBACnetDestination is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetDestination()
 }
 
 // _BACnetDestination is the data-structure of this message

@@ -41,6 +41,8 @@ type LightingDataRampToLevel interface {
 	GetGroup() byte
 	// GetLevel returns Level (property field)
 	GetLevel() byte
+	// IsLightingDataRampToLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLightingDataRampToLevel()
 }
 
 // _LightingDataRampToLevel is the data-structure of this message

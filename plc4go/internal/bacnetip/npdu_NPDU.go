@@ -194,6 +194,9 @@ func (n *_NPDU) GetPayloadSubtraction() uint16 {
 	return npdu.GetPayloadSubtraction()
 }
 
+func (n *_NPDU) IsNPDU() {
+}
+
 func (n *_NPDU) deepCopy() *_NPDU {
 	return &_NPDU{_NPCI: n._NPCI.deepCopy(), _PDUData: n._PDUData.deepCopy()}
 }

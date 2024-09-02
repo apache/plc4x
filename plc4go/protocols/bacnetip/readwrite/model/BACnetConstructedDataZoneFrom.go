@@ -41,6 +41,8 @@ type BACnetConstructedDataZoneFrom interface {
 	GetZoneFrom() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
+	// IsBACnetConstructedDataZoneFrom is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataZoneFrom()
 }
 
 // _BACnetConstructedDataZoneFrom is the data-structure of this message

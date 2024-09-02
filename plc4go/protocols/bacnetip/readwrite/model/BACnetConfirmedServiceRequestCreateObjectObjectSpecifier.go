@@ -50,6 +50,8 @@ type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier interface {
 	GetObjectType() BACnetObjectType
 	// GetIsObjectIdentifier returns IsObjectIdentifier (virtual field)
 	GetIsObjectIdentifier() bool
+	// IsBACnetConfirmedServiceRequestCreateObjectObjectSpecifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestCreateObjectObjectSpecifier()
 }
 
 // _BACnetConfirmedServiceRequestCreateObjectObjectSpecifier is the data-structure of this message

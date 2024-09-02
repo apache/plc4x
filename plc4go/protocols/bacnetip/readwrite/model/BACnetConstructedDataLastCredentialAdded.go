@@ -41,6 +41,8 @@ type BACnetConstructedDataLastCredentialAdded interface {
 	GetLastCredentialAdded() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
+	// IsBACnetConstructedDataLastCredentialAdded is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLastCredentialAdded()
 }
 
 // _BACnetConstructedDataLastCredentialAdded is the data-structure of this message

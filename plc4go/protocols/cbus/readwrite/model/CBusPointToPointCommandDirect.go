@@ -39,6 +39,8 @@ type CBusPointToPointCommandDirect interface {
 	CBusPointToPointCommand
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
+	// IsCBusPointToPointCommandDirect is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusPointToPointCommandDirect()
 }
 
 // _CBusPointToPointCommandDirect is the data-structure of this message

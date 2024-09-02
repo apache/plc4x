@@ -35,6 +35,8 @@ type AccessControlDataRequestToExit interface {
 	utils.LengthAware
 	utils.Serializable
 	AccessControlData
+	// IsAccessControlDataRequestToExit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAccessControlDataRequestToExit()
 }
 
 // _AccessControlDataRequestToExit is the data-structure of this message

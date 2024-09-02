@@ -41,6 +41,8 @@ type BACnetConstructedDataIPAddress interface {
 	GetIpAddress() BACnetApplicationTagOctetString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagOctetString
+	// IsBACnetConstructedDataIPAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataIPAddress()
 }
 
 // _BACnetConstructedDataIPAddress is the data-structure of this message

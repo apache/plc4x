@@ -39,6 +39,8 @@ type ConnectionResponseDataBlockTunnelConnection interface {
 	ConnectionResponseDataBlock
 	// GetKnxAddress returns KnxAddress (property field)
 	GetKnxAddress() KnxAddress
+	// IsConnectionResponseDataBlockTunnelConnection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConnectionResponseDataBlockTunnelConnection()
 }
 
 // _ConnectionResponseDataBlockTunnelConnection is the data-structure of this message

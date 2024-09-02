@@ -38,6 +38,8 @@ type LightingData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsLightingData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLightingData()
 }
 
 // LightingDataContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type LightingDataContract interface {
 	GetCommandTypeContainer() LightingCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
 	GetCommandType() LightingCommandType
-	// IsLightingData() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsLightingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingData()
 }
 

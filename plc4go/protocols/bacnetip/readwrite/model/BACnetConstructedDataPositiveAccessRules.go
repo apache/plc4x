@@ -43,6 +43,8 @@ type BACnetConstructedDataPositiveAccessRules interface {
 	GetPositiveAccessRules() []BACnetAccessRule
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataPositiveAccessRules is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataPositiveAccessRules()
 }
 
 // _BACnetConstructedDataPositiveAccessRules is the data-structure of this message

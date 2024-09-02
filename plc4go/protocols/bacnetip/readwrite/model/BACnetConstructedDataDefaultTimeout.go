@@ -41,6 +41,8 @@ type BACnetConstructedDataDefaultTimeout interface {
 	GetDefaultTimeout() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataDefaultTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDefaultTimeout()
 }
 
 // _BACnetConstructedDataDefaultTimeout is the data-structure of this message

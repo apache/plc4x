@@ -43,6 +43,8 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	GetNotification() ConfirmedEventNotificationRequest
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetEventLogRecordLogDatumNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventLogRecordLogDatumNotification()
 }
 
 // _BACnetEventLogRecordLogDatumNotification is the data-structure of this message

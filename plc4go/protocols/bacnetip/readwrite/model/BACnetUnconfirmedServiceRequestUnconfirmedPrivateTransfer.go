@@ -43,6 +43,8 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
 	GetServiceNumber() BACnetContextTagUnsignedInteger
 	// GetServiceParameters returns ServiceParameters (property field)
 	GetServiceParameters() BACnetConstructedData
+	// IsBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer()
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer is the data-structure of this message

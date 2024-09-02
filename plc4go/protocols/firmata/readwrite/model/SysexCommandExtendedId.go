@@ -39,6 +39,8 @@ type SysexCommandExtendedId interface {
 	SysexCommand
 	// GetId returns Id (property field)
 	GetId() []int8
+	// IsSysexCommandExtendedId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandExtendedId()
 }
 
 // _SysexCommandExtendedId is the data-structure of this message

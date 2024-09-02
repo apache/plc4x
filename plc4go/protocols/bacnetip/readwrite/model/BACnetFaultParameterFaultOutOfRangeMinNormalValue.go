@@ -38,6 +38,8 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetFaultParameterFaultOutOfRangeMinNormalValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultOutOfRangeMinNormalValue()
 }
 
 // BACnetFaultParameterFaultOutOfRangeMinNormalValueContract provides a set of functions which can be overwritten by a sub struct
@@ -52,7 +54,7 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueContract interface {
 	GetPeekedTagNumber() uint8
 	// GetTagNumber() returns a parser argument
 	GetTagNumber() uint8
-	// IsBACnetFaultParameterFaultOutOfRangeMinNormalValue() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetFaultParameterFaultOutOfRangeMinNormalValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultOutOfRangeMinNormalValue()
 }
 

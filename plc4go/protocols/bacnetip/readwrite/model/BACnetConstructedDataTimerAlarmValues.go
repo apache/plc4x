@@ -39,6 +39,8 @@ type BACnetConstructedDataTimerAlarmValues interface {
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetTimerStateTagged
+	// IsBACnetConstructedDataTimerAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimerAlarmValues()
 }
 
 // _BACnetConstructedDataTimerAlarmValues is the data-structure of this message

@@ -57,6 +57,8 @@ type DataSetWriterDataType interface {
 	GetTransportSettings() ExtensionObject
 	// GetMessageSettings returns MessageSettings (property field)
 	GetMessageSettings() ExtensionObject
+	// IsDataSetWriterDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDataSetWriterDataType()
 }
 
 // _DataSetWriterDataType is the data-structure of this message

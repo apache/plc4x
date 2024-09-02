@@ -43,6 +43,8 @@ type BACnetFaultParameterFaultStatusFlags interface {
 	GetStatusFlagsReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetFaultParameterFaultStatusFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetFaultParameterFaultStatusFlags()
 }
 
 // _BACnetFaultParameterFaultStatusFlags is the data-structure of this message

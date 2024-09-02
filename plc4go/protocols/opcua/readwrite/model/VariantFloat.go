@@ -41,6 +41,8 @@ type VariantFloat interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []float32
+	// IsVariantFloat is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantFloat()
 }
 
 // _VariantFloat is the data-structure of this message

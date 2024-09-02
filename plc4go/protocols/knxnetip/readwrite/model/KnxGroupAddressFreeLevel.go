@@ -39,6 +39,8 @@ type KnxGroupAddressFreeLevel interface {
 	KnxGroupAddress
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint16
+	// IsKnxGroupAddressFreeLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsKnxGroupAddressFreeLevel()
 }
 
 // _KnxGroupAddressFreeLevel is the data-structure of this message

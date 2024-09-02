@@ -35,6 +35,8 @@ type SubscribedDataSetDataType interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsSubscribedDataSetDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSubscribedDataSetDataType()
 }
 
 // _SubscribedDataSetDataType is the data-structure of this message

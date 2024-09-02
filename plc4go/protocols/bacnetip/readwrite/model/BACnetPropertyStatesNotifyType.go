@@ -39,6 +39,8 @@ type BACnetPropertyStatesNotifyType interface {
 	BACnetPropertyStates
 	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() BACnetNotifyTypeTagged
+	// IsBACnetPropertyStatesNotifyType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesNotifyType()
 }
 
 // _BACnetPropertyStatesNotifyType is the data-structure of this message

@@ -36,13 +36,15 @@ type S7Payload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsS7Payload is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7Payload()
 }
 
 // S7PayloadContract provides a set of functions which can be overwritten by a sub struct
 type S7PayloadContract interface {
 	// GetParameter() returns a parser argument
 	GetParameter() S7Parameter
-	// IsS7Payload() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsS7Payload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Payload()
 }
 

@@ -48,6 +48,8 @@ type AmsPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsAmsPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAmsPacket()
 }
 
 // AmsPacketContract provides a set of functions which can be overwritten by a sub struct
@@ -64,7 +66,7 @@ type AmsPacketContract interface {
 	GetErrorCode() uint32
 	// GetInvokeId returns InvokeId (property field)
 	GetInvokeId() uint32
-	// IsAmsPacket() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsAmsPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsPacket()
 }
 

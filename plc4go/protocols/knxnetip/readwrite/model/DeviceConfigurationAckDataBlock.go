@@ -42,6 +42,8 @@ type DeviceConfigurationAckDataBlock interface {
 	GetSequenceCounter() uint8
 	// GetStatus returns Status (property field)
 	GetStatus() Status
+	// IsDeviceConfigurationAckDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDeviceConfigurationAckDataBlock()
 }
 
 // _DeviceConfigurationAckDataBlock is the data-structure of this message

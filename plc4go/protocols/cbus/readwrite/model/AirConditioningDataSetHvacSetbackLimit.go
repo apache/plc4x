@@ -45,6 +45,8 @@ type AirConditioningDataSetHvacSetbackLimit interface {
 	GetLimit() HVACTemperature
 	// GetHvacModeAndFlags returns HvacModeAndFlags (property field)
 	GetHvacModeAndFlags() HVACModeAndFlags
+	// IsAirConditioningDataSetHvacSetbackLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataSetHvacSetbackLimit()
 }
 
 // _AirConditioningDataSetHvacSetbackLimit is the data-structure of this message

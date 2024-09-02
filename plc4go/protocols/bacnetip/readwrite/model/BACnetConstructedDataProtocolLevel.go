@@ -41,6 +41,8 @@ type BACnetConstructedDataProtocolLevel interface {
 	GetProtocolLevel() BACnetProtocolLevelTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetProtocolLevelTagged
+	// IsBACnetConstructedDataProtocolLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProtocolLevel()
 }
 
 // _BACnetConstructedDataProtocolLevel is the data-structure of this message

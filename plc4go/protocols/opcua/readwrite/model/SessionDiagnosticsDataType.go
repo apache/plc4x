@@ -125,6 +125,8 @@ type SessionDiagnosticsDataType interface {
 	GetRegisterNodesCount() ExtensionObjectDefinition
 	// GetUnregisterNodesCount returns UnregisterNodesCount (property field)
 	GetUnregisterNodesCount() ExtensionObjectDefinition
+	// IsSessionDiagnosticsDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSessionDiagnosticsDataType()
 }
 
 // _SessionDiagnosticsDataType is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetLandingCallStatusCommandDestination interface {
 	BACnetLandingCallStatusCommand
 	// GetDestination returns Destination (property field)
 	GetDestination() BACnetContextTagUnsignedInteger
+	// IsBACnetLandingCallStatusCommandDestination is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingCallStatusCommandDestination()
 }
 
 // _BACnetLandingCallStatusCommandDestination is the data-structure of this message

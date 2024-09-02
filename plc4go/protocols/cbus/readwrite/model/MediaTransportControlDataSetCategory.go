@@ -39,6 +39,8 @@ type MediaTransportControlDataSetCategory interface {
 	MediaTransportControlData
 	// GetCategoryNumber returns CategoryNumber (property field)
 	GetCategoryNumber() uint8
+	// IsMediaTransportControlDataSetCategory is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataSetCategory()
 }
 
 // _MediaTransportControlDataSetCategory is the data-structure of this message

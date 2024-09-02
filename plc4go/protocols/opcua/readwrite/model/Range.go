@@ -41,6 +41,8 @@ type Range interface {
 	GetLow() float64
 	// GetHigh returns High (property field)
 	GetHigh() float64
+	// IsRange is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRange()
 }
 
 // _Range is the data-structure of this message

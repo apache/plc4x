@@ -53,6 +53,8 @@ type SessionlessInvokeRequestType interface {
 	GetLocaleIds() []PascalString
 	// GetServiceId returns ServiceId (property field)
 	GetServiceId() uint32
+	// IsSessionlessInvokeRequestType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSessionlessInvokeRequestType()
 }
 
 // _SessionlessInvokeRequestType is the data-structure of this message

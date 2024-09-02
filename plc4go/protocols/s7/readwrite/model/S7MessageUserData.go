@@ -35,6 +35,8 @@ type S7MessageUserData interface {
 	utils.LengthAware
 	utils.Serializable
 	S7Message
+	// IsS7MessageUserData is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7MessageUserData()
 }
 
 // _S7MessageUserData is the data-structure of this message

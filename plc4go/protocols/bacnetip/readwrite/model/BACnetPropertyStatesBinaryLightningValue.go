@@ -39,6 +39,8 @@ type BACnetPropertyStatesBinaryLightningValue interface {
 	BACnetPropertyStates
 	// GetBinaryLightningValue returns BinaryLightningValue (property field)
 	GetBinaryLightningValue() BACnetBinaryLightingPVTagged
+	// IsBACnetPropertyStatesBinaryLightningValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetPropertyStatesBinaryLightningValue()
 }
 
 // _BACnetPropertyStatesBinaryLightningValue is the data-structure of this message

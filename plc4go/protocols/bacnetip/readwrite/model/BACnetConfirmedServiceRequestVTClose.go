@@ -39,6 +39,8 @@ type BACnetConfirmedServiceRequestVTClose interface {
 	BACnetConfirmedServiceRequest
 	// GetListOfRemoteVtSessionIdentifiers returns ListOfRemoteVtSessionIdentifiers (property field)
 	GetListOfRemoteVtSessionIdentifiers() []BACnetApplicationTagUnsignedInteger
+	// IsBACnetConfirmedServiceRequestVTClose is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestVTClose()
 }
 
 // _BACnetConfirmedServiceRequestVTClose is the data-structure of this message

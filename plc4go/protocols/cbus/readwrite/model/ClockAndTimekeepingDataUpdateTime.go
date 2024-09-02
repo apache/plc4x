@@ -53,6 +53,8 @@ type ClockAndTimekeepingDataUpdateTime interface {
 	GetIsReserved() bool
 	// GetIsUnknown returns IsUnknown (virtual field)
 	GetIsUnknown() bool
+	// IsClockAndTimekeepingDataUpdateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsClockAndTimekeepingDataUpdateTime()
 }
 
 // _ClockAndTimekeepingDataUpdateTime is the data-structure of this message

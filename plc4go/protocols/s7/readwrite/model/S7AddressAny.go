@@ -49,6 +49,8 @@ type S7AddressAny interface {
 	GetByteAddress() uint16
 	// GetBitAddress returns BitAddress (property field)
 	GetBitAddress() uint8
+	// IsS7AddressAny is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7AddressAny()
 }
 
 // _S7AddressAny is the data-structure of this message

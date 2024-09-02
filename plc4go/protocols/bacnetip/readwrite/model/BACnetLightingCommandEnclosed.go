@@ -42,6 +42,8 @@ type BACnetLightingCommandEnclosed interface {
 	GetLightingCommand() BACnetLightingCommand
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetLightingCommandEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLightingCommandEnclosed()
 }
 
 // _BACnetLightingCommandEnclosed is the data-structure of this message

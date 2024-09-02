@@ -40,6 +40,8 @@ type HVACRawLevels interface {
 	GetRawValue() int16
 	// GetValueInPercent returns ValueInPercent (virtual field)
 	GetValueInPercent() float32
+	// IsHVACRawLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHVACRawLevels()
 }
 
 // _HVACRawLevels is the data-structure of this message

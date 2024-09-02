@@ -43,6 +43,8 @@ type BVLCDeleteForeignDeviceTableEntry interface {
 	GetIp() []uint8
 	// GetPort returns Port (property field)
 	GetPort() uint16
+	// IsBVLCDeleteForeignDeviceTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBVLCDeleteForeignDeviceTableEntry()
 }
 
 // _BVLCDeleteForeignDeviceTableEntry is the data-structure of this message

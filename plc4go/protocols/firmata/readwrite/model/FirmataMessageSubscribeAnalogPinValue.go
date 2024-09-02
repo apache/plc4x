@@ -43,6 +43,8 @@ type FirmataMessageSubscribeAnalogPinValue interface {
 	GetPin() uint8
 	// GetEnable returns Enable (property field)
 	GetEnable() bool
+	// IsFirmataMessageSubscribeAnalogPinValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataMessageSubscribeAnalogPinValue()
 }
 
 // _FirmataMessageSubscribeAnalogPinValue is the data-structure of this message

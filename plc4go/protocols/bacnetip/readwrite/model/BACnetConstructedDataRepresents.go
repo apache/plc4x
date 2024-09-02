@@ -41,6 +41,8 @@ type BACnetConstructedDataRepresents interface {
 	GetRepresents() BACnetDeviceObjectReference
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDeviceObjectReference
+	// IsBACnetConstructedDataRepresents is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataRepresents()
 }
 
 // _BACnetConstructedDataRepresents is the data-structure of this message

@@ -39,6 +39,8 @@ type SALDataHeating interface {
 	SALData
 	// GetHeatingData returns HeatingData (property field)
 	GetHeatingData() LightingData
+	// IsSALDataHeating is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataHeating()
 }
 
 // _SALDataHeating is the data-structure of this message

@@ -34,6 +34,8 @@ type UtcTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsUtcTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsUtcTime()
 }
 
 // _UtcTime is the data-structure of this message

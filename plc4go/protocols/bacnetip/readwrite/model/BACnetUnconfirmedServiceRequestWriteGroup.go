@@ -45,6 +45,8 @@ type BACnetUnconfirmedServiceRequestWriteGroup interface {
 	GetChangeList() BACnetGroupChannelValueList
 	// GetInhibitDelay returns InhibitDelay (property field)
 	GetInhibitDelay() BACnetContextTagUnsignedInteger
+	// IsBACnetUnconfirmedServiceRequestWriteGroup is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetUnconfirmedServiceRequestWriteGroup()
 }
 
 // _BACnetUnconfirmedServiceRequestWriteGroup is the data-structure of this message

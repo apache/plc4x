@@ -47,6 +47,8 @@ type BACnetNotificationParametersChangeOfCharacterString interface {
 	GetAlarmValue() BACnetContextTagCharacterString
 	// GetInnerClosingTag returns InnerClosingTag (property field)
 	GetInnerClosingTag() BACnetClosingTag
+	// IsBACnetNotificationParametersChangeOfCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfCharacterString()
 }
 
 // _BACnetNotificationParametersChangeOfCharacterString is the data-structure of this message

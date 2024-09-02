@@ -39,6 +39,8 @@ type BACnetLandingCallStatusCommandDirection interface {
 	BACnetLandingCallStatusCommand
 	// GetDirection returns Direction (property field)
 	GetDirection() BACnetLiftCarDirectionTagged
+	// IsBACnetLandingCallStatusCommandDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLandingCallStatusCommandDirection()
 }
 
 // _BACnetLandingCallStatusCommandDirection is the data-structure of this message

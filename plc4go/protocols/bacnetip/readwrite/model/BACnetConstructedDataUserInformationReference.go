@@ -41,6 +41,8 @@ type BACnetConstructedDataUserInformationReference interface {
 	GetUserInformationReference() BACnetApplicationTagCharacterString
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagCharacterString
+	// IsBACnetConstructedDataUserInformationReference is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataUserInformationReference()
 }
 
 // _BACnetConstructedDataUserInformationReference is the data-structure of this message

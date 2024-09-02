@@ -49,6 +49,8 @@ type HistoryReadRequest interface {
 	GetNoOfNodesToRead() int32
 	// GetNodesToRead returns NodesToRead (property field)
 	GetNodesToRead() []ExtensionObjectDefinition
+	// IsHistoryReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryReadRequest()
 }
 
 // _HistoryReadRequest is the data-structure of this message

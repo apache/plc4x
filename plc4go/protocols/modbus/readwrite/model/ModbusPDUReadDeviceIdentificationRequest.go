@@ -44,6 +44,8 @@ type ModbusPDUReadDeviceIdentificationRequest interface {
 	GetLevel() ModbusDeviceInformationLevel
 	// GetObjectId returns ObjectId (property field)
 	GetObjectId() uint8
+	// IsModbusPDUReadDeviceIdentificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUReadDeviceIdentificationRequest()
 }
 
 // _ModbusPDUReadDeviceIdentificationRequest is the data-structure of this message

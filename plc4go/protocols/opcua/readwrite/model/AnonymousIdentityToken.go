@@ -35,6 +35,8 @@ type AnonymousIdentityToken interface {
 	utils.LengthAware
 	utils.Serializable
 	UserIdentityTokenDefinition
+	// IsAnonymousIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAnonymousIdentityToken()
 }
 
 // _AnonymousIdentityToken is the data-structure of this message

@@ -39,6 +39,8 @@ type BACnetConstructedDataCredentialsInZone interface {
 	BACnetConstructedData
 	// GetCredentialsInZone returns CredentialsInZone (property field)
 	GetCredentialsInZone() []BACnetDeviceObjectReference
+	// IsBACnetConstructedDataCredentialsInZone is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataCredentialsInZone()
 }
 
 // _BACnetConstructedDataCredentialsInZone is the data-structure of this message

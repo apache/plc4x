@@ -39,6 +39,8 @@ type SysexCommandPinStateQuery interface {
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
+	// IsSysexCommandPinStateQuery is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSysexCommandPinStateQuery()
 }
 
 // _SysexCommandPinStateQuery is the data-structure of this message

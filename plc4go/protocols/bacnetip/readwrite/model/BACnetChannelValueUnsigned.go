@@ -39,6 +39,8 @@ type BACnetChannelValueUnsigned interface {
 	BACnetChannelValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetChannelValueUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetChannelValueUnsigned()
 }
 
 // _BACnetChannelValueUnsigned is the data-structure of this message

@@ -39,6 +39,8 @@ type IdentifyReplyCommandMaximumLevels interface {
 	IdentifyReplyCommand
 	// GetMaximumLevels returns MaximumLevels (property field)
 	GetMaximumLevels() []byte
+	// IsIdentifyReplyCommandMaximumLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsIdentifyReplyCommandMaximumLevels()
 }
 
 // _IdentifyReplyCommandMaximumLevels is the data-structure of this message

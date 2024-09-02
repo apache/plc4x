@@ -42,6 +42,8 @@ type SzlId interface {
 	GetSublistExtract() uint8
 	// GetSublistList returns SublistList (property field)
 	GetSublistList() SzlSublist
+	// IsSzlId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSzlId()
 }
 
 // _SzlId is the data-structure of this message

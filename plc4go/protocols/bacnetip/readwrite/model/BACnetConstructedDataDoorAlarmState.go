@@ -41,6 +41,8 @@ type BACnetConstructedDataDoorAlarmState interface {
 	GetDoorAlarmState() BACnetDoorAlarmStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorAlarmStateTagged
+	// IsBACnetConstructedDataDoorAlarmState is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataDoorAlarmState()
 }
 
 // _BACnetConstructedDataDoorAlarmState is the data-structure of this message

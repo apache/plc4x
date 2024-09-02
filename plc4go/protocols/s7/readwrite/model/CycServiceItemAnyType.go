@@ -47,6 +47,8 @@ type CycServiceItemAnyType interface {
 	GetMemoryArea() MemoryArea
 	// GetAddress returns Address (property field)
 	GetAddress() uint32
+	// IsCycServiceItemAnyType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCycServiceItemAnyType()
 }
 
 // _CycServiceItemAnyType is the data-structure of this message

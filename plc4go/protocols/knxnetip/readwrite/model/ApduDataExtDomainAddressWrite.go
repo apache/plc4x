@@ -35,6 +35,8 @@ type ApduDataExtDomainAddressWrite interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtDomainAddressWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtDomainAddressWrite()
 }
 
 // _ApduDataExtDomainAddressWrite is the data-structure of this message

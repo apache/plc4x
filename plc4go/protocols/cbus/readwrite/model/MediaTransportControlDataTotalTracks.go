@@ -45,6 +45,8 @@ type MediaTransportControlDataTotalTracks interface {
 	GetTotalTracksMLSB() byte
 	// GetTotalTracksLSB returns TotalTracksLSB (property field)
 	GetTotalTracksLSB() byte
+	// IsMediaTransportControlDataTotalTracks is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMediaTransportControlDataTotalTracks()
 }
 
 // _MediaTransportControlDataTotalTracks is the data-structure of this message

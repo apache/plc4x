@@ -34,6 +34,8 @@ type ImageGIF interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsImageGIF is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsImageGIF()
 }
 
 // _ImageGIF is the data-structure of this message

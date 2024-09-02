@@ -41,6 +41,8 @@ type XVType interface {
 	GetX() float64
 	// GetValue returns Value (property field)
 	GetValue() float32
+	// IsXVType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsXVType()
 }
 
 // _XVType is the data-structure of this message

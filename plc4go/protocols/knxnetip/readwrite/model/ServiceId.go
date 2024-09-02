@@ -38,11 +38,13 @@ type ServiceId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsServiceId is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsServiceId()
 }
 
 // ServiceIdContract provides a set of functions which can be overwritten by a sub struct
 type ServiceIdContract interface {
-	// IsServiceId() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsServiceId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceId()
 }
 

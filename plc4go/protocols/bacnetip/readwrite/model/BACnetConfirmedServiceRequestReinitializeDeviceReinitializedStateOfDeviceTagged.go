@@ -40,6 +40,8 @@ type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
+	// IsBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged()
 }
 
 // _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged is the data-structure of this message

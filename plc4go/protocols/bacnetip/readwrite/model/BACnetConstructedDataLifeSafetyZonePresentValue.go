@@ -41,6 +41,8 @@ type BACnetConstructedDataLifeSafetyZonePresentValue interface {
 	GetPresentValue() BACnetLifeSafetyStateTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetLifeSafetyStateTagged
+	// IsBACnetConstructedDataLifeSafetyZonePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLifeSafetyZonePresentValue()
 }
 
 // _BACnetConstructedDataLifeSafetyZonePresentValue is the data-structure of this message

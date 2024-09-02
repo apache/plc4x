@@ -43,6 +43,8 @@ type BACnetConstructedDataWeeklySchedule interface {
 	GetWeeklySchedule() []BACnetDailySchedule
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataWeeklySchedule is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataWeeklySchedule()
 }
 
 // _BACnetConstructedDataWeeklySchedule is the data-structure of this message

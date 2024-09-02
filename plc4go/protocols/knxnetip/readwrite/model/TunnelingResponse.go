@@ -41,6 +41,8 @@ type TunnelingResponse interface {
 	KnxNetIpMessage
 	// GetTunnelingResponseDataBlock returns TunnelingResponseDataBlock (property field)
 	GetTunnelingResponseDataBlock() TunnelingResponseDataBlock
+	// IsTunnelingResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsTunnelingResponse()
 }
 
 // _TunnelingResponse is the data-structure of this message

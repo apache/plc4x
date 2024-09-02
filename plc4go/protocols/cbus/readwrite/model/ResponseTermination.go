@@ -40,6 +40,8 @@ type ResponseTermination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsResponseTermination is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsResponseTermination()
 }
 
 // _ResponseTermination is the data-structure of this message

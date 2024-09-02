@@ -39,6 +39,8 @@ type BACnetTimerStateChangeValueDouble interface {
 	BACnetTimerStateChangeValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
+	// IsBACnetTimerStateChangeValueDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTimerStateChangeValueDouble()
 }
 
 // _BACnetTimerStateChangeValueDouble is the data-structure of this message

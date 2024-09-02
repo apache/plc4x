@@ -39,6 +39,8 @@ type BacnetConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBacnetConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBacnetConstants()
 }
 
 // _BacnetConstants is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConfirmedServiceRequestVTOpen interface {
 	GetVtClass() BACnetVTClassTagged
 	// GetLocalVtSessionIdentifier returns LocalVtSessionIdentifier (property field)
 	GetLocalVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConfirmedServiceRequestVTOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConfirmedServiceRequestVTOpen()
 }
 
 // _BACnetConfirmedServiceRequestVTOpen is the data-structure of this message

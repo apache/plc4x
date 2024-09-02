@@ -44,6 +44,8 @@ type BACnetAccessZoneOccupancyStateTagged interface {
 	GetProprietaryValue() uint32
 	// GetIsProprietary returns IsProprietary (virtual field)
 	GetIsProprietary() bool
+	// IsBACnetAccessZoneOccupancyStateTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetAccessZoneOccupancyStateTagged()
 }
 
 // _BACnetAccessZoneOccupancyStateTagged is the data-structure of this message

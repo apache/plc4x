@@ -41,6 +41,8 @@ type FirmataCommandProtocolVersion interface {
 	GetMajorVersion() uint8
 	// GetMinorVersion returns MinorVersion (property field)
 	GetMinorVersion() uint8
+	// IsFirmataCommandProtocolVersion is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsFirmataCommandProtocolVersion()
 }
 
 // _FirmataCommandProtocolVersion is the data-structure of this message

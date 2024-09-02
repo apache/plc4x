@@ -39,6 +39,8 @@ type BACnetRecipientDevice interface {
 	BACnetRecipient
 	// GetDeviceValue returns DeviceValue (property field)
 	GetDeviceValue() BACnetContextTagObjectIdentifier
+	// IsBACnetRecipientDevice is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRecipientDevice()
 }
 
 // _BACnetRecipientDevice is the data-structure of this message

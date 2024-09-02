@@ -42,6 +42,8 @@ type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues interface
 	GetListOfLifeSavetyAlarmValues() []BACnetLifeSafetyStateTagged
 	// GetClosingTag returns ClosingTag (property field)
 	GetClosingTag() BACnetClosingTag
+	// IsBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues()
 }
 
 // _BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues is the data-structure of this message

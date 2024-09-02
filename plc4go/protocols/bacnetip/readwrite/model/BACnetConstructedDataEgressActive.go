@@ -41,6 +41,8 @@ type BACnetConstructedDataEgressActive interface {
 	GetEgressActive() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataEgressActive is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataEgressActive()
 }
 
 // _BACnetConstructedDataEgressActive is the data-structure of this message

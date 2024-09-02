@@ -43,6 +43,8 @@ type LDataReq interface {
 	GetAdditionalInformation() []CEMIAdditionalInformation
 	// GetDataFrame returns DataFrame (property field)
 	GetDataFrame() LDataFrame
+	// IsLDataReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsLDataReq()
 }
 
 // _LDataReq is the data-structure of this message

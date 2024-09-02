@@ -40,6 +40,8 @@ type NPDUNetworkPriorityTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() NPDUNetworkPriority
+	// IsNPDUNetworkPriorityTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNPDUNetworkPriorityTagged()
 }
 
 // _NPDUNetworkPriorityTagged is the data-structure of this message

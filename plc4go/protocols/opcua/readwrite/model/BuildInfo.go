@@ -49,6 +49,8 @@ type BuildInfo interface {
 	GetBuildNumber() PascalString
 	// GetBuildDate returns BuildDate (property field)
 	GetBuildDate() int64
+	// IsBuildInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBuildInfo()
 }
 
 // _BuildInfo is the data-structure of this message

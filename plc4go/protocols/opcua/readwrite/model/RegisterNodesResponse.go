@@ -43,6 +43,8 @@ type RegisterNodesResponse interface {
 	GetNoOfRegisteredNodeIds() int32
 	// GetRegisteredNodeIds returns RegisteredNodeIds (property field)
 	GetRegisteredNodeIds() []NodeId
+	// IsRegisterNodesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsRegisterNodesResponse()
 }
 
 // _RegisterNodesResponse is the data-structure of this message

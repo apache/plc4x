@@ -53,6 +53,8 @@ type StructureField interface {
 	GetMaxStringLength() uint32
 	// GetIsOptional returns IsOptional (property field)
 	GetIsOptional() bool
+	// IsStructureField is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsStructureField()
 }
 
 // _StructureField is the data-structure of this message

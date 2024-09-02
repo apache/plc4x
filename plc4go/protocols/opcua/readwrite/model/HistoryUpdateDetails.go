@@ -35,6 +35,8 @@ type HistoryUpdateDetails interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
+	// IsHistoryUpdateDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsHistoryUpdateDetails()
 }
 
 // _HistoryUpdateDetails is the data-structure of this message

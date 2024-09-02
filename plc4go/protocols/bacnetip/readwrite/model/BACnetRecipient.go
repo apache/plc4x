@@ -38,6 +38,8 @@ type BACnetRecipient interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	// IsBACnetRecipient is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetRecipient()
 }
 
 // BACnetRecipientContract provides a set of functions which can be overwritten by a sub struct
@@ -46,7 +48,7 @@ type BACnetRecipientContract interface {
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
 	GetPeekedTagNumber() uint8
-	// IsBACnetRecipient() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	// IsBACnetRecipient is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipient()
 }
 

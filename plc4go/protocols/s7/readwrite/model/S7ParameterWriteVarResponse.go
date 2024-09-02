@@ -39,6 +39,8 @@ type S7ParameterWriteVarResponse interface {
 	S7Parameter
 	// GetNumItems returns NumItems (property field)
 	GetNumItems() uint8
+	// IsS7ParameterWriteVarResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7ParameterWriteVarResponse()
 }
 
 // _S7ParameterWriteVarResponse is the data-structure of this message

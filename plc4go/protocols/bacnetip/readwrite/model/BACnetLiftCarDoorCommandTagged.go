@@ -40,6 +40,8 @@ type BACnetLiftCarDoorCommandTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetLiftCarDoorCommand
+	// IsBACnetLiftCarDoorCommandTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetLiftCarDoorCommandTagged()
 }
 
 // _BACnetLiftCarDoorCommandTagged is the data-structure of this message

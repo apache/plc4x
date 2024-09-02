@@ -49,6 +49,8 @@ type AdsAddDeviceNotificationRequest interface {
 	GetMaxDelayInMs() uint32
 	// GetCycleTimeInMs returns CycleTimeInMs (property field)
 	GetCycleTimeInMs() uint32
+	// IsAdsAddDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAdsAddDeviceNotificationRequest()
 }
 
 // _AdsAddDeviceNotificationRequest is the data-structure of this message

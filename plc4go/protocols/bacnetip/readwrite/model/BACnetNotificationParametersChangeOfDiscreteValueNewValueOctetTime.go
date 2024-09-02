@@ -39,6 +39,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime interfac
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
+	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime()
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime is the data-structure of this message

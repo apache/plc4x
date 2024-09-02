@@ -61,6 +61,8 @@ type PubSubKeyPushTargetDataType interface {
 	GetNoOfSecurityGroups() int32
 	// GetSecurityGroups returns SecurityGroups (property field)
 	GetSecurityGroups() []PascalString
+	// IsPubSubKeyPushTargetDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsPubSubKeyPushTargetDataType()
 }
 
 // _PubSubKeyPushTargetDataType is the data-structure of this message

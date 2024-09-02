@@ -39,6 +39,8 @@ type BACnetOptionalCharacterStringNull interface {
 	BACnetOptionalCharacterString
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
+	// IsBACnetOptionalCharacterStringNull is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetOptionalCharacterStringNull()
 }
 
 // _BACnetOptionalCharacterStringNull is the data-structure of this message

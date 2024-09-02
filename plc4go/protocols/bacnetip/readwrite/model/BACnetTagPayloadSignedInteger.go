@@ -70,6 +70,8 @@ type BACnetTagPayloadSignedInteger interface {
 	GetIsInt64() bool
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint64
+	// IsBACnetTagPayloadSignedInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetTagPayloadSignedInteger()
 }
 
 // _BACnetTagPayloadSignedInteger is the data-structure of this message

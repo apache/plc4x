@@ -41,6 +41,8 @@ type S7MessageResponse interface {
 	GetErrorClass() uint8
 	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() uint8
+	// IsS7MessageResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7MessageResponse()
 }
 
 // _S7MessageResponse is the data-structure of this message

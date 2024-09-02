@@ -41,6 +41,8 @@ type BACnetConstructedDataGlobalIdentifier interface {
 	GetGlobalIdentifier() BACnetApplicationTagUnsignedInteger
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagUnsignedInteger
+	// IsBACnetConstructedDataGlobalIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataGlobalIdentifier()
 }
 
 // _BACnetConstructedDataGlobalIdentifier is the data-structure of this message

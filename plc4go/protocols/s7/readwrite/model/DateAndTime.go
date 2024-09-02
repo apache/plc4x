@@ -53,6 +53,8 @@ type DateAndTime interface {
 	GetMsec() uint16
 	// GetDow returns Dow (property field)
 	GetDow() uint8
+	// IsDateAndTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDateAndTime()
 }
 
 // _DateAndTime is the data-structure of this message

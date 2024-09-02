@@ -47,6 +47,8 @@ type NodeAttributes interface {
 	GetWriteMask() uint32
 	// GetUserWriteMask returns UserWriteMask (property field)
 	GetUserWriteMask() uint32
+	// IsNodeAttributes is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNodeAttributes()
 }
 
 // _NodeAttributes is the data-structure of this message

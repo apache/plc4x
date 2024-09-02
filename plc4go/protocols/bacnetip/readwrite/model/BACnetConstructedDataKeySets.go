@@ -43,6 +43,8 @@ type BACnetConstructedDataKeySets interface {
 	GetKeySets() []BACnetSecurityKeySet
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataKeySets is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataKeySets()
 }
 
 // _BACnetConstructedDataKeySets is the data-structure of this message

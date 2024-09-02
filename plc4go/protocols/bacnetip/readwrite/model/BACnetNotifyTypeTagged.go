@@ -40,6 +40,8 @@ type BACnetNotifyTypeTagged interface {
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetNotifyType
+	// IsBACnetNotifyTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetNotifyTypeTagged()
 }
 
 // _BACnetNotifyTypeTagged is the data-structure of this message

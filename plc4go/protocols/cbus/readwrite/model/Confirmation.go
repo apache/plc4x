@@ -44,6 +44,8 @@ type Confirmation interface {
 	GetConfirmationType() ConfirmationType
 	// GetIsSuccess returns IsSuccess (virtual field)
 	GetIsSuccess() bool
+	// IsConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsConfirmation()
 }
 
 // _Confirmation is the data-structure of this message

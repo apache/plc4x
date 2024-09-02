@@ -41,6 +41,8 @@ type BACnetConstructedDataAlignIntervals interface {
 	GetAlignIntervals() BACnetApplicationTagBoolean
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagBoolean
+	// IsBACnetConstructedDataAlignIntervals is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAlignIntervals()
 }
 
 // _BACnetConstructedDataAlignIntervals is the data-structure of this message

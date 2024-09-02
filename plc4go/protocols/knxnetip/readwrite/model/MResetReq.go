@@ -35,6 +35,8 @@ type MResetReq interface {
 	utils.LengthAware
 	utils.Serializable
 	CEMI
+	// IsMResetReq is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsMResetReq()
 }
 
 // _MResetReq is the data-structure of this message

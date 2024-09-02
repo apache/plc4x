@@ -43,6 +43,8 @@ type BACnetConstructedDataLinkSpeeds interface {
 	GetLinkSpeeds() []BACnetApplicationTagReal
 	// GetZero returns Zero (virtual field)
 	GetZero() uint64
+	// IsBACnetConstructedDataLinkSpeeds is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLinkSpeeds()
 }
 
 // _BACnetConstructedDataLinkSpeeds is the data-structure of this message

@@ -41,6 +41,8 @@ type ParameterValueApplicationAddress2 interface {
 	GetValue() ApplicationAddress2
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsParameterValueApplicationAddress2 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueApplicationAddress2()
 }
 
 // _ParameterValueApplicationAddress2 is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataExpirationTime interface {
 	GetExpirationTime() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
+	// IsBACnetConstructedDataExpirationTime is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataExpirationTime()
 }
 
 // _BACnetConstructedDataExpirationTime is the data-structure of this message

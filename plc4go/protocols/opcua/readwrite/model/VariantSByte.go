@@ -41,6 +41,8 @@ type VariantSByte interface {
 	GetArrayLength() *int32
 	// GetValue returns Value (property field)
 	GetValue() []byte
+	// IsVariantSByte is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsVariantSByte()
 }
 
 // _VariantSByte is the data-structure of this message

@@ -39,6 +39,8 @@ type SALDataClockAndTimekeeping interface {
 	SALData
 	// GetClockAndTimekeepingData returns ClockAndTimekeepingData (property field)
 	GetClockAndTimekeepingData() ClockAndTimekeepingData
+	// IsSALDataClockAndTimekeeping is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataClockAndTimekeeping()
 }
 
 // _SALDataClockAndTimekeeping is the data-structure of this message

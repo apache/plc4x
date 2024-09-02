@@ -41,6 +41,8 @@ type BACnetConstructedDataLinkSpeed interface {
 	GetLinkSpeed() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataLinkSpeed is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLinkSpeed()
 }
 
 // _BACnetConstructedDataLinkSpeed is the data-structure of this message

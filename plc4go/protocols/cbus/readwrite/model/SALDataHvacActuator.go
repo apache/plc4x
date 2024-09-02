@@ -39,6 +39,8 @@ type SALDataHvacActuator interface {
 	SALData
 	// GetHvacActuatorData returns HvacActuatorData (property field)
 	GetHvacActuatorData() LightingData
+	// IsSALDataHvacActuator is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSALDataHvacActuator()
 }
 
 // _SALDataHvacActuator is the data-structure of this message

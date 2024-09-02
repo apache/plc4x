@@ -41,6 +41,8 @@ type NLMSecurityPayload interface {
 	GetPayloadLength() uint16
 	// GetPayload returns Payload (property field)
 	GetPayload() []byte
+	// IsNLMSecurityPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsNLMSecurityPayload()
 }
 
 // _NLMSecurityPayload is the data-structure of this message

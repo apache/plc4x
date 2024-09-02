@@ -43,6 +43,8 @@ type S7VarPayloadDataItem interface {
 	GetTransportSize() DataTransportSize
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsS7VarPayloadDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsS7VarPayloadDataItem()
 }
 
 // _S7VarPayloadDataItem is the data-structure of this message

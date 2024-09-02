@@ -61,6 +61,8 @@ type CreateSessionResponse interface {
 	GetServerSignature() ExtensionObjectDefinition
 	// GetMaxRequestMessageSize returns MaxRequestMessageSize (property field)
 	GetMaxRequestMessageSize() uint32
+	// IsCreateSessionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCreateSessionResponse()
 }
 
 // _CreateSessionResponse is the data-structure of this message

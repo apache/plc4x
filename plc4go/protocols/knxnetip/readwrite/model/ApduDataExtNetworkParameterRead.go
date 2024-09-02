@@ -35,6 +35,8 @@ type ApduDataExtNetworkParameterRead interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt
+	// IsApduDataExtNetworkParameterRead is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduDataExtNetworkParameterRead()
 }
 
 // _ApduDataExtNetworkParameterRead is the data-structure of this message

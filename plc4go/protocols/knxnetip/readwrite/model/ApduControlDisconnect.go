@@ -35,6 +35,8 @@ type ApduControlDisconnect interface {
 	utils.LengthAware
 	utils.Serializable
 	ApduControl
+	// IsApduControlDisconnect is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsApduControlDisconnect()
 }
 
 // _ApduControlDisconnect is the data-structure of this message

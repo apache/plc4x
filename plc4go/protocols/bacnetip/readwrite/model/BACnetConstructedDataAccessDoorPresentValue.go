@@ -41,6 +41,8 @@ type BACnetConstructedDataAccessDoorPresentValue interface {
 	GetPresentValue() BACnetDoorValueTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDoorValueTagged
+	// IsBACnetConstructedDataAccessDoorPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAccessDoorPresentValue()
 }
 
 // _BACnetConstructedDataAccessDoorPresentValue is the data-structure of this message

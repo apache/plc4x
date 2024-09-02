@@ -41,6 +41,8 @@ type BACnetConstructedDataMaintenanceRequired interface {
 	GetMaintenanceRequired() BACnetMaintenanceTagged
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetMaintenanceTagged
+	// IsBACnetConstructedDataMaintenanceRequired is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataMaintenanceRequired()
 }
 
 // _BACnetConstructedDataMaintenanceRequired is the data-structure of this message

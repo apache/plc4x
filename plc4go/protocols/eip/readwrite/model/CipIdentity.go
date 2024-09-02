@@ -69,6 +69,8 @@ type CipIdentity interface {
 	GetProductName() string
 	// GetState returns State (property field)
 	GetState() uint8
+	// IsCipIdentity is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCipIdentity()
 }
 
 // _CipIdentity is the data-structure of this message

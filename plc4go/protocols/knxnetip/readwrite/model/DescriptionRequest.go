@@ -41,6 +41,8 @@ type DescriptionRequest interface {
 	KnxNetIpMessage
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
+	// IsDescriptionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsDescriptionRequest()
 }
 
 // _DescriptionRequest is the data-structure of this message

@@ -41,6 +41,8 @@ type BACnetConstructedDataAnalogValueRelinquishDefault interface {
 	GetRelinquishDefault() BACnetApplicationTagReal
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetApplicationTagReal
+	// IsBACnetConstructedDataAnalogValueRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataAnalogValueRelinquishDefault()
 }
 
 // _BACnetConstructedDataAnalogValueRelinquishDefault is the data-structure of this message

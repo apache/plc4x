@@ -35,6 +35,8 @@ type BACnetConstructedDataLoopAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataLoopAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataLoopAll()
 }
 
 // _BACnetConstructedDataLoopAll is the data-structure of this message

@@ -41,6 +41,8 @@ type ParameterValueInterfaceOptions1 interface {
 	GetValue() InterfaceOptions1
 	// GetData returns Data (property field)
 	GetData() []byte
+	// IsParameterValueInterfaceOptions1 is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsParameterValueInterfaceOptions1()
 }
 
 // _ParameterValueInterfaceOptions1 is the data-structure of this message

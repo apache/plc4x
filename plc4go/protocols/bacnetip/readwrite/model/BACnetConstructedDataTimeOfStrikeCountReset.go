@@ -41,6 +41,8 @@ type BACnetConstructedDataTimeOfStrikeCountReset interface {
 	GetTimeOfStrikeCountReset() BACnetDateTime
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() BACnetDateTime
+	// IsBACnetConstructedDataTimeOfStrikeCountReset is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataTimeOfStrikeCountReset()
 }
 
 // _BACnetConstructedDataTimeOfStrikeCountReset is the data-structure of this message

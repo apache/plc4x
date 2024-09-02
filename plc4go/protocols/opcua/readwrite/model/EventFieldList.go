@@ -43,6 +43,8 @@ type EventFieldList interface {
 	GetNoOfEventFields() int32
 	// GetEventFields returns EventFields (property field)
 	GetEventFields() []Variant
+	// IsEventFieldList is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsEventFieldList()
 }
 
 // _EventFieldList is the data-structure of this message

@@ -43,6 +43,8 @@ type ModbusPDUMaskWriteHoldingRegisterRequest interface {
 	GetAndMask() uint16
 	// GetOrMask returns OrMask (property field)
 	GetOrMask() uint16
+	// IsModbusPDUMaskWriteHoldingRegisterRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsModbusPDUMaskWriteHoldingRegisterRequest()
 }
 
 // _ModbusPDUMaskWriteHoldingRegisterRequest is the data-structure of this message

@@ -47,6 +47,8 @@ type AirConditioningDataZoneHumidityPlantStatus interface {
 	GetHumidityStatus() HVACHumidityStatusFlags
 	// GetHumidityErrorCode returns HumidityErrorCode (property field)
 	GetHumidityErrorCode() HVACHumidityError
+	// IsAirConditioningDataZoneHumidityPlantStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsAirConditioningDataZoneHumidityPlantStatus()
 }
 
 // _AirConditioningDataZoneHumidityPlantStatus is the data-structure of this message

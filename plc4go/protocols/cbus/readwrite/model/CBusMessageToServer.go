@@ -39,6 +39,8 @@ type CBusMessageToServer interface {
 	CBusMessage
 	// GetRequest returns Request (property field)
 	GetRequest() Request
+	// IsCBusMessageToServer is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsCBusMessageToServer()
 }
 
 // _CBusMessageToServer is the data-structure of this message

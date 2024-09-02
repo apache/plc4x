@@ -35,6 +35,8 @@ type BACnetConstructedDataProgramAll interface {
 	utils.LengthAware
 	utils.Serializable
 	BACnetConstructedData
+	// IsBACnetConstructedDataProgramAll is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsBACnetConstructedDataProgramAll()
 }
 
 // _BACnetConstructedDataProgramAll is the data-structure of this message

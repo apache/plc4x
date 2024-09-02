@@ -41,6 +41,8 @@ type SubscribeCOVPropertyMultipleError interface {
 	GetErrorType() ErrorEnclosed
 	// GetFirstFailedSubscription returns FirstFailedSubscription (property field)
 	GetFirstFailedSubscription() SubscribeCOVPropertyMultipleErrorFirstFailedSubscription
+	// IsSubscribeCOVPropertyMultipleError is a marker method to prevent unintentional type checks (interfaces of same signature)
+	IsSubscribeCOVPropertyMultipleError()
 }
 
 // _SubscribeCOVPropertyMultipleError is the data-structure of this message
