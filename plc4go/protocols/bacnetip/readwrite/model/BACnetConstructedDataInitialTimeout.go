@@ -59,6 +59,7 @@ type _BACnetConstructedDataInitialTimeout struct {
 }
 
 var _ BACnetConstructedDataInitialTimeout = (*_BACnetConstructedDataInitialTimeout)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInitialTimeout)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConstructedDataInitialTimeout) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataInitialTimeout BACnetConstructedDataInitialTimeout, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInitialTimeout"); pullErr != nil {

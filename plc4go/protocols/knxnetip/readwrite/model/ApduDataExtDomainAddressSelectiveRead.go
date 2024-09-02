@@ -52,6 +52,7 @@ type _ApduDataExtDomainAddressSelectiveRead struct {
 }
 
 var _ ApduDataExtDomainAddressSelectiveRead = (*_ApduDataExtDomainAddressSelectiveRead)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressSelectiveRead)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBytes(ctx context.Co
 
 func (m *_ApduDataExtDomainAddressSelectiveRead) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtDomainAddressSelectiveRead ApduDataExtDomainAddressSelectiveRead, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressSelectiveRead"); pullErr != nil {

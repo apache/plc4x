@@ -48,6 +48,8 @@ type LogicalSegmentTypeContract interface {
 
 // LogicalSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
 type LogicalSegmentTypeRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetLogicalSegmentType returns LogicalSegmentType (discriminator field)
 	GetLogicalSegmentType() uint8
 }
@@ -61,16 +63,10 @@ type LogicalSegmentTypeExactly interface {
 
 // _LogicalSegmentType is the data-structure of this message
 type _LogicalSegmentType struct {
-	_LogicalSegmentTypeChildRequirements
+	_SubType LogicalSegmentType
 }
 
 var _ LogicalSegmentTypeContract = (*_LogicalSegmentType)(nil)
-
-type _LogicalSegmentTypeChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetLogicalSegmentType() uint8
-}
 
 type LogicalSegmentTypeChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_LogicalSegmentType) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_LogicalSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func LogicalSegmentTypeParse[T LogicalSegmentType](ctx context.Context, theBytes []byte) (T, error) {

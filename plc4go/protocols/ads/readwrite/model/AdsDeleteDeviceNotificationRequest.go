@@ -57,6 +57,7 @@ type _AdsDeleteDeviceNotificationRequest struct {
 }
 
 var _ AdsDeleteDeviceNotificationRequest = (*_AdsDeleteDeviceNotificationRequest)(nil)
+var _ AmsPacketRequirements = (*_AdsDeleteDeviceNotificationRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -133,6 +134,7 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetLengthInBytes(ctx context.Conte
 
 func (m *_AdsDeleteDeviceNotificationRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsDeleteDeviceNotificationRequest AdsDeleteDeviceNotificationRequest, err error) {
 	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeleteDeviceNotificationRequest"); pullErr != nil {

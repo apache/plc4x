@@ -62,6 +62,7 @@ type _BACnetConstructedDataLinkSpeeds struct {
 }
 
 var _ BACnetConstructedDataLinkSpeeds = (*_BACnetConstructedDataLinkSpeeds)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLinkSpeeds)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataLinkSpeeds) GetLinkSpeeds() []BACnetApplicationTa
 func (m *_BACnetConstructedDataLinkSpeeds) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataLinkSpeeds) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetConstructedDataLinkSpeeds) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLinkSpeeds BACnetConstructedDataLinkSpeeds, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLinkSpeeds"); pullErr != nil {

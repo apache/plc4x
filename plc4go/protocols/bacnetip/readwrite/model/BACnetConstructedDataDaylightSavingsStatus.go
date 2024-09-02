@@ -59,6 +59,7 @@ type _BACnetConstructedDataDaylightSavingsStatus struct {
 }
 
 var _ BACnetConstructedDataDaylightSavingsStatus = (*_BACnetConstructedDataDaylightSavingsStatus)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDaylightSavingsStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBytes(ctx conte
 
 func (m *_BACnetConstructedDataDaylightSavingsStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDaylightSavingsStatus BACnetConstructedDataDaylightSavingsStatus, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDaylightSavingsStatus"); pullErr != nil {

@@ -71,6 +71,7 @@ type _S7ParameterModeTransition struct {
 }
 
 var _ S7ParameterModeTransition = (*_S7ParameterModeTransition)(nil)
+var _ S7ParameterRequirements = (*_S7ParameterModeTransition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -185,6 +186,7 @@ func (m *_S7ParameterModeTransition) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_S7ParameterModeTransition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Parameter, messageType uint8) (__s7ParameterModeTransition S7ParameterModeTransition, err error) {
 	m.S7ParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterModeTransition"); pullErr != nil {

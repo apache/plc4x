@@ -60,6 +60,7 @@ type _CALDataGetStatus struct {
 }
 
 var _ CALDataGetStatus = (*_CALDataGetStatus)(nil)
+var _ CALDataRequirements = (*_CALDataGetStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,6 +137,7 @@ func (m *_CALDataGetStatus) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CALDataGetStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, requestContext RequestContext) (__cALDataGetStatus CALDataGetStatus, err error) {
 	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataGetStatus"); pullErr != nil {

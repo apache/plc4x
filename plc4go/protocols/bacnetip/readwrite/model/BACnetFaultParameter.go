@@ -52,6 +52,10 @@ type BACnetFaultParameterContract interface {
 
 // BACnetFaultParameterRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetFaultParameterRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetFaultParameterExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameter.
@@ -63,17 +67,11 @@ type BACnetFaultParameterExactly interface {
 
 // _BACnetFaultParameter is the data-structure of this message
 type _BACnetFaultParameter struct {
-	_BACnetFaultParameterChildRequirements
+	_SubType        BACnetFaultParameter
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetFaultParameterContract = (*_BACnetFaultParameter)(nil)
-
-type _BACnetFaultParameterChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetFaultParameterChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetFaultParameter) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetFaultParameter) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetFaultParameter) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetFaultParameter) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetFaultParameter) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetFaultParameterParse[T BACnetFaultParameter](ctx context.Context, theBytes []byte) (T, error) {

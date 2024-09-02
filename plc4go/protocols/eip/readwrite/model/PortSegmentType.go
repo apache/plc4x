@@ -48,6 +48,8 @@ type PortSegmentTypeContract interface {
 
 // PortSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
 type PortSegmentTypeRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetExtendedLinkAddress returns ExtendedLinkAddress (discriminator field)
 	GetExtendedLinkAddress() bool
 }
@@ -61,16 +63,10 @@ type PortSegmentTypeExactly interface {
 
 // _PortSegmentType is the data-structure of this message
 type _PortSegmentType struct {
-	_PortSegmentTypeChildRequirements
+	_SubType PortSegmentType
 }
 
 var _ PortSegmentTypeContract = (*_PortSegmentType)(nil)
-
-type _PortSegmentTypeChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetExtendedLinkAddress() bool
-}
 
 type PortSegmentTypeChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_PortSegmentType) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_PortSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func PortSegmentTypeParse[T PortSegmentType](ctx context.Context, theBytes []byte) (T, error) {

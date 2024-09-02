@@ -73,6 +73,7 @@ type _MediaTransportControlDataRewind struct {
 }
 
 var _ MediaTransportControlDataRewind = (*_MediaTransportControlDataRewind)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataRewind)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -214,6 +215,7 @@ func (m *_MediaTransportControlDataRewind) GetLengthInBytes(ctx context.Context)
 
 func (m *_MediaTransportControlDataRewind) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataRewind MediaTransportControlDataRewind, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataRewind"); pullErr != nil {

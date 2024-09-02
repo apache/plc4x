@@ -58,6 +58,8 @@ type CIPEncapsulationPacketContract interface {
 
 // CIPEncapsulationPacketRequirements provides a set of functions which need to be implemented by a sub struct
 type CIPEncapsulationPacketRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() uint16
 }
@@ -71,7 +73,7 @@ type CIPEncapsulationPacketExactly interface {
 
 // _CIPEncapsulationPacket is the data-structure of this message
 type _CIPEncapsulationPacket struct {
-	_CIPEncapsulationPacketChildRequirements
+	_SubType      CIPEncapsulationPacket
 	SessionHandle uint32
 	Status        uint32
 	SenderContext []uint8
@@ -81,12 +83,6 @@ type _CIPEncapsulationPacket struct {
 }
 
 var _ CIPEncapsulationPacketContract = (*_CIPEncapsulationPacket)(nil)
-
-type _CIPEncapsulationPacketChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() uint16
-}
 
 type CIPEncapsulationPacketChild interface {
 	utils.Serializable
@@ -172,7 +168,7 @@ func (m *_CIPEncapsulationPacket) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CIPEncapsulationPacket) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CIPEncapsulationPacketParse[T CIPEncapsulationPacket](ctx context.Context, theBytes []byte) (T, error) {

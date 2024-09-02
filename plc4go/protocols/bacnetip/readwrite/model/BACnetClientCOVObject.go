@@ -57,6 +57,7 @@ type _BACnetClientCOVObject struct {
 }
 
 var _ BACnetClientCOVObject = (*_BACnetClientCOVObject)(nil)
+var _ BACnetClientCOVRequirements = (*_BACnetClientCOVObject)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetClientCOVObject) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BACnetClientCOVObject) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetClientCOV) (__bACnetClientCOVObject BACnetClientCOVObject, err error) {
 	m.BACnetClientCOVContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetClientCOVObject"); pullErr != nil {

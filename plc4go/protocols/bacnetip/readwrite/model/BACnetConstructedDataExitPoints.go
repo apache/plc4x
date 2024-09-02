@@ -57,6 +57,7 @@ type _BACnetConstructedDataExitPoints struct {
 }
 
 var _ BACnetConstructedDataExitPoints = (*_BACnetConstructedDataExitPoints)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExitPoints)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataExitPoints) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetConstructedDataExitPoints) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataExitPoints BACnetConstructedDataExitPoints, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExitPoints"); pullErr != nil {

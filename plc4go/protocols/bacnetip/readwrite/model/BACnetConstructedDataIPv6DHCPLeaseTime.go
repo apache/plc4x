@@ -59,6 +59,7 @@ type _BACnetConstructedDataIPv6DHCPLeaseTime struct {
 }
 
 var _ BACnetConstructedDataIPv6DHCPLeaseTime = (*_BACnetConstructedDataIPv6DHCPLeaseTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6DHCPLeaseTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetLengthInBytes(ctx context.C
 
 func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIPv6DHCPLeaseTime BACnetConstructedDataIPv6DHCPLeaseTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DHCPLeaseTime"); pullErr != nil {

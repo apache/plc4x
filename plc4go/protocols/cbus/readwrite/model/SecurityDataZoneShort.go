@@ -57,6 +57,7 @@ type _SecurityDataZoneShort struct {
 }
 
 var _ SecurityDataZoneShort = (*_SecurityDataZoneShort)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataZoneShort)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_SecurityDataZoneShort) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SecurityDataZoneShort) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataZoneShort SecurityDataZoneShort, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataZoneShort"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataDistributionKeyRevision struct {
 }
 
 var _ BACnetConstructedDataDistributionKeyRevision = (*_BACnetConstructedDataDistributionKeyRevision)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDistributionKeyRevision)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBytes(ctx con
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDistributionKeyRevision BACnetConstructedDataDistributionKeyRevision, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDistributionKeyRevision"); pullErr != nil {

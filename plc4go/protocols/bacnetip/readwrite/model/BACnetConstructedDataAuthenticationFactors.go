@@ -62,6 +62,7 @@ type _BACnetConstructedDataAuthenticationFactors struct {
 }
 
 var _ BACnetConstructedDataAuthenticationFactors = (*_BACnetConstructedDataAuthenticationFactors)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthenticationFactors)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataAuthenticationFactors) GetAuthenticationFactors()
 func (m *_BACnetConstructedDataAuthenticationFactors) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataAuthenticationFactors) GetLengthInBytes(ctx conte
 
 func (m *_BACnetConstructedDataAuthenticationFactors) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAuthenticationFactors BACnetConstructedDataAuthenticationFactors, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthenticationFactors"); pullErr != nil {

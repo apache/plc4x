@@ -57,6 +57,7 @@ type _BACnetPropertyStatesFileAccessMethod struct {
 }
 
 var _ BACnetPropertyStatesFileAccessMethod = (*_BACnetPropertyStatesFileAccessMethod)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesFileAccessMethod)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesFileAccessMethod) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetPropertyStatesFileAccessMethod) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesFileAccessMethod BACnetPropertyStatesFileAccessMethod, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesFileAccessMethod"); pullErr != nil {

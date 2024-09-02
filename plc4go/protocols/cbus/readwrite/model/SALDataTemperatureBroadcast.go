@@ -57,6 +57,7 @@ type _SALDataTemperatureBroadcast struct {
 }
 
 var _ SALDataTemperatureBroadcast = (*_SALDataTemperatureBroadcast)(nil)
+var _ SALDataRequirements = (*_SALDataTemperatureBroadcast)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataTemperatureBroadcast) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_SALDataTemperatureBroadcast) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataTemperatureBroadcast SALDataTemperatureBroadcast, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTemperatureBroadcast"); pullErr != nil {

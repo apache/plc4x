@@ -69,6 +69,7 @@ type _NodeAttributes struct {
 }
 
 var _ NodeAttributes = (*_NodeAttributes)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_NodeAttributes)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -173,6 +174,7 @@ func (m *_NodeAttributes) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NodeAttributes) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__nodeAttributes NodeAttributes, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NodeAttributes"); pullErr != nil {

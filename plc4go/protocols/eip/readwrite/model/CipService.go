@@ -50,6 +50,8 @@ type CipServiceContract interface {
 
 // CipServiceRequirements provides a set of functions which need to be implemented by a sub struct
 type CipServiceRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetConnected returns Connected (discriminator field)
 	GetConnected() bool
 	// GetResponse returns Response (discriminator field)
@@ -67,21 +69,13 @@ type CipServiceExactly interface {
 
 // _CipService is the data-structure of this message
 type _CipService struct {
-	_CipServiceChildRequirements
+	_SubType CipService
 
 	// Arguments.
 	ServiceLen uint16
 }
 
 var _ CipServiceContract = (*_CipService)(nil)
-
-type _CipServiceChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetConnected() bool
-	GetResponse() bool
-	GetService() uint8
-}
 
 type CipServiceChild interface {
 	utils.Serializable
@@ -123,7 +117,7 @@ func (m *_CipService) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CipService) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CipServiceParse[T CipService](ctx context.Context, theBytes []byte, connected bool, serviceLen uint16) (T, error) {

@@ -52,6 +52,7 @@ type _ClockAndTimekeepingDataRequestRefresh struct {
 }
 
 var _ ClockAndTimekeepingDataRequestRefresh = (*_ClockAndTimekeepingDataRequestRefresh)(nil)
+var _ ClockAndTimekeepingDataRequirements = (*_ClockAndTimekeepingDataRequestRefresh)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_ClockAndTimekeepingDataRequestRefresh) GetLengthInBytes(ctx context.Co
 
 func (m *_ClockAndTimekeepingDataRequestRefresh) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ClockAndTimekeepingData) (__clockAndTimekeepingDataRequestRefresh ClockAndTimekeepingDataRequestRefresh, err error) {
 	m.ClockAndTimekeepingDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ClockAndTimekeepingDataRequestRefresh"); pullErr != nil {

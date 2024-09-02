@@ -56,6 +56,10 @@ type AccessControlDataContract interface {
 
 // AccessControlDataRequirements provides a set of functions which need to be implemented by a sub struct
 type AccessControlDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() AccessControlCommandType
 }
 
 // AccessControlDataExactly can be used when we want exactly this type and not a type which fulfills AccessControlData.
@@ -67,19 +71,13 @@ type AccessControlDataExactly interface {
 
 // _AccessControlData is the data-structure of this message
 type _AccessControlData struct {
-	_AccessControlDataChildRequirements
+	_SubType             AccessControlData
 	CommandTypeContainer AccessControlCommandTypeContainer
 	NetworkId            byte
 	AccessPointId        byte
 }
 
 var _ AccessControlDataContract = (*_AccessControlData)(nil)
-
-type _AccessControlDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() AccessControlCommandType
-}
 
 type AccessControlDataChild interface {
 	utils.Serializable
@@ -116,7 +114,8 @@ func (m *_AccessControlData) GetAccessPointId() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_AccessControlData) GetCommandType() AccessControlCommandType {
+func (pm *_AccessControlData) GetCommandType() AccessControlCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastAccessControlCommandType(m.GetCommandTypeContainer().CommandType())
@@ -165,7 +164,7 @@ func (m *_AccessControlData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_AccessControlData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func AccessControlDataParse[T AccessControlData](ctx context.Context, theBytes []byte) (T, error) {

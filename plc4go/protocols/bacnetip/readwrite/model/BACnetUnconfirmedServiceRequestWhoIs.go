@@ -60,6 +60,7 @@ type _BACnetUnconfirmedServiceRequestWhoIs struct {
 }
 
 var _ BACnetUnconfirmedServiceRequestWhoIs = (*_BACnetUnconfirmedServiceRequestWhoIs)(nil)
+var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestWhoIs)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetUnconfirmedServiceRequestWhoIs) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetUnconfirmedServiceRequest, serviceRequestLength uint16) (__bACnetUnconfirmedServiceRequestWhoIs BACnetUnconfirmedServiceRequestWhoIs, err error) {
 	m.BACnetUnconfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoIs"); pullErr != nil {

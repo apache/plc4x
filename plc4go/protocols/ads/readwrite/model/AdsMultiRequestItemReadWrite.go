@@ -66,6 +66,7 @@ type _AdsMultiRequestItemReadWrite struct {
 }
 
 var _ AdsMultiRequestItemReadWrite = (*_AdsMultiRequestItemReadWrite)(nil)
+var _ AdsMultiRequestItemRequirements = (*_AdsMultiRequestItemReadWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_AdsMultiRequestItemReadWrite) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_AdsMultiRequestItemReadWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsMultiRequestItem, indexGroup uint32) (__adsMultiRequestItemReadWrite AdsMultiRequestItemReadWrite, err error) {
 	m.AdsMultiRequestItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItemReadWrite"); pullErr != nil {

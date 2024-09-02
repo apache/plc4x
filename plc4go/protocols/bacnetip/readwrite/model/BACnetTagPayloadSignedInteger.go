@@ -147,21 +147,21 @@ func (m *_BACnetTagPayloadSignedInteger) GetValueInt64() *int64 {
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt8() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueInt8 := m.ValueInt8
+	valueInt8 := m.GetValueInt8()
 	_ = valueInt8
-	valueInt16 := m.ValueInt16
+	valueInt16 := m.GetValueInt16()
 	_ = valueInt16
-	valueInt24 := m.ValueInt24
+	valueInt24 := m.GetValueInt24()
 	_ = valueInt24
-	valueInt32 := m.ValueInt32
+	valueInt32 := m.GetValueInt32()
 	_ = valueInt32
-	valueInt40 := m.ValueInt40
+	valueInt40 := m.GetValueInt40()
 	_ = valueInt40
-	valueInt48 := m.ValueInt48
+	valueInt48 := m.GetValueInt48()
 	_ = valueInt48
-	valueInt56 := m.ValueInt56
+	valueInt56 := m.GetValueInt56()
 	_ = valueInt56
-	valueInt64 := m.ValueInt64
+	valueInt64 := m.GetValueInt64()
 	_ = valueInt64
 	return bool(bool((m.GetActualLength()) == (1)))
 }
@@ -169,21 +169,21 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt8() bool {
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt16() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueInt8 := m.ValueInt8
+	valueInt8 := m.GetValueInt8()
 	_ = valueInt8
-	valueInt16 := m.ValueInt16
+	valueInt16 := m.GetValueInt16()
 	_ = valueInt16
-	valueInt24 := m.ValueInt24
+	valueInt24 := m.GetValueInt24()
 	_ = valueInt24
-	valueInt32 := m.ValueInt32
+	valueInt32 := m.GetValueInt32()
 	_ = valueInt32
-	valueInt40 := m.ValueInt40
+	valueInt40 := m.GetValueInt40()
 	_ = valueInt40
-	valueInt48 := m.ValueInt48
+	valueInt48 := m.GetValueInt48()
 	_ = valueInt48
-	valueInt56 := m.ValueInt56
+	valueInt56 := m.GetValueInt56()
 	_ = valueInt56
-	valueInt64 := m.ValueInt64
+	valueInt64 := m.GetValueInt64()
 	_ = valueInt64
 	return bool(bool((m.GetActualLength()) == (2)))
 }
@@ -191,21 +191,21 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt16() bool {
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt24() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueInt8 := m.ValueInt8
+	valueInt8 := m.GetValueInt8()
 	_ = valueInt8
-	valueInt16 := m.ValueInt16
+	valueInt16 := m.GetValueInt16()
 	_ = valueInt16
-	valueInt24 := m.ValueInt24
+	valueInt24 := m.GetValueInt24()
 	_ = valueInt24
-	valueInt32 := m.ValueInt32
+	valueInt32 := m.GetValueInt32()
 	_ = valueInt32
-	valueInt40 := m.ValueInt40
+	valueInt40 := m.GetValueInt40()
 	_ = valueInt40
-	valueInt48 := m.ValueInt48
+	valueInt48 := m.GetValueInt48()
 	_ = valueInt48
-	valueInt56 := m.ValueInt56
+	valueInt56 := m.GetValueInt56()
 	_ = valueInt56
-	valueInt64 := m.ValueInt64
+	valueInt64 := m.GetValueInt64()
 	_ = valueInt64
 	return bool(bool((m.GetActualLength()) == (3)))
 }
@@ -213,21 +213,21 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt24() bool {
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt32() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueInt8 := m.ValueInt8
+	valueInt8 := m.GetValueInt8()
 	_ = valueInt8
-	valueInt16 := m.ValueInt16
+	valueInt16 := m.GetValueInt16()
 	_ = valueInt16
-	valueInt24 := m.ValueInt24
+	valueInt24 := m.GetValueInt24()
 	_ = valueInt24
-	valueInt32 := m.ValueInt32
+	valueInt32 := m.GetValueInt32()
 	_ = valueInt32
-	valueInt40 := m.ValueInt40
+	valueInt40 := m.GetValueInt40()
 	_ = valueInt40
-	valueInt48 := m.ValueInt48
+	valueInt48 := m.GetValueInt48()
 	_ = valueInt48
-	valueInt56 := m.ValueInt56
+	valueInt56 := m.GetValueInt56()
 	_ = valueInt56
-	valueInt64 := m.ValueInt64
+	valueInt64 := m.GetValueInt64()
 	_ = valueInt64
 	return bool(bool((m.GetActualLength()) == (4)))
 }
@@ -235,21 +235,21 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt32() bool {
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt40() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueInt8 := m.ValueInt8
+	valueInt8 := m.GetValueInt8()
 	_ = valueInt8
-	valueInt16 := m.ValueInt16
+	valueInt16 := m.GetValueInt16()
 	_ = valueInt16
-	valueInt24 := m.ValueInt24
+	valueInt24 := m.GetValueInt24()
 	_ = valueInt24
-	valueInt32 := m.ValueInt32
+	valueInt32 := m.GetValueInt32()
 	_ = valueInt32
-	valueInt40 := m.ValueInt40
+	valueInt40 := m.GetValueInt40()
 	_ = valueInt40
-	valueInt48 := m.ValueInt48
+	valueInt48 := m.GetValueInt48()
 	_ = valueInt48
-	valueInt56 := m.ValueInt56
+	valueInt56 := m.GetValueInt56()
 	_ = valueInt56
-	valueInt64 := m.ValueInt64
+	valueInt64 := m.GetValueInt64()
 	_ = valueInt64
 	return bool(bool((m.GetActualLength()) == (5)))
 }
@@ -257,21 +257,21 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt40() bool {
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt48() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueInt8 := m.ValueInt8
+	valueInt8 := m.GetValueInt8()
 	_ = valueInt8
-	valueInt16 := m.ValueInt16
+	valueInt16 := m.GetValueInt16()
 	_ = valueInt16
-	valueInt24 := m.ValueInt24
+	valueInt24 := m.GetValueInt24()
 	_ = valueInt24
-	valueInt32 := m.ValueInt32
+	valueInt32 := m.GetValueInt32()
 	_ = valueInt32
-	valueInt40 := m.ValueInt40
+	valueInt40 := m.GetValueInt40()
 	_ = valueInt40
-	valueInt48 := m.ValueInt48
+	valueInt48 := m.GetValueInt48()
 	_ = valueInt48
-	valueInt56 := m.ValueInt56
+	valueInt56 := m.GetValueInt56()
 	_ = valueInt56
-	valueInt64 := m.ValueInt64
+	valueInt64 := m.GetValueInt64()
 	_ = valueInt64
 	return bool(bool((m.GetActualLength()) == (6)))
 }
@@ -279,21 +279,21 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt48() bool {
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt56() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueInt8 := m.ValueInt8
+	valueInt8 := m.GetValueInt8()
 	_ = valueInt8
-	valueInt16 := m.ValueInt16
+	valueInt16 := m.GetValueInt16()
 	_ = valueInt16
-	valueInt24 := m.ValueInt24
+	valueInt24 := m.GetValueInt24()
 	_ = valueInt24
-	valueInt32 := m.ValueInt32
+	valueInt32 := m.GetValueInt32()
 	_ = valueInt32
-	valueInt40 := m.ValueInt40
+	valueInt40 := m.GetValueInt40()
 	_ = valueInt40
-	valueInt48 := m.ValueInt48
+	valueInt48 := m.GetValueInt48()
 	_ = valueInt48
-	valueInt56 := m.ValueInt56
+	valueInt56 := m.GetValueInt56()
 	_ = valueInt56
-	valueInt64 := m.ValueInt64
+	valueInt64 := m.GetValueInt64()
 	_ = valueInt64
 	return bool(bool((m.GetActualLength()) == (7)))
 }
@@ -301,21 +301,21 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt56() bool {
 func (m *_BACnetTagPayloadSignedInteger) GetIsInt64() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueInt8 := m.ValueInt8
+	valueInt8 := m.GetValueInt8()
 	_ = valueInt8
-	valueInt16 := m.ValueInt16
+	valueInt16 := m.GetValueInt16()
 	_ = valueInt16
-	valueInt24 := m.ValueInt24
+	valueInt24 := m.GetValueInt24()
 	_ = valueInt24
-	valueInt32 := m.ValueInt32
+	valueInt32 := m.GetValueInt32()
 	_ = valueInt32
-	valueInt40 := m.ValueInt40
+	valueInt40 := m.GetValueInt40()
 	_ = valueInt40
-	valueInt48 := m.ValueInt48
+	valueInt48 := m.GetValueInt48()
 	_ = valueInt48
-	valueInt56 := m.ValueInt56
+	valueInt56 := m.GetValueInt56()
 	_ = valueInt56
-	valueInt64 := m.ValueInt64
+	valueInt64 := m.GetValueInt64()
 	_ = valueInt64
 	return bool(bool((m.GetActualLength()) == (8)))
 }
@@ -323,21 +323,21 @@ func (m *_BACnetTagPayloadSignedInteger) GetIsInt64() bool {
 func (m *_BACnetTagPayloadSignedInteger) GetActualValue() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	valueInt8 := m.ValueInt8
+	valueInt8 := m.GetValueInt8()
 	_ = valueInt8
-	valueInt16 := m.ValueInt16
+	valueInt16 := m.GetValueInt16()
 	_ = valueInt16
-	valueInt24 := m.ValueInt24
+	valueInt24 := m.GetValueInt24()
 	_ = valueInt24
-	valueInt32 := m.ValueInt32
+	valueInt32 := m.GetValueInt32()
 	_ = valueInt32
-	valueInt40 := m.ValueInt40
+	valueInt40 := m.GetValueInt40()
 	_ = valueInt40
-	valueInt48 := m.ValueInt48
+	valueInt48 := m.GetValueInt48()
 	_ = valueInt48
-	valueInt56 := m.ValueInt56
+	valueInt56 := m.GetValueInt56()
 	_ = valueInt56
-	valueInt64 := m.ValueInt64
+	valueInt64 := m.GetValueInt64()
 	_ = valueInt64
 	return uint64(utils.InlineIf(m.GetIsInt8(), func() any { return uint64((*m.GetValueInt8())) }, func() any {
 		return uint64((utils.InlineIf(m.GetIsInt16(), func() any { return uint64((*m.GetValueInt16())) }, func() any {

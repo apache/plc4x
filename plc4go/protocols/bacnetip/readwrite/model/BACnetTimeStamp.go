@@ -52,6 +52,10 @@ type BACnetTimeStampContract interface {
 
 // BACnetTimeStampRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetTimeStampRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetTimeStampExactly can be used when we want exactly this type and not a type which fulfills BACnetTimeStamp.
@@ -63,17 +67,11 @@ type BACnetTimeStampExactly interface {
 
 // _BACnetTimeStamp is the data-structure of this message
 type _BACnetTimeStamp struct {
-	_BACnetTimeStampChildRequirements
+	_SubType        BACnetTimeStamp
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetTimeStampContract = (*_BACnetTimeStamp)(nil)
-
-type _BACnetTimeStampChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetTimeStampChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetTimeStamp) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetTimeStamp) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetTimeStamp) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetTimeStamp) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetTimeStamp) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTimeStampParse[T BACnetTimeStamp](ctx context.Context, theBytes []byte) (T, error) {

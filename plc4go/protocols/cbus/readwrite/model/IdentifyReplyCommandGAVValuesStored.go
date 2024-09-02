@@ -57,6 +57,7 @@ type _IdentifyReplyCommandGAVValuesStored struct {
 }
 
 var _ IdentifyReplyCommandGAVValuesStored = (*_IdentifyReplyCommandGAVValuesStored)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandGAVValuesStored)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_IdentifyReplyCommandGAVValuesStored) GetLengthInBytes(ctx context.Cont
 
 func (m *_IdentifyReplyCommandGAVValuesStored) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandGAVValuesStored IdentifyReplyCommandGAVValuesStored, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandGAVValuesStored"); pullErr != nil {

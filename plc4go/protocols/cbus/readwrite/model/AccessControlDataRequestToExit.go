@@ -52,6 +52,7 @@ type _AccessControlDataRequestToExit struct {
 }
 
 var _ AccessControlDataRequestToExit = (*_AccessControlDataRequestToExit)(nil)
+var _ AccessControlDataRequirements = (*_AccessControlDataRequestToExit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_AccessControlDataRequestToExit) GetLengthInBytes(ctx context.Context) 
 
 func (m *_AccessControlDataRequestToExit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AccessControlData) (__accessControlDataRequestToExit AccessControlDataRequestToExit, err error) {
 	m.AccessControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataRequestToExit"); pullErr != nil {

@@ -57,6 +57,7 @@ type _ServerErrorReply struct {
 }
 
 var _ ServerErrorReply = (*_ServerErrorReply)(nil)
+var _ ReplyOrConfirmationRequirements = (*_ServerErrorReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -124,6 +125,7 @@ func (m *_ServerErrorReply) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ServerErrorReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ReplyOrConfirmation, cBusOptions CBusOptions, requestContext RequestContext) (__serverErrorReply ServerErrorReply, err error) {
 	m.ReplyOrConfirmationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServerErrorReply"); pullErr != nil {

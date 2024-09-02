@@ -72,6 +72,7 @@ type _BACnetConfirmedServiceRequestSubscribeCOVProperty struct {
 }
 
 var _ BACnetConfirmedServiceRequestSubscribeCOVProperty = (*_BACnetConfirmedServiceRequestSubscribeCOVProperty)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestSubscribeCOVProperty)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -190,6 +191,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetLengthInBytes(ct
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestSubscribeCOVProperty BACnetConfirmedServiceRequestSubscribeCOVProperty, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pullErr != nil {

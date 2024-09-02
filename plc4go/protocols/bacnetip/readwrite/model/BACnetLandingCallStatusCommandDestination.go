@@ -57,6 +57,7 @@ type _BACnetLandingCallStatusCommandDestination struct {
 }
 
 var _ BACnetLandingCallStatusCommandDestination = (*_BACnetLandingCallStatusCommandDestination)(nil)
+var _ BACnetLandingCallStatusCommandRequirements = (*_BACnetLandingCallStatusCommandDestination)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBytes(ctx contex
 
 func (m *_BACnetLandingCallStatusCommandDestination) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLandingCallStatusCommand) (__bACnetLandingCallStatusCommandDestination BACnetLandingCallStatusCommandDestination, err error) {
 	m.BACnetLandingCallStatusCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommandDestination"); pullErr != nil {

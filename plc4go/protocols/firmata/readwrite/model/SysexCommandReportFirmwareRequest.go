@@ -52,6 +52,7 @@ type _SysexCommandReportFirmwareRequest struct {
 }
 
 var _ SysexCommandReportFirmwareRequest = (*_SysexCommandReportFirmwareRequest)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandReportFirmwareRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_SysexCommandReportFirmwareRequest) GetLengthInBytes(ctx context.Contex
 
 func (m *_SysexCommandReportFirmwareRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandReportFirmwareRequest SysexCommandReportFirmwareRequest, err error) {
 	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareRequest"); pullErr != nil {

@@ -60,6 +60,7 @@ type _NLMICouldBeRouterToNetwork struct {
 }
 
 var _ NLMICouldBeRouterToNetwork = (*_NLMICouldBeRouterToNetwork)(nil)
+var _ NLMRequirements = (*_NLMICouldBeRouterToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_NLMICouldBeRouterToNetwork) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_NLMICouldBeRouterToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMICouldBeRouterToNetwork NLMICouldBeRouterToNetwork, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMICouldBeRouterToNetwork"); pullErr != nil {

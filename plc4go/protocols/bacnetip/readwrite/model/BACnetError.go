@@ -46,6 +46,8 @@ type BACnetErrorContract interface {
 
 // BACnetErrorRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetErrorRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetErrorChoice returns ErrorChoice (discriminator field)
 	GetErrorChoice() BACnetConfirmedServiceChoice
 }
@@ -59,16 +61,10 @@ type BACnetErrorExactly interface {
 
 // _BACnetError is the data-structure of this message
 type _BACnetError struct {
-	_BACnetErrorChildRequirements
+	_SubType BACnetError
 }
 
 var _ BACnetErrorContract = (*_BACnetError)(nil)
-
-type _BACnetErrorChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetErrorChoice() BACnetConfirmedServiceChoice
-}
 
 type BACnetErrorChild interface {
 	utils.Serializable
@@ -106,7 +102,7 @@ func (m *_BACnetError) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetError) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetErrorParse[T BACnetError](ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (T, error) {

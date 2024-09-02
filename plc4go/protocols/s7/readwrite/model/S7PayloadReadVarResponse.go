@@ -57,6 +57,7 @@ type _S7PayloadReadVarResponse struct {
 }
 
 var _ S7PayloadReadVarResponse = (*_S7PayloadReadVarResponse)(nil)
+var _ S7PayloadRequirements = (*_S7PayloadReadVarResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_S7PayloadReadVarResponse) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_S7PayloadReadVarResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Payload, messageType uint8, parameter S7Parameter) (__s7PayloadReadVarResponse S7PayloadReadVarResponse, err error) {
 	m.S7PayloadContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadReadVarResponse"); pullErr != nil {

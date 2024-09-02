@@ -57,6 +57,7 @@ type _BACnetConstructedDataMultiStateInputFaultValues struct {
 }
 
 var _ BACnetConstructedDataMultiStateInputFaultValues = (*_BACnetConstructedDataMultiStateInputFaultValues)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateInputFaultValues)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) GetLengthInBytes(ctx 
 
 func (m *_BACnetConstructedDataMultiStateInputFaultValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMultiStateInputFaultValues BACnetConstructedDataMultiStateInputFaultValues, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateInputFaultValues"); pullErr != nil {

@@ -63,6 +63,7 @@ type _LDataReq struct {
 }
 
 var _ LDataReq = (*_LDataReq)(nil)
+var _ CEMIRequirements = (*_LDataReq)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -155,6 +156,7 @@ func (m *_LDataReq) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LDataReq) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__lDataReq LDataReq, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataReq"); pullErr != nil {

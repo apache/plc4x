@@ -52,6 +52,8 @@ type S7DataAlarmMessageContract interface {
 
 // S7DataAlarmMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type S7DataAlarmMessageRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
 	GetCpuFunctionType() uint8
 }
@@ -65,16 +67,10 @@ type S7DataAlarmMessageExactly interface {
 
 // _S7DataAlarmMessage is the data-structure of this message
 type _S7DataAlarmMessage struct {
-	_S7DataAlarmMessageChildRequirements
+	_SubType S7DataAlarmMessage
 }
 
 var _ S7DataAlarmMessageContract = (*_S7DataAlarmMessage)(nil)
-
-type _S7DataAlarmMessageChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCpuFunctionType() uint8
-}
 
 type S7DataAlarmMessageChild interface {
 	utils.Serializable
@@ -136,7 +132,7 @@ func (m *_S7DataAlarmMessage) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_S7DataAlarmMessage) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func S7DataAlarmMessageParse[T S7DataAlarmMessage](ctx context.Context, theBytes []byte, cpuFunctionType uint8) (T, error) {

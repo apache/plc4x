@@ -52,6 +52,7 @@ type _ApduControlConnect struct {
 }
 
 var _ ApduControlConnect = (*_ApduControlConnect)(nil)
+var _ ApduControlRequirements = (*_ApduControlConnect)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduControlConnect) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApduControlConnect) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduControl) (__apduControlConnect ApduControlConnect, err error) {
 	m.ApduControlContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlConnect"); pullErr != nil {

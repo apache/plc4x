@@ -57,6 +57,7 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated struct
 }
 
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated)(nil)
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) G
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParametersChangeOfDiscreteValueNewValue, tagNumber uint8) (__bACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated, err error) {
 	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated"); pullErr != nil {

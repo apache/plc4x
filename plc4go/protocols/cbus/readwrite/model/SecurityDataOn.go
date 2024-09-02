@@ -57,6 +57,7 @@ type _SecurityDataOn struct {
 }
 
 var _ SecurityDataOn = (*_SecurityDataOn)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataOn)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,6 +128,7 @@ func (m *_SecurityDataOn) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SecurityDataOn) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData, commandTypeContainer SecurityCommandTypeContainer) (__securityDataOn SecurityDataOn, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataOn"); pullErr != nil {

@@ -60,6 +60,7 @@ type _SignedSoftwareCertificate struct {
 }
 
 var _ SignedSoftwareCertificate = (*_SignedSoftwareCertificate)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SignedSoftwareCertificate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_SignedSoftwareCertificate) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_SignedSoftwareCertificate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__signedSoftwareCertificate SignedSoftwareCertificate, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SignedSoftwareCertificate"); pullErr != nil {

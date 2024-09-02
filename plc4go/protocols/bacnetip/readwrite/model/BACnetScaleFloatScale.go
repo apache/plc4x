@@ -57,6 +57,7 @@ type _BACnetScaleFloatScale struct {
 }
 
 var _ BACnetScaleFloatScale = (*_BACnetScaleFloatScale)(nil)
+var _ BACnetScaleRequirements = (*_BACnetScaleFloatScale)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetScaleFloatScale) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BACnetScaleFloatScale) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetScale) (__bACnetScaleFloatScale BACnetScaleFloatScale, err error) {
 	m.BACnetScaleContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetScaleFloatScale"); pullErr != nil {

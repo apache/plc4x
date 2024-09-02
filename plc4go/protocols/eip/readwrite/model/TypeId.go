@@ -48,6 +48,8 @@ type TypeIdContract interface {
 
 // TypeIdRequirements provides a set of functions which need to be implemented by a sub struct
 type TypeIdRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetId returns Id (discriminator field)
 	GetId() uint16
 }
@@ -61,16 +63,10 @@ type TypeIdExactly interface {
 
 // _TypeId is the data-structure of this message
 type _TypeId struct {
-	_TypeIdChildRequirements
+	_SubType TypeId
 }
 
 var _ TypeIdContract = (*_TypeId)(nil)
-
-type _TypeIdChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetId() uint16
-}
 
 type TypeIdChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_TypeId) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_TypeId) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func TypeIdParse[T TypeId](ctx context.Context, theBytes []byte) (T, error) {

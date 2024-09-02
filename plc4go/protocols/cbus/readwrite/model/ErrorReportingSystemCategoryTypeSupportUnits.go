@@ -57,6 +57,7 @@ type _ErrorReportingSystemCategoryTypeSupportUnits struct {
 }
 
 var _ ErrorReportingSystemCategoryTypeSupportUnits = (*_ErrorReportingSystemCategoryTypeSupportUnits)(nil)
+var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeSupportUnits)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ErrorReportingSystemCategoryTypeSupportUnits) GetLengthInBytes(ctx con
 
 func (m *_ErrorReportingSystemCategoryTypeSupportUnits) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ErrorReportingSystemCategoryType, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (__errorReportingSystemCategoryTypeSupportUnits ErrorReportingSystemCategoryTypeSupportUnits, err error) {
 	m.ErrorReportingSystemCategoryTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeSupportUnits"); pullErr != nil {

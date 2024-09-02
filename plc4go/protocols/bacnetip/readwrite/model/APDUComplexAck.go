@@ -84,6 +84,7 @@ type _APDUComplexAck struct {
 }
 
 var _ APDUComplexAck = (*_APDUComplexAck)(nil)
+var _ APDURequirements = (*_APDUComplexAck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,13 +153,13 @@ func (m *_APDUComplexAck) GetSegment() []byte {
 func (m *_APDUComplexAck) GetApduHeaderReduction() uint16 {
 	ctx := context.Background()
 	_ = ctx
-	sequenceNumber := m.SequenceNumber
+	sequenceNumber := m.GetSequenceNumber()
 	_ = sequenceNumber
-	proposedWindowSize := m.ProposedWindowSize
+	proposedWindowSize := m.GetProposedWindowSize()
 	_ = proposedWindowSize
-	serviceAck := m.ServiceAck
+	serviceAck := m.GetServiceAck()
 	_ = serviceAck
-	segmentServiceChoice := m.SegmentServiceChoice
+	segmentServiceChoice := m.GetSegmentServiceChoice()
 	_ = segmentServiceChoice
 	return uint16(uint16(uint16(2)) + uint16((utils.InlineIf(m.GetSegmentedMessage(), func() any { return uint16(uint16(2)) }, func() any { return uint16(uint16(0)) }).(uint16))))
 }
@@ -166,13 +167,13 @@ func (m *_APDUComplexAck) GetApduHeaderReduction() uint16 {
 func (m *_APDUComplexAck) GetSegmentReduction() uint16 {
 	ctx := context.Background()
 	_ = ctx
-	sequenceNumber := m.SequenceNumber
+	sequenceNumber := m.GetSequenceNumber()
 	_ = sequenceNumber
-	proposedWindowSize := m.ProposedWindowSize
+	proposedWindowSize := m.GetProposedWindowSize()
 	_ = proposedWindowSize
-	serviceAck := m.ServiceAck
+	serviceAck := m.GetServiceAck()
 	_ = serviceAck
-	segmentServiceChoice := m.SegmentServiceChoice
+	segmentServiceChoice := m.GetSegmentServiceChoice()
 	_ = segmentServiceChoice
 	return uint16(utils.InlineIf((bool((m.GetSegmentServiceChoice()) != (nil))), func() any { return uint16((uint16(m.GetApduHeaderReduction()) + uint16(uint16(1)))) }, func() any { return uint16(m.GetApduHeaderReduction()) }).(uint16))
 }
@@ -266,6 +267,7 @@ func (m *_APDUComplexAck) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_APDUComplexAck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUComplexAck APDUComplexAck, err error) {
 	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUComplexAck"); pullErr != nil {

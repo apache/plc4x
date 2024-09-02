@@ -63,6 +63,7 @@ type _ModbusPDUMaskWriteHoldingRegisterResponse struct {
 }
 
 var _ ModbusPDUMaskWriteHoldingRegisterResponse = (*_ModbusPDUMaskWriteHoldingRegisterResponse)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUMaskWriteHoldingRegisterResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -159,6 +160,7 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) GetLengthInBytes(ctx contex
 
 func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUMaskWriteHoldingRegisterResponse ModbusPDUMaskWriteHoldingRegisterResponse, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUMaskWriteHoldingRegisterResponse"); pullErr != nil {

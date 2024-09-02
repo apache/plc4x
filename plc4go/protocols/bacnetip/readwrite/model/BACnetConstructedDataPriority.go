@@ -62,6 +62,7 @@ type _BACnetConstructedDataPriority struct {
 }
 
 var _ BACnetConstructedDataPriority = (*_BACnetConstructedDataPriority)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPriority)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataPriority) GetPriority() []BACnetApplicationTagUns
 func (m *_BACnetConstructedDataPriority) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataPriority) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetConstructedDataPriority) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPriority BACnetConstructedDataPriority, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPriority"); pullErr != nil {

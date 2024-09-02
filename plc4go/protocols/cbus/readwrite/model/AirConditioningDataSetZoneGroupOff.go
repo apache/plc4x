@@ -57,6 +57,7 @@ type _AirConditioningDataSetZoneGroupOff struct {
 }
 
 var _ AirConditioningDataSetZoneGroupOff = (*_AirConditioningDataSetZoneGroupOff)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataSetZoneGroupOff)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_AirConditioningDataSetZoneGroupOff) GetLengthInBytes(ctx context.Conte
 
 func (m *_AirConditioningDataSetZoneGroupOff) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataSetZoneGroupOff AirConditioningDataSetZoneGroupOff, err error) {
 	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetZoneGroupOff"); pullErr != nil {

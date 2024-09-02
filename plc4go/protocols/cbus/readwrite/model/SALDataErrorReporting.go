@@ -57,6 +57,7 @@ type _SALDataErrorReporting struct {
 }
 
 var _ SALDataErrorReporting = (*_SALDataErrorReporting)(nil)
+var _ SALDataRequirements = (*_SALDataErrorReporting)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataErrorReporting) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataErrorReporting) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataErrorReporting SALDataErrorReporting, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataErrorReporting"); pullErr != nil {

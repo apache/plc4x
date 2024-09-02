@@ -52,6 +52,7 @@ type _SecurityDataExitDelayStarted struct {
 }
 
 var _ SecurityDataExitDelayStarted = (*_SecurityDataExitDelayStarted)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataExitDelayStarted)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataExitDelayStarted) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_SecurityDataExitDelayStarted) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataExitDelayStarted SecurityDataExitDelayStarted, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataExitDelayStarted"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataPositiveIntegerValueFaultLowLimit struct {
 }
 
 var _ BACnetConstructedDataPositiveIntegerValueFaultLowLimit = (*_BACnetConstructedDataPositiveIntegerValueFaultLowLimit)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueFaultLowLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueFaultLowLimit) GetLengthInByt
 
 func (m *_BACnetConstructedDataPositiveIntegerValueFaultLowLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPositiveIntegerValueFaultLowLimit BACnetConstructedDataPositiveIntegerValueFaultLowLimit, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueFaultLowLimit"); pullErr != nil {

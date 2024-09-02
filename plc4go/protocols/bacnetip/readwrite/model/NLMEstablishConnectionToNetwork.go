@@ -60,6 +60,7 @@ type _NLMEstablishConnectionToNetwork struct {
 }
 
 var _ NLMEstablishConnectionToNetwork = (*_NLMEstablishConnectionToNetwork)(nil)
+var _ NLMRequirements = (*_NLMEstablishConnectionToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_NLMEstablishConnectionToNetwork) GetLengthInBytes(ctx context.Context)
 
 func (m *_NLMEstablishConnectionToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMEstablishConnectionToNetwork NLMEstablishConnectionToNetwork, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMEstablishConnectionToNetwork"); pullErr != nil {

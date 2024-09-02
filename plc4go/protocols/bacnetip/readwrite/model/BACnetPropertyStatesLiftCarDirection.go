@@ -57,6 +57,7 @@ type _BACnetPropertyStatesLiftCarDirection struct {
 }
 
 var _ BACnetPropertyStatesLiftCarDirection = (*_BACnetPropertyStatesLiftCarDirection)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftCarDirection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesLiftCarDirection) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetPropertyStatesLiftCarDirection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesLiftCarDirection BACnetPropertyStatesLiftCarDirection, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarDirection"); pullErr != nil {

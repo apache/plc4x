@@ -52,6 +52,7 @@ type _ApduDataExtIndividualAddressSerialNumberResponse struct {
 }
 
 var _ ApduDataExtIndividualAddressSerialNumberResponse = (*_ApduDataExtIndividualAddressSerialNumberResponse)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtIndividualAddressSerialNumberResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtIndividualAddressSerialNumberResponse) GetLengthInBytes(ctx
 
 func (m *_ApduDataExtIndividualAddressSerialNumberResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtIndividualAddressSerialNumberResponse ApduDataExtIndividualAddressSerialNumberResponse, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtIndividualAddressSerialNumberResponse"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetPriorityValueTime struct {
 }
 
 var _ BACnetPriorityValueTime = (*_BACnetPriorityValueTime)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPriorityValueTime) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_BACnetPriorityValueTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueTime BACnetPriorityValueTime, err error) {
 	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueTime"); pullErr != nil {

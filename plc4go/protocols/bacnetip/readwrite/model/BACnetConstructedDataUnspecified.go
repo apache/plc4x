@@ -62,6 +62,7 @@ type _BACnetConstructedDataUnspecified struct {
 }
 
 var _ BACnetConstructedDataUnspecified = (*_BACnetConstructedDataUnspecified)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUnspecified)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataUnspecified) GetData() []BACnetConstructedDataEle
 func (m *_BACnetConstructedDataUnspecified) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataUnspecified) GetLengthInBytes(ctx context.Context
 
 func (m *_BACnetConstructedDataUnspecified) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataUnspecified BACnetConstructedDataUnspecified, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUnspecified"); pullErr != nil {

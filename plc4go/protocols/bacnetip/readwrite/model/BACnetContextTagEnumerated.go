@@ -59,6 +59,7 @@ type _BACnetContextTagEnumerated struct {
 }
 
 var _ BACnetContextTagEnumerated = (*_BACnetContextTagEnumerated)(nil)
+var _ BACnetContextTagRequirements = (*_BACnetContextTagEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -148,6 +149,7 @@ func (m *_BACnetContextTagEnumerated) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_BACnetContextTagEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetContextTag, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (__bACnetContextTagEnumerated BACnetContextTagEnumerated, err error) {
 	m.BACnetContextTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagEnumerated"); pullErr != nil {

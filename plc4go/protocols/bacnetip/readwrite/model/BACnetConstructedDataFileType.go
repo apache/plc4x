@@ -59,6 +59,7 @@ type _BACnetConstructedDataFileType struct {
 }
 
 var _ BACnetConstructedDataFileType = (*_BACnetConstructedDataFileType)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataFileType) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetConstructedDataFileType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataFileType BACnetConstructedDataFileType, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileType"); pullErr != nil {

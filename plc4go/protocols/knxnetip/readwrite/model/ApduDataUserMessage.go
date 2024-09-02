@@ -52,6 +52,7 @@ type _ApduDataUserMessage struct {
 }
 
 var _ ApduDataUserMessage = (*_ApduDataUserMessage)(nil)
+var _ ApduDataRequirements = (*_ApduDataUserMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataUserMessage) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApduDataUserMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataUserMessage ApduDataUserMessage, err error) {
 	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataUserMessage"); pullErr != nil {

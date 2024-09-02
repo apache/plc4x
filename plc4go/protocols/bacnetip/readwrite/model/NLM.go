@@ -52,6 +52,10 @@ type NLMContract interface {
 
 // NLMRequirements provides a set of functions which need to be implemented by a sub struct
 type NLMRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetIsVendorProprietaryMessage returns IsVendorProprietaryMessage (discriminator field)
+	GetIsVendorProprietaryMessage() bool
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 }
@@ -65,20 +69,13 @@ type NLMExactly interface {
 
 // _NLM is the data-structure of this message
 type _NLM struct {
-	_NLMChildRequirements
+	_SubType NLM
 
 	// Arguments.
 	ApduLength uint16
 }
 
 var _ NLMContract = (*_NLM)(nil)
-
-type _NLMChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIsVendorProprietaryMessage() bool
-	GetMessageType() uint8
-}
 
 type NLMChild interface {
 	utils.Serializable
@@ -94,7 +91,8 @@ type NLMChild interface {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_NLM) GetIsVendorProprietaryMessage() bool {
+func (pm *_NLM) GetIsVendorProprietaryMessage() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetMessageType()) >= (128)))
@@ -136,7 +134,7 @@ func (m *_NLM) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_NLM) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func NLMParse[T NLM](ctx context.Context, theBytes []byte, apduLength uint16) (T, error) {

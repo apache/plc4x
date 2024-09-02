@@ -52,6 +52,10 @@ type BACnetShedLevelContract interface {
 
 // BACnetShedLevelRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetShedLevelRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetShedLevelExactly can be used when we want exactly this type and not a type which fulfills BACnetShedLevel.
@@ -63,17 +67,11 @@ type BACnetShedLevelExactly interface {
 
 // _BACnetShedLevel is the data-structure of this message
 type _BACnetShedLevel struct {
-	_BACnetShedLevelChildRequirements
+	_SubType        BACnetShedLevel
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetShedLevelContract = (*_BACnetShedLevel)(nil)
-
-type _BACnetShedLevelChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetShedLevelChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetShedLevel) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetShedLevel) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetShedLevel) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetShedLevel) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetShedLevel) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetShedLevelParse[T BACnetShedLevel](ctx context.Context, theBytes []byte) (T, error) {

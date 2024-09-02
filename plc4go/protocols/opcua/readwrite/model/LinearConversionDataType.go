@@ -66,6 +66,7 @@ type _LinearConversionDataType struct {
 }
 
 var _ LinearConversionDataType = (*_LinearConversionDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_LinearConversionDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_LinearConversionDataType) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_LinearConversionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__linearConversionDataType LinearConversionDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LinearConversionDataType"); pullErr != nil {

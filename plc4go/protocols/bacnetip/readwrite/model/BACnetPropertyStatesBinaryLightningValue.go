@@ -57,6 +57,7 @@ type _BACnetPropertyStatesBinaryLightningValue struct {
 }
 
 var _ BACnetPropertyStatesBinaryLightningValue = (*_BACnetPropertyStatesBinaryLightningValue)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBinaryLightningValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) GetLengthInBytes(ctx context
 
 func (m *_BACnetPropertyStatesBinaryLightningValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesBinaryLightningValue BACnetPropertyStatesBinaryLightningValue, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryLightningValue"); pullErr != nil {

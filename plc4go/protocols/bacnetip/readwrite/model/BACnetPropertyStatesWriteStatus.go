@@ -57,6 +57,7 @@ type _BACnetPropertyStatesWriteStatus struct {
 }
 
 var _ BACnetPropertyStatesWriteStatus = (*_BACnetPropertyStatesWriteStatus)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesWriteStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesWriteStatus) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetPropertyStatesWriteStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesWriteStatus BACnetPropertyStatesWriteStatus, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesWriteStatus"); pullErr != nil {

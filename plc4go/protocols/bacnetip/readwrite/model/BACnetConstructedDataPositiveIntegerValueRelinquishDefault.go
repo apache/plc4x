@@ -59,6 +59,7 @@ type _BACnetConstructedDataPositiveIntegerValueRelinquishDefault struct {
 }
 
 var _ BACnetConstructedDataPositiveIntegerValueRelinquishDefault = (*_BACnetConstructedDataPositiveIntegerValueRelinquishDefault)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueRelinquishDefault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) GetLengthI
 
 func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPositiveIntegerValueRelinquishDefault BACnetConstructedDataPositiveIntegerValueRelinquishDefault, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueRelinquishDefault"); pullErr != nil {

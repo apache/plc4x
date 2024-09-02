@@ -69,6 +69,7 @@ type _ModifyMonitoredItemsRequest struct {
 }
 
 var _ ModifyMonitoredItemsRequest = (*_ModifyMonitoredItemsRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ModifyMonitoredItemsRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -180,6 +181,7 @@ func (m *_ModifyMonitoredItemsRequest) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_ModifyMonitoredItemsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__modifyMonitoredItemsRequest ModifyMonitoredItemsRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModifyMonitoredItemsRequest"); pullErr != nil {

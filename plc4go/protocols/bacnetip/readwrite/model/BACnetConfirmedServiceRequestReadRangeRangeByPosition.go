@@ -60,6 +60,7 @@ type _BACnetConfirmedServiceRequestReadRangeRangeByPosition struct {
 }
 
 var _ BACnetConfirmedServiceRequestReadRangeRangeByPosition = (*_BACnetConfirmedServiceRequestReadRangeRangeByPosition)(nil)
+var _ BACnetConfirmedServiceRequestReadRangeRangeRequirements = (*_BACnetConfirmedServiceRequestReadRangeRangeByPosition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,6 +137,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetLengthInByte
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequestReadRangeRange) (__bACnetConfirmedServiceRequestReadRangeRangeByPosition BACnetConfirmedServiceRequestReadRangeRangeByPosition, err error) {
 	m.BACnetConfirmedServiceRequestReadRangeRangeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition"); pullErr != nil {

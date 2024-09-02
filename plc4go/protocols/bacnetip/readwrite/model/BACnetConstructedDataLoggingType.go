@@ -59,6 +59,7 @@ type _BACnetConstructedDataLoggingType struct {
 }
 
 var _ BACnetConstructedDataLoggingType = (*_BACnetConstructedDataLoggingType)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoggingType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataLoggingType) GetLengthInBytes(ctx context.Context
 
 func (m *_BACnetConstructedDataLoggingType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLoggingType BACnetConstructedDataLoggingType, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLoggingType"); pullErr != nil {

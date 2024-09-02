@@ -57,6 +57,7 @@ type _BACnetCalendarEntryDate struct {
 }
 
 var _ BACnetCalendarEntryDate = (*_BACnetCalendarEntryDate)(nil)
+var _ BACnetCalendarEntryRequirements = (*_BACnetCalendarEntryDate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetCalendarEntryDate) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_BACnetCalendarEntryDate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetCalendarEntry) (__bACnetCalendarEntryDate BACnetCalendarEntryDate, err error) {
 	m.BACnetCalendarEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryDate"); pullErr != nil {

@@ -149,6 +149,7 @@ type _SubscriptionDiagnosticsDataType struct {
 }
 
 var _ SubscriptionDiagnosticsDataType = (*_SubscriptionDiagnosticsDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SubscriptionDiagnosticsDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -464,6 +465,7 @@ func (m *_SubscriptionDiagnosticsDataType) GetLengthInBytes(ctx context.Context)
 
 func (m *_SubscriptionDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__subscriptionDiagnosticsDataType SubscriptionDiagnosticsDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SubscriptionDiagnosticsDataType"); pullErr != nil {

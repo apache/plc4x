@@ -59,6 +59,7 @@ type _BACnetConstructedDataNetworkNumber struct {
 }
 
 var _ BACnetConstructedDataNetworkNumber = (*_BACnetConstructedDataNetworkNumber)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkNumber)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataNetworkNumber) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataNetworkNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNetworkNumber BACnetConstructedDataNetworkNumber, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkNumber"); pullErr != nil {

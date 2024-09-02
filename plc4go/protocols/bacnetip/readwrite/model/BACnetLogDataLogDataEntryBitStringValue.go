@@ -57,6 +57,7 @@ type _BACnetLogDataLogDataEntryBitStringValue struct {
 }
 
 var _ BACnetLogDataLogDataEntryBitStringValue = (*_BACnetLogDataLogDataEntryBitStringValue)(nil)
+var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryBitStringValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) GetLengthInBytes(ctx context.
 
 func (m *_BACnetLogDataLogDataEntryBitStringValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogDataLogDataEntry) (__bACnetLogDataLogDataEntryBitStringValue BACnetLogDataLogDataEntryBitStringValue, err error) {
 	m.BACnetLogDataLogDataEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryBitStringValue"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataPassbackTimeout struct {
 }
 
 var _ BACnetConstructedDataPassbackTimeout = (*_BACnetConstructedDataPassbackTimeout)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPassbackTimeout)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataPassbackTimeout) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetConstructedDataPassbackTimeout) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPassbackTimeout BACnetConstructedDataPassbackTimeout, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPassbackTimeout"); pullErr != nil {

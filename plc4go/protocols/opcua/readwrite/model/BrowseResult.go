@@ -66,6 +66,7 @@ type _BrowseResult struct {
 }
 
 var _ BrowseResult = (*_BrowseResult)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_BrowseResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,6 +170,7 @@ func (m *_BrowseResult) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BrowseResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browseResult BrowseResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BrowseResult"); pullErr != nil {

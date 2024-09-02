@@ -53,6 +53,8 @@ type DF1SymbolContract interface {
 
 // DF1SymbolRequirements provides a set of functions which need to be implemented by a sub struct
 type DF1SymbolRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetSymbolType returns SymbolType (discriminator field)
 	GetSymbolType() uint8
 }
@@ -66,16 +68,10 @@ type DF1SymbolExactly interface {
 
 // _DF1Symbol is the data-structure of this message
 type _DF1Symbol struct {
-	_DF1SymbolChildRequirements
+	_SubType DF1Symbol
 }
 
 var _ DF1SymbolContract = (*_DF1Symbol)(nil)
-
-type _DF1SymbolChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetSymbolType() uint8
-}
 
 type DF1SymbolChild interface {
 	utils.Serializable
@@ -132,7 +128,7 @@ func (m *_DF1Symbol) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_DF1Symbol) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func DF1SymbolParse[T DF1Symbol](ctx context.Context, theBytes []byte) (T, error) {

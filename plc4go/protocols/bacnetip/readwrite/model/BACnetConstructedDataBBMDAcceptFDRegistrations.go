@@ -59,6 +59,7 @@ type _BACnetConstructedDataBBMDAcceptFDRegistrations struct {
 }
 
 var _ BACnetConstructedDataBBMDAcceptFDRegistrations = (*_BACnetConstructedDataBBMDAcceptFDRegistrations)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDAcceptFDRegistrations)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetLengthInBytes(ctx c
 
 func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBBMDAcceptFDRegistrations BACnetConstructedDataBBMDAcceptFDRegistrations, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBBMDAcceptFDRegistrations"); pullErr != nil {

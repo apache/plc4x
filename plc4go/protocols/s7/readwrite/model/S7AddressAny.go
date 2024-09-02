@@ -74,6 +74,7 @@ type _S7AddressAny struct {
 }
 
 var _ S7AddressAny = (*_S7AddressAny)(nil)
+var _ S7AddressRequirements = (*_S7AddressAny)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -189,6 +190,7 @@ func (m *_S7AddressAny) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_S7AddressAny) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Address) (__s7AddressAny S7AddressAny, err error) {
 	m.S7AddressContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7AddressAny"); pullErr != nil {

@@ -52,6 +52,7 @@ type _TDataConnectedReq struct {
 }
 
 var _ TDataConnectedReq = (*_TDataConnectedReq)(nil)
+var _ CEMIRequirements = (*_TDataConnectedReq)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_TDataConnectedReq) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_TDataConnectedReq) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__tDataConnectedReq TDataConnectedReq, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TDataConnectedReq"); pullErr != nil {

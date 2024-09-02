@@ -69,6 +69,7 @@ type _BACnetNotificationParametersUnsignedRange struct {
 }
 
 var _ BACnetNotificationParametersUnsignedRange = (*_BACnetNotificationParametersUnsignedRange)(nil)
+var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersUnsignedRange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,6 +170,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBytes(ctx contex
 
 func (m *_BACnetNotificationParametersUnsignedRange) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParameters, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetNotificationParametersUnsignedRange BACnetNotificationParametersUnsignedRange, err error) {
 	m.BACnetNotificationParametersContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersUnsignedRange"); pullErr != nil {

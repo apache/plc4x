@@ -52,6 +52,7 @@ type _ReaderGroupTransportDataType struct {
 }
 
 var _ ReaderGroupTransportDataType = (*_ReaderGroupTransportDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ReaderGroupTransportDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ReaderGroupTransportDataType) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_ReaderGroupTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__readerGroupTransportDataType ReaderGroupTransportDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReaderGroupTransportDataType"); pullErr != nil {

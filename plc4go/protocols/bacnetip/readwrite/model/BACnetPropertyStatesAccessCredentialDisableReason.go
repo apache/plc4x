@@ -57,6 +57,7 @@ type _BACnetPropertyStatesAccessCredentialDisableReason struct {
 }
 
 var _ BACnetPropertyStatesAccessCredentialDisableReason = (*_BACnetPropertyStatesAccessCredentialDisableReason)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAccessCredentialDisableReason)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetLengthInBytes(ct
 
 func (m *_BACnetPropertyStatesAccessCredentialDisableReason) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesAccessCredentialDisableReason BACnetPropertyStatesAccessCredentialDisableReason, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAccessCredentialDisableReason"); pullErr != nil {

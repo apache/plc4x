@@ -60,6 +60,7 @@ type _OpcuaCloseRequest struct {
 }
 
 var _ OpcuaCloseRequest = (*_OpcuaCloseRequest)(nil)
+var _ MessagePDURequirements = (*_OpcuaCloseRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_OpcuaCloseRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_OpcuaCloseRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool) (__opcuaCloseRequest OpcuaCloseRequest, err error) {
 	m.MessagePDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("OpcuaCloseRequest"); pullErr != nil {

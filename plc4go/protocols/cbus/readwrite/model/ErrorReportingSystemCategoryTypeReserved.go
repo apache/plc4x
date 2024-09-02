@@ -57,6 +57,7 @@ type _ErrorReportingSystemCategoryTypeReserved struct {
 }
 
 var _ ErrorReportingSystemCategoryTypeReserved = (*_ErrorReportingSystemCategoryTypeReserved)(nil)
+var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeReserved)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetLengthInBytes(ctx context
 
 func (m *_ErrorReportingSystemCategoryTypeReserved) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ErrorReportingSystemCategoryType, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (__errorReportingSystemCategoryTypeReserved ErrorReportingSystemCategoryTypeReserved, err error) {
 	m.ErrorReportingSystemCategoryTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeReserved"); pullErr != nil {

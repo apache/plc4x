@@ -59,6 +59,7 @@ type _BACnetConstructedDataAbsenteeLimit struct {
 }
 
 var _ BACnetConstructedDataAbsenteeLimit = (*_BACnetConstructedDataAbsenteeLimit)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAbsenteeLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataAbsenteeLimit) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataAbsenteeLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAbsenteeLimit BACnetConstructedDataAbsenteeLimit, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAbsenteeLimit"); pullErr != nil {

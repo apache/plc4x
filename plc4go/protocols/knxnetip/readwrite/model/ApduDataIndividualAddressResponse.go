@@ -52,6 +52,7 @@ type _ApduDataIndividualAddressResponse struct {
 }
 
 var _ ApduDataIndividualAddressResponse = (*_ApduDataIndividualAddressResponse)(nil)
+var _ ApduDataRequirements = (*_ApduDataIndividualAddressResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataIndividualAddressResponse) GetLengthInBytes(ctx context.Contex
 
 func (m *_ApduDataIndividualAddressResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataIndividualAddressResponse ApduDataIndividualAddressResponse, err error) {
 	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressResponse"); pullErr != nil {

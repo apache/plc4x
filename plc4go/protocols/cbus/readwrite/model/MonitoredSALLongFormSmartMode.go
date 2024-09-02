@@ -79,6 +79,7 @@ type _MonitoredSALLongFormSmartMode struct {
 }
 
 var _ MonitoredSALLongFormSmartMode = (*_MonitoredSALLongFormSmartMode)(nil)
+var _ MonitoredSALRequirements = (*_MonitoredSALLongFormSmartMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -139,15 +140,15 @@ func (m *_MonitoredSALLongFormSmartMode) GetSalData() SALData {
 func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 	ctx := context.Background()
 	_ = ctx
-	unitAddress := m.UnitAddress
+	unitAddress := m.GetUnitAddress()
 	_ = unitAddress
-	bridgeAddress := m.BridgeAddress
+	bridgeAddress := m.GetBridgeAddress()
 	_ = bridgeAddress
-	reservedByte := m.ReservedByte
+	reservedByte := m.GetReservedByte()
 	_ = reservedByte
-	replyNetwork := m.ReplyNetwork
+	replyNetwork := m.GetReplyNetwork()
 	_ = replyNetwork
-	salData := m.SalData
+	salData := m.GetSalData()
 	_ = salData
 	return bool(bool((m.GetTerminatingByte() & 0xff) == (0x00)))
 }
@@ -232,6 +233,7 @@ func (m *_MonitoredSALLongFormSmartMode) GetLengthInBytes(ctx context.Context) u
 
 func (m *_MonitoredSALLongFormSmartMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MonitoredSAL, cBusOptions CBusOptions) (__monitoredSALLongFormSmartMode MonitoredSALLongFormSmartMode, err error) {
 	m.MonitoredSALContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALLongFormSmartMode"); pullErr != nil {

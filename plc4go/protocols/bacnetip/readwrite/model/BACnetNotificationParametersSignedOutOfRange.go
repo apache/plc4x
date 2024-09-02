@@ -72,6 +72,7 @@ type _BACnetNotificationParametersSignedOutOfRange struct {
 }
 
 var _ BACnetNotificationParametersSignedOutOfRange = (*_BACnetNotificationParametersSignedOutOfRange)(nil)
+var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersSignedOutOfRange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -180,6 +181,7 @@ func (m *_BACnetNotificationParametersSignedOutOfRange) GetLengthInBytes(ctx con
 
 func (m *_BACnetNotificationParametersSignedOutOfRange) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParameters, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetNotificationParametersSignedOutOfRange BACnetNotificationParametersSignedOutOfRange, err error) {
 	m.BACnetNotificationParametersContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersSignedOutOfRange"); pullErr != nil {

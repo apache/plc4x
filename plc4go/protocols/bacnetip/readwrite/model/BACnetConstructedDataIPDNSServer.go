@@ -62,6 +62,7 @@ type _BACnetConstructedDataIPDNSServer struct {
 }
 
 var _ BACnetConstructedDataIPDNSServer = (*_BACnetConstructedDataIPDNSServer)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDNSServer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataIPDNSServer) GetIpDnsServer() []BACnetApplication
 func (m *_BACnetConstructedDataIPDNSServer) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataIPDNSServer) GetLengthInBytes(ctx context.Context
 
 func (m *_BACnetConstructedDataIPDNSServer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIPDNSServer BACnetConstructedDataIPDNSServer, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDNSServer"); pullErr != nil {

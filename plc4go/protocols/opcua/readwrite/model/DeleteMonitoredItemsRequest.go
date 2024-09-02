@@ -66,6 +66,7 @@ type _DeleteMonitoredItemsRequest struct {
 }
 
 var _ DeleteMonitoredItemsRequest = (*_DeleteMonitoredItemsRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DeleteMonitoredItemsRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -164,6 +165,7 @@ func (m *_DeleteMonitoredItemsRequest) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_DeleteMonitoredItemsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteMonitoredItemsRequest DeleteMonitoredItemsRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeleteMonitoredItemsRequest"); pullErr != nil {

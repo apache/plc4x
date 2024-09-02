@@ -56,6 +56,8 @@ type EipPacketContract interface {
 
 // EipPacketRequirements provides a set of functions which need to be implemented by a sub struct
 type EipPacketRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCommand returns Command (discriminator field)
 	GetCommand() uint16
 	// GetPacketLength returns PacketLength (discriminator field)
@@ -73,7 +75,7 @@ type EipPacketExactly interface {
 
 // _EipPacket is the data-structure of this message
 type _EipPacket struct {
-	_EipPacketChildRequirements
+	_SubType      EipPacket
 	SessionHandle uint32
 	Status        uint32
 	SenderContext []byte
@@ -81,14 +83,6 @@ type _EipPacket struct {
 }
 
 var _ EipPacketContract = (*_EipPacket)(nil)
-
-type _EipPacketChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommand() uint16
-	GetPacketLength() uint16
-	GetResponse() bool
-}
 
 type EipPacketChild interface {
 	utils.Serializable
@@ -171,7 +165,7 @@ func (m *_EipPacket) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_EipPacket) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func EipPacketParse[T EipPacket](ctx context.Context, theBytes []byte, response bool) (T, error) {

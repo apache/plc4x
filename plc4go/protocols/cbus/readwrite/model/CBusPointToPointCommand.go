@@ -56,6 +56,10 @@ type CBusPointToPointCommandContract interface {
 
 // CBusPointToPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusPointToPointCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetIsDirect returns IsDirect (discriminator field)
+	GetIsDirect() bool
 }
 
 // CBusPointToPointCommandExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointCommand.
@@ -67,7 +71,7 @@ type CBusPointToPointCommandExactly interface {
 
 // _CBusPointToPointCommand is the data-structure of this message
 type _CBusPointToPointCommand struct {
-	_CBusPointToPointCommandChildRequirements
+	_SubType               CBusPointToPointCommand
 	BridgeAddressCountPeek uint16
 	CalData                CALData
 
@@ -76,12 +80,6 @@ type _CBusPointToPointCommand struct {
 }
 
 var _ CBusPointToPointCommandContract = (*_CBusPointToPointCommand)(nil)
-
-type _CBusPointToPointCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIsDirect() bool
-}
 
 type CBusPointToPointCommandChild interface {
 	utils.Serializable
@@ -114,7 +112,8 @@ func (m *_CBusPointToPointCommand) GetCalData() CALData {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_CBusPointToPointCommand) GetIsDirect() bool {
+func (pm *_CBusPointToPointCommand) GetIsDirect() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetBridgeAddressCountPeek() & 0x00FF) == (0x0000)))
@@ -157,7 +156,7 @@ func (m *_CBusPointToPointCommand) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CBusPointToPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CBusPointToPointCommandParse[T CBusPointToPointCommand](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {

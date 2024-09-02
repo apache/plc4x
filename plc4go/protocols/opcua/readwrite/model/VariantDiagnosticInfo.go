@@ -60,6 +60,7 @@ type _VariantDiagnosticInfo struct {
 }
 
 var _ VariantDiagnosticInfo = (*_VariantDiagnosticInfo)(nil)
+var _ VariantRequirements = (*_VariantDiagnosticInfo)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -149,6 +150,7 @@ func (m *_VariantDiagnosticInfo) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantDiagnosticInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantDiagnosticInfo VariantDiagnosticInfo, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantDiagnosticInfo"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetServiceAckVTOpen struct {
 }
 
 var _ BACnetServiceAckVTOpen = (*_BACnetServiceAckVTOpen)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckVTOpen)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_BACnetServiceAckVTOpen) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BACnetServiceAckVTOpen) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckVTOpen BACnetServiceAckVTOpen, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {

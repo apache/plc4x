@@ -57,6 +57,7 @@ type _BACnetTimeStampSequence struct {
 }
 
 var _ BACnetTimeStampSequence = (*_BACnetTimeStampSequence)(nil)
+var _ BACnetTimeStampRequirements = (*_BACnetTimeStampSequence)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetTimeStampSequence) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_BACnetTimeStampSequence) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetTimeStamp) (__bACnetTimeStampSequence BACnetTimeStampSequence, err error) {
 	m.BACnetTimeStampContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampSequence"); pullErr != nil {

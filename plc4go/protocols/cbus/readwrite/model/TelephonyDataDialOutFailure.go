@@ -57,6 +57,7 @@ type _TelephonyDataDialOutFailure struct {
 }
 
 var _ TelephonyDataDialOutFailure = (*_TelephonyDataDialOutFailure)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataDialOutFailure)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_TelephonyDataDialOutFailure) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_TelephonyDataDialOutFailure) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData) (__telephonyDataDialOutFailure TelephonyDataDialOutFailure, err error) {
 	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataDialOutFailure"); pullErr != nil {

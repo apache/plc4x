@@ -129,13 +129,13 @@ func (m *_BACnetTagHeader) GetExtExtExtLength() *uint32 {
 func (m *_BACnetTagHeader) GetActualTagNumber() uint8 {
 	ctx := context.Background()
 	_ = ctx
-	extTagNumber := m.ExtTagNumber
+	extTagNumber := m.GetExtTagNumber()
 	_ = extTagNumber
-	extLength := m.ExtLength
+	extLength := m.GetExtLength()
 	_ = extLength
-	extExtLength := m.ExtExtLength
+	extExtLength := m.GetExtExtLength()
 	_ = extExtLength
-	extExtExtLength := m.ExtExtExtLength
+	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
 	return uint8(utils.InlineIf(bool((m.GetTagNumber()) < (15)), func() any { return uint8(m.GetTagNumber()) }, func() any { return uint8((*m.GetExtTagNumber())) }).(uint8))
 }
@@ -143,13 +143,13 @@ func (m *_BACnetTagHeader) GetActualTagNumber() uint8 {
 func (m *_BACnetTagHeader) GetIsBoolean() bool {
 	ctx := context.Background()
 	_ = ctx
-	extTagNumber := m.ExtTagNumber
+	extTagNumber := m.GetExtTagNumber()
 	_ = extTagNumber
-	extLength := m.ExtLength
+	extLength := m.GetExtLength()
 	_ = extLength
-	extExtLength := m.ExtExtLength
+	extExtLength := m.GetExtExtLength()
 	_ = extExtLength
-	extExtExtLength := m.ExtExtExtLength
+	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
 	return bool(bool(bool((m.GetTagNumber()) == (1))) && bool(bool((m.GetTagClass()) == (TagClass_APPLICATION_TAGS))))
 }
@@ -157,13 +157,13 @@ func (m *_BACnetTagHeader) GetIsBoolean() bool {
 func (m *_BACnetTagHeader) GetIsConstructed() bool {
 	ctx := context.Background()
 	_ = ctx
-	extTagNumber := m.ExtTagNumber
+	extTagNumber := m.GetExtTagNumber()
 	_ = extTagNumber
-	extLength := m.ExtLength
+	extLength := m.GetExtLength()
 	_ = extLength
-	extExtLength := m.ExtExtLength
+	extExtLength := m.GetExtExtLength()
 	_ = extExtLength
-	extExtExtLength := m.ExtExtExtLength
+	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
 	return bool(bool(bool((m.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((m.GetLengthValueType()) == (6))))
 }
@@ -171,13 +171,13 @@ func (m *_BACnetTagHeader) GetIsConstructed() bool {
 func (m *_BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
 	ctx := context.Background()
 	_ = ctx
-	extTagNumber := m.ExtTagNumber
+	extTagNumber := m.GetExtTagNumber()
 	_ = extTagNumber
-	extLength := m.ExtLength
+	extLength := m.GetExtLength()
 	_ = extLength
-	extExtLength := m.ExtExtLength
+	extExtLength := m.GetExtExtLength()
 	_ = extExtLength
-	extExtExtLength := m.ExtExtExtLength
+	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
 	return bool(bool(!(m.GetIsConstructed())) && bool(!(m.GetIsBoolean())))
 }
@@ -185,13 +185,13 @@ func (m *_BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
 func (m *_BACnetTagHeader) GetActualLength() uint32 {
 	ctx := context.Background()
 	_ = ctx
-	extTagNumber := m.ExtTagNumber
+	extTagNumber := m.GetExtTagNumber()
 	_ = extTagNumber
-	extLength := m.ExtLength
+	extLength := m.GetExtLength()
 	_ = extLength
-	extExtLength := m.ExtExtLength
+	extExtLength := m.GetExtExtLength()
 	_ = extExtLength
-	extExtExtLength := m.ExtExtExtLength
+	extExtExtLength := m.GetExtExtExtLength()
 	_ = extExtExtLength
 	return uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (255))), func() any { return uint32((*m.GetExtExtExtLength())) }, func() any {
 		return uint32((utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (254))), func() any { return uint32((*m.GetExtExtLength())) }, func() any {

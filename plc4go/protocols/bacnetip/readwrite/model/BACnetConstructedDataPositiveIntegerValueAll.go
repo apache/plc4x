@@ -52,6 +52,7 @@ type _BACnetConstructedDataPositiveIntegerValueAll struct {
 }
 
 var _ BACnetConstructedDataPositiveIntegerValueAll = (*_BACnetConstructedDataPositiveIntegerValueAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueAll) GetLengthInBytes(ctx con
 
 func (m *_BACnetConstructedDataPositiveIntegerValueAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPositiveIntegerValueAll BACnetConstructedDataPositiveIntegerValueAll, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueAll"); pullErr != nil {

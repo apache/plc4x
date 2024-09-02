@@ -66,6 +66,7 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessage struct {
 }
 
 var _ BACnetConfirmedServiceRequestConfirmedTextMessage = (*_BACnetConfirmedServiceRequestConfirmedTextMessage)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestConfirmedTextMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -164,6 +165,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBytes(ct
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestConfirmedTextMessage BACnetConfirmedServiceRequestConfirmedTextMessage, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); pullErr != nil {

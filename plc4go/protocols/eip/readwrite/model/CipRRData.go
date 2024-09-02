@@ -63,6 +63,7 @@ type _CipRRData struct {
 }
 
 var _ CipRRData = (*_CipRRData)(nil)
+var _ EipPacketRequirements = (*_CipRRData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,6 +170,7 @@ func (m *_CipRRData) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CipRRData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__cipRRData CipRRData, err error) {
 	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {

@@ -63,6 +63,7 @@ type _CBusCommandDeviceManagement struct {
 }
 
 var _ CBusCommandDeviceManagement = (*_CBusCommandDeviceManagement)(nil)
+var _ CBusCommandRequirements = (*_CBusCommandDeviceManagement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -155,6 +156,7 @@ func (m *_CBusCommandDeviceManagement) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_CBusCommandDeviceManagement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusCommand, cBusOptions CBusOptions) (__cBusCommandDeviceManagement CBusCommandDeviceManagement, err error) {
 	m.CBusCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandDeviceManagement"); pullErr != nil {

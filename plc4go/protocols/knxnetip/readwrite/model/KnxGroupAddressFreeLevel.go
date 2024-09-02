@@ -57,6 +57,7 @@ type _KnxGroupAddressFreeLevel struct {
 }
 
 var _ KnxGroupAddressFreeLevel = (*_KnxGroupAddressFreeLevel)(nil)
+var _ KnxGroupAddressRequirements = (*_KnxGroupAddressFreeLevel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_KnxGroupAddressFreeLevel) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_KnxGroupAddressFreeLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxGroupAddress, numLevels uint8) (__knxGroupAddressFreeLevel KnxGroupAddressFreeLevel, err error) {
 	m.KnxGroupAddressContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxGroupAddressFreeLevel"); pullErr != nil {

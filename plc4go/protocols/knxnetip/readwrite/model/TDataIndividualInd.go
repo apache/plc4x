@@ -52,6 +52,7 @@ type _TDataIndividualInd struct {
 }
 
 var _ TDataIndividualInd = (*_TDataIndividualInd)(nil)
+var _ CEMIRequirements = (*_TDataIndividualInd)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_TDataIndividualInd) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_TDataIndividualInd) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__tDataIndividualInd TDataIndividualInd, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TDataIndividualInd"); pullErr != nil {

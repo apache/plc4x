@@ -70,6 +70,7 @@ type _RequestCommand struct {
 }
 
 var _ RequestCommand = (*_RequestCommand)(nil)
+var _ RequestRequirements = (*_RequestCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,7 +115,7 @@ func (m *_RequestCommand) GetAlpha() Alpha {
 func (m *_RequestCommand) GetCbusCommandDecoded() CBusCommand {
 	ctx := context.Background()
 	_ = ctx
-	alpha := m.Alpha
+	alpha := m.GetAlpha()
 	_ = alpha
 	return CastCBusCommand(m.GetCbusCommand())
 }
@@ -122,7 +123,7 @@ func (m *_RequestCommand) GetCbusCommandDecoded() CBusCommand {
 func (m *_RequestCommand) GetChksumDecoded() Checksum {
 	ctx := context.Background()
 	_ = ctx
-	alpha := m.Alpha
+	alpha := m.GetAlpha()
 	_ = alpha
 	return CastChecksum(m.GetChksum())
 }
@@ -201,6 +202,7 @@ func (m *_RequestCommand) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RequestCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestCommand RequestCommand, err error) {
 	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestCommand"); pullErr != nil {

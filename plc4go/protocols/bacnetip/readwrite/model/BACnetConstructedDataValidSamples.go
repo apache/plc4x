@@ -59,6 +59,7 @@ type _BACnetConstructedDataValidSamples struct {
 }
 
 var _ BACnetConstructedDataValidSamples = (*_BACnetConstructedDataValidSamples)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValidSamples)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataValidSamples) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetConstructedDataValidSamples) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataValidSamples BACnetConstructedDataValidSamples, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataValidSamples"); pullErr != nil {

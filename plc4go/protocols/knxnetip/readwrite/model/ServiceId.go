@@ -48,6 +48,8 @@ type ServiceIdContract interface {
 
 // ServiceIdRequirements provides a set of functions which need to be implemented by a sub struct
 type ServiceIdRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetServiceType returns ServiceType (discriminator field)
 	GetServiceType() uint8
 }
@@ -61,16 +63,10 @@ type ServiceIdExactly interface {
 
 // _ServiceId is the data-structure of this message
 type _ServiceId struct {
-	_ServiceIdChildRequirements
+	_SubType ServiceId
 }
 
 var _ ServiceIdContract = (*_ServiceId)(nil)
-
-type _ServiceIdChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetServiceType() uint8
-}
 
 type ServiceIdChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_ServiceId) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ServiceId) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ServiceIdParse[T ServiceId](ctx context.Context, theBytes []byte) (T, error) {

@@ -52,6 +52,10 @@ type BACnetClientCOVContract interface {
 
 // BACnetClientCOVRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetClientCOVRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetClientCOVExactly can be used when we want exactly this type and not a type which fulfills BACnetClientCOV.
@@ -63,17 +67,11 @@ type BACnetClientCOVExactly interface {
 
 // _BACnetClientCOV is the data-structure of this message
 type _BACnetClientCOV struct {
-	_BACnetClientCOVChildRequirements
+	_SubType        BACnetClientCOV
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetClientCOVContract = (*_BACnetClientCOV)(nil)
-
-type _BACnetClientCOVChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetClientCOVChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetClientCOV) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetClientCOV) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetClientCOV) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetClientCOV) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetClientCOV) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetClientCOVParse[T BACnetClientCOV](ctx context.Context, theBytes []byte) (T, error) {

@@ -69,6 +69,7 @@ type _DeleteSubscriptionsResponse struct {
 }
 
 var _ DeleteSubscriptionsResponse = (*_DeleteSubscriptionsResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DeleteSubscriptionsResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -187,6 +188,7 @@ func (m *_DeleteSubscriptionsResponse) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_DeleteSubscriptionsResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteSubscriptionsResponse DeleteSubscriptionsResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeleteSubscriptionsResponse"); pullErr != nil {

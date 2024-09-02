@@ -57,6 +57,7 @@ type _BACnetProcessIdSelectionNull struct {
 }
 
 var _ BACnetProcessIdSelectionNull = (*_BACnetProcessIdSelectionNull)(nil)
+var _ BACnetProcessIdSelectionRequirements = (*_BACnetProcessIdSelectionNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetProcessIdSelectionNull) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_BACnetProcessIdSelectionNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetProcessIdSelection) (__bACnetProcessIdSelectionNull BACnetProcessIdSelectionNull, err error) {
 	m.BACnetProcessIdSelectionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetProcessIdSelectionNull"); pullErr != nil {

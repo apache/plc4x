@@ -61,6 +61,7 @@ type _TelephonyDataRecallLastNumberRequest struct {
 }
 
 var _ TelephonyDataRecallLastNumberRequest = (*_TelephonyDataRecallLastNumberRequest)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataRecallLastNumberRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -154,6 +155,7 @@ func (m *_TelephonyDataRecallLastNumberRequest) GetLengthInBytes(ctx context.Con
 
 func (m *_TelephonyDataRecallLastNumberRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData) (__telephonyDataRecallLastNumberRequest TelephonyDataRecallLastNumberRequest, err error) {
 	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataRecallLastNumberRequest"); pullErr != nil {

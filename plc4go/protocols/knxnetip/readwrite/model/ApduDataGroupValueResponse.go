@@ -60,6 +60,7 @@ type _ApduDataGroupValueResponse struct {
 }
 
 var _ ApduDataGroupValueResponse = (*_ApduDataGroupValueResponse)(nil)
+var _ ApduDataRequirements = (*_ApduDataGroupValueResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_ApduDataGroupValueResponse) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_ApduDataGroupValueResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataGroupValueResponse ApduDataGroupValueResponse, err error) {
 	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueResponse"); pullErr != nil {

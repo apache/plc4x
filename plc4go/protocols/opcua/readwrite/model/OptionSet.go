@@ -60,6 +60,7 @@ type _OptionSet struct {
 }
 
 var _ OptionSet = (*_OptionSet)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_OptionSet)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_OptionSet) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_OptionSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__optionSet OptionSet, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("OptionSet"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetFaultParameterFaultExtendedParametersEntryNull struct {
 }
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryNull = (*_BACnetFaultParameterFaultExtendedParametersEntryNull)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) GetLengthInBytes
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryNull BACnetFaultParameterFaultExtendedParametersEntryNull, err error) {
 	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryNull"); pullErr != nil {

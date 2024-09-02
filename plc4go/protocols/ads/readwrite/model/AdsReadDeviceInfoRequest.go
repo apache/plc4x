@@ -52,6 +52,7 @@ type _AdsReadDeviceInfoRequest struct {
 }
 
 var _ AdsReadDeviceInfoRequest = (*_AdsReadDeviceInfoRequest)(nil)
+var _ AmsPacketRequirements = (*_AdsReadDeviceInfoRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_AdsReadDeviceInfoRequest) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_AdsReadDeviceInfoRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsReadDeviceInfoRequest AdsReadDeviceInfoRequest, err error) {
 	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoRequest"); pullErr != nil {

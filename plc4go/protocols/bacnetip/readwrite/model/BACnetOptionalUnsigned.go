@@ -52,6 +52,10 @@ type BACnetOptionalUnsignedContract interface {
 
 // BACnetOptionalUnsignedRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetOptionalUnsignedRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetOptionalUnsignedExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalUnsigned.
@@ -63,17 +67,11 @@ type BACnetOptionalUnsignedExactly interface {
 
 // _BACnetOptionalUnsigned is the data-structure of this message
 type _BACnetOptionalUnsigned struct {
-	_BACnetOptionalUnsignedChildRequirements
+	_SubType        BACnetOptionalUnsigned
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetOptionalUnsignedContract = (*_BACnetOptionalUnsigned)(nil)
-
-type _BACnetOptionalUnsignedChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetOptionalUnsignedChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetOptionalUnsigned) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetOptionalUnsigned) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetOptionalUnsigned) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetOptionalUnsigned) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetOptionalUnsigned) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetOptionalUnsignedParse[T BACnetOptionalUnsigned](ctx context.Context, theBytes []byte) (T, error) {

@@ -72,6 +72,7 @@ type _AxisInformation struct {
 }
 
 var _ AxisInformation = (*_AxisInformation)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AxisInformation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -186,6 +187,7 @@ func (m *_AxisInformation) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_AxisInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__axisInformation AxisInformation, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AxisInformation"); pullErr != nil {

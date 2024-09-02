@@ -81,6 +81,7 @@ type _QueryFirstResponse struct {
 }
 
 var _ QueryFirstResponse = (*_QueryFirstResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_QueryFirstResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -238,6 +239,7 @@ func (m *_QueryFirstResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_QueryFirstResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryFirstResponse QueryFirstResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("QueryFirstResponse"); pullErr != nil {

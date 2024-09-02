@@ -52,6 +52,7 @@ type _BACnetConstructedDataEscalatorAll struct {
 }
 
 var _ BACnetConstructedDataEscalatorAll = (*_BACnetConstructedDataEscalatorAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEscalatorAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_BACnetConstructedDataEscalatorAll) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetConstructedDataEscalatorAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataEscalatorAll BACnetConstructedDataEscalatorAll, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEscalatorAll"); pullErr != nil {

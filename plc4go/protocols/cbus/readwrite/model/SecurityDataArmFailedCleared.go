@@ -52,6 +52,7 @@ type _SecurityDataArmFailedCleared struct {
 }
 
 var _ SecurityDataArmFailedCleared = (*_SecurityDataArmFailedCleared)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataArmFailedCleared)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataArmFailedCleared) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_SecurityDataArmFailedCleared) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataArmFailedCleared SecurityDataArmFailedCleared, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataArmFailedCleared"); pullErr != nil {

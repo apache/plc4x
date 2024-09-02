@@ -60,6 +60,7 @@ type _NLMUpdateKeyDistributionKey struct {
 }
 
 var _ NLMUpdateKeyDistributionKey = (*_NLMUpdateKeyDistributionKey)(nil)
+var _ NLMRequirements = (*_NLMUpdateKeyDistributionKey)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_NLMUpdateKeyDistributionKey) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_NLMUpdateKeyDistributionKey) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMUpdateKeyDistributionKey NLMUpdateKeyDistributionKey, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMUpdateKeyDistributionKey"); pullErr != nil {

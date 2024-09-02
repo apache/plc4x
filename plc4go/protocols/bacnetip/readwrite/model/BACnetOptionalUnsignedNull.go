@@ -57,6 +57,7 @@ type _BACnetOptionalUnsignedNull struct {
 }
 
 var _ BACnetOptionalUnsignedNull = (*_BACnetOptionalUnsignedNull)(nil)
+var _ BACnetOptionalUnsignedRequirements = (*_BACnetOptionalUnsignedNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetOptionalUnsignedNull) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_BACnetOptionalUnsignedNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetOptionalUnsigned) (__bACnetOptionalUnsignedNull BACnetOptionalUnsignedNull, err error) {
 	m.BACnetOptionalUnsignedContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalUnsignedNull"); pullErr != nil {

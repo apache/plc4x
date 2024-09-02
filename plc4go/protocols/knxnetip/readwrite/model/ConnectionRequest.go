@@ -65,6 +65,7 @@ type _ConnectionRequest struct {
 }
 
 var _ ConnectionRequest = (*_ConnectionRequest)(nil)
+var _ KnxNetIpMessageRequirements = (*_ConnectionRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -153,6 +154,7 @@ func (m *_ConnectionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ConnectionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__connectionRequest ConnectionRequest, err error) {
 	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequest"); pullErr != nil {

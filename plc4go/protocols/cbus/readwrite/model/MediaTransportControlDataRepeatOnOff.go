@@ -63,6 +63,7 @@ type _MediaTransportControlDataRepeatOnOff struct {
 }
 
 var _ MediaTransportControlDataRepeatOnOff = (*_MediaTransportControlDataRepeatOnOff)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataRepeatOnOff)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -164,6 +165,7 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetLengthInBytes(ctx context.Con
 
 func (m *_MediaTransportControlDataRepeatOnOff) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataRepeatOnOff MediaTransportControlDataRepeatOnOff, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataRepeatOnOff"); pullErr != nil {

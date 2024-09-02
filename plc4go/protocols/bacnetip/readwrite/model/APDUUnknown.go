@@ -60,6 +60,7 @@ type _APDUUnknown struct {
 }
 
 var _ APDUUnknown = (*_APDUUnknown)(nil)
+var _ APDURequirements = (*_APDUUnknown)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_APDUUnknown) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_APDUUnknown) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUUnknown APDUUnknown, err error) {
 	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUUnknown"); pullErr != nil {

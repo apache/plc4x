@@ -60,6 +60,7 @@ type _ModbusPDUReadCoilsRequest struct {
 }
 
 var _ ModbusPDUReadCoilsRequest = (*_ModbusPDUReadCoilsRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUReadCoilsRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -148,6 +149,7 @@ func (m *_ModbusPDUReadCoilsRequest) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_ModbusPDUReadCoilsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUReadCoilsRequest ModbusPDUReadCoilsRequest, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadCoilsRequest"); pullErr != nil {

@@ -60,6 +60,7 @@ type _NLMSecurityPayload struct {
 }
 
 var _ NLMSecurityPayload = (*_NLMSecurityPayload)(nil)
+var _ NLMRequirements = (*_NLMSecurityPayload)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_NLMSecurityPayload) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NLMSecurityPayload) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMSecurityPayload NLMSecurityPayload, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMSecurityPayload"); pullErr != nil {

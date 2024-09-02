@@ -52,6 +52,7 @@ type _BACnetConstructedDataStructuredViewAll struct {
 }
 
 var _ BACnetConstructedDataStructuredViewAll = (*_BACnetConstructedDataStructuredViewAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStructuredViewAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_BACnetConstructedDataStructuredViewAll) GetLengthInBytes(ctx context.C
 
 func (m *_BACnetConstructedDataStructuredViewAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataStructuredViewAll BACnetConstructedDataStructuredViewAll, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStructuredViewAll"); pullErr != nil {

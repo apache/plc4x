@@ -59,6 +59,7 @@ type _BACnetConstructedDataMaximumOutput struct {
 }
 
 var _ BACnetConstructedDataMaximumOutput = (*_BACnetConstructedDataMaximumOutput)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaximumOutput)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataMaximumOutput) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataMaximumOutput) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMaximumOutput BACnetConstructedDataMaximumOutput, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaximumOutput"); pullErr != nil {

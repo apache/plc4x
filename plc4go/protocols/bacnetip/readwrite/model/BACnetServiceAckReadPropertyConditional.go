@@ -60,6 +60,7 @@ type _BACnetServiceAckReadPropertyConditional struct {
 }
 
 var _ BACnetServiceAckReadPropertyConditional = (*_BACnetServiceAckReadPropertyConditional)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadPropertyConditional)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBytes(ctx context.
 
 func (m *_BACnetServiceAckReadPropertyConditional) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckPayloadLength uint32, serviceAckLength uint32) (__bACnetServiceAckReadPropertyConditional BACnetServiceAckReadPropertyConditional, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyConditional"); pullErr != nil {

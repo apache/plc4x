@@ -78,6 +78,7 @@ type _BACnetNotificationParametersChangeOfTimer struct {
 }
 
 var _ BACnetNotificationParametersChangeOfTimer = (*_BACnetNotificationParametersChangeOfTimer)(nil)
+var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfTimer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -208,6 +209,7 @@ func (m *_BACnetNotificationParametersChangeOfTimer) GetLengthInBytes(ctx contex
 
 func (m *_BACnetNotificationParametersChangeOfTimer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParameters, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetNotificationParametersChangeOfTimer BACnetNotificationParametersChangeOfTimer, err error) {
 	m.BACnetNotificationParametersContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfTimer"); pullErr != nil {

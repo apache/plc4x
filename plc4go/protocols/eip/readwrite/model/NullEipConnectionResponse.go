@@ -52,6 +52,7 @@ type _NullEipConnectionResponse struct {
 }
 
 var _ NullEipConnectionResponse = (*_NullEipConnectionResponse)(nil)
+var _ EipPacketRequirements = (*_NullEipConnectionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ func (m *_NullEipConnectionResponse) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_NullEipConnectionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__nullEipConnectionResponse NullEipConnectionResponse, err error) {
 	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NullEipConnectionResponse"); pullErr != nil {

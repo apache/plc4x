@@ -60,6 +60,7 @@ type _VariantBoolean struct {
 }
 
 var _ VariantBoolean = (*_VariantBoolean)(nil)
+var _ VariantRequirements = (*_VariantBoolean)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_VariantBoolean) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantBoolean) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantBoolean VariantBoolean, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantBoolean"); pullErr != nil {

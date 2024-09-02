@@ -60,6 +60,7 @@ type _VariantExtensionObject struct {
 }
 
 var _ VariantExtensionObject = (*_VariantExtensionObject)(nil)
+var _ VariantRequirements = (*_VariantExtensionObject)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -149,6 +150,7 @@ func (m *_VariantExtensionObject) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantExtensionObject) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantExtensionObject VariantExtensionObject, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantExtensionObject"); pullErr != nil {

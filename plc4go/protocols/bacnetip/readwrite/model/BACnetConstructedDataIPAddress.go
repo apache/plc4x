@@ -59,6 +59,7 @@ type _BACnetConstructedDataIPAddress struct {
 }
 
 var _ BACnetConstructedDataIPAddress = (*_BACnetConstructedDataIPAddress)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataIPAddress) GetLengthInBytes(ctx context.Context) 
 
 func (m *_BACnetConstructedDataIPAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIPAddress BACnetConstructedDataIPAddress, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPAddress"); pullErr != nil {

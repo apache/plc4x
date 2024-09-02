@@ -63,6 +63,7 @@ type _RedundantServerDataType struct {
 }
 
 var _ RedundantServerDataType = (*_RedundantServerDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RedundantServerDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_RedundantServerDataType) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_RedundantServerDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__redundantServerDataType RedundantServerDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RedundantServerDataType"); pullErr != nil {

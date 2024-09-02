@@ -59,6 +59,7 @@ type _BACnetConstructedDataBACnetIPv6Mode struct {
 }
 
 var _ BACnetConstructedDataBACnetIPv6Mode = (*_BACnetConstructedDataBACnetIPv6Mode)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPv6Mode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConstructedDataBACnetIPv6Mode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBACnetIPv6Mode BACnetConstructedDataBACnetIPv6Mode, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6Mode"); pullErr != nil {

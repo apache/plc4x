@@ -57,6 +57,7 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier 
 }
 
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier)(nil)
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentif
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParametersChangeOfDiscreteValueNewValue, tagNumber uint8) (__bACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier, err error) {
 	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier"); pullErr != nil {

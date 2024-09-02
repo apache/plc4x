@@ -60,6 +60,7 @@ type _VariantExpandedNodeId struct {
 }
 
 var _ VariantExpandedNodeId = (*_VariantExpandedNodeId)(nil)
+var _ VariantRequirements = (*_VariantExpandedNodeId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -149,6 +150,7 @@ func (m *_VariantExpandedNodeId) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantExpandedNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantExpandedNodeId VariantExpandedNodeId, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantExpandedNodeId"); pullErr != nil {

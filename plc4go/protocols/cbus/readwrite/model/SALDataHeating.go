@@ -57,6 +57,7 @@ type _SALDataHeating struct {
 }
 
 var _ SALDataHeating = (*_SALDataHeating)(nil)
+var _ SALDataRequirements = (*_SALDataHeating)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataHeating) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataHeating) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataHeating SALDataHeating, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataHeating"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetApplicationTagSignedInteger struct {
 }
 
 var _ BACnetApplicationTagSignedInteger = (*_BACnetApplicationTagSignedInteger)(nil)
+var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagSignedInteger)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_BACnetApplicationTagSignedInteger) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetApplicationTagSignedInteger) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetApplicationTag, header BACnetTagHeader) (__bACnetApplicationTagSignedInteger BACnetApplicationTagSignedInteger, err error) {
 	m.BACnetApplicationTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagSignedInteger"); pullErr != nil {

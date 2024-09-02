@@ -52,6 +52,7 @@ type _SetAttributeListRequest struct {
 }
 
 var _ SetAttributeListRequest = (*_SetAttributeListRequest)(nil)
+var _ CipServiceRequirements = (*_SetAttributeListRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ func (m *_SetAttributeListRequest) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_SetAttributeListRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__setAttributeListRequest SetAttributeListRequest, err error) {
 	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SetAttributeListRequest"); pullErr != nil {

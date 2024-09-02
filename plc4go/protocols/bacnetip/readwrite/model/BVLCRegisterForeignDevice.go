@@ -59,6 +59,7 @@ type _BVLCRegisterForeignDevice struct {
 }
 
 var _ BVLCRegisterForeignDevice = (*_BVLCRegisterForeignDevice)(nil)
+var _ BVLCRequirements = (*_BVLCRegisterForeignDevice)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_BVLCRegisterForeignDevice) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_BVLCRegisterForeignDevice) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC) (__bVLCRegisterForeignDevice BVLCRegisterForeignDevice, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCRegisterForeignDevice"); pullErr != nil {

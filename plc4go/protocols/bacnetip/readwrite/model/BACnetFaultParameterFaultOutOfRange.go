@@ -66,6 +66,7 @@ type _BACnetFaultParameterFaultOutOfRange struct {
 }
 
 var _ BACnetFaultParameterFaultOutOfRange = (*_BACnetFaultParameterFaultOutOfRange)(nil)
+var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultOutOfRange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_BACnetFaultParameterFaultOutOfRange) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetFaultParameterFaultOutOfRange) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameter) (__bACnetFaultParameterFaultOutOfRange BACnetFaultParameterFaultOutOfRange, err error) {
 	m.BACnetFaultParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRange"); pullErr != nil {

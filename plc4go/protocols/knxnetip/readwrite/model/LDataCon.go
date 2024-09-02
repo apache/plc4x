@@ -63,6 +63,7 @@ type _LDataCon struct {
 }
 
 var _ LDataCon = (*_LDataCon)(nil)
+var _ CEMIRequirements = (*_LDataCon)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -155,6 +156,7 @@ func (m *_LDataCon) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LDataCon) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__lDataCon LDataCon, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataCon"); pullErr != nil {

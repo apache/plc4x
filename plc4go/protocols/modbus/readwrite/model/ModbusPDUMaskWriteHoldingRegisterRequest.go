@@ -63,6 +63,7 @@ type _ModbusPDUMaskWriteHoldingRegisterRequest struct {
 }
 
 var _ ModbusPDUMaskWriteHoldingRegisterRequest = (*_ModbusPDUMaskWriteHoldingRegisterRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUMaskWriteHoldingRegisterRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -159,6 +160,7 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetLengthInBytes(ctx context
 
 func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUMaskWriteHoldingRegisterRequest ModbusPDUMaskWriteHoldingRegisterRequest, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUMaskWriteHoldingRegisterRequest"); pullErr != nil {

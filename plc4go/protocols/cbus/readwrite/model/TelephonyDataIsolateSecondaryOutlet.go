@@ -61,6 +61,7 @@ type _TelephonyDataIsolateSecondaryOutlet struct {
 }
 
 var _ TelephonyDataIsolateSecondaryOutlet = (*_TelephonyDataIsolateSecondaryOutlet)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataIsolateSecondaryOutlet)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -154,6 +155,7 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBytes(ctx context.Cont
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData) (__telephonyDataIsolateSecondaryOutlet TelephonyDataIsolateSecondaryOutlet, err error) {
 	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataIsolateSecondaryOutlet"); pullErr != nil {

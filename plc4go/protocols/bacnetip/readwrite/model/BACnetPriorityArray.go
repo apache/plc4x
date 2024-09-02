@@ -127,7 +127,7 @@ func (m *_BACnetPriorityArray) GetData() []BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -135,7 +135,7 @@ func (m *_BACnetPriorityArray) GetZero() uint64 {
 func (m *_BACnetPriorityArray) GetPriorityValue01() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (0)), func() any { return CastBACnetPriorityValue(m.GetData()[0]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -143,7 +143,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue01() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue02() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (1)), func() any { return CastBACnetPriorityValue(m.GetData()[1]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -151,7 +151,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue02() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue03() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (2)), func() any { return CastBACnetPriorityValue(m.GetData()[2]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -159,7 +159,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue03() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue04() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (3)), func() any { return CastBACnetPriorityValue(m.GetData()[3]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -167,7 +167,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue04() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue05() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (4)), func() any { return CastBACnetPriorityValue(m.GetData()[4]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -175,7 +175,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue05() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue06() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (5)), func() any { return CastBACnetPriorityValue(m.GetData()[5]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -183,7 +183,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue06() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue07() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (6)), func() any { return CastBACnetPriorityValue(m.GetData()[6]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -191,7 +191,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue07() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue08() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (7)), func() any { return CastBACnetPriorityValue(m.GetData()[7]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -199,7 +199,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue08() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue09() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (8)), func() any { return CastBACnetPriorityValue(m.GetData()[8]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -207,7 +207,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue09() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue10() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (9)), func() any { return CastBACnetPriorityValue(m.GetData()[9]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -215,7 +215,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue10() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue11() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (10)), func() any { return CastBACnetPriorityValue(m.GetData()[10]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -223,7 +223,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue11() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue12() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (11)), func() any { return CastBACnetPriorityValue(m.GetData()[11]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -231,7 +231,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue12() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue13() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (12)), func() any { return CastBACnetPriorityValue(m.GetData()[12]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -239,7 +239,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue13() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue14() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (13)), func() any { return CastBACnetPriorityValue(m.GetData()[13]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -247,7 +247,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue14() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue15() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (14)), func() any { return CastBACnetPriorityValue(m.GetData()[14]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -255,7 +255,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue15() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetPriorityValue16() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (15)), func() any { return CastBACnetPriorityValue(m.GetData()[15]) }, func() any { return CastBACnetPriorityValue(nil) })))
 }
@@ -263,7 +263,7 @@ func (m *_BACnetPriorityArray) GetPriorityValue16() BACnetPriorityValue {
 func (m *_BACnetPriorityArray) GetIsIndexedAccess() bool {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return bool(bool((len(m.GetData())) == (1)))
 }
@@ -271,7 +271,7 @@ func (m *_BACnetPriorityArray) GetIsIndexedAccess() bool {
 func (m *_BACnetPriorityArray) GetIndexEntry() BACnetPriorityValue {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(m.GetPriorityValue01())
 }

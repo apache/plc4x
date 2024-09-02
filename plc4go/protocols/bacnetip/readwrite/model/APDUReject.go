@@ -62,6 +62,7 @@ type _APDUReject struct {
 }
 
 var _ APDUReject = (*_APDUReject)(nil)
+var _ APDURequirements = (*_APDUReject)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,6 +146,7 @@ func (m *_APDUReject) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_APDUReject) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUReject APDUReject, err error) {
 	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUReject"); pullErr != nil {

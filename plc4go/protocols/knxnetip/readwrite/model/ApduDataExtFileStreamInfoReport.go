@@ -52,6 +52,7 @@ type _ApduDataExtFileStreamInfoReport struct {
 }
 
 var _ ApduDataExtFileStreamInfoReport = (*_ApduDataExtFileStreamInfoReport)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtFileStreamInfoReport)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtFileStreamInfoReport) GetLengthInBytes(ctx context.Context)
 
 func (m *_ApduDataExtFileStreamInfoReport) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtFileStreamInfoReport ApduDataExtFileStreamInfoReport, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtFileStreamInfoReport"); pullErr != nil {

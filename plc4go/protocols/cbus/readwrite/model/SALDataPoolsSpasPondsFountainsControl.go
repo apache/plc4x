@@ -57,6 +57,7 @@ type _SALDataPoolsSpasPondsFountainsControl struct {
 }
 
 var _ SALDataPoolsSpasPondsFountainsControl = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
+var _ SALDataRequirements = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBytes(ctx context.Co
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataPoolsSpasPondsFountainsControl SALDataPoolsSpasPondsFountainsControl, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataPoolsSpasPondsFountainsControl"); pullErr != nil {

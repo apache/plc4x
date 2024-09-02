@@ -62,6 +62,7 @@ type _FirmataMessageDigitalIO struct {
 }
 
 var _ FirmataMessageDigitalIO = (*_FirmataMessageDigitalIO)(nil)
+var _ FirmataMessageRequirements = (*_FirmataMessageDigitalIO)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_FirmataMessageDigitalIO) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_FirmataMessageDigitalIO) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataMessage, response bool) (__firmataMessageDigitalIO FirmataMessageDigitalIO, err error) {
 	m.FirmataMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageDigitalIO"); pullErr != nil {

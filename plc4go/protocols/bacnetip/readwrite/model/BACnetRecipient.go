@@ -52,6 +52,10 @@ type BACnetRecipientContract interface {
 
 // BACnetRecipientRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetRecipientRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetRecipientExactly can be used when we want exactly this type and not a type which fulfills BACnetRecipient.
@@ -63,17 +67,11 @@ type BACnetRecipientExactly interface {
 
 // _BACnetRecipient is the data-structure of this message
 type _BACnetRecipient struct {
-	_BACnetRecipientChildRequirements
+	_SubType        BACnetRecipient
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetRecipientContract = (*_BACnetRecipient)(nil)
-
-type _BACnetRecipientChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetRecipientChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetRecipient) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetRecipient) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetRecipient) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetRecipient) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetRecipient) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetRecipientParse[T BACnetRecipient](ctx context.Context, theBytes []byte) (T, error) {

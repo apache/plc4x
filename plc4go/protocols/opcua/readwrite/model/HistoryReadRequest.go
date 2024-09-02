@@ -74,6 +74,7 @@ type _HistoryReadRequest struct {
 }
 
 var _ HistoryReadRequest = (*_HistoryReadRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -196,6 +197,7 @@ func (m *_HistoryReadRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_HistoryReadRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyReadRequest HistoryReadRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HistoryReadRequest"); pullErr != nil {

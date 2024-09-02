@@ -53,6 +53,8 @@ type KnxNetIpMessageContract interface {
 
 // KnxNetIpMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type KnxNetIpMessageRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetMsgType returns MsgType (discriminator field)
 	GetMsgType() uint16
 }
@@ -66,16 +68,10 @@ type KnxNetIpMessageExactly interface {
 
 // _KnxNetIpMessage is the data-structure of this message
 type _KnxNetIpMessage struct {
-	_KnxNetIpMessageChildRequirements
+	_SubType KnxNetIpMessage
 }
 
 var _ KnxNetIpMessageContract = (*_KnxNetIpMessage)(nil)
-
-type _KnxNetIpMessageChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetMsgType() uint16
-}
 
 type KnxNetIpMessageChild interface {
 	utils.Serializable
@@ -138,7 +134,7 @@ func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_KnxNetIpMessage) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func KnxNetIpMessageParse[T KnxNetIpMessage](ctx context.Context, theBytes []byte) (T, error) {

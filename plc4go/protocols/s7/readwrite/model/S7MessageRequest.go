@@ -52,6 +52,7 @@ type _S7MessageRequest struct {
 }
 
 var _ S7MessageRequest = (*_S7MessageRequest)(nil)
+var _ S7MessageRequirements = (*_S7MessageRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_S7MessageRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_S7MessageRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Message) (__s7MessageRequest S7MessageRequest, err error) {
 	m.S7MessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageRequest"); pullErr != nil {

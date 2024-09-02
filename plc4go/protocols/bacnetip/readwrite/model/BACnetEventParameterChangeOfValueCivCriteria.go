@@ -58,6 +58,10 @@ type BACnetEventParameterChangeOfValueCivCriteriaContract interface {
 
 // BACnetEventParameterChangeOfValueCivCriteriaRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetEventParameterChangeOfValueCivCriteriaRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetEventParameterChangeOfValueCivCriteriaExactly can be used when we want exactly this type and not a type which fulfills BACnetEventParameterChangeOfValueCivCriteria.
@@ -69,7 +73,7 @@ type BACnetEventParameterChangeOfValueCivCriteriaExactly interface {
 
 // _BACnetEventParameterChangeOfValueCivCriteria is the data-structure of this message
 type _BACnetEventParameterChangeOfValueCivCriteria struct {
-	_BACnetEventParameterChangeOfValueCivCriteriaChildRequirements
+	_SubType        BACnetEventParameterChangeOfValueCivCriteria
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
@@ -79,12 +83,6 @@ type _BACnetEventParameterChangeOfValueCivCriteria struct {
 }
 
 var _ BACnetEventParameterChangeOfValueCivCriteriaContract = (*_BACnetEventParameterChangeOfValueCivCriteria)(nil)
-
-type _BACnetEventParameterChangeOfValueCivCriteriaChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetEventParameterChangeOfValueCivCriteriaChild interface {
 	utils.Serializable
@@ -121,7 +119,8 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetClosingTag() BACnetCl
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetEventParameterChangeOfValueCivCriteria) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -167,7 +166,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) getLengthInBits(ctx cont
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventParameterChangeOfValueCivCriteriaParse[T BACnetEventParameterChangeOfValueCivCriteria](ctx context.Context, theBytes []byte, tagNumber uint8) (T, error) {

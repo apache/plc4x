@@ -69,6 +69,7 @@ type _BACnetConfirmedServiceRequestAtomicWriteFile struct {
 }
 
 var _ BACnetConfirmedServiceRequestAtomicWriteFile = (*_BACnetConfirmedServiceRequestAtomicWriteFile)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAtomicWriteFile)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -177,6 +178,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetLengthInBytes(ctx con
 
 func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestAtomicWriteFile BACnetConfirmedServiceRequestAtomicWriteFile, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicWriteFile"); pullErr != nil {

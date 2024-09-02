@@ -69,6 +69,7 @@ type _ParsingResult struct {
 }
 
 var _ ParsingResult = (*_ParsingResult)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ParsingResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -187,6 +188,7 @@ func (m *_ParsingResult) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ParsingResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__parsingResult ParsingResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParsingResult"); pullErr != nil {

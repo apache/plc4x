@@ -69,6 +69,7 @@ type _CycServiceItemAnyType struct {
 }
 
 var _ CycServiceItemAnyType = (*_CycServiceItemAnyType)(nil)
+var _ CycServiceItemTypeRequirements = (*_CycServiceItemAnyType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,6 +170,7 @@ func (m *_CycServiceItemAnyType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CycServiceItemAnyType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CycServiceItemType) (__cycServiceItemAnyType CycServiceItemAnyType, err error) {
 	m.CycServiceItemTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CycServiceItemAnyType"); pullErr != nil {

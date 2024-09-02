@@ -60,6 +60,7 @@ type _IdentityMappingRuleType struct {
 }
 
 var _ IdentityMappingRuleType = (*_IdentityMappingRuleType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_IdentityMappingRuleType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_IdentityMappingRuleType) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_IdentityMappingRuleType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__identityMappingRuleType IdentityMappingRuleType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentityMappingRuleType"); pullErr != nil {

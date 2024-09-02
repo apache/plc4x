@@ -87,6 +87,7 @@ type _NLMUpdateKeyUpdate struct {
 }
 
 var _ NLMUpdateKeyUpdate = (*_NLMUpdateKeyUpdate)(nil)
+var _ NLMRequirements = (*_NLMUpdateKeyUpdate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -269,6 +270,7 @@ func (m *_NLMUpdateKeyUpdate) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NLMUpdateKeyUpdate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMUpdateKeyUpdate NLMUpdateKeyUpdate, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMUpdateKeyUpdate"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataEgressActive struct {
 }
 
 var _ BACnetConstructedDataEgressActive = (*_BACnetConstructedDataEgressActive)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEgressActive)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataEgressActive) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetConstructedDataEgressActive) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataEgressActive BACnetConstructedDataEgressActive, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEgressActive"); pullErr != nil {

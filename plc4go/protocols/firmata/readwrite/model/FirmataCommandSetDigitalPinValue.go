@@ -62,6 +62,7 @@ type _FirmataCommandSetDigitalPinValue struct {
 }
 
 var _ FirmataCommandSetDigitalPinValue = (*_FirmataCommandSetDigitalPinValue)(nil)
+var _ FirmataCommandRequirements = (*_FirmataCommandSetDigitalPinValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,6 +146,7 @@ func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBytes(ctx context.Context
 
 func (m *_FirmataCommandSetDigitalPinValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataCommand, response bool) (__firmataCommandSetDigitalPinValue FirmataCommandSetDigitalPinValue, err error) {
 	m.FirmataCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSetDigitalPinValue"); pullErr != nil {

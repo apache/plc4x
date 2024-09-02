@@ -69,6 +69,7 @@ type _ClockAndTimekeepingDataUpdateDate struct {
 }
 
 var _ ClockAndTimekeepingDataUpdateDate = (*_ClockAndTimekeepingDataUpdateDate)(nil)
+var _ ClockAndTimekeepingDataRequirements = (*_ClockAndTimekeepingDataUpdateDate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,6 +170,7 @@ func (m *_ClockAndTimekeepingDataUpdateDate) GetLengthInBytes(ctx context.Contex
 
 func (m *_ClockAndTimekeepingDataUpdateDate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ClockAndTimekeepingData) (__clockAndTimekeepingDataUpdateDate ClockAndTimekeepingDataUpdateDate, err error) {
 	m.ClockAndTimekeepingDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ClockAndTimekeepingDataUpdateDate"); pullErr != nil {

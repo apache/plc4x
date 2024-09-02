@@ -54,12 +54,16 @@ type S7PayloadUserDataItemContract interface {
 
 // S7PayloadUserDataItemRequirements provides a set of functions which need to be implemented by a sub struct
 type S7PayloadUserDataItemRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCpuFunctionGroup returns CpuFunctionGroup (discriminator field)
 	GetCpuFunctionGroup() uint8
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)
 	GetCpuFunctionType() uint8
 	// GetCpuSubfunction returns CpuSubfunction (discriminator field)
 	GetCpuSubfunction() uint8
+	// GetDataLength returns DataLength (discriminator field)
+	GetDataLength() uint16
 }
 
 // S7PayloadUserDataItemExactly can be used when we want exactly this type and not a type which fulfills S7PayloadUserDataItem.
@@ -71,22 +75,13 @@ type S7PayloadUserDataItemExactly interface {
 
 // _S7PayloadUserDataItem is the data-structure of this message
 type _S7PayloadUserDataItem struct {
-	_S7PayloadUserDataItemChildRequirements
+	_SubType      S7PayloadUserDataItem
 	ReturnCode    DataTransportErrorCode
 	TransportSize DataTransportSize
 	DataLength    uint16
 }
 
 var _ S7PayloadUserDataItemContract = (*_S7PayloadUserDataItem)(nil)
-
-type _S7PayloadUserDataItemChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCpuFunctionGroup() uint8
-	GetCpuFunctionType() uint8
-	GetCpuSubfunction() uint8
-	GetDataLength() uint16
-}
 
 type S7PayloadUserDataItemChild interface {
 	utils.Serializable
@@ -155,7 +150,7 @@ func (m *_S7PayloadUserDataItem) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_S7PayloadUserDataItem) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func S7PayloadUserDataItemParse[T S7PayloadUserDataItem](ctx context.Context, theBytes []byte, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (T, error) {

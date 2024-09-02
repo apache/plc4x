@@ -66,6 +66,7 @@ type _PriorityMappingEntryType struct {
 }
 
 var _ PriorityMappingEntryType = (*_PriorityMappingEntryType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PriorityMappingEntryType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_PriorityMappingEntryType) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_PriorityMappingEntryType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__priorityMappingEntryType PriorityMappingEntryType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PriorityMappingEntryType"); pullErr != nil {

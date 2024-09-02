@@ -60,6 +60,7 @@ type _KeyValuePair struct {
 }
 
 var _ KeyValuePair = (*_KeyValuePair)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_KeyValuePair)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_KeyValuePair) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_KeyValuePair) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__keyValuePair KeyValuePair, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KeyValuePair"); pullErr != nil {

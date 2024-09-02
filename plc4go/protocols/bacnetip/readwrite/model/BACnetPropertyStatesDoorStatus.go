@@ -57,6 +57,7 @@ type _BACnetPropertyStatesDoorStatus struct {
 }
 
 var _ BACnetPropertyStatesDoorStatus = (*_BACnetPropertyStatesDoorStatus)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesDoorStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesDoorStatus) GetLengthInBytes(ctx context.Context) 
 
 func (m *_BACnetPropertyStatesDoorStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesDoorStatus BACnetPropertyStatesDoorStatus, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorStatus"); pullErr != nil {

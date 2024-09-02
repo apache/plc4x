@@ -66,6 +66,7 @@ type _ContentFilterResult struct {
 }
 
 var _ ContentFilterResult = (*_ContentFilterResult)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ContentFilterResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -176,6 +177,7 @@ func (m *_ContentFilterResult) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ContentFilterResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__contentFilterResult ContentFilterResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ContentFilterResult"); pullErr != nil {

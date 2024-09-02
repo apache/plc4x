@@ -57,6 +57,7 @@ type _LightingDataTerminateRamp struct {
 }
 
 var _ LightingDataTerminateRamp = (*_LightingDataTerminateRamp)(nil)
+var _ LightingDataRequirements = (*_LightingDataTerminateRamp)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_LightingDataTerminateRamp) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_LightingDataTerminateRamp) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LightingData) (__lightingDataTerminateRamp LightingDataTerminateRamp, err error) {
 	m.LightingDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataTerminateRamp"); pullErr != nil {

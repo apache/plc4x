@@ -57,6 +57,7 @@ type _BACnetRecipientDevice struct {
 }
 
 var _ BACnetRecipientDevice = (*_BACnetRecipientDevice)(nil)
+var _ BACnetRecipientRequirements = (*_BACnetRecipientDevice)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetRecipientDevice) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BACnetRecipientDevice) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetRecipient) (__bACnetRecipientDevice BACnetRecipientDevice, err error) {
 	m.BACnetRecipientContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRecipientDevice"); pullErr != nil {

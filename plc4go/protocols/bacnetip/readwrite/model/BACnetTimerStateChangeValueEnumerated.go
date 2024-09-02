@@ -57,6 +57,7 @@ type _BACnetTimerStateChangeValueEnumerated struct {
 }
 
 var _ BACnetTimerStateChangeValueEnumerated = (*_BACnetTimerStateChangeValueEnumerated)(nil)
+var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetTimerStateChangeValueEnumerated) GetLengthInBytes(ctx context.Co
 
 func (m *_BACnetTimerStateChangeValueEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetTimerStateChangeValue, objectTypeArgument BACnetObjectType) (__bACnetTimerStateChangeValueEnumerated BACnetTimerStateChangeValueEnumerated, err error) {
 	m.BACnetTimerStateChangeValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueEnumerated"); pullErr != nil {

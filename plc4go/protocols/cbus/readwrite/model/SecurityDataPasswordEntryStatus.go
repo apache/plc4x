@@ -67,6 +67,7 @@ type _SecurityDataPasswordEntryStatus struct {
 }
 
 var _ SecurityDataPasswordEntryStatus = (*_SecurityDataPasswordEntryStatus)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataPasswordEntryStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -184,6 +185,7 @@ func (m *_SecurityDataPasswordEntryStatus) GetLengthInBytes(ctx context.Context)
 
 func (m *_SecurityDataPasswordEntryStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataPasswordEntryStatus SecurityDataPasswordEntryStatus, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataPasswordEntryStatus"); pullErr != nil {

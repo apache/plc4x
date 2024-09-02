@@ -52,6 +52,7 @@ type _BACnetConstructedDataScheduleAll struct {
 }
 
 var _ BACnetConstructedDataScheduleAll = (*_BACnetConstructedDataScheduleAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScheduleAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_BACnetConstructedDataScheduleAll) GetLengthInBytes(ctx context.Context
 
 func (m *_BACnetConstructedDataScheduleAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataScheduleAll BACnetConstructedDataScheduleAll, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataScheduleAll"); pullErr != nil {

@@ -57,6 +57,7 @@ type _ModbusPDUReportServerIdResponse struct {
 }
 
 var _ ModbusPDUReportServerIdResponse = (*_ModbusPDUReportServerIdResponse)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUReportServerIdResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_ModbusPDUReportServerIdResponse) GetLengthInBytes(ctx context.Context)
 
 func (m *_ModbusPDUReportServerIdResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUReportServerIdResponse ModbusPDUReportServerIdResponse, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdResponse"); pullErr != nil {

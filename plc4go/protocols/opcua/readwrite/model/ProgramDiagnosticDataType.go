@@ -90,6 +90,7 @@ type _ProgramDiagnosticDataType struct {
 }
 
 var _ ProgramDiagnosticDataType = (*_ProgramDiagnosticDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ProgramDiagnosticDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -264,6 +265,7 @@ func (m *_ProgramDiagnosticDataType) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_ProgramDiagnosticDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__programDiagnosticDataType ProgramDiagnosticDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ProgramDiagnosticDataType"); pullErr != nil {

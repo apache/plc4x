@@ -52,6 +52,7 @@ type _MResetReq struct {
 }
 
 var _ MResetReq = (*_MResetReq)(nil)
+var _ CEMIRequirements = (*_MResetReq)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_MResetReq) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_MResetReq) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__mResetReq MResetReq, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MResetReq"); pullErr != nil {

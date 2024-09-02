@@ -57,6 +57,7 @@ type _IdentifyReplyCommandNetworkTerminalLevels struct {
 }
 
 var _ IdentifyReplyCommandNetworkTerminalLevels = (*_IdentifyReplyCommandNetworkTerminalLevels)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandNetworkTerminalLevels)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetLengthInBytes(ctx contex
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandNetworkTerminalLevels IdentifyReplyCommandNetworkTerminalLevels, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandNetworkTerminalLevels"); pullErr != nil {

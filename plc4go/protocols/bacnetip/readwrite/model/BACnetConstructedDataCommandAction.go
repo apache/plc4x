@@ -62,6 +62,7 @@ type _BACnetConstructedDataCommandAction struct {
 }
 
 var _ BACnetConstructedDataCommandAction = (*_BACnetConstructedDataCommandAction)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCommandAction)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataCommandAction) GetActionLists() []BACnetActionLis
 func (m *_BACnetConstructedDataCommandAction) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataCommandAction) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataCommandAction) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCommandAction BACnetConstructedDataCommandAction, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCommandAction"); pullErr != nil {

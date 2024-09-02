@@ -63,6 +63,7 @@ type _UnregisterNodesRequest struct {
 }
 
 var _ UnregisterNodesRequest = (*_UnregisterNodesRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_UnregisterNodesRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_UnregisterNodesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_UnregisterNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__unregisterNodesRequest UnregisterNodesRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnregisterNodesRequest"); pullErr != nil {

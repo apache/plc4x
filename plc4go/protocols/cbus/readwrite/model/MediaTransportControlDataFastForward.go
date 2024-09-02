@@ -73,6 +73,7 @@ type _MediaTransportControlDataFastForward struct {
 }
 
 var _ MediaTransportControlDataFastForward = (*_MediaTransportControlDataFastForward)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataFastForward)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -214,6 +215,7 @@ func (m *_MediaTransportControlDataFastForward) GetLengthInBytes(ctx context.Con
 
 func (m *_MediaTransportControlDataFastForward) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataFastForward MediaTransportControlDataFastForward, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataFastForward"); pullErr != nil {

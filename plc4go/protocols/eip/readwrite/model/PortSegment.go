@@ -57,6 +57,7 @@ type _PortSegment struct {
 }
 
 var _ PortSegment = (*_PortSegment)(nil)
+var _ PathSegmentRequirements = (*_PortSegment)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_PortSegment) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_PortSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_PathSegment) (__portSegment PortSegment, err error) {
 	m.PathSegmentContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PortSegment"); pullErr != nil {

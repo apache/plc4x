@@ -72,6 +72,7 @@ type _BuildInfo struct {
 }
 
 var _ BuildInfo = (*_BuildInfo)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_BuildInfo)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -184,6 +185,7 @@ func (m *_BuildInfo) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BuildInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__buildInfo BuildInfo, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BuildInfo"); pullErr != nil {

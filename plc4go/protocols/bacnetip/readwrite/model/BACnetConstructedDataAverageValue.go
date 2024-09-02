@@ -59,6 +59,7 @@ type _BACnetConstructedDataAverageValue struct {
 }
 
 var _ BACnetConstructedDataAverageValue = (*_BACnetConstructedDataAverageValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAverageValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataAverageValue) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetConstructedDataAverageValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAverageValue BACnetConstructedDataAverageValue, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAverageValue"); pullErr != nil {

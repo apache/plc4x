@@ -66,6 +66,7 @@ type _NotificationMessage struct {
 }
 
 var _ NotificationMessage = (*_NotificationMessage)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_NotificationMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,6 +170,7 @@ func (m *_NotificationMessage) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NotificationMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__notificationMessage NotificationMessage, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NotificationMessage"); pullErr != nil {

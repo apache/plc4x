@@ -60,6 +60,7 @@ type _AdditionalParametersType struct {
 }
 
 var _ AdditionalParametersType = (*_AdditionalParametersType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AdditionalParametersType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_AdditionalParametersType) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_AdditionalParametersType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__additionalParametersType AdditionalParametersType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdditionalParametersType"); pullErr != nil {

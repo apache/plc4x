@@ -57,6 +57,7 @@ type _NLMReserved struct {
 }
 
 var _ NLMReserved = (*_NLMReserved)(nil)
+var _ NLMRequirements = (*_NLMReserved)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_NLMReserved) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NLMReserved) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMReserved NLMReserved, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMReserved"); pullErr != nil {

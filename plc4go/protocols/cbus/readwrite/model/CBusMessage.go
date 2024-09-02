@@ -50,6 +50,8 @@ type CBusMessageContract interface {
 
 // CBusMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusMessageRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetIsResponse returns IsResponse (discriminator field)
 	GetIsResponse() bool
 }
@@ -63,7 +65,7 @@ type CBusMessageExactly interface {
 
 // _CBusMessage is the data-structure of this message
 type _CBusMessage struct {
-	_CBusMessageChildRequirements
+	_SubType CBusMessage
 
 	// Arguments.
 	RequestContext RequestContext
@@ -71,12 +73,6 @@ type _CBusMessage struct {
 }
 
 var _ CBusMessageContract = (*_CBusMessage)(nil)
-
-type _CBusMessageChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIsResponse() bool
-}
 
 type CBusMessageChild interface {
 	utils.Serializable
@@ -114,7 +110,7 @@ func (m *_CBusMessage) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CBusMessage) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CBusMessageParse[T CBusMessage](ctx context.Context, theBytes []byte, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (T, error) {

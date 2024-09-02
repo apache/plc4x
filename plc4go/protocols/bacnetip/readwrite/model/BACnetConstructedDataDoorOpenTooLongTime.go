@@ -59,6 +59,7 @@ type _BACnetConstructedDataDoorOpenTooLongTime struct {
 }
 
 var _ BACnetConstructedDataDoorOpenTooLongTime = (*_BACnetConstructedDataDoorOpenTooLongTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorOpenTooLongTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDoorOpenTooLongTime) GetLengthInBytes(ctx context
 
 func (m *_BACnetConstructedDataDoorOpenTooLongTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDoorOpenTooLongTime BACnetConstructedDataDoorOpenTooLongTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorOpenTooLongTime"); pullErr != nil {

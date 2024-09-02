@@ -60,6 +60,7 @@ type _VariantXmlElement struct {
 }
 
 var _ VariantXmlElement = (*_VariantXmlElement)(nil)
+var _ VariantRequirements = (*_VariantXmlElement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -149,6 +150,7 @@ func (m *_VariantXmlElement) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantXmlElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantXmlElement VariantXmlElement, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantXmlElement"); pullErr != nil {

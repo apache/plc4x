@@ -60,6 +60,7 @@ type _AdsDiscoveryBlockAmsNetId struct {
 }
 
 var _ AdsDiscoveryBlockAmsNetId = (*_AdsDiscoveryBlockAmsNetId)(nil)
+var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockAmsNetId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -148,6 +149,7 @@ func (m *_AdsDiscoveryBlockAmsNetId) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_AdsDiscoveryBlockAmsNetId) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsDiscoveryBlock) (__adsDiscoveryBlockAmsNetId AdsDiscoveryBlockAmsNetId, err error) {
 	m.AdsDiscoveryBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockAmsNetId"); pullErr != nil {

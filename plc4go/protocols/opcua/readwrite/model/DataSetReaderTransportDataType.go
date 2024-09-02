@@ -52,6 +52,7 @@ type _DataSetReaderTransportDataType struct {
 }
 
 var _ DataSetReaderTransportDataType = (*_DataSetReaderTransportDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DataSetReaderTransportDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_DataSetReaderTransportDataType) GetLengthInBytes(ctx context.Context) 
 
 func (m *_DataSetReaderTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataSetReaderTransportDataType DataSetReaderTransportDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DataSetReaderTransportDataType"); pullErr != nil {

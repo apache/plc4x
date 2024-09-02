@@ -60,6 +60,7 @@ type _COTPPacketTpduError struct {
 }
 
 var _ COTPPacketTpduError = (*_COTPPacketTpduError)(nil)
+var _ COTPPacketRequirements = (*_COTPPacketTpduError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_COTPPacketTpduError) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_COTPPacketTpduError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint16) (__cOTPPacketTpduError COTPPacketTpduError, err error) {
 	m.COTPPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketTpduError"); pullErr != nil {

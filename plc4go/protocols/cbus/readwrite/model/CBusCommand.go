@@ -56,6 +56,12 @@ type CBusCommandContract interface {
 
 // CBusCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetDestinationAddressType returns DestinationAddressType (discriminator field)
+	GetDestinationAddressType() DestinationAddressType
+	// GetIsDeviceManagement returns IsDeviceManagement (discriminator field)
+	GetIsDeviceManagement() bool
 }
 
 // CBusCommandExactly can be used when we want exactly this type and not a type which fulfills CBusCommand.
@@ -67,21 +73,14 @@ type CBusCommandExactly interface {
 
 // _CBusCommand is the data-structure of this message
 type _CBusCommand struct {
-	_CBusCommandChildRequirements
-	Header CBusHeader
+	_SubType CBusCommand
+	Header   CBusHeader
 
 	// Arguments.
 	CBusOptions CBusOptions
 }
 
 var _ CBusCommandContract = (*_CBusCommand)(nil)
-
-type _CBusCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetDestinationAddressType() DestinationAddressType
-	GetIsDeviceManagement() bool
-}
 
 type CBusCommandChild interface {
 	utils.Serializable
@@ -110,13 +109,15 @@ func (m *_CBusCommand) GetHeader() CBusHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_CBusCommand) GetIsDeviceManagement() bool {
+func (pm *_CBusCommand) GetIsDeviceManagement() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(m.GetHeader().GetDp())
 }
 
-func (m *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
+func (pm *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastDestinationAddressType(m.GetHeader().GetDestinationAddressType())
@@ -161,7 +162,7 @@ func (m *_CBusCommand) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CBusCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CBusCommandParse[T CBusCommand](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {

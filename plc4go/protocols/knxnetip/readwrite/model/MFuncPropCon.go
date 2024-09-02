@@ -52,6 +52,7 @@ type _MFuncPropCon struct {
 }
 
 var _ MFuncPropCon = (*_MFuncPropCon)(nil)
+var _ CEMIRequirements = (*_MFuncPropCon)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_MFuncPropCon) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_MFuncPropCon) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__mFuncPropCon MFuncPropCon, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MFuncPropCon"); pullErr != nil {

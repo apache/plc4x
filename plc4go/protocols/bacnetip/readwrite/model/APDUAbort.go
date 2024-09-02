@@ -65,6 +65,7 @@ type _APDUAbort struct {
 }
 
 var _ APDUAbort = (*_APDUAbort)(nil)
+var _ APDURequirements = (*_APDUAbort)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -156,6 +157,7 @@ func (m *_APDUAbort) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_APDUAbort) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUAbort APDUAbort, err error) {
 	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUAbort"); pullErr != nil {

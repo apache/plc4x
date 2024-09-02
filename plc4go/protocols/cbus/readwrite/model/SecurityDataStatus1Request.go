@@ -52,6 +52,7 @@ type _SecurityDataStatus1Request struct {
 }
 
 var _ SecurityDataStatus1Request = (*_SecurityDataStatus1Request)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataStatus1Request)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataStatus1Request) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_SecurityDataStatus1Request) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataStatus1Request SecurityDataStatus1Request, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataStatus1Request"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataOccupancyCountEnable struct {
 }
 
 var _ BACnetConstructedDataOccupancyCountEnable = (*_BACnetConstructedDataOccupancyCountEnable)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyCountEnable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataOccupancyCountEnable) GetLengthInBytes(ctx contex
 
 func (m *_BACnetConstructedDataOccupancyCountEnable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataOccupancyCountEnable BACnetConstructedDataOccupancyCountEnable, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataOccupancyCountEnable"); pullErr != nil {

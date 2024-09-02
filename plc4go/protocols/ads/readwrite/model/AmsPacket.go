@@ -70,8 +70,12 @@ type AmsPacketContract interface {
 
 // AmsPacketRequirements provides a set of functions which need to be implemented by a sub struct
 type AmsPacketRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCommandId returns CommandId (discriminator field)
 	GetCommandId() CommandId
+	// GetErrorCode returns ErrorCode (discriminator field)
+	GetErrorCode() uint32
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
 }
@@ -85,7 +89,7 @@ type AmsPacketExactly interface {
 
 // _AmsPacket is the data-structure of this message
 type _AmsPacket struct {
-	_AmsPacketChildRequirements
+	_SubType       AmsPacket
 	TargetAmsNetId AmsNetId
 	TargetAmsPort  uint16
 	SourceAmsNetId AmsNetId
@@ -97,14 +101,6 @@ type _AmsPacket struct {
 }
 
 var _ AmsPacketContract = (*_AmsPacket)(nil)
-
-type _AmsPacketChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandId() CommandId
-	GetErrorCode() uint32
-	GetResponse() bool
-}
 
 type AmsPacketChild interface {
 	utils.Serializable
@@ -269,7 +265,7 @@ func (m *_AmsPacket) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_AmsPacket) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func AmsPacketParse[T AmsPacket](ctx context.Context, theBytes []byte) (T, error) {

@@ -62,6 +62,7 @@ type _CipWriteResponse struct {
 }
 
 var _ CipWriteResponse = (*_CipWriteResponse)(nil)
+var _ CipServiceRequirements = (*_CipWriteResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -153,6 +154,7 @@ func (m *_CipWriteResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CipWriteResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipWriteResponse CipWriteResponse, err error) {
 	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipWriteResponse"); pullErr != nil {

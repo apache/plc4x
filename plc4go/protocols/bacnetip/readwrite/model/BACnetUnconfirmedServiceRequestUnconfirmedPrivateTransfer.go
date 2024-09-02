@@ -63,6 +63,7 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 }
 
 var _ BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer = (*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)(nil)
+var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -153,6 +154,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetLengthIn
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetUnconfirmedServiceRequest, serviceRequestLength uint16) (__bACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer, err error) {
 	m.BACnetUnconfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"); pullErr != nil {

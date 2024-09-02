@@ -60,6 +60,7 @@ type _NLMInitializeRoutingTable struct {
 }
 
 var _ NLMInitializeRoutingTable = (*_NLMInitializeRoutingTable)(nil)
+var _ NLMRequirements = (*_NLMInitializeRoutingTable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_NLMInitializeRoutingTable) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_NLMInitializeRoutingTable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMInitializeRoutingTable NLMInitializeRoutingTable, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitializeRoutingTable"); pullErr != nil {

@@ -60,6 +60,7 @@ type _ServiceCounterDataType struct {
 }
 
 var _ ServiceCounterDataType = (*_ServiceCounterDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ServiceCounterDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_ServiceCounterDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ServiceCounterDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serviceCounterDataType ServiceCounterDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServiceCounterDataType"); pullErr != nil {

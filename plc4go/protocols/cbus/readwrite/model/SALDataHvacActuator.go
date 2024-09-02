@@ -57,6 +57,7 @@ type _SALDataHvacActuator struct {
 }
 
 var _ SALDataHvacActuator = (*_SALDataHvacActuator)(nil)
+var _ SALDataRequirements = (*_SALDataHvacActuator)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataHvacActuator) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataHvacActuator) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataHvacActuator SALDataHvacActuator, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataHvacActuator"); pullErr != nil {

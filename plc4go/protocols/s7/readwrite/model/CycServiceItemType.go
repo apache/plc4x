@@ -55,6 +55,10 @@ type CycServiceItemTypeContract interface {
 
 // CycServiceItemTypeRequirements provides a set of functions which need to be implemented by a sub struct
 type CycServiceItemTypeRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetSyntaxId returns SyntaxId (discriminator field)
+	GetSyntaxId() uint8
 }
 
 // CycServiceItemTypeExactly can be used when we want exactly this type and not a type which fulfills CycServiceItemType.
@@ -66,18 +70,12 @@ type CycServiceItemTypeExactly interface {
 
 // _CycServiceItemType is the data-structure of this message
 type _CycServiceItemType struct {
-	_CycServiceItemTypeChildRequirements
+	_SubType   CycServiceItemType
 	ByteLength uint8
 	SyntaxId   uint8
 }
 
 var _ CycServiceItemTypeContract = (*_CycServiceItemType)(nil)
-
-type _CycServiceItemTypeChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetSyntaxId() uint8
-}
 
 type CycServiceItemTypeChild interface {
 	utils.Serializable
@@ -155,7 +153,7 @@ func (m *_CycServiceItemType) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CycServiceItemType) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CycServiceItemTypeParse[T CycServiceItemType](ctx context.Context, theBytes []byte) (T, error) {

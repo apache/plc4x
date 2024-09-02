@@ -57,6 +57,7 @@ type _BACnetConstructedDataVirtualMACAddressTable struct {
 }
 
 var _ BACnetConstructedDataVirtualMACAddressTable = (*_BACnetConstructedDataVirtualMACAddressTable)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVirtualMACAddressTable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) GetLengthInBytes(ctx cont
 
 func (m *_BACnetConstructedDataVirtualMACAddressTable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataVirtualMACAddressTable BACnetConstructedDataVirtualMACAddressTable, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVirtualMACAddressTable"); pullErr != nil {

@@ -52,6 +52,7 @@ type _ApduDataExtNetworkParameterWrite struct {
 }
 
 var _ ApduDataExtNetworkParameterWrite = (*_ApduDataExtNetworkParameterWrite)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtNetworkParameterWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtNetworkParameterWrite) GetLengthInBytes(ctx context.Context
 
 func (m *_ApduDataExtNetworkParameterWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtNetworkParameterWrite ApduDataExtNetworkParameterWrite, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterWrite"); pullErr != nil {

@@ -54,6 +54,12 @@ type BACnetFaultParameterFaultExtendedParametersEntryContract interface {
 
 // BACnetFaultParameterFaultExtendedParametersEntryRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetFaultParameterFaultExtendedParametersEntryRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
+	GetPeekedIsContextTag() bool
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetFaultParameterFaultExtendedParametersEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultExtendedParametersEntry.
@@ -65,18 +71,11 @@ type BACnetFaultParameterFaultExtendedParametersEntryExactly interface {
 
 // _BACnetFaultParameterFaultExtendedParametersEntry is the data-structure of this message
 type _BACnetFaultParameterFaultExtendedParametersEntry struct {
-	_BACnetFaultParameterFaultExtendedParametersEntryChildRequirements
+	_SubType        BACnetFaultParameterFaultExtendedParametersEntry
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryContract = (*_BACnetFaultParameterFaultExtendedParametersEntry)(nil)
-
-type _BACnetFaultParameterFaultExtendedParametersEntryChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedIsContextTag() bool
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetFaultParameterFaultExtendedParametersEntryChild interface {
 	utils.Serializable
@@ -105,13 +104,15 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedTagHeader()
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedIsContextTag() bool {
+func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedIsContextTag() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
@@ -153,7 +154,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) getLengthInBits(ctx 
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetFaultParameterFaultExtendedParametersEntryParse[T BACnetFaultParameterFaultExtendedParametersEntry](ctx context.Context, theBytes []byte) (T, error) {

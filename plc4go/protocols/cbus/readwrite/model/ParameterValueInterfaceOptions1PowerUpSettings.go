@@ -57,6 +57,7 @@ type _ParameterValueInterfaceOptions1PowerUpSettings struct {
 }
 
 var _ ParameterValueInterfaceOptions1PowerUpSettings = (*_ParameterValueInterfaceOptions1PowerUpSettings)(nil)
+var _ ParameterValueRequirements = (*_ParameterValueInterfaceOptions1PowerUpSettings)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetLengthInBytes(ctx c
 
 func (m *_ParameterValueInterfaceOptions1PowerUpSettings) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ParameterValue, parameterType ParameterType, numBytes uint8) (__parameterValueInterfaceOptions1PowerUpSettings ParameterValueInterfaceOptions1PowerUpSettings, err error) {
 	m.ParameterValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueInterfaceOptions1PowerUpSettings"); pullErr != nil {

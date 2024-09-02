@@ -48,6 +48,8 @@ type IdentifyReplyCommandContract interface {
 
 // IdentifyReplyCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type IdentifyReplyCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetAttribute returns Attribute (discriminator field)
 	GetAttribute() Attribute
 }
@@ -61,19 +63,13 @@ type IdentifyReplyCommandExactly interface {
 
 // _IdentifyReplyCommand is the data-structure of this message
 type _IdentifyReplyCommand struct {
-	_IdentifyReplyCommandChildRequirements
+	_SubType IdentifyReplyCommand
 
 	// Arguments.
 	NumBytes uint8
 }
 
 var _ IdentifyReplyCommandContract = (*_IdentifyReplyCommand)(nil)
-
-type _IdentifyReplyCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetAttribute() Attribute
-}
 
 type IdentifyReplyCommandChild interface {
 	utils.Serializable
@@ -111,7 +107,7 @@ func (m *_IdentifyReplyCommand) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_IdentifyReplyCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandParse[T IdentifyReplyCommand](ctx context.Context, theBytes []byte, attribute Attribute, numBytes uint8) (T, error) {

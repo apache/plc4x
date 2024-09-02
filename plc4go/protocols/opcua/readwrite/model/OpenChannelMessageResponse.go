@@ -66,6 +66,7 @@ type _OpenChannelMessageResponse struct {
 }
 
 var _ OpenChannelMessageResponse = (*_OpenChannelMessageResponse)(nil)
+var _ OpenChannelMessageRequirements = (*_OpenChannelMessageResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_OpenChannelMessageResponse) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_OpenChannelMessageResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_OpenChannelMessage, response bool) (__openChannelMessageResponse OpenChannelMessageResponse, err error) {
 	m.OpenChannelMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("OpenChannelMessageResponse"); pullErr != nil {

@@ -63,6 +63,7 @@ type _NLMChallengeRequest struct {
 }
 
 var _ NLMChallengeRequest = (*_NLMChallengeRequest)(nil)
+var _ NLMRequirements = (*_NLMChallengeRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_NLMChallengeRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NLMChallengeRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMChallengeRequest NLMChallengeRequest, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMChallengeRequest"); pullErr != nil {

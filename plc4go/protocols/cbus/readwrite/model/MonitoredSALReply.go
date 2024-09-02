@@ -57,6 +57,7 @@ type _MonitoredSALReply struct {
 }
 
 var _ MonitoredSALReply = (*_MonitoredSALReply)(nil)
+var _ EncodedReplyRequirements = (*_MonitoredSALReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_MonitoredSALReply) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_MonitoredSALReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EncodedReply, cBusOptions CBusOptions, requestContext RequestContext) (__monitoredSALReply MonitoredSALReply, err error) {
 	m.EncodedReplyContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALReply"); pullErr != nil {

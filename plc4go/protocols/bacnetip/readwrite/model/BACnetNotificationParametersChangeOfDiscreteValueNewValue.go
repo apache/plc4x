@@ -60,6 +60,12 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueContract interface
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
+	GetPeekedIsContextTag() bool
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetNotificationParametersChangeOfDiscreteValueNewValueExactly can be used when we want exactly this type and not a type which fulfills BACnetNotificationParametersChangeOfDiscreteValueNewValue.
@@ -71,7 +77,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueExactly interface 
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValue is the data-structure of this message
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
-	_BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements
+	_SubType        BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
@@ -81,13 +87,6 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
 }
 
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)(nil)
-
-type _BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedIsContextTag() bool
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueChild interface {
 	utils.Serializable
@@ -124,13 +123,15 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetClosingT
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
-func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetPeekedIsContextTag() bool {
+func (pm *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetPeekedIsContextTag() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
@@ -178,7 +179,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) getLengthIn
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetNotificationParametersChangeOfDiscreteValueNewValueParse[T BACnetNotificationParametersChangeOfDiscreteValueNewValue](ctx context.Context, theBytes []byte, tagNumber uint8) (T, error) {

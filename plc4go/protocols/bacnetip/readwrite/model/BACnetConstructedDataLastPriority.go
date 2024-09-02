@@ -59,6 +59,7 @@ type _BACnetConstructedDataLastPriority struct {
 }
 
 var _ BACnetConstructedDataLastPriority = (*_BACnetConstructedDataLastPriority)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastPriority)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataLastPriority) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetConstructedDataLastPriority) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLastPriority BACnetConstructedDataLastPriority, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastPriority"); pullErr != nil {

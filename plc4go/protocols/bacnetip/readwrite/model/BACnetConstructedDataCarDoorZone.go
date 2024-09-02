@@ -59,6 +59,7 @@ type _BACnetConstructedDataCarDoorZone struct {
 }
 
 var _ BACnetConstructedDataCarDoorZone = (*_BACnetConstructedDataCarDoorZone)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDoorZone)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataCarDoorZone) GetLengthInBytes(ctx context.Context
 
 func (m *_BACnetConstructedDataCarDoorZone) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCarDoorZone BACnetConstructedDataCarDoorZone, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarDoorZone"); pullErr != nil {

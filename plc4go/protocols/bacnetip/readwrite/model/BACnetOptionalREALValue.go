@@ -57,6 +57,7 @@ type _BACnetOptionalREALValue struct {
 }
 
 var _ BACnetOptionalREALValue = (*_BACnetOptionalREALValue)(nil)
+var _ BACnetOptionalREALRequirements = (*_BACnetOptionalREALValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetOptionalREALValue) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_BACnetOptionalREALValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetOptionalREAL) (__bACnetOptionalREALValue BACnetOptionalREALValue, err error) {
 	m.BACnetOptionalREALContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalREALValue"); pullErr != nil {

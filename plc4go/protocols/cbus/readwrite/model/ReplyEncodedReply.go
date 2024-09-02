@@ -63,6 +63,7 @@ type _ReplyEncodedReply struct {
 }
 
 var _ ReplyEncodedReply = (*_ReplyEncodedReply)(nil)
+var _ ReplyRequirements = (*_ReplyEncodedReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -164,6 +165,7 @@ func (m *_ReplyEncodedReply) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ReplyEncodedReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Reply, cBusOptions CBusOptions, requestContext RequestContext) (__replyEncodedReply ReplyEncodedReply, err error) {
 	m.ReplyContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyEncodedReply"); pullErr != nil {

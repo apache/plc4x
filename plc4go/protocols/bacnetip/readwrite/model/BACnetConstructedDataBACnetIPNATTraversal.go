@@ -59,6 +59,7 @@ type _BACnetConstructedDataBACnetIPNATTraversal struct {
 }
 
 var _ BACnetConstructedDataBACnetIPNATTraversal = (*_BACnetConstructedDataBACnetIPNATTraversal)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPNATTraversal)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetLengthInBytes(ctx contex
 
 func (m *_BACnetConstructedDataBACnetIPNATTraversal) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBACnetIPNATTraversal BACnetConstructedDataBACnetIPNATTraversal, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPNATTraversal"); pullErr != nil {

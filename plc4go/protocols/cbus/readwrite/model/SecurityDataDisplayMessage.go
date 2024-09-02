@@ -57,6 +57,7 @@ type _SecurityDataDisplayMessage struct {
 }
 
 var _ SecurityDataDisplayMessage = (*_SecurityDataDisplayMessage)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataDisplayMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_SecurityDataDisplayMessage) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_SecurityDataDisplayMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData, commandTypeContainer SecurityCommandTypeContainer) (__securityDataDisplayMessage SecurityDataDisplayMessage, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataDisplayMessage"); pullErr != nil {

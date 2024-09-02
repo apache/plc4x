@@ -69,6 +69,7 @@ type _DF1RequestProtectedTypedLogicalRead struct {
 }
 
 var _ DF1RequestProtectedTypedLogicalRead = (*_DF1RequestProtectedTypedLogicalRead)(nil)
+var _ DF1RequestCommandRequirements = (*_DF1RequestProtectedTypedLogicalRead)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -173,6 +174,7 @@ func (m *_DF1RequestProtectedTypedLogicalRead) GetLengthInBytes(ctx context.Cont
 
 func (m *_DF1RequestProtectedTypedLogicalRead) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_DF1RequestCommand) (__dF1RequestProtectedTypedLogicalRead DF1RequestProtectedTypedLogicalRead, err error) {
 	m.DF1RequestCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1RequestProtectedTypedLogicalRead"); pullErr != nil {

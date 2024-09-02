@@ -59,6 +59,7 @@ type _BACnetConstructedDataSetpointReference struct {
 }
 
 var _ BACnetConstructedDataSetpointReference = (*_BACnetConstructedDataSetpointReference)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSetpointReference)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataSetpointReference) GetLengthInBytes(ctx context.C
 
 func (m *_BACnetConstructedDataSetpointReference) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataSetpointReference BACnetConstructedDataSetpointReference, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSetpointReference"); pullErr != nil {

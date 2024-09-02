@@ -75,6 +75,7 @@ type _AirConditioningDataSetZoneHvacMode struct {
 }
 
 var _ AirConditioningDataSetZoneHvacMode = (*_AirConditioningDataSetZoneHvacMode)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataSetZoneHvacMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -197,6 +198,7 @@ func (m *_AirConditioningDataSetZoneHvacMode) GetLengthInBytes(ctx context.Conte
 
 func (m *_AirConditioningDataSetZoneHvacMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataSetZoneHvacMode AirConditioningDataSetZoneHvacMode, err error) {
 	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetZoneHvacMode"); pullErr != nil {

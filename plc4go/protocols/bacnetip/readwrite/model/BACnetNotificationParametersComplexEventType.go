@@ -57,6 +57,7 @@ type _BACnetNotificationParametersComplexEventType struct {
 }
 
 var _ BACnetNotificationParametersComplexEventType = (*_BACnetNotificationParametersComplexEventType)(nil)
+var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersComplexEventType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetNotificationParametersComplexEventType) GetLengthInBytes(ctx con
 
 func (m *_BACnetNotificationParametersComplexEventType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParameters, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetNotificationParametersComplexEventType BACnetNotificationParametersComplexEventType, err error) {
 	m.BACnetNotificationParametersContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersComplexEventType"); pullErr != nil {

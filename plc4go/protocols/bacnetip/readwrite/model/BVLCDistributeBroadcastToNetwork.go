@@ -62,6 +62,7 @@ type _BVLCDistributeBroadcastToNetwork struct {
 }
 
 var _ BVLCDistributeBroadcastToNetwork = (*_BVLCDistributeBroadcastToNetwork)(nil)
+var _ BVLCRequirements = (*_BVLCDistributeBroadcastToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_BVLCDistributeBroadcastToNetwork) GetLengthInBytes(ctx context.Context
 
 func (m *_BVLCDistributeBroadcastToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC, bvlcPayloadLength uint16) (__bVLCDistributeBroadcastToNetwork BVLCDistributeBroadcastToNetwork, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCDistributeBroadcastToNetwork"); pullErr != nil {

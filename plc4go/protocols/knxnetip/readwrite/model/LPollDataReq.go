@@ -52,6 +52,7 @@ type _LPollDataReq struct {
 }
 
 var _ LPollDataReq = (*_LPollDataReq)(nil)
+var _ CEMIRequirements = (*_LPollDataReq)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_LPollDataReq) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LPollDataReq) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__lPollDataReq LPollDataReq, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollDataReq"); pullErr != nil {

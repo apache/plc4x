@@ -57,6 +57,7 @@ type _ParameterValueRaw struct {
 }
 
 var _ ParameterValueRaw = (*_ParameterValueRaw)(nil)
+var _ ParameterValueRequirements = (*_ParameterValueRaw)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_ParameterValueRaw) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ParameterValueRaw) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ParameterValue, parameterType ParameterType, numBytes uint8) (__parameterValueRaw ParameterValueRaw, err error) {
 	m.ParameterValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueRaw"); pullErr != nil {

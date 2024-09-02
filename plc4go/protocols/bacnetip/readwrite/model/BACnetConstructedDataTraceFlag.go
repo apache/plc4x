@@ -59,6 +59,7 @@ type _BACnetConstructedDataTraceFlag struct {
 }
 
 var _ BACnetConstructedDataTraceFlag = (*_BACnetConstructedDataTraceFlag)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTraceFlag)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataTraceFlag) GetLengthInBytes(ctx context.Context) 
 
 func (m *_BACnetConstructedDataTraceFlag) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTraceFlag BACnetConstructedDataTraceFlag, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTraceFlag"); pullErr != nil {

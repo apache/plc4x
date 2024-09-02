@@ -57,6 +57,7 @@ type _BACnetPropertyStatesTimerState struct {
 }
 
 var _ BACnetPropertyStatesTimerState = (*_BACnetPropertyStatesTimerState)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesTimerState)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesTimerState) GetLengthInBytes(ctx context.Context) 
 
 func (m *_BACnetPropertyStatesTimerState) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesTimerState BACnetPropertyStatesTimerState, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesTimerState"); pullErr != nil {

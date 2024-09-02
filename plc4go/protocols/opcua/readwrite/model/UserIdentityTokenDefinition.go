@@ -46,6 +46,8 @@ type UserIdentityTokenDefinitionContract interface {
 
 // UserIdentityTokenDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
 type UserIdentityTokenDefinitionRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetIdentifier returns Identifier (discriminator field)
 	GetIdentifier() string
 }
@@ -59,16 +61,10 @@ type UserIdentityTokenDefinitionExactly interface {
 
 // _UserIdentityTokenDefinition is the data-structure of this message
 type _UserIdentityTokenDefinition struct {
-	_UserIdentityTokenDefinitionChildRequirements
+	_SubType UserIdentityTokenDefinition
 }
 
 var _ UserIdentityTokenDefinitionContract = (*_UserIdentityTokenDefinition)(nil)
-
-type _UserIdentityTokenDefinitionChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIdentifier() string
-}
 
 type UserIdentityTokenDefinitionChild interface {
 	utils.Serializable
@@ -106,7 +102,7 @@ func (m *_UserIdentityTokenDefinition) getLengthInBits(ctx context.Context) uint
 }
 
 func (m *_UserIdentityTokenDefinition) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func UserIdentityTokenDefinitionParse[T UserIdentityTokenDefinition](ctx context.Context, theBytes []byte, identifier string) (T, error) {

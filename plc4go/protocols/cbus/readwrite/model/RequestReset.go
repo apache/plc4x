@@ -66,6 +66,7 @@ type _RequestReset struct {
 }
 
 var _ RequestReset = (*_RequestReset)(nil)
+var _ RequestRequirements = (*_RequestReset)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -156,6 +157,7 @@ func (m *_RequestReset) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RequestReset) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestReset RequestReset, err error) {
 	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestReset"); pullErr != nil {

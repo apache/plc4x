@@ -59,6 +59,7 @@ type _BACnetConstructedDataBinaryInputPresentValue struct {
 }
 
 var _ BACnetConstructedDataBinaryInputPresentValue = (*_BACnetConstructedDataBinaryInputPresentValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryInputPresentValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBinaryInputPresentValue) GetLengthInBytes(ctx con
 
 func (m *_BACnetConstructedDataBinaryInputPresentValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBinaryInputPresentValue BACnetConstructedDataBinaryInputPresentValue, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryInputPresentValue"); pullErr != nil {

@@ -53,6 +53,7 @@ type _BVLCReadForeignDeviceTable struct {
 }
 
 var _ BVLCReadForeignDeviceTable = (*_BVLCReadForeignDeviceTable)(nil)
+var _ BVLCRequirements = (*_BVLCReadForeignDeviceTable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,6 +108,7 @@ func (m *_BVLCReadForeignDeviceTable) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_BVLCReadForeignDeviceTable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC) (__bVLCReadForeignDeviceTable BVLCReadForeignDeviceTable, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTable"); pullErr != nil {

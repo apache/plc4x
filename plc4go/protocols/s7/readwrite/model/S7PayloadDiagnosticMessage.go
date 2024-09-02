@@ -75,6 +75,7 @@ type _S7PayloadDiagnosticMessage struct {
 }
 
 var _ S7PayloadDiagnosticMessage = (*_S7PayloadDiagnosticMessage)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadDiagnosticMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -203,6 +204,7 @@ func (m *_S7PayloadDiagnosticMessage) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_S7PayloadDiagnosticMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadDiagnosticMessage S7PayloadDiagnosticMessage, err error) {
 	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadDiagnosticMessage"); pullErr != nil {

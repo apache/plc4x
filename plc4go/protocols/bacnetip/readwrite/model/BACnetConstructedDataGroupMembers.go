@@ -62,6 +62,7 @@ type _BACnetConstructedDataGroupMembers struct {
 }
 
 var _ BACnetConstructedDataGroupMembers = (*_BACnetConstructedDataGroupMembers)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupMembers)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataGroupMembers) GetGroupMembers() []BACnetApplicati
 func (m *_BACnetConstructedDataGroupMembers) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataGroupMembers) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetConstructedDataGroupMembers) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataGroupMembers BACnetConstructedDataGroupMembers, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupMembers"); pullErr != nil {

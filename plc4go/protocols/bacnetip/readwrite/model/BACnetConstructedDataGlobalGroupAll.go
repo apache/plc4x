@@ -52,6 +52,7 @@ type _BACnetConstructedDataGlobalGroupAll struct {
 }
 
 var _ BACnetConstructedDataGlobalGroupAll = (*_BACnetConstructedDataGlobalGroupAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGlobalGroupAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_BACnetConstructedDataGlobalGroupAll) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConstructedDataGlobalGroupAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataGlobalGroupAll BACnetConstructedDataGlobalGroupAll, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGlobalGroupAll"); pullErr != nil {

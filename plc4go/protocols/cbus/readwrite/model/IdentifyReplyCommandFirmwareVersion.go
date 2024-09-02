@@ -57,6 +57,7 @@ type _IdentifyReplyCommandFirmwareVersion struct {
 }
 
 var _ IdentifyReplyCommandFirmwareVersion = (*_IdentifyReplyCommandFirmwareVersion)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandFirmwareVersion)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetLengthInBytes(ctx context.Cont
 
 func (m *_IdentifyReplyCommandFirmwareVersion) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandFirmwareVersion IdentifyReplyCommandFirmwareVersion, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandFirmwareVersion"); pullErr != nil {

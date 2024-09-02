@@ -57,6 +57,7 @@ type _BACnetConstructedDataAccessDoorAlarmValues struct {
 }
 
 var _ BACnetConstructedDataAccessDoorAlarmValues = (*_BACnetConstructedDataAccessDoorAlarmValues)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessDoorAlarmValues)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataAccessDoorAlarmValues) GetLengthInBytes(ctx conte
 
 func (m *_BACnetConstructedDataAccessDoorAlarmValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAccessDoorAlarmValues BACnetConstructedDataAccessDoorAlarmValues, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessDoorAlarmValues"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetChannelValueEnumerated struct {
 }
 
 var _ BACnetChannelValueEnumerated = (*_BACnetChannelValueEnumerated)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetChannelValueEnumerated) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_BACnetChannelValueEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueEnumerated BACnetChannelValueEnumerated, err error) {
 	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueEnumerated"); pullErr != nil {

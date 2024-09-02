@@ -59,6 +59,7 @@ type _BACnetConstructedDataPrescale struct {
 }
 
 var _ BACnetConstructedDataPrescale = (*_BACnetConstructedDataPrescale)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPrescale)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataPrescale) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetConstructedDataPrescale) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPrescale BACnetConstructedDataPrescale, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPrescale"); pullErr != nil {

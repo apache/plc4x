@@ -62,6 +62,7 @@ type _BACnetConstructedDataCarDoorCommand struct {
 }
 
 var _ BACnetConstructedDataCarDoorCommand = (*_BACnetConstructedDataCarDoorCommand)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDoorCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataCarDoorCommand) GetCarDoorCommand() []BACnetLiftC
 func (m *_BACnetConstructedDataCarDoorCommand) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataCarDoorCommand) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConstructedDataCarDoorCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCarDoorCommand BACnetConstructedDataCarDoorCommand, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarDoorCommand"); pullErr != nil {

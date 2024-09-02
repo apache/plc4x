@@ -52,6 +52,7 @@ type _SecurityDataGasAlarmRaised struct {
 }
 
 var _ SecurityDataGasAlarmRaised = (*_SecurityDataGasAlarmRaised)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataGasAlarmRaised)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataGasAlarmRaised) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_SecurityDataGasAlarmRaised) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataGasAlarmRaised SecurityDataGasAlarmRaised, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataGasAlarmRaised"); pullErr != nil {

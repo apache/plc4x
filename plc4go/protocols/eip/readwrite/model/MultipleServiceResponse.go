@@ -71,6 +71,7 @@ type _MultipleServiceResponse struct {
 }
 
 var _ MultipleServiceResponse = (*_MultipleServiceResponse)(nil)
+var _ CipServiceRequirements = (*_MultipleServiceResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -190,6 +191,7 @@ func (m *_MultipleServiceResponse) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_MultipleServiceResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__multipleServiceResponse MultipleServiceResponse, err error) {
 	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceResponse"); pullErr != nil {

@@ -69,6 +69,7 @@ type _DeleteNodesResponse struct {
 }
 
 var _ DeleteNodesResponse = (*_DeleteNodesResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DeleteNodesResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -187,6 +188,7 @@ func (m *_DeleteNodesResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_DeleteNodesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteNodesResponse DeleteNodesResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeleteNodesResponse"); pullErr != nil {

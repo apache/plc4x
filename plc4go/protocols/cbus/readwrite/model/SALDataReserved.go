@@ -52,6 +52,7 @@ type _SALDataReserved struct {
 }
 
 var _ SALDataReserved = (*_SALDataReserved)(nil)
+var _ SALDataRequirements = (*_SALDataReserved)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_SALDataReserved) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataReserved) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataReserved SALDataReserved, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataReserved"); pullErr != nil {

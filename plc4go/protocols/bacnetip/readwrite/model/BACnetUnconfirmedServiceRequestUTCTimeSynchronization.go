@@ -60,6 +60,7 @@ type _BACnetUnconfirmedServiceRequestUTCTimeSynchronization struct {
 }
 
 var _ BACnetUnconfirmedServiceRequestUTCTimeSynchronization = (*_BACnetUnconfirmedServiceRequestUTCTimeSynchronization)(nil)
+var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUTCTimeSynchronization)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetLengthInByte
 
 func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetUnconfirmedServiceRequest, serviceRequestLength uint16) (__bACnetUnconfirmedServiceRequestUTCTimeSynchronization BACnetUnconfirmedServiceRequestUTCTimeSynchronization, err error) {
 	m.BACnetUnconfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); pullErr != nil {

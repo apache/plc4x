@@ -52,6 +52,7 @@ type _MFuncPropCommandReq struct {
 }
 
 var _ MFuncPropCommandReq = (*_MFuncPropCommandReq)(nil)
+var _ CEMIRequirements = (*_MFuncPropCommandReq)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_MFuncPropCommandReq) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_MFuncPropCommandReq) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__mFuncPropCommandReq MFuncPropCommandReq, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MFuncPropCommandReq"); pullErr != nil {

@@ -60,6 +60,7 @@ type _NLMRequestMasterKey struct {
 }
 
 var _ NLMRequestMasterKey = (*_NLMRequestMasterKey)(nil)
+var _ NLMRequirements = (*_NLMRequestMasterKey)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_NLMRequestMasterKey) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NLMRequestMasterKey) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMRequestMasterKey NLMRequestMasterKey, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRequestMasterKey"); pullErr != nil {

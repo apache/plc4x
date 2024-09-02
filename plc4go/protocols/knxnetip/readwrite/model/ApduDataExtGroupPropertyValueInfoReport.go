@@ -52,6 +52,7 @@ type _ApduDataExtGroupPropertyValueInfoReport struct {
 }
 
 var _ ApduDataExtGroupPropertyValueInfoReport = (*_ApduDataExtGroupPropertyValueInfoReport)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtGroupPropertyValueInfoReport)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtGroupPropertyValueInfoReport) GetLengthInBytes(ctx context.
 
 func (m *_ApduDataExtGroupPropertyValueInfoReport) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtGroupPropertyValueInfoReport ApduDataExtGroupPropertyValueInfoReport, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueInfoReport"); pullErr != nil {

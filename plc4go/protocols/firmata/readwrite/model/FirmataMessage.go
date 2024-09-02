@@ -52,6 +52,8 @@ type FirmataMessageContract interface {
 
 // FirmataMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type FirmataMessageRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 }
@@ -65,19 +67,13 @@ type FirmataMessageExactly interface {
 
 // _FirmataMessage is the data-structure of this message
 type _FirmataMessage struct {
-	_FirmataMessageChildRequirements
+	_SubType FirmataMessage
 
 	// Arguments.
 	Response bool
 }
 
 var _ FirmataMessageContract = (*_FirmataMessage)(nil)
-
-type _FirmataMessageChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetMessageType() uint8
-}
 
 type FirmataMessageChild interface {
 	utils.Serializable
@@ -117,7 +113,7 @@ func (m *_FirmataMessage) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_FirmataMessage) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func FirmataMessageParse[T FirmataMessage](ctx context.Context, theBytes []byte, response bool) (T, error) {

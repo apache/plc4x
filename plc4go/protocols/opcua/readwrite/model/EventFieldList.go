@@ -63,6 +63,7 @@ type _EventFieldList struct {
 }
 
 var _ EventFieldList = (*_EventFieldList)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EventFieldList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_EventFieldList) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_EventFieldList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__eventFieldList EventFieldList, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EventFieldList"); pullErr != nil {

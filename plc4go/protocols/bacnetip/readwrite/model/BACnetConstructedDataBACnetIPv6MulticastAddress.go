@@ -59,6 +59,7 @@ type _BACnetConstructedDataBACnetIPv6MulticastAddress struct {
 }
 
 var _ BACnetConstructedDataBACnetIPv6MulticastAddress = (*_BACnetConstructedDataBACnetIPv6MulticastAddress)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPv6MulticastAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetLengthInBytes(ctx 
 
 func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBACnetIPv6MulticastAddress BACnetConstructedDataBACnetIPv6MulticastAddress, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6MulticastAddress"); pullErr != nil {

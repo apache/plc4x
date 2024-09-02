@@ -90,6 +90,7 @@ type _PubSubKeyPushTargetDataType struct {
 }
 
 var _ PubSubKeyPushTargetDataType = (*_PubSubKeyPushTargetDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PubSubKeyPushTargetDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -271,6 +272,7 @@ func (m *_PubSubKeyPushTargetDataType) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_PubSubKeyPushTargetDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__pubSubKeyPushTargetDataType PubSubKeyPushTargetDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PubSubKeyPushTargetDataType"); pullErr != nil {

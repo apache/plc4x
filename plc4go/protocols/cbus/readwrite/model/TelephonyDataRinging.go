@@ -59,6 +59,7 @@ type _TelephonyDataRinging struct {
 }
 
 var _ TelephonyDataRinging = (*_TelephonyDataRinging)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataRinging)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,6 +131,7 @@ func (m *_TelephonyDataRinging) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_TelephonyDataRinging) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData, commandTypeContainer TelephonyCommandTypeContainer) (__telephonyDataRinging TelephonyDataRinging, err error) {
 	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataRinging"); pullErr != nil {

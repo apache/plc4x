@@ -57,6 +57,7 @@ type _ModbusPDUError struct {
 }
 
 var _ ModbusPDUError = (*_ModbusPDUError)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_ModbusPDUError) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ModbusPDUError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUError ModbusPDUError, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUError"); pullErr != nil {

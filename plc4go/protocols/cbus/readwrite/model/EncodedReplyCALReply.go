@@ -57,6 +57,7 @@ type _EncodedReplyCALReply struct {
 }
 
 var _ EncodedReplyCALReply = (*_EncodedReplyCALReply)(nil)
+var _ EncodedReplyRequirements = (*_EncodedReplyCALReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_EncodedReplyCALReply) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_EncodedReplyCALReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EncodedReply, cBusOptions CBusOptions, requestContext RequestContext) (__encodedReplyCALReply EncodedReplyCALReply, err error) {
 	m.EncodedReplyContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EncodedReplyCALReply"); pullErr != nil {

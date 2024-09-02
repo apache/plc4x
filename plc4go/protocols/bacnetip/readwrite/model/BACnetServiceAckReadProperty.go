@@ -66,6 +66,7 @@ type _BACnetServiceAckReadProperty struct {
 }
 
 var _ BACnetServiceAckReadProperty = (*_BACnetServiceAckReadProperty)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadProperty)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -166,6 +167,7 @@ func (m *_BACnetServiceAckReadProperty) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_BACnetServiceAckReadProperty) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckReadProperty BACnetServiceAckReadProperty, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadProperty"); pullErr != nil {

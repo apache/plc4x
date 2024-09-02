@@ -60,6 +60,7 @@ type _EphemeralKeyType struct {
 }
 
 var _ EphemeralKeyType = (*_EphemeralKeyType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EphemeralKeyType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_EphemeralKeyType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_EphemeralKeyType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__ephemeralKeyType EphemeralKeyType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EphemeralKeyType"); pullErr != nil {

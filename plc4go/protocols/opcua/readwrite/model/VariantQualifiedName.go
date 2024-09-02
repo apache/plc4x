@@ -60,6 +60,7 @@ type _VariantQualifiedName struct {
 }
 
 var _ VariantQualifiedName = (*_VariantQualifiedName)(nil)
+var _ VariantRequirements = (*_VariantQualifiedName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -149,6 +150,7 @@ func (m *_VariantQualifiedName) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantQualifiedName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantQualifiedName VariantQualifiedName, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantQualifiedName"); pullErr != nil {

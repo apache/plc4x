@@ -57,6 +57,7 @@ type _NLMSetMasterKey struct {
 }
 
 var _ NLMSetMasterKey = (*_NLMSetMasterKey)(nil)
+var _ NLMRequirements = (*_NLMSetMasterKey)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_NLMSetMasterKey) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NLMSetMasterKey) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMSetMasterKey NLMSetMasterKey, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMSetMasterKey"); pullErr != nil {

@@ -62,6 +62,7 @@ type _BVLCSecureBVLL struct {
 }
 
 var _ BVLCSecureBVLL = (*_BVLCSecureBVLL)(nil)
+var _ BVLCRequirements = (*_BVLCSecureBVLL)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,6 +137,7 @@ func (m *_BVLCSecureBVLL) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BVLCSecureBVLL) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC, bvlcPayloadLength uint16) (__bVLCSecureBVLL BVLCSecureBVLL, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCSecureBVLL"); pullErr != nil {

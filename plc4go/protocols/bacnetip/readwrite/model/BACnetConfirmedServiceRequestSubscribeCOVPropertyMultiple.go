@@ -69,6 +69,7 @@ type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple struct {
 }
 
 var _ BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -179,6 +180,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetLengthIn
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); pullErr != nil {

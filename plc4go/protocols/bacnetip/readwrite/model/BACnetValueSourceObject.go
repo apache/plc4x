@@ -57,6 +57,7 @@ type _BACnetValueSourceObject struct {
 }
 
 var _ BACnetValueSourceObject = (*_BACnetValueSourceObject)(nil)
+var _ BACnetValueSourceRequirements = (*_BACnetValueSourceObject)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetValueSourceObject) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_BACnetValueSourceObject) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetValueSource) (__bACnetValueSourceObject BACnetValueSourceObject, err error) {
 	m.BACnetValueSourceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetValueSourceObject"); pullErr != nil {

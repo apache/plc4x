@@ -60,6 +60,7 @@ type _NLMVendorProprietaryMessage struct {
 }
 
 var _ NLMVendorProprietaryMessage = (*_NLMVendorProprietaryMessage)(nil)
+var _ NLMRequirements = (*_NLMVendorProprietaryMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_NLMVendorProprietaryMessage) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_NLMVendorProprietaryMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMVendorProprietaryMessage NLMVendorProprietaryMessage, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMVendorProprietaryMessage"); pullErr != nil {

@@ -50,6 +50,8 @@ type SALDataContract interface {
 
 // SALDataRequirements provides a set of functions which need to be implemented by a sub struct
 type SALDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetApplicationId returns ApplicationId (discriminator field)
 	GetApplicationId() ApplicationId
 }
@@ -63,17 +65,11 @@ type SALDataExactly interface {
 
 // _SALData is the data-structure of this message
 type _SALData struct {
-	_SALDataChildRequirements
-	SalData SALData
+	_SubType SALData
+	SalData  SALData
 }
 
 var _ SALDataContract = (*_SALData)(nil)
-
-type _SALDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetApplicationId() ApplicationId
-}
 
 type SALDataChild interface {
 	utils.Serializable
@@ -130,7 +126,7 @@ func (m *_SALData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_SALData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func SALDataParse[T SALData](ctx context.Context, theBytes []byte, applicationId ApplicationId) (T, error) {

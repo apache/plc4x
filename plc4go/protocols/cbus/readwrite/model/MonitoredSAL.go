@@ -52,6 +52,10 @@ type MonitoredSALContract interface {
 
 // MonitoredSALRequirements provides a set of functions which need to be implemented by a sub struct
 type MonitoredSALRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetSalType returns SalType (discriminator field)
+	GetSalType() byte
 }
 
 // MonitoredSALExactly can be used when we want exactly this type and not a type which fulfills MonitoredSAL.
@@ -63,20 +67,14 @@ type MonitoredSALExactly interface {
 
 // _MonitoredSAL is the data-structure of this message
 type _MonitoredSAL struct {
-	_MonitoredSALChildRequirements
-	SalType byte
+	_SubType MonitoredSAL
+	SalType  byte
 
 	// Arguments.
 	CBusOptions CBusOptions
 }
 
 var _ MonitoredSALContract = (*_MonitoredSAL)(nil)
-
-type _MonitoredSALChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetSalType() byte
-}
 
 type MonitoredSALChild interface {
 	utils.Serializable
@@ -128,7 +126,7 @@ func (m *_MonitoredSAL) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_MonitoredSAL) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func MonitoredSALParse[T MonitoredSAL](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {

@@ -57,6 +57,7 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean struct {
 }
 
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean)(nil)
+var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) GetL
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParametersChangeOfDiscreteValueNewValue, tagNumber uint8) (__bACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean, err error) {
 	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean"); pullErr != nil {

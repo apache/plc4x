@@ -90,6 +90,7 @@ type _SecurityGroupDataType struct {
 }
 
 var _ SecurityGroupDataType = (*_SecurityGroupDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SecurityGroupDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -271,6 +272,7 @@ func (m *_SecurityGroupDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SecurityGroupDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__securityGroupDataType SecurityGroupDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityGroupDataType"); pullErr != nil {

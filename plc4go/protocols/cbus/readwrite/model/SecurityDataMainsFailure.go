@@ -52,6 +52,7 @@ type _SecurityDataMainsFailure struct {
 }
 
 var _ SecurityDataMainsFailure = (*_SecurityDataMainsFailure)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataMainsFailure)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataMainsFailure) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_SecurityDataMainsFailure) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataMainsFailure SecurityDataMainsFailure, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataMainsFailure"); pullErr != nil {

@@ -63,6 +63,7 @@ type _AdsWriteControlRequest struct {
 }
 
 var _ AdsWriteControlRequest = (*_AdsWriteControlRequest)(nil)
+var _ AmsPacketRequirements = (*_AdsWriteControlRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -160,6 +161,7 @@ func (m *_AdsWriteControlRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_AdsWriteControlRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsWriteControlRequest AdsWriteControlRequest, err error) {
 	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsWriteControlRequest"); pullErr != nil {

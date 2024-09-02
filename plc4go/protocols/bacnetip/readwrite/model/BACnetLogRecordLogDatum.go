@@ -58,6 +58,10 @@ type BACnetLogRecordLogDatumContract interface {
 
 // BACnetLogRecordLogDatumRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetLogRecordLogDatumRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetLogRecordLogDatumExactly can be used when we want exactly this type and not a type which fulfills BACnetLogRecordLogDatum.
@@ -69,7 +73,7 @@ type BACnetLogRecordLogDatumExactly interface {
 
 // _BACnetLogRecordLogDatum is the data-structure of this message
 type _BACnetLogRecordLogDatum struct {
-	_BACnetLogRecordLogDatumChildRequirements
+	_SubType        BACnetLogRecordLogDatum
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
@@ -79,12 +83,6 @@ type _BACnetLogRecordLogDatum struct {
 }
 
 var _ BACnetLogRecordLogDatumContract = (*_BACnetLogRecordLogDatum)(nil)
-
-type _BACnetLogRecordLogDatumChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetLogRecordLogDatumChild interface {
 	utils.Serializable
@@ -121,7 +119,8 @@ func (m *_BACnetLogRecordLogDatum) GetClosingTag() BACnetClosingTag {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetLogRecordLogDatum) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetLogRecordLogDatum) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -167,7 +166,7 @@ func (m *_BACnetLogRecordLogDatum) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetLogRecordLogDatum) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogRecordLogDatumParse[T BACnetLogRecordLogDatum](ctx context.Context, theBytes []byte, tagNumber uint8) (T, error) {

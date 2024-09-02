@@ -59,6 +59,7 @@ type _BACnetConstructedDataVerificationTime struct {
 }
 
 var _ BACnetConstructedDataVerificationTime = (*_BACnetConstructedDataVerificationTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVerificationTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataVerificationTime) GetLengthInBytes(ctx context.Co
 
 func (m *_BACnetConstructedDataVerificationTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataVerificationTime BACnetConstructedDataVerificationTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVerificationTime"); pullErr != nil {

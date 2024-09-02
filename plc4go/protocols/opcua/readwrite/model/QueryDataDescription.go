@@ -63,6 +63,7 @@ type _QueryDataDescription struct {
 }
 
 var _ QueryDataDescription = (*_QueryDataDescription)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_QueryDataDescription)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_QueryDataDescription) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_QueryDataDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryDataDescription QueryDataDescription, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("QueryDataDescription"); pullErr != nil {

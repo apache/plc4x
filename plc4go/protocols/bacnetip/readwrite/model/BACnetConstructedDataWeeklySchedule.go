@@ -62,6 +62,7 @@ type _BACnetConstructedDataWeeklySchedule struct {
 }
 
 var _ BACnetConstructedDataWeeklySchedule = (*_BACnetConstructedDataWeeklySchedule)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWeeklySchedule)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataWeeklySchedule) GetWeeklySchedule() []BACnetDaily
 func (m *_BACnetConstructedDataWeeklySchedule) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataWeeklySchedule) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConstructedDataWeeklySchedule) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataWeeklySchedule BACnetConstructedDataWeeklySchedule, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWeeklySchedule"); pullErr != nil {

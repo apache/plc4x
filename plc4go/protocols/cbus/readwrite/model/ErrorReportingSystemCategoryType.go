@@ -46,6 +46,8 @@ type ErrorReportingSystemCategoryTypeContract interface {
 
 // ErrorReportingSystemCategoryTypeRequirements provides a set of functions which need to be implemented by a sub struct
 type ErrorReportingSystemCategoryTypeRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetErrorReportingSystemCategoryClass returns ErrorReportingSystemCategoryClass (discriminator field)
 	GetErrorReportingSystemCategoryClass() ErrorReportingSystemCategoryClass
 }
@@ -59,16 +61,10 @@ type ErrorReportingSystemCategoryTypeExactly interface {
 
 // _ErrorReportingSystemCategoryType is the data-structure of this message
 type _ErrorReportingSystemCategoryType struct {
-	_ErrorReportingSystemCategoryTypeChildRequirements
+	_SubType ErrorReportingSystemCategoryType
 }
 
 var _ ErrorReportingSystemCategoryTypeContract = (*_ErrorReportingSystemCategoryType)(nil)
-
-type _ErrorReportingSystemCategoryTypeChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetErrorReportingSystemCategoryClass() ErrorReportingSystemCategoryClass
-}
 
 type ErrorReportingSystemCategoryTypeChild interface {
 	utils.Serializable
@@ -106,7 +102,7 @@ func (m *_ErrorReportingSystemCategoryType) getLengthInBits(ctx context.Context)
 }
 
 func (m *_ErrorReportingSystemCategoryType) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ErrorReportingSystemCategoryTypeParse[T ErrorReportingSystemCategoryType](ctx context.Context, theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (T, error) {

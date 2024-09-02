@@ -57,6 +57,7 @@ type _ConnectionResponseDataBlockTunnelConnection struct {
 }
 
 var _ ConnectionResponseDataBlockTunnelConnection = (*_ConnectionResponseDataBlockTunnelConnection)(nil)
+var _ ConnectionResponseDataBlockRequirements = (*_ConnectionResponseDataBlockTunnelConnection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) GetLengthInBytes(ctx cont
 
 func (m *_ConnectionResponseDataBlockTunnelConnection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ConnectionResponseDataBlock) (__connectionResponseDataBlockTunnelConnection ConnectionResponseDataBlockTunnelConnection, err error) {
 	m.ConnectionResponseDataBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockTunnelConnection"); pullErr != nil {

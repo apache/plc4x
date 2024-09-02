@@ -57,6 +57,7 @@ type _ErrorReportingSystemCategoryTypeClimateControllers struct {
 }
 
 var _ ErrorReportingSystemCategoryTypeClimateControllers = (*_ErrorReportingSystemCategoryTypeClimateControllers)(nil)
+var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeClimateControllers)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetLengthInBytes(c
 
 func (m *_ErrorReportingSystemCategoryTypeClimateControllers) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ErrorReportingSystemCategoryType, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (__errorReportingSystemCategoryTypeClimateControllers ErrorReportingSystemCategoryTypeClimateControllers, err error) {
 	m.ErrorReportingSystemCategoryTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeClimateControllers"); pullErr != nil {

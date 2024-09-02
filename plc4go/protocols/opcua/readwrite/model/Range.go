@@ -60,6 +60,7 @@ type _Range struct {
 }
 
 var _ Range = (*_Range)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_Range)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_Range) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_Range) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__range Range, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Range"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataCarPosition struct {
 }
 
 var _ BACnetConstructedDataCarPosition = (*_BACnetConstructedDataCarPosition)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarPosition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataCarPosition) GetLengthInBytes(ctx context.Context
 
 func (m *_BACnetConstructedDataCarPosition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCarPosition BACnetConstructedDataCarPosition, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarPosition"); pullErr != nil {

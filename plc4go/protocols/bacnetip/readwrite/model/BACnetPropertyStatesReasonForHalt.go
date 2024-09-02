@@ -57,6 +57,7 @@ type _BACnetPropertyStatesReasonForHalt struct {
 }
 
 var _ BACnetPropertyStatesReasonForHalt = (*_BACnetPropertyStatesReasonForHalt)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesReasonForHalt)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesReasonForHalt) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetPropertyStatesReasonForHalt) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesReasonForHalt BACnetPropertyStatesReasonForHalt, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesReasonForHalt"); pullErr != nil {

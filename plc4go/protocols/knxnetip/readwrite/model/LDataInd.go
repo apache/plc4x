@@ -63,6 +63,7 @@ type _LDataInd struct {
 }
 
 var _ LDataInd = (*_LDataInd)(nil)
+var _ CEMIRequirements = (*_LDataInd)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -155,6 +156,7 @@ func (m *_LDataInd) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LDataInd) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__lDataInd LDataInd, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataInd"); pullErr != nil {

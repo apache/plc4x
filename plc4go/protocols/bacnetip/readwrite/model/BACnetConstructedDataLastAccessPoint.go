@@ -59,6 +59,7 @@ type _BACnetConstructedDataLastAccessPoint struct {
 }
 
 var _ BACnetConstructedDataLastAccessPoint = (*_BACnetConstructedDataLastAccessPoint)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastAccessPoint)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataLastAccessPoint) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetConstructedDataLastAccessPoint) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLastAccessPoint BACnetConstructedDataLastAccessPoint, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastAccessPoint"); pullErr != nil {

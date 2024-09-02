@@ -57,6 +57,7 @@ type _BACnetLogDataLogDataEntryEnumeratedValue struct {
 }
 
 var _ BACnetLogDataLogDataEntryEnumeratedValue = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
+var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetLengthInBytes(ctx context
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogDataLogDataEntry) (__bACnetLogDataLogDataEntryEnumeratedValue BACnetLogDataLogDataEntryEnumeratedValue, err error) {
 	m.BACnetLogDataLogDataEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryEnumeratedValue"); pullErr != nil {

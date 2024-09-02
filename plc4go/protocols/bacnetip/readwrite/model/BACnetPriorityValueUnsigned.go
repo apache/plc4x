@@ -57,6 +57,7 @@ type _BACnetPriorityValueUnsigned struct {
 }
 
 var _ BACnetPriorityValueUnsigned = (*_BACnetPriorityValueUnsigned)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueUnsigned)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPriorityValueUnsigned) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_BACnetPriorityValueUnsigned) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueUnsigned BACnetPriorityValueUnsigned, err error) {
 	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueUnsigned"); pullErr != nil {

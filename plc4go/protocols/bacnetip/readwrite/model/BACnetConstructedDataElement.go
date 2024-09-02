@@ -111,11 +111,11 @@ func (m *_BACnetConstructedDataElement) GetConstructedData() BACnetConstructedDa
 func (m *_BACnetConstructedDataElement) GetPeekedTagNumber() uint8 {
 	ctx := context.Background()
 	_ = ctx
-	applicationTag := m.ApplicationTag
+	applicationTag := m.GetApplicationTag()
 	_ = applicationTag
-	contextTag := m.ContextTag
+	contextTag := m.GetContextTag()
 	_ = contextTag
-	constructedData := m.ConstructedData
+	constructedData := m.GetConstructedData()
 	_ = constructedData
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
@@ -123,11 +123,11 @@ func (m *_BACnetConstructedDataElement) GetPeekedTagNumber() uint8 {
 func (m *_BACnetConstructedDataElement) GetIsApplicationTag() bool {
 	ctx := context.Background()
 	_ = ctx
-	applicationTag := m.ApplicationTag
+	applicationTag := m.GetApplicationTag()
 	_ = applicationTag
-	contextTag := m.ContextTag
+	contextTag := m.GetContextTag()
 	_ = contextTag
-	constructedData := m.ConstructedData
+	constructedData := m.GetConstructedData()
 	_ = constructedData
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_APPLICATION_TAGS)))
 }
@@ -135,11 +135,11 @@ func (m *_BACnetConstructedDataElement) GetIsApplicationTag() bool {
 func (m *_BACnetConstructedDataElement) GetIsConstructedData() bool {
 	ctx := context.Background()
 	_ = ctx
-	applicationTag := m.ApplicationTag
+	applicationTag := m.GetApplicationTag()
 	_ = applicationTag
-	contextTag := m.ContextTag
+	contextTag := m.GetContextTag()
 	_ = contextTag
-	constructedData := m.ConstructedData
+	constructedData := m.GetConstructedData()
 	_ = constructedData
 	return bool(bool(!(m.GetIsApplicationTag())) && bool(bool((m.GetPeekedTagHeader().GetLengthValueType()) == (0x6))))
 }
@@ -147,11 +147,11 @@ func (m *_BACnetConstructedDataElement) GetIsConstructedData() bool {
 func (m *_BACnetConstructedDataElement) GetIsContextTag() bool {
 	ctx := context.Background()
 	_ = ctx
-	applicationTag := m.ApplicationTag
+	applicationTag := m.GetApplicationTag()
 	_ = applicationTag
-	contextTag := m.ContextTag
+	contextTag := m.GetContextTag()
 	_ = contextTag
-	constructedData := m.ConstructedData
+	constructedData := m.GetConstructedData()
 	_ = constructedData
 	return bool(bool(!(m.GetIsConstructedData())) && bool(!(m.GetIsApplicationTag())))
 }

@@ -62,6 +62,7 @@ type _BACnetConstructedDataBitStringValueAlarmValues struct {
 }
 
 var _ BACnetConstructedDataBitStringValueAlarmValues = (*_BACnetConstructedDataBitStringValueAlarmValues)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitStringValueAlarmValues)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetAlarmValues() []BAC
 func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetLengthInBytes(ctx c
 
 func (m *_BACnetConstructedDataBitStringValueAlarmValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBitStringValueAlarmValues BACnetConstructedDataBitStringValueAlarmValues, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitStringValueAlarmValues"); pullErr != nil {

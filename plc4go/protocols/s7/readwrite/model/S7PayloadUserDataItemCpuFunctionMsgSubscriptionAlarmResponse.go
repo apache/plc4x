@@ -69,6 +69,7 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse struct {
 }
 
 var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -181,6 +182,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetLengt
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse, err error) {
 	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse"); pullErr != nil {

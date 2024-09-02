@@ -57,6 +57,7 @@ type _LogicalSegment struct {
 }
 
 var _ LogicalSegment = (*_LogicalSegment)(nil)
+var _ PathSegmentRequirements = (*_LogicalSegment)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_LogicalSegment) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LogicalSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_PathSegment) (__logicalSegment LogicalSegment, err error) {
 	m.PathSegmentContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LogicalSegment"); pullErr != nil {

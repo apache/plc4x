@@ -60,6 +60,7 @@ type _BACnetServiceAckReadPropertyMultiple struct {
 }
 
 var _ BACnetServiceAckReadPropertyMultiple = (*_BACnetServiceAckReadPropertyMultiple)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadPropertyMultiple)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,6 +137,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetServiceAckReadPropertyMultiple) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckPayloadLength uint32, serviceAckLength uint32) (__bACnetServiceAckReadPropertyMultiple BACnetServiceAckReadPropertyMultiple, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyMultiple"); pullErr != nil {

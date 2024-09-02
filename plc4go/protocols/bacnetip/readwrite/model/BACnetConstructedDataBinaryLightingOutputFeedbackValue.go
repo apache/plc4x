@@ -59,6 +59,7 @@ type _BACnetConstructedDataBinaryLightingOutputFeedbackValue struct {
 }
 
 var _ BACnetConstructedDataBinaryLightingOutputFeedbackValue = (*_BACnetConstructedDataBinaryLightingOutputFeedbackValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryLightingOutputFeedbackValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) GetLengthInByt
 
 func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBinaryLightingOutputFeedbackValue BACnetConstructedDataBinaryLightingOutputFeedbackValue, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryLightingOutputFeedbackValue"); pullErr != nil {

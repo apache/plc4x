@@ -59,6 +59,7 @@ type _BACnetConstructedDataFileRecordCount struct {
 }
 
 var _ BACnetConstructedDataFileRecordCount = (*_BACnetConstructedDataFileRecordCount)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileRecordCount)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataFileRecordCount) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetConstructedDataFileRecordCount) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataFileRecordCount BACnetConstructedDataFileRecordCount, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFileRecordCount"); pullErr != nil {

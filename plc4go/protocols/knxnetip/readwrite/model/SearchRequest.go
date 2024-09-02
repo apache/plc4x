@@ -59,6 +59,7 @@ type _SearchRequest struct {
 }
 
 var _ SearchRequest = (*_SearchRequest)(nil)
+var _ KnxNetIpMessageRequirements = (*_SearchRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_SearchRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SearchRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__searchRequest SearchRequest, err error) {
 	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SearchRequest"); pullErr != nil {

@@ -58,6 +58,8 @@ type DF1ResponseMessageContract interface {
 
 // DF1ResponseMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type DF1ResponseMessageRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 }
@@ -71,7 +73,7 @@ type DF1ResponseMessageExactly interface {
 
 // _DF1ResponseMessage is the data-structure of this message
 type _DF1ResponseMessage struct {
-	_DF1ResponseMessageChildRequirements
+	_SubType           DF1ResponseMessage
 	DestinationAddress uint8
 	SourceAddress      uint8
 	Status             uint8
@@ -85,12 +87,6 @@ type _DF1ResponseMessage struct {
 }
 
 var _ DF1ResponseMessageContract = (*_DF1ResponseMessage)(nil)
-
-type _DF1ResponseMessageChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandCode() uint8
-}
 
 type DF1ResponseMessageChild interface {
 	utils.Serializable
@@ -174,7 +170,7 @@ func (m *_DF1ResponseMessage) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_DF1ResponseMessage) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func DF1ResponseMessageParse[T DF1ResponseMessage](ctx context.Context, theBytes []byte, payloadLength uint16) (T, error) {

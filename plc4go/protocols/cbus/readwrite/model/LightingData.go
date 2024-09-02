@@ -52,6 +52,10 @@ type LightingDataContract interface {
 
 // LightingDataRequirements provides a set of functions which need to be implemented by a sub struct
 type LightingDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() LightingCommandType
 }
 
 // LightingDataExactly can be used when we want exactly this type and not a type which fulfills LightingData.
@@ -63,17 +67,11 @@ type LightingDataExactly interface {
 
 // _LightingData is the data-structure of this message
 type _LightingData struct {
-	_LightingDataChildRequirements
+	_SubType             LightingData
 	CommandTypeContainer LightingCommandTypeContainer
 }
 
 var _ LightingDataContract = (*_LightingData)(nil)
-
-type _LightingDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() LightingCommandType
-}
 
 type LightingDataChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_LightingData) GetCommandTypeContainer() LightingCommandTypeContainer {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_LightingData) GetCommandType() LightingCommandType {
+func (pm *_LightingData) GetCommandType() LightingCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastLightingCommandType(m.GetCommandTypeContainer().CommandType())
@@ -145,7 +144,7 @@ func (m *_LightingData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_LightingData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func LightingDataParse[T LightingData](ctx context.Context, theBytes []byte) (T, error) {

@@ -56,6 +56,12 @@ type BACnetPriorityValueContract interface {
 
 // BACnetPriorityValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetPriorityValueRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
+	GetPeekedIsContextTag() bool
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetPriorityValueExactly can be used when we want exactly this type and not a type which fulfills BACnetPriorityValue.
@@ -67,7 +73,7 @@ type BACnetPriorityValueExactly interface {
 
 // _BACnetPriorityValue is the data-structure of this message
 type _BACnetPriorityValue struct {
-	_BACnetPriorityValueChildRequirements
+	_SubType        BACnetPriorityValue
 	PeekedTagHeader BACnetTagHeader
 
 	// Arguments.
@@ -75,13 +81,6 @@ type _BACnetPriorityValue struct {
 }
 
 var _ BACnetPriorityValueContract = (*_BACnetPriorityValue)(nil)
-
-type _BACnetPriorityValueChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedIsContextTag() bool
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetPriorityValueChild interface {
 	utils.Serializable
@@ -110,13 +109,15 @@ func (m *_BACnetPriorityValue) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetPriorityValue) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetPriorityValue) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
-func (m *_BACnetPriorityValue) GetPeekedIsContextTag() bool {
+func (pm *_BACnetPriorityValue) GetPeekedIsContextTag() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
@@ -158,7 +159,7 @@ func (m *_BACnetPriorityValue) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetPriorityValue) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPriorityValueParse[T BACnetPriorityValue](ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (T, error) {

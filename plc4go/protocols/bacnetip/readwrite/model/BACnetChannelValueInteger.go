@@ -57,6 +57,7 @@ type _BACnetChannelValueInteger struct {
 }
 
 var _ BACnetChannelValueInteger = (*_BACnetChannelValueInteger)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueInteger)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetChannelValueInteger) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_BACnetChannelValueInteger) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueInteger BACnetChannelValueInteger, err error) {
 	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueInteger"); pullErr != nil {

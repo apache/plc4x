@@ -52,6 +52,7 @@ type _LRawCon struct {
 }
 
 var _ LRawCon = (*_LRawCon)(nil)
+var _ CEMIRequirements = (*_LRawCon)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_LRawCon) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LRawCon) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__lRawCon LRawCon, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LRawCon"); pullErr != nil {

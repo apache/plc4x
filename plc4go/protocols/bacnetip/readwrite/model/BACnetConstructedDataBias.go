@@ -59,6 +59,7 @@ type _BACnetConstructedDataBias struct {
 }
 
 var _ BACnetConstructedDataBias = (*_BACnetConstructedDataBias)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBias)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBias) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_BACnetConstructedDataBias) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBias BACnetConstructedDataBias, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBias"); pullErr != nil {

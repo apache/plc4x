@@ -52,6 +52,7 @@ type _SecurityDataFireAlarmCleared struct {
 }
 
 var _ SecurityDataFireAlarmCleared = (*_SecurityDataFireAlarmCleared)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataFireAlarmCleared)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataFireAlarmCleared) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_SecurityDataFireAlarmCleared) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataFireAlarmCleared SecurityDataFireAlarmCleared, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataFireAlarmCleared"); pullErr != nil {

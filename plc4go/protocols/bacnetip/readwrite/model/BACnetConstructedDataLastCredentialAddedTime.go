@@ -59,6 +59,7 @@ type _BACnetConstructedDataLastCredentialAddedTime struct {
 }
 
 var _ BACnetConstructedDataLastCredentialAddedTime = (*_BACnetConstructedDataLastCredentialAddedTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastCredentialAddedTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataLastCredentialAddedTime) GetLengthInBytes(ctx con
 
 func (m *_BACnetConstructedDataLastCredentialAddedTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLastCredentialAddedTime BACnetConstructedDataLastCredentialAddedTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastCredentialAddedTime"); pullErr != nil {

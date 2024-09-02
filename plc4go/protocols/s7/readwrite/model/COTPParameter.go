@@ -50,6 +50,8 @@ type COTPParameterContract interface {
 
 // COTPParameterRequirements provides a set of functions which need to be implemented by a sub struct
 type COTPParameterRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetParameterType returns ParameterType (discriminator field)
 	GetParameterType() uint8
 }
@@ -63,19 +65,13 @@ type COTPParameterExactly interface {
 
 // _COTPParameter is the data-structure of this message
 type _COTPParameter struct {
-	_COTPParameterChildRequirements
+	_SubType COTPParameter
 
 	// Arguments.
 	Rest uint8
 }
 
 var _ COTPParameterContract = (*_COTPParameter)(nil)
-
-type _COTPParameterChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetParameterType() uint8
-}
 
 type COTPParameterChild interface {
 	utils.Serializable
@@ -118,7 +114,7 @@ func (m *_COTPParameter) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_COTPParameter) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func COTPParameterParse[T COTPParameter](ctx context.Context, theBytes []byte, rest uint8) (T, error) {

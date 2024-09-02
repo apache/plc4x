@@ -52,6 +52,7 @@ type _TelephonyDataInternetConnectionRequestMade struct {
 }
 
 var _ TelephonyDataInternetConnectionRequestMade = (*_TelephonyDataInternetConnectionRequestMade)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataInternetConnectionRequestMade)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_TelephonyDataInternetConnectionRequestMade) GetLengthInBytes(ctx conte
 
 func (m *_TelephonyDataInternetConnectionRequestMade) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData) (__telephonyDataInternetConnectionRequestMade TelephonyDataInternetConnectionRequestMade, err error) {
 	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataInternetConnectionRequestMade"); pullErr != nil {

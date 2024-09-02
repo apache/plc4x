@@ -81,6 +81,7 @@ type _EndpointDescription struct {
 }
 
 var _ EndpointDescription = (*_EndpointDescription)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EndpointDescription)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -224,6 +225,7 @@ func (m *_EndpointDescription) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_EndpointDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__endpointDescription EndpointDescription, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EndpointDescription"); pullErr != nil {

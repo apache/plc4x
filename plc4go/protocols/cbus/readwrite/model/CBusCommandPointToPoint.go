@@ -57,6 +57,7 @@ type _CBusCommandPointToPoint struct {
 }
 
 var _ CBusCommandPointToPoint = (*_CBusCommandPointToPoint)(nil)
+var _ CBusCommandRequirements = (*_CBusCommandPointToPoint)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_CBusCommandPointToPoint) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_CBusCommandPointToPoint) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusCommand, cBusOptions CBusOptions) (__cBusCommandPointToPoint CBusCommandPointToPoint, err error) {
 	m.CBusCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToPoint"); pullErr != nil {

@@ -68,6 +68,7 @@ type _BACnetConstructedDataEventTimeStamps struct {
 }
 
 var _ BACnetConstructedDataEventTimeStamps = (*_BACnetConstructedDataEventTimeStamps)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventTimeStamps)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,7 +117,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetEventTimeStamps() []BACnetTim
 func (m *_BACnetConstructedDataEventTimeStamps) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -124,7 +125,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetZero() uint64 {
 func (m *_BACnetConstructedDataEventTimeStamps) GetToOffnormal() BACnetTimeStamp {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() any { return CastBACnetTimeStamp(m.GetEventTimeStamps()[0]) }, func() any { return CastBACnetTimeStamp(nil) })))
 }
@@ -132,7 +133,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetToOffnormal() BACnetTimeStamp
 func (m *_BACnetConstructedDataEventTimeStamps) GetToFault() BACnetTimeStamp {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() any { return CastBACnetTimeStamp(m.GetEventTimeStamps()[1]) }, func() any { return CastBACnetTimeStamp(nil) })))
 }
@@ -140,7 +141,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetToFault() BACnetTimeStamp {
 func (m *_BACnetConstructedDataEventTimeStamps) GetToNormal() BACnetTimeStamp {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetTimeStamp(CastBACnetTimeStamp(utils.InlineIf(bool((len(m.GetEventTimeStamps())) == (3)), func() any { return CastBACnetTimeStamp(m.GetEventTimeStamps()[2]) }, func() any { return CastBACnetTimeStamp(nil) })))
 }
@@ -207,6 +208,7 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetConstructedDataEventTimeStamps) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataEventTimeStamps BACnetConstructedDataEventTimeStamps, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventTimeStamps"); pullErr != nil {

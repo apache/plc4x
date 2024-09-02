@@ -66,6 +66,7 @@ type _WriteValue struct {
 }
 
 var _ WriteValue = (*_WriteValue)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_WriteValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_WriteValue) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_WriteValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__writeValue WriteValue, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("WriteValue"); pullErr != nil {

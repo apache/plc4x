@@ -52,6 +52,7 @@ type _FirmataCommandSystemReset struct {
 }
 
 var _ FirmataCommandSystemReset = (*_FirmataCommandSystemReset)(nil)
+var _ FirmataCommandRequirements = (*_FirmataCommandSystemReset)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_FirmataCommandSystemReset) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_FirmataCommandSystemReset) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataCommand, response bool) (__firmataCommandSystemReset FirmataCommandSystemReset, err error) {
 	m.FirmataCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSystemReset"); pullErr != nil {

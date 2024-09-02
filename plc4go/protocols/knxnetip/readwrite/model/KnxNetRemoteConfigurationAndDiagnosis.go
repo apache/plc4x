@@ -57,6 +57,7 @@ type _KnxNetRemoteConfigurationAndDiagnosis struct {
 }
 
 var _ KnxNetRemoteConfigurationAndDiagnosis = (*_KnxNetRemoteConfigurationAndDiagnosis)(nil)
+var _ ServiceIdRequirements = (*_KnxNetRemoteConfigurationAndDiagnosis)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetLengthInBytes(ctx context.Co
 
 func (m *_KnxNetRemoteConfigurationAndDiagnosis) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ServiceId) (__knxNetRemoteConfigurationAndDiagnosis KnxNetRemoteConfigurationAndDiagnosis, err error) {
 	m.ServiceIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetRemoteConfigurationAndDiagnosis"); pullErr != nil {

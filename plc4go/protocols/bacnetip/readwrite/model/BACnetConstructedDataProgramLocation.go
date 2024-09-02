@@ -59,6 +59,7 @@ type _BACnetConstructedDataProgramLocation struct {
 }
 
 var _ BACnetConstructedDataProgramLocation = (*_BACnetConstructedDataProgramLocation)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramLocation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataProgramLocation) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetConstructedDataProgramLocation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataProgramLocation BACnetConstructedDataProgramLocation, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProgramLocation"); pullErr != nil {

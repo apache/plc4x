@@ -52,6 +52,7 @@ type _ApduDataMemoryWrite struct {
 }
 
 var _ ApduDataMemoryWrite = (*_ApduDataMemoryWrite)(nil)
+var _ ApduDataRequirements = (*_ApduDataMemoryWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataMemoryWrite) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApduDataMemoryWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataMemoryWrite ApduDataMemoryWrite, err error) {
 	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataMemoryWrite"); pullErr != nil {

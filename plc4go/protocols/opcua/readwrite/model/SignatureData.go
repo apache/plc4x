@@ -60,6 +60,7 @@ type _SignatureData struct {
 }
 
 var _ SignatureData = (*_SignatureData)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SignatureData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_SignatureData) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SignatureData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__signatureData SignatureData, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SignatureData"); pullErr != nil {

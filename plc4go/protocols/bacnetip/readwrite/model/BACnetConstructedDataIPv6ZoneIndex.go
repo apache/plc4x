@@ -59,6 +59,7 @@ type _BACnetConstructedDataIPv6ZoneIndex struct {
 }
 
 var _ BACnetConstructedDataIPv6ZoneIndex = (*_BACnetConstructedDataIPv6ZoneIndex)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6ZoneIndex)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataIPv6ZoneIndex) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIPv6ZoneIndex BACnetConstructedDataIPv6ZoneIndex, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6ZoneIndex"); pullErr != nil {

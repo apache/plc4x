@@ -57,6 +57,7 @@ type _BACnetConstructedDataAuthorizationExemptions struct {
 }
 
 var _ BACnetConstructedDataAuthorizationExemptions = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetLengthInBytes(ctx con
 
 func (m *_BACnetConstructedDataAuthorizationExemptions) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAuthorizationExemptions BACnetConstructedDataAuthorizationExemptions, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthorizationExemptions"); pullErr != nil {

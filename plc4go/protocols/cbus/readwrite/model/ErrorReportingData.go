@@ -52,6 +52,10 @@ type ErrorReportingDataContract interface {
 
 // ErrorReportingDataRequirements provides a set of functions which need to be implemented by a sub struct
 type ErrorReportingDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() ErrorReportingCommandType
 }
 
 // ErrorReportingDataExactly can be used when we want exactly this type and not a type which fulfills ErrorReportingData.
@@ -63,17 +67,11 @@ type ErrorReportingDataExactly interface {
 
 // _ErrorReportingData is the data-structure of this message
 type _ErrorReportingData struct {
-	_ErrorReportingDataChildRequirements
+	_SubType             ErrorReportingData
 	CommandTypeContainer ErrorReportingCommandTypeContainer
 }
 
 var _ ErrorReportingDataContract = (*_ErrorReportingData)(nil)
-
-type _ErrorReportingDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() ErrorReportingCommandType
-}
 
 type ErrorReportingDataChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_ErrorReportingData) GetCommandTypeContainer() ErrorReportingCommandTyp
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_ErrorReportingData) GetCommandType() ErrorReportingCommandType {
+func (pm *_ErrorReportingData) GetCommandType() ErrorReportingCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastErrorReportingCommandType(m.GetCommandTypeContainer().CommandType())
@@ -145,7 +144,7 @@ func (m *_ErrorReportingData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ErrorReportingData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ErrorReportingDataParse[T ErrorReportingData](ctx context.Context, theBytes []byte) (T, error) {

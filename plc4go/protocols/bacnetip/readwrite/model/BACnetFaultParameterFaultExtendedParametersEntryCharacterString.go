@@ -57,6 +57,7 @@ type _BACnetFaultParameterFaultExtendedParametersEntryCharacterString struct {
 }
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryCharacterString = (*_BACnetFaultParameterFaultExtendedParametersEntryCharacterString)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryCharacterString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetLe
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryCharacterString BACnetFaultParameterFaultExtendedParametersEntryCharacterString, err error) {
 	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryCharacterString"); pullErr != nil {

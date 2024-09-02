@@ -57,6 +57,7 @@ type _BACnetContextTagDate struct {
 }
 
 var _ BACnetContextTagDate = (*_BACnetContextTagDate)(nil)
+var _ BACnetContextTagRequirements = (*_BACnetContextTagDate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_BACnetContextTagDate) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BACnetContextTagDate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetContextTag, tagNumberArgument uint8, dataType BACnetDataType) (__bACnetContextTagDate BACnetContextTagDate, err error) {
 	m.BACnetContextTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagDate"); pullErr != nil {

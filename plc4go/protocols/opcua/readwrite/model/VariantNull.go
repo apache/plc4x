@@ -52,6 +52,7 @@ type _VariantNull struct {
 }
 
 var _ VariantNull = (*_VariantNull)(nil)
+var _ VariantRequirements = (*_VariantNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_VariantNull) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant) (__variantNull VariantNull, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantNull"); pullErr != nil {

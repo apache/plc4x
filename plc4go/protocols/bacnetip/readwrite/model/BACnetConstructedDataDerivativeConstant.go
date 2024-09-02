@@ -59,6 +59,7 @@ type _BACnetConstructedDataDerivativeConstant struct {
 }
 
 var _ BACnetConstructedDataDerivativeConstant = (*_BACnetConstructedDataDerivativeConstant)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDerivativeConstant)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDerivativeConstant) GetLengthInBytes(ctx context.
 
 func (m *_BACnetConstructedDataDerivativeConstant) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDerivativeConstant BACnetConstructedDataDerivativeConstant, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDerivativeConstant"); pullErr != nil {

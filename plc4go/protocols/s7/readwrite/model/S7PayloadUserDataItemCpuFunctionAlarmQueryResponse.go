@@ -57,6 +57,7 @@ type _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
 }
 
 var _ S7PayloadUserDataItemCpuFunctionAlarmQueryResponse = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -139,6 +140,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetLengthInBytes(c
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCpuFunctionAlarmQueryResponse S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, err error) {
 	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryResponse"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataDefaultStepIncrement struct {
 }
 
 var _ BACnetConstructedDataDefaultStepIncrement = (*_BACnetConstructedDataDefaultStepIncrement)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultStepIncrement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBytes(ctx contex
 
 func (m *_BACnetConstructedDataDefaultStepIncrement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDefaultStepIncrement BACnetConstructedDataDefaultStepIncrement, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultStepIncrement"); pullErr != nil {

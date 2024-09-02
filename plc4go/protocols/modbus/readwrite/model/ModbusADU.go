@@ -49,6 +49,8 @@ type ModbusADUContract interface {
 
 // ModbusADURequirements provides a set of functions which need to be implemented by a sub struct
 type ModbusADURequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetDriverType returns DriverType (discriminator field)
 	GetDriverType() DriverType
 }
@@ -62,19 +64,13 @@ type ModbusADUExactly interface {
 
 // _ModbusADU is the data-structure of this message
 type _ModbusADU struct {
-	_ModbusADUChildRequirements
+	_SubType ModbusADU
 
 	// Arguments.
 	Response bool
 }
 
 var _ ModbusADUContract = (*_ModbusADU)(nil)
-
-type _ModbusADUChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetDriverType() DriverType
-}
 
 type ModbusADUChild interface {
 	utils.Serializable
@@ -112,7 +108,7 @@ func (m *_ModbusADU) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ModbusADU) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ModbusADUParse[T ModbusADU](ctx context.Context, theBytes []byte, driverType DriverType, response bool) (T, error) {

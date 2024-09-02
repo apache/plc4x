@@ -66,6 +66,7 @@ type _BACnetConfirmedServiceRequestAddListElement struct {
 }
 
 var _ BACnetConfirmedServiceRequestAddListElement = (*_BACnetConfirmedServiceRequestAddListElement)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAddListElement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -166,6 +167,7 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) GetLengthInBytes(ctx cont
 
 func (m *_BACnetConfirmedServiceRequestAddListElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestAddListElement BACnetConfirmedServiceRequestAddListElement, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAddListElement"); pullErr != nil {

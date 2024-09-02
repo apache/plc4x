@@ -52,6 +52,7 @@ type _ApduDataExtDomainAddressWrite struct {
 }
 
 var _ ApduDataExtDomainAddressWrite = (*_ApduDataExtDomainAddressWrite)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtDomainAddressWrite) GetLengthInBytes(ctx context.Context) u
 
 func (m *_ApduDataExtDomainAddressWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtDomainAddressWrite ApduDataExtDomainAddressWrite, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressWrite"); pullErr != nil {

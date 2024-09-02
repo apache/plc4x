@@ -54,6 +54,8 @@ type ApduContract interface {
 
 // ApduRequirements provides a set of functions which need to be implemented by a sub struct
 type ApduRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetControl returns Control (discriminator field)
 	GetControl() uint8
 }
@@ -67,7 +69,7 @@ type ApduExactly interface {
 
 // _Apdu is the data-structure of this message
 type _Apdu struct {
-	_ApduChildRequirements
+	_SubType Apdu
 	Numbered bool
 	Counter  uint8
 
@@ -76,12 +78,6 @@ type _Apdu struct {
 }
 
 var _ ApduContract = (*_Apdu)(nil)
-
-type _ApduChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetControl() uint8
-}
 
 type ApduChild interface {
 	utils.Serializable
@@ -145,7 +141,7 @@ func (m *_Apdu) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_Apdu) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ApduParse[T Apdu](ctx context.Context, theBytes []byte, dataLength uint8) (T, error) {

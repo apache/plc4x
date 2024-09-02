@@ -57,6 +57,7 @@ type _BACnetConstructedDataZoneMembers struct {
 }
 
 var _ BACnetConstructedDataZoneMembers = (*_BACnetConstructedDataZoneMembers)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataZoneMembers)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataZoneMembers) GetLengthInBytes(ctx context.Context
 
 func (m *_BACnetConstructedDataZoneMembers) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataZoneMembers BACnetConstructedDataZoneMembers, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataZoneMembers"); pullErr != nil {

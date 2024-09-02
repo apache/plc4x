@@ -90,6 +90,7 @@ type _FieldMetaData struct {
 }
 
 var _ FieldMetaData = (*_FieldMetaData)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_FieldMetaData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -259,6 +260,7 @@ func (m *_FieldMetaData) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_FieldMetaData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__fieldMetaData FieldMetaData, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FieldMetaData"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataMinimumOnTime struct {
 }
 
 var _ BACnetConstructedDataMinimumOnTime = (*_BACnetConstructedDataMinimumOnTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumOnTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataMinimumOnTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMinimumOnTime BACnetConstructedDataMinimumOnTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinimumOnTime"); pullErr != nil {

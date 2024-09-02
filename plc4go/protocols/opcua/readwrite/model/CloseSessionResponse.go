@@ -57,6 +57,7 @@ type _CloseSessionResponse struct {
 }
 
 var _ CloseSessionResponse = (*_CloseSessionResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_CloseSessionResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CloseSessionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__closeSessionResponse CloseSessionResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CloseSessionResponse"); pullErr != nil {

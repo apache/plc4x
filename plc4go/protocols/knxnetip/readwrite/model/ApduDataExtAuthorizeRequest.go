@@ -60,6 +60,7 @@ type _ApduDataExtAuthorizeRequest struct {
 }
 
 var _ ApduDataExtAuthorizeRequest = (*_ApduDataExtAuthorizeRequest)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtAuthorizeRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_ApduDataExtAuthorizeRequest) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_ApduDataExtAuthorizeRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtAuthorizeRequest ApduDataExtAuthorizeRequest, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtAuthorizeRequest"); pullErr != nil {

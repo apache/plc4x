@@ -57,6 +57,7 @@ type _BACnetApplicationTagTime struct {
 }
 
 var _ BACnetApplicationTagTime = (*_BACnetApplicationTagTime)(nil)
+var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetApplicationTagTime) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_BACnetApplicationTagTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetApplicationTag) (__bACnetApplicationTagTime BACnetApplicationTagTime, err error) {
 	m.BACnetApplicationTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagTime"); pullErr != nil {

@@ -48,6 +48,8 @@ type DF1RequestCommandContract interface {
 
 // DF1RequestCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type DF1RequestCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetFunctionCode returns FunctionCode (discriminator field)
 	GetFunctionCode() uint8
 }
@@ -61,16 +63,10 @@ type DF1RequestCommandExactly interface {
 
 // _DF1RequestCommand is the data-structure of this message
 type _DF1RequestCommand struct {
-	_DF1RequestCommandChildRequirements
+	_SubType DF1RequestCommand
 }
 
 var _ DF1RequestCommandContract = (*_DF1RequestCommand)(nil)
-
-type _DF1RequestCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetFunctionCode() uint8
-}
 
 type DF1RequestCommandChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_DF1RequestCommand) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_DF1RequestCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func DF1RequestCommandParse[T DF1RequestCommand](ctx context.Context, theBytes []byte) (T, error) {

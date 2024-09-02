@@ -56,6 +56,10 @@ type EncodedReplyContract interface {
 
 // EncodedReplyRequirements provides a set of functions which need to be implemented by a sub struct
 type EncodedReplyRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetIsMonitoredSAL returns IsMonitoredSAL (discriminator field)
+	GetIsMonitoredSAL() bool
 }
 
 // EncodedReplyExactly can be used when we want exactly this type and not a type which fulfills EncodedReply.
@@ -67,7 +71,7 @@ type EncodedReplyExactly interface {
 
 // _EncodedReply is the data-structure of this message
 type _EncodedReply struct {
-	_EncodedReplyChildRequirements
+	_SubType   EncodedReply
 	PeekedByte byte
 
 	// Arguments.
@@ -76,12 +80,6 @@ type _EncodedReply struct {
 }
 
 var _ EncodedReplyContract = (*_EncodedReply)(nil)
-
-type _EncodedReplyChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIsMonitoredSAL() bool
-}
 
 type EncodedReplyChild interface {
 	utils.Serializable
@@ -110,7 +108,8 @@ func (m *_EncodedReply) GetPeekedByte() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_EncodedReply) GetIsMonitoredSAL() bool {
+func (pm *_EncodedReply) GetIsMonitoredSAL() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((bool(bool(bool((m.GetPeekedByte()&0x3F) == (0x05))) || bool(bool((m.GetPeekedByte()) == (0x00)))) || bool(bool((m.GetPeekedByte()&0xF8) == (0x00))))) && bool(!(m.GetRequestContext().GetSendIdentifyRequestBefore())))
@@ -150,7 +149,7 @@ func (m *_EncodedReply) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_EncodedReply) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func EncodedReplyParse[T EncodedReply](ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {

@@ -52,6 +52,7 @@ type _TelephonyDataClearDiversion struct {
 }
 
 var _ TelephonyDataClearDiversion = (*_TelephonyDataClearDiversion)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataClearDiversion)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_TelephonyDataClearDiversion) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_TelephonyDataClearDiversion) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData) (__telephonyDataClearDiversion TelephonyDataClearDiversion, err error) {
 	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataClearDiversion"); pullErr != nil {

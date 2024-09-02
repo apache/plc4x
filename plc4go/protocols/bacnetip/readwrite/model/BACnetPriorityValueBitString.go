@@ -57,6 +57,7 @@ type _BACnetPriorityValueBitString struct {
 }
 
 var _ BACnetPriorityValueBitString = (*_BACnetPriorityValueBitString)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueBitString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPriorityValueBitString) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_BACnetPriorityValueBitString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueBitString BACnetPriorityValueBitString, err error) {
 	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueBitString"); pullErr != nil {

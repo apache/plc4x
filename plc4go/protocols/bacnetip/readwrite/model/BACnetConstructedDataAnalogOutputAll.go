@@ -52,6 +52,7 @@ type _BACnetConstructedDataAnalogOutputAll struct {
 }
 
 var _ BACnetConstructedDataAnalogOutputAll = (*_BACnetConstructedDataAnalogOutputAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogOutputAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_BACnetConstructedDataAnalogOutputAll) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetConstructedDataAnalogOutputAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAnalogOutputAll BACnetConstructedDataAnalogOutputAll, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogOutputAll"); pullErr != nil {

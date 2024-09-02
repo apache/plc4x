@@ -66,6 +66,7 @@ type _CallMethodRequest struct {
 }
 
 var _ CallMethodRequest = (*_CallMethodRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CallMethodRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,6 +170,7 @@ func (m *_CallMethodRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CallMethodRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__callMethodRequest CallMethodRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CallMethodRequest"); pullErr != nil {

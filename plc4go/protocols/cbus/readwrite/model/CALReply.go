@@ -56,6 +56,10 @@ type CALReplyContract interface {
 
 // CALReplyRequirements provides a set of functions which need to be implemented by a sub struct
 type CALReplyRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCalType returns CalType (discriminator field)
+	GetCalType() byte
 }
 
 // CALReplyExactly can be used when we want exactly this type and not a type which fulfills CALReply.
@@ -67,9 +71,9 @@ type CALReplyExactly interface {
 
 // _CALReply is the data-structure of this message
 type _CALReply struct {
-	_CALReplyChildRequirements
-	CalType byte
-	CalData CALData
+	_SubType CALReply
+	CalType  byte
+	CalData  CALData
 
 	// Arguments.
 	CBusOptions    CBusOptions
@@ -77,12 +81,6 @@ type _CALReply struct {
 }
 
 var _ CALReplyContract = (*_CALReply)(nil)
-
-type _CALReplyChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCalType() byte
-}
 
 type CALReplyChild interface {
 	utils.Serializable
@@ -141,7 +139,7 @@ func (m *_CALReply) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CALReply) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CALReplyParse[T CALReply](ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {

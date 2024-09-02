@@ -52,6 +52,7 @@ type _AccessControlDataLockAccessPoint struct {
 }
 
 var _ AccessControlDataLockAccessPoint = (*_AccessControlDataLockAccessPoint)(nil)
+var _ AccessControlDataRequirements = (*_AccessControlDataLockAccessPoint)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_AccessControlDataLockAccessPoint) GetLengthInBytes(ctx context.Context
 
 func (m *_AccessControlDataLockAccessPoint) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AccessControlData) (__accessControlDataLockAccessPoint AccessControlDataLockAccessPoint, err error) {
 	m.AccessControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataLockAccessPoint"); pullErr != nil {

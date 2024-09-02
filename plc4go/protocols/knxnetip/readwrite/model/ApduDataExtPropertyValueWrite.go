@@ -69,6 +69,7 @@ type _ApduDataExtPropertyValueWrite struct {
 }
 
 var _ ApduDataExtPropertyValueWrite = (*_ApduDataExtPropertyValueWrite)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -175,6 +176,7 @@ func (m *_ApduDataExtPropertyValueWrite) GetLengthInBytes(ctx context.Context) u
 
 func (m *_ApduDataExtPropertyValueWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtPropertyValueWrite ApduDataExtPropertyValueWrite, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyValueWrite"); pullErr != nil {

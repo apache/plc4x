@@ -52,6 +52,8 @@ type DF1CommandContract interface {
 
 // DF1CommandRequirements provides a set of functions which need to be implemented by a sub struct
 type DF1CommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 }
@@ -65,18 +67,12 @@ type DF1CommandExactly interface {
 
 // _DF1Command is the data-structure of this message
 type _DF1Command struct {
-	_DF1CommandChildRequirements
+	_SubType           DF1Command
 	Status             uint8
 	TransactionCounter uint16
 }
 
 var _ DF1CommandContract = (*_DF1Command)(nil)
-
-type _DF1CommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandCode() uint8
-}
 
 type DF1CommandChild interface {
 	utils.Serializable
@@ -140,7 +136,7 @@ func (m *_DF1Command) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_DF1Command) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func DF1CommandParse[T DF1Command](ctx context.Context, theBytes []byte) (T, error) {

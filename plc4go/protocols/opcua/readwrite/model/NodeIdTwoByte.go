@@ -59,6 +59,7 @@ type _NodeIdTwoByte struct {
 }
 
 var _ NodeIdTwoByte = (*_NodeIdTwoByte)(nil)
+var _ NodeIdTypeDefinitionRequirements = (*_NodeIdTwoByte)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -148,6 +149,7 @@ func (m *_NodeIdTwoByte) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NodeIdTwoByte) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NodeIdTypeDefinition) (__nodeIdTwoByte NodeIdTwoByte, err error) {
 	m.NodeIdTypeDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NodeIdTwoByte"); pullErr != nil {

@@ -57,6 +57,7 @@ type _AdsDiscoveryBlockPassword struct {
 }
 
 var _ AdsDiscoveryBlockPassword = (*_AdsDiscoveryBlockPassword)(nil)
+var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockPassword)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_AdsDiscoveryBlockPassword) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_AdsDiscoveryBlockPassword) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsDiscoveryBlock) (__adsDiscoveryBlockPassword AdsDiscoveryBlockPassword, err error) {
 	m.AdsDiscoveryBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockPassword"); pullErr != nil {

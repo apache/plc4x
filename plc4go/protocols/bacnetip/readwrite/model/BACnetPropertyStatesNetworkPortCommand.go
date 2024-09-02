@@ -57,6 +57,7 @@ type _BACnetPropertyStatesNetworkPortCommand struct {
 }
 
 var _ BACnetPropertyStatesNetworkPortCommand = (*_BACnetPropertyStatesNetworkPortCommand)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNetworkPortCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBytes(ctx context.C
 
 func (m *_BACnetPropertyStatesNetworkPortCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesNetworkPortCommand BACnetPropertyStatesNetworkPortCommand, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkPortCommand"); pullErr != nil {

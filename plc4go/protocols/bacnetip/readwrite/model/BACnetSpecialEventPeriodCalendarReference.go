@@ -57,6 +57,7 @@ type _BACnetSpecialEventPeriodCalendarReference struct {
 }
 
 var _ BACnetSpecialEventPeriodCalendarReference = (*_BACnetSpecialEventPeriodCalendarReference)(nil)
+var _ BACnetSpecialEventPeriodRequirements = (*_BACnetSpecialEventPeriodCalendarReference)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) GetLengthInBytes(ctx contex
 
 func (m *_BACnetSpecialEventPeriodCalendarReference) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetSpecialEventPeriod) (__bACnetSpecialEventPeriodCalendarReference BACnetSpecialEventPeriodCalendarReference, err error) {
 	m.BACnetSpecialEventPeriodContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriodCalendarReference"); pullErr != nil {

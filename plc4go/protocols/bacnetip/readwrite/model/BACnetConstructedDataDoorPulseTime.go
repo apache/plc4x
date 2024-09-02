@@ -59,6 +59,7 @@ type _BACnetConstructedDataDoorPulseTime struct {
 }
 
 var _ BACnetConstructedDataDoorPulseTime = (*_BACnetConstructedDataDoorPulseTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorPulseTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDoorPulseTime) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataDoorPulseTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDoorPulseTime BACnetConstructedDataDoorPulseTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorPulseTime"); pullErr != nil {

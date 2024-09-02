@@ -57,6 +57,7 @@ type _IdentifyReplyCommandGAVPhysicalAddresses struct {
 }
 
 var _ IdentifyReplyCommandGAVPhysicalAddresses = (*_IdentifyReplyCommandGAVPhysicalAddresses)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandGAVPhysicalAddresses)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetLengthInBytes(ctx context
 
 func (m *_IdentifyReplyCommandGAVPhysicalAddresses) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandGAVPhysicalAddresses IdentifyReplyCommandGAVPhysicalAddresses, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandGAVPhysicalAddresses"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataLifeSafetyPointPresentValue struct {
 }
 
 var _ BACnetConstructedDataLifeSafetyPointPresentValue = (*_BACnetConstructedDataLifeSafetyPointPresentValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyPointPresentValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) GetLengthInBytes(ctx
 
 func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLifeSafetyPointPresentValue BACnetConstructedDataLifeSafetyPointPresentValue, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLifeSafetyPointPresentValue"); pullErr != nil {

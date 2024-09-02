@@ -68,6 +68,7 @@ type _MediaTransportControlDataEnumerateCategoriesSelectionTracks struct {
 }
 
 var _ MediaTransportControlDataEnumerateCategoriesSelectionTracks = (*_MediaTransportControlDataEnumerateCategoriesSelectionTracks)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataEnumerateCategoriesSelectionTracks)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -185,6 +186,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetLength
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataEnumerateCategoriesSelectionTracks MediaTransportControlDataEnumerateCategoriesSelectionTracks, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks"); pullErr != nil {

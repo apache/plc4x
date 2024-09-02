@@ -59,6 +59,7 @@ type _BACnetConstructedDataExpirationTime struct {
 }
 
 var _ BACnetConstructedDataExpirationTime = (*_BACnetConstructedDataExpirationTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExpirationTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataExpirationTime) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConstructedDataExpirationTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataExpirationTime BACnetConstructedDataExpirationTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExpirationTime"); pullErr != nil {

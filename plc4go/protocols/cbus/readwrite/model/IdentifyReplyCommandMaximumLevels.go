@@ -57,6 +57,7 @@ type _IdentifyReplyCommandMaximumLevels struct {
 }
 
 var _ IdentifyReplyCommandMaximumLevels = (*_IdentifyReplyCommandMaximumLevels)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandMaximumLevels)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_IdentifyReplyCommandMaximumLevels) GetLengthInBytes(ctx context.Contex
 
 func (m *_IdentifyReplyCommandMaximumLevels) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandMaximumLevels IdentifyReplyCommandMaximumLevels, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandMaximumLevels"); pullErr != nil {

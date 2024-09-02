@@ -60,6 +60,7 @@ type _ComplexNumberType struct {
 }
 
 var _ ComplexNumberType = (*_ComplexNumberType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ComplexNumberType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_ComplexNumberType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ComplexNumberType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__complexNumberType ComplexNumberType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ComplexNumberType"); pullErr != nil {

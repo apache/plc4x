@@ -52,6 +52,7 @@ type _ApduDataExtIndividualAddressSerialNumberWrite struct {
 }
 
 var _ ApduDataExtIndividualAddressSerialNumberWrite = (*_ApduDataExtIndividualAddressSerialNumberWrite)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtIndividualAddressSerialNumberWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtIndividualAddressSerialNumberWrite) GetLengthInBytes(ctx co
 
 func (m *_ApduDataExtIndividualAddressSerialNumberWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtIndividualAddressSerialNumberWrite ApduDataExtIndividualAddressSerialNumberWrite, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtIndividualAddressSerialNumberWrite"); pullErr != nil {

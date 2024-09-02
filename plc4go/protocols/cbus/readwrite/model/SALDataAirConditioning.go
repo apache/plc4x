@@ -57,6 +57,7 @@ type _SALDataAirConditioning struct {
 }
 
 var _ SALDataAirConditioning = (*_SALDataAirConditioning)(nil)
+var _ SALDataRequirements = (*_SALDataAirConditioning)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataAirConditioning) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataAirConditioning) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataAirConditioning SALDataAirConditioning, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataAirConditioning"); pullErr != nil {

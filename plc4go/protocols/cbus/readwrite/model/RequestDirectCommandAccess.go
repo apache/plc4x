@@ -65,6 +65,7 @@ type _RequestDirectCommandAccess struct {
 }
 
 var _ RequestDirectCommandAccess = (*_RequestDirectCommandAccess)(nil)
+var _ RequestRequirements = (*_RequestDirectCommandAccess)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -105,7 +106,7 @@ func (m *_RequestDirectCommandAccess) GetAlpha() Alpha {
 func (m *_RequestDirectCommandAccess) GetCalDataDecoded() CALData {
 	ctx := context.Background()
 	_ = ctx
-	alpha := m.Alpha
+	alpha := m.GetAlpha()
 	_ = alpha
 	return CastCALData(m.GetCalData())
 }
@@ -178,6 +179,7 @@ func (m *_RequestDirectCommandAccess) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_RequestDirectCommandAccess) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestDirectCommandAccess RequestDirectCommandAccess, err error) {
 	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestDirectCommandAccess"); pullErr != nil {

@@ -72,6 +72,7 @@ type _BACnetNotificationParametersFloatingLimit struct {
 }
 
 var _ BACnetNotificationParametersFloatingLimit = (*_BACnetNotificationParametersFloatingLimit)(nil)
+var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersFloatingLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -180,6 +181,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) GetLengthInBytes(ctx contex
 
 func (m *_BACnetNotificationParametersFloatingLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParameters, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetNotificationParametersFloatingLimit BACnetNotificationParametersFloatingLimit, err error) {
 	m.BACnetNotificationParametersContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersFloatingLimit"); pullErr != nil {

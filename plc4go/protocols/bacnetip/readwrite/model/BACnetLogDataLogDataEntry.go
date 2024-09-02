@@ -52,6 +52,10 @@ type BACnetLogDataLogDataEntryContract interface {
 
 // BACnetLogDataLogDataEntryRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetLogDataLogDataEntryRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetLogDataLogDataEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetLogDataLogDataEntry.
@@ -63,17 +67,11 @@ type BACnetLogDataLogDataEntryExactly interface {
 
 // _BACnetLogDataLogDataEntry is the data-structure of this message
 type _BACnetLogDataLogDataEntry struct {
-	_BACnetLogDataLogDataEntryChildRequirements
+	_SubType        BACnetLogDataLogDataEntry
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetLogDataLogDataEntryContract = (*_BACnetLogDataLogDataEntry)(nil)
-
-type _BACnetLogDataLogDataEntryChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetLogDataLogDataEntryChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetLogDataLogDataEntry) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetLogDataLogDataEntry) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetLogDataLogDataEntry) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetLogDataLogDataEntry) getLengthInBits(ctx context.Context) uint16
 }
 
 func (m *_BACnetLogDataLogDataEntry) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogDataLogDataEntryParse[T BACnetLogDataLogDataEntry](ctx context.Context, theBytes []byte) (T, error) {

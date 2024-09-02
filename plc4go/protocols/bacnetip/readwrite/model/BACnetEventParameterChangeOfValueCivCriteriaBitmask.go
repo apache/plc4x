@@ -57,6 +57,7 @@ type _BACnetEventParameterChangeOfValueCivCriteriaBitmask struct {
 }
 
 var _ BACnetEventParameterChangeOfValueCivCriteriaBitmask = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
+var _ BACnetEventParameterChangeOfValueCivCriteriaRequirements = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetLengthInBytes(
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameterChangeOfValueCivCriteria, tagNumber uint8) (__bACnetEventParameterChangeOfValueCivCriteriaBitmask BACnetEventParameterChangeOfValueCivCriteriaBitmask, err error) {
 	m.BACnetEventParameterChangeOfValueCivCriteriaContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); pullErr != nil {

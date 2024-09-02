@@ -72,6 +72,7 @@ type _AggregateConfiguration struct {
 }
 
 var _ AggregateConfiguration = (*_AggregateConfiguration)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AggregateConfiguration)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -182,6 +183,7 @@ func (m *_AggregateConfiguration) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_AggregateConfiguration) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__aggregateConfiguration AggregateConfiguration, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AggregateConfiguration"); pullErr != nil {

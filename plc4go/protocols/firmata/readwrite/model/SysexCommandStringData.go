@@ -52,6 +52,7 @@ type _SysexCommandStringData struct {
 }
 
 var _ SysexCommandStringData = (*_SysexCommandStringData)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandStringData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_SysexCommandStringData) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SysexCommandStringData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandStringData SysexCommandStringData, err error) {
 	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandStringData"); pullErr != nil {

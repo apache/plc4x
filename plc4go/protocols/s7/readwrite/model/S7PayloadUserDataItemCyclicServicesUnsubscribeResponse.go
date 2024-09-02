@@ -52,6 +52,7 @@ type _S7PayloadUserDataItemCyclicServicesUnsubscribeResponse struct {
 }
 
 var _ S7PayloadUserDataItemCyclicServicesUnsubscribeResponse = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) GetLengthInByt
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCyclicServicesUnsubscribeResponse S7PayloadUserDataItemCyclicServicesUnsubscribeResponse, err error) {
 	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCyclicServicesUnsubscribeResponse"); pullErr != nil {

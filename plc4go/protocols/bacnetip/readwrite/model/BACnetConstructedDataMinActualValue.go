@@ -59,6 +59,7 @@ type _BACnetConstructedDataMinActualValue struct {
 }
 
 var _ BACnetConstructedDataMinActualValue = (*_BACnetConstructedDataMinActualValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinActualValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataMinActualValue) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConstructedDataMinActualValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMinActualValue BACnetConstructedDataMinActualValue, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMinActualValue"); pullErr != nil {

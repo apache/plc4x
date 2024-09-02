@@ -78,6 +78,7 @@ type _AirConditioningDataHumidityScheduleEntry struct {
 }
 
 var _ AirConditioningDataHumidityScheduleEntry = (*_AirConditioningDataHumidityScheduleEntry)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataHumidityScheduleEntry)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -206,6 +207,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) GetLengthInBytes(ctx context
 
 func (m *_AirConditioningDataHumidityScheduleEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataHumidityScheduleEntry AirConditioningDataHumidityScheduleEntry, err error) {
 	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataHumidityScheduleEntry"); pullErr != nil {

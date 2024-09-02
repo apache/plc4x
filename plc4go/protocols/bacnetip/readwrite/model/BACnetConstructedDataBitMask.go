@@ -59,6 +59,7 @@ type _BACnetConstructedDataBitMask struct {
 }
 
 var _ BACnetConstructedDataBitMask = (*_BACnetConstructedDataBitMask)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitMask)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBitMask) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_BACnetConstructedDataBitMask) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBitMask BACnetConstructedDataBitMask, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBitMask"); pullErr != nil {

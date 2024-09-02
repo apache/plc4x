@@ -60,6 +60,7 @@ type _ConfigurationVersionDataType struct {
 }
 
 var _ ConfigurationVersionDataType = (*_ConfigurationVersionDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ConfigurationVersionDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_ConfigurationVersionDataType) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_ConfigurationVersionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__configurationVersionDataType ConfigurationVersionDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConfigurationVersionDataType"); pullErr != nil {

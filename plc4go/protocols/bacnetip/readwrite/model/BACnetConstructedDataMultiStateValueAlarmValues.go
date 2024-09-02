@@ -57,6 +57,7 @@ type _BACnetConstructedDataMultiStateValueAlarmValues struct {
 }
 
 var _ BACnetConstructedDataMultiStateValueAlarmValues = (*_BACnetConstructedDataMultiStateValueAlarmValues)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateValueAlarmValues)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataMultiStateValueAlarmValues) GetLengthInBytes(ctx 
 
 func (m *_BACnetConstructedDataMultiStateValueAlarmValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMultiStateValueAlarmValues BACnetConstructedDataMultiStateValueAlarmValues, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateValueAlarmValues"); pullErr != nil {

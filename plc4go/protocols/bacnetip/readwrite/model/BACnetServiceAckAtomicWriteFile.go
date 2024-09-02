@@ -57,6 +57,7 @@ type _BACnetServiceAckAtomicWriteFile struct {
 }
 
 var _ BACnetServiceAckAtomicWriteFile = (*_BACnetServiceAckAtomicWriteFile)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicWriteFile)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetServiceAckAtomicWriteFile) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckAtomicWriteFile BACnetServiceAckAtomicWriteFile, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicWriteFile"); pullErr != nil {

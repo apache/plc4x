@@ -57,6 +57,7 @@ type _ApduDataOther struct {
 }
 
 var _ ApduDataOther = (*_ApduDataOther)(nil)
+var _ ApduDataRequirements = (*_ApduDataOther)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ApduDataOther) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApduDataOther) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataOther ApduDataOther, err error) {
 	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataOther"); pullErr != nil {

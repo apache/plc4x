@@ -48,6 +48,8 @@ type S7ParameterContract interface {
 
 // S7ParameterRequirements provides a set of functions which need to be implemented by a sub struct
 type S7ParameterRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 	// GetParameterType returns ParameterType (discriminator field)
@@ -63,17 +65,10 @@ type S7ParameterExactly interface {
 
 // _S7Parameter is the data-structure of this message
 type _S7Parameter struct {
-	_S7ParameterChildRequirements
+	_SubType S7Parameter
 }
 
 var _ S7ParameterContract = (*_S7Parameter)(nil)
-
-type _S7ParameterChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetMessageType() uint8
-	GetParameterType() uint8
-}
 
 type S7ParameterChild interface {
 	utils.Serializable
@@ -113,7 +108,7 @@ func (m *_S7Parameter) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_S7Parameter) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func S7ParameterParse[T S7Parameter](ctx context.Context, theBytes []byte, messageType uint8) (T, error) {

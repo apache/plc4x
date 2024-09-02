@@ -46,6 +46,8 @@ type KnxGroupAddressContract interface {
 
 // KnxGroupAddressRequirements provides a set of functions which need to be implemented by a sub struct
 type KnxGroupAddressRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetNumLevels returns NumLevels (discriminator field)
 	GetNumLevels() uint8
 }
@@ -59,16 +61,10 @@ type KnxGroupAddressExactly interface {
 
 // _KnxGroupAddress is the data-structure of this message
 type _KnxGroupAddress struct {
-	_KnxGroupAddressChildRequirements
+	_SubType KnxGroupAddress
 }
 
 var _ KnxGroupAddressContract = (*_KnxGroupAddress)(nil)
-
-type _KnxGroupAddressChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetNumLevels() uint8
-}
 
 type KnxGroupAddressChild interface {
 	utils.Serializable
@@ -106,7 +102,7 @@ func (m *_KnxGroupAddress) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_KnxGroupAddress) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func KnxGroupAddressParse[T KnxGroupAddress](ctx context.Context, theBytes []byte, numLevels uint8) (T, error) {

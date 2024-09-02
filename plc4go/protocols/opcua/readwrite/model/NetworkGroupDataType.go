@@ -63,6 +63,7 @@ type _NetworkGroupDataType struct {
 }
 
 var _ NetworkGroupDataType = (*_NetworkGroupDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_NetworkGroupDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_NetworkGroupDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NetworkGroupDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__networkGroupDataType NetworkGroupDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkGroupDataType"); pullErr != nil {

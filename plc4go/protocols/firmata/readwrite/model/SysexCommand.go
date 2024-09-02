@@ -48,6 +48,8 @@ type SysexCommandContract interface {
 
 // SysexCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type SysexCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCommandType returns CommandType (discriminator field)
 	GetCommandType() uint8
 	// GetResponse returns Response (discriminator field)
@@ -63,17 +65,10 @@ type SysexCommandExactly interface {
 
 // _SysexCommand is the data-structure of this message
 type _SysexCommand struct {
-	_SysexCommandChildRequirements
+	_SubType SysexCommand
 }
 
 var _ SysexCommandContract = (*_SysexCommand)(nil)
-
-type _SysexCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() uint8
-	GetResponse() bool
-}
 
 type SysexCommandChild interface {
 	utils.Serializable
@@ -113,7 +108,7 @@ func (m *_SysexCommand) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_SysexCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func SysexCommandParse[T SysexCommand](ctx context.Context, theBytes []byte, response bool) (T, error) {

@@ -62,6 +62,7 @@ type _BACnetConstructedDataKeySets struct {
 }
 
 var _ BACnetConstructedDataKeySets = (*_BACnetConstructedDataKeySets)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataKeySets)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataKeySets) GetKeySets() []BACnetSecurityKeySet {
 func (m *_BACnetConstructedDataKeySets) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataKeySets) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_BACnetConstructedDataKeySets) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataKeySets BACnetConstructedDataKeySets, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataKeySets"); pullErr != nil {

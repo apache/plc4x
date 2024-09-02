@@ -58,6 +58,10 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueContract interface {
 
 // BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetFaultParameterFaultOutOfRangeMinNormalValueExactly can be used when we want exactly this type and not a type which fulfills BACnetFaultParameterFaultOutOfRangeMinNormalValue.
@@ -69,7 +73,7 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueExactly interface {
 
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValue is the data-structure of this message
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValue struct {
-	_BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements
+	_SubType        BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
@@ -79,12 +83,6 @@ type _BACnetFaultParameterFaultOutOfRangeMinNormalValue struct {
 }
 
 var _ BACnetFaultParameterFaultOutOfRangeMinNormalValueContract = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)(nil)
-
-type _BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueChild interface {
 	utils.Serializable
@@ -121,7 +119,8 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetClosingTag() BAC
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -167,7 +166,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) getLengthInBits(ctx
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetFaultParameterFaultOutOfRangeMinNormalValueParse[T BACnetFaultParameterFaultOutOfRangeMinNormalValue](ctx context.Context, theBytes []byte, tagNumber uint8) (T, error) {

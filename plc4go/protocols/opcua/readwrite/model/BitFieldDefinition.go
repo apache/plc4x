@@ -69,6 +69,7 @@ type _BitFieldDefinition struct {
 }
 
 var _ BitFieldDefinition = (*_BitFieldDefinition)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_BitFieldDefinition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -171,6 +172,7 @@ func (m *_BitFieldDefinition) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BitFieldDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__bitFieldDefinition BitFieldDefinition, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BitFieldDefinition"); pullErr != nil {

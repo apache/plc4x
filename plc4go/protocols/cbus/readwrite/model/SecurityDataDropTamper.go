@@ -52,6 +52,7 @@ type _SecurityDataDropTamper struct {
 }
 
 var _ SecurityDataDropTamper = (*_SecurityDataDropTamper)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataDropTamper)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataDropTamper) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SecurityDataDropTamper) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataDropTamper SecurityDataDropTamper, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataDropTamper"); pullErr != nil {

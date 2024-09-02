@@ -57,6 +57,7 @@ type _TriggerControlDataTriggerEvent struct {
 }
 
 var _ TriggerControlDataTriggerEvent = (*_TriggerControlDataTriggerEvent)(nil)
+var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerEvent)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_TriggerControlDataTriggerEvent) GetLengthInBytes(ctx context.Context) 
 
 func (m *_TriggerControlDataTriggerEvent) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TriggerControlData) (__triggerControlDataTriggerEvent TriggerControlDataTriggerEvent, err error) {
 	m.TriggerControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerEvent"); pullErr != nil {

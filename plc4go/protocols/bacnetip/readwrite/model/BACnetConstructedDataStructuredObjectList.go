@@ -62,6 +62,7 @@ type _BACnetConstructedDataStructuredObjectList struct {
 }
 
 var _ BACnetConstructedDataStructuredObjectList = (*_BACnetConstructedDataStructuredObjectList)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStructuredObjectList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataStructuredObjectList) GetStructuredObjectList() [
 func (m *_BACnetConstructedDataStructuredObjectList) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataStructuredObjectList) GetLengthInBytes(ctx contex
 
 func (m *_BACnetConstructedDataStructuredObjectList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataStructuredObjectList BACnetConstructedDataStructuredObjectList, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStructuredObjectList"); pullErr != nil {

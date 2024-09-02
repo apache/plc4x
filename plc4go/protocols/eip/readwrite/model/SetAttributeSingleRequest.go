@@ -52,6 +52,7 @@ type _SetAttributeSingleRequest struct {
 }
 
 var _ SetAttributeSingleRequest = (*_SetAttributeSingleRequest)(nil)
+var _ CipServiceRequirements = (*_SetAttributeSingleRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ func (m *_SetAttributeSingleRequest) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_SetAttributeSingleRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__setAttributeSingleRequest SetAttributeSingleRequest, err error) {
 	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SetAttributeSingleRequest"); pullErr != nil {

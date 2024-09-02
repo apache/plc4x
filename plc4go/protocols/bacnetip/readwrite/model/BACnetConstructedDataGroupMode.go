@@ -59,6 +59,7 @@ type _BACnetConstructedDataGroupMode struct {
 }
 
 var _ BACnetConstructedDataGroupMode = (*_BACnetConstructedDataGroupMode)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataGroupMode) GetLengthInBytes(ctx context.Context) 
 
 func (m *_BACnetConstructedDataGroupMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataGroupMode BACnetConstructedDataGroupMode, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupMode"); pullErr != nil {

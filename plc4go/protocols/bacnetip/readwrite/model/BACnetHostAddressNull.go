@@ -57,6 +57,7 @@ type _BACnetHostAddressNull struct {
 }
 
 var _ BACnetHostAddressNull = (*_BACnetHostAddressNull)(nil)
+var _ BACnetHostAddressRequirements = (*_BACnetHostAddressNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetHostAddressNull) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BACnetHostAddressNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetHostAddress) (__bACnetHostAddressNull BACnetHostAddressNull, err error) {
 	m.BACnetHostAddressContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetHostAddressNull"); pullErr != nil {

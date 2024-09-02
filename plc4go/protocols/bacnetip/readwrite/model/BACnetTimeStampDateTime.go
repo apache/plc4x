@@ -57,6 +57,7 @@ type _BACnetTimeStampDateTime struct {
 }
 
 var _ BACnetTimeStampDateTime = (*_BACnetTimeStampDateTime)(nil)
+var _ BACnetTimeStampRequirements = (*_BACnetTimeStampDateTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetTimeStampDateTime) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_BACnetTimeStampDateTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetTimeStamp) (__bACnetTimeStampDateTime BACnetTimeStampDateTime, err error) {
 	m.BACnetTimeStampContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimeStampDateTime"); pullErr != nil {

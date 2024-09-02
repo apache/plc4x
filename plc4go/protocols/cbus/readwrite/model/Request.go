@@ -62,6 +62,10 @@ type RequestContract interface {
 
 // RequestRequirements provides a set of functions which need to be implemented by a sub struct
 type RequestRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetActualPeek returns ActualPeek (discriminator field)
+	GetActualPeek() RequestType
 }
 
 // RequestExactly can be used when we want exactly this type and not a type which fulfills Request.
@@ -73,7 +77,7 @@ type RequestExactly interface {
 
 // _Request is the data-structure of this message
 type _Request struct {
-	_RequestChildRequirements
+	_SubType    Request
 	PeekedByte  RequestType
 	StartingCR  *RequestType
 	ResetMode   *RequestType
@@ -85,12 +89,6 @@ type _Request struct {
 }
 
 var _ RequestContract = (*_Request)(nil)
-
-type _RequestChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetActualPeek() RequestType
-}
 
 type RequestChild interface {
 	utils.Serializable
@@ -135,12 +133,13 @@ func (m *_Request) GetTermination() RequestTermination {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_Request) GetActualPeek() RequestType {
+func (pm *_Request) GetActualPeek() RequestType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
-	startingCR := m.StartingCR
+	startingCR := m.GetStartingCR()
 	_ = startingCR
-	resetMode := m.ResetMode
+	resetMode := m.GetResetMode()
 	_ = resetMode
 	return CastRequestType(CastRequestType(utils.InlineIf(bool((bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) == (nil))))) || bool((bool(bool(bool((m.GetStartingCR()) == (nil))) && bool(bool((m.GetResetMode()) != (nil)))) && bool(bool((m.GetSecondPeek()) == (RequestType_EMPTY))))), func() any { return CastRequestType(m.GetPeekedByte()) }, func() any { return CastRequestType(m.GetSecondPeek()) })))
 }
@@ -192,7 +191,7 @@ func (m *_Request) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_Request) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func RequestParse[T Request](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {

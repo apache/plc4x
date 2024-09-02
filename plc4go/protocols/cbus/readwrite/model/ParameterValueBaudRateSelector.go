@@ -60,6 +60,7 @@ type _ParameterValueBaudRateSelector struct {
 }
 
 var _ ParameterValueBaudRateSelector = (*_ParameterValueBaudRateSelector)(nil)
+var _ ParameterValueRequirements = (*_ParameterValueBaudRateSelector)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_ParameterValueBaudRateSelector) GetLengthInBytes(ctx context.Context) 
 
 func (m *_ParameterValueBaudRateSelector) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ParameterValue, parameterType ParameterType, numBytes uint8) (__parameterValueBaudRateSelector ParameterValueBaudRateSelector, err error) {
 	m.ParameterValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueBaudRateSelector"); pullErr != nil {

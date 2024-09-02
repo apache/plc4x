@@ -59,6 +59,7 @@ type _BACnetConstructedDataLocalForwardingOnly struct {
 }
 
 var _ BACnetConstructedDataLocalForwardingOnly = (*_BACnetConstructedDataLocalForwardingOnly)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalForwardingOnly)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) GetLengthInBytes(ctx context
 
 func (m *_BACnetConstructedDataLocalForwardingOnly) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLocalForwardingOnly BACnetConstructedDataLocalForwardingOnly, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLocalForwardingOnly"); pullErr != nil {

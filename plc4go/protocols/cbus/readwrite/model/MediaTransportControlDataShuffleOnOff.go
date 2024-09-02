@@ -61,6 +61,7 @@ type _MediaTransportControlDataShuffleOnOff struct {
 }
 
 var _ MediaTransportControlDataShuffleOnOff = (*_MediaTransportControlDataShuffleOnOff)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataShuffleOnOff)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -154,6 +155,7 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetLengthInBytes(ctx context.Co
 
 func (m *_MediaTransportControlDataShuffleOnOff) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataShuffleOnOff MediaTransportControlDataShuffleOnOff, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataShuffleOnOff"); pullErr != nil {

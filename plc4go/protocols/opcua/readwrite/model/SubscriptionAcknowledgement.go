@@ -60,6 +60,7 @@ type _SubscriptionAcknowledgement struct {
 }
 
 var _ SubscriptionAcknowledgement = (*_SubscriptionAcknowledgement)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SubscriptionAcknowledgement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_SubscriptionAcknowledgement) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_SubscriptionAcknowledgement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__subscriptionAcknowledgement SubscriptionAcknowledgement, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SubscriptionAcknowledgement"); pullErr != nil {

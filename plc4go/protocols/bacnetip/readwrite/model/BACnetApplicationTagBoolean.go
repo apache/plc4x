@@ -59,6 +59,7 @@ type _BACnetApplicationTagBoolean struct {
 }
 
 var _ BACnetApplicationTagBoolean = (*_BACnetApplicationTagBoolean)(nil)
+var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagBoolean)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_BACnetApplicationTagBoolean) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_BACnetApplicationTagBoolean) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetApplicationTag, header BACnetTagHeader) (__bACnetApplicationTagBoolean BACnetApplicationTagBoolean, err error) {
 	m.BACnetApplicationTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagBoolean"); pullErr != nil {

@@ -52,6 +52,7 @@ type _SubscribedDataSetDataType struct {
 }
 
 var _ SubscribedDataSetDataType = (*_SubscribedDataSetDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SubscribedDataSetDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_SubscribedDataSetDataType) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_SubscribedDataSetDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__subscribedDataSetDataType SubscribedDataSetDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SubscribedDataSetDataType"); pullErr != nil {

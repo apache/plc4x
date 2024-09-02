@@ -60,6 +60,7 @@ type _BACnetServiceAckAuthenticate struct {
 }
 
 var _ BACnetServiceAckAuthenticate = (*_BACnetServiceAckAuthenticate)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAuthenticate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_BACnetServiceAckAuthenticate) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_BACnetServiceAckAuthenticate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckPayloadLength uint32, serviceAckLength uint32) (__bACnetServiceAckAuthenticate BACnetServiceAckAuthenticate, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAuthenticate"); pullErr != nil {

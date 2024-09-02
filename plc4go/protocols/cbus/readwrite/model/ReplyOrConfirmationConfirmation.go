@@ -60,6 +60,7 @@ type _ReplyOrConfirmationConfirmation struct {
 }
 
 var _ ReplyOrConfirmationConfirmation = (*_ReplyOrConfirmationConfirmation)(nil)
+var _ ReplyOrConfirmationRequirements = (*_ReplyOrConfirmationConfirmation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -138,6 +139,7 @@ func (m *_ReplyOrConfirmationConfirmation) GetLengthInBytes(ctx context.Context)
 
 func (m *_ReplyOrConfirmationConfirmation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ReplyOrConfirmation, cBusOptions CBusOptions, requestContext RequestContext) (__replyOrConfirmationConfirmation ReplyOrConfirmationConfirmation, err error) {
 	m.ReplyOrConfirmationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReplyOrConfirmationConfirmation"); pullErr != nil {

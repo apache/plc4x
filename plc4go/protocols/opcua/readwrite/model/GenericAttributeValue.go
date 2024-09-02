@@ -60,6 +60,7 @@ type _GenericAttributeValue struct {
 }
 
 var _ GenericAttributeValue = (*_GenericAttributeValue)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_GenericAttributeValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_GenericAttributeValue) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_GenericAttributeValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__genericAttributeValue GenericAttributeValue, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("GenericAttributeValue"); pullErr != nil {

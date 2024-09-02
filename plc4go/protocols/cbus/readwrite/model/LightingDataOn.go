@@ -57,6 +57,7 @@ type _LightingDataOn struct {
 }
 
 var _ LightingDataOn = (*_LightingDataOn)(nil)
+var _ LightingDataRequirements = (*_LightingDataOn)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_LightingDataOn) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LightingDataOn) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LightingData) (__lightingDataOn LightingDataOn, err error) {
 	m.LightingDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataOn"); pullErr != nil {

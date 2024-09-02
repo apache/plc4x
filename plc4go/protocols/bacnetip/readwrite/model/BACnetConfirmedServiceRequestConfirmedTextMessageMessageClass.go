@@ -58,6 +58,10 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract inter
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass.
@@ -69,7 +73,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassExactly interf
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is the data-structure of this message
 type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
-	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements
+	_SubType        BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
@@ -79,12 +83,6 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
 }
 
 var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)(nil)
-
-type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChild interface {
 	utils.Serializable
@@ -121,7 +119,8 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetClos
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -167,7 +166,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) getLeng
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse[T BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx context.Context, theBytes []byte, tagNumber uint8) (T, error) {

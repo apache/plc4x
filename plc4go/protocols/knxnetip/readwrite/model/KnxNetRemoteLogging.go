@@ -57,6 +57,7 @@ type _KnxNetRemoteLogging struct {
 }
 
 var _ KnxNetRemoteLogging = (*_KnxNetRemoteLogging)(nil)
+var _ ServiceIdRequirements = (*_KnxNetRemoteLogging)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_KnxNetRemoteLogging) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_KnxNetRemoteLogging) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ServiceId) (__knxNetRemoteLogging KnxNetRemoteLogging, err error) {
 	m.ServiceIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetRemoteLogging"); pullErr != nil {

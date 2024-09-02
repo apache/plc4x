@@ -57,6 +57,7 @@ type _X509IdentityToken struct {
 }
 
 var _ X509IdentityToken = (*_X509IdentityToken)(nil)
+var _ UserIdentityTokenDefinitionRequirements = (*_X509IdentityToken)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_X509IdentityToken) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_X509IdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_UserIdentityTokenDefinition, identifier string) (__x509IdentityToken X509IdentityToken, err error) {
 	m.UserIdentityTokenDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("X509IdentityToken"); pullErr != nil {

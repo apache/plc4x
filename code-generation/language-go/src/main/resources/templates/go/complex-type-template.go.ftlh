@@ -152,12 +152,19 @@ type ${type.name}Contract interface {
 
 // ${type.name}Requirements provides a set of functions which need to be implemented by a sub struct
 type ${type.name}Requirements interface {
-	<#list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	<#list helper.discriminatorTypes as discriminatorName, discriminatorType>
 	<#-- If the discriminator name matches that of another field, suppress the methods generation -->
-		<#if !type.isNonDiscriminatorField(discriminatorName)>
+		<#if type.isDiscriminatorField(discriminatorName)>
 	// Get${discriminatorName?cap_first} returns ${discriminatorName?cap_first} (discriminator field)
-	Get${discriminatorName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
+	Get${discriminatorName?cap_first}() <#if discriminatorType.isNonSimpleTypeReference() && !discriminatorType.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
 		</#if>
+	</#list>
+	<#list type.abstractFields as field>
+		<#assign namedField=field.asNamedField().orElseThrow()>
+	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
+	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
 	</#list>
 }
 </#if>
@@ -175,7 +182,7 @@ type _${type.name} struct {
 	${type.parentType.orElseThrow().name}Contract
 </#if>
 <#if type.isDiscriminatedParentTypeDefinition()>
-	_${type.name}ChildRequirements
+	_SubType ${type.name}
 </#if>
 <#-- Property fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>
@@ -204,24 +211,10 @@ var _ ${type.name}Contract = (*_${type.name})(nil)
 <#else>
 var _ ${type.name} = (*_${type.name})(nil)
 </#if>
-
-<#if type.isDiscriminatedParentTypeDefinition()>
-type _${type.name}ChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-    <#list helper.discriminatorTypes as discriminatorName, discriminatorType>
-    <#-- If the discriminator name matches that of another field, suppress the methods generation -->
-        <#if type.isDiscriminatorField(discriminatorName)>
-	Get${discriminatorName?cap_first}() <#if discriminatorType.isNonSimpleTypeReference() && !discriminatorType.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
-        </#if>
-    </#list>
-    <#list type.abstractFields as field>
-        <#assign namedField=field.asNamedField().orElseThrow()>
-		// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
-		Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
-    </#list>
-}
+<#if type.isDiscriminatedChildTypeDefinition()>
+var _ ${type.getParentType().orElseThrow().name}Requirements = (*_${type.name})(nil)
 </#if>
+
 
 <#if type.isDiscriminatedChildTypeDefinition()>
 	<#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
@@ -309,12 +302,15 @@ func (m *_${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcc
 
 	<#list type.virtualFields as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
-func (m *_${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+func (<#if type.isDiscriminatedParentTypeDefinition()>p</#if>m *_${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+	<#if type.isDiscriminatedParentTypeDefinition()>
+		m:=pm._SubType
+	</#if>
 	<#-- TODO: This should only be output, if ctx is needed -->
 	ctx := context.Background()
 	_ = ctx
   	  <#list type.propertyFields?filter(f->f.isOptionalField()) as field>
-	${field.name} := m.${field.name?cap_first}
+	${field.name} := m.Get${field.name?cap_first}()
 	_ = ${field.name}
   	  </#list>
 	  <#if typeRef.isStringTypeReference() || typeRef.isVstringTypeReference()>
@@ -338,9 +334,9 @@ func (m *_${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcc
 
 	<#list type.abstractFields as field>
         <#assign typeRef=field.asTypedField().orElseThrow().type>
-		func (m *_${type.name}) Get${field.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(typeRef)} {
-			return m._${type.name}ChildRequirements.Get${field.name?cap_first}()
-		}
+func (m *_${type.name}) Get${field.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+	return m._SubType.Get${field.name?cap_first}()
+}
 
 	</#list>
 ///////////////////////
@@ -785,7 +781,7 @@ func (m *_${type.name}) getLengthInBits(ctx context.Context) uint16 {
 </#if>
 
 func (m *_${type.name}) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m.<#if type.isDiscriminatedParentTypeDefinition()>_SubType.</#if>GetLengthInBits(ctx) / 8
 }
 
 <#assign hasParserArguments=parserArguments?has_content/>
@@ -829,6 +825,7 @@ func ${type.name}ParseWithBuffer<#if type.isDiscriminatedParentTypeDefinition()>
 func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#if type.isDiscriminatedChildTypeDefinition()>, parent *_${type.getParentType().orElseThrow().name}</#if><#if hasParserArguments>, ${parserArgumentList}</#if>) (__${type.name?uncap_first} ${type.name}, err error) {
 <#if type.isDiscriminatedChildTypeDefinition()>
 	m.${type.getParentType().orElseThrow().name}Contract = parent
+	parent._SubType = m
 </#if>
 	positionAware := readBuffer
 	_ = positionAware

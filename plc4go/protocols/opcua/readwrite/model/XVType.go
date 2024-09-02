@@ -60,6 +60,7 @@ type _XVType struct {
 }
 
 var _ XVType = (*_XVType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_XVType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_XVType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_XVType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__xVType XVType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("XVType"); pullErr != nil {

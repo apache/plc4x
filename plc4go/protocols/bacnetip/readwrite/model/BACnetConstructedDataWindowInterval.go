@@ -59,6 +59,7 @@ type _BACnetConstructedDataWindowInterval struct {
 }
 
 var _ BACnetConstructedDataWindowInterval = (*_BACnetConstructedDataWindowInterval)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWindowInterval)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataWindowInterval) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConstructedDataWindowInterval) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataWindowInterval BACnetConstructedDataWindowInterval, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWindowInterval"); pullErr != nil {

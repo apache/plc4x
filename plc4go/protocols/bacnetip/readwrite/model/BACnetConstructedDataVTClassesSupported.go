@@ -57,6 +57,7 @@ type _BACnetConstructedDataVTClassesSupported struct {
 }
 
 var _ BACnetConstructedDataVTClassesSupported = (*_BACnetConstructedDataVTClassesSupported)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVTClassesSupported)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataVTClassesSupported) GetLengthInBytes(ctx context.
 
 func (m *_BACnetConstructedDataVTClassesSupported) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataVTClassesSupported BACnetConstructedDataVTClassesSupported, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVTClassesSupported"); pullErr != nil {

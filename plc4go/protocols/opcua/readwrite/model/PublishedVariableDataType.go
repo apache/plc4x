@@ -81,6 +81,7 @@ type _PublishedVariableDataType struct {
 }
 
 var _ PublishedVariableDataType = (*_PublishedVariableDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PublishedVariableDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -224,6 +225,7 @@ func (m *_PublishedVariableDataType) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_PublishedVariableDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__publishedVariableDataType PublishedVariableDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PublishedVariableDataType"); pullErr != nil {

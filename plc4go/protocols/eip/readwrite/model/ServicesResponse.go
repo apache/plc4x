@@ -69,6 +69,7 @@ type _ServicesResponse struct {
 }
 
 var _ ServicesResponse = (*_ServicesResponse)(nil)
+var _ TypeIdRequirements = (*_ServicesResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -176,6 +177,7 @@ func (m *_ServicesResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ServicesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TypeId) (__servicesResponse ServicesResponse, err error) {
 	m.TypeIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServicesResponse"); pullErr != nil {

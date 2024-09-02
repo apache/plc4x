@@ -66,6 +66,7 @@ type _EUInformation struct {
 }
 
 var _ EUInformation = (*_EUInformation)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EUInformation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_EUInformation) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_EUInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__eUInformation EUInformation, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EUInformation"); pullErr != nil {

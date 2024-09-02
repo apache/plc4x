@@ -52,6 +52,7 @@ type _SecurityDataOtherAlarmCleared struct {
 }
 
 var _ SecurityDataOtherAlarmCleared = (*_SecurityDataOtherAlarmCleared)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataOtherAlarmCleared)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataOtherAlarmCleared) GetLengthInBytes(ctx context.Context) u
 
 func (m *_SecurityDataOtherAlarmCleared) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataOtherAlarmCleared SecurityDataOtherAlarmCleared, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataOtherAlarmCleared"); pullErr != nil {

@@ -65,6 +65,7 @@ type _S7ParameterSetupCommunication struct {
 }
 
 var _ S7ParameterSetupCommunication = (*_S7ParameterSetupCommunication)(nil)
+var _ S7ParameterRequirements = (*_S7ParameterSetupCommunication)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -160,6 +161,7 @@ func (m *_S7ParameterSetupCommunication) GetLengthInBytes(ctx context.Context) u
 
 func (m *_S7ParameterSetupCommunication) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Parameter, messageType uint8) (__s7ParameterSetupCommunication S7ParameterSetupCommunication, err error) {
 	m.S7ParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {

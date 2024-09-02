@@ -57,6 +57,7 @@ type _BACnetUnconfirmedServiceRequestWhoHasObjectName struct {
 }
 
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectName = (*_BACnetUnconfirmedServiceRequestWhoHasObjectName)(nil)
+var _ BACnetUnconfirmedServiceRequestWhoHasObjectRequirements = (*_BACnetUnconfirmedServiceRequestWhoHasObjectName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBytes(ctx 
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetUnconfirmedServiceRequestWhoHasObject) (__bACnetUnconfirmedServiceRequestWhoHasObjectName BACnetUnconfirmedServiceRequestWhoHasObjectName, err error) {
 	m.BACnetUnconfirmedServiceRequestWhoHasObjectContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoHasObjectName"); pullErr != nil {

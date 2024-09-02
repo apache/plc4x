@@ -52,6 +52,7 @@ type _WriterGroupMessageDataType struct {
 }
 
 var _ WriterGroupMessageDataType = (*_WriterGroupMessageDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_WriterGroupMessageDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_WriterGroupMessageDataType) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_WriterGroupMessageDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__writerGroupMessageDataType WriterGroupMessageDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("WriterGroupMessageDataType"); pullErr != nil {

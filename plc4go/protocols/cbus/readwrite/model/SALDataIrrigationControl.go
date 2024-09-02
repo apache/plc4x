@@ -57,6 +57,7 @@ type _SALDataIrrigationControl struct {
 }
 
 var _ SALDataIrrigationControl = (*_SALDataIrrigationControl)(nil)
+var _ SALDataRequirements = (*_SALDataIrrigationControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataIrrigationControl) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_SALDataIrrigationControl) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataIrrigationControl SALDataIrrigationControl, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataIrrigationControl"); pullErr != nil {

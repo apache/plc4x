@@ -75,6 +75,7 @@ type _RequestHeader struct {
 }
 
 var _ RequestHeader = (*_RequestHeader)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RequestHeader)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -195,6 +196,7 @@ func (m *_RequestHeader) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RequestHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__requestHeader RequestHeader, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestHeader"); pullErr != nil {

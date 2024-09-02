@@ -60,8 +60,12 @@ type BACnetConstructedDataContract interface {
 
 // BACnetConstructedDataRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetConstructedDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetObjectTypeArgument returns ObjectTypeArgument (discriminator field)
 	GetObjectTypeArgument() BACnetObjectType
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 	// GetPropertyIdentifierArgument returns PropertyIdentifierArgument (discriminator field)
 	GetPropertyIdentifierArgument() BACnetPropertyIdentifier
 }
@@ -75,7 +79,7 @@ type BACnetConstructedDataExactly interface {
 
 // _BACnetConstructedData is the data-structure of this message
 type _BACnetConstructedData struct {
-	_BACnetConstructedDataChildRequirements
+	_SubType        BACnetConstructedData
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
@@ -86,14 +90,6 @@ type _BACnetConstructedData struct {
 }
 
 var _ BACnetConstructedDataContract = (*_BACnetConstructedData)(nil)
-
-type _BACnetConstructedDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetObjectTypeArgument() BACnetObjectType
-	GetPeekedTagNumber() uint8
-	GetPropertyIdentifierArgument() BACnetPropertyIdentifier
-}
 
 type BACnetConstructedDataChild interface {
 	utils.Serializable
@@ -130,7 +126,8 @@ func (m *_BACnetConstructedData) GetClosingTag() BACnetClosingTag {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetConstructedData) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetConstructedData) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -176,7 +173,7 @@ func (m *_BACnetConstructedData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetConstructedData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataParse[T BACnetConstructedData](ctx context.Context, theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (T, error) {

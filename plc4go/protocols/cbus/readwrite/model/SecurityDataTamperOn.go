@@ -52,6 +52,7 @@ type _SecurityDataTamperOn struct {
 }
 
 var _ SecurityDataTamperOn = (*_SecurityDataTamperOn)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataTamperOn)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataTamperOn) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SecurityDataTamperOn) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataTamperOn SecurityDataTamperOn, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataTamperOn"); pullErr != nil {

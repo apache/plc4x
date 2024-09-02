@@ -57,6 +57,7 @@ type _CBusCommandPointToMultiPoint struct {
 }
 
 var _ CBusCommandPointToMultiPoint = (*_CBusCommandPointToMultiPoint)(nil)
+var _ CBusCommandRequirements = (*_CBusCommandPointToMultiPoint)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_CBusCommandPointToMultiPoint) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_CBusCommandPointToMultiPoint) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusCommand, cBusOptions CBusOptions) (__cBusCommandPointToMultiPoint CBusCommandPointToMultiPoint, err error) {
 	m.CBusCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandPointToMultiPoint"); pullErr != nil {

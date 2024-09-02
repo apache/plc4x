@@ -60,6 +60,7 @@ type _IdentifyReplyCommandDelays struct {
 }
 
 var _ IdentifyReplyCommandDelays = (*_IdentifyReplyCommandDelays)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandDelays)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_IdentifyReplyCommandDelays) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_IdentifyReplyCommandDelays) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandDelays IdentifyReplyCommandDelays, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDelays"); pullErr != nil {

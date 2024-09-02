@@ -66,6 +66,7 @@ type _DataChangeNotification struct {
 }
 
 var _ DataChangeNotification = (*_DataChangeNotification)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DataChangeNotification)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -179,6 +180,7 @@ func (m *_DataChangeNotification) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_DataChangeNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataChangeNotification DataChangeNotification, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DataChangeNotification"); pullErr != nil {

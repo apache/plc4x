@@ -59,6 +59,7 @@ type _BACnetConstructedDataMultiStateOutputRelinquishDefault struct {
 }
 
 var _ BACnetConstructedDataMultiStateOutputRelinquishDefault = (*_BACnetConstructedDataMultiStateOutputRelinquishDefault)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateOutputRelinquishDefault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataMultiStateOutputRelinquishDefault) GetLengthInByt
 
 func (m *_BACnetConstructedDataMultiStateOutputRelinquishDefault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataMultiStateOutputRelinquishDefault BACnetConstructedDataMultiStateOutputRelinquishDefault, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMultiStateOutputRelinquishDefault"); pullErr != nil {

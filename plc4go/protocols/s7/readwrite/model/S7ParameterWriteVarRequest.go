@@ -57,6 +57,7 @@ type _S7ParameterWriteVarRequest struct {
 }
 
 var _ S7ParameterWriteVarRequest = (*_S7ParameterWriteVarRequest)(nil)
+var _ S7ParameterRequirements = (*_S7ParameterWriteVarRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -143,6 +144,7 @@ func (m *_S7ParameterWriteVarRequest) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_S7ParameterWriteVarRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Parameter, messageType uint8) (__s7ParameterWriteVarRequest S7ParameterWriteVarRequest, err error) {
 	m.S7ParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterWriteVarRequest"); pullErr != nil {

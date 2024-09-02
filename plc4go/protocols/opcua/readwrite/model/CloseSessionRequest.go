@@ -62,6 +62,7 @@ type _CloseSessionRequest struct {
 }
 
 var _ CloseSessionRequest = (*_CloseSessionRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,6 +146,7 @@ func (m *_CloseSessionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CloseSessionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__closeSessionRequest CloseSessionRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CloseSessionRequest"); pullErr != nil {

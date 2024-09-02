@@ -66,6 +66,7 @@ type _CurrencyUnitType struct {
 }
 
 var _ CurrencyUnitType = (*_CurrencyUnitType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CurrencyUnitType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_CurrencyUnitType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CurrencyUnitType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__currencyUnitType CurrencyUnitType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CurrencyUnitType"); pullErr != nil {

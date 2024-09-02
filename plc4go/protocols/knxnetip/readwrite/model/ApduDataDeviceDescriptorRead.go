@@ -57,6 +57,7 @@ type _ApduDataDeviceDescriptorRead struct {
 }
 
 var _ ApduDataDeviceDescriptorRead = (*_ApduDataDeviceDescriptorRead)(nil)
+var _ ApduDataRequirements = (*_ApduDataDeviceDescriptorRead)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ApduDataDeviceDescriptorRead) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_ApduDataDeviceDescriptorRead) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataDeviceDescriptorRead ApduDataDeviceDescriptorRead, err error) {
 	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataDeviceDescriptorRead"); pullErr != nil {

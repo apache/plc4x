@@ -60,6 +60,7 @@ type _BACnetServiceAckGetEventInformation struct {
 }
 
 var _ BACnetServiceAckGetEventInformation = (*_BACnetServiceAckGetEventInformation)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetEventInformation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_BACnetServiceAckGetEventInformation) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetServiceAckGetEventInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckGetEventInformation BACnetServiceAckGetEventInformation, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEventInformation"); pullErr != nil {

@@ -69,6 +69,7 @@ type _BrowseNextResponse struct {
 }
 
 var _ BrowseNextResponse = (*_BrowseNextResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_BrowseNextResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -187,6 +188,7 @@ func (m *_BrowseNextResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BrowseNextResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browseNextResponse BrowseNextResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BrowseNextResponse"); pullErr != nil {

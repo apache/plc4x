@@ -63,6 +63,7 @@ type _UserNameIdentityToken struct {
 }
 
 var _ UserNameIdentityToken = (*_UserNameIdentityToken)(nil)
+var _ UserIdentityTokenDefinitionRequirements = (*_UserNameIdentityToken)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_UserNameIdentityToken) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_UserNameIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_UserIdentityTokenDefinition, identifier string) (__userNameIdentityToken UserNameIdentityToken, err error) {
 	m.UserIdentityTokenDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UserNameIdentityToken"); pullErr != nil {

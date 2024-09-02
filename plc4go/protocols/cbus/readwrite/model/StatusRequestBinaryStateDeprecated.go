@@ -60,6 +60,7 @@ type _StatusRequestBinaryStateDeprecated struct {
 }
 
 var _ StatusRequestBinaryStateDeprecated = (*_StatusRequestBinaryStateDeprecated)(nil)
+var _ StatusRequestRequirements = (*_StatusRequestBinaryStateDeprecated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_StatusRequestBinaryStateDeprecated) GetLengthInBytes(ctx context.Conte
 
 func (m *_StatusRequestBinaryStateDeprecated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_StatusRequest) (__statusRequestBinaryStateDeprecated StatusRequestBinaryStateDeprecated, err error) {
 	m.StatusRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequestBinaryStateDeprecated"); pullErr != nil {

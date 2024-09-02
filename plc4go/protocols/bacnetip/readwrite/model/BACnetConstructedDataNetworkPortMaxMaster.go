@@ -59,6 +59,7 @@ type _BACnetConstructedDataNetworkPortMaxMaster struct {
 }
 
 var _ BACnetConstructedDataNetworkPortMaxMaster = (*_BACnetConstructedDataNetworkPortMaxMaster)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkPortMaxMaster)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetLengthInBytes(ctx contex
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNetworkPortMaxMaster BACnetConstructedDataNetworkPortMaxMaster, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkPortMaxMaster"); pullErr != nil {

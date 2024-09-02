@@ -50,6 +50,8 @@ type BACnetUnconfirmedServiceRequestContract interface {
 
 // BACnetUnconfirmedServiceRequestRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetUnconfirmedServiceRequestRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetUnconfirmedServiceChoice
 }
@@ -63,19 +65,13 @@ type BACnetUnconfirmedServiceRequestExactly interface {
 
 // _BACnetUnconfirmedServiceRequest is the data-structure of this message
 type _BACnetUnconfirmedServiceRequest struct {
-	_BACnetUnconfirmedServiceRequestChildRequirements
+	_SubType BACnetUnconfirmedServiceRequest
 
 	// Arguments.
 	ServiceRequestLength uint16
 }
 
 var _ BACnetUnconfirmedServiceRequestContract = (*_BACnetUnconfirmedServiceRequest)(nil)
-
-type _BACnetUnconfirmedServiceRequestChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetServiceChoice() BACnetUnconfirmedServiceChoice
-}
 
 type BACnetUnconfirmedServiceRequestChild interface {
 	utils.Serializable
@@ -115,7 +111,7 @@ func (m *_BACnetUnconfirmedServiceRequest) getLengthInBits(ctx context.Context) 
 }
 
 func (m *_BACnetUnconfirmedServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetUnconfirmedServiceRequestParse[T BACnetUnconfirmedServiceRequest](ctx context.Context, theBytes []byte, serviceRequestLength uint16) (T, error) {

@@ -66,6 +66,7 @@ type _ConfirmedPrivateTransferError struct {
 }
 
 var _ ConfirmedPrivateTransferError = (*_ConfirmedPrivateTransferError)(nil)
+var _ BACnetErrorRequirements = (*_ConfirmedPrivateTransferError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -164,6 +165,7 @@ func (m *_ConfirmedPrivateTransferError) GetLengthInBytes(ctx context.Context) u
 
 func (m *_ConfirmedPrivateTransferError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__confirmedPrivateTransferError ConfirmedPrivateTransferError, err error) {
 	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConfirmedPrivateTransferError"); pullErr != nil {

@@ -52,6 +52,7 @@ type _MeteringDataMeasureElectricity struct {
 }
 
 var _ MeteringDataMeasureElectricity = (*_MeteringDataMeasureElectricity)(nil)
+var _ MeteringDataRequirements = (*_MeteringDataMeasureElectricity)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_MeteringDataMeasureElectricity) GetLengthInBytes(ctx context.Context) 
 
 func (m *_MeteringDataMeasureElectricity) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MeteringData) (__meteringDataMeasureElectricity MeteringDataMeasureElectricity, err error) {
 	m.MeteringDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataMeasureElectricity"); pullErr != nil {

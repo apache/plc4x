@@ -57,6 +57,7 @@ type _BACnetLogRecordLogDatumEnumeratedValue struct {
 }
 
 var _ BACnetLogRecordLogDatumEnumeratedValue = (*_BACnetLogRecordLogDatumEnumeratedValue)(nil)
+var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumEnumeratedValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetLengthInBytes(ctx context.C
 
 func (m *_BACnetLogRecordLogDatumEnumeratedValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogRecordLogDatum, tagNumber uint8) (__bACnetLogRecordLogDatumEnumeratedValue BACnetLogRecordLogDatumEnumeratedValue, err error) {
 	m.BACnetLogRecordLogDatumContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumEnumeratedValue"); pullErr != nil {

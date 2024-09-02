@@ -57,6 +57,7 @@ type _BACnetPriorityValueConstructedValue struct {
 }
 
 var _ BACnetPriorityValueConstructedValue = (*_BACnetPriorityValueConstructedValue)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueConstructedValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPriorityValueConstructedValue) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetPriorityValueConstructedValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueConstructedValue BACnetPriorityValueConstructedValue, err error) {
 	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueConstructedValue"); pullErr != nil {

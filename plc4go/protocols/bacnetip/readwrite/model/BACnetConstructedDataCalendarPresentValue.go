@@ -59,6 +59,7 @@ type _BACnetConstructedDataCalendarPresentValue struct {
 }
 
 var _ BACnetConstructedDataCalendarPresentValue = (*_BACnetConstructedDataCalendarPresentValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCalendarPresentValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataCalendarPresentValue) GetLengthInBytes(ctx contex
 
 func (m *_BACnetConstructedDataCalendarPresentValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCalendarPresentValue BACnetConstructedDataCalendarPresentValue, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCalendarPresentValue"); pullErr != nil {

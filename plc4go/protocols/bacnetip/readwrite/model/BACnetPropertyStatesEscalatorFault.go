@@ -57,6 +57,7 @@ type _BACnetPropertyStatesEscalatorFault struct {
 }
 
 var _ BACnetPropertyStatesEscalatorFault = (*_BACnetPropertyStatesEscalatorFault)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEscalatorFault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesEscalatorFault) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetPropertyStatesEscalatorFault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesEscalatorFault BACnetPropertyStatesEscalatorFault, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorFault"); pullErr != nil {

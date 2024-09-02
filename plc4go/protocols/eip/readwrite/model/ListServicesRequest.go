@@ -52,6 +52,7 @@ type _ListServicesRequest struct {
 }
 
 var _ ListServicesRequest = (*_ListServicesRequest)(nil)
+var _ EipPacketRequirements = (*_ListServicesRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ func (m *_ListServicesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ListServicesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__listServicesRequest ListServicesRequest, err error) {
 	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ListServicesRequest"); pullErr != nil {

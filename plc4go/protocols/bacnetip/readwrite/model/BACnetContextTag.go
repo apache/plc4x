@@ -56,6 +56,8 @@ type BACnetContextTagContract interface {
 
 // BACnetContextTagRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetContextTagRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetDataType returns DataType (discriminator field)
 	GetDataType() BACnetDataType
 }
@@ -69,20 +71,14 @@ type BACnetContextTagExactly interface {
 
 // _BACnetContextTag is the data-structure of this message
 type _BACnetContextTag struct {
-	_BACnetContextTagChildRequirements
-	Header BACnetTagHeader
+	_SubType BACnetContextTag
+	Header   BACnetTagHeader
 
 	// Arguments.
 	TagNumberArgument uint8
 }
 
 var _ BACnetContextTagContract = (*_BACnetContextTag)(nil)
-
-type _BACnetContextTagChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetDataType() BACnetDataType
-}
 
 type BACnetContextTagChild interface {
 	utils.Serializable
@@ -111,13 +107,15 @@ func (m *_BACnetContextTag) GetHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetContextTag) GetTagNumber() uint8 {
+func (pm *_BACnetContextTag) GetTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetHeader().GetTagNumber())
 }
 
-func (m *_BACnetContextTag) GetActualLength() uint32 {
+func (pm *_BACnetContextTag) GetActualLength() uint32 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint32(m.GetHeader().GetActualLength())
@@ -162,7 +160,7 @@ func (m *_BACnetContextTag) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetContextTag) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetContextTagParse[T BACnetContextTag](ctx context.Context, theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (T, error) {

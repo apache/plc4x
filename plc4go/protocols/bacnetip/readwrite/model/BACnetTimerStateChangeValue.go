@@ -56,6 +56,12 @@ type BACnetTimerStateChangeValueContract interface {
 
 // BACnetTimerStateChangeValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetTimerStateChangeValueRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
+	GetPeekedIsContextTag() bool
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetTimerStateChangeValueExactly can be used when we want exactly this type and not a type which fulfills BACnetTimerStateChangeValue.
@@ -67,7 +73,7 @@ type BACnetTimerStateChangeValueExactly interface {
 
 // _BACnetTimerStateChangeValue is the data-structure of this message
 type _BACnetTimerStateChangeValue struct {
-	_BACnetTimerStateChangeValueChildRequirements
+	_SubType        BACnetTimerStateChangeValue
 	PeekedTagHeader BACnetTagHeader
 
 	// Arguments.
@@ -75,13 +81,6 @@ type _BACnetTimerStateChangeValue struct {
 }
 
 var _ BACnetTimerStateChangeValueContract = (*_BACnetTimerStateChangeValue)(nil)
-
-type _BACnetTimerStateChangeValueChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedIsContextTag() bool
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetTimerStateChangeValueChild interface {
 	utils.Serializable
@@ -110,13 +109,15 @@ func (m *_BACnetTimerStateChangeValue) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetTimerStateChangeValue) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetTimerStateChangeValue) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
-func (m *_BACnetTimerStateChangeValue) GetPeekedIsContextTag() bool {
+func (pm *_BACnetTimerStateChangeValue) GetPeekedIsContextTag() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
@@ -158,7 +159,7 @@ func (m *_BACnetTimerStateChangeValue) getLengthInBits(ctx context.Context) uint
 }
 
 func (m *_BACnetTimerStateChangeValue) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTimerStateChangeValueParse[T BACnetTimerStateChangeValue](ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (T, error) {

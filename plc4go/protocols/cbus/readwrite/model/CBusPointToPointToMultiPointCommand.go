@@ -56,6 +56,10 @@ type CBusPointToPointToMultiPointCommandContract interface {
 
 // CBusPointToPointToMultiPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type CBusPointToPointToMultiPointCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedApplication returns PeekedApplication (discriminator field)
+	GetPeekedApplication() byte
 }
 
 // CBusPointToPointToMultiPointCommandExactly can be used when we want exactly this type and not a type which fulfills CBusPointToPointToMultiPointCommand.
@@ -67,7 +71,7 @@ type CBusPointToPointToMultiPointCommandExactly interface {
 
 // _CBusPointToPointToMultiPointCommand is the data-structure of this message
 type _CBusPointToPointToMultiPointCommand struct {
-	_CBusPointToPointToMultiPointCommandChildRequirements
+	_SubType          CBusPointToPointToMultiPointCommand
 	BridgeAddress     BridgeAddress
 	NetworkRoute      NetworkRoute
 	PeekedApplication byte
@@ -77,12 +81,6 @@ type _CBusPointToPointToMultiPointCommand struct {
 }
 
 var _ CBusPointToPointToMultiPointCommandContract = (*_CBusPointToPointToMultiPointCommand)(nil)
-
-type _CBusPointToPointToMultiPointCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedApplication() byte
-}
 
 type CBusPointToPointToMultiPointCommandChild interface {
 	utils.Serializable
@@ -148,7 +146,7 @@ func (m *_CBusPointToPointToMultiPointCommand) getLengthInBits(ctx context.Conte
 }
 
 func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CBusPointToPointToMultiPointCommandParse[T CBusPointToPointToMultiPointCommand](ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (T, error) {

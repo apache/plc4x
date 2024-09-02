@@ -78,6 +78,7 @@ type _SessionlessInvokeRequestType struct {
 }
 
 var _ SessionlessInvokeRequestType = (*_SessionlessInvokeRequestType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SessionlessInvokeRequestType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -227,6 +228,7 @@ func (m *_SessionlessInvokeRequestType) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_SessionlessInvokeRequestType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__sessionlessInvokeRequestType SessionlessInvokeRequestType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SessionlessInvokeRequestType"); pullErr != nil {

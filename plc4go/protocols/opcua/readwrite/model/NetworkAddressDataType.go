@@ -57,6 +57,7 @@ type _NetworkAddressDataType struct {
 }
 
 var _ NetworkAddressDataType = (*_NetworkAddressDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_NetworkAddressDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_NetworkAddressDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NetworkAddressDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__networkAddressDataType NetworkAddressDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NetworkAddressDataType"); pullErr != nil {

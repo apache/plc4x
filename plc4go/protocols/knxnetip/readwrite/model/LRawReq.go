@@ -52,6 +52,7 @@ type _LRawReq struct {
 }
 
 var _ LRawReq = (*_LRawReq)(nil)
+var _ CEMIRequirements = (*_LRawReq)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_LRawReq) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LRawReq) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__lRawReq LRawReq, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LRawReq"); pullErr != nil {

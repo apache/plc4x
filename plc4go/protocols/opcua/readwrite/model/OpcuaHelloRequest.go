@@ -63,6 +63,7 @@ type _OpcuaHelloRequest struct {
 }
 
 var _ OpcuaHelloRequest = (*_OpcuaHelloRequest)(nil)
+var _ MessagePDURequirements = (*_OpcuaHelloRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -155,6 +156,7 @@ func (m *_OpcuaHelloRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_OpcuaHelloRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool) (__opcuaHelloRequest OpcuaHelloRequest, err error) {
 	m.MessagePDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("OpcuaHelloRequest"); pullErr != nil {

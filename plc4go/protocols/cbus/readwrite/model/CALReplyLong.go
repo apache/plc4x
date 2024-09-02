@@ -76,6 +76,7 @@ type _CALReplyLong struct {
 }
 
 var _ CALReplyLong = (*_CALReplyLong)(nil)
+var _ CALReplyRequirements = (*_CALReplyLong)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -132,13 +133,13 @@ func (m *_CALReplyLong) GetReplyNetwork() ReplyNetwork {
 func (m *_CALReplyLong) GetIsUnitAddress() bool {
 	ctx := context.Background()
 	_ = ctx
-	unitAddress := m.UnitAddress
+	unitAddress := m.GetUnitAddress()
 	_ = unitAddress
-	bridgeAddress := m.BridgeAddress
+	bridgeAddress := m.GetBridgeAddress()
 	_ = bridgeAddress
-	reservedByte := m.ReservedByte
+	reservedByte := m.GetReservedByte()
 	_ = reservedByte
-	replyNetwork := m.ReplyNetwork
+	replyNetwork := m.GetReplyNetwork()
 	_ = replyNetwork
 	return bool(bool((m.GetTerminatingByte() & 0xff) == (0x00)))
 }
@@ -217,6 +218,7 @@ func (m *_CALReplyLong) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CALReplyLong) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALReply, cBusOptions CBusOptions, requestContext RequestContext) (__cALReplyLong CALReplyLong, err error) {
 	m.CALReplyContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReplyLong"); pullErr != nil {

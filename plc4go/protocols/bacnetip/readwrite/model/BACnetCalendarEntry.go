@@ -52,6 +52,10 @@ type BACnetCalendarEntryContract interface {
 
 // BACnetCalendarEntryRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetCalendarEntryRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetCalendarEntryExactly can be used when we want exactly this type and not a type which fulfills BACnetCalendarEntry.
@@ -63,17 +67,11 @@ type BACnetCalendarEntryExactly interface {
 
 // _BACnetCalendarEntry is the data-structure of this message
 type _BACnetCalendarEntry struct {
-	_BACnetCalendarEntryChildRequirements
+	_SubType        BACnetCalendarEntry
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetCalendarEntryContract = (*_BACnetCalendarEntry)(nil)
-
-type _BACnetCalendarEntryChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetCalendarEntryChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetCalendarEntry) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetCalendarEntry) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetCalendarEntry) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetCalendarEntry) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetCalendarEntry) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetCalendarEntryParse[T BACnetCalendarEntry](ctx context.Context, theBytes []byte) (T, error) {

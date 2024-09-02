@@ -62,6 +62,7 @@ type _BVLCWriteBroadcastDistributionTable struct {
 }
 
 var _ BVLCWriteBroadcastDistributionTable = (*_BVLCWriteBroadcastDistributionTable)(nil)
+var _ BVLCRequirements = (*_BVLCWriteBroadcastDistributionTable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -138,6 +139,7 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetLengthInBytes(ctx context.Cont
 
 func (m *_BVLCWriteBroadcastDistributionTable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC, bvlcPayloadLength uint16) (__bVLCWriteBroadcastDistributionTable BVLCWriteBroadcastDistributionTable, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCWriteBroadcastDistributionTable"); pullErr != nil {

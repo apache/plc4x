@@ -57,6 +57,7 @@ type _BACnetOptionalCharacterStringNull struct {
 }
 
 var _ BACnetOptionalCharacterStringNull = (*_BACnetOptionalCharacterStringNull)(nil)
+var _ BACnetOptionalCharacterStringRequirements = (*_BACnetOptionalCharacterStringNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetOptionalCharacterStringNull) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetOptionalCharacterStringNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetOptionalCharacterString) (__bACnetOptionalCharacterStringNull BACnetOptionalCharacterStringNull, err error) {
 	m.BACnetOptionalCharacterStringContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalCharacterStringNull"); pullErr != nil {

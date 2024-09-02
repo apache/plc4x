@@ -63,6 +63,7 @@ type _BACnetFaultParameterFaultCharacterString struct {
 }
 
 var _ BACnetFaultParameterFaultCharacterString = (*_BACnetFaultParameterFaultCharacterString)(nil)
+var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultCharacterString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_BACnetFaultParameterFaultCharacterString) GetLengthInBytes(ctx context
 
 func (m *_BACnetFaultParameterFaultCharacterString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameter) (__bACnetFaultParameterFaultCharacterString BACnetFaultParameterFaultCharacterString, err error) {
 	m.BACnetFaultParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultCharacterString"); pullErr != nil {

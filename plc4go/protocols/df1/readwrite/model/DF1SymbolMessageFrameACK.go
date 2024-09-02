@@ -53,6 +53,7 @@ type _DF1SymbolMessageFrameACK struct {
 }
 
 var _ DF1SymbolMessageFrameACK = (*_DF1SymbolMessageFrameACK)(nil)
+var _ DF1SymbolRequirements = (*_DF1SymbolMessageFrameACK)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,6 +108,7 @@ func (m *_DF1SymbolMessageFrameACK) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_DF1SymbolMessageFrameACK) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_DF1Symbol) (__dF1SymbolMessageFrameACK DF1SymbolMessageFrameACK, err error) {
 	m.DF1SymbolContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1SymbolMessageFrameACK"); pullErr != nil {

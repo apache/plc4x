@@ -50,6 +50,8 @@ type CEMIContract interface {
 
 // CEMIRequirements provides a set of functions which need to be implemented by a sub struct
 type CEMIRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetMessageCode returns MessageCode (discriminator field)
 	GetMessageCode() uint8
 }
@@ -63,19 +65,13 @@ type CEMIExactly interface {
 
 // _CEMI is the data-structure of this message
 type _CEMI struct {
-	_CEMIChildRequirements
+	_SubType CEMI
 
 	// Arguments.
 	Size uint16
 }
 
 var _ CEMIContract = (*_CEMI)(nil)
-
-type _CEMIChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetMessageCode() uint8
-}
 
 type CEMIChild interface {
 	utils.Serializable
@@ -115,7 +111,7 @@ func (m *_CEMI) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CEMI) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CEMIParse[T CEMI](ctx context.Context, theBytes []byte, size uint16) (T, error) {

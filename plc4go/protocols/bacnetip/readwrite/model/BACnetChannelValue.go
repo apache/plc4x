@@ -54,6 +54,12 @@ type BACnetChannelValueContract interface {
 
 // BACnetChannelValueRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetChannelValueRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedIsContextTag returns PeekedIsContextTag (discriminator field)
+	GetPeekedIsContextTag() bool
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetChannelValueExactly can be used when we want exactly this type and not a type which fulfills BACnetChannelValue.
@@ -65,18 +71,11 @@ type BACnetChannelValueExactly interface {
 
 // _BACnetChannelValue is the data-structure of this message
 type _BACnetChannelValue struct {
-	_BACnetChannelValueChildRequirements
+	_SubType        BACnetChannelValue
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetChannelValueContract = (*_BACnetChannelValue)(nil)
-
-type _BACnetChannelValueChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedIsContextTag() bool
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetChannelValueChild interface {
 	utils.Serializable
@@ -105,13 +104,15 @@ func (m *_BACnetChannelValue) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetChannelValue) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetChannelValue) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
-func (m *_BACnetChannelValue) GetPeekedIsContextTag() bool {
+func (pm *_BACnetChannelValue) GetPeekedIsContextTag() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetPeekedTagHeader().GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS)))
@@ -153,7 +154,7 @@ func (m *_BACnetChannelValue) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetChannelValue) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetChannelValueParse[T BACnetChannelValue](ctx context.Context, theBytes []byte) (T, error) {

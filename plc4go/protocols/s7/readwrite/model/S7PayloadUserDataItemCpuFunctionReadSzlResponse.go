@@ -57,6 +57,7 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 }
 
 var _ S7PayloadUserDataItemCpuFunctionReadSzlResponse = (*_S7PayloadUserDataItemCpuFunctionReadSzlResponse)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionReadSzlResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -139,6 +140,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetLengthInBytes(ctx 
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCpuFunctionReadSzlResponse S7PayloadUserDataItemCpuFunctionReadSzlResponse, err error) {
 	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); pullErr != nil {

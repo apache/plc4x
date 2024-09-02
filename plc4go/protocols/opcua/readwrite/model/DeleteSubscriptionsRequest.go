@@ -63,6 +63,7 @@ type _DeleteSubscriptionsRequest struct {
 }
 
 var _ DeleteSubscriptionsRequest = (*_DeleteSubscriptionsRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DeleteSubscriptionsRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -153,6 +154,7 @@ func (m *_DeleteSubscriptionsRequest) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_DeleteSubscriptionsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteSubscriptionsRequest DeleteSubscriptionsRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeleteSubscriptionsRequest"); pullErr != nil {

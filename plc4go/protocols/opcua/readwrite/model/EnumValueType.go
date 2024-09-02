@@ -63,6 +63,7 @@ type _EnumValueType struct {
 }
 
 var _ EnumValueType = (*_EnumValueType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EnumValueType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_EnumValueType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_EnumValueType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__enumValueType EnumValueType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EnumValueType"); pullErr != nil {

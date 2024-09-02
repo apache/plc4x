@@ -60,6 +60,7 @@ type _RepublishResponse struct {
 }
 
 var _ RepublishResponse = (*_RepublishResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RepublishResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_RepublishResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RepublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__republishResponse RepublishResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RepublishResponse"); pullErr != nil {

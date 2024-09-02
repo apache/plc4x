@@ -65,6 +65,7 @@ type _LPollData struct {
 }
 
 var _ LPollData = (*_LPollData)(nil)
+var _ LDataFrameRequirements = (*_LPollData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_LPollData) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LPollData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LDataFrame) (__lPollData LPollData, err error) {
 	m.LDataFrameContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollData"); pullErr != nil {

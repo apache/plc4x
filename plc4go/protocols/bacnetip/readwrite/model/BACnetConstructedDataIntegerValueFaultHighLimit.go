@@ -59,6 +59,7 @@ type _BACnetConstructedDataIntegerValueFaultHighLimit struct {
 }
 
 var _ BACnetConstructedDataIntegerValueFaultHighLimit = (*_BACnetConstructedDataIntegerValueFaultHighLimit)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueFaultHighLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) GetLengthInBytes(ctx 
 
 func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIntegerValueFaultHighLimit BACnetConstructedDataIntegerValueFaultHighLimit, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegerValueFaultHighLimit"); pullErr != nil {

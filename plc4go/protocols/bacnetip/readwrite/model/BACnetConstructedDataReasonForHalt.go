@@ -59,6 +59,7 @@ type _BACnetConstructedDataReasonForHalt struct {
 }
 
 var _ BACnetConstructedDataReasonForHalt = (*_BACnetConstructedDataReasonForHalt)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReasonForHalt)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataReasonForHalt) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataReasonForHalt) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataReasonForHalt BACnetConstructedDataReasonForHalt, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReasonForHalt"); pullErr != nil {

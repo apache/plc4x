@@ -57,6 +57,7 @@ type _BACnetChannelValueBitString struct {
 }
 
 var _ BACnetChannelValueBitString = (*_BACnetChannelValueBitString)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueBitString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetChannelValueBitString) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_BACnetChannelValueBitString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueBitString BACnetChannelValueBitString, err error) {
 	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueBitString"); pullErr != nil {

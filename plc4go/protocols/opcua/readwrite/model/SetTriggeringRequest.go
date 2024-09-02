@@ -75,6 +75,7 @@ type _SetTriggeringRequest struct {
 }
 
 var _ SetTriggeringRequest = (*_SetTriggeringRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SetTriggeringRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -199,6 +200,7 @@ func (m *_SetTriggeringRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SetTriggeringRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__setTriggeringRequest SetTriggeringRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SetTriggeringRequest"); pullErr != nil {

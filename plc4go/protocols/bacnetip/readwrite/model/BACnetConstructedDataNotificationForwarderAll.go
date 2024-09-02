@@ -52,6 +52,7 @@ type _BACnetConstructedDataNotificationForwarderAll struct {
 }
 
 var _ BACnetConstructedDataNotificationForwarderAll = (*_BACnetConstructedDataNotificationForwarderAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotificationForwarderAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_BACnetConstructedDataNotificationForwarderAll) GetLengthInBytes(ctx co
 
 func (m *_BACnetConstructedDataNotificationForwarderAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNotificationForwarderAll BACnetConstructedDataNotificationForwarderAll, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotificationForwarderAll"); pullErr != nil {

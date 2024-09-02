@@ -60,6 +60,7 @@ type _PortSegmentNormal struct {
 }
 
 var _ PortSegmentNormal = (*_PortSegmentNormal)(nil)
+var _ PortSegmentTypeRequirements = (*_PortSegmentNormal)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_PortSegmentNormal) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_PortSegmentNormal) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_PortSegmentType) (__portSegmentNormal PortSegmentNormal, err error) {
 	m.PortSegmentTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PortSegmentNormal"); pullErr != nil {

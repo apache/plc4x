@@ -63,6 +63,7 @@ type _BACnetServiceAckGetAlarmSummary struct {
 }
 
 var _ BACnetServiceAckGetAlarmSummary = (*_BACnetServiceAckGetAlarmSummary)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetAlarmSummary)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetServiceAckGetAlarmSummary) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckGetAlarmSummary BACnetServiceAckGetAlarmSummary, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {

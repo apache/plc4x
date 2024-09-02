@@ -57,6 +57,7 @@ type _CipSecurityInformation struct {
 }
 
 var _ CipSecurityInformation = (*_CipSecurityInformation)(nil)
+var _ CommandSpecificDataItemRequirements = (*_CipSecurityInformation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_CipSecurityInformation) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CipSecurityInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CommandSpecificDataItem) (__cipSecurityInformation CipSecurityInformation, err error) {
 	m.CommandSpecificDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipSecurityInformation"); pullErr != nil {

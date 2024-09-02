@@ -52,6 +52,7 @@ type _AdsDeviceNotificationResponse struct {
 }
 
 var _ AdsDeviceNotificationResponse = (*_AdsDeviceNotificationResponse)(nil)
+var _ AmsPacketRequirements = (*_AdsDeviceNotificationResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_AdsDeviceNotificationResponse) GetLengthInBytes(ctx context.Context) u
 
 func (m *_AdsDeviceNotificationResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsDeviceNotificationResponse AdsDeviceNotificationResponse, err error) {
 	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationResponse"); pullErr != nil {

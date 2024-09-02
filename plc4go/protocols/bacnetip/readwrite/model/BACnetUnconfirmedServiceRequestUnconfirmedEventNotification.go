@@ -93,6 +93,7 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedEventNotification struct {
 }
 
 var _ BACnetUnconfirmedServiceRequestUnconfirmedEventNotification = (*_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification)(nil)
+var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -269,6 +270,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) GetLength
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetUnconfirmedServiceRequest, serviceRequestLength uint16) (__bACnetUnconfirmedServiceRequestUnconfirmedEventNotification BACnetUnconfirmedServiceRequestUnconfirmedEventNotification, err error) {
 	m.BACnetUnconfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification"); pullErr != nil {

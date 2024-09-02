@@ -93,6 +93,7 @@ type _APDUConfirmedRequest struct {
 }
 
 var _ APDUConfirmedRequest = (*_APDUConfirmedRequest)(nil)
+var _ APDURequirements = (*_APDUConfirmedRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -173,13 +174,13 @@ func (m *_APDUConfirmedRequest) GetSegment() []byte {
 func (m *_APDUConfirmedRequest) GetApduHeaderReduction() uint16 {
 	ctx := context.Background()
 	_ = ctx
-	sequenceNumber := m.SequenceNumber
+	sequenceNumber := m.GetSequenceNumber()
 	_ = sequenceNumber
-	proposedWindowSize := m.ProposedWindowSize
+	proposedWindowSize := m.GetProposedWindowSize()
 	_ = proposedWindowSize
-	serviceRequest := m.ServiceRequest
+	serviceRequest := m.GetServiceRequest()
 	_ = serviceRequest
-	segmentServiceChoice := m.SegmentServiceChoice
+	segmentServiceChoice := m.GetSegmentServiceChoice()
 	_ = segmentServiceChoice
 	return uint16(uint16(uint16(3)) + uint16((utils.InlineIf(m.GetSegmentedMessage(), func() any { return uint16(uint16(2)) }, func() any { return uint16(uint16(0)) }).(uint16))))
 }
@@ -187,13 +188,13 @@ func (m *_APDUConfirmedRequest) GetApduHeaderReduction() uint16 {
 func (m *_APDUConfirmedRequest) GetSegmentReduction() uint16 {
 	ctx := context.Background()
 	_ = ctx
-	sequenceNumber := m.SequenceNumber
+	sequenceNumber := m.GetSequenceNumber()
 	_ = sequenceNumber
-	proposedWindowSize := m.ProposedWindowSize
+	proposedWindowSize := m.GetProposedWindowSize()
 	_ = proposedWindowSize
-	serviceRequest := m.ServiceRequest
+	serviceRequest := m.GetServiceRequest()
 	_ = serviceRequest
-	segmentServiceChoice := m.SegmentServiceChoice
+	segmentServiceChoice := m.GetSegmentServiceChoice()
 	_ = segmentServiceChoice
 	return uint16(utils.InlineIf((bool((m.GetSegmentServiceChoice()) != (nil))), func() any { return uint16((uint16(m.GetApduHeaderReduction()) + uint16(uint16(1)))) }, func() any { return uint16(m.GetApduHeaderReduction()) }).(uint16))
 }
@@ -299,6 +300,7 @@ func (m *_APDUConfirmedRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_APDUConfirmedRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUConfirmedRequest APDUConfirmedRequest, err error) {
 	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUConfirmedRequest"); pullErr != nil {

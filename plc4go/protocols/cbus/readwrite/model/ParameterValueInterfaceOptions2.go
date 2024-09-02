@@ -60,6 +60,7 @@ type _ParameterValueInterfaceOptions2 struct {
 }
 
 var _ ParameterValueInterfaceOptions2 = (*_ParameterValueInterfaceOptions2)(nil)
+var _ ParameterValueRequirements = (*_ParameterValueInterfaceOptions2)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_ParameterValueInterfaceOptions2) GetLengthInBytes(ctx context.Context)
 
 func (m *_ParameterValueInterfaceOptions2) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ParameterValue, parameterType ParameterType, numBytes uint8) (__parameterValueInterfaceOptions2 ParameterValueInterfaceOptions2, err error) {
 	m.ParameterValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueInterfaceOptions2"); pullErr != nil {

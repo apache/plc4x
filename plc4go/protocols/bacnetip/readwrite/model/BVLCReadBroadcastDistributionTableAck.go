@@ -62,6 +62,7 @@ type _BVLCReadBroadcastDistributionTableAck struct {
 }
 
 var _ BVLCReadBroadcastDistributionTableAck = (*_BVLCReadBroadcastDistributionTableAck)(nil)
+var _ BVLCRequirements = (*_BVLCReadBroadcastDistributionTableAck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -138,6 +139,7 @@ func (m *_BVLCReadBroadcastDistributionTableAck) GetLengthInBytes(ctx context.Co
 
 func (m *_BVLCReadBroadcastDistributionTableAck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC, bvlcPayloadLength uint16) (__bVLCReadBroadcastDistributionTableAck BVLCReadBroadcastDistributionTableAck, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadBroadcastDistributionTableAck"); pullErr != nil {

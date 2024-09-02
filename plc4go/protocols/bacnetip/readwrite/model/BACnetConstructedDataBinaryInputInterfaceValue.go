@@ -59,6 +59,7 @@ type _BACnetConstructedDataBinaryInputInterfaceValue struct {
 }
 
 var _ BACnetConstructedDataBinaryInputInterfaceValue = (*_BACnetConstructedDataBinaryInputInterfaceValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryInputInterfaceValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBinaryInputInterfaceValue) GetLengthInBytes(ctx c
 
 func (m *_BACnetConstructedDataBinaryInputInterfaceValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBinaryInputInterfaceValue BACnetConstructedDataBinaryInputInterfaceValue, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBinaryInputInterfaceValue"); pullErr != nil {

@@ -76,6 +76,7 @@ type _MeasurementDataChannelMeasurementData struct {
 }
 
 var _ MeasurementDataChannelMeasurementData = (*_MeasurementDataChannelMeasurementData)(nil)
+var _ MeasurementDataRequirements = (*_MeasurementDataChannelMeasurementData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -209,6 +210,7 @@ func (m *_MeasurementDataChannelMeasurementData) GetLengthInBytes(ctx context.Co
 
 func (m *_MeasurementDataChannelMeasurementData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MeasurementData) (__measurementDataChannelMeasurementData MeasurementDataChannelMeasurementData, err error) {
 	m.MeasurementDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeasurementDataChannelMeasurementData"); pullErr != nil {

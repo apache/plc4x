@@ -78,6 +78,7 @@ type _S7ParameterUserDataItemCPUFunctions struct {
 }
 
 var _ S7ParameterUserDataItemCPUFunctions = (*_S7ParameterUserDataItemCPUFunctions)(nil)
+var _ S7ParameterUserDataItemRequirements = (*_S7ParameterUserDataItemCPUFunctions)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -215,6 +216,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetLengthInBytes(ctx context.Cont
 
 func (m *_S7ParameterUserDataItemCPUFunctions) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7ParameterUserDataItem) (__s7ParameterUserDataItemCPUFunctions S7ParameterUserDataItemCPUFunctions, err error) {
 	m.S7ParameterUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItemCPUFunctions"); pullErr != nil {

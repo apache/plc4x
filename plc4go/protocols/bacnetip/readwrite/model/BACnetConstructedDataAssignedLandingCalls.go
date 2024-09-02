@@ -62,6 +62,7 @@ type _BACnetConstructedDataAssignedLandingCalls struct {
 }
 
 var _ BACnetConstructedDataAssignedLandingCalls = (*_BACnetConstructedDataAssignedLandingCalls)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAssignedLandingCalls)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataAssignedLandingCalls) GetAssignedLandingCalls() [
 func (m *_BACnetConstructedDataAssignedLandingCalls) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataAssignedLandingCalls) GetLengthInBytes(ctx contex
 
 func (m *_BACnetConstructedDataAssignedLandingCalls) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAssignedLandingCalls BACnetConstructedDataAssignedLandingCalls, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAssignedLandingCalls"); pullErr != nil {

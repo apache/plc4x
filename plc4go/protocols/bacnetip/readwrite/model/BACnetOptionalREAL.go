@@ -52,6 +52,10 @@ type BACnetOptionalREALContract interface {
 
 // BACnetOptionalREALRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetOptionalREALRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetOptionalREALExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalREAL.
@@ -63,17 +67,11 @@ type BACnetOptionalREALExactly interface {
 
 // _BACnetOptionalREAL is the data-structure of this message
 type _BACnetOptionalREAL struct {
-	_BACnetOptionalREALChildRequirements
+	_SubType        BACnetOptionalREAL
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetOptionalREALContract = (*_BACnetOptionalREAL)(nil)
-
-type _BACnetOptionalREALChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetOptionalREALChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetOptionalREAL) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetOptionalREAL) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetOptionalREAL) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetOptionalREAL) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetOptionalREAL) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetOptionalREALParse[T BACnetOptionalREAL](ctx context.Context, theBytes []byte) (T, error) {

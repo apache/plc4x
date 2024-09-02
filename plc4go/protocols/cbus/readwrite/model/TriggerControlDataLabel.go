@@ -66,6 +66,7 @@ type _TriggerControlDataLabel struct {
 }
 
 var _ TriggerControlDataLabel = (*_TriggerControlDataLabel)(nil)
+var _ TriggerControlDataRequirements = (*_TriggerControlDataLabel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_TriggerControlDataLabel) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_TriggerControlDataLabel) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TriggerControlData, commandTypeContainer TriggerControlCommandTypeContainer) (__triggerControlDataLabel TriggerControlDataLabel, err error) {
 	m.TriggerControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataLabel"); pullErr != nil {

@@ -60,6 +60,7 @@ type _ParameterValueApplicationAddress2 struct {
 }
 
 var _ ParameterValueApplicationAddress2 = (*_ParameterValueApplicationAddress2)(nil)
+var _ ParameterValueRequirements = (*_ParameterValueApplicationAddress2)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_ParameterValueApplicationAddress2) GetLengthInBytes(ctx context.Contex
 
 func (m *_ParameterValueApplicationAddress2) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ParameterValue, parameterType ParameterType, numBytes uint8) (__parameterValueApplicationAddress2 ParameterValueApplicationAddress2, err error) {
 	m.ParameterValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueApplicationAddress2"); pullErr != nil {

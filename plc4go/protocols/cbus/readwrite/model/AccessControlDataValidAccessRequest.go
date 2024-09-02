@@ -60,6 +60,7 @@ type _AccessControlDataValidAccessRequest struct {
 }
 
 var _ AccessControlDataValidAccessRequest = (*_AccessControlDataValidAccessRequest)(nil)
+var _ AccessControlDataRequirements = (*_AccessControlDataValidAccessRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -138,6 +139,7 @@ func (m *_AccessControlDataValidAccessRequest) GetLengthInBytes(ctx context.Cont
 
 func (m *_AccessControlDataValidAccessRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AccessControlData, commandTypeContainer AccessControlCommandTypeContainer) (__accessControlDataValidAccessRequest AccessControlDataValidAccessRequest, err error) {
 	m.AccessControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataValidAccessRequest"); pullErr != nil {

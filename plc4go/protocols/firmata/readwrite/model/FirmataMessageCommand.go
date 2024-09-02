@@ -59,6 +59,7 @@ type _FirmataMessageCommand struct {
 }
 
 var _ FirmataMessageCommand = (*_FirmataMessageCommand)(nil)
+var _ FirmataMessageRequirements = (*_FirmataMessageCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_FirmataMessageCommand) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_FirmataMessageCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataMessage, response bool) (__firmataMessageCommand FirmataMessageCommand, err error) {
 	m.FirmataMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageCommand"); pullErr != nil {

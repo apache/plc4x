@@ -59,6 +59,7 @@ type _BACnetConstructedDataTimeOfStrikeCountReset struct {
 }
 
 var _ BACnetConstructedDataTimeOfStrikeCountReset = (*_BACnetConstructedDataTimeOfStrikeCountReset)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeOfStrikeCountReset)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetLengthInBytes(ctx cont
 
 func (m *_BACnetConstructedDataTimeOfStrikeCountReset) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTimeOfStrikeCountReset BACnetConstructedDataTimeOfStrikeCountReset, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeOfStrikeCountReset"); pullErr != nil {

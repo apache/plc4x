@@ -57,6 +57,7 @@ type _SALDataVentilation struct {
 }
 
 var _ SALDataVentilation = (*_SALDataVentilation)(nil)
+var _ SALDataRequirements = (*_SALDataVentilation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataVentilation) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataVentilation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataVentilation SALDataVentilation, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataVentilation"); pullErr != nil {

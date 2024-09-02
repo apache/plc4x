@@ -69,6 +69,7 @@ type _SetPublishingModeResponse struct {
 }
 
 var _ SetPublishingModeResponse = (*_SetPublishingModeResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SetPublishingModeResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -187,6 +188,7 @@ func (m *_SetPublishingModeResponse) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_SetPublishingModeResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__setPublishingModeResponse SetPublishingModeResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SetPublishingModeResponse"); pullErr != nil {

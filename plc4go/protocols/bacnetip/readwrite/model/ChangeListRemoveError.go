@@ -60,6 +60,7 @@ type _ChangeListRemoveError struct {
 }
 
 var _ ChangeListRemoveError = (*_ChangeListRemoveError)(nil)
+var _ BACnetErrorRequirements = (*_ChangeListRemoveError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_ChangeListRemoveError) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ChangeListRemoveError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__changeListRemoveError ChangeListRemoveError, err error) {
 	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChangeListRemoveError"); pullErr != nil {

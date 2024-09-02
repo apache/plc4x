@@ -59,6 +59,7 @@ type _BACnetConstructedDataTransition struct {
 }
 
 var _ BACnetConstructedDataTransition = (*_BACnetConstructedDataTransition)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTransition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataTransition) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetConstructedDataTransition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTransition BACnetConstructedDataTransition, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTransition"); pullErr != nil {

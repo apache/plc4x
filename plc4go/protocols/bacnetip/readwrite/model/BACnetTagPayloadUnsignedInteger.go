@@ -147,21 +147,21 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetValueUint64() *uint64 {
 func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint8() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueUint8 := m.ValueUint8
+	valueUint8 := m.GetValueUint8()
 	_ = valueUint8
-	valueUint16 := m.ValueUint16
+	valueUint16 := m.GetValueUint16()
 	_ = valueUint16
-	valueUint24 := m.ValueUint24
+	valueUint24 := m.GetValueUint24()
 	_ = valueUint24
-	valueUint32 := m.ValueUint32
+	valueUint32 := m.GetValueUint32()
 	_ = valueUint32
-	valueUint40 := m.ValueUint40
+	valueUint40 := m.GetValueUint40()
 	_ = valueUint40
-	valueUint48 := m.ValueUint48
+	valueUint48 := m.GetValueUint48()
 	_ = valueUint48
-	valueUint56 := m.ValueUint56
+	valueUint56 := m.GetValueUint56()
 	_ = valueUint56
-	valueUint64 := m.ValueUint64
+	valueUint64 := m.GetValueUint64()
 	_ = valueUint64
 	return bool(bool((m.GetActualLength()) == (1)))
 }
@@ -169,21 +169,21 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint8() bool {
 func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint16() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueUint8 := m.ValueUint8
+	valueUint8 := m.GetValueUint8()
 	_ = valueUint8
-	valueUint16 := m.ValueUint16
+	valueUint16 := m.GetValueUint16()
 	_ = valueUint16
-	valueUint24 := m.ValueUint24
+	valueUint24 := m.GetValueUint24()
 	_ = valueUint24
-	valueUint32 := m.ValueUint32
+	valueUint32 := m.GetValueUint32()
 	_ = valueUint32
-	valueUint40 := m.ValueUint40
+	valueUint40 := m.GetValueUint40()
 	_ = valueUint40
-	valueUint48 := m.ValueUint48
+	valueUint48 := m.GetValueUint48()
 	_ = valueUint48
-	valueUint56 := m.ValueUint56
+	valueUint56 := m.GetValueUint56()
 	_ = valueUint56
-	valueUint64 := m.ValueUint64
+	valueUint64 := m.GetValueUint64()
 	_ = valueUint64
 	return bool(bool((m.GetActualLength()) == (2)))
 }
@@ -191,21 +191,21 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint16() bool {
 func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint24() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueUint8 := m.ValueUint8
+	valueUint8 := m.GetValueUint8()
 	_ = valueUint8
-	valueUint16 := m.ValueUint16
+	valueUint16 := m.GetValueUint16()
 	_ = valueUint16
-	valueUint24 := m.ValueUint24
+	valueUint24 := m.GetValueUint24()
 	_ = valueUint24
-	valueUint32 := m.ValueUint32
+	valueUint32 := m.GetValueUint32()
 	_ = valueUint32
-	valueUint40 := m.ValueUint40
+	valueUint40 := m.GetValueUint40()
 	_ = valueUint40
-	valueUint48 := m.ValueUint48
+	valueUint48 := m.GetValueUint48()
 	_ = valueUint48
-	valueUint56 := m.ValueUint56
+	valueUint56 := m.GetValueUint56()
 	_ = valueUint56
-	valueUint64 := m.ValueUint64
+	valueUint64 := m.GetValueUint64()
 	_ = valueUint64
 	return bool(bool((m.GetActualLength()) == (3)))
 }
@@ -213,21 +213,21 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint24() bool {
 func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint32() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueUint8 := m.ValueUint8
+	valueUint8 := m.GetValueUint8()
 	_ = valueUint8
-	valueUint16 := m.ValueUint16
+	valueUint16 := m.GetValueUint16()
 	_ = valueUint16
-	valueUint24 := m.ValueUint24
+	valueUint24 := m.GetValueUint24()
 	_ = valueUint24
-	valueUint32 := m.ValueUint32
+	valueUint32 := m.GetValueUint32()
 	_ = valueUint32
-	valueUint40 := m.ValueUint40
+	valueUint40 := m.GetValueUint40()
 	_ = valueUint40
-	valueUint48 := m.ValueUint48
+	valueUint48 := m.GetValueUint48()
 	_ = valueUint48
-	valueUint56 := m.ValueUint56
+	valueUint56 := m.GetValueUint56()
 	_ = valueUint56
-	valueUint64 := m.ValueUint64
+	valueUint64 := m.GetValueUint64()
 	_ = valueUint64
 	return bool(bool((m.GetActualLength()) == (4)))
 }
@@ -235,21 +235,21 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint32() bool {
 func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint40() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueUint8 := m.ValueUint8
+	valueUint8 := m.GetValueUint8()
 	_ = valueUint8
-	valueUint16 := m.ValueUint16
+	valueUint16 := m.GetValueUint16()
 	_ = valueUint16
-	valueUint24 := m.ValueUint24
+	valueUint24 := m.GetValueUint24()
 	_ = valueUint24
-	valueUint32 := m.ValueUint32
+	valueUint32 := m.GetValueUint32()
 	_ = valueUint32
-	valueUint40 := m.ValueUint40
+	valueUint40 := m.GetValueUint40()
 	_ = valueUint40
-	valueUint48 := m.ValueUint48
+	valueUint48 := m.GetValueUint48()
 	_ = valueUint48
-	valueUint56 := m.ValueUint56
+	valueUint56 := m.GetValueUint56()
 	_ = valueUint56
-	valueUint64 := m.ValueUint64
+	valueUint64 := m.GetValueUint64()
 	_ = valueUint64
 	return bool(bool((m.GetActualLength()) == (5)))
 }
@@ -257,21 +257,21 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint40() bool {
 func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint48() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueUint8 := m.ValueUint8
+	valueUint8 := m.GetValueUint8()
 	_ = valueUint8
-	valueUint16 := m.ValueUint16
+	valueUint16 := m.GetValueUint16()
 	_ = valueUint16
-	valueUint24 := m.ValueUint24
+	valueUint24 := m.GetValueUint24()
 	_ = valueUint24
-	valueUint32 := m.ValueUint32
+	valueUint32 := m.GetValueUint32()
 	_ = valueUint32
-	valueUint40 := m.ValueUint40
+	valueUint40 := m.GetValueUint40()
 	_ = valueUint40
-	valueUint48 := m.ValueUint48
+	valueUint48 := m.GetValueUint48()
 	_ = valueUint48
-	valueUint56 := m.ValueUint56
+	valueUint56 := m.GetValueUint56()
 	_ = valueUint56
-	valueUint64 := m.ValueUint64
+	valueUint64 := m.GetValueUint64()
 	_ = valueUint64
 	return bool(bool((m.GetActualLength()) == (6)))
 }
@@ -279,21 +279,21 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint48() bool {
 func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint56() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueUint8 := m.ValueUint8
+	valueUint8 := m.GetValueUint8()
 	_ = valueUint8
-	valueUint16 := m.ValueUint16
+	valueUint16 := m.GetValueUint16()
 	_ = valueUint16
-	valueUint24 := m.ValueUint24
+	valueUint24 := m.GetValueUint24()
 	_ = valueUint24
-	valueUint32 := m.ValueUint32
+	valueUint32 := m.GetValueUint32()
 	_ = valueUint32
-	valueUint40 := m.ValueUint40
+	valueUint40 := m.GetValueUint40()
 	_ = valueUint40
-	valueUint48 := m.ValueUint48
+	valueUint48 := m.GetValueUint48()
 	_ = valueUint48
-	valueUint56 := m.ValueUint56
+	valueUint56 := m.GetValueUint56()
 	_ = valueUint56
-	valueUint64 := m.ValueUint64
+	valueUint64 := m.GetValueUint64()
 	_ = valueUint64
 	return bool(bool((m.GetActualLength()) == (7)))
 }
@@ -301,21 +301,21 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint56() bool {
 func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint64() bool {
 	ctx := context.Background()
 	_ = ctx
-	valueUint8 := m.ValueUint8
+	valueUint8 := m.GetValueUint8()
 	_ = valueUint8
-	valueUint16 := m.ValueUint16
+	valueUint16 := m.GetValueUint16()
 	_ = valueUint16
-	valueUint24 := m.ValueUint24
+	valueUint24 := m.GetValueUint24()
 	_ = valueUint24
-	valueUint32 := m.ValueUint32
+	valueUint32 := m.GetValueUint32()
 	_ = valueUint32
-	valueUint40 := m.ValueUint40
+	valueUint40 := m.GetValueUint40()
 	_ = valueUint40
-	valueUint48 := m.ValueUint48
+	valueUint48 := m.GetValueUint48()
 	_ = valueUint48
-	valueUint56 := m.ValueUint56
+	valueUint56 := m.GetValueUint56()
 	_ = valueUint56
-	valueUint64 := m.ValueUint64
+	valueUint64 := m.GetValueUint64()
 	_ = valueUint64
 	return bool(bool((m.GetActualLength()) == (8)))
 }
@@ -323,21 +323,21 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetIsUint64() bool {
 func (m *_BACnetTagPayloadUnsignedInteger) GetActualValue() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	valueUint8 := m.ValueUint8
+	valueUint8 := m.GetValueUint8()
 	_ = valueUint8
-	valueUint16 := m.ValueUint16
+	valueUint16 := m.GetValueUint16()
 	_ = valueUint16
-	valueUint24 := m.ValueUint24
+	valueUint24 := m.GetValueUint24()
 	_ = valueUint24
-	valueUint32 := m.ValueUint32
+	valueUint32 := m.GetValueUint32()
 	_ = valueUint32
-	valueUint40 := m.ValueUint40
+	valueUint40 := m.GetValueUint40()
 	_ = valueUint40
-	valueUint48 := m.ValueUint48
+	valueUint48 := m.GetValueUint48()
 	_ = valueUint48
-	valueUint56 := m.ValueUint56
+	valueUint56 := m.GetValueUint56()
 	_ = valueUint56
-	valueUint64 := m.ValueUint64
+	valueUint64 := m.GetValueUint64()
 	_ = valueUint64
 	return uint64(utils.InlineIf(m.GetIsUint8(), func() any { return uint64((*m.GetValueUint8())) }, func() any {
 		return uint64((utils.InlineIf(m.GetIsUint16(), func() any { return uint64((*m.GetValueUint16())) }, func() any {

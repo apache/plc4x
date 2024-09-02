@@ -66,6 +66,7 @@ type _LevelInformationCorrupted struct {
 }
 
 var _ LevelInformationCorrupted = (*_LevelInformationCorrupted)(nil)
+var _ LevelInformationRequirements = (*_LevelInformationCorrupted)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_LevelInformationCorrupted) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_LevelInformationCorrupted) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LevelInformation) (__levelInformationCorrupted LevelInformationCorrupted, err error) {
 	m.LevelInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LevelInformationCorrupted"); pullErr != nil {

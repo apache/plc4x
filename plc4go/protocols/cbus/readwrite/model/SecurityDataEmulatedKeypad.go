@@ -79,6 +79,7 @@ type _SecurityDataEmulatedKeypad struct {
 }
 
 var _ SecurityDataEmulatedKeypad = (*_SecurityDataEmulatedKeypad)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataEmulatedKeypad)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -244,6 +245,7 @@ func (m *_SecurityDataEmulatedKeypad) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_SecurityDataEmulatedKeypad) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataEmulatedKeypad SecurityDataEmulatedKeypad, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataEmulatedKeypad"); pullErr != nil {

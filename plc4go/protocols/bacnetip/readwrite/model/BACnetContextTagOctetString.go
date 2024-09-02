@@ -57,6 +57,7 @@ type _BACnetContextTagOctetString struct {
 }
 
 var _ BACnetContextTagOctetString = (*_BACnetContextTagOctetString)(nil)
+var _ BACnetContextTagRequirements = (*_BACnetContextTagOctetString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_BACnetContextTagOctetString) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_BACnetContextTagOctetString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetContextTag, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (__bACnetContextTagOctetString BACnetContextTagOctetString, err error) {
 	m.BACnetContextTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagOctetString"); pullErr != nil {

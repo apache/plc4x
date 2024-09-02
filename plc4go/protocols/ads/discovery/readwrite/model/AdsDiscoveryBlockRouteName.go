@@ -57,6 +57,7 @@ type _AdsDiscoveryBlockRouteName struct {
 }
 
 var _ AdsDiscoveryBlockRouteName = (*_AdsDiscoveryBlockRouteName)(nil)
+var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockRouteName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_AdsDiscoveryBlockRouteName) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_AdsDiscoveryBlockRouteName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsDiscoveryBlock) (__adsDiscoveryBlockRouteName AdsDiscoveryBlockRouteName, err error) {
 	m.AdsDiscoveryBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockRouteName"); pullErr != nil {

@@ -57,6 +57,7 @@ type _NLMRouterBusyToNetwork struct {
 }
 
 var _ NLMRouterBusyToNetwork = (*_NLMRouterBusyToNetwork)(nil)
+var _ NLMRequirements = (*_NLMRouterBusyToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_NLMRouterBusyToNetwork) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NLMRouterBusyToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMRouterBusyToNetwork NLMRouterBusyToNetwork, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRouterBusyToNetwork"); pullErr != nil {

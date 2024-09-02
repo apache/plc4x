@@ -60,6 +60,7 @@ type _S7PayloadUserDataItemCyclicServicesChangeDrivenPush struct {
 }
 
 var _ S7PayloadUserDataItemCyclicServicesChangeDrivenPush = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenPush)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenPush)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -155,6 +156,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPush) GetLengthInBytes(
 
 func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPush) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemCyclicServicesChangeDrivenPush S7PayloadUserDataItemCyclicServicesChangeDrivenPush, err error) {
 	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCyclicServicesChangeDrivenPush"); pullErr != nil {

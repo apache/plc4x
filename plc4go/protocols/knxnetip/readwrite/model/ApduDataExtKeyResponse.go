@@ -52,6 +52,7 @@ type _ApduDataExtKeyResponse struct {
 }
 
 var _ ApduDataExtKeyResponse = (*_ApduDataExtKeyResponse)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtKeyResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtKeyResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApduDataExtKeyResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtKeyResponse ApduDataExtKeyResponse, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtKeyResponse"); pullErr != nil {

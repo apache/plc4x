@@ -117,6 +117,7 @@ type _IdentifyReplyCommandExtendedDiagnosticSummary struct {
 }
 
 var _ IdentifyReplyCommandExtendedDiagnosticSummary = (*_IdentifyReplyCommandExtendedDiagnosticSummary)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandExtendedDiagnosticSummary)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -359,6 +360,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetLengthInBytes(ctx co
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandExtendedDiagnosticSummary IdentifyReplyCommandExtendedDiagnosticSummary, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandExtendedDiagnosticSummary"); pullErr != nil {

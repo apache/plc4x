@@ -52,6 +52,7 @@ type _QosDataType struct {
 }
 
 var _ QosDataType = (*_QosDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_QosDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_QosDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_QosDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__qosDataType QosDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("QosDataType"); pullErr != nil {

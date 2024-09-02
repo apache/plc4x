@@ -63,6 +63,7 @@ type _BACnetFaultParameterFaultListed struct {
 }
 
 var _ BACnetFaultParameterFaultListed = (*_BACnetFaultParameterFaultListed)(nil)
+var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultListed)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_BACnetFaultParameterFaultListed) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetFaultParameterFaultListed) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameter) (__bACnetFaultParameterFaultListed BACnetFaultParameterFaultListed, err error) {
 	m.BACnetFaultParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultListed"); pullErr != nil {

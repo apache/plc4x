@@ -57,6 +57,7 @@ type _BACnetEventParameterNone struct {
 }
 
 var _ BACnetEventParameterNone = (*_BACnetEventParameterNone)(nil)
+var _ BACnetEventParameterRequirements = (*_BACnetEventParameterNone)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetEventParameterNone) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_BACnetEventParameterNone) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameter) (__bACnetEventParameterNone BACnetEventParameterNone, err error) {
 	m.BACnetEventParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterNone"); pullErr != nil {

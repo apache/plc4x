@@ -57,6 +57,7 @@ type _SALDataTelephonyStatusAndControl struct {
 }
 
 var _ SALDataTelephonyStatusAndControl = (*_SALDataTelephonyStatusAndControl)(nil)
+var _ SALDataRequirements = (*_SALDataTelephonyStatusAndControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataTelephonyStatusAndControl) GetLengthInBytes(ctx context.Context
 
 func (m *_SALDataTelephonyStatusAndControl) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataTelephonyStatusAndControl SALDataTelephonyStatusAndControl, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTelephonyStatusAndControl"); pullErr != nil {

@@ -52,6 +52,7 @@ type _ConnectionResponseDataBlockDeviceManagement struct {
 }
 
 var _ ConnectionResponseDataBlockDeviceManagement = (*_ConnectionResponseDataBlockDeviceManagement)(nil)
+var _ ConnectionResponseDataBlockRequirements = (*_ConnectionResponseDataBlockDeviceManagement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) GetLengthInBytes(ctx cont
 
 func (m *_ConnectionResponseDataBlockDeviceManagement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ConnectionResponseDataBlock) (__connectionResponseDataBlockDeviceManagement ConnectionResponseDataBlockDeviceManagement, err error) {
 	m.ConnectionResponseDataBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockDeviceManagement"); pullErr != nil {

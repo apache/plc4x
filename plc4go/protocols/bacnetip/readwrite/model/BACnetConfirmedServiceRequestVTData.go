@@ -63,6 +63,7 @@ type _BACnetConfirmedServiceRequestVTData struct {
 }
 
 var _ BACnetConfirmedServiceRequestVTData = (*_BACnetConfirmedServiceRequestVTData)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestVTData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConfirmedServiceRequestVTData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestVTData BACnetConfirmedServiceRequestVTData, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTData"); pullErr != nil {

@@ -46,6 +46,8 @@ type ExtensionObjectDefinitionContract interface {
 
 // ExtensionObjectDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
 type ExtensionObjectDefinitionRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetIdentifier returns Identifier (discriminator field)
 	GetIdentifier() string
 }
@@ -59,16 +61,10 @@ type ExtensionObjectDefinitionExactly interface {
 
 // _ExtensionObjectDefinition is the data-structure of this message
 type _ExtensionObjectDefinition struct {
-	_ExtensionObjectDefinitionChildRequirements
+	_SubType ExtensionObjectDefinition
 }
 
 var _ ExtensionObjectDefinitionContract = (*_ExtensionObjectDefinition)(nil)
-
-type _ExtensionObjectDefinitionChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIdentifier() string
-}
 
 type ExtensionObjectDefinitionChild interface {
 	utils.Serializable
@@ -106,7 +102,7 @@ func (m *_ExtensionObjectDefinition) getLengthInBits(ctx context.Context) uint16
 }
 
 func (m *_ExtensionObjectDefinition) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ExtensionObjectDefinitionParse[T ExtensionObjectDefinition](ctx context.Context, theBytes []byte, identifier string) (T, error) {

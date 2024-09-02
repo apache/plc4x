@@ -72,6 +72,7 @@ type _ServerStatusDataType struct {
 }
 
 var _ ServerStatusDataType = (*_ServerStatusDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ServerStatusDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -184,6 +185,7 @@ func (m *_ServerStatusDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ServerStatusDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serverStatusDataType ServerStatusDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServerStatusDataType"); pullErr != nil {

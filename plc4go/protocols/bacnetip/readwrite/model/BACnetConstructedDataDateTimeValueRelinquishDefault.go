@@ -59,6 +59,7 @@ type _BACnetConstructedDataDateTimeValueRelinquishDefault struct {
 }
 
 var _ BACnetConstructedDataDateTimeValueRelinquishDefault = (*_BACnetConstructedDataDateTimeValueRelinquishDefault)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDateTimeValueRelinquishDefault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) GetLengthInBytes(
 
 func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDateTimeValueRelinquishDefault BACnetConstructedDataDateTimeValueRelinquishDefault, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDateTimeValueRelinquishDefault"); pullErr != nil {

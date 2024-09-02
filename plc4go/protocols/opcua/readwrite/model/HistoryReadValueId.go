@@ -66,6 +66,7 @@ type _HistoryReadValueId struct {
 }
 
 var _ HistoryReadValueId = (*_HistoryReadValueId)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadValueId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_HistoryReadValueId) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_HistoryReadValueId) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyReadValueId HistoryReadValueId, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HistoryReadValueId"); pullErr != nil {

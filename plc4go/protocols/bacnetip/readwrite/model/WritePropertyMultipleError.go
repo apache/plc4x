@@ -60,6 +60,7 @@ type _WritePropertyMultipleError struct {
 }
 
 var _ WritePropertyMultipleError = (*_WritePropertyMultipleError)(nil)
+var _ BACnetErrorRequirements = (*_WritePropertyMultipleError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_WritePropertyMultipleError) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_WritePropertyMultipleError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__writePropertyMultipleError WritePropertyMultipleError, err error) {
 	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("WritePropertyMultipleError"); pullErr != nil {

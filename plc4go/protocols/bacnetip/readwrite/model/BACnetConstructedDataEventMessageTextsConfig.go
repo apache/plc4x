@@ -68,6 +68,7 @@ type _BACnetConstructedDataEventMessageTextsConfig struct {
 }
 
 var _ BACnetConstructedDataEventMessageTextsConfig = (*_BACnetConstructedDataEventMessageTextsConfig)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventMessageTextsConfig)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,7 +117,7 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) GetEventMessageTextsConf
 func (m *_BACnetConstructedDataEventMessageTextsConfig) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -124,7 +125,7 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) GetZero() uint64 {
 func (m *_BACnetConstructedDataEventMessageTextsConfig) GetToOffnormalTextConfig() BACnetOptionalCharacterString {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetOptionalCharacterString(CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(m.GetEventMessageTextsConfig())) == (3)), func() any { return CastBACnetOptionalCharacterString(m.GetEventMessageTextsConfig()[0]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
 }
@@ -132,7 +133,7 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) GetToOffnormalTextConfig
 func (m *_BACnetConstructedDataEventMessageTextsConfig) GetToFaultTextConfig() BACnetOptionalCharacterString {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetOptionalCharacterString(CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(m.GetEventMessageTextsConfig())) == (3)), func() any { return CastBACnetOptionalCharacterString(m.GetEventMessageTextsConfig()[1]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
 }
@@ -140,7 +141,7 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) GetToFaultTextConfig() B
 func (m *_BACnetConstructedDataEventMessageTextsConfig) GetToNormalTextConfig() BACnetOptionalCharacterString {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return CastBACnetOptionalCharacterString(CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(m.GetEventMessageTextsConfig())) == (3)), func() any { return CastBACnetOptionalCharacterString(m.GetEventMessageTextsConfig()[2]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
 }
@@ -207,6 +208,7 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) GetLengthInBytes(ctx con
 
 func (m *_BACnetConstructedDataEventMessageTextsConfig) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataEventMessageTextsConfig BACnetConstructedDataEventMessageTextsConfig, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventMessageTextsConfig"); pullErr != nil {

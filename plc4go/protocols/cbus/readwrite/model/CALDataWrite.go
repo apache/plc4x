@@ -63,6 +63,7 @@ type _CALDataWrite struct {
 }
 
 var _ CALDataWrite = (*_CALDataWrite)(nil)
+var _ CALDataRequirements = (*_CALDataWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_CALDataWrite) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CALDataWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (__cALDataWrite CALDataWrite, err error) {
 	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataWrite"); pullErr != nil {

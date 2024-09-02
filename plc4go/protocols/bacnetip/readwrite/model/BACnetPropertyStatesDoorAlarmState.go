@@ -57,6 +57,7 @@ type _BACnetPropertyStatesDoorAlarmState struct {
 }
 
 var _ BACnetPropertyStatesDoorAlarmState = (*_BACnetPropertyStatesDoorAlarmState)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesDoorAlarmState)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesDoorAlarmState) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetPropertyStatesDoorAlarmState) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesDoorAlarmState BACnetPropertyStatesDoorAlarmState, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesDoorAlarmState"); pullErr != nil {

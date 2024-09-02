@@ -57,6 +57,7 @@ type _MeteringDataGasConsumption struct {
 }
 
 var _ MeteringDataGasConsumption = (*_MeteringDataGasConsumption)(nil)
+var _ MeteringDataRequirements = (*_MeteringDataGasConsumption)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_MeteringDataGasConsumption) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_MeteringDataGasConsumption) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MeteringData) (__meteringDataGasConsumption MeteringDataGasConsumption, err error) {
 	m.MeteringDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataGasConsumption"); pullErr != nil {

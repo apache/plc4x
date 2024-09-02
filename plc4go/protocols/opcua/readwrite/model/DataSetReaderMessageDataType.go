@@ -52,6 +52,7 @@ type _DataSetReaderMessageDataType struct {
 }
 
 var _ DataSetReaderMessageDataType = (*_DataSetReaderMessageDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DataSetReaderMessageDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_DataSetReaderMessageDataType) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_DataSetReaderMessageDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataSetReaderMessageDataType DataSetReaderMessageDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DataSetReaderMessageDataType"); pullErr != nil {

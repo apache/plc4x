@@ -62,6 +62,7 @@ type _DisconnectResponse struct {
 }
 
 var _ DisconnectResponse = (*_DisconnectResponse)(nil)
+var _ KnxNetIpMessageRequirements = (*_DisconnectResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_DisconnectResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_DisconnectResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__disconnectResponse DisconnectResponse, err error) {
 	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DisconnectResponse"); pullErr != nil {

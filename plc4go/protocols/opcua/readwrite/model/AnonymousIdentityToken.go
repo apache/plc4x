@@ -52,6 +52,7 @@ type _AnonymousIdentityToken struct {
 }
 
 var _ AnonymousIdentityToken = (*_AnonymousIdentityToken)(nil)
+var _ UserIdentityTokenDefinitionRequirements = (*_AnonymousIdentityToken)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_AnonymousIdentityToken) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_AnonymousIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_UserIdentityTokenDefinition, identifier string) (__anonymousIdentityToken AnonymousIdentityToken, err error) {
 	m.UserIdentityTokenDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AnonymousIdentityToken"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataAccumulatorMinPresValue struct {
 }
 
 var _ BACnetConstructedDataAccumulatorMinPresValue = (*_BACnetConstructedDataAccumulatorMinPresValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccumulatorMinPresValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataAccumulatorMinPresValue) GetLengthInBytes(ctx con
 
 func (m *_BACnetConstructedDataAccumulatorMinPresValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAccumulatorMinPresValue BACnetConstructedDataAccumulatorMinPresValue, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccumulatorMinPresValue"); pullErr != nil {

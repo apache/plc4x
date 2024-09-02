@@ -52,6 +52,7 @@ type _SysexCommandSysexNonRealtime struct {
 }
 
 var _ SysexCommandSysexNonRealtime = (*_SysexCommandSysexNonRealtime)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandSysexNonRealtime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_SysexCommandSysexNonRealtime) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_SysexCommandSysexNonRealtime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandSysexNonRealtime SysexCommandSysexNonRealtime, err error) {
 	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandSysexNonRealtime"); pullErr != nil {

@@ -57,6 +57,7 @@ type _COTPParameterCalledTsap struct {
 }
 
 var _ COTPParameterCalledTsap = (*_COTPParameterCalledTsap)(nil)
+var _ COTPParameterRequirements = (*_COTPParameterCalledTsap)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_COTPParameterCalledTsap) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_COTPParameterCalledTsap) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPParameter, rest uint8) (__cOTPParameterCalledTsap COTPParameterCalledTsap, err error) {
 	m.COTPParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterCalledTsap"); pullErr != nil {

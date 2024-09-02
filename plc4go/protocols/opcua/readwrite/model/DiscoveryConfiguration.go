@@ -52,6 +52,7 @@ type _DiscoveryConfiguration struct {
 }
 
 var _ DiscoveryConfiguration = (*_DiscoveryConfiguration)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DiscoveryConfiguration)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_DiscoveryConfiguration) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_DiscoveryConfiguration) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__discoveryConfiguration DiscoveryConfiguration, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DiscoveryConfiguration"); pullErr != nil {

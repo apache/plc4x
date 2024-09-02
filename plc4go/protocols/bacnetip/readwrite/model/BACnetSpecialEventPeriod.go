@@ -52,6 +52,10 @@ type BACnetSpecialEventPeriodContract interface {
 
 // BACnetSpecialEventPeriodRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetSpecialEventPeriodRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetSpecialEventPeriodExactly can be used when we want exactly this type and not a type which fulfills BACnetSpecialEventPeriod.
@@ -63,17 +67,11 @@ type BACnetSpecialEventPeriodExactly interface {
 
 // _BACnetSpecialEventPeriod is the data-structure of this message
 type _BACnetSpecialEventPeriod struct {
-	_BACnetSpecialEventPeriodChildRequirements
+	_SubType        BACnetSpecialEventPeriod
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetSpecialEventPeriodContract = (*_BACnetSpecialEventPeriod)(nil)
-
-type _BACnetSpecialEventPeriodChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetSpecialEventPeriodChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetSpecialEventPeriod) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetSpecialEventPeriod) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetSpecialEventPeriod) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetSpecialEventPeriod) getLengthInBits(ctx context.Context) uint16 
 }
 
 func (m *_BACnetSpecialEventPeriod) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetSpecialEventPeriodParse[T BACnetSpecialEventPeriod](ctx context.Context, theBytes []byte) (T, error) {

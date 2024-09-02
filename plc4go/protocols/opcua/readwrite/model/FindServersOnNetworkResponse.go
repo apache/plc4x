@@ -66,6 +66,7 @@ type _FindServersOnNetworkResponse struct {
 }
 
 var _ FindServersOnNetworkResponse = (*_FindServersOnNetworkResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_FindServersOnNetworkResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,6 +170,7 @@ func (m *_FindServersOnNetworkResponse) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_FindServersOnNetworkResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__findServersOnNetworkResponse FindServersOnNetworkResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FindServersOnNetworkResponse"); pullErr != nil {

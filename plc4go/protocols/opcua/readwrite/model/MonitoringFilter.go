@@ -52,6 +52,7 @@ type _MonitoringFilter struct {
 }
 
 var _ MonitoringFilter = (*_MonitoringFilter)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_MonitoringFilter)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_MonitoringFilter) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_MonitoringFilter) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoringFilter MonitoringFilter, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoringFilter"); pullErr != nil {

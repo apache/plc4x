@@ -52,6 +52,7 @@ type _Frame struct {
 }
 
 var _ Frame = (*_Frame)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_Frame)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_Frame) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_Frame) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__frame Frame, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Frame"); pullErr != nil {

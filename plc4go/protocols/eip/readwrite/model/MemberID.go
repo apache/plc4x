@@ -60,6 +60,7 @@ type _MemberID struct {
 }
 
 var _ MemberID = (*_MemberID)(nil)
+var _ LogicalSegmentTypeRequirements = (*_MemberID)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_MemberID) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_MemberID) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LogicalSegmentType) (__memberID MemberID, err error) {
 	m.LogicalSegmentTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MemberID"); pullErr != nil {

@@ -63,6 +63,7 @@ type _SendUnitData struct {
 }
 
 var _ SendUnitData = (*_SendUnitData)(nil)
+var _ EipPacketRequirements = (*_SendUnitData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -177,6 +178,7 @@ func (m *_SendUnitData) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SendUnitData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__sendUnitData SendUnitData, err error) {
 	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SendUnitData"); pullErr != nil {

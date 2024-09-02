@@ -57,6 +57,7 @@ type _MeteringDataOilConsumption struct {
 }
 
 var _ MeteringDataOilConsumption = (*_MeteringDataOilConsumption)(nil)
+var _ MeteringDataRequirements = (*_MeteringDataOilConsumption)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_MeteringDataOilConsumption) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_MeteringDataOilConsumption) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MeteringData) (__meteringDataOilConsumption MeteringDataOilConsumption, err error) {
 	m.MeteringDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataOilConsumption"); pullErr != nil {

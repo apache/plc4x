@@ -57,6 +57,7 @@ type _BACnetChannelValueUnsigned struct {
 }
 
 var _ BACnetChannelValueUnsigned = (*_BACnetChannelValueUnsigned)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueUnsigned)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetChannelValueUnsigned) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_BACnetChannelValueUnsigned) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueUnsigned BACnetChannelValueUnsigned, err error) {
 	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueUnsigned"); pullErr != nil {

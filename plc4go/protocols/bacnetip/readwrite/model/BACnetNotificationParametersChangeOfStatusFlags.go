@@ -66,6 +66,7 @@ type _BACnetNotificationParametersChangeOfStatusFlags struct {
 }
 
 var _ BACnetNotificationParametersChangeOfStatusFlags = (*_BACnetNotificationParametersChangeOfStatusFlags)(nil)
+var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfStatusFlags)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_BACnetNotificationParametersChangeOfStatusFlags) GetLengthInBytes(ctx 
 
 func (m *_BACnetNotificationParametersChangeOfStatusFlags) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParameters, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetNotificationParametersChangeOfStatusFlags BACnetNotificationParametersChangeOfStatusFlags, err error) {
 	m.BACnetNotificationParametersContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfStatusFlags"); pullErr != nil {

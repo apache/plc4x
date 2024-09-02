@@ -107,9 +107,9 @@ func (m *_ExpandedNodeId) GetServerIndex() *uint32 {
 func (m *_ExpandedNodeId) GetIdentifier() string {
 	ctx := context.Background()
 	_ = ctx
-	namespaceURI := m.NamespaceURI
+	namespaceURI := m.GetNamespaceURI()
 	_ = namespaceURI
-	serverIndex := m.ServerIndex
+	serverIndex := m.GetServerIndex()
 	_ = serverIndex
 	return fmt.Sprintf("%v", m.GetNodeId().GetIdentifier())
 }

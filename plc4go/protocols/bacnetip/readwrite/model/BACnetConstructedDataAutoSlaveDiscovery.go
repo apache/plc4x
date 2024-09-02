@@ -59,6 +59,7 @@ type _BACnetConstructedDataAutoSlaveDiscovery struct {
 }
 
 var _ BACnetConstructedDataAutoSlaveDiscovery = (*_BACnetConstructedDataAutoSlaveDiscovery)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAutoSlaveDiscovery)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetLengthInBytes(ctx context.
 
 func (m *_BACnetConstructedDataAutoSlaveDiscovery) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAutoSlaveDiscovery BACnetConstructedDataAutoSlaveDiscovery, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAutoSlaveDiscovery"); pullErr != nil {

@@ -48,6 +48,8 @@ type CommandSpecificDataItemContract interface {
 
 // CommandSpecificDataItemRequirements provides a set of functions which need to be implemented by a sub struct
 type CommandSpecificDataItemRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetItemType returns ItemType (discriminator field)
 	GetItemType() uint16
 }
@@ -61,16 +63,10 @@ type CommandSpecificDataItemExactly interface {
 
 // _CommandSpecificDataItem is the data-structure of this message
 type _CommandSpecificDataItem struct {
-	_CommandSpecificDataItemChildRequirements
+	_SubType CommandSpecificDataItem
 }
 
 var _ CommandSpecificDataItemContract = (*_CommandSpecificDataItem)(nil)
-
-type _CommandSpecificDataItemChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetItemType() uint16
-}
 
 type CommandSpecificDataItemChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_CommandSpecificDataItem) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CommandSpecificDataItem) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CommandSpecificDataItemParse[T CommandSpecificDataItem](ctx context.Context, theBytes []byte) (T, error) {

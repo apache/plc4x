@@ -62,6 +62,7 @@ type _RequestObsolete struct {
 }
 
 var _ RequestObsolete = (*_RequestObsolete)(nil)
+var _ RequestRequirements = (*_RequestObsolete)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,7 +103,7 @@ func (m *_RequestObsolete) GetAlpha() Alpha {
 func (m *_RequestObsolete) GetCalDataDecoded() CALData {
 	ctx := context.Background()
 	_ = ctx
-	alpha := m.Alpha
+	alpha := m.GetAlpha()
 	_ = alpha
 	return CastCALData(m.GetCalData())
 }
@@ -159,6 +160,7 @@ func (m *_RequestObsolete) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RequestObsolete) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestObsolete RequestObsolete, err error) {
 	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestObsolete"); pullErr != nil {

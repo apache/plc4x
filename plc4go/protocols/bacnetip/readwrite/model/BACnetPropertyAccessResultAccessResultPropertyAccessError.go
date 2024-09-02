@@ -57,6 +57,7 @@ type _BACnetPropertyAccessResultAccessResultPropertyAccessError struct {
 }
 
 var _ BACnetPropertyAccessResultAccessResultPropertyAccessError = (*_BACnetPropertyAccessResultAccessResultPropertyAccessError)(nil)
+var _ BACnetPropertyAccessResultAccessResultRequirements = (*_BACnetPropertyAccessResultAccessResultPropertyAccessError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetLengthIn
 
 func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyAccessResultAccessResult, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetPropertyAccessResultAccessResultPropertyAccessError BACnetPropertyAccessResultAccessResultPropertyAccessError, err error) {
 	m.BACnetPropertyAccessResultAccessResultContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyAccessResultAccessResultPropertyAccessError"); pullErr != nil {

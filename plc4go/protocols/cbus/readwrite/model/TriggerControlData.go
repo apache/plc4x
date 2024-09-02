@@ -56,6 +56,10 @@ type TriggerControlDataContract interface {
 
 // TriggerControlDataRequirements provides a set of functions which need to be implemented by a sub struct
 type TriggerControlDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() TriggerControlCommandType
 }
 
 // TriggerControlDataExactly can be used when we want exactly this type and not a type which fulfills TriggerControlData.
@@ -67,18 +71,12 @@ type TriggerControlDataExactly interface {
 
 // _TriggerControlData is the data-structure of this message
 type _TriggerControlData struct {
-	_TriggerControlDataChildRequirements
+	_SubType             TriggerControlData
 	CommandTypeContainer TriggerControlCommandTypeContainer
 	TriggerGroup         byte
 }
 
 var _ TriggerControlDataContract = (*_TriggerControlData)(nil)
-
-type _TriggerControlDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() TriggerControlCommandType
-}
 
 type TriggerControlDataChild interface {
 	utils.Serializable
@@ -111,13 +109,15 @@ func (m *_TriggerControlData) GetTriggerGroup() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_TriggerControlData) GetCommandType() TriggerControlCommandType {
+func (pm *_TriggerControlData) GetCommandType() TriggerControlCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastTriggerControlCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
-func (m *_TriggerControlData) GetIsUnused() bool {
+func (pm *_TriggerControlData) GetIsUnused() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((m.GetTriggerGroup()) > (0xFE)))
@@ -165,7 +165,7 @@ func (m *_TriggerControlData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_TriggerControlData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func TriggerControlDataParse[T TriggerControlData](ctx context.Context, theBytes []byte) (T, error) {

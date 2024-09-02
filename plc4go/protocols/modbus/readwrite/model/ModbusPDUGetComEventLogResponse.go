@@ -66,6 +66,7 @@ type _ModbusPDUGetComEventLogResponse struct {
 }
 
 var _ ModbusPDUGetComEventLogResponse = (*_ModbusPDUGetComEventLogResponse)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUGetComEventLogResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -175,6 +176,7 @@ func (m *_ModbusPDUGetComEventLogResponse) GetLengthInBytes(ctx context.Context)
 
 func (m *_ModbusPDUGetComEventLogResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUGetComEventLogResponse ModbusPDUGetComEventLogResponse, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventLogResponse"); pullErr != nil {

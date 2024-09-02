@@ -52,6 +52,7 @@ type _TriggerControlDataIndicatorKill struct {
 }
 
 var _ TriggerControlDataIndicatorKill = (*_TriggerControlDataIndicatorKill)(nil)
+var _ TriggerControlDataRequirements = (*_TriggerControlDataIndicatorKill)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_TriggerControlDataIndicatorKill) GetLengthInBytes(ctx context.Context)
 
 func (m *_TriggerControlDataIndicatorKill) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TriggerControlData) (__triggerControlDataIndicatorKill TriggerControlDataIndicatorKill, err error) {
 	m.TriggerControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataIndicatorKill"); pullErr != nil {

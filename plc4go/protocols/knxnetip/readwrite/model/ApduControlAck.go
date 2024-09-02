@@ -52,6 +52,7 @@ type _ApduControlAck struct {
 }
 
 var _ ApduControlAck = (*_ApduControlAck)(nil)
+var _ ApduControlRequirements = (*_ApduControlAck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduControlAck) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApduControlAck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduControl) (__apduControlAck ApduControlAck, err error) {
 	m.ApduControlContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlAck"); pullErr != nil {

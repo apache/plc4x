@@ -54,6 +54,12 @@ type MeteringDataContract interface {
 
 // MeteringDataRequirements provides a set of functions which need to be implemented by a sub struct
 type MeteringDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetArgument returns Argument (discriminator field)
+	GetArgument() byte
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() MeteringCommandType
 }
 
 // MeteringDataExactly can be used when we want exactly this type and not a type which fulfills MeteringData.
@@ -65,19 +71,12 @@ type MeteringDataExactly interface {
 
 // _MeteringData is the data-structure of this message
 type _MeteringData struct {
-	_MeteringDataChildRequirements
+	_SubType             MeteringData
 	CommandTypeContainer MeteringCommandTypeContainer
 	Argument             byte
 }
 
 var _ MeteringDataContract = (*_MeteringData)(nil)
-
-type _MeteringDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetArgument() byte
-	GetCommandType() MeteringCommandType
-}
 
 type MeteringDataChild interface {
 	utils.Serializable
@@ -110,7 +109,8 @@ func (m *_MeteringData) GetArgument() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_MeteringData) GetCommandType() MeteringCommandType {
+func (pm *_MeteringData) GetCommandType() MeteringCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastMeteringCommandType(m.GetCommandTypeContainer().CommandType())
@@ -156,7 +156,7 @@ func (m *_MeteringData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_MeteringData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func MeteringDataParse[T MeteringData](ctx context.Context, theBytes []byte) (T, error) {

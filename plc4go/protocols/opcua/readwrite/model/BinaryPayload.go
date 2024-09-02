@@ -57,6 +57,7 @@ type _BinaryPayload struct {
 }
 
 var _ BinaryPayload = (*_BinaryPayload)(nil)
+var _ PayloadRequirements = (*_BinaryPayload)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_BinaryPayload) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BinaryPayload) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Payload, extensible bool, byteCount uint32) (__binaryPayload BinaryPayload, err error) {
 	m.PayloadContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BinaryPayload"); pullErr != nil {

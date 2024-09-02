@@ -60,6 +60,7 @@ type _StatusRequestBinaryState struct {
 }
 
 var _ StatusRequestBinaryState = (*_StatusRequestBinaryState)(nil)
+var _ StatusRequestRequirements = (*_StatusRequestBinaryState)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_StatusRequestBinaryState) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_StatusRequestBinaryState) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_StatusRequest) (__statusRequestBinaryState StatusRequestBinaryState, err error) {
 	m.StatusRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequestBinaryState"); pullErr != nil {

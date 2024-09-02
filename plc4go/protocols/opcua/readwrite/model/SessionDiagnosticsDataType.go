@@ -186,6 +186,7 @@ type _SessionDiagnosticsDataType struct {
 }
 
 var _ SessionDiagnosticsDataType = (*_SessionDiagnosticsDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SessionDiagnosticsDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -609,6 +610,7 @@ func (m *_SessionDiagnosticsDataType) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_SessionDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__sessionDiagnosticsDataType SessionDiagnosticsDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SessionDiagnosticsDataType"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataRestoreCompletionTime struct {
 }
 
 var _ BACnetConstructedDataRestoreCompletionTime = (*_BACnetConstructedDataRestoreCompletionTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRestoreCompletionTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetLengthInBytes(ctx conte
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataRestoreCompletionTime BACnetConstructedDataRestoreCompletionTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestoreCompletionTime"); pullErr != nil {

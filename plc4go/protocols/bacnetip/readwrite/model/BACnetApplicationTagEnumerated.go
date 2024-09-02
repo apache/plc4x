@@ -59,6 +59,7 @@ type _BACnetApplicationTagEnumerated struct {
 }
 
 var _ BACnetApplicationTagEnumerated = (*_BACnetApplicationTagEnumerated)(nil)
+var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_BACnetApplicationTagEnumerated) GetLengthInBytes(ctx context.Context) 
 
 func (m *_BACnetApplicationTagEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetApplicationTag, header BACnetTagHeader) (__bACnetApplicationTagEnumerated BACnetApplicationTagEnumerated, err error) {
 	m.BACnetApplicationTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagEnumerated"); pullErr != nil {

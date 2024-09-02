@@ -57,6 +57,7 @@ type _SALDataTriggerControl struct {
 }
 
 var _ SALDataTriggerControl = (*_SALDataTriggerControl)(nil)
+var _ SALDataRequirements = (*_SALDataTriggerControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataTriggerControl) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataTriggerControl) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataTriggerControl SALDataTriggerControl, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTriggerControl"); pullErr != nil {

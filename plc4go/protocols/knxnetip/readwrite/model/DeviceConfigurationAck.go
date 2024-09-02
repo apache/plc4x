@@ -59,6 +59,7 @@ type _DeviceConfigurationAck struct {
 }
 
 var _ DeviceConfigurationAck = (*_DeviceConfigurationAck)(nil)
+var _ KnxNetIpMessageRequirements = (*_DeviceConfigurationAck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_DeviceConfigurationAck) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_DeviceConfigurationAck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__deviceConfigurationAck DeviceConfigurationAck, err error) {
 	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAck"); pullErr != nil {

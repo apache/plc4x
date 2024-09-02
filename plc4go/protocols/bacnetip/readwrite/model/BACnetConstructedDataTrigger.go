@@ -59,6 +59,7 @@ type _BACnetConstructedDataTrigger struct {
 }
 
 var _ BACnetConstructedDataTrigger = (*_BACnetConstructedDataTrigger)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrigger)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataTrigger) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_BACnetConstructedDataTrigger) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTrigger BACnetConstructedDataTrigger, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrigger"); pullErr != nil {

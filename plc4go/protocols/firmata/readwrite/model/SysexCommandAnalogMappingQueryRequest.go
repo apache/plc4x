@@ -52,6 +52,7 @@ type _SysexCommandAnalogMappingQueryRequest struct {
 }
 
 var _ SysexCommandAnalogMappingQueryRequest = (*_SysexCommandAnalogMappingQueryRequest)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandAnalogMappingQueryRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_SysexCommandAnalogMappingQueryRequest) GetLengthInBytes(ctx context.Co
 
 func (m *_SysexCommandAnalogMappingQueryRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandAnalogMappingQueryRequest SysexCommandAnalogMappingQueryRequest, err error) {
 	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingQueryRequest"); pullErr != nil {

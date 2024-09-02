@@ -60,6 +60,7 @@ type _NLMRejectMessageToNetwork struct {
 }
 
 var _ NLMRejectMessageToNetwork = (*_NLMRejectMessageToNetwork)(nil)
+var _ NLMRequirements = (*_NLMRejectMessageToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_NLMRejectMessageToNetwork) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_NLMRejectMessageToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMRejectMessageToNetwork NLMRejectMessageToNetwork, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMRejectMessageToNetwork"); pullErr != nil {

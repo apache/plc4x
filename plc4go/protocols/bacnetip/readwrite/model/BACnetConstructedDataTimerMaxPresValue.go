@@ -59,6 +59,7 @@ type _BACnetConstructedDataTimerMaxPresValue struct {
 }
 
 var _ BACnetConstructedDataTimerMaxPresValue = (*_BACnetConstructedDataTimerMaxPresValue)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerMaxPresValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) GetLengthInBytes(ctx context.C
 
 func (m *_BACnetConstructedDataTimerMaxPresValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTimerMaxPresValue BACnetConstructedDataTimerMaxPresValue, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerMaxPresValue"); pullErr != nil {

@@ -60,6 +60,7 @@ type _FirmataCommandProtocolVersion struct {
 }
 
 var _ FirmataCommandProtocolVersion = (*_FirmataCommandProtocolVersion)(nil)
+var _ FirmataCommandRequirements = (*_FirmataCommandProtocolVersion)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_FirmataCommandProtocolVersion) GetLengthInBytes(ctx context.Context) u
 
 func (m *_FirmataCommandProtocolVersion) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataCommand, response bool) (__firmataCommandProtocolVersion FirmataCommandProtocolVersion, err error) {
 	m.FirmataCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandProtocolVersion"); pullErr != nil {

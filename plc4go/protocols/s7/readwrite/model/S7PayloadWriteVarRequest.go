@@ -57,6 +57,7 @@ type _S7PayloadWriteVarRequest struct {
 }
 
 var _ S7PayloadWriteVarRequest = (*_S7PayloadWriteVarRequest)(nil)
+var _ S7PayloadRequirements = (*_S7PayloadWriteVarRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_S7PayloadWriteVarRequest) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_S7PayloadWriteVarRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Payload, messageType uint8, parameter S7Parameter) (__s7PayloadWriteVarRequest S7PayloadWriteVarRequest, err error) {
 	m.S7PayloadContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadWriteVarRequest"); pullErr != nil {

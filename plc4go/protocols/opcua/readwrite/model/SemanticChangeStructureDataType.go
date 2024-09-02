@@ -60,6 +60,7 @@ type _SemanticChangeStructureDataType struct {
 }
 
 var _ SemanticChangeStructureDataType = (*_SemanticChangeStructureDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SemanticChangeStructureDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_SemanticChangeStructureDataType) GetLengthInBytes(ctx context.Context)
 
 func (m *_SemanticChangeStructureDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__semanticChangeStructureDataType SemanticChangeStructureDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SemanticChangeStructureDataType"); pullErr != nil {

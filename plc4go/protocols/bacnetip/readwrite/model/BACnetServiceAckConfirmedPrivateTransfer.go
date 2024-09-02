@@ -63,6 +63,7 @@ type _BACnetServiceAckConfirmedPrivateTransfer struct {
 }
 
 var _ BACnetServiceAckConfirmedPrivateTransfer = (*_BACnetServiceAckConfirmedPrivateTransfer)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckConfirmedPrivateTransfer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -153,6 +154,7 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetLengthInBytes(ctx context
 
 func (m *_BACnetServiceAckConfirmedPrivateTransfer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckConfirmedPrivateTransfer BACnetServiceAckConfirmedPrivateTransfer, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedPrivateTransfer"); pullErr != nil {

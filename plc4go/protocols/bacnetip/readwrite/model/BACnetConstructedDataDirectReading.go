@@ -59,6 +59,7 @@ type _BACnetConstructedDataDirectReading struct {
 }
 
 var _ BACnetConstructedDataDirectReading = (*_BACnetConstructedDataDirectReading)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDirectReading)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDirectReading) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataDirectReading) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDirectReading BACnetConstructedDataDirectReading, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDirectReading"); pullErr != nil {

@@ -60,6 +60,7 @@ type _LightingDataRampToLevel struct {
 }
 
 var _ LightingDataRampToLevel = (*_LightingDataRampToLevel)(nil)
+var _ LightingDataRequirements = (*_LightingDataRampToLevel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,6 +137,7 @@ func (m *_LightingDataRampToLevel) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_LightingDataRampToLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LightingData) (__lightingDataRampToLevel LightingDataRampToLevel, err error) {
 	m.LightingDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataRampToLevel"); pullErr != nil {

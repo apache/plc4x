@@ -52,6 +52,7 @@ type _Orientation struct {
 }
 
 var _ Orientation = (*_Orientation)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_Orientation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_Orientation) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_Orientation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__orientation Orientation, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Orientation"); pullErr != nil {

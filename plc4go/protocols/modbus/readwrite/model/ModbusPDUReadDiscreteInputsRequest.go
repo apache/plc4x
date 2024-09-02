@@ -60,6 +60,7 @@ type _ModbusPDUReadDiscreteInputsRequest struct {
 }
 
 var _ ModbusPDUReadDiscreteInputsRequest = (*_ModbusPDUReadDiscreteInputsRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUReadDiscreteInputsRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -148,6 +149,7 @@ func (m *_ModbusPDUReadDiscreteInputsRequest) GetLengthInBytes(ctx context.Conte
 
 func (m *_ModbusPDUReadDiscreteInputsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUReadDiscreteInputsRequest ModbusPDUReadDiscreteInputsRequest, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDiscreteInputsRequest"); pullErr != nil {

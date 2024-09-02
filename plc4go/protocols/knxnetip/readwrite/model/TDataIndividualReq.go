@@ -52,6 +52,7 @@ type _TDataIndividualReq struct {
 }
 
 var _ TDataIndividualReq = (*_TDataIndividualReq)(nil)
+var _ CEMIRequirements = (*_TDataIndividualReq)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_TDataIndividualReq) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_TDataIndividualReq) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__tDataIndividualReq TDataIndividualReq, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TDataIndividualReq"); pullErr != nil {

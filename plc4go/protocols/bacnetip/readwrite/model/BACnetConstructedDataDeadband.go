@@ -59,6 +59,7 @@ type _BACnetConstructedDataDeadband struct {
 }
 
 var _ BACnetConstructedDataDeadband = (*_BACnetConstructedDataDeadband)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeadband)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDeadband) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetConstructedDataDeadband) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDeadband BACnetConstructedDataDeadband, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDeadband"); pullErr != nil {

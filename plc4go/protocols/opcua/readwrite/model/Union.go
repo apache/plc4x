@@ -52,6 +52,7 @@ type _Union struct {
 }
 
 var _ Union = (*_Union)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_Union)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_Union) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_Union) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__union Union, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Union"); pullErr != nil {

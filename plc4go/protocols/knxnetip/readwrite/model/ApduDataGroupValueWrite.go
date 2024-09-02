@@ -60,6 +60,7 @@ type _ApduDataGroupValueWrite struct {
 }
 
 var _ ApduDataGroupValueWrite = (*_ApduDataGroupValueWrite)(nil)
+var _ ApduDataRequirements = (*_ApduDataGroupValueWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_ApduDataGroupValueWrite) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_ApduDataGroupValueWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataGroupValueWrite ApduDataGroupValueWrite, err error) {
 	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueWrite"); pullErr != nil {

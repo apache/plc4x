@@ -52,6 +52,10 @@ type BACnetValueSourceContract interface {
 
 // BACnetValueSourceRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetValueSourceRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetValueSourceExactly can be used when we want exactly this type and not a type which fulfills BACnetValueSource.
@@ -63,17 +67,11 @@ type BACnetValueSourceExactly interface {
 
 // _BACnetValueSource is the data-structure of this message
 type _BACnetValueSource struct {
-	_BACnetValueSourceChildRequirements
+	_SubType        BACnetValueSource
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetValueSourceContract = (*_BACnetValueSource)(nil)
-
-type _BACnetValueSourceChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetValueSourceChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetValueSource) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetValueSource) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetValueSource) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetValueSource) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetValueSource) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetValueSourceParse[T BACnetValueSource](ctx context.Context, theBytes []byte) (T, error) {

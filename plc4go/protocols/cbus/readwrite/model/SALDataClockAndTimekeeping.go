@@ -57,6 +57,7 @@ type _SALDataClockAndTimekeeping struct {
 }
 
 var _ SALDataClockAndTimekeeping = (*_SALDataClockAndTimekeeping)(nil)
+var _ SALDataRequirements = (*_SALDataClockAndTimekeeping)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataClockAndTimekeeping) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_SALDataClockAndTimekeeping) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataClockAndTimekeeping SALDataClockAndTimekeeping, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataClockAndTimekeeping"); pullErr != nil {

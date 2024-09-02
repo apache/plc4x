@@ -52,6 +52,7 @@ type _ApduDataExtMemoryBitWrite struct {
 }
 
 var _ ApduDataExtMemoryBitWrite = (*_ApduDataExtMemoryBitWrite)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtMemoryBitWrite)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtMemoryBitWrite) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_ApduDataExtMemoryBitWrite) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtMemoryBitWrite ApduDataExtMemoryBitWrite, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtMemoryBitWrite"); pullErr != nil {

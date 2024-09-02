@@ -89,6 +89,7 @@ type _CipConnectionManagerCloseRequest struct {
 }
 
 var _ CipConnectionManagerCloseRequest = (*_CipConnectionManagerCloseRequest)(nil)
+var _ CipServiceRequirements = (*_CipConnectionManagerCloseRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -256,6 +257,7 @@ func (m *_CipConnectionManagerCloseRequest) GetLengthInBytes(ctx context.Context
 
 func (m *_CipConnectionManagerCloseRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipConnectionManagerCloseRequest CipConnectionManagerCloseRequest, err error) {
 	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipConnectionManagerCloseRequest"); pullErr != nil {

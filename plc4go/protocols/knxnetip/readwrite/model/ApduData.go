@@ -50,6 +50,8 @@ type ApduDataContract interface {
 
 // ApduDataRequirements provides a set of functions which need to be implemented by a sub struct
 type ApduDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetApciType returns ApciType (discriminator field)
 	GetApciType() uint8
 }
@@ -63,19 +65,13 @@ type ApduDataExactly interface {
 
 // _ApduData is the data-structure of this message
 type _ApduData struct {
-	_ApduDataChildRequirements
+	_SubType ApduData
 
 	// Arguments.
 	DataLength uint8
 }
 
 var _ ApduDataContract = (*_ApduData)(nil)
-
-type _ApduDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetApciType() uint8
-}
 
 type ApduDataChild interface {
 	utils.Serializable
@@ -115,7 +111,7 @@ func (m *_ApduData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ApduData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataParse[T ApduData](ctx context.Context, theBytes []byte, dataLength uint8) (T, error) {

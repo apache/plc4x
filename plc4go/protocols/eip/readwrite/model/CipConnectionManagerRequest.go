@@ -110,6 +110,7 @@ type _CipConnectionManagerRequest struct {
 }
 
 var _ CipConnectionManagerRequest = (*_CipConnectionManagerRequest)(nil)
+var _ CipServiceRequirements = (*_CipConnectionManagerRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -336,6 +337,7 @@ func (m *_CipConnectionManagerRequest) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_CipConnectionManagerRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipConnectionManagerRequest CipConnectionManagerRequest, err error) {
 	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipConnectionManagerRequest"); pullErr != nil {

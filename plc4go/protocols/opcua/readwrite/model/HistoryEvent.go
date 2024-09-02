@@ -60,6 +60,7 @@ type _HistoryEvent struct {
 }
 
 var _ HistoryEvent = (*_HistoryEvent)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_HistoryEvent)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_HistoryEvent) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_HistoryEvent) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyEvent HistoryEvent, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HistoryEvent"); pullErr != nil {

@@ -69,6 +69,7 @@ type _DeleteReferencesResponse struct {
 }
 
 var _ DeleteReferencesResponse = (*_DeleteReferencesResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DeleteReferencesResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -187,6 +188,7 @@ func (m *_DeleteReferencesResponse) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_DeleteReferencesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteReferencesResponse DeleteReferencesResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeleteReferencesResponse"); pullErr != nil {

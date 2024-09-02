@@ -62,6 +62,7 @@ type _BVLCDeleteForeignDeviceTableEntry struct {
 }
 
 var _ BVLCDeleteForeignDeviceTableEntry = (*_BVLCDeleteForeignDeviceTableEntry)(nil)
+var _ BVLCRequirements = (*_BVLCDeleteForeignDeviceTableEntry)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes(ctx context.Contex
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC) (__bVLCDeleteForeignDeviceTableEntry BVLCDeleteForeignDeviceTableEntry, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCDeleteForeignDeviceTableEntry"); pullErr != nil {

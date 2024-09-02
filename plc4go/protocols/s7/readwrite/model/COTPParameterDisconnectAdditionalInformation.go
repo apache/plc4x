@@ -57,6 +57,7 @@ type _COTPParameterDisconnectAdditionalInformation struct {
 }
 
 var _ COTPParameterDisconnectAdditionalInformation = (*_COTPParameterDisconnectAdditionalInformation)(nil)
+var _ COTPParameterRequirements = (*_COTPParameterDisconnectAdditionalInformation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_COTPParameterDisconnectAdditionalInformation) GetLengthInBytes(ctx con
 
 func (m *_COTPParameterDisconnectAdditionalInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPParameter, rest uint8) (__cOTPParameterDisconnectAdditionalInformation COTPParameterDisconnectAdditionalInformation, err error) {
 	m.COTPParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterDisconnectAdditionalInformation"); pullErr != nil {

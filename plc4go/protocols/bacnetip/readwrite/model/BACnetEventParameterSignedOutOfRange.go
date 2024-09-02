@@ -72,6 +72,7 @@ type _BACnetEventParameterSignedOutOfRange struct {
 }
 
 var _ BACnetEventParameterSignedOutOfRange = (*_BACnetEventParameterSignedOutOfRange)(nil)
+var _ BACnetEventParameterRequirements = (*_BACnetEventParameterSignedOutOfRange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -180,6 +181,7 @@ func (m *_BACnetEventParameterSignedOutOfRange) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetEventParameterSignedOutOfRange) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameter) (__bACnetEventParameterSignedOutOfRange BACnetEventParameterSignedOutOfRange, err error) {
 	m.BACnetEventParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterSignedOutOfRange"); pullErr != nil {

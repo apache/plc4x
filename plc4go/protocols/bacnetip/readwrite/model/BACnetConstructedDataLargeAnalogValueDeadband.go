@@ -59,6 +59,7 @@ type _BACnetConstructedDataLargeAnalogValueDeadband struct {
 }
 
 var _ BACnetConstructedDataLargeAnalogValueDeadband = (*_BACnetConstructedDataLargeAnalogValueDeadband)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueDeadband)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetLengthInBytes(ctx co
 
 func (m *_BACnetConstructedDataLargeAnalogValueDeadband) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLargeAnalogValueDeadband BACnetConstructedDataLargeAnalogValueDeadband, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueDeadband"); pullErr != nil {

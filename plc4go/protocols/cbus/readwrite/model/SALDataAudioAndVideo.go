@@ -57,6 +57,7 @@ type _SALDataAudioAndVideo struct {
 }
 
 var _ SALDataAudioAndVideo = (*_SALDataAudioAndVideo)(nil)
+var _ SALDataRequirements = (*_SALDataAudioAndVideo)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataAudioAndVideo) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataAudioAndVideo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataAudioAndVideo SALDataAudioAndVideo, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataAudioAndVideo"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataAlignIntervals struct {
 }
 
 var _ BACnetConstructedDataAlignIntervals = (*_BACnetConstructedDataAlignIntervals)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlignIntervals)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataAlignIntervals) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConstructedDataAlignIntervals) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAlignIntervals BACnetConstructedDataAlignIntervals, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlignIntervals"); pullErr != nil {

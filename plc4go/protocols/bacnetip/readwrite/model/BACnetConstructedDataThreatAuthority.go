@@ -59,6 +59,7 @@ type _BACnetConstructedDataThreatAuthority struct {
 }
 
 var _ BACnetConstructedDataThreatAuthority = (*_BACnetConstructedDataThreatAuthority)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataThreatAuthority)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataThreatAuthority) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetConstructedDataThreatAuthority) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataThreatAuthority BACnetConstructedDataThreatAuthority, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataThreatAuthority"); pullErr != nil {

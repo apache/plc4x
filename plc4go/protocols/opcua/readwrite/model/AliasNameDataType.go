@@ -63,6 +63,7 @@ type _AliasNameDataType struct {
 }
 
 var _ AliasNameDataType = (*_AliasNameDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AliasNameDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_AliasNameDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_AliasNameDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__aliasNameDataType AliasNameDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AliasNameDataType"); pullErr != nil {

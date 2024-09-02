@@ -57,6 +57,7 @@ type _KnxNetIpDeviceManagement struct {
 }
 
 var _ KnxNetIpDeviceManagement = (*_KnxNetIpDeviceManagement)(nil)
+var _ ServiceIdRequirements = (*_KnxNetIpDeviceManagement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_KnxNetIpDeviceManagement) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_KnxNetIpDeviceManagement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ServiceId) (__knxNetIpDeviceManagement KnxNetIpDeviceManagement, err error) {
 	m.ServiceIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpDeviceManagement"); pullErr != nil {

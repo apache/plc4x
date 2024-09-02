@@ -66,6 +66,7 @@ type _BACnetConfirmedServiceRequestRemoveListElement struct {
 }
 
 var _ BACnetConfirmedServiceRequestRemoveListElement = (*_BACnetConfirmedServiceRequestRemoveListElement)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestRemoveListElement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -166,6 +167,7 @@ func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetLengthInBytes(ctx c
 
 func (m *_BACnetConfirmedServiceRequestRemoveListElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestRemoveListElement BACnetConfirmedServiceRequestRemoveListElement, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemoveListElement"); pullErr != nil {

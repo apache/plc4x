@@ -57,6 +57,7 @@ type _BACnetShedLevelAmount struct {
 }
 
 var _ BACnetShedLevelAmount = (*_BACnetShedLevelAmount)(nil)
+var _ BACnetShedLevelRequirements = (*_BACnetShedLevelAmount)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetShedLevelAmount) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BACnetShedLevelAmount) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetShedLevel) (__bACnetShedLevelAmount BACnetShedLevelAmount, err error) {
 	m.BACnetShedLevelContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetShedLevelAmount"); pullErr != nil {

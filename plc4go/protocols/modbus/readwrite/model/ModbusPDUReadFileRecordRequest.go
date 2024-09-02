@@ -57,6 +57,7 @@ type _ModbusPDUReadFileRecordRequest struct {
 }
 
 var _ ModbusPDUReadFileRecordRequest = (*_ModbusPDUReadFileRecordRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUReadFileRecordRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_ModbusPDUReadFileRecordRequest) GetLengthInBytes(ctx context.Context) 
 
 func (m *_ModbusPDUReadFileRecordRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUReadFileRecordRequest ModbusPDUReadFileRecordRequest, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFileRecordRequest"); pullErr != nil {

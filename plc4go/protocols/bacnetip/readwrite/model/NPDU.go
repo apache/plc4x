@@ -156,19 +156,19 @@ func (m *_NPDU) GetApdu() APDU {
 func (m *_NPDU) GetDestinationLengthAddon() uint16 {
 	ctx := context.Background()
 	_ = ctx
-	destinationNetworkAddress := m.DestinationNetworkAddress
+	destinationNetworkAddress := m.GetDestinationNetworkAddress()
 	_ = destinationNetworkAddress
-	destinationLength := m.DestinationLength
+	destinationLength := m.GetDestinationLength()
 	_ = destinationLength
-	sourceNetworkAddress := m.SourceNetworkAddress
+	sourceNetworkAddress := m.GetSourceNetworkAddress()
 	_ = sourceNetworkAddress
-	sourceLength := m.SourceLength
+	sourceLength := m.GetSourceLength()
 	_ = sourceLength
-	hopCount := m.HopCount
+	hopCount := m.GetHopCount()
 	_ = hopCount
-	nlm := m.Nlm
+	nlm := m.GetNlm()
 	_ = nlm
-	apdu := m.Apdu
+	apdu := m.GetApdu()
 	_ = apdu
 	return uint16(utils.InlineIf(m.GetControl().GetDestinationSpecified(), func() any { return uint16((uint16(uint16(3)) + uint16((*m.GetDestinationLength())))) }, func() any { return uint16(uint16(0)) }).(uint16))
 }
@@ -176,19 +176,19 @@ func (m *_NPDU) GetDestinationLengthAddon() uint16 {
 func (m *_NPDU) GetSourceLengthAddon() uint16 {
 	ctx := context.Background()
 	_ = ctx
-	destinationNetworkAddress := m.DestinationNetworkAddress
+	destinationNetworkAddress := m.GetDestinationNetworkAddress()
 	_ = destinationNetworkAddress
-	destinationLength := m.DestinationLength
+	destinationLength := m.GetDestinationLength()
 	_ = destinationLength
-	sourceNetworkAddress := m.SourceNetworkAddress
+	sourceNetworkAddress := m.GetSourceNetworkAddress()
 	_ = sourceNetworkAddress
-	sourceLength := m.SourceLength
+	sourceLength := m.GetSourceLength()
 	_ = sourceLength
-	hopCount := m.HopCount
+	hopCount := m.GetHopCount()
 	_ = hopCount
-	nlm := m.Nlm
+	nlm := m.GetNlm()
 	_ = nlm
-	apdu := m.Apdu
+	apdu := m.GetApdu()
 	_ = apdu
 	return uint16(utils.InlineIf(m.GetControl().GetSourceSpecified(), func() any { return uint16((uint16(uint16(3)) + uint16((*m.GetSourceLength())))) }, func() any { return uint16(uint16(0)) }).(uint16))
 }
@@ -196,19 +196,19 @@ func (m *_NPDU) GetSourceLengthAddon() uint16 {
 func (m *_NPDU) GetPayloadSubtraction() uint16 {
 	ctx := context.Background()
 	_ = ctx
-	destinationNetworkAddress := m.DestinationNetworkAddress
+	destinationNetworkAddress := m.GetDestinationNetworkAddress()
 	_ = destinationNetworkAddress
-	destinationLength := m.DestinationLength
+	destinationLength := m.GetDestinationLength()
 	_ = destinationLength
-	sourceNetworkAddress := m.SourceNetworkAddress
+	sourceNetworkAddress := m.GetSourceNetworkAddress()
 	_ = sourceNetworkAddress
-	sourceLength := m.SourceLength
+	sourceLength := m.GetSourceLength()
 	_ = sourceLength
-	hopCount := m.HopCount
+	hopCount := m.GetHopCount()
 	_ = hopCount
-	nlm := m.Nlm
+	nlm := m.GetNlm()
 	_ = nlm
-	apdu := m.Apdu
+	apdu := m.GetApdu()
 	_ = apdu
 	return uint16(uint16(uint16(2)) + uint16((uint16(uint16(m.GetSourceLengthAddon())+uint16(m.GetDestinationLengthAddon())) + uint16((utils.InlineIf((m.GetControl().GetDestinationSpecified()), func() any { return uint16(uint16(1)) }, func() any { return uint16(uint16(0)) }).(uint16))))))
 }

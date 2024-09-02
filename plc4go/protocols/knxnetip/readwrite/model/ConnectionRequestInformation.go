@@ -48,6 +48,8 @@ type ConnectionRequestInformationContract interface {
 
 // ConnectionRequestInformationRequirements provides a set of functions which need to be implemented by a sub struct
 type ConnectionRequestInformationRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetConnectionType returns ConnectionType (discriminator field)
 	GetConnectionType() uint8
 }
@@ -61,16 +63,10 @@ type ConnectionRequestInformationExactly interface {
 
 // _ConnectionRequestInformation is the data-structure of this message
 type _ConnectionRequestInformation struct {
-	_ConnectionRequestInformationChildRequirements
+	_SubType ConnectionRequestInformation
 }
 
 var _ ConnectionRequestInformationContract = (*_ConnectionRequestInformation)(nil)
-
-type _ConnectionRequestInformationChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetConnectionType() uint8
-}
 
 type ConnectionRequestInformationChild interface {
 	utils.Serializable
@@ -113,7 +109,7 @@ func (m *_ConnectionRequestInformation) getLengthInBits(ctx context.Context) uin
 }
 
 func (m *_ConnectionRequestInformation) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ConnectionRequestInformationParse[T ConnectionRequestInformation](ctx context.Context, theBytes []byte) (T, error) {

@@ -57,6 +57,7 @@ type _NLMWhoIsRouterToNetwork struct {
 }
 
 var _ NLMWhoIsRouterToNetwork = (*_NLMWhoIsRouterToNetwork)(nil)
+var _ NLMRequirements = (*_NLMWhoIsRouterToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_NLMWhoIsRouterToNetwork) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_NLMWhoIsRouterToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMWhoIsRouterToNetwork NLMWhoIsRouterToNetwork, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMWhoIsRouterToNetwork"); pullErr != nil {

@@ -71,6 +71,7 @@ type _MonitoringParameters struct {
 }
 
 var _ MonitoringParameters = (*_MonitoringParameters)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_MonitoringParameters)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -178,6 +179,7 @@ func (m *_MonitoringParameters) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_MonitoringParameters) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoringParameters MonitoringParameters, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoringParameters"); pullErr != nil {

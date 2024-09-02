@@ -54,6 +54,10 @@ type ReplyContract interface {
 
 // ReplyRequirements provides a set of functions which need to be implemented by a sub struct
 type ReplyRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedByte returns PeekedByte (discriminator field)
+	GetPeekedByte() byte
 }
 
 // ReplyExactly can be used when we want exactly this type and not a type which fulfills Reply.
@@ -65,7 +69,7 @@ type ReplyExactly interface {
 
 // _Reply is the data-structure of this message
 type _Reply struct {
-	_ReplyChildRequirements
+	_SubType   Reply
 	PeekedByte byte
 
 	// Arguments.
@@ -74,12 +78,6 @@ type _Reply struct {
 }
 
 var _ ReplyContract = (*_Reply)(nil)
-
-type _ReplyChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedByte() byte
-}
 
 type ReplyChild interface {
 	utils.Serializable
@@ -131,7 +129,7 @@ func (m *_Reply) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_Reply) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ReplyParse[T Reply](ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {

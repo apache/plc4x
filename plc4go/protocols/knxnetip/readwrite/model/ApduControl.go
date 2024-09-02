@@ -48,6 +48,8 @@ type ApduControlContract interface {
 
 // ApduControlRequirements provides a set of functions which need to be implemented by a sub struct
 type ApduControlRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetControlType returns ControlType (discriminator field)
 	GetControlType() uint8
 }
@@ -61,16 +63,10 @@ type ApduControlExactly interface {
 
 // _ApduControl is the data-structure of this message
 type _ApduControl struct {
-	_ApduControlChildRequirements
+	_SubType ApduControl
 }
 
 var _ ApduControlContract = (*_ApduControl)(nil)
-
-type _ApduControlChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetControlType() uint8
-}
 
 type ApduControlChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_ApduControl) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ApduControl) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ApduControlParse[T ApduControl](ctx context.Context, theBytes []byte) (T, error) {

@@ -69,6 +69,7 @@ type _TransferSubscriptionsResponse struct {
 }
 
 var _ TransferSubscriptionsResponse = (*_TransferSubscriptionsResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_TransferSubscriptionsResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -187,6 +188,7 @@ func (m *_TransferSubscriptionsResponse) GetLengthInBytes(ctx context.Context) u
 
 func (m *_TransferSubscriptionsResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__transferSubscriptionsResponse TransferSubscriptionsResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TransferSubscriptionsResponse"); pullErr != nil {

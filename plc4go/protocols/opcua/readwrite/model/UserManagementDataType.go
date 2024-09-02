@@ -63,6 +63,7 @@ type _UserManagementDataType struct {
 }
 
 var _ UserManagementDataType = (*_UserManagementDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_UserManagementDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_UserManagementDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_UserManagementDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__userManagementDataType UserManagementDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UserManagementDataType"); pullErr != nil {

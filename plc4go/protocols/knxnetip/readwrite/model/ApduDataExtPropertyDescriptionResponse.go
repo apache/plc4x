@@ -81,6 +81,7 @@ type _ApduDataExtPropertyDescriptionResponse struct {
 }
 
 var _ ApduDataExtPropertyDescriptionResponse = (*_ApduDataExtPropertyDescriptionResponse)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtPropertyDescriptionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -215,6 +216,7 @@ func (m *_ApduDataExtPropertyDescriptionResponse) GetLengthInBytes(ctx context.C
 
 func (m *_ApduDataExtPropertyDescriptionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtPropertyDescriptionResponse ApduDataExtPropertyDescriptionResponse, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyDescriptionResponse"); pullErr != nil {

@@ -54,6 +54,12 @@ type ClockAndTimekeepingDataContract interface {
 
 // ClockAndTimekeepingDataRequirements provides a set of functions which need to be implemented by a sub struct
 type ClockAndTimekeepingDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetArgument returns Argument (discriminator field)
+	GetArgument() byte
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() ClockAndTimekeepingCommandType
 }
 
 // ClockAndTimekeepingDataExactly can be used when we want exactly this type and not a type which fulfills ClockAndTimekeepingData.
@@ -65,19 +71,12 @@ type ClockAndTimekeepingDataExactly interface {
 
 // _ClockAndTimekeepingData is the data-structure of this message
 type _ClockAndTimekeepingData struct {
-	_ClockAndTimekeepingDataChildRequirements
+	_SubType             ClockAndTimekeepingData
 	CommandTypeContainer ClockAndTimekeepingCommandTypeContainer
 	Argument             byte
 }
 
 var _ ClockAndTimekeepingDataContract = (*_ClockAndTimekeepingData)(nil)
-
-type _ClockAndTimekeepingDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetArgument() byte
-	GetCommandType() ClockAndTimekeepingCommandType
-}
 
 type ClockAndTimekeepingDataChild interface {
 	utils.Serializable
@@ -110,7 +109,8 @@ func (m *_ClockAndTimekeepingData) GetArgument() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_ClockAndTimekeepingData) GetCommandType() ClockAndTimekeepingCommandType {
+func (pm *_ClockAndTimekeepingData) GetCommandType() ClockAndTimekeepingCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastClockAndTimekeepingCommandType(m.GetCommandTypeContainer().CommandType())
@@ -156,7 +156,7 @@ func (m *_ClockAndTimekeepingData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ClockAndTimekeepingData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ClockAndTimekeepingDataParse[T ClockAndTimekeepingData](ctx context.Context, theBytes []byte) (T, error) {

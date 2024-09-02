@@ -63,6 +63,7 @@ type _SysexCommandPinStateResponse struct {
 }
 
 var _ SysexCommandPinStateResponse = (*_SysexCommandPinStateResponse)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandPinStateResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -155,6 +156,7 @@ func (m *_SysexCommandPinStateResponse) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_SysexCommandPinStateResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandPinStateResponse SysexCommandPinStateResponse, err error) {
 	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateResponse"); pullErr != nil {

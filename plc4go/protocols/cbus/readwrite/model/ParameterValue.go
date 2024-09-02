@@ -48,6 +48,8 @@ type ParameterValueContract interface {
 
 // ParameterValueRequirements provides a set of functions which need to be implemented by a sub struct
 type ParameterValueRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetParameterType returns ParameterType (discriminator field)
 	GetParameterType() ParameterType
 }
@@ -61,19 +63,13 @@ type ParameterValueExactly interface {
 
 // _ParameterValue is the data-structure of this message
 type _ParameterValue struct {
-	_ParameterValueChildRequirements
+	_SubType ParameterValue
 
 	// Arguments.
 	NumBytes uint8
 }
 
 var _ ParameterValueContract = (*_ParameterValue)(nil)
-
-type _ParameterValueChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetParameterType() ParameterType
-}
 
 type ParameterValueChild interface {
 	utils.Serializable
@@ -111,7 +107,7 @@ func (m *_ParameterValue) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ParameterValue) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ParameterValueParse[T ParameterValue](ctx context.Context, theBytes []byte, parameterType ParameterType, numBytes uint8) (T, error) {

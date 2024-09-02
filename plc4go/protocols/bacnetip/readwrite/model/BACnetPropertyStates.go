@@ -52,6 +52,10 @@ type BACnetPropertyStatesContract interface {
 
 // BACnetPropertyStatesRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetPropertyStatesRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetPropertyStatesExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyStates.
@@ -63,17 +67,11 @@ type BACnetPropertyStatesExactly interface {
 
 // _BACnetPropertyStates is the data-structure of this message
 type _BACnetPropertyStates struct {
-	_BACnetPropertyStatesChildRequirements
+	_SubType        BACnetPropertyStates
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetPropertyStatesContract = (*_BACnetPropertyStates)(nil)
-
-type _BACnetPropertyStatesChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetPropertyStatesChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetPropertyStates) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetPropertyStates) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetPropertyStates) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetPropertyStates) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetPropertyStates) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesParse[T BACnetPropertyStates](ctx context.Context, theBytes []byte) (T, error) {

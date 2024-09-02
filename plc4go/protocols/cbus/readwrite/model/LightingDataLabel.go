@@ -66,6 +66,7 @@ type _LightingDataLabel struct {
 }
 
 var _ LightingDataLabel = (*_LightingDataLabel)(nil)
+var _ LightingDataRequirements = (*_LightingDataLabel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_LightingDataLabel) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LightingDataLabel) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LightingData, commandTypeContainer LightingCommandTypeContainer) (__lightingDataLabel LightingDataLabel, err error) {
 	m.LightingDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataLabel"); pullErr != nil {

@@ -57,6 +57,7 @@ type _SALDataMediaTransport struct {
 }
 
 var _ SALDataMediaTransport = (*_SALDataMediaTransport)(nil)
+var _ SALDataRequirements = (*_SALDataMediaTransport)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataMediaTransport) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataMediaTransport) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataMediaTransport SALDataMediaTransport, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataMediaTransport"); pullErr != nil {

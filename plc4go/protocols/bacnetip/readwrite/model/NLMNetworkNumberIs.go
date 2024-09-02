@@ -62,6 +62,7 @@ type _NLMNetworkNumberIs struct {
 }
 
 var _ NLMNetworkNumberIs = (*_NLMNetworkNumberIs)(nil)
+var _ NLMRequirements = (*_NLMNetworkNumberIs)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,6 +146,7 @@ func (m *_NLMNetworkNumberIs) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NLMNetworkNumberIs) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMNetworkNumberIs NLMNetworkNumberIs, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMNetworkNumberIs"); pullErr != nil {

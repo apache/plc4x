@@ -50,6 +50,8 @@ type MessagePDUContract interface {
 
 // MessagePDURequirements provides a set of functions which need to be implemented by a sub struct
 type MessagePDURequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() string
 	// GetResponse returns Response (discriminator field)
@@ -65,18 +67,11 @@ type MessagePDUExactly interface {
 
 // _MessagePDU is the data-structure of this message
 type _MessagePDU struct {
-	_MessagePDUChildRequirements
-	Chunk ChunkType
+	_SubType MessagePDU
+	Chunk    ChunkType
 }
 
 var _ MessagePDUContract = (*_MessagePDU)(nil)
-
-type _MessagePDUChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetMessageType() string
-	GetResponse() bool
-}
 
 type MessagePDUChild interface {
 	utils.Serializable
@@ -136,7 +131,7 @@ func (m *_MessagePDU) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_MessagePDU) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func MessagePDUParse[T MessagePDU](ctx context.Context, theBytes []byte, response bool) (T, error) {

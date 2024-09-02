@@ -72,6 +72,7 @@ type _BACnetEventParameterChangeOfLifeSavety struct {
 }
 
 var _ BACnetEventParameterChangeOfLifeSavety = (*_BACnetEventParameterChangeOfLifeSavety)(nil)
+var _ BACnetEventParameterRequirements = (*_BACnetEventParameterChangeOfLifeSavety)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -180,6 +181,7 @@ func (m *_BACnetEventParameterChangeOfLifeSavety) GetLengthInBytes(ctx context.C
 
 func (m *_BACnetEventParameterChangeOfLifeSavety) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameter) (__bACnetEventParameterChangeOfLifeSavety BACnetEventParameterChangeOfLifeSavety, err error) {
 	m.BACnetEventParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfLifeSavety"); pullErr != nil {

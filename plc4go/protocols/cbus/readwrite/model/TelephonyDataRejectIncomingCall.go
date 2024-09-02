@@ -52,6 +52,7 @@ type _TelephonyDataRejectIncomingCall struct {
 }
 
 var _ TelephonyDataRejectIncomingCall = (*_TelephonyDataRejectIncomingCall)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataRejectIncomingCall)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_TelephonyDataRejectIncomingCall) GetLengthInBytes(ctx context.Context)
 
 func (m *_TelephonyDataRejectIncomingCall) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData) (__telephonyDataRejectIncomingCall TelephonyDataRejectIncomingCall, err error) {
 	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataRejectIncomingCall"); pullErr != nil {

@@ -60,6 +60,7 @@ type _ParameterValueSerialNumber struct {
 }
 
 var _ ParameterValueSerialNumber = (*_ParameterValueSerialNumber)(nil)
+var _ ParameterValueRequirements = (*_ParameterValueSerialNumber)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_ParameterValueSerialNumber) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_ParameterValueSerialNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ParameterValue, parameterType ParameterType, numBytes uint8) (__parameterValueSerialNumber ParameterValueSerialNumber, err error) {
 	m.ParameterValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueSerialNumber"); pullErr != nil {

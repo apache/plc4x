@@ -78,6 +78,7 @@ type _ApplicationDescription struct {
 }
 
 var _ ApplicationDescription = (*_ApplicationDescription)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ApplicationDescription)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -213,6 +214,7 @@ func (m *_ApplicationDescription) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApplicationDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__applicationDescription ApplicationDescription, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApplicationDescription"); pullErr != nil {

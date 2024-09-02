@@ -57,6 +57,7 @@ type _BACnetApplicationTagBitString struct {
 }
 
 var _ BACnetApplicationTagBitString = (*_BACnetApplicationTagBitString)(nil)
+var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagBitString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetApplicationTagBitString) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetApplicationTagBitString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetApplicationTag, header BACnetTagHeader) (__bACnetApplicationTagBitString BACnetApplicationTagBitString, err error) {
 	m.BACnetApplicationTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagBitString"); pullErr != nil {

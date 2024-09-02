@@ -60,6 +60,7 @@ type _CALDataAcknowledge struct {
 }
 
 var _ CALDataAcknowledge = (*_CALDataAcknowledge)(nil)
+var _ CALDataRequirements = (*_CALDataAcknowledge)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,6 +137,7 @@ func (m *_CALDataAcknowledge) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CALDataAcknowledge) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, requestContext RequestContext) (__cALDataAcknowledge CALDataAcknowledge, err error) {
 	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataAcknowledge"); pullErr != nil {

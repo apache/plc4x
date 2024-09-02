@@ -57,6 +57,7 @@ type _KnxNetIpCore struct {
 }
 
 var _ KnxNetIpCore = (*_KnxNetIpCore)(nil)
+var _ ServiceIdRequirements = (*_KnxNetIpCore)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_KnxNetIpCore) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_KnxNetIpCore) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ServiceId) (__knxNetIpCore KnxNetIpCore, err error) {
 	m.ServiceIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpCore"); pullErr != nil {

@@ -69,6 +69,7 @@ type _BACnetNotificationParametersCommandFailure struct {
 }
 
 var _ BACnetNotificationParametersCommandFailure = (*_BACnetNotificationParametersCommandFailure)(nil)
+var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersCommandFailure)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,6 +170,7 @@ func (m *_BACnetNotificationParametersCommandFailure) GetLengthInBytes(ctx conte
 
 func (m *_BACnetNotificationParametersCommandFailure) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParameters, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetNotificationParametersCommandFailure BACnetNotificationParametersCommandFailure, err error) {
 	m.BACnetNotificationParametersContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersCommandFailure"); pullErr != nil {

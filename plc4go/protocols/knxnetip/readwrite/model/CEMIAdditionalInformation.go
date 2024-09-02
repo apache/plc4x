@@ -48,6 +48,8 @@ type CEMIAdditionalInformationContract interface {
 
 // CEMIAdditionalInformationRequirements provides a set of functions which need to be implemented by a sub struct
 type CEMIAdditionalInformationRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetAdditionalInformationType returns AdditionalInformationType (discriminator field)
 	GetAdditionalInformationType() uint8
 }
@@ -61,16 +63,10 @@ type CEMIAdditionalInformationExactly interface {
 
 // _CEMIAdditionalInformation is the data-structure of this message
 type _CEMIAdditionalInformation struct {
-	_CEMIAdditionalInformationChildRequirements
+	_SubType CEMIAdditionalInformation
 }
 
 var _ CEMIAdditionalInformationContract = (*_CEMIAdditionalInformation)(nil)
-
-type _CEMIAdditionalInformationChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetAdditionalInformationType() uint8
-}
 
 type CEMIAdditionalInformationChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_CEMIAdditionalInformation) getLengthInBits(ctx context.Context) uint16
 }
 
 func (m *_CEMIAdditionalInformation) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CEMIAdditionalInformationParse[T CEMIAdditionalInformation](ctx context.Context, theBytes []byte) (T, error) {

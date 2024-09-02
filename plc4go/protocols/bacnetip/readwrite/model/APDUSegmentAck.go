@@ -71,6 +71,7 @@ type _APDUSegmentAck struct {
 }
 
 var _ APDUSegmentAck = (*_APDUSegmentAck)(nil)
+var _ APDURequirements = (*_APDUSegmentAck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -178,6 +179,7 @@ func (m *_APDUSegmentAck) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_APDUSegmentAck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUSegmentAck APDUSegmentAck, err error) {
 	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUSegmentAck"); pullErr != nil {

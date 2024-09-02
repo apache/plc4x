@@ -56,6 +56,7 @@ type _LevelInformationAbsent struct {
 }
 
 var _ LevelInformationAbsent = (*_LevelInformationAbsent)(nil)
+var _ LevelInformationRequirements = (*_LevelInformationAbsent)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,6 +110,7 @@ func (m *_LevelInformationAbsent) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LevelInformationAbsent) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LevelInformation) (__levelInformationAbsent LevelInformationAbsent, err error) {
 	m.LevelInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LevelInformationAbsent"); pullErr != nil {

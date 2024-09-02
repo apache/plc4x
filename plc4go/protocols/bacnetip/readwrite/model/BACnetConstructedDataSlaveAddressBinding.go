@@ -57,6 +57,7 @@ type _BACnetConstructedDataSlaveAddressBinding struct {
 }
 
 var _ BACnetConstructedDataSlaveAddressBinding = (*_BACnetConstructedDataSlaveAddressBinding)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSlaveAddressBinding)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataSlaveAddressBinding) GetLengthInBytes(ctx context
 
 func (m *_BACnetConstructedDataSlaveAddressBinding) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataSlaveAddressBinding BACnetConstructedDataSlaveAddressBinding, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSlaveAddressBinding"); pullErr != nil {

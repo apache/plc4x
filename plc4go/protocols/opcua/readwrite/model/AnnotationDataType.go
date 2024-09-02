@@ -63,6 +63,7 @@ type _AnnotationDataType struct {
 }
 
 var _ AnnotationDataType = (*_AnnotationDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AnnotationDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_AnnotationDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_AnnotationDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__annotationDataType AnnotationDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AnnotationDataType"); pullErr != nil {

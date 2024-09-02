@@ -66,6 +66,7 @@ type _LBusmonInd struct {
 }
 
 var _ LBusmonInd = (*_LBusmonInd)(nil)
+var _ CEMIRequirements = (*_LBusmonInd)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -168,6 +169,7 @@ func (m *_LBusmonInd) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LBusmonInd) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__lBusmonInd LBusmonInd, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LBusmonInd"); pullErr != nil {

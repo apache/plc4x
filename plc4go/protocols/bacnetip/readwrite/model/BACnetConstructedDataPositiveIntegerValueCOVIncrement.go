@@ -59,6 +59,7 @@ type _BACnetConstructedDataPositiveIntegerValueCOVIncrement struct {
 }
 
 var _ BACnetConstructedDataPositiveIntegerValueCOVIncrement = (*_BACnetConstructedDataPositiveIntegerValueCOVIncrement)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueCOVIncrement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetLengthInByte
 
 func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPositiveIntegerValueCOVIncrement BACnetConstructedDataPositiveIntegerValueCOVIncrement, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueCOVIncrement"); pullErr != nil {

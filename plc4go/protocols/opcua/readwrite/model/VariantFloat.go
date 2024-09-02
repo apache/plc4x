@@ -60,6 +60,7 @@ type _VariantFloat struct {
 }
 
 var _ VariantFloat = (*_VariantFloat)(nil)
+var _ VariantRequirements = (*_VariantFloat)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_VariantFloat) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantFloat) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantFloat VariantFloat, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantFloat"); pullErr != nil {

@@ -62,6 +62,7 @@ type _ModbusRtuADU struct {
 }
 
 var _ ModbusRtuADU = (*_ModbusRtuADU)(nil)
+var _ ModbusADURequirements = (*_ModbusRtuADU)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,6 +146,7 @@ func (m *_ModbusRtuADU) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ModbusRtuADU) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusADU, driverType DriverType, response bool) (__modbusRtuADU ModbusRtuADU, err error) {
 	m.ModbusADUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusRtuADU"); pullErr != nil {

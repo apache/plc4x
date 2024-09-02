@@ -52,6 +52,7 @@ type _ConnectionRequestInformationDeviceManagement struct {
 }
 
 var _ ConnectionRequestInformationDeviceManagement = (*_ConnectionRequestInformationDeviceManagement)(nil)
+var _ ConnectionRequestInformationRequirements = (*_ConnectionRequestInformationDeviceManagement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBytes(ctx con
 
 func (m *_ConnectionRequestInformationDeviceManagement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ConnectionRequestInformation) (__connectionRequestInformationDeviceManagement ConnectionRequestInformationDeviceManagement, err error) {
 	m.ConnectionRequestInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformationDeviceManagement"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetConstructedDataLiftFaultSignals struct {
 }
 
 var _ BACnetConstructedDataLiftFaultSignals = (*_BACnetConstructedDataLiftFaultSignals)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLiftFaultSignals)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataLiftFaultSignals) GetLengthInBytes(ctx context.Co
 
 func (m *_BACnetConstructedDataLiftFaultSignals) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLiftFaultSignals BACnetConstructedDataLiftFaultSignals, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLiftFaultSignals"); pullErr != nil {

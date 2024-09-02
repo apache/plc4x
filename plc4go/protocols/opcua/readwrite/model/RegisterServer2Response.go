@@ -69,6 +69,7 @@ type _RegisterServer2Response struct {
 }
 
 var _ RegisterServer2Response = (*_RegisterServer2Response)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RegisterServer2Response)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -187,6 +188,7 @@ func (m *_RegisterServer2Response) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_RegisterServer2Response) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerServer2Response RegisterServer2Response, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RegisterServer2Response"); pullErr != nil {

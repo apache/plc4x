@@ -56,6 +56,12 @@ type ReplyOrConfirmationContract interface {
 
 // ReplyOrConfirmationRequirements provides a set of functions which need to be implemented by a sub struct
 type ReplyOrConfirmationRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetIsAlpha returns IsAlpha (discriminator field)
+	GetIsAlpha() bool
+	// GetPeekedByte returns PeekedByte (discriminator field)
+	GetPeekedByte() byte
 }
 
 // ReplyOrConfirmationExactly can be used when we want exactly this type and not a type which fulfills ReplyOrConfirmation.
@@ -67,7 +73,7 @@ type ReplyOrConfirmationExactly interface {
 
 // _ReplyOrConfirmation is the data-structure of this message
 type _ReplyOrConfirmation struct {
-	_ReplyOrConfirmationChildRequirements
+	_SubType   ReplyOrConfirmation
 	PeekedByte byte
 
 	// Arguments.
@@ -76,13 +82,6 @@ type _ReplyOrConfirmation struct {
 }
 
 var _ ReplyOrConfirmationContract = (*_ReplyOrConfirmation)(nil)
-
-type _ReplyOrConfirmationChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIsAlpha() bool
-	GetPeekedByte() byte
-}
 
 type ReplyOrConfirmationChild interface {
 	utils.Serializable
@@ -111,7 +110,8 @@ func (m *_ReplyOrConfirmation) GetPeekedByte() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_ReplyOrConfirmation) GetIsAlpha() bool {
+func (pm *_ReplyOrConfirmation) GetIsAlpha() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool((bool((m.GetPeekedByte()) >= (0x67)))) && bool((bool((m.GetPeekedByte()) <= (0x7A)))))
@@ -151,7 +151,7 @@ func (m *_ReplyOrConfirmation) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ReplyOrConfirmation) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ReplyOrConfirmationParse[T ReplyOrConfirmation](ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {

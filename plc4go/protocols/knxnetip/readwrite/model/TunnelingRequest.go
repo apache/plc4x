@@ -65,6 +65,7 @@ type _TunnelingRequest struct {
 }
 
 var _ TunnelingRequest = (*_TunnelingRequest)(nil)
+var _ KnxNetIpMessageRequirements = (*_TunnelingRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,6 +146,7 @@ func (m *_TunnelingRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_TunnelingRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage, totalLength uint16) (__tunnelingRequest TunnelingRequest, err error) {
 	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TunnelingRequest"); pullErr != nil {

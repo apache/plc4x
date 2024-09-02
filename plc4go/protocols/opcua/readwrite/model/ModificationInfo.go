@@ -63,6 +63,7 @@ type _ModificationInfo struct {
 }
 
 var _ ModificationInfo = (*_ModificationInfo)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ModificationInfo)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_ModificationInfo) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ModificationInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__modificationInfo ModificationInfo, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModificationInfo"); pullErr != nil {

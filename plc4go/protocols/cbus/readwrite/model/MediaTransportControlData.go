@@ -54,6 +54,10 @@ type MediaTransportControlDataContract interface {
 
 // MediaTransportControlDataRequirements provides a set of functions which need to be implemented by a sub struct
 type MediaTransportControlDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() MediaTransportControlCommandType
 }
 
 // MediaTransportControlDataExactly can be used when we want exactly this type and not a type which fulfills MediaTransportControlData.
@@ -65,18 +69,12 @@ type MediaTransportControlDataExactly interface {
 
 // _MediaTransportControlData is the data-structure of this message
 type _MediaTransportControlData struct {
-	_MediaTransportControlDataChildRequirements
+	_SubType             MediaTransportControlData
 	CommandTypeContainer MediaTransportControlCommandTypeContainer
 	MediaLinkGroup       byte
 }
 
 var _ MediaTransportControlDataContract = (*_MediaTransportControlData)(nil)
-
-type _MediaTransportControlDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() MediaTransportControlCommandType
-}
 
 type MediaTransportControlDataChild interface {
 	utils.Serializable
@@ -109,7 +107,8 @@ func (m *_MediaTransportControlData) GetMediaLinkGroup() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_MediaTransportControlData) GetCommandType() MediaTransportControlCommandType {
+func (pm *_MediaTransportControlData) GetCommandType() MediaTransportControlCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastMediaTransportControlCommandType(m.GetCommandTypeContainer().CommandType())
@@ -155,7 +154,7 @@ func (m *_MediaTransportControlData) getLengthInBits(ctx context.Context) uint16
 }
 
 func (m *_MediaTransportControlData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataParse[T MediaTransportControlData](ctx context.Context, theBytes []byte) (T, error) {

@@ -59,6 +59,7 @@ type _BACnetConstructedDataLowLimit struct {
 }
 
 var _ BACnetConstructedDataLowLimit = (*_BACnetConstructedDataLowLimit)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLowLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataLowLimit) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetConstructedDataLowLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLowLimit BACnetConstructedDataLowLimit, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLowLimit"); pullErr != nil {

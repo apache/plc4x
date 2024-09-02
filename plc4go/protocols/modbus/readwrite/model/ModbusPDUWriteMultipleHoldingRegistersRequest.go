@@ -63,6 +63,7 @@ type _ModbusPDUWriteMultipleHoldingRegistersRequest struct {
 }
 
 var _ ModbusPDUWriteMultipleHoldingRegistersRequest = (*_ModbusPDUWriteMultipleHoldingRegistersRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUWriteMultipleHoldingRegistersRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -164,6 +165,7 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) GetLengthInBytes(ctx co
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUWriteMultipleHoldingRegistersRequest ModbusPDUWriteMultipleHoldingRegistersRequest, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleHoldingRegistersRequest"); pullErr != nil {

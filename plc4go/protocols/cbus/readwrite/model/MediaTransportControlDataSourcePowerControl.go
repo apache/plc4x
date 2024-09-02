@@ -61,6 +61,7 @@ type _MediaTransportControlDataSourcePowerControl struct {
 }
 
 var _ MediaTransportControlDataSourcePowerControl = (*_MediaTransportControlDataSourcePowerControl)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSourcePowerControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -154,6 +155,7 @@ func (m *_MediaTransportControlDataSourcePowerControl) GetLengthInBytes(ctx cont
 
 func (m *_MediaTransportControlDataSourcePowerControl) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataSourcePowerControl MediaTransportControlDataSourcePowerControl, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSourcePowerControl"); pullErr != nil {

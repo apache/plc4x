@@ -57,6 +57,7 @@ type _DF1CommandResponseMessageProtectedTypedLogicalRead struct {
 }
 
 var _ DF1CommandResponseMessageProtectedTypedLogicalRead = (*_DF1CommandResponseMessageProtectedTypedLogicalRead)(nil)
+var _ DF1ResponseMessageRequirements = (*_DF1CommandResponseMessageProtectedTypedLogicalRead)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetLengthInBytes(c
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_DF1ResponseMessage, payloadLength uint16) (__dF1CommandResponseMessageProtectedTypedLogicalRead DF1CommandResponseMessageProtectedTypedLogicalRead, err error) {
 	m.DF1ResponseMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1CommandResponseMessageProtectedTypedLogicalRead"); pullErr != nil {

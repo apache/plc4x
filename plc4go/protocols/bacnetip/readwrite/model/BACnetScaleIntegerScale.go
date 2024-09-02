@@ -57,6 +57,7 @@ type _BACnetScaleIntegerScale struct {
 }
 
 var _ BACnetScaleIntegerScale = (*_BACnetScaleIntegerScale)(nil)
+var _ BACnetScaleRequirements = (*_BACnetScaleIntegerScale)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetScaleIntegerScale) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_BACnetScaleIntegerScale) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetScale) (__bACnetScaleIntegerScale BACnetScaleIntegerScale, err error) {
 	m.BACnetScaleContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetScaleIntegerScale"); pullErr != nil {

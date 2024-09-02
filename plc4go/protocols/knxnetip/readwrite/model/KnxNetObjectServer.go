@@ -57,6 +57,7 @@ type _KnxNetObjectServer struct {
 }
 
 var _ KnxNetObjectServer = (*_KnxNetObjectServer)(nil)
+var _ ServiceIdRequirements = (*_KnxNetObjectServer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_KnxNetObjectServer) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_KnxNetObjectServer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ServiceId) (__knxNetObjectServer KnxNetObjectServer, err error) {
 	m.ServiceIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetObjectServer"); pullErr != nil {

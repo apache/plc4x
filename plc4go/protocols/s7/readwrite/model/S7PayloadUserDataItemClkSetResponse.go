@@ -52,6 +52,7 @@ type _S7PayloadUserDataItemClkSetResponse struct {
 }
 
 var _ S7PayloadUserDataItemClkSetResponse = (*_S7PayloadUserDataItemClkSetResponse)(nil)
+var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemClkSetResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ func (m *_S7PayloadUserDataItemClkSetResponse) GetLengthInBytes(ctx context.Cont
 
 func (m *_S7PayloadUserDataItemClkSetResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7PayloadUserDataItem, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItemClkSetResponse S7PayloadUserDataItemClkSetResponse, err error) {
 	m.S7PayloadUserDataItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemClkSetResponse"); pullErr != nil {

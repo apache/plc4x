@@ -69,6 +69,7 @@ type _BACnetServiceAckGetEnrollmentSummary struct {
 }
 
 var _ BACnetServiceAckGetEnrollmentSummary = (*_BACnetServiceAckGetEnrollmentSummary)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetEnrollmentSummary)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -175,6 +176,7 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetServiceAckGetEnrollmentSummary) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckGetEnrollmentSummary BACnetServiceAckGetEnrollmentSummary, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetEnrollmentSummary"); pullErr != nil {

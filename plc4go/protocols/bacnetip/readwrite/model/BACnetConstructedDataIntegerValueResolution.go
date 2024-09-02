@@ -59,6 +59,7 @@ type _BACnetConstructedDataIntegerValueResolution struct {
 }
 
 var _ BACnetConstructedDataIntegerValueResolution = (*_BACnetConstructedDataIntegerValueResolution)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueResolution)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataIntegerValueResolution) GetLengthInBytes(ctx cont
 
 func (m *_BACnetConstructedDataIntegerValueResolution) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIntegerValueResolution BACnetConstructedDataIntegerValueResolution, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIntegerValueResolution"); pullErr != nil {

@@ -68,6 +68,7 @@ type _ConnectionResponse struct {
 }
 
 var _ ConnectionResponse = (*_ConnectionResponse)(nil)
+var _ KnxNetIpMessageRequirements = (*_ConnectionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -168,6 +169,7 @@ func (m *_ConnectionResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ConnectionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__connectionResponse ConnectionResponse, err error) {
 	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponse"); pullErr != nil {

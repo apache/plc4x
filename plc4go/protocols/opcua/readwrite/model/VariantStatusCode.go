@@ -60,6 +60,7 @@ type _VariantStatusCode struct {
 }
 
 var _ VariantStatusCode = (*_VariantStatusCode)(nil)
+var _ VariantRequirements = (*_VariantStatusCode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -149,6 +150,7 @@ func (m *_VariantStatusCode) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantStatusCode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantStatusCode VariantStatusCode, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantStatusCode"); pullErr != nil {

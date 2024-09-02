@@ -60,6 +60,7 @@ type _UnsignedRationalNumber struct {
 }
 
 var _ UnsignedRationalNumber = (*_UnsignedRationalNumber)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_UnsignedRationalNumber)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_UnsignedRationalNumber) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_UnsignedRationalNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__unsignedRationalNumber UnsignedRationalNumber, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnsignedRationalNumber"); pullErr != nil {

@@ -57,6 +57,7 @@ type _ParameterValueCustomManufacturer struct {
 }
 
 var _ ParameterValueCustomManufacturer = (*_ParameterValueCustomManufacturer)(nil)
+var _ ParameterValueRequirements = (*_ParameterValueCustomManufacturer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ParameterValueCustomManufacturer) GetLengthInBytes(ctx context.Context
 
 func (m *_ParameterValueCustomManufacturer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ParameterValue, parameterType ParameterType, numBytes uint8) (__parameterValueCustomManufacturer ParameterValueCustomManufacturer, err error) {
 	m.ParameterValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterValueCustomManufacturer"); pullErr != nil {

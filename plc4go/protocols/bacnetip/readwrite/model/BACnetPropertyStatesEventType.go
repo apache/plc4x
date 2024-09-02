@@ -57,6 +57,7 @@ type _BACnetPropertyStatesEventType struct {
 }
 
 var _ BACnetPropertyStatesEventType = (*_BACnetPropertyStatesEventType)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEventType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesEventType) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetPropertyStatesEventType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesEventType BACnetPropertyStatesEventType, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEventType"); pullErr != nil {

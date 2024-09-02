@@ -59,6 +59,7 @@ type _BACnetConstructedDataDoorUnlockDelayTime struct {
 }
 
 var _ BACnetConstructedDataDoorUnlockDelayTime = (*_BACnetConstructedDataDoorUnlockDelayTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorUnlockDelayTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetLengthInBytes(ctx context
 
 func (m *_BACnetConstructedDataDoorUnlockDelayTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDoorUnlockDelayTime BACnetConstructedDataDoorUnlockDelayTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDoorUnlockDelayTime"); pullErr != nil {

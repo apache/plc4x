@@ -62,6 +62,7 @@ type _BVLCReadForeignDeviceTableAck struct {
 }
 
 var _ BVLCReadForeignDeviceTableAck = (*_BVLCReadForeignDeviceTableAck)(nil)
+var _ BVLCRequirements = (*_BVLCReadForeignDeviceTableAck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -138,6 +139,7 @@ func (m *_BVLCReadForeignDeviceTableAck) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BVLCReadForeignDeviceTableAck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC, bvlcPayloadLength uint16) (__bVLCReadForeignDeviceTableAck BVLCReadForeignDeviceTableAck, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTableAck"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetPropertyStatesLiftFault struct {
 }
 
 var _ BACnetPropertyStatesLiftFault = (*_BACnetPropertyStatesLiftFault)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftFault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesLiftFault) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetPropertyStatesLiftFault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesLiftFault BACnetPropertyStatesLiftFault, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftFault"); pullErr != nil {

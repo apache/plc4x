@@ -57,6 +57,7 @@ type _BACnetServiceAckCreateObject struct {
 }
 
 var _ BACnetServiceAckCreateObject = (*_BACnetServiceAckCreateObject)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckCreateObject)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_BACnetServiceAckCreateObject) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_BACnetServiceAckCreateObject) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckCreateObject BACnetServiceAckCreateObject, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckCreateObject"); pullErr != nil {

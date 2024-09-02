@@ -56,6 +56,10 @@ type BACnetConfirmedServiceRequestReadRangeRangeContract interface {
 
 // BACnetConfirmedServiceRequestReadRangeRangeRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetConfirmedServiceRequestReadRangeRangeRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetConfirmedServiceRequestReadRangeRangeExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestReadRangeRange.
@@ -67,19 +71,13 @@ type BACnetConfirmedServiceRequestReadRangeRangeExactly interface {
 
 // _BACnetConfirmedServiceRequestReadRangeRange is the data-structure of this message
 type _BACnetConfirmedServiceRequestReadRangeRange struct {
-	_BACnetConfirmedServiceRequestReadRangeRangeChildRequirements
+	_SubType        BACnetConfirmedServiceRequestReadRangeRange
 	PeekedTagHeader BACnetTagHeader
 	OpeningTag      BACnetOpeningTag
 	ClosingTag      BACnetClosingTag
 }
 
 var _ BACnetConfirmedServiceRequestReadRangeRangeContract = (*_BACnetConfirmedServiceRequestReadRangeRange)(nil)
-
-type _BACnetConfirmedServiceRequestReadRangeRangeChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetConfirmedServiceRequestReadRangeRangeChild interface {
 	utils.Serializable
@@ -116,7 +114,8 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetClosingTag() BACnetClo
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetConfirmedServiceRequestReadRangeRange) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -162,7 +161,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) getLengthInBits(ctx conte
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeParse[T BACnetConfirmedServiceRequestReadRangeRange](ctx context.Context, theBytes []byte) (T, error) {

@@ -69,6 +69,7 @@ type _SetMonitoringModeRequest struct {
 }
 
 var _ SetMonitoringModeRequest = (*_SetMonitoringModeRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SetMonitoringModeRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -175,6 +176,7 @@ func (m *_SetMonitoringModeRequest) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_SetMonitoringModeRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__setMonitoringModeRequest SetMonitoringModeRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SetMonitoringModeRequest"); pullErr != nil {

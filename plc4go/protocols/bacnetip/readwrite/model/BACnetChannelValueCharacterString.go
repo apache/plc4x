@@ -57,6 +57,7 @@ type _BACnetChannelValueCharacterString struct {
 }
 
 var _ BACnetChannelValueCharacterString = (*_BACnetChannelValueCharacterString)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueCharacterString)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetChannelValueCharacterString) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetChannelValueCharacterString) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueCharacterString BACnetChannelValueCharacterString, err error) {
 	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueCharacterString"); pullErr != nil {

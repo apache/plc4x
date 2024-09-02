@@ -66,6 +66,7 @@ type _ChannelSecurityToken struct {
 }
 
 var _ ChannelSecurityToken = (*_ChannelSecurityToken)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ChannelSecurityToken)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_ChannelSecurityToken) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ChannelSecurityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__channelSecurityToken ChannelSecurityToken, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChannelSecurityToken"); pullErr != nil {

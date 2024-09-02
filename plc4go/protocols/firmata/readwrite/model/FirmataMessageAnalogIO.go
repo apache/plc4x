@@ -62,6 +62,7 @@ type _FirmataMessageAnalogIO struct {
 }
 
 var _ FirmataMessageAnalogIO = (*_FirmataMessageAnalogIO)(nil)
+var _ FirmataMessageRequirements = (*_FirmataMessageAnalogIO)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_FirmataMessageAnalogIO) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_FirmataMessageAnalogIO) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataMessage, response bool) (__firmataMessageAnalogIO FirmataMessageAnalogIO, err error) {
 	m.FirmataMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageAnalogIO"); pullErr != nil {

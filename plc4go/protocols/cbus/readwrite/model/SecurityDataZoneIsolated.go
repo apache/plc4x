@@ -57,6 +57,7 @@ type _SecurityDataZoneIsolated struct {
 }
 
 var _ SecurityDataZoneIsolated = (*_SecurityDataZoneIsolated)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataZoneIsolated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_SecurityDataZoneIsolated) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_SecurityDataZoneIsolated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataZoneIsolated SecurityDataZoneIsolated, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataZoneIsolated"); pullErr != nil {

@@ -57,6 +57,7 @@ type _ApduDataExtAuthorizeResponse struct {
 }
 
 var _ ApduDataExtAuthorizeResponse = (*_ApduDataExtAuthorizeResponse)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtAuthorizeResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ApduDataExtAuthorizeResponse) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_ApduDataExtAuthorizeResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtAuthorizeResponse ApduDataExtAuthorizeResponse, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtAuthorizeResponse"); pullErr != nil {

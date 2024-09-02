@@ -52,6 +52,7 @@ type _SecurityDataLineCutAlarmCleared struct {
 }
 
 var _ SecurityDataLineCutAlarmCleared = (*_SecurityDataLineCutAlarmCleared)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataLineCutAlarmCleared)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataLineCutAlarmCleared) GetLengthInBytes(ctx context.Context)
 
 func (m *_SecurityDataLineCutAlarmCleared) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataLineCutAlarmCleared SecurityDataLineCutAlarmCleared, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataLineCutAlarmCleared"); pullErr != nil {

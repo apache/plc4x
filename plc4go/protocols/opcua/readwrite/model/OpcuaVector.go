@@ -52,6 +52,7 @@ type _OpcuaVector struct {
 }
 
 var _ OpcuaVector = (*_OpcuaVector)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_OpcuaVector)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_OpcuaVector) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_OpcuaVector) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__opcuaVector OpcuaVector, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("OpcuaVector"); pullErr != nil {

@@ -61,6 +61,7 @@ type _BACnetContextTagObjectIdentifier struct {
 }
 
 var _ BACnetContextTagObjectIdentifier = (*_BACnetContextTagObjectIdentifier)(nil)
+var _ BACnetContextTagRequirements = (*_BACnetContextTagObjectIdentifier)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_BACnetContextTagObjectIdentifier) GetLengthInBytes(ctx context.Context
 
 func (m *_BACnetContextTagObjectIdentifier) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetContextTag, tagNumberArgument uint8, dataType BACnetDataType) (__bACnetContextTagObjectIdentifier BACnetContextTagObjectIdentifier, err error) {
 	m.BACnetContextTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagObjectIdentifier"); pullErr != nil {

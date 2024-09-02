@@ -57,6 +57,7 @@ type _IdentifyReplyCommandCurrentSenseLevels struct {
 }
 
 var _ IdentifyReplyCommandCurrentSenseLevels = (*_IdentifyReplyCommandCurrentSenseLevels)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandCurrentSenseLevels)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetLengthInBytes(ctx context.C
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandCurrentSenseLevels IdentifyReplyCommandCurrentSenseLevels, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandCurrentSenseLevels"); pullErr != nil {

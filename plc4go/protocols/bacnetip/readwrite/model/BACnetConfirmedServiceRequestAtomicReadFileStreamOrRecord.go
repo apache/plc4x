@@ -56,6 +56,10 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract interface
 
 // BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordExactly can be used when we want exactly this type and not a type which fulfills BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.
@@ -67,19 +71,13 @@ type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordExactly interface 
 
 // _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord is the data-structure of this message
 type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord struct {
-	_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildRequirements
+	_SubType        BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 	PeekedTagHeader BACnetTagHeader
 	OpeningTag      BACnetOpeningTag
 	ClosingTag      BACnetClosingTag
 }
 
 var _ BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract = (*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)(nil)
-
-type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChild interface {
 	utils.Serializable
@@ -116,7 +114,8 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetClosingT
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -162,7 +161,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) getLengthIn
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParse[T BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](ctx context.Context, theBytes []byte) (T, error) {

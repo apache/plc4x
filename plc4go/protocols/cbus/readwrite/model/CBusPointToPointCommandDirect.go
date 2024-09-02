@@ -59,6 +59,7 @@ type _CBusPointToPointCommandDirect struct {
 }
 
 var _ CBusPointToPointCommandDirect = (*_CBusPointToPointCommandDirect)(nil)
+var _ CBusPointToPointCommandRequirements = (*_CBusPointToPointCommandDirect)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,6 +131,7 @@ func (m *_CBusPointToPointCommandDirect) GetLengthInBytes(ctx context.Context) u
 
 func (m *_CBusPointToPointCommandDirect) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusPointToPointCommand, cBusOptions CBusOptions) (__cBusPointToPointCommandDirect CBusPointToPointCommandDirect, err error) {
 	m.CBusPointToPointCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommandDirect"); pullErr != nil {

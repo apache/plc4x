@@ -59,6 +59,7 @@ type _BACnetContextTagSignedInteger struct {
 }
 
 var _ BACnetContextTagSignedInteger = (*_BACnetContextTagSignedInteger)(nil)
+var _ BACnetContextTagRequirements = (*_BACnetContextTagSignedInteger)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -148,6 +149,7 @@ func (m *_BACnetContextTagSignedInteger) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetContextTagSignedInteger) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetContextTag, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (__bACnetContextTagSignedInteger BACnetContextTagSignedInteger, err error) {
 	m.BACnetContextTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagSignedInteger"); pullErr != nil {

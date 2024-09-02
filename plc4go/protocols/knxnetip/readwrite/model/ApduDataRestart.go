@@ -52,6 +52,7 @@ type _ApduDataRestart struct {
 }
 
 var _ ApduDataRestart = (*_ApduDataRestart)(nil)
+var _ ApduDataRequirements = (*_ApduDataRestart)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataRestart) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApduDataRestart) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataRestart ApduDataRestart, err error) {
 	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataRestart"); pullErr != nil {

@@ -59,6 +59,7 @@ type _ConnectedAddressItem struct {
 }
 
 var _ ConnectedAddressItem = (*_ConnectedAddressItem)(nil)
+var _ TypeIdRequirements = (*_ConnectedAddressItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_ConnectedAddressItem) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ConnectedAddressItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TypeId) (__connectedAddressItem ConnectedAddressItem, err error) {
 	m.TypeIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectedAddressItem"); pullErr != nil {

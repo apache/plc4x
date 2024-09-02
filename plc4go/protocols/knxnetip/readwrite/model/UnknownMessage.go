@@ -62,6 +62,7 @@ type _UnknownMessage struct {
 }
 
 var _ UnknownMessage = (*_UnknownMessage)(nil)
+var _ KnxNetIpMessageRequirements = (*_UnknownMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,6 +137,7 @@ func (m *_UnknownMessage) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_UnknownMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage, totalLength uint16) (__unknownMessage UnknownMessage, err error) {
 	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnknownMessage"); pullErr != nil {

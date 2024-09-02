@@ -66,6 +66,7 @@ type _IdentifyReplyCommandOutputUnitSummary struct {
 }
 
 var _ IdentifyReplyCommandOutputUnitSummary = (*_IdentifyReplyCommandOutputUnitSummary)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandOutputUnitSummary)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -166,6 +167,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBytes(ctx context.Co
 
 func (m *_IdentifyReplyCommandOutputUnitSummary) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandOutputUnitSummary IdentifyReplyCommandOutputUnitSummary, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandOutputUnitSummary"); pullErr != nil {

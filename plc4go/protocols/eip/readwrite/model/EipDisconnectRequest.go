@@ -52,6 +52,7 @@ type _EipDisconnectRequest struct {
 }
 
 var _ EipDisconnectRequest = (*_EipDisconnectRequest)(nil)
+var _ EipPacketRequirements = (*_EipDisconnectRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ func (m *_EipDisconnectRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_EipDisconnectRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__eipDisconnectRequest EipDisconnectRequest, err error) {
 	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipDisconnectRequest"); pullErr != nil {

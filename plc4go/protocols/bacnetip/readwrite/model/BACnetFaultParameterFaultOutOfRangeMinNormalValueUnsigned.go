@@ -57,6 +57,7 @@ type _BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned struct {
 }
 
 var _ BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned)(nil)
+var _ BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) GetLengthIn
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultOutOfRangeMinNormalValue, tagNumber uint8) (__bACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned, err error) {
 	m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned"); pullErr != nil {

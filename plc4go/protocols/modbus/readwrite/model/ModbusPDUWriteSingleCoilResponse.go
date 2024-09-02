@@ -60,6 +60,7 @@ type _ModbusPDUWriteSingleCoilResponse struct {
 }
 
 var _ ModbusPDUWriteSingleCoilResponse = (*_ModbusPDUWriteSingleCoilResponse)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUWriteSingleCoilResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -148,6 +149,7 @@ func (m *_ModbusPDUWriteSingleCoilResponse) GetLengthInBytes(ctx context.Context
 
 func (m *_ModbusPDUWriteSingleCoilResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUWriteSingleCoilResponse ModbusPDUWriteSingleCoilResponse, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteSingleCoilResponse"); pullErr != nil {

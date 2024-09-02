@@ -52,6 +52,10 @@ type AirConditioningDataContract interface {
 
 // AirConditioningDataRequirements provides a set of functions which need to be implemented by a sub struct
 type AirConditioningDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() AirConditioningCommandType
 }
 
 // AirConditioningDataExactly can be used when we want exactly this type and not a type which fulfills AirConditioningData.
@@ -63,17 +67,11 @@ type AirConditioningDataExactly interface {
 
 // _AirConditioningData is the data-structure of this message
 type _AirConditioningData struct {
-	_AirConditioningDataChildRequirements
+	_SubType             AirConditioningData
 	CommandTypeContainer AirConditioningCommandTypeContainer
 }
 
 var _ AirConditioningDataContract = (*_AirConditioningData)(nil)
-
-type _AirConditioningDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() AirConditioningCommandType
-}
 
 type AirConditioningDataChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_AirConditioningData) GetCommandTypeContainer() AirConditioningCommandT
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_AirConditioningData) GetCommandType() AirConditioningCommandType {
+func (pm *_AirConditioningData) GetCommandType() AirConditioningCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastAirConditioningCommandType(m.GetCommandTypeContainer().CommandType())
@@ -145,7 +144,7 @@ func (m *_AirConditioningData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_AirConditioningData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func AirConditioningDataParse[T AirConditioningData](ctx context.Context, theBytes []byte) (T, error) {

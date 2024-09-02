@@ -75,6 +75,7 @@ type _AddNodesItem struct {
 }
 
 var _ AddNodesItem = (*_AddNodesItem)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AddNodesItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -195,6 +196,7 @@ func (m *_AddNodesItem) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_AddNodesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__addNodesItem AddNodesItem, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AddNodesItem"); pullErr != nil {

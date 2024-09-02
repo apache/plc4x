@@ -78,6 +78,7 @@ type _DataTypeSchemaHeader struct {
 }
 
 var _ DataTypeSchemaHeader = (*_DataTypeSchemaHeader)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DataTypeSchemaHeader)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -234,6 +235,7 @@ func (m *_DataTypeSchemaHeader) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_DataTypeSchemaHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataTypeSchemaHeader DataTypeSchemaHeader, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DataTypeSchemaHeader"); pullErr != nil {

@@ -66,6 +66,7 @@ type _ReadValueId struct {
 }
 
 var _ ReadValueId = (*_ReadValueId)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ReadValueId)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_ReadValueId) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ReadValueId) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__readValueId ReadValueId, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReadValueId"); pullErr != nil {

@@ -52,6 +52,7 @@ type _MeteringDataMeasureOtherWater struct {
 }
 
 var _ MeteringDataMeasureOtherWater = (*_MeteringDataMeasureOtherWater)(nil)
+var _ MeteringDataRequirements = (*_MeteringDataMeasureOtherWater)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_MeteringDataMeasureOtherWater) GetLengthInBytes(ctx context.Context) u
 
 func (m *_MeteringDataMeasureOtherWater) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MeteringData) (__meteringDataMeasureOtherWater MeteringDataMeasureOtherWater, err error) {
 	m.MeteringDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataMeasureOtherWater"); pullErr != nil {

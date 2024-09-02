@@ -98,9 +98,9 @@ func (m *_BACnetReadAccessPropertyReadResult) GetPropertyAccessError() ErrorEncl
 func (m *_BACnetReadAccessPropertyReadResult) GetPeekedTagNumber() uint8 {
 	ctx := context.Background()
 	_ = ctx
-	propertyValue := m.PropertyValue
+	propertyValue := m.GetPropertyValue()
 	_ = propertyValue
-	propertyAccessError := m.PropertyAccessError
+	propertyAccessError := m.GetPropertyAccessError()
 	_ = propertyAccessError
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }

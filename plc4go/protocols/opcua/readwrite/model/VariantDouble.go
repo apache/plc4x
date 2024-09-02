@@ -60,6 +60,7 @@ type _VariantDouble struct {
 }
 
 var _ VariantDouble = (*_VariantDouble)(nil)
+var _ VariantRequirements = (*_VariantDouble)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_VariantDouble) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantDouble) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantDouble VariantDouble, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantDouble"); pullErr != nil {

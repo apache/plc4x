@@ -52,6 +52,7 @@ type _SecurityDataEntryDelayStarted struct {
 }
 
 var _ SecurityDataEntryDelayStarted = (*_SecurityDataEntryDelayStarted)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataEntryDelayStarted)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataEntryDelayStarted) GetLengthInBytes(ctx context.Context) u
 
 func (m *_SecurityDataEntryDelayStarted) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataEntryDelayStarted SecurityDataEntryDelayStarted, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataEntryDelayStarted"); pullErr != nil {

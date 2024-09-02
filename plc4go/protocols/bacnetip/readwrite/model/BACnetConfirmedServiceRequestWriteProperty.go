@@ -69,6 +69,7 @@ type _BACnetConfirmedServiceRequestWriteProperty struct {
 }
 
 var _ BACnetConfirmedServiceRequestWriteProperty = (*_BACnetConfirmedServiceRequestWriteProperty)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestWriteProperty)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -177,6 +178,7 @@ func (m *_BACnetConfirmedServiceRequestWriteProperty) GetLengthInBytes(ctx conte
 
 func (m *_BACnetConfirmedServiceRequestWriteProperty) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestWriteProperty BACnetConfirmedServiceRequestWriteProperty, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestWriteProperty"); pullErr != nil {

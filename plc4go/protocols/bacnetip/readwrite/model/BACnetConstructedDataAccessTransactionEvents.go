@@ -57,6 +57,7 @@ type _BACnetConstructedDataAccessTransactionEvents struct {
 }
 
 var _ BACnetConstructedDataAccessTransactionEvents = (*_BACnetConstructedDataAccessTransactionEvents)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessTransactionEvents)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) GetLengthInBytes(ctx con
 
 func (m *_BACnetConstructedDataAccessTransactionEvents) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAccessTransactionEvents BACnetConstructedDataAccessTransactionEvents, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessTransactionEvents"); pullErr != nil {

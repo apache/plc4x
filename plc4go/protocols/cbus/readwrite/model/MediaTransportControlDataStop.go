@@ -52,6 +52,7 @@ type _MediaTransportControlDataStop struct {
 }
 
 var _ MediaTransportControlDataStop = (*_MediaTransportControlDataStop)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataStop)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_MediaTransportControlDataStop) GetLengthInBytes(ctx context.Context) u
 
 func (m *_MediaTransportControlDataStop) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataStop MediaTransportControlDataStop, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataStop"); pullErr != nil {

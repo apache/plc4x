@@ -59,6 +59,7 @@ type _BACnetConstructedDataUsesRemaining struct {
 }
 
 var _ BACnetConstructedDataUsesRemaining = (*_BACnetConstructedDataUsesRemaining)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUsesRemaining)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataUsesRemaining) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataUsesRemaining) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataUsesRemaining BACnetConstructedDataUsesRemaining, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUsesRemaining"); pullErr != nil {

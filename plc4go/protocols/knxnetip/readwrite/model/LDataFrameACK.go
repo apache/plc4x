@@ -52,6 +52,7 @@ type _LDataFrameACK struct {
 }
 
 var _ LDataFrameACK = (*_LDataFrameACK)(nil)
+var _ LDataFrameRequirements = (*_LDataFrameACK)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_LDataFrameACK) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LDataFrameACK) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LDataFrame) (__lDataFrameACK LDataFrameACK, err error) {
 	m.LDataFrameContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataFrameACK"); pullErr != nil {

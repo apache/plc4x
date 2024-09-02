@@ -52,6 +52,7 @@ type _SecurityDataLowBatteryDetected struct {
 }
 
 var _ SecurityDataLowBatteryDetected = (*_SecurityDataLowBatteryDetected)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataLowBatteryDetected)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataLowBatteryDetected) GetLengthInBytes(ctx context.Context) 
 
 func (m *_SecurityDataLowBatteryDetected) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataLowBatteryDetected SecurityDataLowBatteryDetected, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataLowBatteryDetected"); pullErr != nil {

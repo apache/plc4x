@@ -62,6 +62,7 @@ type _DescriptionResponse struct {
 }
 
 var _ DescriptionResponse = (*_DescriptionResponse)(nil)
+var _ KnxNetIpMessageRequirements = (*_DescriptionResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_DescriptionResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_DescriptionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__descriptionResponse DescriptionResponse, err error) {
 	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DescriptionResponse"); pullErr != nil {

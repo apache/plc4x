@@ -63,6 +63,7 @@ type _ModelChangeStructureDataType struct {
 }
 
 var _ ModelChangeStructureDataType = (*_ModelChangeStructureDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ModelChangeStructureDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_ModelChangeStructureDataType) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_ModelChangeStructureDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__modelChangeStructureDataType ModelChangeStructureDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModelChangeStructureDataType"); pullErr != nil {

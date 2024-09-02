@@ -59,6 +59,7 @@ type _BACnetConstructedDataPriorityArray struct {
 }
 
 var _ BACnetConstructedDataPriorityArray = (*_BACnetConstructedDataPriorityArray)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPriorityArray)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataPriorityArray) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataPriorityArray) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPriorityArray BACnetConstructedDataPriorityArray, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPriorityArray"); pullErr != nil {

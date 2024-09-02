@@ -57,6 +57,7 @@ type _S7ParameterUserData struct {
 }
 
 var _ S7ParameterUserData = (*_S7ParameterUserData)(nil)
+var _ S7ParameterRequirements = (*_S7ParameterUserData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -143,6 +144,7 @@ func (m *_S7ParameterUserData) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_S7ParameterUserData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7Parameter, messageType uint8) (__s7ParameterUserData S7ParameterUserData, err error) {
 	m.S7ParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7ParameterUserData"); pullErr != nil {

@@ -92,6 +92,7 @@ type _PubSubConnectionDataType struct {
 }
 
 var _ PubSubConnectionDataType = (*_PubSubConnectionDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PubSubConnectionDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -276,6 +277,7 @@ func (m *_PubSubConnectionDataType) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_PubSubConnectionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__pubSubConnectionDataType PubSubConnectionDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PubSubConnectionDataType"); pullErr != nil {

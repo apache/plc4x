@@ -52,6 +52,7 @@ type _MediaTransportControlDataStatusRequest struct {
 }
 
 var _ MediaTransportControlDataStatusRequest = (*_MediaTransportControlDataStatusRequest)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataStatusRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_MediaTransportControlDataStatusRequest) GetLengthInBytes(ctx context.C
 
 func (m *_MediaTransportControlDataStatusRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataStatusRequest MediaTransportControlDataStatusRequest, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataStatusRequest"); pullErr != nil {

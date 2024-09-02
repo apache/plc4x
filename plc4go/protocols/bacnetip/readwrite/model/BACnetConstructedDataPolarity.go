@@ -59,6 +59,7 @@ type _BACnetConstructedDataPolarity struct {
 }
 
 var _ BACnetConstructedDataPolarity = (*_BACnetConstructedDataPolarity)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPolarity)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataPolarity) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetConstructedDataPolarity) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataPolarity BACnetConstructedDataPolarity, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPolarity"); pullErr != nil {

@@ -57,6 +57,7 @@ type _AdsDiscoveryBlockOsData struct {
 }
 
 var _ AdsDiscoveryBlockOsData = (*_AdsDiscoveryBlockOsData)(nil)
+var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockOsData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_AdsDiscoveryBlockOsData) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_AdsDiscoveryBlockOsData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsDiscoveryBlock) (__adsDiscoveryBlockOsData AdsDiscoveryBlockOsData, err error) {
 	m.AdsDiscoveryBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockOsData"); pullErr != nil {

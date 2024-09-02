@@ -57,6 +57,7 @@ type _NLMDisconnectConnectionToNetwork struct {
 }
 
 var _ NLMDisconnectConnectionToNetwork = (*_NLMDisconnectConnectionToNetwork)(nil)
+var _ NLMRequirements = (*_NLMDisconnectConnectionToNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_NLMDisconnectConnectionToNetwork) GetLengthInBytes(ctx context.Context
 
 func (m *_NLMDisconnectConnectionToNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMDisconnectConnectionToNetwork NLMDisconnectConnectionToNetwork, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMDisconnectConnectionToNetwork"); pullErr != nil {

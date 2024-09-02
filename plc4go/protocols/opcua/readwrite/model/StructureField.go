@@ -80,6 +80,7 @@ type _StructureField struct {
 }
 
 var _ StructureField = (*_StructureField)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_StructureField)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -213,6 +214,7 @@ func (m *_StructureField) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_StructureField) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__structureField StructureField, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StructureField"); pullErr != nil {

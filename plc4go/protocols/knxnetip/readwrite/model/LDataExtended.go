@@ -72,6 +72,7 @@ type _LDataExtended struct {
 }
 
 var _ LDataExtended = (*_LDataExtended)(nil)
+var _ LDataFrameRequirements = (*_LDataExtended)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -193,6 +194,7 @@ func (m *_LDataExtended) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LDataExtended) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LDataFrame) (__lDataExtended LDataExtended, err error) {
 	m.LDataFrameContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LDataExtended"); pullErr != nil {

@@ -57,6 +57,7 @@ type _ComObjectTableRealisationType6 struct {
 }
 
 var _ ComObjectTableRealisationType6 = (*_ComObjectTableRealisationType6)(nil)
+var _ ComObjectTableRequirements = (*_ComObjectTableRealisationType6)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ComObjectTableRealisationType6) GetLengthInBytes(ctx context.Context) 
 
 func (m *_ComObjectTableRealisationType6) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ComObjectTable, firmwareType FirmwareType) (__comObjectTableRealisationType6 ComObjectTableRealisationType6, err error) {
 	m.ComObjectTableContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType6"); pullErr != nil {

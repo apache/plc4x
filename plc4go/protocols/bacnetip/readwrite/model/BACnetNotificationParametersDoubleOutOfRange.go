@@ -72,6 +72,7 @@ type _BACnetNotificationParametersDoubleOutOfRange struct {
 }
 
 var _ BACnetNotificationParametersDoubleOutOfRange = (*_BACnetNotificationParametersDoubleOutOfRange)(nil)
+var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersDoubleOutOfRange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -180,6 +181,7 @@ func (m *_BACnetNotificationParametersDoubleOutOfRange) GetLengthInBytes(ctx con
 
 func (m *_BACnetNotificationParametersDoubleOutOfRange) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetNotificationParameters, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetNotificationParametersDoubleOutOfRange BACnetNotificationParametersDoubleOutOfRange, err error) {
 	m.BACnetNotificationParametersContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersDoubleOutOfRange"); pullErr != nil {

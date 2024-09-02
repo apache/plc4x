@@ -58,6 +58,12 @@ type CALDataContract interface {
 
 // CALDataRequirements provides a set of functions which need to be implemented by a sub struct
 type CALDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() CALCommandType
+	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (discriminator field)
+	GetSendIdentifyRequestBefore() bool
 }
 
 // CALDataExactly can be used when we want exactly this type and not a type which fulfills CALData.
@@ -69,7 +75,7 @@ type CALDataExactly interface {
 
 // _CALData is the data-structure of this message
 type _CALData struct {
-	_CALDataChildRequirements
+	_SubType             CALData
 	CommandTypeContainer CALCommandTypeContainer
 	AdditionalData       CALData
 
@@ -78,13 +84,6 @@ type _CALData struct {
 }
 
 var _ CALDataContract = (*_CALData)(nil)
-
-type _CALDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() CALCommandType
-	GetSendIdentifyRequestBefore() bool
-}
 
 type CALDataChild interface {
 	utils.Serializable
@@ -117,18 +116,20 @@ func (m *_CALData) GetAdditionalData() CALData {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_CALData) GetCommandType() CALCommandType {
+func (pm *_CALData) GetCommandType() CALCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
-	additionalData := m.AdditionalData
+	additionalData := m.GetAdditionalData()
 	_ = additionalData
 	return CastCALCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
-func (m *_CALData) GetSendIdentifyRequestBefore() bool {
+func (pm *_CALData) GetSendIdentifyRequestBefore() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
-	additionalData := m.AdditionalData
+	additionalData := m.GetAdditionalData()
 	_ = additionalData
 	return bool(utils.InlineIf(bool((m.GetRequestContext()) != (nil)), func() any { return bool(m.GetRequestContext().GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool))
 }
@@ -177,7 +178,7 @@ func (m *_CALData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_CALData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func CALDataParse[T CALData](ctx context.Context, theBytes []byte, requestContext RequestContext) (T, error) {

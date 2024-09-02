@@ -52,6 +52,7 @@ type _RequestEmpty struct {
 }
 
 var _ RequestEmpty = (*_RequestEmpty)(nil)
+var _ RequestRequirements = (*_RequestEmpty)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_RequestEmpty) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RequestEmpty) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestEmpty RequestEmpty, err error) {
 	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestEmpty"); pullErr != nil {

@@ -57,6 +57,7 @@ type _CBusMessageToServer struct {
 }
 
 var _ CBusMessageToServer = (*_CBusMessageToServer)(nil)
+var _ CBusMessageRequirements = (*_CBusMessageToServer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_CBusMessageToServer) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CBusMessageToServer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CBusMessage, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (__cBusMessageToServer CBusMessageToServer, err error) {
 	m.CBusMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusMessageToServer"); pullErr != nil {

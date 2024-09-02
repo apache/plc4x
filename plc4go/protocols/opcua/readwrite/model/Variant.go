@@ -56,8 +56,12 @@ type VariantContract interface {
 
 // VariantRequirements provides a set of functions which need to be implemented by a sub struct
 type VariantRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetVariantType returns VariantType (discriminator field)
 	GetVariantType() uint8
+	// GetArrayLengthSpecified returns ArrayLengthSpecified (discriminator field)
+	GetArrayLengthSpecified() bool
 }
 
 // VariantExactly can be used when we want exactly this type and not a type which fulfills Variant.
@@ -69,7 +73,7 @@ type VariantExactly interface {
 
 // _Variant is the data-structure of this message
 type _Variant struct {
-	_VariantChildRequirements
+	_SubType                 Variant
 	ArrayLengthSpecified     bool
 	ArrayDimensionsSpecified bool
 	NoOfArrayDimensions      *int32
@@ -77,13 +81,6 @@ type _Variant struct {
 }
 
 var _ VariantContract = (*_Variant)(nil)
-
-type _VariantChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetVariantType() uint8
-	GetArrayLengthSpecified() bool
-}
 
 type VariantChild interface {
 	utils.Serializable
@@ -165,7 +162,7 @@ func (m *_Variant) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_Variant) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func VariantParse[T Variant](ctx context.Context, theBytes []byte) (T, error) {

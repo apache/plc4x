@@ -59,6 +59,7 @@ type _APDUUnconfirmedRequest struct {
 }
 
 var _ APDUUnconfirmedRequest = (*_APDUUnconfirmedRequest)(nil)
+var _ APDURequirements = (*_APDUUnconfirmedRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_APDUUnconfirmedRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_APDUUnconfirmedRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUUnconfirmedRequest APDUUnconfirmedRequest, err error) {
 	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUUnconfirmedRequest"); pullErr != nil {

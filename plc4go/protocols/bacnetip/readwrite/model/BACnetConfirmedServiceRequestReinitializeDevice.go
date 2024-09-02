@@ -60,6 +60,7 @@ type _BACnetConfirmedServiceRequestReinitializeDevice struct {
 }
 
 var _ BACnetConfirmedServiceRequestReinitializeDevice = (*_BACnetConfirmedServiceRequestReinitializeDevice)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReinitializeDevice)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBytes(ctx 
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDevice) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestReinitializeDevice BACnetConfirmedServiceRequestReinitializeDevice, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReinitializeDevice"); pullErr != nil {

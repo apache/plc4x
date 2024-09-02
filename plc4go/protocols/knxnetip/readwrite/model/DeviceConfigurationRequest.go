@@ -65,6 +65,7 @@ type _DeviceConfigurationRequest struct {
 }
 
 var _ DeviceConfigurationRequest = (*_DeviceConfigurationRequest)(nil)
+var _ KnxNetIpMessageRequirements = (*_DeviceConfigurationRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,6 +146,7 @@ func (m *_DeviceConfigurationRequest) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_DeviceConfigurationRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage, totalLength uint16) (__deviceConfigurationRequest DeviceConfigurationRequest, err error) {
 	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DeviceConfigurationRequest"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetOptionalBinaryPVValue struct {
 }
 
 var _ BACnetOptionalBinaryPVValue = (*_BACnetOptionalBinaryPVValue)(nil)
+var _ BACnetOptionalBinaryPVRequirements = (*_BACnetOptionalBinaryPVValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetOptionalBinaryPVValue) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_BACnetOptionalBinaryPVValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetOptionalBinaryPV) (__bACnetOptionalBinaryPVValue BACnetOptionalBinaryPVValue, err error) {
 	m.BACnetOptionalBinaryPVContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalBinaryPVValue"); pullErr != nil {

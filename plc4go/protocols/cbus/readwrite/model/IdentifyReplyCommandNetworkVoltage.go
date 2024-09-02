@@ -64,6 +64,7 @@ type _IdentifyReplyCommandNetworkVoltage struct {
 }
 
 var _ IdentifyReplyCommandNetworkVoltage = (*_IdentifyReplyCommandNetworkVoltage)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandNetworkVoltage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -167,6 +168,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBytes(ctx context.Conte
 
 func (m *_IdentifyReplyCommandNetworkVoltage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandNetworkVoltage IdentifyReplyCommandNetworkVoltage, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandNetworkVoltage"); pullErr != nil {

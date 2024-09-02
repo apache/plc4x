@@ -52,6 +52,7 @@ type _BACnetApplicationTagNull struct {
 }
 
 var _ BACnetApplicationTagNull = (*_BACnetApplicationTagNull)(nil)
+var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_BACnetApplicationTagNull) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_BACnetApplicationTagNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetApplicationTag) (__bACnetApplicationTagNull BACnetApplicationTagNull, err error) {
 	m.BACnetApplicationTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagNull"); pullErr != nil {

@@ -52,6 +52,10 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectContract interface {
 
 // BACnetUnconfirmedServiceRequestWhoHasObjectRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetUnconfirmedServiceRequestWhoHasObjectRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetUnconfirmedServiceRequestWhoHasObjectExactly can be used when we want exactly this type and not a type which fulfills BACnetUnconfirmedServiceRequestWhoHasObject.
@@ -63,17 +67,11 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectExactly interface {
 
 // _BACnetUnconfirmedServiceRequestWhoHasObject is the data-structure of this message
 type _BACnetUnconfirmedServiceRequestWhoHasObject struct {
-	_BACnetUnconfirmedServiceRequestWhoHasObjectChildRequirements
+	_SubType        BACnetUnconfirmedServiceRequestWhoHasObject
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectContract = (*_BACnetUnconfirmedServiceRequestWhoHasObject)(nil)
-
-type _BACnetUnconfirmedServiceRequestWhoHasObjectChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetUnconfirmedServiceRequestWhoHasObjectChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetPeekedTagHeader() BACn
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) getLengthInBits(ctx conte
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasObjectParse[T BACnetUnconfirmedServiceRequestWhoHasObject](ctx context.Context, theBytes []byte) (T, error) {

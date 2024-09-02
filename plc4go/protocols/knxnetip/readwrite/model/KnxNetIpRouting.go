@@ -57,6 +57,7 @@ type _KnxNetIpRouting struct {
 }
 
 var _ KnxNetIpRouting = (*_KnxNetIpRouting)(nil)
+var _ ServiceIdRequirements = (*_KnxNetIpRouting)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_KnxNetIpRouting) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_KnxNetIpRouting) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ServiceId) (__knxNetIpRouting KnxNetIpRouting, err error) {
 	m.ServiceIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpRouting"); pullErr != nil {

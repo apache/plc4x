@@ -59,6 +59,7 @@ type _BACnetConstructedDataNextStoppingFloor struct {
 }
 
 var _ BACnetConstructedDataNextStoppingFloor = (*_BACnetConstructedDataNextStoppingFloor)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNextStoppingFloor)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetLengthInBytes(ctx context.C
 
 func (m *_BACnetConstructedDataNextStoppingFloor) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNextStoppingFloor BACnetConstructedDataNextStoppingFloor, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNextStoppingFloor"); pullErr != nil {

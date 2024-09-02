@@ -66,6 +66,7 @@ type _BACnetEventParameterCommandFailure struct {
 }
 
 var _ BACnetEventParameterCommandFailure = (*_BACnetEventParameterCommandFailure)(nil)
+var _ BACnetEventParameterRequirements = (*_BACnetEventParameterCommandFailure)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_BACnetEventParameterCommandFailure) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetEventParameterCommandFailure) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameter) (__bACnetEventParameterCommandFailure BACnetEventParameterCommandFailure, err error) {
 	m.BACnetEventParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterCommandFailure"); pullErr != nil {

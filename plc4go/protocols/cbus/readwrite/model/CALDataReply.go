@@ -60,6 +60,7 @@ type _CALDataReply struct {
 }
 
 var _ CALDataReply = (*_CALDataReply)(nil)
+var _ CALDataRequirements = (*_CALDataReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,6 +137,7 @@ func (m *_CALDataReply) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CALDataReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (__cALDataReply CALDataReply, err error) {
 	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataReply"); pullErr != nil {

@@ -59,6 +59,7 @@ type _BVLCResult struct {
 }
 
 var _ BVLCResult = (*_BVLCResult)(nil)
+var _ BVLCRequirements = (*_BVLCResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_BVLCResult) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BVLCResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC) (__bVLCResult BVLCResult, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {

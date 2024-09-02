@@ -69,6 +69,7 @@ type _SecurityDataArmSystem struct {
 }
 
 var _ SecurityDataArmSystem = (*_SecurityDataArmSystem)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataArmSystem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -194,6 +195,7 @@ func (m *_SecurityDataArmSystem) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SecurityDataArmSystem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataArmSystem SecurityDataArmSystem, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataArmSystem"); pullErr != nil {

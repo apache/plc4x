@@ -46,6 +46,8 @@ type ComObjectTableContract interface {
 
 // ComObjectTableRequirements provides a set of functions which need to be implemented by a sub struct
 type ComObjectTableRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetFirmwareType returns FirmwareType (discriminator field)
 	GetFirmwareType() FirmwareType
 }
@@ -59,16 +61,10 @@ type ComObjectTableExactly interface {
 
 // _ComObjectTable is the data-structure of this message
 type _ComObjectTable struct {
-	_ComObjectTableChildRequirements
+	_SubType ComObjectTable
 }
 
 var _ ComObjectTableContract = (*_ComObjectTable)(nil)
-
-type _ComObjectTableChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetFirmwareType() FirmwareType
-}
 
 type ComObjectTableChild interface {
 	utils.Serializable
@@ -106,7 +102,7 @@ func (m *_ComObjectTable) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ComObjectTable) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ComObjectTableParse[T ComObjectTable](ctx context.Context, theBytes []byte, firmwareType FirmwareType) (T, error) {

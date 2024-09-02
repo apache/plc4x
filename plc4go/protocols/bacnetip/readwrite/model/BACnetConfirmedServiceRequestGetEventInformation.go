@@ -57,6 +57,7 @@ type _BACnetConfirmedServiceRequestGetEventInformation struct {
 }
 
 var _ BACnetConfirmedServiceRequestGetEventInformation = (*_BACnetConfirmedServiceRequestGetEventInformation)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestGetEventInformation)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes(ctx
 
 func (m *_BACnetConfirmedServiceRequestGetEventInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestGetEventInformation BACnetConfirmedServiceRequestGetEventInformation, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEventInformation"); pullErr != nil {

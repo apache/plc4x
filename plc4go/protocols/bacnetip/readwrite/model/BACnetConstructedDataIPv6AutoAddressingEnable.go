@@ -59,6 +59,7 @@ type _BACnetConstructedDataIPv6AutoAddressingEnable struct {
 }
 
 var _ BACnetConstructedDataIPv6AutoAddressingEnable = (*_BACnetConstructedDataIPv6AutoAddressingEnable)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6AutoAddressingEnable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetLengthInBytes(ctx co
 
 func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIPv6AutoAddressingEnable BACnetConstructedDataIPv6AutoAddressingEnable, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6AutoAddressingEnable"); pullErr != nil {

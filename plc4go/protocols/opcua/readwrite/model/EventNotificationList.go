@@ -60,6 +60,7 @@ type _EventNotificationList struct {
 }
 
 var _ EventNotificationList = (*_EventNotificationList)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EventNotificationList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -150,6 +151,7 @@ func (m *_EventNotificationList) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_EventNotificationList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__eventNotificationList EventNotificationList, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EventNotificationList"); pullErr != nil {

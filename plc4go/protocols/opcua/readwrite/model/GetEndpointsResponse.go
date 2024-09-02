@@ -63,6 +63,7 @@ type _GetEndpointsResponse struct {
 }
 
 var _ GetEndpointsResponse = (*_GetEndpointsResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_GetEndpointsResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_GetEndpointsResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_GetEndpointsResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__getEndpointsResponse GetEndpointsResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("GetEndpointsResponse"); pullErr != nil {

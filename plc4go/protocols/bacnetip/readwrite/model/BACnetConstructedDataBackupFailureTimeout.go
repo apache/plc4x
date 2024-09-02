@@ -59,6 +59,7 @@ type _BACnetConstructedDataBackupFailureTimeout struct {
 }
 
 var _ BACnetConstructedDataBackupFailureTimeout = (*_BACnetConstructedDataBackupFailureTimeout)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupFailureTimeout)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) GetLengthInBytes(ctx contex
 
 func (m *_BACnetConstructedDataBackupFailureTimeout) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBackupFailureTimeout BACnetConstructedDataBackupFailureTimeout, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBackupFailureTimeout"); pullErr != nil {

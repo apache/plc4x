@@ -60,6 +60,7 @@ type _SubscribeCOVPropertyMultipleError struct {
 }
 
 var _ SubscribeCOVPropertyMultipleError = (*_SubscribeCOVPropertyMultipleError)(nil)
+var _ BACnetErrorRequirements = (*_SubscribeCOVPropertyMultipleError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_SubscribeCOVPropertyMultipleError) GetLengthInBytes(ctx context.Contex
 
 func (m *_SubscribeCOVPropertyMultipleError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__subscribeCOVPropertyMultipleError SubscribeCOVPropertyMultipleError, err error) {
 	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SubscribeCOVPropertyMultipleError"); pullErr != nil {

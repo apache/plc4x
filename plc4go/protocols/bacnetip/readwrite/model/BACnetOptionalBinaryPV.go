@@ -52,6 +52,10 @@ type BACnetOptionalBinaryPVContract interface {
 
 // BACnetOptionalBinaryPVRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetOptionalBinaryPVRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetOptionalBinaryPVExactly can be used when we want exactly this type and not a type which fulfills BACnetOptionalBinaryPV.
@@ -63,17 +67,11 @@ type BACnetOptionalBinaryPVExactly interface {
 
 // _BACnetOptionalBinaryPV is the data-structure of this message
 type _BACnetOptionalBinaryPV struct {
-	_BACnetOptionalBinaryPVChildRequirements
+	_SubType        BACnetOptionalBinaryPV
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetOptionalBinaryPVContract = (*_BACnetOptionalBinaryPV)(nil)
-
-type _BACnetOptionalBinaryPVChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetOptionalBinaryPVChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetOptionalBinaryPV) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetOptionalBinaryPV) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetOptionalBinaryPV) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetOptionalBinaryPV) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetOptionalBinaryPV) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetOptionalBinaryPVParse[T BACnetOptionalBinaryPV](ctx context.Context, theBytes []byte) (T, error) {

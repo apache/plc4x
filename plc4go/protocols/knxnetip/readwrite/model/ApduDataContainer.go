@@ -57,6 +57,7 @@ type _ApduDataContainer struct {
 }
 
 var _ ApduDataContainer = (*_ApduDataContainer)(nil)
+var _ ApduRequirements = (*_ApduDataContainer)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ApduDataContainer) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApduDataContainer) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Apdu, dataLength uint8) (__apduDataContainer ApduDataContainer, err error) {
 	m.ApduContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataContainer"); pullErr != nil {

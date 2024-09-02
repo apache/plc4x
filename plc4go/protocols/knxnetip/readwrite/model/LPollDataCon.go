@@ -52,6 +52,7 @@ type _LPollDataCon struct {
 }
 
 var _ LPollDataCon = (*_LPollDataCon)(nil)
+var _ CEMIRequirements = (*_LPollDataCon)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_LPollDataCon) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LPollDataCon) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__lPollDataCon LPollDataCon, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LPollDataCon"); pullErr != nil {

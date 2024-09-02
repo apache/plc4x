@@ -57,6 +57,7 @@ type _S7VarRequestParameterItemAddress struct {
 }
 
 var _ S7VarRequestParameterItemAddress = (*_S7VarRequestParameterItemAddress)(nil)
+var _ S7VarRequestParameterItemRequirements = (*_S7VarRequestParameterItemAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -132,6 +133,7 @@ func (m *_S7VarRequestParameterItemAddress) GetLengthInBytes(ctx context.Context
 
 func (m *_S7VarRequestParameterItemAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_S7VarRequestParameterItem) (__s7VarRequestParameterItemAddress S7VarRequestParameterItemAddress, err error) {
 	m.S7VarRequestParameterItemContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {

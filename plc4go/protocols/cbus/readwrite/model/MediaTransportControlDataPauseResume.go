@@ -61,6 +61,7 @@ type _MediaTransportControlDataPauseResume struct {
 }
 
 var _ MediaTransportControlDataPauseResume = (*_MediaTransportControlDataPauseResume)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataPauseResume)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -154,6 +155,7 @@ func (m *_MediaTransportControlDataPauseResume) GetLengthInBytes(ctx context.Con
 
 func (m *_MediaTransportControlDataPauseResume) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataPauseResume MediaTransportControlDataPauseResume, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataPauseResume"); pullErr != nil {

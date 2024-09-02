@@ -81,6 +81,7 @@ type _CreateSessionRequest struct {
 }
 
 var _ CreateSessionRequest = (*_CreateSessionRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CreateSessionRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -217,6 +218,7 @@ func (m *_CreateSessionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CreateSessionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__createSessionRequest CreateSessionRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CreateSessionRequest"); pullErr != nil {

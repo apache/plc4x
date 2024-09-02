@@ -72,6 +72,7 @@ type _MPropReadCon struct {
 }
 
 var _ MPropReadCon = (*_MPropReadCon)(nil)
+var _ CEMIRequirements = (*_MPropReadCon)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -184,6 +185,7 @@ func (m *_MPropReadCon) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_MPropReadCon) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__mPropReadCon MPropReadCon, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropReadCon"); pullErr != nil {

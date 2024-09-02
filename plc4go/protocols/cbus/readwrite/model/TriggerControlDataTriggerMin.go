@@ -52,6 +52,7 @@ type _TriggerControlDataTriggerMin struct {
 }
 
 var _ TriggerControlDataTriggerMin = (*_TriggerControlDataTriggerMin)(nil)
+var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMin)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_TriggerControlDataTriggerMin) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_TriggerControlDataTriggerMin) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TriggerControlData) (__triggerControlDataTriggerMin TriggerControlDataTriggerMin, err error) {
 	m.TriggerControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerMin"); pullErr != nil {

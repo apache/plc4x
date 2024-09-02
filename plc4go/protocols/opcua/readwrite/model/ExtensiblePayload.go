@@ -57,6 +57,7 @@ type _ExtensiblePayload struct {
 }
 
 var _ ExtensiblePayload = (*_ExtensiblePayload)(nil)
+var _ PayloadRequirements = (*_ExtensiblePayload)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ExtensiblePayload) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ExtensiblePayload) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Payload, extensible bool, byteCount uint32) (__extensiblePayload ExtensiblePayload, err error) {
 	m.PayloadContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ExtensiblePayload"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetConstructedDataAcceptedModes struct {
 }
 
 var _ BACnetConstructedDataAcceptedModes = (*_BACnetConstructedDataAcceptedModes)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAcceptedModes)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataAcceptedModes) GetLengthInBytes(ctx context.Conte
 
 func (m *_BACnetConstructedDataAcceptedModes) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAcceptedModes BACnetConstructedDataAcceptedModes, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAcceptedModes"); pullErr != nil {

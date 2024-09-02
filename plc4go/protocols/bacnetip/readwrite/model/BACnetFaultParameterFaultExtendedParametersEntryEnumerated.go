@@ -57,6 +57,7 @@ type _BACnetFaultParameterFaultExtendedParametersEntryEnumerated struct {
 }
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryEnumerated = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumerated)(nil)
+var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetLengthI
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultExtendedParametersEntry) (__bACnetFaultParameterFaultExtendedParametersEntryEnumerated BACnetFaultParameterFaultExtendedParametersEntryEnumerated, err error) {
 	m.BACnetFaultParameterFaultExtendedParametersEntryContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); pullErr != nil {

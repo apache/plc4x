@@ -58,6 +58,10 @@ type BACnetEventLogRecordLogDatumContract interface {
 
 // BACnetEventLogRecordLogDatumRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetEventLogRecordLogDatumRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetEventLogRecordLogDatumExactly can be used when we want exactly this type and not a type which fulfills BACnetEventLogRecordLogDatum.
@@ -69,7 +73,7 @@ type BACnetEventLogRecordLogDatumExactly interface {
 
 // _BACnetEventLogRecordLogDatum is the data-structure of this message
 type _BACnetEventLogRecordLogDatum struct {
-	_BACnetEventLogRecordLogDatumChildRequirements
+	_SubType        BACnetEventLogRecordLogDatum
 	OpeningTag      BACnetOpeningTag
 	PeekedTagHeader BACnetTagHeader
 	ClosingTag      BACnetClosingTag
@@ -79,12 +83,6 @@ type _BACnetEventLogRecordLogDatum struct {
 }
 
 var _ BACnetEventLogRecordLogDatumContract = (*_BACnetEventLogRecordLogDatum)(nil)
-
-type _BACnetEventLogRecordLogDatumChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetEventLogRecordLogDatumChild interface {
 	utils.Serializable
@@ -121,7 +119,8 @@ func (m *_BACnetEventLogRecordLogDatum) GetClosingTag() BACnetClosingTag {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetEventLogRecordLogDatum) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetEventLogRecordLogDatum) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -167,7 +166,7 @@ func (m *_BACnetEventLogRecordLogDatum) getLengthInBits(ctx context.Context) uin
 }
 
 func (m *_BACnetEventLogRecordLogDatum) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventLogRecordLogDatumParse[T BACnetEventLogRecordLogDatum](ctx context.Context, theBytes []byte, tagNumber uint8) (T, error) {

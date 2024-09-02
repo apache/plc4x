@@ -66,6 +66,7 @@ type _PubSubConfigurationRefDataType struct {
 }
 
 var _ PubSubConfigurationRefDataType = (*_PubSubConfigurationRefDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PubSubConfigurationRefDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_PubSubConfigurationRefDataType) GetLengthInBytes(ctx context.Context) 
 
 func (m *_PubSubConfigurationRefDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__pubSubConfigurationRefDataType PubSubConfigurationRefDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PubSubConfigurationRefDataType"); pullErr != nil {

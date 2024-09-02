@@ -69,6 +69,7 @@ type _BrowseRequest struct {
 }
 
 var _ BrowseRequest = (*_BrowseRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_BrowseRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -180,6 +181,7 @@ func (m *_BrowseRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BrowseRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browseRequest BrowseRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BrowseRequest"); pullErr != nil {

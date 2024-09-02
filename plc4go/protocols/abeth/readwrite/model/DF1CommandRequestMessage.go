@@ -57,6 +57,7 @@ type _DF1CommandRequestMessage struct {
 }
 
 var _ DF1CommandRequestMessage = (*_DF1CommandRequestMessage)(nil)
+var _ DF1RequestMessageRequirements = (*_DF1CommandRequestMessage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_DF1CommandRequestMessage) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_DF1CommandRequestMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_DF1RequestMessage) (__dF1CommandRequestMessage DF1CommandRequestMessage, err error) {
 	m.DF1RequestMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1CommandRequestMessage"); pullErr != nil {

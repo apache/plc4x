@@ -59,6 +59,7 @@ type _BACnetConstructedDataCarAssignedDirection struct {
 }
 
 var _ BACnetConstructedDataCarAssignedDirection = (*_BACnetConstructedDataCarAssignedDirection)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarAssignedDirection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetLengthInBytes(ctx contex
 
 func (m *_BACnetConstructedDataCarAssignedDirection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCarAssignedDirection BACnetConstructedDataCarAssignedDirection, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarAssignedDirection"); pullErr != nil {

@@ -60,6 +60,7 @@ type _AddNodesResult struct {
 }
 
 var _ AddNodesResult = (*_AddNodesResult)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_AddNodesResult)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_AddNodesResult) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_AddNodesResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__addNodesResult AddNodesResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AddNodesResult"); pullErr != nil {

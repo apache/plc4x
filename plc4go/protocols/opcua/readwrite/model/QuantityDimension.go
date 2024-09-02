@@ -78,6 +78,7 @@ type _QuantityDimension struct {
 }
 
 var _ QuantityDimension = (*_QuantityDimension)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_QuantityDimension)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -206,6 +207,7 @@ func (m *_QuantityDimension) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_QuantityDimension) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__quantityDimension QuantityDimension, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("QuantityDimension"); pullErr != nil {

@@ -56,6 +56,7 @@ type _NullAddressItem struct {
 }
 
 var _ NullAddressItem = (*_NullAddressItem)(nil)
+var _ TypeIdRequirements = (*_NullAddressItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,6 +114,7 @@ func (m *_NullAddressItem) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NullAddressItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TypeId) (__nullAddressItem NullAddressItem, err error) {
 	m.TypeIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NullAddressItem"); pullErr != nil {

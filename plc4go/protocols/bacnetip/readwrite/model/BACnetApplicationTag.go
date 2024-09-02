@@ -54,6 +54,10 @@ type BACnetApplicationTagContract interface {
 
 // BACnetApplicationTagRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetApplicationTagRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetActualTagNumber returns ActualTagNumber (discriminator field)
+	GetActualTagNumber() uint8
 }
 
 // BACnetApplicationTagExactly can be used when we want exactly this type and not a type which fulfills BACnetApplicationTag.
@@ -65,17 +69,11 @@ type BACnetApplicationTagExactly interface {
 
 // _BACnetApplicationTag is the data-structure of this message
 type _BACnetApplicationTag struct {
-	_BACnetApplicationTagChildRequirements
-	Header BACnetTagHeader
+	_SubType BACnetApplicationTag
+	Header   BACnetTagHeader
 }
 
 var _ BACnetApplicationTagContract = (*_BACnetApplicationTag)(nil)
-
-type _BACnetApplicationTagChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetActualTagNumber() uint8
-}
 
 type BACnetApplicationTagChild interface {
 	utils.Serializable
@@ -104,13 +102,15 @@ func (m *_BACnetApplicationTag) GetHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetApplicationTag) GetActualTagNumber() uint8 {
+func (pm *_BACnetApplicationTag) GetActualTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetHeader().GetActualTagNumber())
 }
 
-func (m *_BACnetApplicationTag) GetActualLength() uint32 {
+func (pm *_BACnetApplicationTag) GetActualLength() uint32 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint32(m.GetHeader().GetActualLength())
@@ -155,7 +155,7 @@ func (m *_BACnetApplicationTag) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetApplicationTag) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetApplicationTagParse[T BACnetApplicationTag](ctx context.Context, theBytes []byte) (T, error) {

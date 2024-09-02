@@ -57,6 +57,7 @@ type _AdsDiscoveryBlockFingerprint struct {
 }
 
 var _ AdsDiscoveryBlockFingerprint = (*_AdsDiscoveryBlockFingerprint)(nil)
+var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockFingerprint)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_AdsDiscoveryBlockFingerprint) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_AdsDiscoveryBlockFingerprint) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AdsDiscoveryBlock) (__adsDiscoveryBlockFingerprint AdsDiscoveryBlockFingerprint, err error) {
 	m.AdsDiscoveryBlockContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockFingerprint"); pullErr != nil {

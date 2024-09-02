@@ -57,6 +57,7 @@ type _DataSegment struct {
 }
 
 var _ DataSegment = (*_DataSegment)(nil)
+var _ PathSegmentRequirements = (*_DataSegment)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_DataSegment) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_DataSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_PathSegment) (__dataSegment DataSegment, err error) {
 	m.PathSegmentContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DataSegment"); pullErr != nil {

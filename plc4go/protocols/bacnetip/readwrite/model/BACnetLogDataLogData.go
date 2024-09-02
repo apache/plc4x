@@ -63,6 +63,7 @@ type _BACnetLogDataLogData struct {
 }
 
 var _ BACnetLogDataLogData = (*_BACnetLogDataLogData)(nil)
+var _ BACnetLogDataRequirements = (*_BACnetLogDataLogData)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_BACnetLogDataLogData) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BACnetLogDataLogData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetLogData, tagNumber uint8) (__bACnetLogDataLogData BACnetLogDataLogData, err error) {
 	m.BACnetLogDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogData"); pullErr != nil {

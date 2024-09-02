@@ -52,6 +52,7 @@ type _PublishedDataSetSourceDataType struct {
 }
 
 var _ PublishedDataSetSourceDataType = (*_PublishedDataSetSourceDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PublishedDataSetSourceDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_PublishedDataSetSourceDataType) GetLengthInBytes(ctx context.Context) 
 
 func (m *_PublishedDataSetSourceDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__publishedDataSetSourceDataType PublishedDataSetSourceDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PublishedDataSetSourceDataType"); pullErr != nil {

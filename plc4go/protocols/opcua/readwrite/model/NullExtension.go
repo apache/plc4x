@@ -52,6 +52,7 @@ type _NullExtension struct {
 }
 
 var _ NullExtension = (*_NullExtension)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_NullExtension)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_NullExtension) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_NullExtension) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__nullExtension NullExtension, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NullExtension"); pullErr != nil {

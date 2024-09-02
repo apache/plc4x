@@ -50,8 +50,12 @@ type NodeIdTypeDefinitionContract interface {
 
 // NodeIdTypeDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
 type NodeIdTypeDefinitionRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetNodeType returns NodeType (discriminator field)
 	GetNodeType() NodeIdType
+	// GetIdentifier returns Identifier (abstract field)
+	GetIdentifier() string
 }
 
 // NodeIdTypeDefinitionExactly can be used when we want exactly this type and not a type which fulfills NodeIdTypeDefinition.
@@ -63,18 +67,10 @@ type NodeIdTypeDefinitionExactly interface {
 
 // _NodeIdTypeDefinition is the data-structure of this message
 type _NodeIdTypeDefinition struct {
-	_NodeIdTypeDefinitionChildRequirements
+	_SubType NodeIdTypeDefinition
 }
 
 var _ NodeIdTypeDefinitionContract = (*_NodeIdTypeDefinition)(nil)
-
-type _NodeIdTypeDefinitionChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetNodeType() NodeIdType
-	// GetIdentifier returns Identifier (abstract field)
-	GetIdentifier() string
-}
 
 type NodeIdTypeDefinitionChild interface {
 	utils.Serializable
@@ -91,7 +87,7 @@ type NodeIdTypeDefinitionChild interface {
 ///////////////////////
 
 func (m *_NodeIdTypeDefinition) GetIdentifier() string {
-	return m._NodeIdTypeDefinitionChildRequirements.GetIdentifier()
+	return m._SubType.GetIdentifier()
 }
 
 ///////////////////////
@@ -128,7 +124,7 @@ func (m *_NodeIdTypeDefinition) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_NodeIdTypeDefinition) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func NodeIdTypeDefinitionParse[T NodeIdTypeDefinition](ctx context.Context, theBytes []byte) (T, error) {

@@ -63,6 +63,7 @@ type _ModbusPDUWriteMultipleCoilsRequest struct {
 }
 
 var _ ModbusPDUWriteMultipleCoilsRequest = (*_ModbusPDUWriteMultipleCoilsRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUWriteMultipleCoilsRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -164,6 +165,7 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) GetLengthInBytes(ctx context.Conte
 
 func (m *_ModbusPDUWriteMultipleCoilsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUWriteMultipleCoilsRequest ModbusPDUWriteMultipleCoilsRequest, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleCoilsRequest"); pullErr != nil {

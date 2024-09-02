@@ -60,6 +60,7 @@ type _OpcuaMessageError struct {
 }
 
 var _ OpcuaMessageError = (*_OpcuaMessageError)(nil)
+var _ MessagePDURequirements = (*_OpcuaMessageError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_OpcuaMessageError) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_OpcuaMessageError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool) (__opcuaMessageError OpcuaMessageError, err error) {
 	m.MessagePDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("OpcuaMessageError"); pullErr != nil {

@@ -53,6 +53,7 @@ type _RoutingIndication struct {
 }
 
 var _ RoutingIndication = (*_RoutingIndication)(nil)
+var _ KnxNetIpMessageRequirements = (*_RoutingIndication)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,6 +108,7 @@ func (m *_RoutingIndication) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RoutingIndication) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_KnxNetIpMessage) (__routingIndication RoutingIndication, err error) {
 	m.KnxNetIpMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RoutingIndication"); pullErr != nil {

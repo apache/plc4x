@@ -52,6 +52,7 @@ type _AccessControlDataCloseAccessPoint struct {
 }
 
 var _ AccessControlDataCloseAccessPoint = (*_AccessControlDataCloseAccessPoint)(nil)
+var _ AccessControlDataRequirements = (*_AccessControlDataCloseAccessPoint)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_AccessControlDataCloseAccessPoint) GetLengthInBytes(ctx context.Contex
 
 func (m *_AccessControlDataCloseAccessPoint) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AccessControlData) (__accessControlDataCloseAccessPoint AccessControlDataCloseAccessPoint, err error) {
 	m.AccessControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlDataCloseAccessPoint"); pullErr != nil {

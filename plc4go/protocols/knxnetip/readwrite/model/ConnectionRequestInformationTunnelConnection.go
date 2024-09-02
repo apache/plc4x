@@ -59,6 +59,7 @@ type _ConnectionRequestInformationTunnelConnection struct {
 }
 
 var _ ConnectionRequestInformationTunnelConnection = (*_ConnectionRequestInformationTunnelConnection)(nil)
+var _ ConnectionRequestInformationRequirements = (*_ConnectionRequestInformationTunnelConnection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_ConnectionRequestInformationTunnelConnection) GetLengthInBytes(ctx con
 
 func (m *_ConnectionRequestInformationTunnelConnection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ConnectionRequestInformation) (__connectionRequestInformationTunnelConnection ConnectionRequestInformationTunnelConnection, err error) {
 	m.ConnectionRequestInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformationTunnelConnection"); pullErr != nil {

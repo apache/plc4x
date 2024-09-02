@@ -93,7 +93,7 @@ func (m *_Confirmation) GetConfirmationType() ConfirmationType {
 func (m *_Confirmation) GetIsSuccess() bool {
 	ctx := context.Background()
 	_ = ctx
-	secondAlpha := m.SecondAlpha
+	secondAlpha := m.GetSecondAlpha()
 	_ = secondAlpha
 	return bool(bool((m.GetConfirmationType()) == (ConfirmationType_CONFIRMATION_SUCCESSFUL)))
 }

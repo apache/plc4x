@@ -65,6 +65,7 @@ type _ReferenceListEntryDataType struct {
 }
 
 var _ ReferenceListEntryDataType = (*_ReferenceListEntryDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ReferenceListEntryDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -156,6 +157,7 @@ func (m *_ReferenceListEntryDataType) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_ReferenceListEntryDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__referenceListEntryDataType ReferenceListEntryDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReferenceListEntryDataType"); pullErr != nil {

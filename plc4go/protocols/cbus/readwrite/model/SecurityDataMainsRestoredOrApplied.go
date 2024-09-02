@@ -52,6 +52,7 @@ type _SecurityDataMainsRestoredOrApplied struct {
 }
 
 var _ SecurityDataMainsRestoredOrApplied = (*_SecurityDataMainsRestoredOrApplied)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataMainsRestoredOrApplied)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataMainsRestoredOrApplied) GetLengthInBytes(ctx context.Conte
 
 func (m *_SecurityDataMainsRestoredOrApplied) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataMainsRestoredOrApplied SecurityDataMainsRestoredOrApplied, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataMainsRestoredOrApplied"); pullErr != nil {

@@ -52,6 +52,7 @@ type _SecurityDataPanicCleared struct {
 }
 
 var _ SecurityDataPanicCleared = (*_SecurityDataPanicCleared)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataPanicCleared)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_SecurityDataPanicCleared) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_SecurityDataPanicCleared) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataPanicCleared SecurityDataPanicCleared, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataPanicCleared"); pullErr != nil {

@@ -57,6 +57,8 @@ type S7MessageContract interface {
 
 // S7MessageRequirements provides a set of functions which need to be implemented by a sub struct
 type S7MessageRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetMessageType returns MessageType (discriminator field)
 	GetMessageType() uint8
 }
@@ -70,7 +72,7 @@ type S7MessageExactly interface {
 
 // _S7Message is the data-structure of this message
 type _S7Message struct {
-	_S7MessageChildRequirements
+	_SubType      S7Message
 	TpduReference uint16
 	Parameter     S7Parameter
 	Payload       S7Payload
@@ -79,12 +81,6 @@ type _S7Message struct {
 }
 
 var _ S7MessageContract = (*_S7Message)(nil)
-
-type _S7MessageChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetMessageType() uint8
-}
 
 type S7MessageChild interface {
 	utils.Serializable
@@ -184,7 +180,7 @@ func (m *_S7Message) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_S7Message) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func S7MessageParse[T S7Message](ctx context.Context, theBytes []byte) (T, error) {

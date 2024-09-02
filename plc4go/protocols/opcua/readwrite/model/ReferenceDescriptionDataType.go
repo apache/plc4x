@@ -68,6 +68,7 @@ type _ReferenceDescriptionDataType struct {
 }
 
 var _ ReferenceDescriptionDataType = (*_ReferenceDescriptionDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ReferenceDescriptionDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -167,6 +168,7 @@ func (m *_ReferenceDescriptionDataType) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_ReferenceDescriptionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__referenceDescriptionDataType ReferenceDescriptionDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ReferenceDescriptionDataType"); pullErr != nil {

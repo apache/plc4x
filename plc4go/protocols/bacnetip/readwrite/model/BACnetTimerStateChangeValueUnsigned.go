@@ -57,6 +57,7 @@ type _BACnetTimerStateChangeValueUnsigned struct {
 }
 
 var _ BACnetTimerStateChangeValueUnsigned = (*_BACnetTimerStateChangeValueUnsigned)(nil)
+var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueUnsigned)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetTimerStateChangeValueUnsigned) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetTimerStateChangeValueUnsigned) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetTimerStateChangeValue, objectTypeArgument BACnetObjectType) (__bACnetTimerStateChangeValueUnsigned BACnetTimerStateChangeValueUnsigned, err error) {
 	m.BACnetTimerStateChangeValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueUnsigned"); pullErr != nil {

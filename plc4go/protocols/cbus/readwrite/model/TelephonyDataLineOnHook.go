@@ -52,6 +52,7 @@ type _TelephonyDataLineOnHook struct {
 }
 
 var _ TelephonyDataLineOnHook = (*_TelephonyDataLineOnHook)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataLineOnHook)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_TelephonyDataLineOnHook) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_TelephonyDataLineOnHook) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData) (__telephonyDataLineOnHook TelephonyDataLineOnHook, err error) {
 	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataLineOnHook"); pullErr != nil {

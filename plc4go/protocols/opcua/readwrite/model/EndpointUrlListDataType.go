@@ -60,6 +60,7 @@ type _EndpointUrlListDataType struct {
 }
 
 var _ EndpointUrlListDataType = (*_EndpointUrlListDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_EndpointUrlListDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_EndpointUrlListDataType) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_EndpointUrlListDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__endpointUrlListDataType EndpointUrlListDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EndpointUrlListDataType"); pullErr != nil {

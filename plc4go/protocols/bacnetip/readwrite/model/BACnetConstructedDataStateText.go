@@ -62,6 +62,7 @@ type _BACnetConstructedDataStateText struct {
 }
 
 var _ BACnetConstructedDataStateText = (*_BACnetConstructedDataStateText)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStateText)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ func (m *_BACnetConstructedDataStateText) GetStateText() []BACnetApplicationTagC
 func (m *_BACnetConstructedDataStateText) GetZero() uint64 {
 	ctx := context.Background()
 	_ = ctx
-	numberOfDataElements := m.NumberOfDataElements
+	numberOfDataElements := m.GetNumberOfDataElements()
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
@@ -171,6 +172,7 @@ func (m *_BACnetConstructedDataStateText) GetLengthInBytes(ctx context.Context) 
 
 func (m *_BACnetConstructedDataStateText) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataStateText BACnetConstructedDataStateText, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStateText"); pullErr != nil {

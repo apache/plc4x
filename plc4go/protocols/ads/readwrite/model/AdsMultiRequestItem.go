@@ -46,6 +46,8 @@ type AdsMultiRequestItemContract interface {
 
 // AdsMultiRequestItemRequirements provides a set of functions which need to be implemented by a sub struct
 type AdsMultiRequestItemRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetIndexGroup returns IndexGroup (discriminator field)
 	GetIndexGroup() uint32
 }
@@ -59,16 +61,10 @@ type AdsMultiRequestItemExactly interface {
 
 // _AdsMultiRequestItem is the data-structure of this message
 type _AdsMultiRequestItem struct {
-	_AdsMultiRequestItemChildRequirements
+	_SubType AdsMultiRequestItem
 }
 
 var _ AdsMultiRequestItemContract = (*_AdsMultiRequestItem)(nil)
-
-type _AdsMultiRequestItemChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIndexGroup() uint32
-}
 
 type AdsMultiRequestItemChild interface {
 	utils.Serializable
@@ -106,7 +102,7 @@ func (m *_AdsMultiRequestItem) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_AdsMultiRequestItem) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func AdsMultiRequestItemParse[T AdsMultiRequestItem](ctx context.Context, theBytes []byte, indexGroup uint32) (T, error) {

@@ -57,6 +57,7 @@ type _BACnetPropertyStatesSilencedState struct {
 }
 
 var _ BACnetPropertyStatesSilencedState = (*_BACnetPropertyStatesSilencedState)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesSilencedState)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesSilencedState) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetPropertyStatesSilencedState) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesSilencedState BACnetPropertyStatesSilencedState, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesSilencedState"); pullErr != nil {

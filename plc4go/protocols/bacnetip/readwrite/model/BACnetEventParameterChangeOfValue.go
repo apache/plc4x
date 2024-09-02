@@ -66,6 +66,7 @@ type _BACnetEventParameterChangeOfValue struct {
 }
 
 var _ BACnetEventParameterChangeOfValue = (*_BACnetEventParameterChangeOfValue)(nil)
+var _ BACnetEventParameterRequirements = (*_BACnetEventParameterChangeOfValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_BACnetEventParameterChangeOfValue) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetEventParameterChangeOfValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameter) (__bACnetEventParameterChangeOfValue BACnetEventParameterChangeOfValue, err error) {
 	m.BACnetEventParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValue"); pullErr != nil {

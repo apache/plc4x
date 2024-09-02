@@ -59,6 +59,7 @@ type _BACnetApplicationTagUnsignedInteger struct {
 }
 
 var _ BACnetApplicationTagUnsignedInteger = (*_BACnetApplicationTagUnsignedInteger)(nil)
+var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagUnsignedInteger)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_BACnetApplicationTagUnsignedInteger) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetApplicationTagUnsignedInteger) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetApplicationTag, header BACnetTagHeader) (__bACnetApplicationTagUnsignedInteger BACnetApplicationTagUnsignedInteger, err error) {
 	m.BACnetApplicationTagContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagUnsignedInteger"); pullErr != nil {

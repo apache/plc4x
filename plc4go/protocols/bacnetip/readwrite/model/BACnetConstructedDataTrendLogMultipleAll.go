@@ -52,6 +52,7 @@ type _BACnetConstructedDataTrendLogMultipleAll struct {
 }
 
 var _ BACnetConstructedDataTrendLogMultipleAll = (*_BACnetConstructedDataTrendLogMultipleAll)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogMultipleAll)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_BACnetConstructedDataTrendLogMultipleAll) GetLengthInBytes(ctx context
 
 func (m *_BACnetConstructedDataTrendLogMultipleAll) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTrendLogMultipleAll BACnetConstructedDataTrendLogMultipleAll, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTrendLogMultipleAll"); pullErr != nil {

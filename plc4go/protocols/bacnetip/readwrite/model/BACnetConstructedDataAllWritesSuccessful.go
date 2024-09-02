@@ -59,6 +59,7 @@ type _BACnetConstructedDataAllWritesSuccessful struct {
 }
 
 var _ BACnetConstructedDataAllWritesSuccessful = (*_BACnetConstructedDataAllWritesSuccessful)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAllWritesSuccessful)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBytes(ctx context
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataAllWritesSuccessful BACnetConstructedDataAllWritesSuccessful, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAllWritesSuccessful"); pullErr != nil {

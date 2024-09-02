@@ -57,6 +57,7 @@ type _BACnetPropertyStatesLightningInProgress struct {
 }
 
 var _ BACnetPropertyStatesLightningInProgress = (*_BACnetPropertyStatesLightningInProgress)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLightningInProgress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesLightningInProgress) GetLengthInBytes(ctx context.
 
 func (m *_BACnetPropertyStatesLightningInProgress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesLightningInProgress BACnetPropertyStatesLightningInProgress, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLightningInProgress"); pullErr != nil {

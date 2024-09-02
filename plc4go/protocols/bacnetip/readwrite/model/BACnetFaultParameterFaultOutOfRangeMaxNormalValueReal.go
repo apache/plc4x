@@ -57,6 +57,7 @@ type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal struct {
 }
 
 var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal)(nil)
+var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueRequirements = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetLengthInByte
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue, tagNumber uint8) (__bACnetFaultParameterFaultOutOfRangeMaxNormalValueReal BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal, err error) {
 	m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal"); pullErr != nil {

@@ -60,6 +60,7 @@ type _CreateObjectError struct {
 }
 
 var _ CreateObjectError = (*_CreateObjectError)(nil)
+var _ BACnetErrorRequirements = (*_CreateObjectError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_CreateObjectError) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CreateObjectError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__createObjectError CreateObjectError, err error) {
 	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CreateObjectError"); pullErr != nil {

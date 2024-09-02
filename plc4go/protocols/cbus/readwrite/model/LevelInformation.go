@@ -66,6 +66,12 @@ type LevelInformationContract interface {
 
 // LevelInformationRequirements provides a set of functions which need to be implemented by a sub struct
 type LevelInformationRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetIsAbsent returns IsAbsent (discriminator field)
+	GetIsAbsent() bool
+	// GetIsCorrupted returns IsCorrupted (discriminator field)
+	GetIsCorrupted() bool
 }
 
 // LevelInformationExactly can be used when we want exactly this type and not a type which fulfills LevelInformation.
@@ -77,18 +83,11 @@ type LevelInformationExactly interface {
 
 // _LevelInformation is the data-structure of this message
 type _LevelInformation struct {
-	_LevelInformationChildRequirements
-	Raw uint16
+	_SubType LevelInformation
+	Raw      uint16
 }
 
 var _ LevelInformationContract = (*_LevelInformation)(nil)
-
-type _LevelInformationChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetIsAbsent() bool
-	GetIsCorrupted() bool
-}
 
 type LevelInformationChild interface {
 	utils.Serializable
@@ -117,49 +116,57 @@ func (m *_LevelInformation) GetRaw() uint16 {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_LevelInformation) GetNibble1() uint8 {
+func (pm *_LevelInformation) GetNibble1() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8((m.GetRaw() & 0xF000) >> uint8(12))
 }
 
-func (m *_LevelInformation) GetNibble2() uint8 {
+func (pm *_LevelInformation) GetNibble2() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8((m.GetRaw() & 0x0F00) >> uint8(8))
 }
 
-func (m *_LevelInformation) GetNibble3() uint8 {
+func (pm *_LevelInformation) GetNibble3() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8((m.GetRaw() & 0x00F0) >> uint8(4))
 }
 
-func (m *_LevelInformation) GetNibble4() uint8 {
+func (pm *_LevelInformation) GetNibble4() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8((m.GetRaw() & 0x000F) >> uint8(0))
 }
 
-func (m *_LevelInformation) GetIsAbsent() bool {
+func (pm *_LevelInformation) GetIsAbsent() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool(bool(bool(bool((m.GetNibble1()) == (0x0))) && bool(bool((m.GetNibble2()) == (0x0)))) && bool(bool((m.GetNibble3()) == (0x0)))) && bool(bool((m.GetNibble4()) == (0x0))))
 }
 
-func (m *_LevelInformation) GetIsCorruptedByNoise() bool {
+func (pm *_LevelInformation) GetIsCorruptedByNoise() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool(!(m.GetIsAbsent())) && bool((bool(bool(bool((bool(bool((bool((m.GetNibble1()) < (0x5)))) || bool((bool((m.GetNibble1()) == (0x8))))) || bool((bool((m.GetNibble1()) == (0xC)))))) || bool((bool(bool((bool((m.GetNibble2()) < (0x5)))) || bool((bool((m.GetNibble2()) == (0x8))))) || bool((bool((m.GetNibble2()) == (0xC))))))) || bool((bool(bool((bool((m.GetNibble3()) < (0x5)))) || bool((bool((m.GetNibble3()) == (0x8))))) || bool((bool((m.GetNibble3()) == (0xC))))))) || bool((bool(bool((bool((m.GetNibble4()) < (0x5)))) || bool((bool((m.GetNibble4()) == (0x8))))) || bool((bool((m.GetNibble4()) == (0xC)))))))))
 }
 
-func (m *_LevelInformation) GetIsCorruptedByNoiseOrLevelsDiffer() bool {
+func (pm *_LevelInformation) GetIsCorruptedByNoiseOrLevelsDiffer() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool(!(m.GetIsAbsent())) && bool((bool(bool(bool((bool(bool((bool((m.GetNibble1()) == (0x7)))) || bool((bool((m.GetNibble1()) == (0xB))))) || bool((bool((m.GetNibble1()) > (0xC)))))) || bool((bool(bool((bool((m.GetNibble2()) == (0x7)))) || bool((bool((m.GetNibble2()) == (0xB))))) || bool((bool((m.GetNibble2()) > (0xC))))))) || bool((bool(bool((bool((m.GetNibble3()) == (0x7)))) || bool((bool((m.GetNibble3()) == (0xB))))) || bool((bool((m.GetNibble3()) > (0xC))))))) || bool((bool(bool((bool((m.GetNibble4()) == (0x7)))) || bool((bool((m.GetNibble4()) == (0xB))))) || bool((bool((m.GetNibble4()) > (0xC)))))))))
 }
 
-func (m *_LevelInformation) GetIsCorrupted() bool {
+func (pm *_LevelInformation) GetIsCorrupted() bool {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return bool(bool(m.GetIsCorruptedByNoise()) || bool(m.GetIsCorruptedByNoiseOrLevelsDiffer()))
@@ -213,7 +220,7 @@ func (m *_LevelInformation) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_LevelInformation) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func LevelInformationParse[T LevelInformation](ctx context.Context, theBytes []byte) (T, error) {

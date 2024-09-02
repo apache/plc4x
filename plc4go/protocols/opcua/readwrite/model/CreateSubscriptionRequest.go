@@ -77,6 +77,7 @@ type _CreateSubscriptionRequest struct {
 }
 
 var _ CreateSubscriptionRequest = (*_CreateSubscriptionRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CreateSubscriptionRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -200,6 +201,7 @@ func (m *_CreateSubscriptionRequest) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_CreateSubscriptionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__createSubscriptionRequest CreateSubscriptionRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CreateSubscriptionRequest"); pullErr != nil {

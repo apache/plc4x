@@ -73,6 +73,7 @@ type _CALDataStatusExtended struct {
 }
 
 var _ CALDataStatusExtended = (*_CALDataStatusExtended)(nil)
+var _ CALDataRequirements = (*_CALDataStatusExtended)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -214,6 +215,7 @@ func (m *_CALDataStatusExtended) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CALDataStatusExtended) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (__cALDataStatusExtended CALDataStatusExtended, err error) {
 	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataStatusExtended"); pullErr != nil {

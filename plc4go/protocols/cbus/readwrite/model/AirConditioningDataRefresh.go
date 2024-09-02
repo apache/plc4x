@@ -57,6 +57,7 @@ type _AirConditioningDataRefresh struct {
 }
 
 var _ AirConditioningDataRefresh = (*_AirConditioningDataRefresh)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataRefresh)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_AirConditioningDataRefresh) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_AirConditioningDataRefresh) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataRefresh AirConditioningDataRefresh, err error) {
 	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataRefresh"); pullErr != nil {

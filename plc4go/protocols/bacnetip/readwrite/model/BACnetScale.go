@@ -52,6 +52,10 @@ type BACnetScaleContract interface {
 
 // BACnetScaleRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetScaleRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetScaleExactly can be used when we want exactly this type and not a type which fulfills BACnetScale.
@@ -63,17 +67,11 @@ type BACnetScaleExactly interface {
 
 // _BACnetScale is the data-structure of this message
 type _BACnetScale struct {
-	_BACnetScaleChildRequirements
+	_SubType        BACnetScale
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetScaleContract = (*_BACnetScale)(nil)
-
-type _BACnetScaleChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetScaleChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetScale) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetScale) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetScale) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetScale) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetScale) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetScaleParse[T BACnetScale](ctx context.Context, theBytes []byte) (T, error) {

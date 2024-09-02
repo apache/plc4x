@@ -75,6 +75,7 @@ type _CEMIAdditionalInformationBusmonitorInfo struct {
 }
 
 var _ CEMIAdditionalInformationBusmonitorInfo = (*_CEMIAdditionalInformationBusmonitorInfo)(nil)
+var _ CEMIAdditionalInformationRequirements = (*_CEMIAdditionalInformationBusmonitorInfo)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -203,6 +204,7 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLengthInBytes(ctx context.
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMIAdditionalInformation) (__cEMIAdditionalInformationBusmonitorInfo CEMIAdditionalInformationBusmonitorInfo, err error) {
 	m.CEMIAdditionalInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {

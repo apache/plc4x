@@ -60,6 +60,7 @@ type _MediaTransportControlDataSetSelection struct {
 }
 
 var _ MediaTransportControlDataSetSelection = (*_MediaTransportControlDataSetSelection)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSetSelection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,6 +137,7 @@ func (m *_MediaTransportControlDataSetSelection) GetLengthInBytes(ctx context.Co
 
 func (m *_MediaTransportControlDataSetSelection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataSetSelection MediaTransportControlDataSetSelection, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSetSelection"); pullErr != nil {

@@ -83,6 +83,7 @@ type _PubSubGroupDataType struct {
 }
 
 var _ PubSubGroupDataType = (*_PubSubGroupDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PubSubGroupDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -236,6 +237,7 @@ func (m *_PubSubGroupDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_PubSubGroupDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__pubSubGroupDataType PubSubGroupDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PubSubGroupDataType"); pullErr != nil {

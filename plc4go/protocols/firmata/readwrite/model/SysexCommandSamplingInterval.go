@@ -52,6 +52,7 @@ type _SysexCommandSamplingInterval struct {
 }
 
 var _ SysexCommandSamplingInterval = (*_SysexCommandSamplingInterval)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandSamplingInterval)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_SysexCommandSamplingInterval) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_SysexCommandSamplingInterval) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandSamplingInterval SysexCommandSamplingInterval, err error) {
 	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandSamplingInterval"); pullErr != nil {

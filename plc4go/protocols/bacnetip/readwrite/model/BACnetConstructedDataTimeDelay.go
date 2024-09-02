@@ -59,6 +59,7 @@ type _BACnetConstructedDataTimeDelay struct {
 }
 
 var _ BACnetConstructedDataTimeDelay = (*_BACnetConstructedDataTimeDelay)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeDelay)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataTimeDelay) GetLengthInBytes(ctx context.Context) 
 
 func (m *_BACnetConstructedDataTimeDelay) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataTimeDelay BACnetConstructedDataTimeDelay, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeDelay"); pullErr != nil {

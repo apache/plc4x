@@ -52,6 +52,10 @@ type BACnetLandingCallStatusCommandContract interface {
 
 // BACnetLandingCallStatusCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetLandingCallStatusCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetLandingCallStatusCommandExactly can be used when we want exactly this type and not a type which fulfills BACnetLandingCallStatusCommand.
@@ -63,17 +67,11 @@ type BACnetLandingCallStatusCommandExactly interface {
 
 // _BACnetLandingCallStatusCommand is the data-structure of this message
 type _BACnetLandingCallStatusCommand struct {
-	_BACnetLandingCallStatusCommandChildRequirements
+	_SubType        BACnetLandingCallStatusCommand
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetLandingCallStatusCommandContract = (*_BACnetLandingCallStatusCommand)(nil)
-
-type _BACnetLandingCallStatusCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetLandingCallStatusCommandChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetLandingCallStatusCommand) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetLandingCallStatusCommand) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetLandingCallStatusCommand) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetLandingCallStatusCommand) getLengthInBits(ctx context.Context) u
 }
 
 func (m *_BACnetLandingCallStatusCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLandingCallStatusCommandParse[T BACnetLandingCallStatusCommand](ctx context.Context, theBytes []byte) (T, error) {

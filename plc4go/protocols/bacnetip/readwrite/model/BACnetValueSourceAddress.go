@@ -57,6 +57,7 @@ type _BACnetValueSourceAddress struct {
 }
 
 var _ BACnetValueSourceAddress = (*_BACnetValueSourceAddress)(nil)
+var _ BACnetValueSourceRequirements = (*_BACnetValueSourceAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetValueSourceAddress) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_BACnetValueSourceAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetValueSource) (__bACnetValueSourceAddress BACnetValueSourceAddress, err error) {
 	m.BACnetValueSourceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetValueSourceAddress"); pullErr != nil {

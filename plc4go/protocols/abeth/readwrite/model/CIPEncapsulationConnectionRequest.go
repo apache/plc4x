@@ -53,6 +53,7 @@ type _CIPEncapsulationConnectionRequest struct {
 }
 
 var _ CIPEncapsulationConnectionRequest = (*_CIPEncapsulationConnectionRequest)(nil)
+var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationConnectionRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,6 +108,7 @@ func (m *_CIPEncapsulationConnectionRequest) GetLengthInBytes(ctx context.Contex
 
 func (m *_CIPEncapsulationConnectionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CIPEncapsulationPacket) (__cIPEncapsulationConnectionRequest CIPEncapsulationConnectionRequest, err error) {
 	m.CIPEncapsulationPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationConnectionRequest"); pullErr != nil {

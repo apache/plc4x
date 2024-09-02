@@ -52,6 +52,8 @@ type PayloadContract interface {
 
 // PayloadRequirements provides a set of functions which need to be implemented by a sub struct
 type PayloadRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetExtensible returns Extensible (discriminator field)
 	GetExtensible() bool
 }
@@ -65,7 +67,7 @@ type PayloadExactly interface {
 
 // _Payload is the data-structure of this message
 type _Payload struct {
-	_PayloadChildRequirements
+	_SubType       Payload
 	SequenceHeader SequenceHeader
 
 	// Arguments.
@@ -73,12 +75,6 @@ type _Payload struct {
 }
 
 var _ PayloadContract = (*_Payload)(nil)
-
-type _PayloadChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetExtensible() bool
-}
 
 type PayloadChild interface {
 	utils.Serializable
@@ -133,7 +129,7 @@ func (m *_Payload) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_Payload) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func PayloadParse[T Payload](ctx context.Context, theBytes []byte, extensible bool, byteCount uint32) (T, error) {

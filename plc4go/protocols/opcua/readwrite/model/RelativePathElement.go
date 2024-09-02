@@ -68,6 +68,7 @@ type _RelativePathElement struct {
 }
 
 var _ RelativePathElement = (*_RelativePathElement)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RelativePathElement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -167,6 +168,7 @@ func (m *_RelativePathElement) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RelativePathElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__relativePathElement RelativePathElement, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RelativePathElement"); pullErr != nil {

@@ -60,6 +60,7 @@ type _AnsiExtendedSymbolSegment struct {
 }
 
 var _ AnsiExtendedSymbolSegment = (*_AnsiExtendedSymbolSegment)(nil)
+var _ DataSegmentTypeRequirements = (*_AnsiExtendedSymbolSegment)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,6 +146,7 @@ func (m *_AnsiExtendedSymbolSegment) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_AnsiExtendedSymbolSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_DataSegmentType) (__ansiExtendedSymbolSegment AnsiExtendedSymbolSegment, err error) {
 	m.DataSegmentTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AnsiExtendedSymbolSegment"); pullErr != nil {

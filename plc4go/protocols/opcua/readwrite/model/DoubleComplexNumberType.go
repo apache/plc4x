@@ -60,6 +60,7 @@ type _DoubleComplexNumberType struct {
 }
 
 var _ DoubleComplexNumberType = (*_DoubleComplexNumberType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DoubleComplexNumberType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_DoubleComplexNumberType) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_DoubleComplexNumberType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__doubleComplexNumberType DoubleComplexNumberType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DoubleComplexNumberType"); pullErr != nil {

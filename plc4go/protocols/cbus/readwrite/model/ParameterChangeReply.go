@@ -57,6 +57,7 @@ type _ParameterChangeReply struct {
 }
 
 var _ ParameterChangeReply = (*_ParameterChangeReply)(nil)
+var _ ReplyRequirements = (*_ParameterChangeReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_ParameterChangeReply) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ParameterChangeReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Reply, cBusOptions CBusOptions, requestContext RequestContext) (__parameterChangeReply ParameterChangeReply, err error) {
 	m.ReplyContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterChangeReply"); pullErr != nil {

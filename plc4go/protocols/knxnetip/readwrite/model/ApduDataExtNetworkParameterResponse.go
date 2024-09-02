@@ -52,6 +52,7 @@ type _ApduDataExtNetworkParameterResponse struct {
 }
 
 var _ ApduDataExtNetworkParameterResponse = (*_ApduDataExtNetworkParameterResponse)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtNetworkParameterResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtNetworkParameterResponse) GetLengthInBytes(ctx context.Cont
 
 func (m *_ApduDataExtNetworkParameterResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtNetworkParameterResponse ApduDataExtNetworkParameterResponse, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterResponse"); pullErr != nil {

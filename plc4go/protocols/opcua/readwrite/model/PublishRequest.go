@@ -63,6 +63,7 @@ type _PublishRequest struct {
 }
 
 var _ PublishRequest = (*_PublishRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PublishRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_PublishRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_PublishRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__publishRequest PublishRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PublishRequest"); pullErr != nil {

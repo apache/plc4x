@@ -57,6 +57,7 @@ type _SALDataMeasurement struct {
 }
 
 var _ SALDataMeasurement = (*_SALDataMeasurement)(nil)
+var _ SALDataRequirements = (*_SALDataMeasurement)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataMeasurement) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataMeasurement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataMeasurement SALDataMeasurement, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataMeasurement"); pullErr != nil {

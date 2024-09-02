@@ -60,6 +60,7 @@ type _BrowsePathTarget struct {
 }
 
 var _ BrowsePathTarget = (*_BrowsePathTarget)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_BrowsePathTarget)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_BrowsePathTarget) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BrowsePathTarget) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browsePathTarget BrowsePathTarget, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BrowsePathTarget"); pullErr != nil {

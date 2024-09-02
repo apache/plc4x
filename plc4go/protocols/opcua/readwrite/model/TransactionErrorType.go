@@ -63,6 +63,7 @@ type _TransactionErrorType struct {
 }
 
 var _ TransactionErrorType = (*_TransactionErrorType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_TransactionErrorType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_TransactionErrorType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_TransactionErrorType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__transactionErrorType TransactionErrorType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TransactionErrorType"); pullErr != nil {

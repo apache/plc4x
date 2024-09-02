@@ -52,6 +52,7 @@ type _TriggerControlDataTriggerMax struct {
 }
 
 var _ TriggerControlDataTriggerMax = (*_TriggerControlDataTriggerMax)(nil)
+var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMax)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_TriggerControlDataTriggerMax) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_TriggerControlDataTriggerMax) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TriggerControlData) (__triggerControlDataTriggerMax TriggerControlDataTriggerMax, err error) {
 	m.TriggerControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerMax"); pullErr != nil {

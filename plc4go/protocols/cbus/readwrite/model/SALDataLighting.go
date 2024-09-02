@@ -57,6 +57,7 @@ type _SALDataLighting struct {
 }
 
 var _ SALDataLighting = (*_SALDataLighting)(nil)
+var _ SALDataRequirements = (*_SALDataLighting)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataLighting) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataLighting) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataLighting SALDataLighting, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataLighting"); pullErr != nil {

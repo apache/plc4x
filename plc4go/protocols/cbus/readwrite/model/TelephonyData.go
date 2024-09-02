@@ -54,6 +54,12 @@ type TelephonyDataContract interface {
 
 // TelephonyDataRequirements provides a set of functions which need to be implemented by a sub struct
 type TelephonyDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetArgument returns Argument (discriminator field)
+	GetArgument() byte
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() TelephonyCommandType
 }
 
 // TelephonyDataExactly can be used when we want exactly this type and not a type which fulfills TelephonyData.
@@ -65,19 +71,12 @@ type TelephonyDataExactly interface {
 
 // _TelephonyData is the data-structure of this message
 type _TelephonyData struct {
-	_TelephonyDataChildRequirements
+	_SubType             TelephonyData
 	CommandTypeContainer TelephonyCommandTypeContainer
 	Argument             byte
 }
 
 var _ TelephonyDataContract = (*_TelephonyData)(nil)
-
-type _TelephonyDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetArgument() byte
-	GetCommandType() TelephonyCommandType
-}
 
 type TelephonyDataChild interface {
 	utils.Serializable
@@ -110,7 +109,8 @@ func (m *_TelephonyData) GetArgument() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_TelephonyData) GetCommandType() TelephonyCommandType {
+func (pm *_TelephonyData) GetCommandType() TelephonyCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastTelephonyCommandType(m.GetCommandTypeContainer().CommandType())
@@ -156,7 +156,7 @@ func (m *_TelephonyData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_TelephonyData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func TelephonyDataParse[T TelephonyData](ctx context.Context, theBytes []byte) (T, error) {

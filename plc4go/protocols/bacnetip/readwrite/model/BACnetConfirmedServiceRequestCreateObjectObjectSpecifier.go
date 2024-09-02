@@ -107,9 +107,9 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetClosingTa
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetIsObjectType() bool {
 	ctx := context.Background()
 	_ = ctx
-	rawObjectType := m.RawObjectType
+	rawObjectType := m.GetRawObjectType()
 	_ = rawObjectType
-	objectIdentifier := m.ObjectIdentifier
+	objectIdentifier := m.GetObjectIdentifier()
 	_ = objectIdentifier
 	return bool(bool((m.GetRawObjectType()) != (nil)))
 }
@@ -117,9 +117,9 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetIsObjectT
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetObjectType() BACnetObjectType {
 	ctx := context.Background()
 	_ = ctx
-	rawObjectType := m.RawObjectType
+	rawObjectType := m.GetRawObjectType()
 	_ = rawObjectType
-	objectIdentifier := m.ObjectIdentifier
+	objectIdentifier := m.GetObjectIdentifier()
 	_ = objectIdentifier
 	return CastBACnetObjectType(MapBACnetObjectType(ctx, (m.GetRawObjectType())))
 }
@@ -127,9 +127,9 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetObjectTyp
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetIsObjectIdentifier() bool {
 	ctx := context.Background()
 	_ = ctx
-	rawObjectType := m.RawObjectType
+	rawObjectType := m.GetRawObjectType()
 	_ = rawObjectType
-	objectIdentifier := m.ObjectIdentifier
+	objectIdentifier := m.GetObjectIdentifier()
 	_ = objectIdentifier
 	return bool(bool((m.GetObjectIdentifier()) != (nil)))
 }

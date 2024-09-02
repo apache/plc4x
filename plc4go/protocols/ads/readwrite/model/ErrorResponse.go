@@ -52,6 +52,7 @@ type _ErrorResponse struct {
 }
 
 var _ ErrorResponse = (*_ErrorResponse)(nil)
+var _ AmsPacketRequirements = (*_ErrorResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_ErrorResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ErrorResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__errorResponse ErrorResponse, err error) {
 	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorResponse"); pullErr != nil {

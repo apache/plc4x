@@ -57,6 +57,7 @@ type _KnxNetIpTunneling struct {
 }
 
 var _ KnxNetIpTunneling = (*_KnxNetIpTunneling)(nil)
+var _ ServiceIdRequirements = (*_KnxNetIpTunneling)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_KnxNetIpTunneling) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_KnxNetIpTunneling) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ServiceId) (__knxNetIpTunneling KnxNetIpTunneling, err error) {
 	m.ServiceIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("KnxNetIpTunneling"); pullErr != nil {

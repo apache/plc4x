@@ -57,6 +57,7 @@ type _PowerUpReply struct {
 }
 
 var _ PowerUpReply = (*_PowerUpReply)(nil)
+var _ ReplyRequirements = (*_PowerUpReply)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_PowerUpReply) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_PowerUpReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Reply, cBusOptions CBusOptions, requestContext RequestContext) (__powerUpReply PowerUpReply, err error) {
 	m.ReplyContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PowerUpReply"); pullErr != nil {

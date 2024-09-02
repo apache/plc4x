@@ -52,6 +52,10 @@ type MeasurementDataContract interface {
 
 // MeasurementDataRequirements provides a set of functions which need to be implemented by a sub struct
 type MeasurementDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() MeasurementCommandType
 }
 
 // MeasurementDataExactly can be used when we want exactly this type and not a type which fulfills MeasurementData.
@@ -63,17 +67,11 @@ type MeasurementDataExactly interface {
 
 // _MeasurementData is the data-structure of this message
 type _MeasurementData struct {
-	_MeasurementDataChildRequirements
+	_SubType             MeasurementData
 	CommandTypeContainer MeasurementCommandTypeContainer
 }
 
 var _ MeasurementDataContract = (*_MeasurementData)(nil)
-
-type _MeasurementDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() MeasurementCommandType
-}
 
 type MeasurementDataChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_MeasurementData) GetCommandTypeContainer() MeasurementCommandTypeConta
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_MeasurementData) GetCommandType() MeasurementCommandType {
+func (pm *_MeasurementData) GetCommandType() MeasurementCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastMeasurementCommandType(m.GetCommandTypeContainer().CommandType())
@@ -145,7 +144,7 @@ func (m *_MeasurementData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_MeasurementData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func MeasurementDataParse[T MeasurementData](ctx context.Context, theBytes []byte) (T, error) {

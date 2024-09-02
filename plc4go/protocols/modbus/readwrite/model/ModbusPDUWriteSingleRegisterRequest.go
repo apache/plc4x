@@ -60,6 +60,7 @@ type _ModbusPDUWriteSingleRegisterRequest struct {
 }
 
 var _ ModbusPDUWriteSingleRegisterRequest = (*_ModbusPDUWriteSingleRegisterRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUWriteSingleRegisterRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -148,6 +149,7 @@ func (m *_ModbusPDUWriteSingleRegisterRequest) GetLengthInBytes(ctx context.Cont
 
 func (m *_ModbusPDUWriteSingleRegisterRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUWriteSingleRegisterRequest ModbusPDUWriteSingleRegisterRequest, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteSingleRegisterRequest"); pullErr != nil {

@@ -57,6 +57,7 @@ type _ModbusPDUReadFifoQueueRequest struct {
 }
 
 var _ ModbusPDUReadFifoQueueRequest = (*_ModbusPDUReadFifoQueueRequest)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUReadFifoQueueRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_ModbusPDUReadFifoQueueRequest) GetLengthInBytes(ctx context.Context) u
 
 func (m *_ModbusPDUReadFifoQueueRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUReadFifoQueueRequest ModbusPDUReadFifoQueueRequest, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFifoQueueRequest"); pullErr != nil {

@@ -72,6 +72,7 @@ type _MonitoredSALShortFormBasicMode struct {
 }
 
 var _ MonitoredSALShortFormBasicMode = (*_MonitoredSALShortFormBasicMode)(nil)
+var _ MonitoredSALRequirements = (*_MonitoredSALShortFormBasicMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -185,6 +186,7 @@ func (m *_MonitoredSALShortFormBasicMode) GetLengthInBytes(ctx context.Context) 
 
 func (m *_MonitoredSALShortFormBasicMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MonitoredSAL, cBusOptions CBusOptions) (__monitoredSALShortFormBasicMode MonitoredSALShortFormBasicMode, err error) {
 	m.MonitoredSALContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSALShortFormBasicMode"); pullErr != nil {

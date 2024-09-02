@@ -57,6 +57,7 @@ type _BACnetChannelValueLightingCommand struct {
 }
 
 var _ BACnetChannelValueLightingCommand = (*_BACnetChannelValueLightingCommand)(nil)
+var _ BACnetChannelValueRequirements = (*_BACnetChannelValueLightingCommand)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetChannelValueLightingCommand) GetLengthInBytes(ctx context.Contex
 
 func (m *_BACnetChannelValueLightingCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetChannelValue) (__bACnetChannelValueLightingCommand BACnetChannelValueLightingCommand, err error) {
 	m.BACnetChannelValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueLightingCommand"); pullErr != nil {

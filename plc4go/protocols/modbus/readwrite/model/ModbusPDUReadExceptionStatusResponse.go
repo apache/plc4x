@@ -57,6 +57,7 @@ type _ModbusPDUReadExceptionStatusResponse struct {
 }
 
 var _ ModbusPDUReadExceptionStatusResponse = (*_ModbusPDUReadExceptionStatusResponse)(nil)
+var _ ModbusPDURequirements = (*_ModbusPDUReadExceptionStatusResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_ModbusPDUReadExceptionStatusResponse) GetLengthInBytes(ctx context.Con
 
 func (m *_ModbusPDUReadExceptionStatusResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ModbusPDU, response bool) (__modbusPDUReadExceptionStatusResponse ModbusPDUReadExceptionStatusResponse, err error) {
 	m.ModbusPDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadExceptionStatusResponse"); pullErr != nil {

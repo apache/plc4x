@@ -52,6 +52,8 @@ type BACnetServiceAckContract interface {
 
 // BACnetServiceAckRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetServiceAckRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
 }
@@ -65,19 +67,13 @@ type BACnetServiceAckExactly interface {
 
 // _BACnetServiceAck is the data-structure of this message
 type _BACnetServiceAck struct {
-	_BACnetServiceAckChildRequirements
+	_SubType BACnetServiceAck
 
 	// Arguments.
 	ServiceAckLength uint32
 }
 
 var _ BACnetServiceAckContract = (*_BACnetServiceAck)(nil)
-
-type _BACnetServiceAckChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetServiceChoice() BACnetConfirmedServiceChoice
-}
 
 type BACnetServiceAckChild interface {
 	utils.Serializable
@@ -93,7 +89,8 @@ type BACnetServiceAckChild interface {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetServiceAck) GetServiceAckPayloadLength() uint32 {
+func (pm *_BACnetServiceAck) GetServiceAckPayloadLength() uint32 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint32(utils.InlineIf((bool((m.GetServiceAckLength()) > (0))), func() any { return uint32((uint32(m.GetServiceAckLength()) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32))
@@ -135,7 +132,7 @@ func (m *_BACnetServiceAck) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BACnetServiceAck) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetServiceAckParse[T BACnetServiceAck](ctx context.Context, theBytes []byte, serviceAckLength uint32) (T, error) {

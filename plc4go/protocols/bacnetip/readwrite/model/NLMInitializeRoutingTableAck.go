@@ -60,6 +60,7 @@ type _NLMInitializeRoutingTableAck struct {
 }
 
 var _ NLMInitializeRoutingTableAck = (*_NLMInitializeRoutingTableAck)(nil)
+var _ NLMRequirements = (*_NLMInitializeRoutingTableAck)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_NLMInitializeRoutingTableAck) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_NLMInitializeRoutingTableAck) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_NLM, apduLength uint16) (__nLMInitializeRoutingTableAck NLMInitializeRoutingTableAck, err error) {
 	m.NLMContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitializeRoutingTableAck"); pullErr != nil {

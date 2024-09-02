@@ -48,6 +48,8 @@ type S7ParameterUserDataItemContract interface {
 
 // S7ParameterUserDataItemRequirements provides a set of functions which need to be implemented by a sub struct
 type S7ParameterUserDataItemRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetItemType returns ItemType (discriminator field)
 	GetItemType() uint8
 }
@@ -61,16 +63,10 @@ type S7ParameterUserDataItemExactly interface {
 
 // _S7ParameterUserDataItem is the data-structure of this message
 type _S7ParameterUserDataItem struct {
-	_S7ParameterUserDataItemChildRequirements
+	_SubType S7ParameterUserDataItem
 }
 
 var _ S7ParameterUserDataItemContract = (*_S7ParameterUserDataItem)(nil)
-
-type _S7ParameterUserDataItemChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetItemType() uint8
-}
 
 type S7ParameterUserDataItemChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_S7ParameterUserDataItem) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_S7ParameterUserDataItem) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func S7ParameterUserDataItemParse[T S7ParameterUserDataItem](ctx context.Context, theBytes []byte) (T, error) {

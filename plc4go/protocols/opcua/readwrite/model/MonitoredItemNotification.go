@@ -60,6 +60,7 @@ type _MonitoredItemNotification struct {
 }
 
 var _ MonitoredItemNotification = (*_MonitoredItemNotification)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemNotification)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_MonitoredItemNotification) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_MonitoredItemNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoredItemNotification MonitoredItemNotification, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredItemNotification"); pullErr != nil {

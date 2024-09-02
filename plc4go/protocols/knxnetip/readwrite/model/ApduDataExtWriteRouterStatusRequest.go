@@ -52,6 +52,7 @@ type _ApduDataExtWriteRouterStatusRequest struct {
 }
 
 var _ ApduDataExtWriteRouterStatusRequest = (*_ApduDataExtWriteRouterStatusRequest)(nil)
+var _ ApduDataExtRequirements = (*_ApduDataExtWriteRouterStatusRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataExtWriteRouterStatusRequest) GetLengthInBytes(ctx context.Cont
 
 func (m *_ApduDataExtWriteRouterStatusRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduDataExt, length uint8) (__apduDataExtWriteRouterStatusRequest ApduDataExtWriteRouterStatusRequest, err error) {
 	m.ApduDataExtContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtWriteRouterStatusRequest"); pullErr != nil {

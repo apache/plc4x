@@ -66,6 +66,7 @@ type _QueryDataSet struct {
 }
 
 var _ QueryDataSet = (*_QueryDataSet)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_QueryDataSet)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,6 +170,7 @@ func (m *_QueryDataSet) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_QueryDataSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryDataSet QueryDataSet, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("QueryDataSet"); pullErr != nil {

@@ -63,6 +63,7 @@ type _COTPPacketConnectionRequest struct {
 }
 
 var _ COTPPacketConnectionRequest = (*_COTPPacketConnectionRequest)(nil)
+var _ COTPPacketRequirements = (*_COTPPacketConnectionRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_COTPPacketConnectionRequest) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_COTPPacketConnectionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint16) (__cOTPPacketConnectionRequest COTPPacketConnectionRequest, err error) {
 	m.COTPPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketConnectionRequest"); pullErr != nil {

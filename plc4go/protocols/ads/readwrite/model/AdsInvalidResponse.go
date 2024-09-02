@@ -52,6 +52,7 @@ type _AdsInvalidResponse struct {
 }
 
 var _ AdsInvalidResponse = (*_AdsInvalidResponse)(nil)
+var _ AmsPacketRequirements = (*_AdsInvalidResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_AdsInvalidResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_AdsInvalidResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AmsPacket) (__adsInvalidResponse AdsInvalidResponse, err error) {
 	m.AmsPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsInvalidResponse"); pullErr != nil {

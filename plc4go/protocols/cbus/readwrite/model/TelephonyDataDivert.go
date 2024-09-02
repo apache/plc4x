@@ -57,6 +57,7 @@ type _TelephonyDataDivert struct {
 }
 
 var _ TelephonyDataDivert = (*_TelephonyDataDivert)(nil)
+var _ TelephonyDataRequirements = (*_TelephonyDataDivert)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_TelephonyDataDivert) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_TelephonyDataDivert) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TelephonyData, commandTypeContainer TelephonyCommandTypeContainer) (__telephonyDataDivert TelephonyDataDivert, err error) {
 	m.TelephonyDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataDivert"); pullErr != nil {

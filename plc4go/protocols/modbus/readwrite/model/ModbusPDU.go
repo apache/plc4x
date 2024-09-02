@@ -48,6 +48,8 @@ type ModbusPDUContract interface {
 
 // ModbusPDURequirements provides a set of functions which need to be implemented by a sub struct
 type ModbusPDURequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetErrorFlag returns ErrorFlag (discriminator field)
 	GetErrorFlag() bool
 	// GetFunctionFlag returns FunctionFlag (discriminator field)
@@ -65,18 +67,10 @@ type ModbusPDUExactly interface {
 
 // _ModbusPDU is the data-structure of this message
 type _ModbusPDU struct {
-	_ModbusPDUChildRequirements
+	_SubType ModbusPDU
 }
 
 var _ ModbusPDUContract = (*_ModbusPDU)(nil)
-
-type _ModbusPDUChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetErrorFlag() bool
-	GetFunctionFlag() uint8
-	GetResponse() bool
-}
 
 type ModbusPDUChild interface {
 	utils.Serializable
@@ -118,7 +112,7 @@ func (m *_ModbusPDU) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ModbusPDU) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ModbusPDUParse[T ModbusPDU](ctx context.Context, theBytes []byte, response bool) (T, error) {

@@ -60,6 +60,7 @@ type _BACnetServiceAckRequestKey struct {
 }
 
 var _ BACnetServiceAckRequestKey = (*_BACnetServiceAckRequestKey)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckRequestKey)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_BACnetServiceAckRequestKey) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_BACnetServiceAckRequestKey) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckPayloadLength uint32, serviceAckLength uint32) (__bACnetServiceAckRequestKey BACnetServiceAckRequestKey, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRequestKey"); pullErr != nil {

@@ -93,6 +93,7 @@ type _BACnetConfirmedServiceRequestConfirmedEventNotification struct {
 }
 
 var _ BACnetConfirmedServiceRequestConfirmedEventNotification = (*_BACnetConfirmedServiceRequestConfirmedEventNotification)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestConfirmedEventNotification)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -269,6 +270,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) GetLengthInBy
 
 func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestConfirmedEventNotification BACnetConfirmedServiceRequestConfirmedEventNotification, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedEventNotification"); pullErr != nil {

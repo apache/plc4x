@@ -57,6 +57,7 @@ type _BACnetErrorGeneral struct {
 }
 
 var _ BACnetErrorGeneral = (*_BACnetErrorGeneral)(nil)
+var _ BACnetErrorRequirements = (*_BACnetErrorGeneral)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_BACnetErrorGeneral) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BACnetErrorGeneral) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__bACnetErrorGeneral BACnetErrorGeneral, err error) {
 	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetErrorGeneral"); pullErr != nil {

@@ -64,6 +64,7 @@ type _LevelInformationNormal struct {
 }
 
 var _ LevelInformationNormal = (*_LevelInformationNormal)(nil)
+var _ LevelInformationRequirements = (*_LevelInformationNormal)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -165,6 +166,7 @@ func (m *_LevelInformationNormal) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_LevelInformationNormal) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_LevelInformation) (__levelInformationNormal LevelInformationNormal, err error) {
 	m.LevelInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LevelInformationNormal"); pullErr != nil {

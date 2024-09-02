@@ -52,6 +52,10 @@ type BACnetProcessIdSelectionContract interface {
 
 // BACnetProcessIdSelectionRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetProcessIdSelectionRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetProcessIdSelectionExactly can be used when we want exactly this type and not a type which fulfills BACnetProcessIdSelection.
@@ -63,17 +67,11 @@ type BACnetProcessIdSelectionExactly interface {
 
 // _BACnetProcessIdSelection is the data-structure of this message
 type _BACnetProcessIdSelection struct {
-	_BACnetProcessIdSelectionChildRequirements
+	_SubType        BACnetProcessIdSelection
 	PeekedTagHeader BACnetTagHeader
 }
 
 var _ BACnetProcessIdSelectionContract = (*_BACnetProcessIdSelection)(nil)
-
-type _BACnetProcessIdSelectionChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetProcessIdSelectionChild interface {
 	utils.Serializable
@@ -102,7 +100,8 @@ func (m *_BACnetProcessIdSelection) GetPeekedTagHeader() BACnetTagHeader {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetProcessIdSelection) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetProcessIdSelection) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -142,7 +141,7 @@ func (m *_BACnetProcessIdSelection) getLengthInBits(ctx context.Context) uint16 
 }
 
 func (m *_BACnetProcessIdSelection) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetProcessIdSelectionParse[T BACnetProcessIdSelection](ctx context.Context, theBytes []byte) (T, error) {

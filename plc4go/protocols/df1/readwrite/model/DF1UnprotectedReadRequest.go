@@ -60,6 +60,7 @@ type _DF1UnprotectedReadRequest struct {
 }
 
 var _ DF1UnprotectedReadRequest = (*_DF1UnprotectedReadRequest)(nil)
+var _ DF1CommandRequirements = (*_DF1UnprotectedReadRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_DF1UnprotectedReadRequest) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_DF1UnprotectedReadRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_DF1Command) (__dF1UnprotectedReadRequest DF1UnprotectedReadRequest, err error) {
 	m.DF1CommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DF1UnprotectedReadRequest"); pullErr != nil {

@@ -60,6 +60,7 @@ type _PortableQualifiedName struct {
 }
 
 var _ PortableQualifiedName = (*_PortableQualifiedName)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_PortableQualifiedName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_PortableQualifiedName) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_PortableQualifiedName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__portableQualifiedName PortableQualifiedName, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PortableQualifiedName"); pullErr != nil {

@@ -57,6 +57,7 @@ type _ServiceFault struct {
 }
 
 var _ ServiceFault = (*_ServiceFault)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ServiceFault)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_ServiceFault) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ServiceFault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serviceFault ServiceFault, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServiceFault"); pullErr != nil {

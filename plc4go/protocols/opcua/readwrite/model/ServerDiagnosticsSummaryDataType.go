@@ -90,6 +90,7 @@ type _ServerDiagnosticsSummaryDataType struct {
 }
 
 var _ ServerDiagnosticsSummaryDataType = (*_ServerDiagnosticsSummaryDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ServerDiagnosticsSummaryDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -250,6 +251,7 @@ func (m *_ServerDiagnosticsSummaryDataType) GetLengthInBytes(ctx context.Context
 
 func (m *_ServerDiagnosticsSummaryDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serverDiagnosticsSummaryDataType ServerDiagnosticsSummaryDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServerDiagnosticsSummaryDataType"); pullErr != nil {

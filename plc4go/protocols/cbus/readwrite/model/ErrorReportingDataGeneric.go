@@ -84,6 +84,7 @@ type _ErrorReportingDataGeneric struct {
 }
 
 var _ ErrorReportingDataGeneric = (*_ErrorReportingDataGeneric)(nil)
+var _ ErrorReportingDataRequirements = (*_ErrorReportingDataGeneric)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -241,6 +242,7 @@ func (m *_ErrorReportingDataGeneric) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_ErrorReportingDataGeneric) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ErrorReportingData) (__errorReportingDataGeneric ErrorReportingDataGeneric, err error) {
 	m.ErrorReportingDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingDataGeneric"); pullErr != nil {

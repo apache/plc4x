@@ -57,6 +57,7 @@ type _BACnetPropertyStatesNetworkType struct {
 }
 
 var _ BACnetPropertyStatesNetworkType = (*_BACnetPropertyStatesNetworkType)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNetworkType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesNetworkType) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetPropertyStatesNetworkType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesNetworkType BACnetPropertyStatesNetworkType, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesNetworkType"); pullErr != nil {

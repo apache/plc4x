@@ -60,6 +60,7 @@ type _VariantGuid struct {
 }
 
 var _ VariantGuid = (*_VariantGuid)(nil)
+var _ VariantRequirements = (*_VariantGuid)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -149,6 +150,7 @@ func (m *_VariantGuid) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantGuid) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantGuid VariantGuid, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantGuid"); pullErr != nil {

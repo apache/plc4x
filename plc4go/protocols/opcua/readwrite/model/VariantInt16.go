@@ -60,6 +60,7 @@ type _VariantInt16 struct {
 }
 
 var _ VariantInt16 = (*_VariantInt16)(nil)
+var _ VariantRequirements = (*_VariantInt16)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_VariantInt16) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantInt16) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantInt16 VariantInt16, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantInt16"); pullErr != nil {

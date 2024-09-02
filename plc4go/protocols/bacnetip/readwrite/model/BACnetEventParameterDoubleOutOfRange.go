@@ -72,6 +72,7 @@ type _BACnetEventParameterDoubleOutOfRange struct {
 }
 
 var _ BACnetEventParameterDoubleOutOfRange = (*_BACnetEventParameterDoubleOutOfRange)(nil)
+var _ BACnetEventParameterRequirements = (*_BACnetEventParameterDoubleOutOfRange)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -180,6 +181,7 @@ func (m *_BACnetEventParameterDoubleOutOfRange) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetEventParameterDoubleOutOfRange) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventParameter) (__bACnetEventParameterDoubleOutOfRange BACnetEventParameterDoubleOutOfRange, err error) {
 	m.BACnetEventParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterDoubleOutOfRange"); pullErr != nil {

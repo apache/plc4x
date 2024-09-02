@@ -57,6 +57,7 @@ type _BACnetPropertyStatesEscalatorOperationDirection struct {
 }
 
 var _ BACnetPropertyStatesEscalatorOperationDirection = (*_BACnetPropertyStatesEscalatorOperationDirection)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEscalatorOperationDirection)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetLengthInBytes(ctx 
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesEscalatorOperationDirection BACnetPropertyStatesEscalatorOperationDirection, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEscalatorOperationDirection"); pullErr != nil {

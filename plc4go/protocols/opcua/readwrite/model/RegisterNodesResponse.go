@@ -63,6 +63,7 @@ type _RegisterNodesResponse struct {
 }
 
 var _ RegisterNodesResponse = (*_RegisterNodesResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RegisterNodesResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_RegisterNodesResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RegisterNodesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerNodesResponse RegisterNodesResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RegisterNodesResponse"); pullErr != nil {

@@ -63,6 +63,7 @@ type _FindServersResponse struct {
 }
 
 var _ FindServersResponse = (*_FindServersResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_FindServersResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_FindServersResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_FindServersResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__findServersResponse FindServersResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FindServersResponse"); pullErr != nil {

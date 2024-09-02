@@ -81,6 +81,7 @@ type _TrustListDataType struct {
 }
 
 var _ TrustListDataType = (*_TrustListDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_TrustListDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -245,6 +246,7 @@ func (m *_TrustListDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_TrustListDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__trustListDataType TrustListDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TrustListDataType"); pullErr != nil {

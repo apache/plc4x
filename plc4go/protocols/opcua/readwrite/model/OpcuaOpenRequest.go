@@ -63,6 +63,7 @@ type _OpcuaOpenRequest struct {
 }
 
 var _ OpcuaOpenRequest = (*_OpcuaOpenRequest)(nil)
+var _ MessagePDURequirements = (*_OpcuaOpenRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_OpcuaOpenRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_OpcuaOpenRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, totalLength uint32, response bool) (__opcuaOpenRequest OpcuaOpenRequest, err error) {
 	m.MessagePDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("OpcuaOpenRequest"); pullErr != nil {

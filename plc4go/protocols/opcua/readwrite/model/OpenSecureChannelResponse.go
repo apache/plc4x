@@ -66,6 +66,7 @@ type _OpenSecureChannelResponse struct {
 }
 
 var _ OpenSecureChannelResponse = (*_OpenSecureChannelResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_OpenSecureChannelResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_OpenSecureChannelResponse) GetLengthInBytes(ctx context.Context) uint1
 
 func (m *_OpenSecureChannelResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__openSecureChannelResponse OpenSecureChannelResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("OpenSecureChannelResponse"); pullErr != nil {

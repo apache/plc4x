@@ -60,6 +60,7 @@ type _VariantByte struct {
 }
 
 var _ VariantByte = (*_VariantByte)(nil)
+var _ VariantRequirements = (*_VariantByte)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -144,6 +145,7 @@ func (m *_VariantByte) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VariantByte) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Variant, arrayLengthSpecified bool) (__variantByte VariantByte, err error) {
 	m.VariantContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VariantByte"); pullErr != nil {

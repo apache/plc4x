@@ -54,6 +54,12 @@ type SecurityDataContract interface {
 
 // SecurityDataRequirements provides a set of functions which need to be implemented by a sub struct
 type SecurityDataRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetArgument returns Argument (discriminator field)
+	GetArgument() byte
+	// GetCommandType returns CommandType (discriminator field)
+	GetCommandType() SecurityCommandType
 }
 
 // SecurityDataExactly can be used when we want exactly this type and not a type which fulfills SecurityData.
@@ -65,19 +71,12 @@ type SecurityDataExactly interface {
 
 // _SecurityData is the data-structure of this message
 type _SecurityData struct {
-	_SecurityDataChildRequirements
+	_SubType             SecurityData
 	CommandTypeContainer SecurityCommandTypeContainer
 	Argument             byte
 }
 
 var _ SecurityDataContract = (*_SecurityData)(nil)
-
-type _SecurityDataChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetArgument() byte
-	GetCommandType() SecurityCommandType
-}
 
 type SecurityDataChild interface {
 	utils.Serializable
@@ -110,7 +109,8 @@ func (m *_SecurityData) GetArgument() byte {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_SecurityData) GetCommandType() SecurityCommandType {
+func (pm *_SecurityData) GetCommandType() SecurityCommandType {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return CastSecurityCommandType(m.GetCommandTypeContainer().CommandType())
@@ -156,7 +156,7 @@ func (m *_SecurityData) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_SecurityData) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataParse[T SecurityData](ctx context.Context, theBytes []byte) (T, error) {

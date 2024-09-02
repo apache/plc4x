@@ -69,6 +69,7 @@ type _ServerOnNetwork struct {
 }
 
 var _ ServerOnNetwork = (*_ServerOnNetwork)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ServerOnNetwork)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -180,6 +181,7 @@ func (m *_ServerOnNetwork) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ServerOnNetwork) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serverOnNetwork ServerOnNetwork, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServerOnNetwork"); pullErr != nil {

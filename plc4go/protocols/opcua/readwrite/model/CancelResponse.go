@@ -60,6 +60,7 @@ type _CancelResponse struct {
 }
 
 var _ CancelResponse = (*_CancelResponse)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CancelResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_CancelResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CancelResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__cancelResponse CancelResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CancelResponse"); pullErr != nil {

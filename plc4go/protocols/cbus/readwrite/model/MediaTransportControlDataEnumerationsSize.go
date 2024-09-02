@@ -71,6 +71,7 @@ type _MediaTransportControlDataEnumerationsSize struct {
 }
 
 var _ MediaTransportControlDataEnumerationsSize = (*_MediaTransportControlDataEnumerationsSize)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataEnumerationsSize)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -196,6 +197,7 @@ func (m *_MediaTransportControlDataEnumerationsSize) GetLengthInBytes(ctx contex
 
 func (m *_MediaTransportControlDataEnumerationsSize) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataEnumerationsSize MediaTransportControlDataEnumerationsSize, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataEnumerationsSize"); pullErr != nil {

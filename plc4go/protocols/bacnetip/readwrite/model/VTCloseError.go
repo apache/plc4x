@@ -60,6 +60,7 @@ type _VTCloseError struct {
 }
 
 var _ VTCloseError = (*_VTCloseError)(nil)
+var _ BACnetErrorRequirements = (*_VTCloseError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -142,6 +143,7 @@ func (m *_VTCloseError) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_VTCloseError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__vTCloseError VTCloseError, err error) {
 	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("VTCloseError"); pullErr != nil {

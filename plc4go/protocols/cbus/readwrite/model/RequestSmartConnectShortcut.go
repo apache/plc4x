@@ -63,6 +63,7 @@ type _RequestSmartConnectShortcut struct {
 }
 
 var _ RequestSmartConnectShortcut = (*_RequestSmartConnectShortcut)(nil)
+var _ RequestRequirements = (*_RequestSmartConnectShortcut)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -154,6 +155,7 @@ func (m *_RequestSmartConnectShortcut) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_RequestSmartConnectShortcut) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestSmartConnectShortcut RequestSmartConnectShortcut, err error) {
 	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestSmartConnectShortcut"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetConstructedDataActiveVTSessions struct {
 }
 
 var _ BACnetConstructedDataActiveVTSessions = (*_BACnetConstructedDataActiveVTSessions)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveVTSessions)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,6 +138,7 @@ func (m *_BACnetConstructedDataActiveVTSessions) GetLengthInBytes(ctx context.Co
 
 func (m *_BACnetConstructedDataActiveVTSessions) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataActiveVTSessions BACnetConstructedDataActiveVTSessions, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveVTSessions"); pullErr != nil {

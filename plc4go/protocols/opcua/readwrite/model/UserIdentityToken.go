@@ -60,6 +60,7 @@ type _UserIdentityToken struct {
 }
 
 var _ UserIdentityToken = (*_UserIdentityToken)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_UserIdentityToken)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -143,6 +144,7 @@ func (m *_UserIdentityToken) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_UserIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__userIdentityToken UserIdentityToken, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UserIdentityToken"); pullErr != nil {

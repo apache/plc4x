@@ -52,6 +52,7 @@ type _ConnectionTransportDataType struct {
 }
 
 var _ ConnectionTransportDataType = (*_ConnectionTransportDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_ConnectionTransportDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ConnectionTransportDataType) GetLengthInBytes(ctx context.Context) uin
 
 func (m *_ConnectionTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__connectionTransportDataType ConnectionTransportDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionTransportDataType"); pullErr != nil {

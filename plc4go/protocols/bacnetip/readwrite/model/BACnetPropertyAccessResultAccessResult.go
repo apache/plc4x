@@ -58,6 +58,10 @@ type BACnetPropertyAccessResultAccessResultContract interface {
 
 // BACnetPropertyAccessResultAccessResultRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetPropertyAccessResultAccessResultRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetPeekedTagNumber returns PeekedTagNumber (discriminator field)
+	GetPeekedTagNumber() uint8
 }
 
 // BACnetPropertyAccessResultAccessResultExactly can be used when we want exactly this type and not a type which fulfills BACnetPropertyAccessResultAccessResult.
@@ -69,7 +73,7 @@ type BACnetPropertyAccessResultAccessResultExactly interface {
 
 // _BACnetPropertyAccessResultAccessResult is the data-structure of this message
 type _BACnetPropertyAccessResultAccessResult struct {
-	_BACnetPropertyAccessResultAccessResultChildRequirements
+	_SubType        BACnetPropertyAccessResultAccessResult
 	PeekedTagHeader BACnetTagHeader
 
 	// Arguments.
@@ -79,12 +83,6 @@ type _BACnetPropertyAccessResultAccessResult struct {
 }
 
 var _ BACnetPropertyAccessResultAccessResultContract = (*_BACnetPropertyAccessResultAccessResult)(nil)
-
-type _BACnetPropertyAccessResultAccessResultChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
-}
 
 type BACnetPropertyAccessResultAccessResultChild interface {
 	utils.Serializable
@@ -113,7 +111,8 @@ func (m *_BACnetPropertyAccessResultAccessResult) GetPeekedTagHeader() BACnetTag
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetPropertyAccessResultAccessResult) GetPeekedTagNumber() uint8 {
+func (pm *_BACnetPropertyAccessResultAccessResult) GetPeekedTagNumber() uint8 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
@@ -153,7 +152,7 @@ func (m *_BACnetPropertyAccessResultAccessResult) getLengthInBits(ctx context.Co
 }
 
 func (m *_BACnetPropertyAccessResultAccessResult) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyAccessResultAccessResultParse[T BACnetPropertyAccessResultAccessResult](ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (T, error) {

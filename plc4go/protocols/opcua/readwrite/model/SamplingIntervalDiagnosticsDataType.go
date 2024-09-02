@@ -66,6 +66,7 @@ type _SamplingIntervalDiagnosticsDataType struct {
 }
 
 var _ SamplingIntervalDiagnosticsDataType = (*_SamplingIntervalDiagnosticsDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_SamplingIntervalDiagnosticsDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ func (m *_SamplingIntervalDiagnosticsDataType) GetLengthInBytes(ctx context.Cont
 
 func (m *_SamplingIntervalDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__samplingIntervalDiagnosticsDataType SamplingIntervalDiagnosticsDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SamplingIntervalDiagnosticsDataType"); pullErr != nil {

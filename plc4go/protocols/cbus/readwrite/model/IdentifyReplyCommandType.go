@@ -57,6 +57,7 @@ type _IdentifyReplyCommandType struct {
 }
 
 var _ IdentifyReplyCommandType = (*_IdentifyReplyCommandType)(nil)
+var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_IdentifyReplyCommandType) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_IdentifyReplyCommandType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_IdentifyReplyCommand, attribute Attribute, numBytes uint8) (__identifyReplyCommandType IdentifyReplyCommandType, err error) {
 	m.IdentifyReplyCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandType"); pullErr != nil {

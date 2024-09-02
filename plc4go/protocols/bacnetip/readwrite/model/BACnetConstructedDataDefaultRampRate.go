@@ -59,6 +59,7 @@ type _BACnetConstructedDataDefaultRampRate struct {
 }
 
 var _ BACnetConstructedDataDefaultRampRate = (*_BACnetConstructedDataDefaultRampRate)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultRampRate)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataDefaultRampRate) GetLengthInBytes(ctx context.Con
 
 func (m *_BACnetConstructedDataDefaultRampRate) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataDefaultRampRate BACnetConstructedDataDefaultRampRate, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultRampRate"); pullErr != nil {

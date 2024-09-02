@@ -60,6 +60,7 @@ type _COTPPacketDisconnectResponse struct {
 }
 
 var _ COTPPacketDisconnectResponse = (*_COTPPacketDisconnectResponse)(nil)
+var _ COTPPacketRequirements = (*_COTPPacketDisconnectResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_COTPPacketDisconnectResponse) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_COTPPacketDisconnectResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPPacket, cotpLen uint16) (__cOTPPacketDisconnectResponse COTPPacketDisconnectResponse, err error) {
 	m.COTPPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketDisconnectResponse"); pullErr != nil {

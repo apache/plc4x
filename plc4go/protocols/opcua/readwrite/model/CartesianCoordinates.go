@@ -52,6 +52,7 @@ type _CartesianCoordinates struct {
 }
 
 var _ CartesianCoordinates = (*_CartesianCoordinates)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_CartesianCoordinates)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_CartesianCoordinates) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CartesianCoordinates) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__cartesianCoordinates CartesianCoordinates, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CartesianCoordinates"); pullErr != nil {

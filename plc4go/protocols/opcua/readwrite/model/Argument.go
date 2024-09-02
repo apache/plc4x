@@ -72,6 +72,7 @@ type _Argument struct {
 }
 
 var _ Argument = (*_Argument)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_Argument)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -186,6 +187,7 @@ func (m *_Argument) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_Argument) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__argument Argument, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Argument"); pullErr != nil {

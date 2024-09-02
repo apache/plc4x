@@ -61,6 +61,7 @@ type _MediaTransportControlDataNextPreviousCategory struct {
 }
 
 var _ MediaTransportControlDataNextPreviousCategory = (*_MediaTransportControlDataNextPreviousCategory)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataNextPreviousCategory)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -154,6 +155,7 @@ func (m *_MediaTransportControlDataNextPreviousCategory) GetLengthInBytes(ctx co
 
 func (m *_MediaTransportControlDataNextPreviousCategory) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData) (__mediaTransportControlDataNextPreviousCategory MediaTransportControlDataNextPreviousCategory, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataNextPreviousCategory"); pullErr != nil {

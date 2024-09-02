@@ -60,6 +60,7 @@ type _CipConnectedRequest struct {
 }
 
 var _ CipConnectedRequest = (*_CipConnectedRequest)(nil)
+var _ CipServiceRequirements = (*_CipConnectedRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -151,6 +152,7 @@ func (m *_CipConnectedRequest) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CipConnectedRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__cipConnectedRequest CipConnectedRequest, err error) {
 	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipConnectedRequest"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetPropertyStatesShedState struct {
 }
 
 var _ BACnetPropertyStatesShedState = (*_BACnetPropertyStatesShedState)(nil)
+var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesShedState)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPropertyStatesShedState) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetPropertyStatesShedState) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPropertyStates, peekedTagNumber uint8) (__bACnetPropertyStatesShedState BACnetPropertyStatesShedState, err error) {
 	m.BACnetPropertyStatesContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesShedState"); pullErr != nil {

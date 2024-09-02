@@ -59,6 +59,7 @@ type _BACnetConstructedDataNotifyType struct {
 }
 
 var _ BACnetConstructedDataNotifyType = (*_BACnetConstructedDataNotifyType)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotifyType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataNotifyType) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetConstructedDataNotifyType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataNotifyType BACnetConstructedDataNotifyType, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNotifyType"); pullErr != nil {

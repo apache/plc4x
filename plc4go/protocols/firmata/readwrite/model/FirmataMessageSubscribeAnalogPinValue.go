@@ -64,6 +64,7 @@ type _FirmataMessageSubscribeAnalogPinValue struct {
 }
 
 var _ FirmataMessageSubscribeAnalogPinValue = (*_FirmataMessageSubscribeAnalogPinValue)(nil)
+var _ FirmataMessageRequirements = (*_FirmataMessageSubscribeAnalogPinValue)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) GetLengthInBytes(ctx context.Co
 
 func (m *_FirmataMessageSubscribeAnalogPinValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataMessage, response bool) (__firmataMessageSubscribeAnalogPinValue FirmataMessageSubscribeAnalogPinValue, err error) {
 	m.FirmataMessageContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeAnalogPinValue"); pullErr != nil {

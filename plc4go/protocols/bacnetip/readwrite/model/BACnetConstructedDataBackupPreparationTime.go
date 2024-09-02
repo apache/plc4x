@@ -59,6 +59,7 @@ type _BACnetConstructedDataBackupPreparationTime struct {
 }
 
 var _ BACnetConstructedDataBackupPreparationTime = (*_BACnetConstructedDataBackupPreparationTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupPreparationTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBackupPreparationTime) GetLengthInBytes(ctx conte
 
 func (m *_BACnetConstructedDataBackupPreparationTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBackupPreparationTime BACnetConstructedDataBackupPreparationTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBackupPreparationTime"); pullErr != nil {

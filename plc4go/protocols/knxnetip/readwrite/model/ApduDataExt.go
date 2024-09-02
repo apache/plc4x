@@ -50,6 +50,8 @@ type ApduDataExtContract interface {
 
 // ApduDataExtRequirements provides a set of functions which need to be implemented by a sub struct
 type ApduDataExtRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetExtApciType returns ExtApciType (discriminator field)
 	GetExtApciType() uint8
 }
@@ -63,19 +65,13 @@ type ApduDataExtExactly interface {
 
 // _ApduDataExt is the data-structure of this message
 type _ApduDataExt struct {
-	_ApduDataExtChildRequirements
+	_SubType ApduDataExt
 
 	// Arguments.
 	Length uint8
 }
 
 var _ ApduDataExtContract = (*_ApduDataExt)(nil)
-
-type _ApduDataExtChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetExtApciType() uint8
-}
 
 type ApduDataExtChild interface {
 	utils.Serializable
@@ -115,7 +111,7 @@ func (m *_ApduDataExt) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_ApduDataExt) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataExtParse[T ApduDataExt](ctx context.Context, theBytes []byte, length uint8) (T, error) {

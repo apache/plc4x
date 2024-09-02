@@ -57,6 +57,7 @@ type _SecurityDataArmReadyNotReady struct {
 }
 
 var _ SecurityDataArmReadyNotReady = (*_SecurityDataArmReadyNotReady)(nil)
+var _ SecurityDataRequirements = (*_SecurityDataArmReadyNotReady)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_SecurityDataArmReadyNotReady) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_SecurityDataArmReadyNotReady) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SecurityData) (__securityDataArmReadyNotReady SecurityDataArmReadyNotReady, err error) {
 	m.SecurityDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataArmReadyNotReady"); pullErr != nil {

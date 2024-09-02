@@ -48,6 +48,8 @@ type PathSegmentContract interface {
 
 // PathSegmentRequirements provides a set of functions which need to be implemented by a sub struct
 type PathSegmentRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetPathSegment returns PathSegment (discriminator field)
 	GetPathSegment() uint8
 }
@@ -61,16 +63,10 @@ type PathSegmentExactly interface {
 
 // _PathSegment is the data-structure of this message
 type _PathSegment struct {
-	_PathSegmentChildRequirements
+	_SubType PathSegment
 }
 
 var _ PathSegmentContract = (*_PathSegment)(nil)
-
-type _PathSegmentChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetPathSegment() uint8
-}
 
 type PathSegmentChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_PathSegment) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_PathSegment) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func PathSegmentParse[T PathSegment](ctx context.Context, theBytes []byte) (T, error) {

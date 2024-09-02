@@ -55,6 +55,8 @@ type BVLCContract interface {
 
 // BVLCRequirements provides a set of functions which need to be implemented by a sub struct
 type BVLCRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetBvlcFunction returns BvlcFunction (discriminator field)
 	GetBvlcFunction() uint8
 }
@@ -68,16 +70,10 @@ type BVLCExactly interface {
 
 // _BVLC is the data-structure of this message
 type _BVLC struct {
-	_BVLCChildRequirements
+	_SubType BVLC
 }
 
 var _ BVLCContract = (*_BVLC)(nil)
-
-type _BVLCChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetBvlcFunction() uint8
-}
 
 type BVLCChild interface {
 	utils.Serializable
@@ -93,7 +89,8 @@ type BVLCChild interface {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BVLC) GetBvlcPayloadLength() uint16 {
+func (pm *_BVLC) GetBvlcPayloadLength() uint16 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(4)))
@@ -154,7 +151,7 @@ func (m *_BVLC) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_BVLC) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BVLCParse[T BVLC](ctx context.Context, theBytes []byte) (T, error) {

@@ -52,6 +52,7 @@ type _MPropInfoInd struct {
 }
 
 var _ MPropInfoInd = (*_MPropInfoInd)(nil)
+var _ CEMIRequirements = (*_MPropInfoInd)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_MPropInfoInd) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_MPropInfoInd) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMI, size uint16) (__mPropInfoInd MPropInfoInd, err error) {
 	m.CEMIContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MPropInfoInd"); pullErr != nil {

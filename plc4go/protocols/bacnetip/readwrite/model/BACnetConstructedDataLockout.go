@@ -59,6 +59,7 @@ type _BACnetConstructedDataLockout struct {
 }
 
 var _ BACnetConstructedDataLockout = (*_BACnetConstructedDataLockout)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLockout)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataLockout) GetLengthInBytes(ctx context.Context) ui
 
 func (m *_BACnetConstructedDataLockout) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLockout BACnetConstructedDataLockout, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLockout"); pullErr != nil {

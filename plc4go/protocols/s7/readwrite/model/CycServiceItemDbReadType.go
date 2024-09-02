@@ -60,6 +60,7 @@ type _CycServiceItemDbReadType struct {
 }
 
 var _ CycServiceItemDbReadType = (*_CycServiceItemDbReadType)(nil)
+var _ CycServiceItemTypeRequirements = (*_CycServiceItemDbReadType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -143,6 +144,7 @@ func (m *_CycServiceItemDbReadType) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_CycServiceItemDbReadType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CycServiceItemType) (__cycServiceItemDbReadType CycServiceItemDbReadType, err error) {
 	m.CycServiceItemTypeContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CycServiceItemDbReadType"); pullErr != nil {

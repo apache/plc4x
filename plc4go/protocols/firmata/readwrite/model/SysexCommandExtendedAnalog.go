@@ -52,6 +52,7 @@ type _SysexCommandExtendedAnalog struct {
 }
 
 var _ SysexCommandExtendedAnalog = (*_SysexCommandExtendedAnalog)(nil)
+var _ SysexCommandRequirements = (*_SysexCommandExtendedAnalog)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,6 +111,7 @@ func (m *_SysexCommandExtendedAnalog) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_SysexCommandExtendedAnalog) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SysexCommand, response bool) (__sysexCommandExtendedAnalog SysexCommandExtendedAnalog, err error) {
 	m.SysexCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedAnalog"); pullErr != nil {

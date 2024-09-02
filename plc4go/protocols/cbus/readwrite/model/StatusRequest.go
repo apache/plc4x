@@ -50,6 +50,10 @@ type StatusRequestContract interface {
 
 // StatusRequestRequirements provides a set of functions which need to be implemented by a sub struct
 type StatusRequestRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
+	// GetStatusType returns StatusType (discriminator field)
+	GetStatusType() byte
 }
 
 // StatusRequestExactly can be used when we want exactly this type and not a type which fulfills StatusRequest.
@@ -61,17 +65,11 @@ type StatusRequestExactly interface {
 
 // _StatusRequest is the data-structure of this message
 type _StatusRequest struct {
-	_StatusRequestChildRequirements
+	_SubType   StatusRequest
 	StatusType byte
 }
 
 var _ StatusRequestContract = (*_StatusRequest)(nil)
-
-type _StatusRequestChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetStatusType() byte
-}
 
 type StatusRequestChild interface {
 	utils.Serializable
@@ -123,7 +121,7 @@ func (m *_StatusRequest) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_StatusRequest) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func StatusRequestParse[T StatusRequest](ctx context.Context, theBytes []byte) (T, error) {

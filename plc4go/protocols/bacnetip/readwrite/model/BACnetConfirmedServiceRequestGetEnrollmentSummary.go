@@ -72,6 +72,7 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummary struct {
 }
 
 var _ BACnetConfirmedServiceRequestGetEnrollmentSummary = (*_BACnetConfirmedServiceRequestGetEnrollmentSummary)(nil)
+var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestGetEnrollmentSummary)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -194,6 +195,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetLengthInBytes(ct
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConfirmedServiceRequest, serviceRequestLength uint32) (__bACnetConfirmedServiceRequestGetEnrollmentSummary BACnetConfirmedServiceRequestGetEnrollmentSummary, err error) {
 	m.BACnetConfirmedServiceRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEnrollmentSummary"); pullErr != nil {

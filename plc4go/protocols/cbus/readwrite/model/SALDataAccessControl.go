@@ -57,6 +57,7 @@ type _SALDataAccessControl struct {
 }
 
 var _ SALDataAccessControl = (*_SALDataAccessControl)(nil)
+var _ SALDataRequirements = (*_SALDataAccessControl)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_SALDataAccessControl) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataAccessControl) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataAccessControl SALDataAccessControl, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataAccessControl"); pullErr != nil {

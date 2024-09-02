@@ -59,6 +59,7 @@ type _BACnetConstructedDataStopTime struct {
 }
 
 var _ BACnetConstructedDataStopTime = (*_BACnetConstructedDataStopTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStopTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataStopTime) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetConstructedDataStopTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataStopTime BACnetConstructedDataStopTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStopTime"); pullErr != nil {

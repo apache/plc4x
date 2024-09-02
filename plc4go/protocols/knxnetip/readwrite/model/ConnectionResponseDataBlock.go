@@ -48,6 +48,8 @@ type ConnectionResponseDataBlockContract interface {
 
 // ConnectionResponseDataBlockRequirements provides a set of functions which need to be implemented by a sub struct
 type ConnectionResponseDataBlockRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetConnectionType returns ConnectionType (discriminator field)
 	GetConnectionType() uint8
 }
@@ -61,16 +63,10 @@ type ConnectionResponseDataBlockExactly interface {
 
 // _ConnectionResponseDataBlock is the data-structure of this message
 type _ConnectionResponseDataBlock struct {
-	_ConnectionResponseDataBlockChildRequirements
+	_SubType ConnectionResponseDataBlock
 }
 
 var _ ConnectionResponseDataBlockContract = (*_ConnectionResponseDataBlock)(nil)
-
-type _ConnectionResponseDataBlockChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetConnectionType() uint8
-}
 
 type ConnectionResponseDataBlockChild interface {
 	utils.Serializable
@@ -113,7 +109,7 @@ func (m *_ConnectionResponseDataBlock) getLengthInBits(ctx context.Context) uint
 }
 
 func (m *_ConnectionResponseDataBlock) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func ConnectionResponseDataBlockParse[T ConnectionResponseDataBlock](ctx context.Context, theBytes []byte) (T, error) {

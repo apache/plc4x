@@ -63,6 +63,7 @@ type _StatusRequestLevel struct {
 }
 
 var _ StatusRequestLevel = (*_StatusRequestLevel)(nil)
+var _ StatusRequestRequirements = (*_StatusRequestLevel)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,6 +146,7 @@ func (m *_StatusRequestLevel) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_StatusRequestLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_StatusRequest) (__statusRequestLevel StatusRequestLevel, err error) {
 	m.StatusRequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequestLevel"); pullErr != nil {

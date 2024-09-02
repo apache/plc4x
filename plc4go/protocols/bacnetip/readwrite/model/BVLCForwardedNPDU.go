@@ -68,6 +68,7 @@ type _BVLCForwardedNPDU struct {
 }
 
 var _ BVLCForwardedNPDU = (*_BVLCForwardedNPDU)(nil)
+var _ BVLCRequirements = (*_BVLCForwardedNPDU)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_BVLCForwardedNPDU) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_BVLCForwardedNPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC, bvlcPayloadLength uint16) (__bVLCForwardedNPDU BVLCForwardedNPDU, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCForwardedNPDU"); pullErr != nil {

@@ -57,6 +57,7 @@ type _BACnetPriorityValueObjectidentifier struct {
 }
 
 var _ BACnetPriorityValueObjectidentifier = (*_BACnetPriorityValueObjectidentifier)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueObjectidentifier)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPriorityValueObjectidentifier) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetPriorityValueObjectidentifier) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueObjectidentifier BACnetPriorityValueObjectidentifier, err error) {
 	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueObjectidentifier"); pullErr != nil {

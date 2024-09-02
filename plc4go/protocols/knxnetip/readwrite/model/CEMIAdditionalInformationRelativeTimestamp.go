@@ -60,6 +60,7 @@ type _CEMIAdditionalInformationRelativeTimestamp struct {
 }
 
 var _ CEMIAdditionalInformationRelativeTimestamp = (*_CEMIAdditionalInformationRelativeTimestamp)(nil)
+var _ CEMIAdditionalInformationRequirements = (*_CEMIAdditionalInformationRelativeTimestamp)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -148,6 +149,7 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBytes(ctx conte
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CEMIAdditionalInformation) (__cEMIAdditionalInformationRelativeTimestamp CEMIAdditionalInformationRelativeTimestamp, err error) {
 	m.CEMIAdditionalInformationContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationRelativeTimestamp"); pullErr != nil {

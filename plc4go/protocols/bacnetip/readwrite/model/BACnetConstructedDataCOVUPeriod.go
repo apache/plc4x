@@ -59,6 +59,7 @@ type _BACnetConstructedDataCOVUPeriod struct {
 }
 
 var _ BACnetConstructedDataCOVUPeriod = (*_BACnetConstructedDataCOVUPeriod)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVUPeriod)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataCOVUPeriod) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetConstructedDataCOVUPeriod) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataCOVUPeriod BACnetConstructedDataCOVUPeriod, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVUPeriod"); pullErr != nil {

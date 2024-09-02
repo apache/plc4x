@@ -59,6 +59,7 @@ type _BACnetConstructedDataActivationTime struct {
 }
 
 var _ BACnetConstructedDataActivationTime = (*_BACnetConstructedDataActivationTime)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActivationTime)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataActivationTime) GetLengthInBytes(ctx context.Cont
 
 func (m *_BACnetConstructedDataActivationTime) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataActivationTime BACnetConstructedDataActivationTime, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActivationTime"); pullErr != nil {

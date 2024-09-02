@@ -59,6 +59,7 @@ type _BACnetConstructedDataIsUTC struct {
 }
 
 var _ BACnetConstructedDataIsUTC = (*_BACnetConstructedDataIsUTC)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIsUTC)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataIsUTC) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_BACnetConstructedDataIsUTC) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataIsUTC BACnetConstructedDataIsUTC, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIsUTC"); pullErr != nil {

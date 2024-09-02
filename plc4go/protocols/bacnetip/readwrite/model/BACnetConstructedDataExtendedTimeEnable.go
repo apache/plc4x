@@ -59,6 +59,7 @@ type _BACnetConstructedDataExtendedTimeEnable struct {
 }
 
 var _ BACnetConstructedDataExtendedTimeEnable = (*_BACnetConstructedDataExtendedTimeEnable)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExtendedTimeEnable)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) GetLengthInBytes(ctx context.
 
 func (m *_BACnetConstructedDataExtendedTimeEnable) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataExtendedTimeEnable BACnetConstructedDataExtendedTimeEnable, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExtendedTimeEnable"); pullErr != nil {

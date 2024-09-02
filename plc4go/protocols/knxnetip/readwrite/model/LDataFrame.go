@@ -58,6 +58,8 @@ type LDataFrameContract interface {
 
 // LDataFrameRequirements provides a set of functions which need to be implemented by a sub struct
 type LDataFrameRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetNotAckFrame returns NotAckFrame (discriminator field)
 	GetNotAckFrame() bool
 	// GetPolling returns Polling (discriminator field)
@@ -73,7 +75,7 @@ type LDataFrameExactly interface {
 
 // _LDataFrame is the data-structure of this message
 type _LDataFrame struct {
-	_LDataFrameChildRequirements
+	_SubType             LDataFrame
 	FrameType            bool
 	NotRepeated          bool
 	Priority             CEMIPriority
@@ -82,13 +84,6 @@ type _LDataFrame struct {
 }
 
 var _ LDataFrameContract = (*_LDataFrame)(nil)
-
-type _LDataFrameChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetNotAckFrame() bool
-	GetPolling() bool
-}
 
 type LDataFrameChild interface {
 	utils.Serializable
@@ -175,7 +170,7 @@ func (m *_LDataFrame) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_LDataFrame) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func LDataFrameParse[T LDataFrame](ctx context.Context, theBytes []byte) (T, error) {

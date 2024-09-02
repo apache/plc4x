@@ -57,6 +57,7 @@ type _UnConnectedDataItem struct {
 }
 
 var _ UnConnectedDataItem = (*_UnConnectedDataItem)(nil)
+var _ TypeIdRequirements = (*_UnConnectedDataItem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -132,6 +133,7 @@ func (m *_UnConnectedDataItem) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_UnConnectedDataItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_TypeId) (__unConnectedDataItem UnConnectedDataItem, err error) {
 	m.TypeIdContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnConnectedDataItem"); pullErr != nil {

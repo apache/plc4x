@@ -60,6 +60,7 @@ type _RolePermissionType struct {
 }
 
 var _ RolePermissionType = (*_RolePermissionType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_RolePermissionType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_RolePermissionType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RolePermissionType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__rolePermissionType RolePermissionType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RolePermissionType"); pullErr != nil {

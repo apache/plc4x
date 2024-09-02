@@ -60,6 +60,7 @@ type _BACnetServiceAckAtomicReadFile struct {
 }
 
 var _ BACnetServiceAckAtomicReadFile = (*_BACnetServiceAckAtomicReadFile)(nil)
+var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicReadFile)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_BACnetServiceAckAtomicReadFile) GetLengthInBytes(ctx context.Context) 
 
 func (m *_BACnetServiceAckAtomicReadFile) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetServiceAck, serviceAckLength uint32) (__bACnetServiceAckAtomicReadFile BACnetServiceAckAtomicReadFile, err error) {
 	m.BACnetServiceAckContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFile"); pullErr != nil {

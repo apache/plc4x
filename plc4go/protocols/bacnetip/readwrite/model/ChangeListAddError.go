@@ -60,6 +60,7 @@ type _ChangeListAddError struct {
 }
 
 var _ ChangeListAddError = (*_ChangeListAddError)(nil)
+var _ BACnetErrorRequirements = (*_ChangeListAddError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_ChangeListAddError) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ChangeListAddError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetError, errorChoice BACnetConfirmedServiceChoice) (__changeListAddError ChangeListAddError, err error) {
 	m.BACnetErrorContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ChangeListAddError"); pullErr != nil {

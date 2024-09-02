@@ -48,6 +48,8 @@ type AdsDiscoveryBlockContract interface {
 
 // AdsDiscoveryBlockRequirements provides a set of functions which need to be implemented by a sub struct
 type AdsDiscoveryBlockRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetBlockType returns BlockType (discriminator field)
 	GetBlockType() AdsDiscoveryBlockType
 }
@@ -61,16 +63,10 @@ type AdsDiscoveryBlockExactly interface {
 
 // _AdsDiscoveryBlock is the data-structure of this message
 type _AdsDiscoveryBlock struct {
-	_AdsDiscoveryBlockChildRequirements
+	_SubType AdsDiscoveryBlock
 }
 
 var _ AdsDiscoveryBlockContract = (*_AdsDiscoveryBlock)(nil)
-
-type _AdsDiscoveryBlockChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetBlockType() AdsDiscoveryBlockType
-}
 
 type AdsDiscoveryBlockChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_AdsDiscoveryBlock) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_AdsDiscoveryBlock) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func AdsDiscoveryBlockParse[T AdsDiscoveryBlock](ctx context.Context, theBytes []byte) (T, error) {

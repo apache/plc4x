@@ -57,6 +57,7 @@ type _COTPParameterChecksum struct {
 }
 
 var _ COTPParameterChecksum = (*_COTPParameterChecksum)(nil)
+var _ COTPParameterRequirements = (*_COTPParameterChecksum)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,6 +130,7 @@ func (m *_COTPParameterChecksum) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_COTPParameterChecksum) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_COTPParameter, rest uint8) (__cOTPParameterChecksum COTPParameterChecksum, err error) {
 	m.COTPParameterContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPParameterChecksum"); pullErr != nil {

@@ -63,6 +63,7 @@ type _TranslateBrowsePathsToNodeIdsRequest struct {
 }
 
 var _ TranslateBrowsePathsToNodeIdsRequest = (*_TranslateBrowsePathsToNodeIdsRequest)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_TranslateBrowsePathsToNodeIdsRequest)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) GetLengthInBytes(ctx context.Con
 
 func (m *_TranslateBrowsePathsToNodeIdsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__translateBrowsePathsToNodeIdsRequest TranslateBrowsePathsToNodeIdsRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TranslateBrowsePathsToNodeIdsRequest"); pullErr != nil {

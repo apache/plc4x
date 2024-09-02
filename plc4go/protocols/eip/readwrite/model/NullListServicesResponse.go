@@ -52,6 +52,7 @@ type _NullListServicesResponse struct {
 }
 
 var _ NullListServicesResponse = (*_NullListServicesResponse)(nil)
+var _ EipPacketRequirements = (*_NullListServicesResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ func (m *_NullListServicesResponse) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_NullListServicesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_EipPacket, response bool) (__nullListServicesResponse NullListServicesResponse, err error) {
 	m.EipPacketContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NullListServicesResponse"); pullErr != nil {

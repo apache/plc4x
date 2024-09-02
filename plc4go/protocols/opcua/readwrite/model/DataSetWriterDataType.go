@@ -86,6 +86,7 @@ type _DataSetWriterDataType struct {
 }
 
 var _ DataSetWriterDataType = (*_DataSetWriterDataType)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DataSetWriterDataType)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -240,6 +241,7 @@ func (m *_DataSetWriterDataType) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_DataSetWriterDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataSetWriterDataType DataSetWriterDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DataSetWriterDataType"); pullErr != nil {

@@ -52,6 +52,7 @@ type _SALDataFreeUsage struct {
 }
 
 var _ SALDataFreeUsage = (*_SALDataFreeUsage)(nil)
+var _ SALDataRequirements = (*_SALDataFreeUsage)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_SALDataFreeUsage) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_SALDataFreeUsage) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataFreeUsage SALDataFreeUsage, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataFreeUsage"); pullErr != nil {

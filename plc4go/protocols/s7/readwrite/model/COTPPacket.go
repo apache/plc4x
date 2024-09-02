@@ -54,6 +54,8 @@ type COTPPacketContract interface {
 
 // COTPPacketRequirements provides a set of functions which need to be implemented by a sub struct
 type COTPPacketRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetTpduCode returns TpduCode (discriminator field)
 	GetTpduCode() uint8
 }
@@ -67,7 +69,7 @@ type COTPPacketExactly interface {
 
 // _COTPPacket is the data-structure of this message
 type _COTPPacket struct {
-	_COTPPacketChildRequirements
+	_SubType   COTPPacket
 	Parameters []COTPParameter
 	Payload    S7Message
 
@@ -76,12 +78,6 @@ type _COTPPacket struct {
 }
 
 var _ COTPPacketContract = (*_COTPPacket)(nil)
-
-type _COTPPacketChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetTpduCode() uint8
-}
 
 type COTPPacketChild interface {
 	utils.Serializable
@@ -154,7 +150,7 @@ func (m *_COTPPacket) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_COTPPacket) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func COTPPacketParse[T COTPPacket](ctx context.Context, theBytes []byte, cotpLen uint16) (T, error) {

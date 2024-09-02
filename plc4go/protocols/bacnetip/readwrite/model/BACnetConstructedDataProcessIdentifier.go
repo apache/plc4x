@@ -59,6 +59,7 @@ type _BACnetConstructedDataProcessIdentifier struct {
 }
 
 var _ BACnetConstructedDataProcessIdentifier = (*_BACnetConstructedDataProcessIdentifier)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProcessIdentifier)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataProcessIdentifier) GetLengthInBytes(ctx context.C
 
 func (m *_BACnetConstructedDataProcessIdentifier) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataProcessIdentifier BACnetConstructedDataProcessIdentifier, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProcessIdentifier"); pullErr != nil {

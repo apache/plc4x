@@ -59,6 +59,7 @@ type _BACnetConstructedDataRepresents struct {
 }
 
 var _ BACnetConstructedDataRepresents = (*_BACnetConstructedDataRepresents)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRepresents)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataRepresents) GetLengthInBytes(ctx context.Context)
 
 func (m *_BACnetConstructedDataRepresents) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataRepresents BACnetConstructedDataRepresents, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRepresents"); pullErr != nil {

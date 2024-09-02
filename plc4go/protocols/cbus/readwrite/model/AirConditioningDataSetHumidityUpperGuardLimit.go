@@ -66,6 +66,7 @@ type _AirConditioningDataSetHumidityUpperGuardLimit struct {
 }
 
 var _ AirConditioningDataSetHumidityUpperGuardLimit = (*_AirConditioningDataSetHumidityUpperGuardLimit)(nil)
+var _ AirConditioningDataRequirements = (*_AirConditioningDataSetHumidityUpperGuardLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -158,6 +159,7 @@ func (m *_AirConditioningDataSetHumidityUpperGuardLimit) GetLengthInBytes(ctx co
 
 func (m *_AirConditioningDataSetHumidityUpperGuardLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_AirConditioningData) (__airConditioningDataSetHumidityUpperGuardLimit AirConditioningDataSetHumidityUpperGuardLimit, err error) {
 	m.AirConditioningDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetHumidityUpperGuardLimit"); pullErr != nil {

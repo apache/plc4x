@@ -59,6 +59,7 @@ type _BACnetConstructedDataBACnetIPGlobalAddress struct {
 }
 
 var _ BACnetConstructedDataBACnetIPGlobalAddress = (*_BACnetConstructedDataBACnetIPGlobalAddress)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPGlobalAddress)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) GetLengthInBytes(ctx conte
 
 func (m *_BACnetConstructedDataBACnetIPGlobalAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataBACnetIPGlobalAddress BACnetConstructedDataBACnetIPGlobalAddress, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPGlobalAddress"); pullErr != nil {

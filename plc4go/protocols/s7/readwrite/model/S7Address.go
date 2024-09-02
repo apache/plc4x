@@ -48,6 +48,8 @@ type S7AddressContract interface {
 
 // S7AddressRequirements provides a set of functions which need to be implemented by a sub struct
 type S7AddressRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetAddressType returns AddressType (discriminator field)
 	GetAddressType() uint8
 }
@@ -61,16 +63,10 @@ type S7AddressExactly interface {
 
 // _S7Address is the data-structure of this message
 type _S7Address struct {
-	_S7AddressChildRequirements
+	_SubType S7Address
 }
 
 var _ S7AddressContract = (*_S7Address)(nil)
-
-type _S7AddressChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetAddressType() uint8
-}
 
 type S7AddressChild interface {
 	utils.Serializable
@@ -110,7 +106,7 @@ func (m *_S7Address) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_S7Address) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func S7AddressParse[T S7Address](ctx context.Context, theBytes []byte) (T, error) {

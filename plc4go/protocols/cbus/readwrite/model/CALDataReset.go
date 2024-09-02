@@ -52,6 +52,7 @@ type _CALDataReset struct {
 }
 
 var _ CALDataReset = (*_CALDataReset)(nil)
+var _ CALDataRequirements = (*_CALDataReset)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ func (m *_CALDataReset) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_CALDataReset) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CALData, requestContext RequestContext) (__cALDataReset CALDataReset, err error) {
 	m.CALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataReset"); pullErr != nil {

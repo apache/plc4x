@@ -59,6 +59,7 @@ type _BACnetConstructedDataLargeAnalogValueLowLimit struct {
 }
 
 var _ BACnetConstructedDataLargeAnalogValueLowLimit = (*_BACnetConstructedDataLargeAnalogValueLowLimit)(nil)
+var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueLowLimit)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) GetLengthInBytes(ctx co
 
 func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetConstructedData, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataLargeAnalogValueLowLimit BACnetConstructedDataLargeAnalogValueLowLimit, err error) {
 	m.BACnetConstructedDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLargeAnalogValueLowLimit"); pullErr != nil {

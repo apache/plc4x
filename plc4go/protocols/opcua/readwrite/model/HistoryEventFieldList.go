@@ -60,6 +60,7 @@ type _HistoryEventFieldList struct {
 }
 
 var _ HistoryEventFieldList = (*_HistoryEventFieldList)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_HistoryEventFieldList)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ func (m *_HistoryEventFieldList) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_HistoryEventFieldList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyEventFieldList HistoryEventFieldList, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HistoryEventFieldList"); pullErr != nil {

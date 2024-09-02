@@ -52,6 +52,8 @@ type BACnetConfirmedServiceRequestContract interface {
 
 // BACnetConfirmedServiceRequestRequirements provides a set of functions which need to be implemented by a sub struct
 type BACnetConfirmedServiceRequestRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetServiceChoice returns ServiceChoice (discriminator field)
 	GetServiceChoice() BACnetConfirmedServiceChoice
 }
@@ -65,19 +67,13 @@ type BACnetConfirmedServiceRequestExactly interface {
 
 // _BACnetConfirmedServiceRequest is the data-structure of this message
 type _BACnetConfirmedServiceRequest struct {
-	_BACnetConfirmedServiceRequestChildRequirements
+	_SubType BACnetConfirmedServiceRequest
 
 	// Arguments.
 	ServiceRequestLength uint32
 }
 
 var _ BACnetConfirmedServiceRequestContract = (*_BACnetConfirmedServiceRequest)(nil)
-
-type _BACnetConfirmedServiceRequestChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetServiceChoice() BACnetConfirmedServiceChoice
-}
 
 type BACnetConfirmedServiceRequestChild interface {
 	utils.Serializable
@@ -93,7 +89,8 @@ type BACnetConfirmedServiceRequestChild interface {
 /////////////////////// Accessors for virtual fields.
 ///////////////////////
 
-func (m *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint32 {
+func (pm *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint32 {
+	m := pm._SubType
 	ctx := context.Background()
 	_ = ctx
 	return uint32(utils.InlineIf((bool((m.GetServiceRequestLength()) > (0))), func() any { return uint32((uint32(m.GetServiceRequestLength()) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32))
@@ -135,7 +132,7 @@ func (m *_BACnetConfirmedServiceRequest) getLengthInBits(ctx context.Context) ui
 }
 
 func (m *_BACnetConfirmedServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestParse[T BACnetConfirmedServiceRequest](ctx context.Context, theBytes []byte, serviceRequestLength uint32) (T, error) {

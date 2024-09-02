@@ -62,6 +62,7 @@ type _BVLCOriginalUnicastNPDU struct {
 }
 
 var _ BVLCOriginalUnicastNPDU = (*_BVLCOriginalUnicastNPDU)(nil)
+var _ BVLCRequirements = (*_BVLCOriginalUnicastNPDU)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,6 +135,7 @@ func (m *_BVLCOriginalUnicastNPDU) GetLengthInBytes(ctx context.Context) uint16 
 
 func (m *_BVLCOriginalUnicastNPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BVLC, bvlcPayloadLength uint16) (__bVLCOriginalUnicastNPDU BVLCOriginalUnicastNPDU, err error) {
 	m.BVLCContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCOriginalUnicastNPDU"); pullErr != nil {

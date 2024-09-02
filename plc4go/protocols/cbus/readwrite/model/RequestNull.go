@@ -57,6 +57,7 @@ type _RequestNull struct {
 }
 
 var _ RequestNull = (*_RequestNull)(nil)
+var _ RequestRequirements = (*_RequestNull)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -124,6 +125,7 @@ func (m *_RequestNull) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_RequestNull) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Request, cBusOptions CBusOptions) (__requestNull RequestNull, err error) {
 	m.RequestContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("RequestNull"); pullErr != nil {

@@ -52,6 +52,7 @@ type _ApduDataAdcResponse struct {
 }
 
 var _ ApduDataAdcResponse = (*_ApduDataAdcResponse)(nil)
+var _ ApduDataRequirements = (*_ApduDataAdcResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduDataAdcResponse) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApduDataAdcResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduData, dataLength uint8) (__apduDataAdcResponse ApduDataAdcResponse, err error) {
 	m.ApduDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataAdcResponse"); pullErr != nil {

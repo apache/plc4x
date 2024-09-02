@@ -50,6 +50,8 @@ type FirmataCommandContract interface {
 
 // FirmataCommandRequirements provides a set of functions which need to be implemented by a sub struct
 type FirmataCommandRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetCommandCode returns CommandCode (discriminator field)
 	GetCommandCode() uint8
 }
@@ -63,19 +65,13 @@ type FirmataCommandExactly interface {
 
 // _FirmataCommand is the data-structure of this message
 type _FirmataCommand struct {
-	_FirmataCommandChildRequirements
+	_SubType FirmataCommand
 
 	// Arguments.
 	Response bool
 }
 
 var _ FirmataCommandContract = (*_FirmataCommand)(nil)
-
-type _FirmataCommandChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetCommandCode() uint8
-}
 
 type FirmataCommandChild interface {
 	utils.Serializable
@@ -115,7 +111,7 @@ func (m *_FirmataCommand) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_FirmataCommand) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func FirmataCommandParse[T FirmataCommand](ctx context.Context, theBytes []byte, response bool) (T, error) {

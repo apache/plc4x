@@ -46,6 +46,8 @@ type OpenChannelMessageContract interface {
 
 // OpenChannelMessageRequirements provides a set of functions which need to be implemented by a sub struct
 type OpenChannelMessageRequirements interface {
+	GetLengthInBits(ctx context.Context) uint16
+	GetLengthInBytes(ctx context.Context) uint16
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
 }
@@ -59,16 +61,10 @@ type OpenChannelMessageExactly interface {
 
 // _OpenChannelMessage is the data-structure of this message
 type _OpenChannelMessage struct {
-	_OpenChannelMessageChildRequirements
+	_SubType OpenChannelMessage
 }
 
 var _ OpenChannelMessageContract = (*_OpenChannelMessage)(nil)
-
-type _OpenChannelMessageChildRequirements interface {
-	utils.Serializable
-	GetLengthInBits(ctx context.Context) uint16
-	GetResponse() bool
-}
 
 type OpenChannelMessageChild interface {
 	utils.Serializable
@@ -106,7 +102,7 @@ func (m *_OpenChannelMessage) getLengthInBits(ctx context.Context) uint16 {
 }
 
 func (m *_OpenChannelMessage) GetLengthInBytes(ctx context.Context) uint16 {
-	return m.GetLengthInBits(ctx) / 8
+	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
 func OpenChannelMessageParse[T OpenChannelMessage](ctx context.Context, theBytes []byte, response bool) (T, error) {

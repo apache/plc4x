@@ -52,6 +52,7 @@ type _GetAttributeSingleResponse struct {
 }
 
 var _ GetAttributeSingleResponse = (*_GetAttributeSingleResponse)(nil)
+var _ CipServiceRequirements = (*_GetAttributeSingleResponse)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ func (m *_GetAttributeSingleResponse) GetLengthInBytes(ctx context.Context) uint
 
 func (m *_GetAttributeSingleResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_CipService, connected bool, serviceLen uint16) (__getAttributeSingleResponse GetAttributeSingleResponse, err error) {
 	m.CipServiceContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("GetAttributeSingleResponse"); pullErr != nil {

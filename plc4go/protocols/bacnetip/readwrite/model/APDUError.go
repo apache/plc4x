@@ -65,6 +65,7 @@ type _APDUError struct {
 }
 
 var _ APDUError = (*_APDUError)(nil)
+var _ APDURequirements = (*_APDUError)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -156,6 +157,7 @@ func (m *_APDUError) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_APDUError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_APDU, apduLength uint16) (__aPDUError APDUError, err error) {
 	m.APDUContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("APDUError"); pullErr != nil {

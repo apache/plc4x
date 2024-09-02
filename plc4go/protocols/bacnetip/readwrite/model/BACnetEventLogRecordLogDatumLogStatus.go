@@ -57,6 +57,7 @@ type _BACnetEventLogRecordLogDatumLogStatus struct {
 }
 
 var _ BACnetEventLogRecordLogDatumLogStatus = (*_BACnetEventLogRecordLogDatumLogStatus)(nil)
+var _ BACnetEventLogRecordLogDatumRequirements = (*_BACnetEventLogRecordLogDatumLogStatus)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetEventLogRecordLogDatumLogStatus) GetLengthInBytes(ctx context.Co
 
 func (m *_BACnetEventLogRecordLogDatumLogStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetEventLogRecordLogDatum, tagNumber uint8) (__bACnetEventLogRecordLogDatumLogStatus BACnetEventLogRecordLogDatumLogStatus, err error) {
 	m.BACnetEventLogRecordLogDatumContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventLogRecordLogDatumLogStatus"); pullErr != nil {

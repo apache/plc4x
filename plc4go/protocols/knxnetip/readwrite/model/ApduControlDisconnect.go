@@ -52,6 +52,7 @@ type _ApduControlDisconnect struct {
 }
 
 var _ ApduControlDisconnect = (*_ApduControlDisconnect)(nil)
+var _ ApduControlRequirements = (*_ApduControlDisconnect)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_ApduControlDisconnect) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_ApduControlDisconnect) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ApduControl) (__apduControlDisconnect ApduControlDisconnect, err error) {
 	m.ApduControlContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduControlDisconnect"); pullErr != nil {

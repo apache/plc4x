@@ -57,6 +57,7 @@ type _MediaTransportControlDataCategoryName struct {
 }
 
 var _ MediaTransportControlDataCategoryName = (*_MediaTransportControlDataCategoryName)(nil)
+var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataCategoryName)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_MediaTransportControlDataCategoryName) GetLengthInBytes(ctx context.Co
 
 func (m *_MediaTransportControlDataCategoryName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MediaTransportControlData, commandTypeContainer MediaTransportControlCommandTypeContainer) (__mediaTransportControlDataCategoryName MediaTransportControlDataCategoryName, err error) {
 	m.MediaTransportControlDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataCategoryName"); pullErr != nil {

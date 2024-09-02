@@ -52,6 +52,7 @@ type _DataTypeDefinition struct {
 }
 
 var _ DataTypeDefinition = (*_DataTypeDefinition)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_DataTypeDefinition)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_DataTypeDefinition) GetLengthInBytes(ctx context.Context) uint16 {
 
 func (m *_DataTypeDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataTypeDefinition DataTypeDefinition, err error) {
 	m.ExtensionObjectDefinitionContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DataTypeDefinition"); pullErr != nil {

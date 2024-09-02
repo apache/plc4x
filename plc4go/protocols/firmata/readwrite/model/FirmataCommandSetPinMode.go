@@ -60,6 +60,7 @@ type _FirmataCommandSetPinMode struct {
 }
 
 var _ FirmataCommandSetPinMode = (*_FirmataCommandSetPinMode)(nil)
+var _ FirmataCommandRequirements = (*_FirmataCommandSetPinMode)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,6 +141,7 @@ func (m *_FirmataCommandSetPinMode) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_FirmataCommandSetPinMode) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_FirmataCommand, response bool) (__firmataCommandSetPinMode FirmataCommandSetPinMode, err error) {
 	m.FirmataCommandContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSetPinMode"); pullErr != nil {

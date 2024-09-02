@@ -96,7 +96,7 @@ func (m *_ExtensionObject) GetBody() ExtensionObjectDefinition {
 func (m *_ExtensionObject) GetIdentifier() string {
 	ctx := context.Background()
 	_ = ctx
-	encodingMask := m.EncodingMask
+	encodingMask := m.GetEncodingMask()
 	_ = encodingMask
 	return fmt.Sprintf("%v", m.GetTypeId().GetIdentifier())
 }

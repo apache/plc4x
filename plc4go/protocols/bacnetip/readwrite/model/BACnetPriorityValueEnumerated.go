@@ -57,6 +57,7 @@ type _BACnetPriorityValueEnumerated struct {
 }
 
 var _ BACnetPriorityValueEnumerated = (*_BACnetPriorityValueEnumerated)(nil)
+var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueEnumerated)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -125,6 +126,7 @@ func (m *_BACnetPriorityValueEnumerated) GetLengthInBytes(ctx context.Context) u
 
 func (m *_BACnetPriorityValueEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_BACnetPriorityValue, objectTypeArgument BACnetObjectType) (__bACnetPriorityValueEnumerated BACnetPriorityValueEnumerated, err error) {
 	m.BACnetPriorityValueContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueEnumerated"); pullErr != nil {

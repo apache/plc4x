@@ -52,6 +52,7 @@ type _SALDataRoomControlSystem struct {
 }
 
 var _ SALDataRoomControlSystem = (*_SALDataRoomControlSystem)(nil)
+var _ SALDataRequirements = (*_SALDataRoomControlSystem)(nil)
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,6 +107,7 @@ func (m *_SALDataRoomControlSystem) GetLengthInBytes(ctx context.Context) uint16
 
 func (m *_SALDataRoomControlSystem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_SALData, applicationId ApplicationId) (__sALDataRoomControlSystem SALDataRoomControlSystem, err error) {
 	m.SALDataContract = parent
+	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataRoomControlSystem"); pullErr != nil {
