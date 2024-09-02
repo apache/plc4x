@@ -92,7 +92,7 @@ func HandleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.
 }
 
 func HandleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Handle, error) {
-	v, err := (&_Handle{}).parse(ctx, readBuffer)
+	v, err := NewHandle().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

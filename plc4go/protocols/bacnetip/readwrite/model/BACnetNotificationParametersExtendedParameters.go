@@ -425,7 +425,7 @@ func BACnetNotificationParametersExtendedParametersParseWithBufferProducer(tagNu
 }
 
 func BACnetNotificationParametersExtendedParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersExtendedParameters, error) {
-	v, err := (&_BACnetNotificationParametersExtendedParameters{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetNotificationParametersExtendedParameters(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

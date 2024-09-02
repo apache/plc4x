@@ -125,7 +125,7 @@ func PortSegmentTypeParseWithBufferProducer[T PortSegmentType]() func(ctx contex
 }
 
 func PortSegmentTypeParseWithBuffer[T PortSegmentType](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_PortSegmentType{}).parse(ctx, readBuffer)
+	v, err := NewPortSegmentType().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

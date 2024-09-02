@@ -146,7 +146,7 @@ func AssociatedValueTypeParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedValueType, error) {
-	v, err := (&_AssociatedValueType{}).parse(ctx, readBuffer)
+	v, err := NewAssociatedValueType().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -157,7 +157,7 @@ func BACnetReliabilityTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetReliabilityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetReliabilityTagged, error) {
-	v, err := (&_BACnetReliabilityTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetReliabilityTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

@@ -92,7 +92,7 @@ func AudioDataTypeParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func AudioDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AudioDataType, error) {
-	v, err := (&_AudioDataType{}).parse(ctx, readBuffer)
+	v, err := NewAudioDataType().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

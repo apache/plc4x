@@ -114,7 +114,7 @@ func ChecksumParseWithBufferProducer() func(ctx context.Context, readBuffer util
 }
 
 func ChecksumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Checksum, error) {
-	v, err := (&_Checksum{}).parse(ctx, readBuffer)
+	v, err := NewChecksum().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

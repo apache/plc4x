@@ -168,7 +168,7 @@ func EncodedReplyParseWithBufferProducer[T EncodedReply](cBusOptions CBusOptions
 }
 
 func EncodedReplyParseWithBuffer[T EncodedReply](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {
-	v, err := (&_EncodedReply{}).parse(ctx, readBuffer, cBusOptions, requestContext)
+	v, err := NewEncodedReply(cBusOptions, requestContext).parse(ctx, readBuffer, cBusOptions, requestContext)
 	if err != nil {
 		var zero T
 		return zero, err

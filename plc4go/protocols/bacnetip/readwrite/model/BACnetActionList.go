@@ -138,7 +138,7 @@ func BACnetActionListParseWithBufferProducer() func(ctx context.Context, readBuf
 }
 
 func BACnetActionListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetActionList, error) {
-	v, err := (&_BACnetActionList{}).parse(ctx, readBuffer)
+	v, err := NewBACnetActionList().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

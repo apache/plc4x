@@ -129,7 +129,7 @@ func CBusMessageParseWithBufferProducer[T CBusMessage](isResponse bool, requestC
 }
 
 func CBusMessageParseWithBuffer[T CBusMessage](ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_CBusMessage{}).parse(ctx, readBuffer, isResponse, requestContext, cBusOptions)
+	v, err := NewCBusMessage(requestContext, cBusOptions).parse(ctx, readBuffer, isResponse, requestContext, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err

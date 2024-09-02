@@ -160,7 +160,7 @@ func BACnetScaleParseWithBufferProducer[T BACnetScale]() func(ctx context.Contex
 }
 
 func BACnetScaleParseWithBuffer[T BACnetScale](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetScale{}).parse(ctx, readBuffer)
+	v, err := NewBACnetScale().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

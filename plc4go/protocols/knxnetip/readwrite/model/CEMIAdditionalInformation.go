@@ -125,7 +125,7 @@ func CEMIAdditionalInformationParseWithBufferProducer[T CEMIAdditionalInformatio
 }
 
 func CEMIAdditionalInformationParseWithBuffer[T CEMIAdditionalInformation](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_CEMIAdditionalInformation{}).parse(ctx, readBuffer)
+	v, err := NewCEMIAdditionalInformation().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

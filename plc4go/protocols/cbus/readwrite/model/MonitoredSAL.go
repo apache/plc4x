@@ -145,7 +145,7 @@ func MonitoredSALParseWithBufferProducer[T MonitoredSAL](cBusOptions CBusOptions
 }
 
 func MonitoredSALParseWithBuffer[T MonitoredSAL](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_MonitoredSAL{}).parse(ctx, readBuffer, cBusOptions)
+	v, err := NewMonitoredSAL(cBusOptions).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err

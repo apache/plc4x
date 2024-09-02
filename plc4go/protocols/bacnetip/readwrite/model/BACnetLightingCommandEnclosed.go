@@ -137,7 +137,7 @@ func BACnetLightingCommandEnclosedParseWithBufferProducer(tagNumber uint8) func(
 }
 
 func BACnetLightingCommandEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLightingCommandEnclosed, error) {
-	v, err := (&_BACnetLightingCommandEnclosed{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetLightingCommandEnclosed(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

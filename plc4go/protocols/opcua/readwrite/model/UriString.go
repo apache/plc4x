@@ -92,7 +92,7 @@ func UriStringParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 }
 
 func UriStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UriString, error) {
-	v, err := (&_UriString{}).parse(ctx, readBuffer)
+	v, err := NewUriString().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

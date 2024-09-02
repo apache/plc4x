@@ -136,7 +136,7 @@ func BACnetGroupChannelValueParseWithBufferProducer() func(ctx context.Context, 
 }
 
 func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {
-	v, err := (&_BACnetGroupChannelValue{}).parse(ctx, readBuffer)
+	v, err := NewBACnetGroupChannelValue().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

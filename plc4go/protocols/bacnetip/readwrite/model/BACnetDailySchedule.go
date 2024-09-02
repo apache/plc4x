@@ -138,7 +138,7 @@ func BACnetDailyScheduleParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func BACnetDailyScheduleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDailySchedule, error) {
-	v, err := (&_BACnetDailySchedule{}).parse(ctx, readBuffer)
+	v, err := NewBACnetDailySchedule().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

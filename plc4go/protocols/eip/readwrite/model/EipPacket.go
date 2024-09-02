@@ -184,7 +184,7 @@ func EipPacketParseWithBufferProducer[T EipPacket](response bool) func(ctx conte
 }
 
 func EipPacketParseWithBuffer[T EipPacket](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
-	v, err := (&_EipPacket{}).parse(ctx, readBuffer, response)
+	v, err := NewEipPacket().parse(ctx, readBuffer, response)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -92,7 +92,7 @@ func ImagePNGParseWithBufferProducer() func(ctx context.Context, readBuffer util
 }
 
 func ImagePNGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImagePNG, error) {
-	v, err := (&_ImagePNG{}).parse(ctx, readBuffer)
+	v, err := NewImagePNG().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

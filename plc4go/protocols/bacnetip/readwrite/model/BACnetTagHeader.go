@@ -285,7 +285,7 @@ func BACnetTagHeaderParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
-	v, err := (&_BACnetTagHeader{}).parse(ctx, readBuffer)
+	v, err := NewBACnetTagHeader().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

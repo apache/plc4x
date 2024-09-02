@@ -178,7 +178,7 @@ func BACnetTimerStateChangeValueParseWithBufferProducer[T BACnetTimerStateChange
 }
 
 func BACnetTimerStateChangeValueParseWithBuffer[T BACnetTimerStateChangeValue](ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (T, error) {
-	v, err := (&_BACnetTimerStateChangeValue{}).parse(ctx, readBuffer, objectTypeArgument)
+	v, err := NewBACnetTimerStateChangeValue(objectTypeArgument).parse(ctx, readBuffer, objectTypeArgument)
 	if err != nil {
 		var zero T
 		return zero, err

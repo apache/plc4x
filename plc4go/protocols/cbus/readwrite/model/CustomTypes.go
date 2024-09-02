@@ -117,7 +117,7 @@ func CustomTypesParseWithBufferProducer(numBytes uint8) func(ctx context.Context
 }
 
 func CustomTypesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (CustomTypes, error) {
-	v, err := (&_CustomTypes{}).parse(ctx, readBuffer, numBytes)
+	v, err := NewCustomTypes(numBytes).parse(ctx, readBuffer, numBytes)
 	if err != nil {
 		return nil, err
 	}

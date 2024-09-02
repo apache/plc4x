@@ -153,7 +153,7 @@ func BACnetPropertyWriteDefinitionParseWithBufferProducer(objectTypeArgument BAC
 }
 
 func BACnetPropertyWriteDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPropertyWriteDefinition, error) {
-	v, err := (&_BACnetPropertyWriteDefinition{}).parse(ctx, readBuffer, objectTypeArgument)
+	v, err := NewBACnetPropertyWriteDefinition(objectTypeArgument).parse(ctx, readBuffer, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}

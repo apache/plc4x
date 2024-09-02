@@ -137,7 +137,7 @@ func ErrorEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx context.Cont
 }
 
 func ErrorEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEnclosed, error) {
-	v, err := (&_ErrorEnclosed{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewErrorEnclosed(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

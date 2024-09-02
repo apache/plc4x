@@ -170,7 +170,7 @@ func ReplyOrConfirmationParseWithBufferProducer[T ReplyOrConfirmation](cBusOptio
 }
 
 func ReplyOrConfirmationParseWithBuffer[T ReplyOrConfirmation](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {
-	v, err := (&_ReplyOrConfirmation{}).parse(ctx, readBuffer, cBusOptions, requestContext)
+	v, err := NewReplyOrConfirmation(cBusOptions, requestContext).parse(ctx, readBuffer, cBusOptions, requestContext)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -197,7 +197,7 @@ func CALDataParseWithBufferProducer[T CALData](requestContext RequestContext) fu
 }
 
 func CALDataParseWithBuffer[T CALData](ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (T, error) {
-	v, err := (&_CALData{}).parse(ctx, readBuffer, requestContext)
+	v, err := NewCALData(requestContext).parse(ctx, readBuffer, requestContext)
 	if err != nil {
 		var zero T
 		return zero, err

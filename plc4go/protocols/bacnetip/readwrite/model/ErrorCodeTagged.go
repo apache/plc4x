@@ -157,7 +157,7 @@ func ErrorCodeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) 
 }
 
 func ErrorCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (ErrorCodeTagged, error) {
-	v, err := (&_ErrorCodeTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewErrorCodeTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

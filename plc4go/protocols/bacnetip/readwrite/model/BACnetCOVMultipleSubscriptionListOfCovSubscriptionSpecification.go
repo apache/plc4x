@@ -141,7 +141,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuf
 }
 
 func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification, error) {
-	v, err := (&_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

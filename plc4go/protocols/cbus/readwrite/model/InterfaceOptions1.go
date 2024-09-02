@@ -173,7 +173,7 @@ func InterfaceOptions1ParseWithBufferProducer() func(ctx context.Context, readBu
 }
 
 func InterfaceOptions1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions1, error) {
-	v, err := (&_InterfaceOptions1{}).parse(ctx, readBuffer)
+	v, err := NewInterfaceOptions1().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

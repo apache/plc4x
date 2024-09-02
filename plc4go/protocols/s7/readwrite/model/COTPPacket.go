@@ -169,7 +169,7 @@ func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint16) func(ctx co
 }
 
 func COTPPacketParseWithBuffer[T COTPPacket](ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (T, error) {
-	v, err := (&_COTPPacket{}).parse(ctx, readBuffer, cotpLen)
+	v, err := NewCOTPPacket(cotpLen).parse(ctx, readBuffer, cotpLen)
 	if err != nil {
 		var zero T
 		return zero, err

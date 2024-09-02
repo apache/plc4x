@@ -185,7 +185,7 @@ func BACnetLogRecordLogDatumParseWithBufferProducer[T BACnetLogRecordLogDatum](t
 }
 
 func BACnetLogRecordLogDatumParseWithBuffer[T BACnetLogRecordLogDatum](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (T, error) {
-	v, err := (&_BACnetLogRecordLogDatum{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetLogRecordLogDatum(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		var zero T
 		return zero, err

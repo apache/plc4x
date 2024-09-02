@@ -157,7 +157,7 @@ func BACnetPropertyIdentifierTaggedParseWithBufferProducer(tagNumber uint8, tagC
 }
 
 func BACnetPropertyIdentifierTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetPropertyIdentifierTagged, error) {
-	v, err := (&_BACnetPropertyIdentifierTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetPropertyIdentifierTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

@@ -174,7 +174,7 @@ func BACnetLightingCommandParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLightingCommand, error) {
-	v, err := (&_BACnetLightingCommand{}).parse(ctx, readBuffer)
+	v, err := NewBACnetLightingCommand().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

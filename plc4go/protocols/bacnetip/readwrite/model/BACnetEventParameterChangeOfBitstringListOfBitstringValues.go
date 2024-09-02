@@ -141,7 +141,7 @@ func BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBufferPr
 }
 
 func BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfBitstringListOfBitstringValues, error) {
-	v, err := (&_BACnetEventParameterChangeOfBitstringListOfBitstringValues{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetEventParameterChangeOfBitstringListOfBitstringValues(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

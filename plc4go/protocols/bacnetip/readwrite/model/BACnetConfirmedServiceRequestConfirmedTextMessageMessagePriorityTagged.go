@@ -128,7 +128,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParse
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, error) {
-	v, err := (&_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

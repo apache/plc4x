@@ -141,7 +141,7 @@ func BACnetFaultParameterFaultStateListOfFaultValuesParseWithBufferProducer(tagN
 }
 
 func BACnetFaultParameterFaultStateListOfFaultValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultStateListOfFaultValues, error) {
-	v, err := (&_BACnetFaultParameterFaultStateListOfFaultValues{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetFaultParameterFaultStateListOfFaultValues(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

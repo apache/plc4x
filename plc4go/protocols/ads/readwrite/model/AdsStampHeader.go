@@ -141,7 +141,7 @@ func AdsStampHeaderParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func AdsStampHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
-	v, err := (&_AdsStampHeader{}).parse(ctx, readBuffer)
+	v, err := NewAdsStampHeader().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

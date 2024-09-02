@@ -157,7 +157,7 @@ func BACnetDoorStatusTaggedParseWithBufferProducer(tagNumber uint8, tagClass Tag
 }
 
 func BACnetDoorStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDoorStatusTagged, error) {
-	v, err := (&_BACnetDoorStatusTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetDoorStatusTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

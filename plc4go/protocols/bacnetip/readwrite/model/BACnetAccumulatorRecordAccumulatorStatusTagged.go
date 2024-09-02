@@ -128,7 +128,7 @@ func BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBufferProducer(tagNu
 }
 
 func BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccumulatorRecordAccumulatorStatusTagged, error) {
-	v, err := (&_BACnetAccumulatorRecordAccumulatorStatusTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetAccumulatorRecordAccumulatorStatusTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

@@ -141,7 +141,7 @@ func AlarmMessageAckTypeParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func AlarmMessageAckTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckType, error) {
-	v, err := (&_AlarmMessageAckType{}).parse(ctx, readBuffer)
+	v, err := NewAlarmMessageAckType().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

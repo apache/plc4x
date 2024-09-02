@@ -136,7 +136,7 @@ func CipServiceParseWithBufferProducer[T CipService](connected bool, serviceLen 
 }
 
 func CipServiceParseWithBuffer[T CipService](ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (T, error) {
-	v, err := (&_CipService{}).parse(ctx, readBuffer, connected, serviceLen)
+	v, err := NewCipService(serviceLen).parse(ctx, readBuffer, connected, serviceLen)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -124,7 +124,7 @@ func BACnetNetworkSecurityPolicyParseWithBufferProducer() func(ctx context.Conte
 }
 
 func BACnetNetworkSecurityPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNetworkSecurityPolicy, error) {
-	v, err := (&_BACnetNetworkSecurityPolicy{}).parse(ctx, readBuffer)
+	v, err := NewBACnetNetworkSecurityPolicy().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

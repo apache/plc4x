@@ -125,7 +125,7 @@ func S7ParameterUserDataItemParseWithBufferProducer[T S7ParameterUserDataItem]()
 }
 
 func S7ParameterUserDataItemParseWithBuffer[T S7ParameterUserDataItem](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_S7ParameterUserDataItem{}).parse(ctx, readBuffer)
+	v, err := NewS7ParameterUserDataItem().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -92,7 +92,7 @@ func TimeStringParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func TimeStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TimeString, error) {
-	v, err := (&_TimeString{}).parse(ctx, readBuffer)
+	v, err := NewTimeString().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

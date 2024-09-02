@@ -133,7 +133,7 @@ func HVACTemperatureParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func HVACTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACTemperature, error) {
-	v, err := (&_HVACTemperature{}).parse(ctx, readBuffer)
+	v, err := NewHVACTemperature().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

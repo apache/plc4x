@@ -173,7 +173,7 @@ func SecurityArmCodeParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func SecurityArmCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
-	v, err := (&_SecurityArmCode{}).parse(ctx, readBuffer)
+	v, err := NewSecurityArmCode().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

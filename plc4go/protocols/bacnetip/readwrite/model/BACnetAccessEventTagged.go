@@ -157,7 +157,7 @@ func BACnetAccessEventTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetAccessEventTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessEventTagged, error) {
-	v, err := (&_BACnetAccessEventTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetAccessEventTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

@@ -130,7 +130,7 @@ func CEMIParseWithBufferProducer[T CEMI](size uint16) func(ctx context.Context, 
 }
 
 func CEMIParseWithBuffer[T CEMI](ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (T, error) {
-	v, err := (&_CEMI{}).parse(ctx, readBuffer, size)
+	v, err := NewCEMI(size).parse(ctx, readBuffer, size)
 	if err != nil {
 		var zero T
 		return zero, err

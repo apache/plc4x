@@ -128,7 +128,7 @@ func NPDUNetworkPriorityTaggedParseWithBufferProducer(tagNumber uint8, tagClass 
 }
 
 func NPDUNetworkPriorityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (NPDUNetworkPriorityTagged, error) {
-	v, err := (&_NPDUNetworkPriorityTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewNPDUNetworkPriorityTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

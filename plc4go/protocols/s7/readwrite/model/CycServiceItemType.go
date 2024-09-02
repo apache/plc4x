@@ -172,7 +172,7 @@ func CycServiceItemTypeParseWithBufferProducer[T CycServiceItemType]() func(ctx 
 }
 
 func CycServiceItemTypeParseWithBuffer[T CycServiceItemType](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_CycServiceItemType{}).parse(ctx, readBuffer)
+	v, err := NewCycServiceItemType().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

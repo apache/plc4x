@@ -202,7 +202,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBufferProd
 }
 
 func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error) {
-	v, err := (&_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

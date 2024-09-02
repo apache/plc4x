@@ -125,7 +125,7 @@ func DF1RequestCommandParseWithBufferProducer[T DF1RequestCommand]() func(ctx co
 }
 
 func DF1RequestCommandParseWithBuffer[T DF1RequestCommand](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_DF1RequestCommand{}).parse(ctx, readBuffer)
+	v, err := NewDF1RequestCommand().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

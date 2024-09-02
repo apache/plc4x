@@ -148,7 +148,7 @@ func ReplyParseWithBufferProducer[T Reply](cBusOptions CBusOptions, requestConte
 }
 
 func ReplyParseWithBuffer[T Reply](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {
-	v, err := (&_Reply{}).parse(ctx, readBuffer, cBusOptions, requestContext)
+	v, err := NewReply(cBusOptions, requestContext).parse(ctx, readBuffer, cBusOptions, requestContext)
 	if err != nil {
 		var zero T
 		return zero, err

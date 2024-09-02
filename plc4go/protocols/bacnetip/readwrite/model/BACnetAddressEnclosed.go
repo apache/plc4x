@@ -137,7 +137,7 @@ func BACnetAddressEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx cont
 }
 
 func BACnetAddressEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAddressEnclosed, error) {
-	v, err := (&_BACnetAddressEnclosed{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetAddressEnclosed(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

@@ -175,7 +175,7 @@ func ClockAndTimekeepingDataParseWithBufferProducer[T ClockAndTimekeepingData]()
 }
 
 func ClockAndTimekeepingDataParseWithBuffer[T ClockAndTimekeepingData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_ClockAndTimekeepingData{}).parse(ctx, readBuffer)
+	v, err := NewClockAndTimekeepingData().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

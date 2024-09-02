@@ -157,7 +157,7 @@ func BACnetLifeSafetyStateTaggedParseWithBufferProducer(tagNumber uint8, tagClas
 }
 
 func BACnetLifeSafetyStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLifeSafetyStateTagged, error) {
-	v, err := (&_BACnetLifeSafetyStateTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetLifeSafetyStateTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

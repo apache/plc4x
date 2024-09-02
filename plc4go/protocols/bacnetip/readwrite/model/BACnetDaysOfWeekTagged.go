@@ -207,7 +207,7 @@ func BACnetDaysOfWeekTaggedParseWithBufferProducer(tagNumber uint8, tagClass Tag
 }
 
 func BACnetDaysOfWeekTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDaysOfWeekTagged, error) {
-	v, err := (&_BACnetDaysOfWeekTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetDaysOfWeekTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

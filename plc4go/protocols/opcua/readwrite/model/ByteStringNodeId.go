@@ -124,7 +124,7 @@ func ByteStringNodeIdParseWithBufferProducer() func(ctx context.Context, readBuf
 }
 
 func ByteStringNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ByteStringNodeId, error) {
-	v, err := (&_ByteStringNodeId{}).parse(ctx, readBuffer)
+	v, err := NewByteStringNodeId().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

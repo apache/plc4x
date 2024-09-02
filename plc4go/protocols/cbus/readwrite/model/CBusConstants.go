@@ -114,7 +114,7 @@ func CBusConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func CBusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusConstants, error) {
-	v, err := (&_CBusConstants{}).parse(ctx, readBuffer)
+	v, err := NewCBusConstants().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

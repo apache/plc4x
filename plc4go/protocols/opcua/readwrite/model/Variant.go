@@ -181,7 +181,7 @@ func VariantParseWithBufferProducer[T Variant]() func(ctx context.Context, readB
 }
 
 func VariantParseWithBuffer[T Variant](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_Variant{}).parse(ctx, readBuffer)
+	v, err := NewVariant().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

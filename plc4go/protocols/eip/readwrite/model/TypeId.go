@@ -125,7 +125,7 @@ func TypeIdParseWithBufferProducer[T TypeId]() func(ctx context.Context, readBuf
 }
 
 func TypeIdParseWithBuffer[T TypeId](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_TypeId{}).parse(ctx, readBuffer)
+	v, err := NewTypeId().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

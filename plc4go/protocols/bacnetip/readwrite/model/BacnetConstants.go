@@ -114,7 +114,7 @@ func BacnetConstantsParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BacnetConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BacnetConstants, error) {
-	v, err := (&_BacnetConstants{}).parse(ctx, readBuffer)
+	v, err := NewBacnetConstants().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -184,7 +184,7 @@ func IdentifyReplyCommandUnitSummaryParseWithBufferProducer() func(ctx context.C
 }
 
 func IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
-	v, err := (&_IdentifyReplyCommandUnitSummary{}).parse(ctx, readBuffer)
+	v, err := NewIdentifyReplyCommandUnitSummary().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

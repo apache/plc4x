@@ -145,7 +145,7 @@ func SALDataParseWithBufferProducer[T SALData](applicationId ApplicationId) func
 }
 
 func SALDataParseWithBuffer[T SALData](ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (T, error) {
-	v, err := (&_SALData{}).parse(ctx, readBuffer, applicationId)
+	v, err := NewSALData().parse(ctx, readBuffer, applicationId)
 	if err != nil {
 		var zero T
 		return zero, err

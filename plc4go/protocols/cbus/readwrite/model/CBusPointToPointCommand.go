@@ -175,7 +175,7 @@ func CBusPointToPointCommandParseWithBufferProducer[T CBusPointToPointCommand](c
 }
 
 func CBusPointToPointCommandParseWithBuffer[T CBusPointToPointCommand](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_CBusPointToPointCommand{}).parse(ctx, readBuffer, cBusOptions)
+	v, err := NewCBusPointToPointCommand(cBusOptions).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -137,7 +137,7 @@ func HPAIDiscoveryEndpointParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func HPAIDiscoveryEndpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIDiscoveryEndpoint, error) {
-	v, err := (&_HPAIDiscoveryEndpoint{}).parse(ctx, readBuffer)
+	v, err := NewHPAIDiscoveryEndpoint().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -137,7 +137,7 @@ func BACnetHostAddressEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx 
 }
 
 func BACnetHostAddressEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetHostAddressEnclosed, error) {
-	v, err := (&_BACnetHostAddressEnclosed{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetHostAddressEnclosed(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

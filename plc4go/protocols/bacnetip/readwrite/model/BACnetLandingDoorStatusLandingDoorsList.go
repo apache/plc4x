@@ -141,7 +141,7 @@ func BACnetLandingDoorStatusLandingDoorsListParseWithBufferProducer(tagNumber ui
 }
 
 func BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLandingDoorStatusLandingDoorsList, error) {
-	v, err := (&_BACnetLandingDoorStatusLandingDoorsList{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetLandingDoorStatusLandingDoorsList(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

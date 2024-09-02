@@ -127,7 +127,7 @@ func ModbusADUParseWithBufferProducer[T ModbusADU](driverType DriverType, respon
 }
 
 func ModbusADUParseWithBuffer[T ModbusADU](ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (T, error) {
-	v, err := (&_ModbusADU{}).parse(ctx, readBuffer, driverType, response)
+	v, err := NewModbusADU(response).parse(ctx, readBuffer, driverType, response)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -157,7 +157,7 @@ func BACnetRelationshipTaggedParseWithBufferProducer(tagNumber uint8, tagClass T
 }
 
 func BACnetRelationshipTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRelationshipTagged, error) {
-	v, err := (&_BACnetRelationshipTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetRelationshipTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

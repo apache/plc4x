@@ -151,7 +151,7 @@ func ListOfCovNotificationsValueParseWithBufferProducer(objectTypeArgument BACne
 }
 
 func ListOfCovNotificationsValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
-	v, err := (&_ListOfCovNotificationsValue{}).parse(ctx, readBuffer, objectTypeArgument)
+	v, err := NewListOfCovNotificationsValue(objectTypeArgument).parse(ctx, readBuffer, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}

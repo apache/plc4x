@@ -92,7 +92,7 @@ func CounterParseWithBufferProducer() func(ctx context.Context, readBuffer utils
 }
 
 func CounterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Counter, error) {
-	v, err := (&_Counter{}).parse(ctx, readBuffer)
+	v, err := NewCounter().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

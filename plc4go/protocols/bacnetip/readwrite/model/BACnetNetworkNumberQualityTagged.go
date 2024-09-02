@@ -128,7 +128,7 @@ func BACnetNetworkNumberQualityTaggedParseWithBufferProducer(tagNumber uint8, ta
 }
 
 func BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkNumberQualityTagged, error) {
-	v, err := (&_BACnetNetworkNumberQualityTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetNetworkNumberQualityTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

@@ -166,7 +166,7 @@ func AdsTableSizesParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func AdsTableSizesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
-	v, err := (&_AdsTableSizes{}).parse(ctx, readBuffer)
+	v, err := NewAdsTableSizes().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

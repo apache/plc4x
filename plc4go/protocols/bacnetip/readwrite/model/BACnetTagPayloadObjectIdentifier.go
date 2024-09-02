@@ -153,7 +153,7 @@ func BACnetTagPayloadObjectIdentifierParseWithBufferProducer() func(ctx context.
 }
 
 func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadObjectIdentifier, error) {
-	v, err := (&_BACnetTagPayloadObjectIdentifier{}).parse(ctx, readBuffer)
+	v, err := NewBACnetTagPayloadObjectIdentifier().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

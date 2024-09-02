@@ -128,7 +128,7 @@ func S7PayloadParseWithBufferProducer[T S7Payload](messageType uint8, parameter 
 }
 
 func S7PayloadParseWithBuffer[T S7Payload](ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (T, error) {
-	v, err := (&_S7Payload{}).parse(ctx, readBuffer, messageType, parameter)
+	v, err := NewS7Payload(parameter).parse(ctx, readBuffer, messageType, parameter)
 	if err != nil {
 		var zero T
 		return zero, err

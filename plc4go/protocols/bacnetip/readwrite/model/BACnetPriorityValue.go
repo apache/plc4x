@@ -178,7 +178,7 @@ func BACnetPriorityValueParseWithBufferProducer[T BACnetPriorityValue](objectTyp
 }
 
 func BACnetPriorityValueParseWithBuffer[T BACnetPriorityValue](ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (T, error) {
-	v, err := (&_BACnetPriorityValue{}).parse(ctx, readBuffer, objectTypeArgument)
+	v, err := NewBACnetPriorityValue(objectTypeArgument).parse(ctx, readBuffer, objectTypeArgument)
 	if err != nil {
 		var zero T
 		return zero, err

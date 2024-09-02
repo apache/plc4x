@@ -148,7 +148,7 @@ func BACnetDeviceObjectPropertyReferenceParseWithBufferProducer() func(ctx conte
 }
 
 func BACnetDeviceObjectPropertyReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDeviceObjectPropertyReference, error) {
-	v, err := (&_BACnetDeviceObjectPropertyReference{}).parse(ctx, readBuffer)
+	v, err := NewBACnetDeviceObjectPropertyReference().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

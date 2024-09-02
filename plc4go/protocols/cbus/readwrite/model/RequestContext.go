@@ -114,7 +114,7 @@ func RequestContextParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func RequestContextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RequestContext, error) {
-	v, err := (&_RequestContext{}).parse(ctx, readBuffer)
+	v, err := NewRequestContext().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

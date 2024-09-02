@@ -141,7 +141,7 @@ func LightingLabelOptionsParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingLabelOptions, error) {
-	v, err := (&_LightingLabelOptions{}).parse(ctx, readBuffer)
+	v, err := NewLightingLabelOptions().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

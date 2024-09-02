@@ -126,7 +126,7 @@ func ParameterValueParseWithBufferProducer[T ParameterValue](parameterType Param
 }
 
 func ParameterValueParseWithBuffer[T ParameterValue](ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (T, error) {
-	v, err := (&_ParameterValue{}).parse(ctx, readBuffer, parameterType, numBytes)
+	v, err := NewParameterValue(numBytes).parse(ctx, readBuffer, parameterType, numBytes)
 	if err != nil {
 		var zero T
 		return zero, err

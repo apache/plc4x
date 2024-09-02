@@ -157,7 +157,7 @@ func BACnetAccessCredentialDisableTaggedParseWithBufferProducer(tagNumber uint8,
 }
 
 func BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessCredentialDisableTagged, error) {
-	v, err := (&_BACnetAccessCredentialDisableTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetAccessCredentialDisableTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

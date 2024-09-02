@@ -179,7 +179,7 @@ func BACnetContextTagParseWithBufferProducer[T BACnetContextTag](tagNumberArgume
 }
 
 func BACnetContextTagParseWithBuffer[T BACnetContextTag](ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (T, error) {
-	v, err := (&_BACnetContextTag{}).parse(ctx, readBuffer, tagNumberArgument, dataType)
+	v, err := NewBACnetContextTag(tagNumberArgument).parse(ctx, readBuffer, tagNumberArgument, dataType)
 	if err != nil {
 		var zero T
 		return zero, err

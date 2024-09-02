@@ -173,7 +173,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryParseWithBufferProducer[T B
 }
 
 func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer[T BACnetFaultParameterFaultExtendedParametersEntry](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetFaultParameterFaultExtendedParametersEntry{}).parse(ctx, readBuffer)
+	v, err := NewBACnetFaultParameterFaultExtendedParametersEntry().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -157,7 +157,7 @@ func BACnetLiftFaultTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagC
 }
 
 func BACnetLiftFaultTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftFaultTagged, error) {
-	v, err := (&_BACnetLiftFaultTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetLiftFaultTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

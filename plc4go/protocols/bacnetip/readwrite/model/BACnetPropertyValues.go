@@ -142,7 +142,7 @@ func BACnetPropertyValuesParseWithBufferProducer(tagNumber uint8, objectTypeArgu
 }
 
 func BACnetPropertyValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetPropertyValues, error) {
-	v, err := (&_BACnetPropertyValues{}).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
+	v, err := NewBACnetPropertyValues(tagNumber, objectTypeArgument).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}

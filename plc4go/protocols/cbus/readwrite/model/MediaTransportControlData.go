@@ -173,7 +173,7 @@ func MediaTransportControlDataParseWithBufferProducer[T MediaTransportControlDat
 }
 
 func MediaTransportControlDataParseWithBuffer[T MediaTransportControlData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_MediaTransportControlData{}).parse(ctx, readBuffer)
+	v, err := NewMediaTransportControlData().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

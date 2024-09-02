@@ -151,7 +151,7 @@ func BACnetServiceAckParseWithBufferProducer[T BACnetServiceAck](serviceAckLengt
 }
 
 func BACnetServiceAckParseWithBuffer[T BACnetServiceAck](ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (T, error) {
-	v, err := (&_BACnetServiceAck{}).parse(ctx, readBuffer, serviceAckLength)
+	v, err := NewBACnetServiceAck(serviceAckLength).parse(ctx, readBuffer, serviceAckLength)
 	if err != nil {
 		var zero T
 		return zero, err

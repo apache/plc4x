@@ -175,7 +175,7 @@ func SecurityDataParseWithBufferProducer[T SecurityData]() func(ctx context.Cont
 }
 
 func SecurityDataParseWithBuffer[T SecurityData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_SecurityData{}).parse(ctx, readBuffer)
+	v, err := NewSecurityData().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

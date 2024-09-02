@@ -129,7 +129,7 @@ func ModbusDeviceInformationObjectParseWithBufferProducer() func(ctx context.Con
 }
 
 func ModbusDeviceInformationObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusDeviceInformationObject, error) {
-	v, err := (&_ModbusDeviceInformationObject{}).parse(ctx, readBuffer)
+	v, err := NewModbusDeviceInformationObject().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

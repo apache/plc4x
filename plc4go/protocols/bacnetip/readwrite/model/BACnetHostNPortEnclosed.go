@@ -137,7 +137,7 @@ func BACnetHostNPortEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx co
 }
 
 func BACnetHostNPortEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetHostNPortEnclosed, error) {
-	v, err := (&_BACnetHostNPortEnclosed{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetHostNPortEnclosed(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

@@ -128,7 +128,7 @@ func BACnetLightingInProgressTaggedParseWithBufferProducer(tagNumber uint8, tagC
 }
 
 func BACnetLightingInProgressTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLightingInProgressTagged, error) {
-	v, err := (&_BACnetLightingInProgressTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetLightingInProgressTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

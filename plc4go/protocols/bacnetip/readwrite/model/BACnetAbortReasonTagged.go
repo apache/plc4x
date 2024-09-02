@@ -145,7 +145,7 @@ func BACnetAbortReasonTaggedParseWithBufferProducer(actualLength uint32) func(ct
 }
 
 func BACnetAbortReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetAbortReasonTagged, error) {
-	v, err := (&_BACnetAbortReasonTagged{}).parse(ctx, readBuffer, actualLength)
+	v, err := NewBACnetAbortReasonTagged(actualLength).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}

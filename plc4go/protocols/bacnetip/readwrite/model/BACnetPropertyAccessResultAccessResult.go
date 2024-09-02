@@ -171,7 +171,7 @@ func BACnetPropertyAccessResultAccessResultParseWithBufferProducer[T BACnetPrope
 }
 
 func BACnetPropertyAccessResultAccessResultParseWithBuffer[T BACnetPropertyAccessResultAccessResult](ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (T, error) {
-	v, err := (&_BACnetPropertyAccessResultAccessResult{}).parse(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
+	v, err := NewBACnetPropertyAccessResultAccessResult(objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument).parse(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -147,7 +147,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuf
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
-	v, err := (&_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

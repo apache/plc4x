@@ -163,7 +163,7 @@ func BACnetAddressParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddress, error) {
-	v, err := (&_BACnetAddress{}).parse(ctx, readBuffer)
+	v, err := NewBACnetAddress().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

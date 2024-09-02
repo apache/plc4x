@@ -141,7 +141,7 @@ func VTCloseErrorListOfVTSessionIdentifiersParseWithBufferProducer(tagNumber uin
 }
 
 func VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (VTCloseErrorListOfVTSessionIdentifiers, error) {
-	v, err := (&_VTCloseErrorListOfVTSessionIdentifiers{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewVTCloseErrorListOfVTSessionIdentifiers(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

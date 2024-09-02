@@ -153,7 +153,7 @@ func NLMParseWithBufferProducer[T NLM](apduLength uint16) func(ctx context.Conte
 }
 
 func NLMParseWithBuffer[T NLM](ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (T, error) {
-	v, err := (&_NLM{}).parse(ctx, readBuffer, apduLength)
+	v, err := NewNLM(apduLength).parse(ctx, readBuffer, apduLength)
 	if err != nil {
 		var zero T
 		return zero, err

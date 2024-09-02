@@ -128,7 +128,7 @@ func BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBufferProducer(tagNumber u
 }
 
 func BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessRuleTimeRangeSpecifierTagged, error) {
-	v, err := (&_BACnetAccessRuleTimeRangeSpecifierTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetAccessRuleTimeRangeSpecifierTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

@@ -158,7 +158,7 @@ func GuidValueParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 }
 
 func GuidValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GuidValue, error) {
-	v, err := (&_GuidValue{}).parse(ctx, readBuffer)
+	v, err := NewGuidValue().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

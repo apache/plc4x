@@ -141,7 +141,7 @@ func BACnetGroupChannelValueListParseWithBufferProducer(tagNumber uint8) func(ct
 }
 
 func BACnetGroupChannelValueListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetGroupChannelValueList, error) {
-	v, err := (&_BACnetGroupChannelValueList{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetGroupChannelValueList(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

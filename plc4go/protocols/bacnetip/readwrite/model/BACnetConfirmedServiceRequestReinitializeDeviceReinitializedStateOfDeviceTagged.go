@@ -128,7 +128,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 }
 
 func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, error) {
-	v, err := (&_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

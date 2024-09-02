@@ -128,7 +128,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedP
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, error) {
-	v, err := (&_BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

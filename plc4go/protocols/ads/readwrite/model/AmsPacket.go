@@ -284,7 +284,7 @@ func AmsPacketParseWithBufferProducer[T AmsPacket]() func(ctx context.Context, r
 }
 
 func AmsPacketParseWithBuffer[T AmsPacket](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_AmsPacket{}).parse(ctx, readBuffer)
+	v, err := NewAmsPacket().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -92,7 +92,7 @@ func DurationStringParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func DurationStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DurationString, error) {
-	v, err := (&_DurationString{}).parse(ctx, readBuffer)
+	v, err := NewDurationString().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

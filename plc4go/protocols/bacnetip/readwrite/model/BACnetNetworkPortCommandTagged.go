@@ -157,7 +157,7 @@ func BACnetNetworkPortCommandTaggedParseWithBufferProducer(tagNumber uint8, tagC
 }
 
 func BACnetNetworkPortCommandTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkPortCommandTagged, error) {
-	v, err := (&_BACnetNetworkPortCommandTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetNetworkPortCommandTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

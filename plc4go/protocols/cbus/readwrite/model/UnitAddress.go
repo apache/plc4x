@@ -114,7 +114,7 @@ func UnitAddressParseWithBufferProducer() func(ctx context.Context, readBuffer u
 }
 
 func UnitAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UnitAddress, error) {
-	v, err := (&_UnitAddress{}).parse(ctx, readBuffer)
+	v, err := NewUnitAddress().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

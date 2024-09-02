@@ -157,7 +157,7 @@ func BACnetBinaryLightingPVTaggedParseWithBufferProducer(tagNumber uint8, tagCla
 }
 
 func BACnetBinaryLightingPVTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryLightingPVTagged, error) {
-	v, err := (&_BACnetBinaryLightingPVTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetBinaryLightingPVTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

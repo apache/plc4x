@@ -160,7 +160,7 @@ func BACnetOptionalREALParseWithBufferProducer[T BACnetOptionalREAL]() func(ctx 
 }
 
 func BACnetOptionalREALParseWithBuffer[T BACnetOptionalREAL](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetOptionalREAL{}).parse(ctx, readBuffer)
+	v, err := NewBACnetOptionalREAL().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

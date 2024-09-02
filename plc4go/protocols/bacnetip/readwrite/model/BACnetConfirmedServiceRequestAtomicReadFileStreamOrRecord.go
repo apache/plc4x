@@ -180,7 +180,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBufferPro
 }
 
 func BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer[T BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{}).parse(ctx, readBuffer)
+	v, err := NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

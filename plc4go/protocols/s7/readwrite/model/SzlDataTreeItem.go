@@ -156,7 +156,7 @@ func SzlDataTreeItemParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func SzlDataTreeItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
-	v, err := (&_SzlDataTreeItem{}).parse(ctx, readBuffer)
+	v, err := NewSzlDataTreeItem().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

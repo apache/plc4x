@@ -140,7 +140,7 @@ func StatusRequestParseWithBufferProducer[T StatusRequest]() func(ctx context.Co
 }
 
 func StatusRequestParseWithBuffer[T StatusRequest](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_StatusRequest{}).parse(ctx, readBuffer)
+	v, err := NewStatusRequest().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -129,7 +129,7 @@ func ExtensionHeaderParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func ExtensionHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ExtensionHeader, error) {
-	v, err := (&_ExtensionHeader{}).parse(ctx, readBuffer)
+	v, err := NewExtensionHeader().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -134,7 +134,7 @@ func KnxAddressParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func KnxAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxAddress, error) {
-	v, err := (&_KnxAddress{}).parse(ctx, readBuffer)
+	v, err := NewKnxAddress().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

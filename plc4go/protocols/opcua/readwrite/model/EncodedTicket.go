@@ -92,7 +92,7 @@ func EncodedTicketParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func EncodedTicketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EncodedTicket, error) {
-	v, err := (&_EncodedTicket{}).parse(ctx, readBuffer)
+	v, err := NewEncodedTicket().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

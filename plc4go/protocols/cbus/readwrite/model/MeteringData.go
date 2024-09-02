@@ -175,7 +175,7 @@ func MeteringDataParseWithBufferProducer[T MeteringData]() func(ctx context.Cont
 }
 
 func MeteringDataParseWithBuffer[T MeteringData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_MeteringData{}).parse(ctx, readBuffer)
+	v, err := NewMeteringData().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

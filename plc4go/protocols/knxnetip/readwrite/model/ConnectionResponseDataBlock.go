@@ -128,7 +128,7 @@ func ConnectionResponseDataBlockParseWithBufferProducer[T ConnectionResponseData
 }
 
 func ConnectionResponseDataBlockParseWithBuffer[T ConnectionResponseDataBlock](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_ConnectionResponseDataBlock{}).parse(ctx, readBuffer)
+	v, err := NewConnectionResponseDataBlock().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

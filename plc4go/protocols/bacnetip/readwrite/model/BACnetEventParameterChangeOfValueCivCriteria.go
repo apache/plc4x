@@ -185,7 +185,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaParseWithBufferProducer[T BACne
 }
 
 func BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer[T BACnetEventParameterChangeOfValueCivCriteria](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (T, error) {
-	v, err := (&_BACnetEventParameterChangeOfValueCivCriteria{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetEventParameterChangeOfValueCivCriteria(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		var zero T
 		return zero, err

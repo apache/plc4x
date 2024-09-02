@@ -188,7 +188,7 @@ func BACnetNotificationParametersParseWithBufferProducer[T BACnetNotificationPar
 }
 
 func BACnetNotificationParametersParseWithBuffer[T BACnetNotificationParameters](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (T, error) {
-	v, err := (&_BACnetNotificationParameters{}).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
+	v, err := NewBACnetNotificationParameters(tagNumber, objectTypeArgument).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -154,7 +154,7 @@ func BACnetCOVMultipleSubscriptionParseWithBufferProducer() func(ctx context.Con
 }
 
 func BACnetCOVMultipleSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscription, error) {
-	v, err := (&_BACnetCOVMultipleSubscription{}).parse(ctx, readBuffer)
+	v, err := NewBACnetCOVMultipleSubscription().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

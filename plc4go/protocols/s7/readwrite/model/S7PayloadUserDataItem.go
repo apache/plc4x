@@ -169,7 +169,7 @@ func S7PayloadUserDataItemParseWithBufferProducer[T S7PayloadUserDataItem](cpuFu
 }
 
 func S7PayloadUserDataItemParseWithBuffer[T S7PayloadUserDataItem](ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (T, error) {
-	v, err := (&_S7PayloadUserDataItem{}).parse(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	v, err := NewS7PayloadUserDataItem().parse(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 	if err != nil {
 		var zero T
 		return zero, err

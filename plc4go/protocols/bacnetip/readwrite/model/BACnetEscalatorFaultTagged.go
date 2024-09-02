@@ -157,7 +157,7 @@ func BACnetEscalatorFaultTaggedParseWithBufferProducer(tagNumber uint8, tagClass
 }
 
 func BACnetEscalatorFaultTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEscalatorFaultTagged, error) {
-	v, err := (&_BACnetEscalatorFaultTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetEscalatorFaultTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

@@ -153,7 +153,7 @@ func KnxNetIpMessageParseWithBufferProducer[T KnxNetIpMessage]() func(ctx contex
 }
 
 func KnxNetIpMessageParseWithBuffer[T KnxNetIpMessage](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_KnxNetIpMessage{}).parse(ctx, readBuffer)
+	v, err := NewKnxNetIpMessage().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

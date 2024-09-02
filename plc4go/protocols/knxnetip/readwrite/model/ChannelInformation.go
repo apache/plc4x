@@ -124,7 +124,7 @@ func ChannelInformationParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func ChannelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ChannelInformation, error) {
-	v, err := (&_ChannelInformation{}).parse(ctx, readBuffer)
+	v, err := NewChannelInformation().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

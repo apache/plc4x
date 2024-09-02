@@ -116,7 +116,7 @@ func MACAddressParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func MACAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MACAddress, error) {
-	v, err := (&_MACAddress{}).parse(ctx, readBuffer)
+	v, err := NewMACAddress().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

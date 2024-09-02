@@ -174,7 +174,7 @@ func AmsSerialFrameParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func AmsSerialFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
-	v, err := (&_AmsSerialFrame{}).parse(ctx, readBuffer)
+	v, err := NewAmsSerialFrame().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

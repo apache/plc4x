@@ -160,7 +160,7 @@ func BACnetLogDataLogDataEntryParseWithBufferProducer[T BACnetLogDataLogDataEntr
 }
 
 func BACnetLogDataLogDataEntryParseWithBuffer[T BACnetLogDataLogDataEntry](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_BACnetLogDataLogDataEntry{}).parse(ctx, readBuffer)
+	v, err := NewBACnetLogDataLogDataEntry().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

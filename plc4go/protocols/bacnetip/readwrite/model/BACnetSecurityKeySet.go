@@ -144,7 +144,7 @@ func BACnetSecurityKeySetParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func BACnetSecurityKeySetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSecurityKeySet, error) {
-	v, err := (&_BACnetSecurityKeySet{}).parse(ctx, readBuffer)
+	v, err := NewBACnetSecurityKeySet().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

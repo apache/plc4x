@@ -128,7 +128,7 @@ func BACnetSecurityLevelTaggedParseWithBufferProducer(tagNumber uint8, tagClass 
 }
 
 func BACnetSecurityLevelTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSecurityLevelTagged, error) {
-	v, err := (&_BACnetSecurityLevelTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetSecurityLevelTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

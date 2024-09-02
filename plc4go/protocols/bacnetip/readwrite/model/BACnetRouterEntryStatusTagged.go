@@ -128,7 +128,7 @@ func BACnetRouterEntryStatusTaggedParseWithBufferProducer(tagNumber uint8, tagCl
 }
 
 func BACnetRouterEntryStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRouterEntryStatusTagged, error) {
-	v, err := (&_BACnetRouterEntryStatusTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetRouterEntryStatusTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

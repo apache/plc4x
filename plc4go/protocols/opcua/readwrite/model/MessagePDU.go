@@ -150,7 +150,7 @@ func MessagePDUParseWithBufferProducer[T MessagePDU](response bool) func(ctx con
 }
 
 func MessagePDUParseWithBuffer[T MessagePDU](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
-	v, err := (&_MessagePDU{}).parse(ctx, readBuffer, response)
+	v, err := NewMessagePDU().parse(ctx, readBuffer, response)
 	if err != nil {
 		var zero T
 		return zero, err

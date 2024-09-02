@@ -128,7 +128,7 @@ func BACnetAccessPassbackModeTaggedParseWithBufferProducer(tagNumber uint8, tagC
 }
 
 func BACnetAccessPassbackModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessPassbackModeTagged, error) {
-	v, err := (&_BACnetAccessPassbackModeTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetAccessPassbackModeTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

@@ -148,7 +148,7 @@ func PayloadParseWithBufferProducer[T Payload](extensible bool, byteCount uint32
 }
 
 func PayloadParseWithBuffer[T Payload](ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (T, error) {
-	v, err := (&_Payload{}).parse(ctx, readBuffer, extensible, byteCount)
+	v, err := NewPayload(byteCount).parse(ctx, readBuffer, extensible, byteCount)
 	if err != nil {
 		var zero T
 		return zero, err

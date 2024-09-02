@@ -160,7 +160,7 @@ func ExtensionObjectParseWithBufferProducer(includeEncodingMask bool) func(ctx c
 }
 
 func ExtensionObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, includeEncodingMask bool) (ExtensionObject, error) {
-	v, err := (&_ExtensionObject{}).parse(ctx, readBuffer, includeEncodingMask)
+	v, err := NewExtensionObject(includeEncodingMask).parse(ctx, readBuffer, includeEncodingMask)
 	if err != nil {
 		return nil, err
 	}

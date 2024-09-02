@@ -125,7 +125,7 @@ func AdsDiscoveryBlockParseWithBufferProducer[T AdsDiscoveryBlock]() func(ctx co
 }
 
 func AdsDiscoveryBlockParseWithBuffer[T AdsDiscoveryBlock](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_AdsDiscoveryBlock{}).parse(ctx, readBuffer)
+	v, err := NewAdsDiscoveryBlock().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

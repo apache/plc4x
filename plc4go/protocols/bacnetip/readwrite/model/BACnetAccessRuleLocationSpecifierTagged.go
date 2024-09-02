@@ -128,7 +128,7 @@ func BACnetAccessRuleLocationSpecifierTaggedParseWithBufferProducer(tagNumber ui
 }
 
 func BACnetAccessRuleLocationSpecifierTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessRuleLocationSpecifierTagged, error) {
-	v, err := (&_BACnetAccessRuleLocationSpecifierTagged{}).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := NewBACnetAccessRuleLocationSpecifierTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

@@ -137,7 +137,7 @@ func BACnetPropertyReferenceEnclosedParseWithBufferProducer(tagNumber uint8) fun
 }
 
 func BACnetPropertyReferenceEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetPropertyReferenceEnclosed, error) {
-	v, err := (&_BACnetPropertyReferenceEnclosed{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetPropertyReferenceEnclosed(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

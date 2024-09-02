@@ -194,7 +194,7 @@ func CBusOptionsParseWithBufferProducer() func(ctx context.Context, readBuffer u
 }
 
 func CBusOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusOptions, error) {
-	v, err := (&_CBusOptions{}).parse(ctx, readBuffer)
+	v, err := NewCBusOptions().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

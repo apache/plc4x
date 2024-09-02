@@ -165,7 +165,7 @@ func CBusPointToPointToMultiPointCommandParseWithBufferProducer[T CBusPointToPoi
 }
 
 func CBusPointToPointToMultiPointCommandParseWithBuffer[T CBusPointToPointToMultiPointCommand](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := (&_CBusPointToPointToMultiPointCommand{}).parse(ctx, readBuffer, cBusOptions)
+	v, err := NewCBusPointToPointToMultiPointCommand(cBusOptions).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err

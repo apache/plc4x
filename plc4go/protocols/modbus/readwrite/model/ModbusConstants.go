@@ -114,7 +114,7 @@ func ModbusConstantsParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func ModbusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusConstants, error) {
-	v, err := (&_ModbusConstants{}).parse(ctx, readBuffer)
+	v, err := NewModbusConstants().parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

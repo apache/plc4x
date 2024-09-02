@@ -189,7 +189,7 @@ func LDataFrameParseWithBufferProducer[T LDataFrame]() func(ctx context.Context,
 }
 
 func LDataFrameParseWithBuffer[T LDataFrame](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := (&_LDataFrame{}).parse(ctx, readBuffer)
+	v, err := NewLDataFrame().parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

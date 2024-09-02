@@ -141,7 +141,7 @@ func BACnetEventParameterAccessEventListOfAccessEventsParseWithBufferProducer(ta
 }
 
 func BACnetEventParameterAccessEventListOfAccessEventsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterAccessEventListOfAccessEvents, error) {
-	v, err := (&_BACnetEventParameterAccessEventListOfAccessEvents{}).parse(ctx, readBuffer, tagNumber)
+	v, err := NewBACnetEventParameterAccessEventListOfAccessEvents(tagNumber).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}
