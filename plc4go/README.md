@@ -19,6 +19,8 @@
 
 # plc4go
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/apache/plc4x/plc4go.svg)](https://pkg.go.dev/github.com/apache/plc4x/plc4go)
+
 ## plc4go module
 
 To use plc4go import `"github.com/apache/plc4x/plc4go/pkg/api"` and use the driver manager 
