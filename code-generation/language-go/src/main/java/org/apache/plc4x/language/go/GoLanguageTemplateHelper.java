@@ -1100,7 +1100,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else if ((serializerArguments != null) && serializerArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("serialization argument");
-            return tracer + "m." + capitalize(variableLiteralName) +
+            return tracer + "m.Get" + capitalize(variableLiteralName) +"()"+
                 variableLiteral.getChild()
                     .map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");

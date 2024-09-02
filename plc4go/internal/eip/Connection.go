@@ -227,8 +227,8 @@ func (c *Connection) listServiceRequest(ctx context.Context, ch chan plc4go.PlcC
 			uint32(0),
 		),
 		func(message spi.Message) bool {
-			eipPacket := message.(readWriteModel.EipPacketExactly)
-			if eipPacket == nil {
+			eipPacket, ok := message.(readWriteModel.EipPacketExactly)
+			if !ok {
 				return false
 			}
 			eipPacketListServicesResponse := eipPacket.(readWriteModel.ListServicesResponseExactly)

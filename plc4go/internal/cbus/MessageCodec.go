@@ -187,7 +187,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		_, _ = ti.Read(1)
 		// Report one Error at a time
 		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-		return readWriteModel.CBusMessageParse(ctxForModel, bytes, true, m.requestContext, m.cbusOptions)
+		return readWriteModel.CBusMessageParse[readWriteModel.CBusMessage](ctxForModel, bytes, true, m.requestContext, m.cbusOptions)
 	}
 
 	peekedBytes, err := ti.PeekReadableBytes(readableBytes)
@@ -322,7 +322,7 @@ lookingForTheEnd:
 				Msg("We found foundErrors errors in the current message. We have currentlyReportedServerErrors reported already")
 			m.currentlyReportedServerErrors.Add(1)
 			ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-			return readWriteModel.CBusMessageParse(ctxForModel, []byte{'!'}, true, m.requestContext, m.cbusOptions)
+			return readWriteModel.CBusMessageParse[readWriteModel.CBusMessage](ctxForModel, []byte{'!'}, true, m.requestContext, m.cbusOptions)
 		}
 		if foundErrors > 0 {
 			m.log.Debug().
@@ -357,14 +357,14 @@ lookingForTheEnd:
 	m.log.Debug().Bytes("sanitizedInput", sanitizedInput).Msg("Parsing")
 	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	start := time.Now()
-	cBusMessage, err := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, pciResponse, m.requestContext, m.cbusOptions)
+	cBusMessage, err := readWriteModel.CBusMessageParse[readWriteModel.CBusMessage](ctxForModel, sanitizedInput, pciResponse, m.requestContext, m.cbusOptions)
 	m.log.Trace().TimeDiff("elapsedTime", time.Now(), start).Msg("Parsing took elapsedTime")
 	if err != nil {
 		m.log.Debug().Err(err).Msg("First Parse Failed")
 		{ // Try SAL
 			m.log.Trace().Msg("try SAL")
 			requestContext := readWriteModel.NewRequestContext(false)
-			cBusMessage, secondErr := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, pciResponse, requestContext, m.cbusOptions)
+			cBusMessage, secondErr := readWriteModel.CBusMessageParse[readWriteModel.CBusMessage](ctxForModel, sanitizedInput, pciResponse, requestContext, m.cbusOptions)
 			if secondErr == nil {
 				m.log.Trace().Msg("Parsed message as SAL")
 				return cBusMessage, nil
@@ -376,7 +376,7 @@ lookingForTheEnd:
 			m.log.Trace().Msg("try MMI")
 			requestContext := readWriteModel.NewRequestContext(false)
 			cbusOptions := readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false)
-			cBusMessage, secondErr := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, true, requestContext, cbusOptions)
+			cBusMessage, secondErr := readWriteModel.CBusMessageParse[readWriteModel.CBusMessage](ctxForModel, sanitizedInput, true, requestContext, cbusOptions)
 			if secondErr == nil {
 				m.log.Trace().Msg("Parsed message as MMI")
 				return cBusMessage, nil

@@ -299,15 +299,26 @@ func ${type.name}Serialize(value api.PlcValue<#if parserArguments?has_content>, 
 	return wb.GetBytes(), nil
 }
 
+<#if parserArguments?has_content>
+type _${type.name} struct {
+	<#list parserArguments as parserArgument>
+		${parserArgument.name?cap_first} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+	</#list>
+}
+
+	<#list parserArguments as parserArgument>
+func (m _${type.name}) Get${parserArgument.name?cap_first}() <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}{
+		return m.${parserArgument.name?cap_first}
+}
+
+	</#list>
+</#if>
+
 func ${type.name}SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer, value api.PlcValue<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
 	<#if parserArguments?has_content>
-	m := struct {
-    	<#list parserArguments as parserArgument>
-			${parserArgument.name?cap_first} <#if parserArgument.type.isNonSimpleTypeReference() && !parserArgument.type.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
-		</#list>
-	}{
+	m := _${type.name}{
 		<#list parserArguments as parserArgument>
 			${parserArgument.name?cap_first}: ${parserArgument.name},
 		</#list>

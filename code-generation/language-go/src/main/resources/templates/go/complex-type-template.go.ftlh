@@ -116,6 +116,11 @@ type ${type.name} interface {
 </#if>
 }
 
+<#if parserArguments?has_content>
+	<#assign filteredParserArguments=parserArguments?filter(arg -> !type.isDiscriminatorField(arg.name) && !type.getPropertyFieldFromThisOrParentByName(arg.name).isPresent())>
+	<#assign filteredParserArgumentsLocalToType=filteredParserArguments?filter(arg->type.getParentType().isEmpty()||(type.getParentType().orElseThrow().getAllParserArguments().isEmpty()||!type.getParentType().orElseThrow().isParserArgument(arg.name)))>
+</#if>
+
 <#if type.isDiscriminatedParentTypeDefinition()>
 // ${type.name}Contract provides a set of functions which can be overwritten by a sub struct
 type ${type.name}Contract interface {
@@ -137,6 +142,12 @@ type ${type.name}Contract interface {
 	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
 	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
 	</#list>
+	<#if filteredParserArgumentsLocalToType?has_content>
+		<#list filteredParserArgumentsLocalToType as parserArgument>
+	// Get${parserArgument.name?cap_first}() returns a parser argument
+	Get${parserArgument.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
+		</#list>
+	</#if>
 }
 
 // ${type.name}Requirements provides a set of functions which need to be implemented by a sub struct
@@ -171,10 +182,6 @@ type _${type.name} struct {
     <#list type.propertyFields as field>
         ${field.name?cap_first} <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
     </#list>
-</#if>
-<#if parserArguments?has_content>
-    <#assign filteredParserArguments=parserArguments?filter(arg -> !type.isDiscriminatorField(arg.name) && !type.getPropertyFieldFromThisOrParentByName(arg.name).isPresent())>
-	<#assign filteredParserArgumentsLocalToType=filteredParserArguments?filter(arg->type.getParentType().isEmpty()||(type.getParentType().orElseThrow().getAllParserArguments().isEmpty()||!type.getParentType().orElseThrow().isParserArgument(arg.name)))>
 </#if>
 <#if filteredParserArgumentsLocalToType?has_content>
 
@@ -964,16 +971,11 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	<#if optionalField.type.isComplexTypeReference()>_</#if>${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if optionalField.conditionExpression.present>, ${helper.toParseExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}<#else>, true</#if>${helper.getFieldOptions(typedField, parserArguments)})
+	var ${namedField.name} <#if !optionalField.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(optionalField)}
+	<#if optionalField.type.isComplexTypeReference()>_</#if>${namedField.name},err <#if optionalField.type.isComplexTypeReference()>:</#if>= Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if optionalField.conditionExpression.present>, ${helper.toParseExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}<#else>, true</#if>${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
-	<#if optionalField.type.isComplexTypeReference()>
-	var ${namedField.name} ${helper.getLanguageTypeNameForField(field)}
-	if _${namedField.name}!=nil{
-			${namedField.name}=*_${namedField.name}
-	}
-	</#if>
 				<#break>
 			<#case "padding">
 				<#assign paddingField = field.asPaddingField().orElseThrow()>
@@ -1121,9 +1123,16 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 		&& !field.isChecksumField()
 		&& !field.isImplicitField()
 		&& !field.isDiscriminatorField()
+		&& !(field.isOptionalField() && field.asOptionalField().orElseThrow().type.isComplexTypeReference())
 		&& !field.isVirtualField()>
 			<#assign namedField = field.asNamedField().orElseThrow()>
 	m.${namedField.name?cap_first} = ${namedField.name}
+		</#if>
+		<#if field.isOptionalField() && field.asOptionalField().orElseThrow().type.isComplexTypeReference()>
+	if _${namedField.name} != nil {
+		${namedField.name} = *_${namedField.name}
+		m.${namedField.name?cap_first} = ${namedField.name}
+	}
 		</#if>
 		<#if field.isReservedField()>
 	m.reservedField${reservedFieldIndex-1} = reservedField${reservedFieldIndex-1}

@@ -54,6 +54,11 @@ func (a *__APDU) Decode(pdu Arg) error {
 	panic("implement me")
 }
 
+func (a *__APDU) GetApduLength() uint16 {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (a *__APDU) GetApduType() model.ApduType {
 	panic("implement me")
 }
