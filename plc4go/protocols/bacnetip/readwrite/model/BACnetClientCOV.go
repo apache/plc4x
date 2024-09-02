@@ -160,7 +160,7 @@ func BACnetClientCOVParseWithBufferProducer[T BACnetClientCOV]() func(ctx contex
 }
 
 func BACnetClientCOVParseWithBuffer[T BACnetClientCOV](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewBACnetClientCOV().parse(ctx, readBuffer)
+	v, err := (&_BACnetClientCOV{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

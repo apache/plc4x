@@ -125,7 +125,7 @@ func PathSegmentParseWithBufferProducer[T PathSegment]() func(ctx context.Contex
 }
 
 func PathSegmentParseWithBuffer[T PathSegment](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewPathSegment().parse(ctx, readBuffer)
+	v, err := (&_PathSegment{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

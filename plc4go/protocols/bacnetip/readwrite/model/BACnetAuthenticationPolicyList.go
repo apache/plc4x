@@ -141,7 +141,7 @@ func BACnetAuthenticationPolicyListParseWithBufferProducer(tagNumber uint8) func
 }
 
 func BACnetAuthenticationPolicyListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetAuthenticationPolicyList, error) {
-	v, err := NewBACnetAuthenticationPolicyList(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetAuthenticationPolicyList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

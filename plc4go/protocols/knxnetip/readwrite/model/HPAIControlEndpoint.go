@@ -137,7 +137,7 @@ func HPAIControlEndpointParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func HPAIControlEndpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIControlEndpoint, error) {
-	v, err := NewHPAIControlEndpoint().parse(ctx, readBuffer)
+	v, err := (&_HPAIControlEndpoint{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

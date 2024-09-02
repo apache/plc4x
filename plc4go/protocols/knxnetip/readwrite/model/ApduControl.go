@@ -125,7 +125,7 @@ func ApduControlParseWithBufferProducer[T ApduControl]() func(ctx context.Contex
 }
 
 func ApduControlParseWithBuffer[T ApduControl](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewApduControl().parse(ctx, readBuffer)
+	v, err := (&_ApduControl{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

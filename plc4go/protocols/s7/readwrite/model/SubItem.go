@@ -134,7 +134,7 @@ func SubItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils
 }
 
 func SubItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SubItem, error) {
-	v, err := NewSubItem().parse(ctx, readBuffer)
+	v, err := (&_SubItem{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

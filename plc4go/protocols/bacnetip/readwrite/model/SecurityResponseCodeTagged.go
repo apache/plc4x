@@ -128,7 +128,7 @@ func SecurityResponseCodeTaggedParseWithBufferProducer(tagNumber uint8, tagClass
 }
 
 func SecurityResponseCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (SecurityResponseCodeTagged, error) {
-	v, err := NewSecurityResponseCodeTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_SecurityResponseCodeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

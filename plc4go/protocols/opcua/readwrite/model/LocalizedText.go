@@ -153,7 +153,7 @@ func LocalizedTextParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func LocalizedTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LocalizedText, error) {
-	v, err := NewLocalizedText().parse(ctx, readBuffer)
+	v, err := (&_LocalizedText{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

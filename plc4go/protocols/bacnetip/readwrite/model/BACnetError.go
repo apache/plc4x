@@ -121,7 +121,7 @@ func BACnetErrorParseWithBufferProducer[T BACnetError](errorChoice BACnetConfirm
 }
 
 func BACnetErrorParseWithBuffer[T BACnetError](ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (T, error) {
-	v, err := NewBACnetError().parse(ctx, readBuffer, errorChoice)
+	v, err := (&_BACnetError{}).parse(ctx, readBuffer, errorChoice)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -139,7 +139,7 @@ func ServicesParseWithBufferProducer(servicesLen uint16) func(ctx context.Contex
 }
 
 func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, servicesLen uint16) (Services, error) {
-	v, err := NewServices(servicesLen).parse(ctx, readBuffer, servicesLen)
+	v, err := (&_Services{ServicesLen: servicesLen}).parse(ctx, readBuffer, servicesLen)
 	if err != nil {
 		return nil, err
 	}

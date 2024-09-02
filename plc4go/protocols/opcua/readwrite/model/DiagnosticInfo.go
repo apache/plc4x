@@ -263,7 +263,7 @@ func DiagnosticInfoParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DiagnosticInfo, error) {
-	v, err := NewDiagnosticInfo().parse(ctx, readBuffer)
+	v, err := (&_DiagnosticInfo{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

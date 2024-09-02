@@ -157,7 +157,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBufferProd
 }
 
 func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, error) {
-	v, err := NewSubscribeCOVPropertyMultipleErrorFirstFailedSubscription(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

@@ -117,7 +117,7 @@ func BACnetClosingTagParseWithBufferProducer(tagNumberArgument uint8) func(ctx c
 }
 
 func BACnetClosingTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetClosingTag, error) {
-	v, err := NewBACnetClosingTag(tagNumberArgument).parse(ctx, readBuffer, tagNumberArgument)
+	v, err := (&_BACnetClosingTag{TagNumberArgument: tagNumberArgument}).parse(ctx, readBuffer, tagNumberArgument)
 	if err != nil {
 		return nil, err
 	}

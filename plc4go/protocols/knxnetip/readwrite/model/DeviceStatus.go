@@ -119,7 +119,7 @@ func DeviceStatusParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func DeviceStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceStatus, error) {
-	v, err := NewDeviceStatus().parse(ctx, readBuffer)
+	v, err := (&_DeviceStatus{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

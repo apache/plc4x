@@ -458,7 +458,7 @@ func BACnetTagPayloadSignedIntegerParseWithBufferProducer(actualLength uint32) f
 }
 
 func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadSignedInteger, error) {
-	v, err := NewBACnetTagPayloadSignedInteger(actualLength).parse(ctx, readBuffer, actualLength)
+	v, err := (&_BACnetTagPayloadSignedInteger{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}

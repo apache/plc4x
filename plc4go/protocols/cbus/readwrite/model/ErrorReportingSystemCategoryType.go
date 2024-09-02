@@ -121,7 +121,7 @@ func ErrorReportingSystemCategoryTypeParseWithBufferProducer[T ErrorReportingSys
 }
 
 func ErrorReportingSystemCategoryTypeParseWithBuffer[T ErrorReportingSystemCategoryType](ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (T, error) {
-	v, err := NewErrorReportingSystemCategoryType().parse(ctx, readBuffer, errorReportingSystemCategoryClass)
+	v, err := (&_ErrorReportingSystemCategoryType{}).parse(ctx, readBuffer, errorReportingSystemCategoryClass)
 	if err != nil {
 		var zero T
 		return zero, err

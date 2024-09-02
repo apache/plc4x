@@ -158,7 +158,7 @@ func CALReplyParseWithBufferProducer[T CALReply](cBusOptions CBusOptions, reques
 }
 
 func CALReplyParseWithBuffer[T CALReply](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (T, error) {
-	v, err := NewCALReply(cBusOptions, requestContext).parse(ctx, readBuffer, cBusOptions, requestContext)
+	v, err := (&_CALReply{CBusOptions: cBusOptions, RequestContext: requestContext}).parse(ctx, readBuffer, cBusOptions, requestContext)
 	if err != nil {
 		var zero T
 		return zero, err

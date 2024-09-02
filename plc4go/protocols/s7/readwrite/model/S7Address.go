@@ -125,7 +125,7 @@ func S7AddressParseWithBufferProducer[T S7Address]() func(ctx context.Context, r
 }
 
 func S7AddressParseWithBuffer[T S7Address](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewS7Address().parse(ctx, readBuffer)
+	v, err := (&_S7Address{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

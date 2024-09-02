@@ -132,7 +132,7 @@ func DeviceConfigurationRequestDataBlockParseWithBufferProducer() func(ctx conte
 }
 
 func DeviceConfigurationRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationRequestDataBlock, error) {
-	v, err := NewDeviceConfigurationRequestDataBlock().parse(ctx, readBuffer)
+	v, err := (&_DeviceConfigurationRequestDataBlock{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

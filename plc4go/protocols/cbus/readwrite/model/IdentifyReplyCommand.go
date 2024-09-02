@@ -126,7 +126,7 @@ func IdentifyReplyCommandParseWithBufferProducer[T IdentifyReplyCommand](attribu
 }
 
 func IdentifyReplyCommandParseWithBuffer[T IdentifyReplyCommand](ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (T, error) {
-	v, err := NewIdentifyReplyCommand(numBytes).parse(ctx, readBuffer, attribute, numBytes)
+	v, err := (&_IdentifyReplyCommand{NumBytes: numBytes}).parse(ctx, readBuffer, attribute, numBytes)
 	if err != nil {
 		var zero T
 		return zero, err

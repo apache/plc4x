@@ -124,7 +124,7 @@ func BACnetPrescaleParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func BACnetPrescaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
-	v, err := NewBACnetPrescale().parse(ctx, readBuffer)
+	v, err := (&_BACnetPrescale{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -128,7 +128,7 @@ func BACnetNodeTypeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagCl
 }
 
 func BACnetNodeTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNodeTypeTagged, error) {
-	v, err := NewBACnetNodeTypeTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetNodeTypeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

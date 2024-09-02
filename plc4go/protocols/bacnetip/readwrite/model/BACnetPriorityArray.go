@@ -372,7 +372,7 @@ func BACnetPriorityArrayParseWithBufferProducer(objectTypeArgument BACnetObjectT
 }
 
 func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPriorityArray, error) {
-	v, err := NewBACnetPriorityArray(objectTypeArgument, tagNumber, arrayIndexArgument).parse(ctx, readBuffer, objectTypeArgument, tagNumber, arrayIndexArgument)
+	v, err := (&_BACnetPriorityArray{ObjectTypeArgument: objectTypeArgument, TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}).parse(ctx, readBuffer, objectTypeArgument, tagNumber, arrayIndexArgument)
 	if err != nil {
 		return nil, err
 	}

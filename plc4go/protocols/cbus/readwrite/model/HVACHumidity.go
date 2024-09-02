@@ -133,7 +133,7 @@ func HVACHumidityParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func HVACHumidityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidity, error) {
-	v, err := NewHVACHumidity().parse(ctx, readBuffer)
+	v, err := (&_HVACHumidity{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

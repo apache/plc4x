@@ -92,7 +92,7 @@ func StructureParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 }
 
 func StructureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Structure, error) {
-	v, err := NewStructure().parse(ctx, readBuffer)
+	v, err := (&_Structure{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

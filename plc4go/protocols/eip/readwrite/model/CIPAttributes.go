@@ -158,7 +158,7 @@ func CIPAttributesParseWithBufferProducer(packetLength uint16) func(ctx context.
 }
 
 func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CIPAttributes, error) {
-	v, err := NewCIPAttributes(packetLength).parse(ctx, readBuffer, packetLength)
+	v, err := (&_CIPAttributes{PacketLength: packetLength}).parse(ctx, readBuffer, packetLength)
 	if err != nil {
 		return nil, err
 	}

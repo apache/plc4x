@@ -130,7 +130,7 @@ func FirmataCommandParseWithBufferProducer[T FirmataCommand](response bool) func
 }
 
 func FirmataCommandParseWithBuffer[T FirmataCommand](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
-	v, err := NewFirmataCommand(response).parse(ctx, readBuffer, response)
+	v, err := (&_FirmataCommand{Response: response}).parse(ctx, readBuffer, response)
 	if err != nil {
 		var zero T
 		return zero, err

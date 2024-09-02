@@ -114,7 +114,7 @@ func BACnetAccessThreatLevelParseWithBufferProducer() func(ctx context.Context, 
 }
 
 func BACnetAccessThreatLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
-	v, err := NewBACnetAccessThreatLevel().parse(ctx, readBuffer)
+	v, err := (&_BACnetAccessThreatLevel{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -134,7 +134,7 @@ func BACnetAuthenticationFactorParseWithBufferProducer() func(ctx context.Contex
 }
 
 func BACnetAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactor, error) {
-	v, err := NewBACnetAuthenticationFactor().parse(ctx, readBuffer)
+	v, err := (&_BACnetAuthenticationFactor{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

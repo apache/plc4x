@@ -185,7 +185,7 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBufferProducer[T 
 }
 
 func BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBuffer[T BACnetFaultParameterFaultOutOfRangeMinNormalValue](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (T, error) {
-	v, err := NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetFaultParameterFaultOutOfRangeMinNormalValue{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		var zero T
 		return zero, err

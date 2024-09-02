@@ -134,7 +134,7 @@ func TransportTypeParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TransportType, error) {
-	v, err := NewTransportType().parse(ctx, readBuffer)
+	v, err := (&_TransportType{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

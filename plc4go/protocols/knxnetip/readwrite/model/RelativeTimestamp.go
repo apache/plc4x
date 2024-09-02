@@ -114,7 +114,7 @@ func RelativeTimestampParseWithBufferProducer() func(ctx context.Context, readBu
 }
 
 func RelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RelativeTimestamp, error) {
-	v, err := NewRelativeTimestamp().parse(ctx, readBuffer)
+	v, err := (&_RelativeTimestamp{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

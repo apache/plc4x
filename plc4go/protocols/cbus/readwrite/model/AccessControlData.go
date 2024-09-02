@@ -183,7 +183,7 @@ func AccessControlDataParseWithBufferProducer[T AccessControlData]() func(ctx co
 }
 
 func AccessControlDataParseWithBuffer[T AccessControlData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewAccessControlData().parse(ctx, readBuffer)
+	v, err := (&_AccessControlData{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

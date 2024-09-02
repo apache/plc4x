@@ -130,7 +130,7 @@ func ApduDataExtParseWithBufferProducer[T ApduDataExt](length uint8) func(ctx co
 }
 
 func ApduDataExtParseWithBuffer[T ApduDataExt](ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (T, error) {
-	v, err := NewApduDataExt(length).parse(ctx, readBuffer, length)
+	v, err := (&_ApduDataExt{Length: length}).parse(ctx, readBuffer, length)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -126,7 +126,7 @@ func BACnetBDTEntryParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func BACnetBDTEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
-	v, err := NewBACnetBDTEntry().parse(ctx, readBuffer)
+	v, err := (&_BACnetBDTEntry{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

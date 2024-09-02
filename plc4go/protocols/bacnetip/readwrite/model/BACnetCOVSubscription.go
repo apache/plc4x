@@ -156,7 +156,7 @@ func BACnetCOVSubscriptionParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func BACnetCOVSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVSubscription, error) {
-	v, err := NewBACnetCOVSubscription().parse(ctx, readBuffer)
+	v, err := (&_BACnetCOVSubscription{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

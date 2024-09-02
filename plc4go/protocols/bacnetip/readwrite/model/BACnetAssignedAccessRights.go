@@ -124,7 +124,7 @@ func BACnetAssignedAccessRightsParseWithBufferProducer() func(ctx context.Contex
 }
 
 func BACnetAssignedAccessRightsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {
-	v, err := NewBACnetAssignedAccessRights().parse(ctx, readBuffer)
+	v, err := (&_BACnetAssignedAccessRights{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -131,7 +131,7 @@ func NetworkRouteParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
-	v, err := NewNetworkRoute().parse(ctx, readBuffer)
+	v, err := (&_NetworkRoute{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

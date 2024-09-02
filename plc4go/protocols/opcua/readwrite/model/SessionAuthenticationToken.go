@@ -92,7 +92,7 @@ func SessionAuthenticationTokenParseWithBufferProducer() func(ctx context.Contex
 }
 
 func SessionAuthenticationTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SessionAuthenticationToken, error) {
-	v, err := NewSessionAuthenticationToken().parse(ctx, readBuffer)
+	v, err := (&_SessionAuthenticationToken{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

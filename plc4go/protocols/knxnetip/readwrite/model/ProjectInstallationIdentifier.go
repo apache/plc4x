@@ -124,7 +124,7 @@ func ProjectInstallationIdentifierParseWithBufferProducer() func(ctx context.Con
 }
 
 func ProjectInstallationIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ProjectInstallationIdentifier, error) {
-	v, err := NewProjectInstallationIdentifier().parse(ctx, readBuffer)
+	v, err := (&_ProjectInstallationIdentifier{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

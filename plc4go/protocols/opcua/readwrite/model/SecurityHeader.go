@@ -124,7 +124,7 @@ func SecurityHeaderParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func SecurityHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityHeader, error) {
-	v, err := NewSecurityHeader().parse(ctx, readBuffer)
+	v, err := (&_SecurityHeader{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

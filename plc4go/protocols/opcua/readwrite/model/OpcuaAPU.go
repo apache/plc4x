@@ -119,7 +119,7 @@ func OpcuaAPUParseWithBufferProducer(response bool) func(ctx context.Context, re
 }
 
 func OpcuaAPUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaAPU, error) {
-	v, err := NewOpcuaAPU(response).parse(ctx, readBuffer, response)
+	v, err := (&_OpcuaAPU{Response: response}).parse(ctx, readBuffer, response)
 	if err != nil {
 		return nil, err
 	}

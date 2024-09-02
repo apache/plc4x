@@ -138,7 +138,7 @@ func BVLCBroadcastDistributionTableEntryParseWithBufferProducer() func(ctx conte
 }
 
 func BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCBroadcastDistributionTableEntry, error) {
-	v, err := NewBVLCBroadcastDistributionTableEntry().parse(ctx, readBuffer)
+	v, err := (&_BVLCBroadcastDistributionTableEntry{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

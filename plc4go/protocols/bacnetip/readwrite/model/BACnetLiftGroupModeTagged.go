@@ -128,7 +128,7 @@ func BACnetLiftGroupModeTaggedParseWithBufferProducer(tagNumber uint8, tagClass 
 }
 
 func BACnetLiftGroupModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftGroupModeTagged, error) {
-	v, err := NewBACnetLiftGroupModeTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetLiftGroupModeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

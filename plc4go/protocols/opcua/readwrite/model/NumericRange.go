@@ -92,7 +92,7 @@ func NumericRangeParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func NumericRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NumericRange, error) {
-	v, err := NewNumericRange().parse(ctx, readBuffer)
+	v, err := (&_NumericRange{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

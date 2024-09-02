@@ -151,7 +151,7 @@ func S7DataAlarmMessageParseWithBufferProducer[T S7DataAlarmMessage](cpuFunction
 }
 
 func S7DataAlarmMessageParseWithBuffer[T S7DataAlarmMessage](ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (T, error) {
-	v, err := NewS7DataAlarmMessage().parse(ctx, readBuffer, cpuFunctionType)
+	v, err := (&_S7DataAlarmMessage{}).parse(ctx, readBuffer, cpuFunctionType)
 	if err != nil {
 		var zero T
 		return zero, err

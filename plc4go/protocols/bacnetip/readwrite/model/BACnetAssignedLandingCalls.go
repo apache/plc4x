@@ -114,7 +114,7 @@ func BACnetAssignedLandingCallsParseWithBufferProducer() func(ctx context.Contex
 }
 
 func BACnetAssignedLandingCallsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedLandingCalls, error) {
-	v, err := NewBACnetAssignedLandingCalls().parse(ctx, readBuffer)
+	v, err := (&_BACnetAssignedLandingCalls{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

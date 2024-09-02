@@ -225,7 +225,7 @@ func BACnetConstructedDataElementParseWithBufferProducer(objectTypeArgument BACn
 }
 
 func BACnetConstructedDataElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElement, error) {
-	v, err := NewBACnetConstructedDataElement(objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument).parse(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	v, err := (&_BACnetConstructedDataElement{ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}).parse(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	if err != nil {
 		return nil, err
 	}

@@ -121,7 +121,7 @@ func UserIdentityTokenDefinitionParseWithBufferProducer[T UserIdentityTokenDefin
 }
 
 func UserIdentityTokenDefinitionParseWithBuffer[T UserIdentityTokenDefinition](ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (T, error) {
-	v, err := NewUserIdentityTokenDefinition().parse(ctx, readBuffer, identifier)
+	v, err := (&_UserIdentityTokenDefinition{}).parse(ctx, readBuffer, identifier)
 	if err != nil {
 		var zero T
 		return zero, err

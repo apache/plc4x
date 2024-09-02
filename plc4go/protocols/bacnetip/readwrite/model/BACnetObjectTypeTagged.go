@@ -157,7 +157,7 @@ func BACnetObjectTypeTaggedParseWithBufferProducer(tagNumber uint8, tagClass Tag
 }
 
 func BACnetObjectTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetObjectTypeTagged, error) {
-	v, err := NewBACnetObjectTypeTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetObjectTypeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

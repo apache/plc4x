@@ -128,7 +128,7 @@ func BACnetLiftCarDoorCommandTaggedParseWithBufferProducer(tagNumber uint8, tagC
 }
 
 func BACnetLiftCarDoorCommandTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftCarDoorCommandTagged, error) {
-	v, err := NewBACnetLiftCarDoorCommandTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetLiftCarDoorCommandTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

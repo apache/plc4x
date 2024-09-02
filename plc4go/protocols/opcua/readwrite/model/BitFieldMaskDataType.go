@@ -92,7 +92,7 @@ func BitFieldMaskDataTypeParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func BitFieldMaskDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BitFieldMaskDataType, error) {
-	v, err := NewBitFieldMaskDataType().parse(ctx, readBuffer)
+	v, err := (&_BitFieldMaskDataType{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

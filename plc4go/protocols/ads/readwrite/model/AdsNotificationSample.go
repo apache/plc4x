@@ -136,7 +136,7 @@ func AdsNotificationSampleParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func AdsNotificationSampleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
-	v, err := NewAdsNotificationSample().parse(ctx, readBuffer)
+	v, err := (&_AdsNotificationSample{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

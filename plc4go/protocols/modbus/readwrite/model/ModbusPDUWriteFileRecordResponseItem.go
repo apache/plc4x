@@ -149,7 +149,7 @@ func ModbusPDUWriteFileRecordResponseItemParseWithBufferProducer() func(ctx cont
 }
 
 func ModbusPDUWriteFileRecordResponseItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUWriteFileRecordResponseItem, error) {
-	v, err := NewModbusPDUWriteFileRecordResponseItem().parse(ctx, readBuffer)
+	v, err := (&_ModbusPDUWriteFileRecordResponseItem{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

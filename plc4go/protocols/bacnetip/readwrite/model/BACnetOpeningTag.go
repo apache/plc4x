@@ -117,7 +117,7 @@ func BACnetOpeningTagParseWithBufferProducer(tagNumberArgument uint8) func(ctx c
 }
 
 func BACnetOpeningTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetOpeningTag, error) {
-	v, err := NewBACnetOpeningTag(tagNumberArgument).parse(ctx, readBuffer, tagNumberArgument)
+	v, err := (&_BACnetOpeningTag{TagNumberArgument: tagNumberArgument}).parse(ctx, readBuffer, tagNumberArgument)
 	if err != nil {
 		return nil, err
 	}

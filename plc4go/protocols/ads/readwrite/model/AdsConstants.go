@@ -114,7 +114,7 @@ func AdsConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func AdsConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsConstants, error) {
-	v, err := NewAdsConstants().parse(ctx, readBuffer)
+	v, err := (&_AdsConstants{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -148,7 +148,7 @@ func BACnetWriteAccessSpecificationParseWithBufferProducer() func(ctx context.Co
 }
 
 func BACnetWriteAccessSpecificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetWriteAccessSpecification, error) {
-	v, err := NewBACnetWriteAccessSpecification().parse(ctx, readBuffer)
+	v, err := (&_BACnetWriteAccessSpecification{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

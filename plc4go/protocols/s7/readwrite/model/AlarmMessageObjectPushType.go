@@ -220,7 +220,7 @@ func AlarmMessageObjectPushTypeParseWithBufferProducer() func(ctx context.Contex
 }
 
 func AlarmMessageObjectPushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageObjectPushType, error) {
-	v, err := NewAlarmMessageObjectPushType().parse(ctx, readBuffer)
+	v, err := (&_AlarmMessageObjectPushType{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

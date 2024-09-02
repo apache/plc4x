@@ -128,7 +128,7 @@ func BACnetSegmentationTaggedParseWithBufferProducer(tagNumber uint8, tagClass T
 }
 
 func BACnetSegmentationTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSegmentationTagged, error) {
-	v, err := NewBACnetSegmentationTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetSegmentationTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

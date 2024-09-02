@@ -126,7 +126,7 @@ func BACnetRecipientProcessParseWithBufferProducer() func(ctx context.Context, r
 }
 
 func BACnetRecipientProcessParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientProcess, error) {
-	v, err := NewBACnetRecipientProcess().parse(ctx, readBuffer)
+	v, err := (&_BACnetRecipientProcess{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

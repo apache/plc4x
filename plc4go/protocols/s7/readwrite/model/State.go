@@ -184,7 +184,7 @@ func StateParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 }
 
 func StateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (State, error) {
-	v, err := NewState().parse(ctx, readBuffer)
+	v, err := (&_State{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

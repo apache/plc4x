@@ -121,7 +121,7 @@ func ExtensionObjectDefinitionParseWithBufferProducer[T ExtensionObjectDefinitio
 }
 
 func ExtensionObjectDefinitionParseWithBuffer[T ExtensionObjectDefinition](ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (T, error) {
-	v, err := NewExtensionObjectDefinition().parse(ctx, readBuffer, identifier)
+	v, err := (&_ExtensionObjectDefinition{}).parse(ctx, readBuffer, identifier)
 	if err != nil {
 		var zero T
 		return zero, err

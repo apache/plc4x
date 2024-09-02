@@ -128,7 +128,7 @@ func BVLCResultCodeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagCl
 }
 
 func BVLCResultCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BVLCResultCodeTagged, error) {
-	v, err := NewBVLCResultCodeTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BVLCResultCodeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

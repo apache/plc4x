@@ -124,7 +124,7 @@ func AmsTCPPacketParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
-	v, err := NewAmsTCPPacket().parse(ctx, readBuffer)
+	v, err := (&_AmsTCPPacket{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

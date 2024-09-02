@@ -163,7 +163,7 @@ func BACnetReadAccessPropertyReadResultParseWithBufferProducer(objectTypeArgumen
 }
 
 func BACnetReadAccessPropertyReadResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetReadAccessPropertyReadResult, error) {
-	v, err := NewBACnetReadAccessPropertyReadResult(objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument).parse(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	v, err := (&_BACnetReadAccessPropertyReadResult{ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}).parse(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	if err != nil {
 		return nil, err
 	}

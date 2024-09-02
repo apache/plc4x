@@ -160,7 +160,7 @@ func BACnetPropertyStatesParseWithBufferProducer[T BACnetPropertyStates]() func(
 }
 
 func BACnetPropertyStatesParseWithBuffer[T BACnetPropertyStates](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewBACnetPropertyStates().parse(ctx, readBuffer)
+	v, err := (&_BACnetPropertyStates{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

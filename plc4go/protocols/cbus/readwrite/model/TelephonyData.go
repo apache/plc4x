@@ -175,7 +175,7 @@ func TelephonyDataParseWithBufferProducer[T TelephonyData]() func(ctx context.Co
 }
 
 func TelephonyDataParseWithBuffer[T TelephonyData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewTelephonyData().parse(ctx, readBuffer)
+	v, err := (&_TelephonyData{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

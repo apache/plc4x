@@ -158,7 +158,7 @@ func BACnetPropertyAccessResultParseWithBufferProducer() func(ctx context.Contex
 }
 
 func BACnetPropertyAccessResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyAccessResult, error) {
-	v, err := NewBACnetPropertyAccessResult().parse(ctx, readBuffer)
+	v, err := (&_BACnetPropertyAccessResult{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

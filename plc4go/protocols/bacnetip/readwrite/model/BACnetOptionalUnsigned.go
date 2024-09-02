@@ -160,7 +160,7 @@ func BACnetOptionalUnsignedParseWithBufferProducer[T BACnetOptionalUnsigned]() f
 }
 
 func BACnetOptionalUnsignedParseWithBuffer[T BACnetOptionalUnsigned](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewBACnetOptionalUnsigned().parse(ctx, readBuffer)
+	v, err := (&_BACnetOptionalUnsigned{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

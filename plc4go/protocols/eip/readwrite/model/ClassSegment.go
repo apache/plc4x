@@ -144,7 +144,7 @@ func ClassSegmentParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func ClassSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClassSegment, error) {
-	v, err := NewClassSegment().parse(ctx, readBuffer)
+	v, err := (&_ClassSegment{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

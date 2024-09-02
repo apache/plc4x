@@ -128,7 +128,7 @@ func BACnetUnconfirmedServiceChoiceTaggedParseWithBufferProducer(tagNumber uint8
 }
 
 func BACnetUnconfirmedServiceChoiceTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetUnconfirmedServiceChoiceTagged, error) {
-	v, err := NewBACnetUnconfirmedServiceChoiceTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetUnconfirmedServiceChoiceTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

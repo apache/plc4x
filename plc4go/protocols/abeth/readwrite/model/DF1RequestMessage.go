@@ -180,7 +180,7 @@ func DF1RequestMessageParseWithBufferProducer[T DF1RequestMessage]() func(ctx co
 }
 
 func DF1RequestMessageParseWithBuffer[T DF1RequestMessage](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewDF1RequestMessage().parse(ctx, readBuffer)
+	v, err := (&_DF1RequestMessage{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

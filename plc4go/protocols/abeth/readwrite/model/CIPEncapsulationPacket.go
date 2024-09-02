@@ -187,7 +187,7 @@ func CIPEncapsulationPacketParseWithBufferProducer[T CIPEncapsulationPacket]() f
 }
 
 func CIPEncapsulationPacketParseWithBuffer[T CIPEncapsulationPacket](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewCIPEncapsulationPacket().parse(ctx, readBuffer)
+	v, err := (&_CIPEncapsulationPacket{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

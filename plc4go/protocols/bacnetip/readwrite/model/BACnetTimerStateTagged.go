@@ -128,7 +128,7 @@ func BACnetTimerStateTaggedParseWithBufferProducer(tagNumber uint8, tagClass Tag
 }
 
 func BACnetTimerStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetTimerStateTagged, error) {
-	v, err := NewBACnetTimerStateTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetTimerStateTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

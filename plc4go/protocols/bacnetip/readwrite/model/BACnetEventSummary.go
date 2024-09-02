@@ -174,7 +174,7 @@ func BACnetEventSummaryParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func BACnetEventSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventSummary, error) {
-	v, err := NewBACnetEventSummary().parse(ctx, readBuffer)
+	v, err := (&_BACnetEventSummary{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

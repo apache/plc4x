@@ -130,7 +130,7 @@ func APDUParseWithBufferProducer[T APDU](apduLength uint16) func(ctx context.Con
 }
 
 func APDUParseWithBuffer[T APDU](ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (T, error) {
-	v, err := NewAPDU(apduLength).parse(ctx, readBuffer, apduLength)
+	v, err := (&_APDU{ApduLength: apduLength}).parse(ctx, readBuffer, apduLength)
 	if err != nil {
 		var zero T
 		return zero, err

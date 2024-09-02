@@ -144,7 +144,7 @@ func InstanceSegmentParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func InstanceSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InstanceSegment, error) {
-	v, err := NewInstanceSegment().parse(ctx, readBuffer)
+	v, err := (&_InstanceSegment{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

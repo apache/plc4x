@@ -157,7 +157,7 @@ func BACnetEscalatorOperationDirectionTaggedParseWithBufferProducer(tagNumber ui
 }
 
 func BACnetEscalatorOperationDirectionTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetEscalatorOperationDirectionTagged, error) {
-	v, err := NewBACnetEscalatorOperationDirectionTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetEscalatorOperationDirectionTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

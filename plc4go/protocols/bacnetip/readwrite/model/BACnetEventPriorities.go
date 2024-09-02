@@ -157,7 +157,7 @@ func BACnetEventPrioritiesParseWithBufferProducer(tagNumber uint8) func(ctx cont
 }
 
 func BACnetEventPrioritiesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventPriorities, error) {
-	v, err := NewBACnetEventPriorities(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetEventPriorities{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

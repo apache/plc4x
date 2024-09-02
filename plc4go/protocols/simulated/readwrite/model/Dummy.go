@@ -116,7 +116,7 @@ func DummyParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 }
 
 func DummyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Dummy, error) {
-	v, err := NewDummy().parse(ctx, readBuffer)
+	v, err := (&_Dummy{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

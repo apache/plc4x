@@ -141,7 +141,7 @@ func BACnetEventSummariesListParseWithBufferProducer(tagNumber uint8) func(ctx c
 }
 
 func BACnetEventSummariesListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventSummariesList, error) {
-	v, err := NewBACnetEventSummariesList(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetEventSummariesList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

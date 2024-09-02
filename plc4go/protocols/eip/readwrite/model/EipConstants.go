@@ -122,7 +122,7 @@ func EipConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func EipConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipConstants, error) {
-	v, err := NewEipConstants().parse(ctx, readBuffer)
+	v, err := (&_EipConstants{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

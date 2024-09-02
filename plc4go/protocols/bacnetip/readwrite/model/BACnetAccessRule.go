@@ -158,7 +158,7 @@ func BACnetAccessRuleParseWithBufferProducer() func(ctx context.Context, readBuf
 }
 
 func BACnetAccessRuleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessRule, error) {
-	v, err := NewBACnetAccessRule().parse(ctx, readBuffer)
+	v, err := (&_BACnetAccessRule{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

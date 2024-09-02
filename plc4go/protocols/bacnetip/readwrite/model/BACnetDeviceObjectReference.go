@@ -126,7 +126,7 @@ func BACnetDeviceObjectReferenceParseWithBufferProducer() func(ctx context.Conte
 }
 
 func BACnetDeviceObjectReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDeviceObjectReference, error) {
-	v, err := NewBACnetDeviceObjectReference().parse(ctx, readBuffer)
+	v, err := (&_BACnetDeviceObjectReference{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

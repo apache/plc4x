@@ -134,7 +134,7 @@ func BACnetVTSessionParseWithBufferProducer() func(ctx context.Context, readBuff
 }
 
 func BACnetVTSessionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVTSession, error) {
-	v, err := NewBACnetVTSession().parse(ctx, readBuffer)
+	v, err := (&_BACnetVTSession{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

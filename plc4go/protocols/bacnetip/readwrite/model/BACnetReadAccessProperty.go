@@ -141,7 +141,7 @@ func BACnetReadAccessPropertyParseWithBufferProducer(objectTypeArgument BACnetOb
 }
 
 func BACnetReadAccessPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetReadAccessProperty, error) {
-	v, err := NewBACnetReadAccessProperty(objectTypeArgument).parse(ctx, readBuffer, objectTypeArgument)
+	v, err := (&_BACnetReadAccessProperty{ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}

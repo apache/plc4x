@@ -174,7 +174,7 @@ func BACnetDestinationParseWithBufferProducer() func(ctx context.Context, readBu
 }
 
 func BACnetDestinationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDestination, error) {
-	v, err := NewBACnetDestination().parse(ctx, readBuffer)
+	v, err := (&_BACnetDestination{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

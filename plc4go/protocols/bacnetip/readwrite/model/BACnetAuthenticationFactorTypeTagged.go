@@ -128,7 +128,7 @@ func BACnetAuthenticationFactorTypeTaggedParseWithBufferProducer(tagNumber uint8
 }
 
 func BACnetAuthenticationFactorTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthenticationFactorTypeTagged, error) {
-	v, err := NewBACnetAuthenticationFactorTypeTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetAuthenticationFactorTypeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

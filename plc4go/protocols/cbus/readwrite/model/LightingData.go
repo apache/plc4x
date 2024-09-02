@@ -163,7 +163,7 @@ func LightingDataParseWithBufferProducer[T LightingData]() func(ctx context.Cont
 }
 
 func LightingDataParseWithBuffer[T LightingData](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewLightingData().parse(ctx, readBuffer)
+	v, err := (&_LightingData{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

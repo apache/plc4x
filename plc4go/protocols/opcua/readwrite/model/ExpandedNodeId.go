@@ -181,7 +181,7 @@ func ExpandedNodeIdParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ExpandedNodeId, error) {
-	v, err := NewExpandedNodeId().parse(ctx, readBuffer)
+	v, err := (&_ExpandedNodeId{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

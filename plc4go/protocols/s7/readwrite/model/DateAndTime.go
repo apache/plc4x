@@ -185,7 +185,7 @@ func DateAndTimeParseWithBufferProducer() func(ctx context.Context, readBuffer u
 }
 
 func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DateAndTime, error) {
-	v, err := NewDateAndTime().parse(ctx, readBuffer)
+	v, err := (&_DateAndTime{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

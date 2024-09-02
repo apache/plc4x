@@ -137,7 +137,7 @@ func BACnetCalendarEntryEnclosedParseWithBufferProducer(tagNumber uint8) func(ct
 }
 
 func BACnetCalendarEntryEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetCalendarEntryEnclosed, error) {
-	v, err := NewBACnetCalendarEntryEnclosed(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetCalendarEntryEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

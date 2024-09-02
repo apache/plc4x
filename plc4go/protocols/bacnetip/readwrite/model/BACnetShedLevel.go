@@ -160,7 +160,7 @@ func BACnetShedLevelParseWithBufferProducer[T BACnetShedLevel]() func(ctx contex
 }
 
 func BACnetShedLevelParseWithBuffer[T BACnetShedLevel](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewBACnetShedLevel().parse(ctx, readBuffer)
+	v, err := (&_BACnetShedLevel{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

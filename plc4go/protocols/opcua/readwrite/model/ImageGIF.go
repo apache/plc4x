@@ -92,7 +92,7 @@ func ImageGIFParseWithBufferProducer() func(ctx context.Context, readBuffer util
 }
 
 func ImageGIFParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImageGIF, error) {
-	v, err := NewImageGIF().parse(ctx, readBuffer)
+	v, err := (&_ImageGIF{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

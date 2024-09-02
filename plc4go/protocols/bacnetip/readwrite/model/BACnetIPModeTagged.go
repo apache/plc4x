@@ -128,7 +128,7 @@ func BACnetIPModeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClas
 }
 
 func BACnetIPModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetIPModeTagged, error) {
-	v, err := NewBACnetIPModeTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetIPModeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

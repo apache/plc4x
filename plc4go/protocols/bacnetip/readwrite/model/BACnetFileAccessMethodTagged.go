@@ -128,7 +128,7 @@ func BACnetFileAccessMethodTaggedParseWithBufferProducer(tagNumber uint8, tagCla
 }
 
 func BACnetFileAccessMethodTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetFileAccessMethodTagged, error) {
-	v, err := NewBACnetFileAccessMethodTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetFileAccessMethodTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

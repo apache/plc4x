@@ -114,7 +114,7 @@ func RequestTerminationParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func RequestTerminationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RequestTermination, error) {
-	v, err := NewRequestTermination().parse(ctx, readBuffer)
+	v, err := (&_RequestTermination{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

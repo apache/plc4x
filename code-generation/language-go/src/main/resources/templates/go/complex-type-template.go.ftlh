@@ -809,8 +809,8 @@ func ${type.name}ParseWithBufferProducer<#if type.isDiscriminatedParentTypeDefin
 }
 
 func ${type.name}ParseWithBuffer<#if type.isDiscriminatedParentTypeDefinition()>[T ${type.name}]</#if>(ctx context.Context, readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (<#if type.isDiscriminatedParentTypeDefinition()>T<#else>${type.name}</#if>, error) {
-	<#assign filteredParserArgumentList><#if filteredParserArgumentsLocalToType?has_content> <#list filteredParserArgumentsLocalToType as parserArgument>${parserArgument.name}<#sep>, </#sep></#list> </#if></#assign>
-	v,err:= New${type.name}(${filteredParserArgumentList}).parse(ctx , readBuffer<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
+	<#assign filteredPartialTypeCreationArgumentList><#if filteredParserArgumentsLocalToType?has_content> <#list filteredParserArgumentsLocalToType as parserArgument>${parserArgument.name?cap_first}: ${parserArgument.name}<#sep>, </#sep></#list> </#if></#assign>
+	v,err:= (&_${type.name}{${filteredPartialTypeCreationArgumentList}}).parse(ctx , readBuffer<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
 	if err != nil {
 	<#if !type.isDiscriminatedParentTypeDefinition()>
 		return nil,err

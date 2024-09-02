@@ -92,7 +92,7 @@ func UtcTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils
 }
 
 func UtcTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UtcTime, error) {
-	v, err := NewUtcTime().parse(ctx, readBuffer)
+	v, err := (&_UtcTime{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -192,7 +192,7 @@ func BACnetConstructedDataParseWithBufferProducer[T BACnetConstructedData](tagNu
 }
 
 func BACnetConstructedDataParseWithBuffer[T BACnetConstructedData](ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (T, error) {
-	v, err := NewBACnetConstructedData(tagNumber, arrayIndexArgument).parse(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	v, err := (&_BACnetConstructedData{TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}).parse(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 	if err != nil {
 		var zero T
 		return zero, err

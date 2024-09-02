@@ -116,7 +116,7 @@ func BACnetSetpointReferenceParseWithBufferProducer() func(ctx context.Context, 
 }
 
 func BACnetSetpointReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {
-	v, err := NewBACnetSetpointReference().parse(ctx, readBuffer)
+	v, err := (&_BACnetSetpointReference{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

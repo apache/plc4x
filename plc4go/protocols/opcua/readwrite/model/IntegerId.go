@@ -92,7 +92,7 @@ func IntegerIdParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 }
 
 func IntegerIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IntegerId, error) {
-	v, err := NewIntegerId().parse(ctx, readBuffer)
+	v, err := (&_IntegerId{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

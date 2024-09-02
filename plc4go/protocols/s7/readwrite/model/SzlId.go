@@ -134,7 +134,7 @@ func SzlIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 }
 
 func SzlIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlId, error) {
-	v, err := NewSzlId().parse(ctx, readBuffer)
+	v, err := (&_SzlId{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

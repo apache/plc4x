@@ -199,7 +199,7 @@ func S7MessageParseWithBufferProducer[T S7Message]() func(ctx context.Context, r
 }
 
 func S7MessageParseWithBuffer[T S7Message](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewS7Message().parse(ctx, readBuffer)
+	v, err := (&_S7Message{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

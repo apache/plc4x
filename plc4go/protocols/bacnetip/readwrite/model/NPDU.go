@@ -316,7 +316,7 @@ func NPDUParseWithBufferProducer(npduLength uint16) func(ctx context.Context, re
 }
 
 func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
-	v, err := NewNPDU(npduLength).parse(ctx, readBuffer, npduLength)
+	v, err := (&_NPDU{NpduLength: npduLength}).parse(ctx, readBuffer, npduLength)
 	if err != nil {
 		return nil, err
 	}

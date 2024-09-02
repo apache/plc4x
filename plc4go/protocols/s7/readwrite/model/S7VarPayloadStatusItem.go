@@ -114,7 +114,7 @@ func S7VarPayloadStatusItemParseWithBufferProducer() func(ctx context.Context, r
 }
 
 func S7VarPayloadStatusItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarPayloadStatusItem, error) {
-	v, err := NewS7VarPayloadStatusItem().parse(ctx, readBuffer)
+	v, err := (&_S7VarPayloadStatusItem{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

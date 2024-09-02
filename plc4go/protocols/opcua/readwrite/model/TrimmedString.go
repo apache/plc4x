@@ -92,7 +92,7 @@ func TrimmedStringParseWithBufferProducer() func(ctx context.Context, readBuffer
 }
 
 func TrimmedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TrimmedString, error) {
-	v, err := NewTrimmedString().parse(ctx, readBuffer)
+	v, err := (&_TrimmedString{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

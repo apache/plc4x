@@ -114,7 +114,7 @@ func SerialInterfaceAddressParseWithBufferProducer() func(ctx context.Context, r
 }
 
 func SerialInterfaceAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SerialInterfaceAddress, error) {
-	v, err := NewSerialInterfaceAddress().parse(ctx, readBuffer)
+	v, err := (&_SerialInterfaceAddress{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

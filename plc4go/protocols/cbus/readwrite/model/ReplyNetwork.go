@@ -124,7 +124,7 @@ func ReplyNetworkParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func ReplyNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
-	v, err := NewReplyNetwork().parse(ctx, readBuffer)
+	v, err := (&_ReplyNetwork{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

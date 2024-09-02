@@ -144,7 +144,7 @@ func CBusHeaderParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func CBusHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusHeader, error) {
-	v, err := NewCBusHeader().parse(ctx, readBuffer)
+	v, err := (&_CBusHeader{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -136,7 +136,7 @@ func PascalStringParseWithBufferProducer() func(ctx context.Context, readBuffer 
 }
 
 func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PascalString, error) {
-	v, err := NewPascalString().parse(ctx, readBuffer)
+	v, err := (&_PascalString{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -122,7 +122,7 @@ func ResponseTerminationParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func ResponseTerminationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ResponseTermination, error) {
-	v, err := NewResponseTermination().parse(ctx, readBuffer)
+	v, err := (&_ResponseTermination{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

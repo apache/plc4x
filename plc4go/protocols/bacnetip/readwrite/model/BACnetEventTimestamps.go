@@ -134,7 +134,7 @@ func BACnetEventTimestampsParseWithBufferProducer() func(ctx context.Context, re
 }
 
 func BACnetEventTimestampsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventTimestamps, error) {
-	v, err := NewBACnetEventTimestamps().parse(ctx, readBuffer)
+	v, err := (&_BACnetEventTimestamps{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

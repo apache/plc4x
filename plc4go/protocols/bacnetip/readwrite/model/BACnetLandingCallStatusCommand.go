@@ -160,7 +160,7 @@ func BACnetLandingCallStatusCommandParseWithBufferProducer[T BACnetLandingCallSt
 }
 
 func BACnetLandingCallStatusCommandParseWithBuffer[T BACnetLandingCallStatusCommand](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewBACnetLandingCallStatusCommand().parse(ctx, readBuffer)
+	v, err := (&_BACnetLandingCallStatusCommand{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -141,7 +141,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParseWithBufferProducer(tagNum
 }
 
 func BACnetEventParameterChangeOfStateListOfValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfStateListOfValues, error) {
-	v, err := NewBACnetEventParameterChangeOfStateListOfValues(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetEventParameterChangeOfStateListOfValues{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

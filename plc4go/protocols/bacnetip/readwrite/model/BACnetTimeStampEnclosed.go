@@ -137,7 +137,7 @@ func BACnetTimeStampEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx co
 }
 
 func BACnetTimeStampEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetTimeStampEnclosed, error) {
-	v, err := NewBACnetTimeStampEnclosed(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetTimeStampEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

@@ -145,7 +145,7 @@ func BACnetRejectReasonTaggedParseWithBufferProducer(actualLength uint32) func(c
 }
 
 func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetRejectReasonTagged, error) {
-	v, err := NewBACnetRejectReasonTagged(actualLength).parse(ctx, readBuffer, actualLength)
+	v, err := (&_BACnetRejectReasonTagged{ActualLength: actualLength}).parse(ctx, readBuffer, actualLength)
 	if err != nil {
 		return nil, err
 	}

@@ -157,7 +157,7 @@ func BACnetSilencedStateTaggedParseWithBufferProducer(tagNumber uint8, tagClass 
 }
 
 func BACnetSilencedStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetSilencedStateTagged, error) {
-	v, err := NewBACnetSilencedStateTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetSilencedStateTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

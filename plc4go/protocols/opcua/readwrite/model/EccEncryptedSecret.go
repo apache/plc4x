@@ -92,7 +92,7 @@ func EccEncryptedSecretParseWithBufferProducer() func(ctx context.Context, readB
 }
 
 func EccEncryptedSecretParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EccEncryptedSecret, error) {
-	v, err := NewEccEncryptedSecret().parse(ctx, readBuffer)
+	v, err := (&_EccEncryptedSecret{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

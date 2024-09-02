@@ -147,7 +147,7 @@ func DF1SymbolParseWithBufferProducer[T DF1Symbol]() func(ctx context.Context, r
 }
 
 func DF1SymbolParseWithBuffer[T DF1Symbol](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewDF1Symbol().parse(ctx, readBuffer)
+	v, err := (&_DF1Symbol{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

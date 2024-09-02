@@ -164,7 +164,7 @@ func AmsNetIdParseWithBufferProducer() func(ctx context.Context, readBuffer util
 }
 
 func AmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsNetId, error) {
-	v, err := NewAmsNetId().parse(ctx, readBuffer)
+	v, err := (&_AmsNetId{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

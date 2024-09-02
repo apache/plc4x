@@ -128,7 +128,7 @@ func ConnectionRequestInformationParseWithBufferProducer[T ConnectionRequestInfo
 }
 
 func ConnectionRequestInformationParseWithBuffer[T ConnectionRequestInformation](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewConnectionRequestInformation().parse(ctx, readBuffer)
+	v, err := (&_ConnectionRequestInformation{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

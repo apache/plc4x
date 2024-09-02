@@ -141,7 +141,7 @@ func BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParseWithBuffer
 }
 
 func BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, error) {
-	v, err := NewBACnetEventParameterChangeOfCharacterStringListOfAlarmValues(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

@@ -189,7 +189,7 @@ func DF1ResponseMessageParseWithBufferProducer[T DF1ResponseMessage](payloadLeng
 }
 
 func DF1ResponseMessageParseWithBuffer[T DF1ResponseMessage](ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (T, error) {
-	v, err := NewDF1ResponseMessage(payloadLength).parse(ctx, readBuffer, payloadLength)
+	v, err := (&_DF1ResponseMessage{PayloadLength: payloadLength}).parse(ctx, readBuffer, payloadLength)
 	if err != nil {
 		var zero T
 		return zero, err

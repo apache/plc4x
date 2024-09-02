@@ -204,7 +204,7 @@ func BACnetActionCommandParseWithBufferProducer() func(ctx context.Context, read
 }
 
 func BACnetActionCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetActionCommand, error) {
-	v, err := NewBACnetActionCommand().parse(ctx, readBuffer)
+	v, err := (&_BACnetActionCommand{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

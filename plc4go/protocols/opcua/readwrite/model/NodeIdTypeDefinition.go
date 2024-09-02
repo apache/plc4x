@@ -143,7 +143,7 @@ func NodeIdTypeDefinitionParseWithBufferProducer[T NodeIdTypeDefinition]() func(
 }
 
 func NodeIdTypeDefinitionParseWithBuffer[T NodeIdTypeDefinition](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewNodeIdTypeDefinition().parse(ctx, readBuffer)
+	v, err := (&_NodeIdTypeDefinition{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

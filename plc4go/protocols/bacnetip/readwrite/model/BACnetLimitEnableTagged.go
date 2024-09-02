@@ -157,7 +157,7 @@ func BACnetLimitEnableTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetLimitEnableTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLimitEnableTagged, error) {
-	v, err := NewBACnetLimitEnableTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetLimitEnableTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

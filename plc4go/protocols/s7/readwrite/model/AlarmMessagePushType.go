@@ -151,7 +151,7 @@ func AlarmMessagePushTypeParseWithBufferProducer() func(ctx context.Context, rea
 }
 
 func AlarmMessagePushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
-	v, err := NewAlarmMessagePushType().parse(ctx, readBuffer)
+	v, err := (&_AlarmMessagePushType{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

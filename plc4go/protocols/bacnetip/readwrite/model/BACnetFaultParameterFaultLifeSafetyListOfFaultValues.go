@@ -141,7 +141,7 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBufferProducer
 }
 
 func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultLifeSafetyListOfFaultValues, error) {
-	v, err := NewBACnetFaultParameterFaultLifeSafetyListOfFaultValues(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetFaultParameterFaultLifeSafetyListOfFaultValues{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

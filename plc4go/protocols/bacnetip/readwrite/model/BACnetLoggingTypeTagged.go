@@ -157,7 +157,7 @@ func BACnetLoggingTypeTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 }
 
 func BACnetLoggingTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLoggingTypeTagged, error) {
-	v, err := NewBACnetLoggingTypeTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetLoggingTypeTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

@@ -157,7 +157,7 @@ func BACnetRestartReasonTaggedParseWithBufferProducer(tagNumber uint8, tagClass 
 }
 
 func BACnetRestartReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRestartReasonTagged, error) {
-	v, err := NewBACnetRestartReasonTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetRestartReasonTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

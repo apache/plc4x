@@ -141,7 +141,7 @@ func BACnetSpecialEventListOfTimeValuesParseWithBufferProducer(tagNumber uint8) 
 }
 
 func BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetSpecialEventListOfTimeValues, error) {
-	v, err := NewBACnetSpecialEventListOfTimeValues(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetSpecialEventListOfTimeValues{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

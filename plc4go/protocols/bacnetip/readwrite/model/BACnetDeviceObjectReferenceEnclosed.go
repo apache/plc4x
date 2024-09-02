@@ -137,7 +137,7 @@ func BACnetDeviceObjectReferenceEnclosedParseWithBufferProducer(tagNumber uint8)
 }
 
 func BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetDeviceObjectReferenceEnclosed, error) {
-	v, err := NewBACnetDeviceObjectReferenceEnclosed(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetDeviceObjectReferenceEnclosed{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

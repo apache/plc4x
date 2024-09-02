@@ -124,7 +124,7 @@ func BACnetAuthenticationPolicyListEntryParseWithBufferProducer() func(ctx conte
 }
 
 func BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyListEntry, error) {
-	v, err := NewBACnetAuthenticationPolicyListEntry().parse(ctx, readBuffer)
+	v, err := (&_BACnetAuthenticationPolicyListEntry{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

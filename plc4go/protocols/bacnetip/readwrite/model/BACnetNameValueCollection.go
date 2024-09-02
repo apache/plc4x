@@ -141,7 +141,7 @@ func BACnetNameValueCollectionParseWithBufferProducer(tagNumber uint8) func(ctx 
 }
 
 func BACnetNameValueCollectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNameValueCollection, error) {
-	v, err := NewBACnetNameValueCollection(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetNameValueCollection{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

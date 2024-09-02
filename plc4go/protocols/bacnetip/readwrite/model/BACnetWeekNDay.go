@@ -92,7 +92,7 @@ func BACnetWeekNDayParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func BACnetWeekNDayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetWeekNDay, error) {
-	v, err := NewBACnetWeekNDay().parse(ctx, readBuffer)
+	v, err := (&_BACnetWeekNDay{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

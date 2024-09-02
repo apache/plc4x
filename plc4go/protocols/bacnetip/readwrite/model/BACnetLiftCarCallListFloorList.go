@@ -141,7 +141,7 @@ func BACnetLiftCarCallListFloorListParseWithBufferProducer(tagNumber uint8) func
 }
 
 func BACnetLiftCarCallListFloorListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLiftCarCallListFloorList, error) {
-	v, err := NewBACnetLiftCarCallListFloorList(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetLiftCarCallListFloorList{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

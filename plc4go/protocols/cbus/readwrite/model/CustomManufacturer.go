@@ -117,7 +117,7 @@ func CustomManufacturerParseWithBufferProducer(numBytes uint8) func(ctx context.
 }
 
 func CustomManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (CustomManufacturer, error) {
-	v, err := NewCustomManufacturer(numBytes).parse(ctx, readBuffer, numBytes)
+	v, err := (&_CustomManufacturer{NumBytes: numBytes}).parse(ctx, readBuffer, numBytes)
 	if err != nil {
 		return nil, err
 	}

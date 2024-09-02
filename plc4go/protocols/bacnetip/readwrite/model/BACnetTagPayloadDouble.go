@@ -114,7 +114,7 @@ func BACnetTagPayloadDoubleParseWithBufferProducer() func(ctx context.Context, r
 }
 
 func BACnetTagPayloadDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDouble, error) {
-	v, err := NewBACnetTagPayloadDouble().parse(ctx, readBuffer)
+	v, err := (&_BACnetTagPayloadDouble{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

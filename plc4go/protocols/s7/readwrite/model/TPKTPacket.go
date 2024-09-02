@@ -143,7 +143,7 @@ func TPKTPacketParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 }
 
 func TPKTPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TPKTPacket, error) {
-	v, err := NewTPKTPacket().parse(ctx, readBuffer)
+	v, err := (&_TPKTPacket{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

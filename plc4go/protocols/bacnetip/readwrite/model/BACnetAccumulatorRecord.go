@@ -144,7 +144,7 @@ func BACnetAccumulatorRecordParseWithBufferProducer() func(ctx context.Context, 
 }
 
 func BACnetAccumulatorRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccumulatorRecord, error) {
-	v, err := NewBACnetAccumulatorRecord().parse(ctx, readBuffer)
+	v, err := (&_BACnetAccumulatorRecord{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

@@ -210,7 +210,7 @@ func RequestParseWithBufferProducer[T Request](cBusOptions CBusOptions) func(ctx
 }
 
 func RequestParseWithBuffer[T Request](ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (T, error) {
-	v, err := NewRequest(cBusOptions).parse(ctx, readBuffer, cBusOptions)
+	v, err := (&_Request{CBusOptions: cBusOptions}).parse(ctx, readBuffer, cBusOptions)
 	if err != nil {
 		var zero T
 		return zero, err

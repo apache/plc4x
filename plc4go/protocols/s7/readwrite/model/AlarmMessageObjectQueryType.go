@@ -208,7 +208,7 @@ func AlarmMessageObjectQueryTypeParseWithBufferProducer() func(ctx context.Conte
 }
 
 func AlarmMessageObjectQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageObjectQueryType, error) {
-	v, err := NewAlarmMessageObjectQueryType().parse(ctx, readBuffer)
+	v, err := (&_AlarmMessageObjectQueryType{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

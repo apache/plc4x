@@ -123,7 +123,7 @@ func AmsStringParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 }
 
 func AmsStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsString, error) {
-	v, err := NewAmsString().parse(ctx, readBuffer)
+	v, err := (&_AmsString{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

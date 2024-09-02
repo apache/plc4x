@@ -425,7 +425,7 @@ func BACnetEventParameterExtendedParametersParseWithBufferProducer(tagNumber uin
 }
 
 func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterExtendedParameters, error) {
-	v, err := NewBACnetEventParameterExtendedParameters(tagNumber).parse(ctx, readBuffer, tagNumber)
+	v, err := (&_BACnetEventParameterExtendedParameters{TagNumber: tagNumber}).parse(ctx, readBuffer, tagNumber)
 	if err != nil {
 		return nil, err
 	}

@@ -141,7 +141,7 @@ func TriggerControlLabelOptionsParseWithBufferProducer() func(ctx context.Contex
 }
 
 func TriggerControlLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
-	v, err := NewTriggerControlLabelOptions().parse(ctx, readBuffer)
+	v, err := (&_TriggerControlLabelOptions{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

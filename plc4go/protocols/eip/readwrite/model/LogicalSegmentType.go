@@ -125,7 +125,7 @@ func LogicalSegmentTypeParseWithBufferProducer[T LogicalSegmentType]() func(ctx 
 }
 
 func LogicalSegmentTypeParseWithBuffer[T LogicalSegmentType](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewLogicalSegmentType().parse(ctx, readBuffer)
+	v, err := (&_LogicalSegmentType{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

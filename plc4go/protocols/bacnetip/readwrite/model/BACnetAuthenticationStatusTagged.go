@@ -128,7 +128,7 @@ func BACnetAuthenticationStatusTaggedParseWithBufferProducer(tagNumber uint8, ta
 }
 
 func BACnetAuthenticationStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAuthenticationStatusTagged, error) {
-	v, err := NewBACnetAuthenticationStatusTagged(tagNumber, tagClass).parse(ctx, readBuffer, tagNumber, tagClass)
+	v, err := (&_BACnetAuthenticationStatusTagged{TagNumber: tagNumber, TagClass: tagClass}).parse(ctx, readBuffer, tagNumber, tagClass)
 	if err != nil {
 		return nil, err
 	}

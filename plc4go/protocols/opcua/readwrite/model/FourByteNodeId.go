@@ -124,7 +124,7 @@ func FourByteNodeIdParseWithBufferProducer() func(ctx context.Context, readBuffe
 }
 
 func FourByteNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (FourByteNodeId, error) {
-	v, err := NewFourByteNodeId().parse(ctx, readBuffer)
+	v, err := (&_FourByteNodeId{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

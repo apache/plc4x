@@ -130,7 +130,7 @@ func BACnetUnconfirmedServiceRequestParseWithBufferProducer[T BACnetUnconfirmedS
 }
 
 func BACnetUnconfirmedServiceRequestParseWithBuffer[T BACnetUnconfirmedServiceRequest](ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (T, error) {
-	v, err := NewBACnetUnconfirmedServiceRequest(serviceRequestLength).parse(ctx, readBuffer, serviceRequestLength)
+	v, err := (&_BACnetUnconfirmedServiceRequest{ServiceRequestLength: serviceRequestLength}).parse(ctx, readBuffer, serviceRequestLength)
 	if err != nil {
 		var zero T
 		return zero, err

@@ -125,7 +125,7 @@ func S7VarRequestParameterItemParseWithBufferProducer[T S7VarRequestParameterIte
 }
 
 func S7VarRequestParameterItemParseWithBuffer[T S7VarRequestParameterItem](ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-	v, err := NewS7VarRequestParameterItem().parse(ctx, readBuffer)
+	v, err := (&_S7VarRequestParameterItem{}).parse(ctx, readBuffer)
 	if err != nil {
 		var zero T
 		return zero, err

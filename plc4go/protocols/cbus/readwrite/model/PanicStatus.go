@@ -153,7 +153,7 @@ func PanicStatusParseWithBufferProducer() func(ctx context.Context, readBuffer u
 }
 
 func PanicStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PanicStatus, error) {
-	v, err := NewPanicStatus().parse(ctx, readBuffer)
+	v, err := (&_PanicStatus{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}

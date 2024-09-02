@@ -142,7 +142,7 @@ func BACnetReadAccessResultListOfResultsParseWithBufferProducer(tagNumber uint8,
 }
 
 func BACnetReadAccessResultListOfResultsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetReadAccessResultListOfResults, error) {
-	v, err := NewBACnetReadAccessResultListOfResults(tagNumber, objectTypeArgument).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
+	v, err := (&_BACnetReadAccessResultListOfResults{TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}).parse(ctx, readBuffer, tagNumber, objectTypeArgument)
 	if err != nil {
 		return nil, err
 	}

@@ -92,7 +92,7 @@ func IndexParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 }
 
 func IndexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Index, error) {
-	v, err := NewIndex().parse(ctx, readBuffer)
+	v, err := (&_Index{}).parse(ctx, readBuffer)
 	if err != nil {
 		return nil, err
 	}
