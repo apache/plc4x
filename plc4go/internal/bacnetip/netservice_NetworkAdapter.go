@@ -83,7 +83,7 @@ func (n *NetworkAdapter) Confirmation(args Args, kwargs KWArgs) error {
 	var nlm model.NLM
 	var apdu model.APDU
 	switch pdu := pdu.GetRootMessage().(type) {
-	case model.NPDUExactly:
+	case model.NPDU:
 		nlm = pdu.GetNlm()
 		apdu = pdu.GetApdu()
 	default:

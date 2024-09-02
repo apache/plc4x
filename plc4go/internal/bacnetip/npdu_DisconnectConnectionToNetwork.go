@@ -84,9 +84,9 @@ func (n *DisconnectConnectionToNetwork) Decode(npdu Arg) error {
 			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
-		case model.NPDUExactly:
+		case model.NPDU:
 			switch nlm := pduUserData.GetNlm().(type) {
-			case model.NLMDisconnectConnectionToNetworkExactly:
+			case model.NLMDisconnectConnectionToNetwork:
 				n.setNLM(nlm)
 				n.dctnDNET = nlm.GetDestinationNetworkAddress()
 			}

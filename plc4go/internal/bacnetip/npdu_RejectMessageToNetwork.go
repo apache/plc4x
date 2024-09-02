@@ -96,9 +96,9 @@ func (n *RejectMessageToNetwork) Decode(npdu Arg) error {
 			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
-		case model.NPDUExactly:
+		case model.NPDU:
 			switch nlm := pduUserData.GetNlm().(type) {
-			case model.NLMRejectMessageToNetworkExactly:
+			case model.NLMRejectMessageToNetwork:
 				n.setNLM(nlm)
 				n.rmtnRejectionReason = nlm.GetRejectReason()
 				n.rmtnDNET = nlm.GetDestinationNetworkAddress()

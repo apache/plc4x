@@ -45,7 +45,7 @@ func NewForwardedNPDU(pdu PDU, opts ...func(*ForwardedNPDU)) (*ForwardedNPDU, er
 		opt(b)
 	}
 	switch npdu := pdu.(type) {
-	case model.NPDUExactly:
+	case model.NPDU:
 		b._BVLPDU = NewBVLPDU(model.NewBVLCForwardedNPDU(b.produceInnerNPDU(npdu))).(*_BVLPDU)
 	case nil:
 		b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
@@ -114,7 +114,7 @@ func (w *ForwardedNPDU) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCForwardedNPDUExactly:
+		case model.BVLCForwardedNPDU:
 			addr := rm.GetIp()
 			port := rm.GetPort()
 			var portArray = make([]byte, 2)

@@ -142,7 +142,7 @@ func (n *NetworkServiceElement) Indication(args Args, kwargs KWArgs) error {
 	npdu := args.Get1NPDU()
 
 	switch message := npdu.GetRootMessage().(type) {
-	case model.NPDUExactly:
+	case model.NPDU:
 		switch nlm := message.GetNlm().(type) {
 		case model.NLMWhoIsRouterToNetwork:
 			return n.WhoIsRouteToNetwork(adapter, npdu, nlm)
@@ -184,7 +184,7 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 	npdu := args.Get1NPDU()
 
 	switch message := npdu.GetRootMessage().(type) {
-	case model.NPDUExactly:
+	case model.NPDU:
 		switch nlm := message.GetNlm().(type) {
 		case model.NLMWhoIsRouterToNetwork:
 			return n.WhoIsRouteToNetwork(adapter, npdu, nlm)

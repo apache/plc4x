@@ -128,11 +128,11 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 			return
 		}
 		extensionObjectDefinition := reply.GetBody()
-		if _readResponse, ok := extensionObjectDefinition.(readWriteModel.ReadResponseExactly); ok {
+		if _readResponse, ok := extensionObjectDefinition.(readWriteModel.ReadResponse); ok {
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, spiModel.NewDefaultPlcReadResponse(readResponse(m.log, readRequest, readRequest.GetTagNames(), _readResponse.GetResults())), nil)
 			return
 		} else {
-			if serviceFault, ok := extensionObjectDefinition.(readWriteModel.ServiceFaultExactly); ok {
+			if serviceFault, ok := extensionObjectDefinition.(readWriteModel.ServiceFault); ok {
 				header := serviceFault.GetResponseHeader()
 				m.log.Error().Stringer("header", header).Msg("Read request ended up with ServiceFault")
 			} else {

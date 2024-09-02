@@ -148,6 +148,8 @@ type ${type.name}Contract interface {
 	Get${parserArgument.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
 		</#list>
 	</#if>
+	// Is${type.name}() is a marker method to prevent unintentional type checks (interfaces of same signature)
+	Is${type.name}()
 }
 
 // ${type.name}Requirements provides a set of functions which need to be implemented by a sub struct
@@ -168,13 +170,6 @@ type ${type.name}Requirements interface {
 	</#list>
 }
 </#if>
-
-// ${type.name}Exactly can be used when we want exactly this type and not a type which fulfills ${type.name}.
-// This is useful for switch cases.
-type ${type.name}Exactly interface {
-	${type.name}
-	is${type.name}() bool
-}
 
 // _${type.name} is the data-structure of this message
 type _${type.name} struct {
@@ -260,17 +255,7 @@ func (m *_${type.name})  Get${discriminatorName?cap_first}() <#if typeRef.isNonS
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 </#if>
-<#if type.isDiscriminatedParentTypeDefinition()>
-
-type ${type.name}Child interface {
-	utils.Serializable
-
-	GetParent() *${type.name}
-
-	GetTypeName() string
-	${type.name}
-}
-<#elseif type.parentType.isPresent()>
+<#if !type.isDiscriminatedParentTypeDefinition() && type.parentType.isPresent()>
 
 func (m *_${type.name})  GetParent() ${type.parentType.orElseThrow().name}Contract {
 	return m.${type.parentType.orElseThrow().name}Contract
@@ -1558,9 +1543,7 @@ func (m *_${type.name}) Get${parserArgument.name?cap_first}() ${helper.getLangua
 ////
 </#if>
 
-func (m *_${type.name}) is${type.name}() bool {
-	return true
-}
+func (m *_${type.name}) Is${type.name}()  {}
 
 <#if !type.isDiscriminatedParentTypeDefinition()>
 func (m *_${type.name}) String() string {

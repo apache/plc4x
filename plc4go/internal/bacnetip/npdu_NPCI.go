@@ -88,9 +88,9 @@ func NewNPCI(pduUserData spi.Message, nlm model.NLM, apdu model.APDU) NPCI {
 	}
 	n._PCI = newPCI(pduUserData, nil, nil, nil, false, model.NPDUNetworkPriority_NORMAL_MESSAGE)
 	switch ud := pduUserData.(type) {
-	case model.NLMExactly:
+	case model.NLM:
 		n.nlm = ud
-	case model.APDUExactly:
+	case model.APDU:
 		n.apdu = ud
 	}
 	return n
@@ -358,7 +358,7 @@ func (n *_NPCI) Decode(pdu Arg) error {
 		n.rootMessage = parse
 	}
 	switch rm := n.rootMessage.(type) {
-	case model.NPDUExactly:
+	case model.NPDU:
 		n.npdu = rm
 		n.nlm = rm.GetNlm()
 		n.apdu = rm.GetApdu()

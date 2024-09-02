@@ -169,7 +169,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 
 	switch msg := pdu.GetRootMessage().(type) {
 	// check for a registration request result
-	case model.BVLCResultExactly:
+	case model.BVLCResult:
 		// if we are unbinding, do nothing
 		if b.registrationStatus == -2 {
 			return nil
@@ -192,14 +192,14 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 		}
 
 		return nil
-	case model.BVLCOriginalUnicastNPDUExactly:
+	case model.BVLCOriginalUnicastNPDU:
 		// build a vanilla _PDU
 		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
 		return b.Response(NewArgs(xpdu), NoKWArgs)
-	case model.BVLCForwardedNPDUExactly:
+	case model.BVLCForwardedNPDU:
 		// check the BBMD registration status, we may not be registered
 		if b.registrationStatus != 0 {
 			b.log.Debug().Msg("packet dropped, unregistered")
@@ -224,13 +224,13 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it upstream
 		return b.Response(NewArgs(xpdu), NoKWArgs)
-	case model.BVLCReadBroadcastDistributionTableAckExactly:
+	case model.BVLCReadBroadcastDistributionTableAck:
 		// send this to the service access point
 		return b.SapResponse(args, NoKWArgs)
-	case model.BVLCReadForeignDeviceTableAckExactly:
+	case model.BVLCReadForeignDeviceTableAck:
 		// send this to the service access point
 		return b.SapResponse(args, NoKWArgs)
-	case model.BVLCWriteBroadcastDistributionTableExactly:
+	case model.BVLCWriteBroadcastDistributionTable:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK))
 		if err != nil {
@@ -241,7 +241,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
-	case model.BVLCReadBroadcastDistributionTableExactly:
+	case model.BVLCReadBroadcastDistributionTable:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK))
 		if err != nil {
@@ -252,7 +252,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
-	case model.BVLCRegisterForeignDeviceExactly:
+	case model.BVLCRegisterForeignDevice:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK))
 		if err != nil {
@@ -263,7 +263,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
-	case model.BVLCReadForeignDeviceTableExactly:
+	case model.BVLCReadForeignDeviceTable:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK))
 		if err != nil {
@@ -274,7 +274,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
-	case model.BVLCDeleteForeignDeviceTableEntryExactly:
+	case model.BVLCDeleteForeignDeviceTableEntry:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK))
 		if err != nil {
@@ -285,7 +285,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
-	case model.BVLCDistributeBroadcastToNetworkExactly:
+	case model.BVLCDistributeBroadcastToNetwork:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK))
 		if err != nil {
@@ -296,7 +296,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
-	case model.BVLCOriginalBroadcastNPDUExactly:
+	case model.BVLCOriginalBroadcastNPDU:
 		b.log.Debug().Msg("packet dropped")
 		return nil
 	default:

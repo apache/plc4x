@@ -101,11 +101,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					ctx,
 					request,
 					func(message spi.Message) bool {
-						eipPacket := message.(readWriteModel.EipPacketExactly)
+						eipPacket := message.(readWriteModel.EipPacket)
 						if eipPacket == nil {
 							return false
 						}
-						cipRRData := eipPacket.(readWriteModel.CipRRDataExactly)
+						cipRRData := eipPacket.(readWriteModel.CipRRData)
 						if cipRRData == nil {
 							return false
 						}
@@ -205,7 +205,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 	plcValues := map[string]values.PlcValue{}
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	switch response := response.(type) {
-	case readWriteModel.CipReadResponseExactly: // only 1 tag
+	case readWriteModel.CipReadResponse: // only 1 tag
 		cipReadResponse := response
 		tagName := readRequest.GetTagNames()[0]
 		tag := readRequest.GetTag(tagName).(PlcTag)
@@ -222,7 +222,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.CipService, readReq
 		}
 		plcValues[tagName] = plcValue
 		responseCodes[tagName] = code
-	case readWriteModel.MultipleServiceResponseExactly: //Multiple response
+	case readWriteModel.MultipleServiceResponse: //Multiple response
 		multipleServiceResponse := response
 		nb := multipleServiceResponse.GetServiceNb()
 		arr := make([]readWriteModel.CipService, nb)

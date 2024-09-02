@@ -110,7 +110,7 @@ func (w *WriteBroadcastDistributionTable) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case readWriteModel.BVLCWriteBroadcastDistributionTableExactly:
+		case readWriteModel.BVLCWriteBroadcastDistributionTable:
 			switch bvlc := rm.(type) {
 			case readWriteModel.BVLCWriteBroadcastDistributionTable:
 				w.setBVLC(bvlc)

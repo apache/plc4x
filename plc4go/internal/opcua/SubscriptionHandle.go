@@ -172,9 +172,9 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		}
 		var responseMessage readWriteModel.CreateMonitoredItemsResponse
 		switch unknownExtensionObject := unknownExtensionObject.(type) {
-		case readWriteModel.CreateMonitoredItemsResponseExactly:
+		case readWriteModel.CreateMonitoredItemsResponse:
 			responseMessage = unknownExtensionObject
-		case readWriteModel.ServiceFaultExactly:
+		case readWriteModel.ServiceFault:
 			serviceFault := unknownExtensionObject
 			header := serviceFault.GetResponseHeader().(readWriteModel.ResponseHeader)
 			errorChan <- errors.Errorf("Subscription ServiceFault returned from server with error code,  '%s'", header.GetServiceResult())

@@ -75,7 +75,7 @@ func (n *RegisterForeignDevice) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCRegisterForeignDeviceExactly:
+		case model.BVLCRegisterForeignDevice:
 			switch bvlc := rm.(type) {
 			case model.BVLCRegisterForeignDevice:
 				n.setBVLC(bvlc)

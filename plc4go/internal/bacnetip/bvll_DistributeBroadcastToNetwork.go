@@ -44,7 +44,7 @@ func NewDistributeBroadcastToNetwork(pdu PDU, opts ...func(*DistributeBroadcastT
 		opt(o)
 	}
 	switch npdu := pdu.(type) {
-	case model.NPDUExactly:
+	case model.NPDU:
 		o._BVLPDU = NewBVLPDU(model.NewBVLCDistributeBroadcastToNetwork(o.produceInnerNPDU(npdu))).(*_BVLPDU)
 	case nil:
 		o._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
@@ -109,7 +109,7 @@ func (o *DistributeBroadcastToNetwork) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCDistributeBroadcastToNetworkExactly:
+		case model.BVLCDistributeBroadcastToNetwork:
 			npdu := rm.GetNpdu()
 			pduData, err := npdu.Serialize()
 			if err != nil {

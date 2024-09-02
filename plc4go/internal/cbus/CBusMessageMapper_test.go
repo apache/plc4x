@@ -1557,7 +1557,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataStatusExtendedExactly (binary)",
+			name: "CALDataStatusExtended (binary)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					statusBytes := []readWriteModel.StatusByte{
@@ -1626,7 +1626,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataStatusExtendedExactly (level)",
+			name: "CALDataStatusExtended (level)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					levelInformation := []readWriteModel.LevelInformation{
@@ -1687,7 +1687,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (sense levels)",
+			name: "CALDataIdentifyReply (sense levels)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandCurrentSenseLevels([]byte{1, 2, 3, 4}, 4)
@@ -1738,7 +1738,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (delays)",
+			name: "CALDataIdentifyReply (delays)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandDelays([]byte{1, 2, 3, 4}, 5, 5)
@@ -1792,7 +1792,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (dsi status)",
+			name: "CALDataIdentifyReply (dsi status)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandDSIStatus(
@@ -1866,7 +1866,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (extended diagnostic summary)",
+			name: "CALDataIdentifyReply (extended diagnostic summary)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandExtendedDiagnosticSummary(
@@ -1958,7 +1958,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (summary)",
+			name: "CALDataIdentifyReply (summary)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandSummary("pineapple", 1, "13", 3)
@@ -2013,7 +2013,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (firmware version)",
+			name: "CALDataIdentifyReply (firmware version)",
 			args: args{
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
 					command := readWriteModel.NewIdentifyReplyCommandFirmwareVersion("13", 1)

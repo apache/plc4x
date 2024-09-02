@@ -96,9 +96,9 @@ func (i *ICouldBeRouterToNetwork) Decode(npdu Arg) error {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
-		case model.NPDUExactly:
+		case model.NPDU:
 			switch nlm := pduUserData.GetNlm().(type) {
-			case model.NLMICouldBeRouterToNetworkExactly:
+			case model.NLMICouldBeRouterToNetwork:
 				i.setNLM(nlm)
 				i.icbrtnNetwork = nlm.GetDestinationNetworkAddress()
 				i.icbrtnPerformanceIndex = nlm.GetPerformanceIndex()

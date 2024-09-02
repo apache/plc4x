@@ -75,7 +75,7 @@ func (n *Result) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCResultExactly:
+		case model.BVLCResult:
 			switch bvlc := rm.(type) {
 			case model.BVLCResult:
 				n.setBVLC(bvlc)

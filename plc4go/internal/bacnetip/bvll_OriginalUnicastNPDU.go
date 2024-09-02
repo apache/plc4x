@@ -44,7 +44,7 @@ func NewOriginalUnicastNPDU(pdu PDU, opts ...func(*OriginalUnicastNPDU)) (*Origi
 		opt(o)
 	}
 	switch npdu := pdu.(type) {
-	case model.NPDUExactly:
+	case model.NPDU:
 		o._BVLPDU = NewBVLPDU(model.NewBVLCOriginalUnicastNPDU(o.produceInnerNPDU(npdu))).(*_BVLPDU)
 	case nil:
 		o._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
@@ -109,7 +109,7 @@ func (o *OriginalUnicastNPDU) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCOriginalUnicastNPDUExactly:
+		case model.BVLCOriginalUnicastNPDU:
 			npdu := rm.GetNpdu()
 			pduData, err := npdu.Serialize()
 			if err != nil {

@@ -87,7 +87,7 @@ func NewBitStringWithExtension(bitStringExtension BitStringExtension, args Args)
 		}
 	case *BitString:
 		b.value = arg.value[:]
-	case model.BACnetApplicationTagBitStringExactly:
+	case model.BACnetApplicationTagBitString:
 		b.value = arg.GetPayload().GetData()
 	default:
 		return nil, errors.Errorf("no support for %T yet", arg)

@@ -235,7 +235,7 @@ func (s *SSM) setState(newState SSMState, timer *uint) error {
 func (s *SSM) setSegmentationContext(apdu readWriteModel.APDU) error {
 	s.log.Debug().Stringer("apdu", apdu).Msg("setSegmentationContext")
 	switch apdu := apdu.(type) {
-	case readWriteModel.APDUConfirmedRequestExactly:
+	case readWriteModel.APDUConfirmedRequest:
 		if apdu.GetSegmentedMessage() || apdu.GetMoreFollows() {
 			return errors.New("Can't handle already segmented message")
 		}
@@ -250,7 +250,7 @@ func (s *SSM) setSegmentationContext(apdu readWriteModel.APDU) error {
 			serviceChoice:    apdu.GetServiceRequest().GetServiceChoice(),
 		}
 		s.segmentAPDU = &segmentAPDU
-	case readWriteModel.APDUComplexAckExactly:
+	case readWriteModel.APDUComplexAck:
 		if apdu.GetSegmentedMessage() || apdu.GetMoreFollows() {
 			return errors.New("Can't handle already segmented message")
 		}
@@ -342,7 +342,7 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU PDU, moreFollows bool, err er
 func (s *SSM) appendSegment(apdu PDU) error {
 	s.log.Debug().Stringer("apdu", apdu).Msg("appendSegment")
 	switch apdu := apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUConfirmedRequestExactly:
+	case readWriteModel.APDUConfirmedRequest:
 		if apdu.GetSegmentedMessage() || apdu.GetMoreFollows() {
 			return errors.New("Can't handle already segmented message")
 		}
@@ -351,7 +351,7 @@ func (s *SSM) appendSegment(apdu PDU) error {
 			return errors.Wrap(err, "Can serialize service request")
 		}
 		s.segmentAPDU.serviceBytes = append(s.segmentAPDU.serviceBytes, serializedBytes...)
-	case readWriteModel.APDUComplexAckExactly:
+	case readWriteModel.APDUComplexAck:
 		if apdu.GetSegmentedMessage() || apdu.GetMoreFollows() {
 			return errors.New("Can't handle already segmented message")
 		}

@@ -134,7 +134,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 
 	switch _apdu := apdu.GetRootMessage().(type) {
 	// abort response
-	case readWriteModel.APDUAbortExactly:
+	case readWriteModel.APDUAbort:
 		s.log.Debug().Msg("abort")
 
 		if err := s.setState(SSMState_ABORTED, nil); err != nil {
@@ -144,7 +144,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 		// end the response to the device
 		return s.Response(args, kwargs)
 	// simple response
-	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
+	case readWriteModel.APDUSimpleAck, readWriteModel.APDUError, readWriteModel.APDUReject:
 		s.log.Debug().Msg("simple ack, error or reject")
 
 		// transaction completed
@@ -155,7 +155,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 		// send the response to the device
 		return s.Response(args, kwargs)
 	// complex ack
-	case readWriteModel.APDUComplexAckExactly:
+	case readWriteModel.APDUComplexAck:
 		s.log.Debug().Msg("complex ack")
 
 		// save the response and set the segmentation context
@@ -292,7 +292,7 @@ func (s *ServerSSM) idle(apdu PDU) error {
 
 	// make sure we're getting confirmed requests
 	var apduConfirmedRequest readWriteModel.APDUConfirmedRequest
-	if apdu, ok := apdu.(readWriteModel.APDUConfirmedRequestExactly); !ok {
+	if apdu, ok := apdu.(readWriteModel.APDUConfirmedRequest); !ok {
 		return errors.Errorf("Invalid APDU type %T", apdu)
 	} else {
 		apduConfirmedRequest = apdu
@@ -395,7 +395,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 	s.log.Debug().Stringer("apdu", apdu).Msg("segmentedRequest")
 
 	// some kind of problem
-	if _, ok := apdu.(readWriteModel.APDUAbortExactly); ok {
+	if _, ok := apdu.(readWriteModel.APDUAbort); ok {
 		if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}
@@ -404,7 +404,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 
 	// the only messages we should be getting are confirmed requests
 	var apduConfirmedRequest readWriteModel.APDUConfirmedRequest
-	if castedApdu, ok := apdu.(readWriteModel.APDUConfirmedRequestExactly); !ok {
+	if castedApdu, ok := apdu.(readWriteModel.APDUConfirmedRequest); !ok {
 		abort, err := s.abort(readWriteModel.BACnetAbortReason_INVALID_APDU_IN_THIS_STATE)
 		if err != nil {
 			return errors.Wrap(err, "error creating abort")
@@ -515,9 +515,9 @@ func (s *ServerSSM) awaitResponse(apdu PDU) error {
 	s.log.Debug().Stringer("apdu", apdu).Msg("awaitResponse")
 
 	switch apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUConfirmedRequestExactly:
+	case readWriteModel.APDUConfirmedRequest:
 		s.log.Debug().Msg("client is trying this request again")
-	case readWriteModel.APDUAbortExactly:
+	case readWriteModel.APDUAbort:
 		s.log.Debug().Msg("client aborting this request")
 
 		// forward to the application
@@ -554,7 +554,7 @@ func (s *ServerSSM) segmentedResponse(apdu PDU) error {
 
 	// client is ready for the next segment
 	switch _apdu := apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUSegmentAckExactly:
+	case readWriteModel.APDUSegmentAck:
 		s.log.Debug().Msg("segment ack")
 
 		// actual window size is provided by client
@@ -584,7 +584,7 @@ func (s *ServerSSM) segmentedResponse(apdu PDU) error {
 			s.RestartTimer(s.segmentRetryCount)
 		}
 	// some kind of problem
-	case readWriteModel.APDUAbortExactly:
+	case readWriteModel.APDUAbort:
 		if err := s.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "Error setting state to aborted")
 		}

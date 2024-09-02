@@ -116,21 +116,21 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 				// Send the  over the wire
 				m.log.Trace().Msg("Send ")
 				if err := m.messageCodec.SendRequest(ctx, messageToSend, func(receivedMessage spi.Message) bool {
-					cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessageExactly)
+					cbusMessage, ok := receivedMessage.(readWriteModel.CBusMessage)
 					if !ok {
 						return false
 					}
-					messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClientExactly)
+					messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClient)
 					if !ok {
 						return false
 					}
 					// Check if this errored
-					if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
+					if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReply); ok {
 						// This means we must handle this below
 						return true
 					}
 
-					confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
+					confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmation)
 					if !ok {
 						return false
 					}

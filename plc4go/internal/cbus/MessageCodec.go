@@ -395,25 +395,25 @@ lookingForTheEnd:
 func extractMMIAndSAL(log zerolog.Logger) _default.CustomMessageHandler {
 	return func(codec _default.DefaultCodecRequirements, message spi.Message) bool {
 		switch message := message.(type) {
-		case readWriteModel.CBusMessageToClientExactly:
+		case readWriteModel.CBusMessageToClient:
 			switch reply := message.GetReply().(type) {
-			case readWriteModel.ReplyOrConfirmationReplyExactly:
+			case readWriteModel.ReplyOrConfirmationReply:
 				switch reply := reply.GetReply().(type) {
-				case readWriteModel.ReplyEncodedReplyExactly:
+				case readWriteModel.ReplyEncodedReply:
 					switch encodedReply := reply.GetEncodedReply().(type) {
-					case readWriteModel.MonitoredSALReplyExactly:
+					case readWriteModel.MonitoredSALReply:
 						log.Trace().Msg("Feed to monitored SALs")
 						codec.(*MessageCodec).monitoredSALs <- encodedReply.GetMonitoredSAL()
-					case readWriteModel.EncodedReplyCALReplyExactly:
+					case readWriteModel.EncodedReplyCALReply:
 						calData := encodedReply.GetCalReply().GetCalData()
 						switch calData.(type) {
-						case readWriteModel.CALDataStatusExactly, readWriteModel.CALDataStatusExtendedExactly:
+						case readWriteModel.CALDataStatus, readWriteModel.CALDataStatusExtended:
 							log.Trace().Msg("Feed to monitored MMIs")
 							codec.(*MessageCodec).monitoredMMIs <- encodedReply.GetCalReply()
 						default:
 							log.Trace().
 								Type("actualType", calData).
-								Msg("Not a CALDataStatusExactly or CALDataStatusExtendedExactly")
+								Msg("Not a CALDataStatus or CALDataStatusExtended")
 						}
 					default:
 						log.Trace().

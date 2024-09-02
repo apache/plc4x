@@ -161,10 +161,10 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 
 	pdu := args.Get0PDU()
 	switch pdu.GetRootMessage().(type) {
-	case model.BVLCResultExactly: //some kind of response to a request
+	case model.BVLCResult: //some kind of response to a request
 		// send this to the service access point
 		return b.SapResponse(NewArgs(pdu), NoKWArgs)
-	case model.BVLCWriteBroadcastDistributionTableExactly:
+	case model.BVLCWriteBroadcastDistributionTable:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK))
 		if err != nil {
@@ -174,7 +174,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(pdu), NoKWArgs)
-	case model.BVLCReadBroadcastDistributionTableExactly:
+	case model.BVLCReadBroadcastDistributionTable:
 		// build a response
 		xpdu, err := NewReadBroadcastDistributionTableAck(WithReadBroadcastDistributionTableAckBDT(b.bbmdBDT...))
 		if err != nil {
@@ -184,10 +184,10 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(pdu), NoKWArgs)
-	case model.BVLCReadBroadcastDistributionTableAckExactly:
+	case model.BVLCReadBroadcastDistributionTableAck:
 		// send it to the service access point
 		return b.SapResponse(NewArgs(pdu), NoKWArgs)
-	case model.BVLCForwardedNPDUExactly:
+	case model.BVLCForwardedNPDU:
 		pdu := pdu.(*ForwardedNPDU) // TODO: check if this cast is fine
 		// send it upstream if there is a network layer
 		if b.hasServerPeer() {
@@ -232,7 +232,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 			}
 		}
 		return nil
-	case model.BVLCRegisterForeignDeviceExactly:
+	case model.BVLCRegisterForeignDevice:
 		pdu := pdu.(*RegisterForeignDevice) // TODO: check if this cast is fine
 		// process the request
 		stat, err := b.RegisterForeignDevice(pdu.GetPDUSource(), pdu.GetBvlciTimeToLive())
@@ -262,10 +262,10 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
-	case model.BVLCReadForeignDeviceTableAckExactly:
+	case model.BVLCReadForeignDeviceTableAck:
 		// send this to the service access point
 		return b.SapResponse(NewArgs(pdu), NoKWArgs)
-	case model.BVLCDeleteForeignDeviceTableEntryExactly:
+	case model.BVLCDeleteForeignDeviceTableEntry:
 		pdu := pdu.(*DeleteForeignDeviceTableEntry) // TODO: check if this cast is fine
 		// process the request
 		stat, err := b.DeleteForeignDeviceTableEntry(pdu.GetBvlciAddress())
@@ -282,7 +282,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), NoKWArgs)
-	case model.BVLCDistributeBroadcastToNetworkExactly:
+	case model.BVLCDistributeBroadcastToNetwork:
 		// send it upstream if there is a network layer
 		if b.hasServerPeer() {
 			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)), WithPDUUserData(pdu.GetPDUUserData()))
@@ -334,7 +334,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 			}
 		}
 		return nil
-	case model.BVLCOriginalUnicastNPDUExactly:
+	case model.BVLCOriginalUnicastNPDU:
 		// send it upstream if there is a network layer
 		if b.hasServerPeer() {
 			// build a PDU
@@ -345,7 +345,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 
 			return b.Response(NewArgs(xpdu), NoKWArgs)
 		}
-	case model.BVLCOriginalBroadcastNPDUExactly:
+	case model.BVLCOriginalBroadcastNPDU:
 		// send it upstream if there is a network layer
 		if b.hasServerPeer() {
 			// build a PDU with a local broadcast address

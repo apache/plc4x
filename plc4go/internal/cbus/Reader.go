@@ -152,19 +152,19 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 		messageToSend,
 		func(cbusMessage spi.Message) bool {
 			m.log.Trace().Type("cbusMessageType", cbusMessage).Msg("Checking")
-			messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClientExactly)
+			messageToClient, ok := cbusMessage.(readWriteModel.CBusMessageToClient)
 			if !ok {
 				m.log.Trace().Msg("Not a message to client")
 				return false
 			}
 			// Check if this errored
-			if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
+			if _, ok = messageToClient.GetReply().(readWriteModel.ServerErrorReply); ok {
 				// This means we must handle this below
 				m.log.Trace().Msg("It is a error, we will handle it")
 				return true
 			}
 
-			confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
+			confirmation, ok := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmation)
 			if !ok {
 				m.log.Trace().Msg("it is not a confirmation")
 				return false
@@ -187,12 +187,12 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 			// Convert the response into an
 			m.log.Trace().Type("receivedMessage", receivedMessage).Msg("convert message")
 			messageToClient := receivedMessage.(readWriteModel.CBusMessageToClient)
-			if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReplyExactly); ok {
+			if _, ok := messageToClient.GetReply().(readWriteModel.ServerErrorReply); ok {
 				m.log.Trace().Msg("We got a server failure")
 				addResponseCode(tagName, apiModel.PlcResponseCode_INVALID_DATA)
 				return transaction.EndRequest()
 			}
-			replyOrConfirmationConfirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmationExactly)
+			replyOrConfirmationConfirmation := messageToClient.GetReply().(readWriteModel.ReplyOrConfirmationConfirmation)
 			if !replyOrConfirmationConfirmation.GetConfirmation().GetIsSuccess() {
 				var responseCode apiModel.PlcResponseCode
 				switch replyOrConfirmationConfirmation.GetConfirmation().GetConfirmationType() {
@@ -217,7 +217,7 @@ func (m *Reader) sendMessageOverTheWire(ctx context.Context, transaction transac
 
 			alpha := replyOrConfirmationConfirmation.GetConfirmation().GetAlpha()
 			// TODO: it could be double confirmed but this is not implemented yet
-			embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReplyExactly)
+			embeddedReply, ok := replyOrConfirmationConfirmation.GetEmbeddedReply().(readWriteModel.ReplyOrConfirmationReply)
 			if !ok {
 				m.log.Trace().
 					Stringer("alpha", alpha).

@@ -110,7 +110,7 @@ func (w *ReadBroadcastDistributionTableAck) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCReadBroadcastDistributionTableAckExactly:
+		case model.BVLCReadBroadcastDistributionTableAck:
 			switch bvlc := rm.(type) {
 			case model.BVLCReadBroadcastDistributionTableAck:
 				w.setBVLC(bvlc)

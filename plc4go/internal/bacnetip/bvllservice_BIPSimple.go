@@ -126,30 +126,30 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 
 	switch msg := pdu.GetRootMessage().(type) {
 	// some kind of response to a request
-	case model.BVLCResultExactly:
+	case model.BVLCResult:
 		// send this to the service access point
 		return b.SapResponse(args, kwargs)
-	case model.BVLCReadBroadcastDistributionTableAckExactly:
+	case model.BVLCReadBroadcastDistributionTableAck:
 		// send this to the service access point
 		return b.SapResponse(args, kwargs)
-	case model.BVLCReadForeignDeviceTableAckExactly:
+	case model.BVLCReadForeignDeviceTableAck:
 		// send this to the service access point
 		return b.SapResponse(args, kwargs)
-	case model.BVLCOriginalUnicastNPDUExactly:
+	case model.BVLCOriginalUnicastNPDU:
 		// build a vanilla _PDU
 		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
 		return b.Response(NewArgs(xpdu), kwargs)
-	case model.BVLCOriginalBroadcastNPDUExactly:
+	case model.BVLCOriginalBroadcastNPDU:
 		// build a _PDU with a local broadcast address
 		xpdu := NewPDU(msg.GetNpdu(), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)))
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it upstream
 		return b.Response(NewArgs(xpdu), kwargs)
-	case model.BVLCForwardedNPDUExactly:
+	case model.BVLCForwardedNPDU:
 		// build a _PDU with the source from the real source
 		ip := msg.GetIp()
 		port := msg.GetPort()
@@ -162,7 +162,7 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it upstream
 		return b.Response(NewArgs(xpdu), kwargs)
-	case model.BVLCWriteBroadcastDistributionTableExactly:
+	case model.BVLCWriteBroadcastDistributionTable:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK))
 		if err != nil {
@@ -172,7 +172,7 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
-	case model.BVLCReadBroadcastDistributionTableExactly:
+	case model.BVLCReadBroadcastDistributionTable:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK))
 		if err != nil {
@@ -183,7 +183,7 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
 		// build a response
-	case model.BVLCRegisterForeignDeviceExactly:
+	case model.BVLCRegisterForeignDevice:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK))
 		if err != nil {
@@ -193,7 +193,7 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
-	case model.BVLCReadForeignDeviceTableExactly:
+	case model.BVLCReadForeignDeviceTable:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK))
 		if err != nil {
@@ -203,7 +203,7 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
-	case model.BVLCDeleteForeignDeviceTableEntryExactly:
+	case model.BVLCDeleteForeignDeviceTableEntry:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK))
 		if err != nil {
@@ -213,7 +213,7 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 
 		// send it downstream
 		return b.Request(NewArgs(xpdu), kwargs)
-	case model.BVLCDistributeBroadcastToNetworkExactly:
+	case model.BVLCDistributeBroadcastToNetwork:
 		// build a response
 		xpdu, err := NewResult(WithResultBvlciResultCode(model.BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK))
 		if err != nil {

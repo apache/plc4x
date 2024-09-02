@@ -117,11 +117,11 @@ func (a *ApplicationIOController) _AppComplete(address *Address, apdu PDU) error
 
 	// this request is complete
 	switch apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly:
+	case readWriteModel.APDUSimpleAck, readWriteModel.APDUComplexAck:
 		if err := queue.CompleteIO(queue.activeIOCB, apdu); err != nil {
 			return err
 		}
-	case readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly, readWriteModel.APDUAbortExactly:
+	case readWriteModel.APDUError, readWriteModel.APDUReject, readWriteModel.APDUAbort:
 		// TODO: extract error
 		if err := queue.AbortIO(queue.activeIOCB, errors.Errorf("%s", apdu)); err != nil {
 			return err
@@ -147,7 +147,7 @@ func (a *ApplicationIOController) _AppRequest(apdu PDU) {
 	}
 
 	// if this was an unconfirmed request, it's complete, no message
-	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequestExactly); ok {
+	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequest); ok {
 		if err := a._AppComplete(apdu.GetPDUDestination(), apdu); err != nil {
 			a.log.Error().Err(err).Msg("AppRequest failed")
 			return
@@ -160,7 +160,7 @@ func (a *ApplicationIOController) Request(args Args, kwargs KWArgs) error {
 	apdu := args.Get0PDU()
 
 	// if this is not unconfirmed request, tell the application to use the IOCB interface
-	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequestExactly); !ok {
+	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequest); !ok {
 		return errors.New("use IOCB for confirmed requests")
 	}
 

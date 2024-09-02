@@ -100,9 +100,9 @@ func (n *NetworkNumberIs) Decode(npdu Arg) error {
 			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
-		case model.NPDUExactly:
+		case model.NPDU:
 			switch nlm := pduUserData.GetNlm().(type) {
-			case model.NLMNetworkNumberIsExactly:
+			case model.NLMNetworkNumberIs:
 				n.setNLM(nlm)
 				n.nniNet = nlm.GetNetworkNumber()
 				n.nniFlag = nlm.GetNetworkNumberConfigured()

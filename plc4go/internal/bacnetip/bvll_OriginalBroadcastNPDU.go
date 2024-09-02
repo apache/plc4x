@@ -44,7 +44,7 @@ func NewOriginalBroadcastNPDU(pdu PDU, opts ...func(*OriginalBroadcastNPDU)) (*O
 		opt(o)
 	}
 	switch npdu := pdu.(type) {
-	case model.NPDUExactly:
+	case model.NPDU:
 		o._BVLPDU = NewBVLPDU(model.NewBVLCOriginalBroadcastNPDU(o.produceInnerNPDU(npdu))).(*_BVLPDU)
 	case nil:
 		o._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
@@ -109,7 +109,7 @@ func (o *OriginalBroadcastNPDU) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCOriginalBroadcastNPDUExactly:
+		case model.BVLCOriginalBroadcastNPDU:
 			npdu := rm.GetNpdu()
 			pduData, err := npdu.Serialize()
 			if err != nil {

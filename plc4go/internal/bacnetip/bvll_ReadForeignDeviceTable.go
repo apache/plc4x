@@ -62,7 +62,7 @@ func (w *ReadForeignDeviceTable) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCReadForeignDeviceTableExactly:
+		case model.BVLCReadForeignDeviceTable:
 			switch bvlc := rm.(type) {
 			case model.BVLCReadForeignDeviceTable:
 				w.setBVLC(bvlc)

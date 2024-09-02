@@ -122,6 +122,9 @@ func (b *_BVLPDU) GetBvlcPayloadLength() uint16 {
 	return b.bvlc.GetBvlcPayloadLength()
 }
 
+func (b *_BVLPDU) IsBVLC() {
+}
+
 func (b *_BVLPDU) deepCopy() *_BVLPDU {
 	return &_BVLPDU{_BVLCI: b._BVLCI.deepCopy(), _PDUData: b._PDUData.deepCopy(), bvlc: b.bvlc}
 }

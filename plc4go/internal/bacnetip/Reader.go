@@ -138,7 +138,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			// Send the  over the wire
 			m.log.Trace().Msg("Send ")
 			if err := m.messageCodec.SendRequest(ctx, apdu, func(message spi.Message) bool {
-				bvlc, ok := message.(readWriteModel.BVLCExactly)
+				bvlc, ok := message.(readWriteModel.BVLC)
 				if !ok {
 					m.log.Debug().Type("bvlc", bvlc).Msg("Received strange type")
 					return false
@@ -285,11 +285,11 @@ func (m *Reader) ToPlc4xReadResponse(apdu readWriteModel.APDU, readRequest apiMo
 	}
 
 	switch serviceAck := complexAck.GetServiceAck().(type) {
-	case readWriteModel.BACnetServiceAckReadPropertyExactly:
+	case readWriteModel.BACnetServiceAckReadProperty:
 		// TODO: super lazy implementation for now
 		responseCodes[readRequest.GetTagNames()[0]] = apiModel.PlcResponseCode_OK
 		plcValues[readRequest.GetTagNames()[0]] = spiValues.NewPlcSTRING(serviceAck.GetValues().(fmt.Stringer).String())
-	case readWriteModel.BACnetServiceAckReadPropertyMultipleExactly:
+	case readWriteModel.BACnetServiceAckReadPropertyMultiple:
 
 		// way to know how to interpret the responses is by aligning them with the
 		// items from the request as this information is not returned by the PLC.

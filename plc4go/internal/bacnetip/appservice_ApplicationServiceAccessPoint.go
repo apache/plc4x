@@ -78,7 +78,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 	apdu := args.Get0PDU()
 
 	switch _apdu := apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUConfirmedRequestExactly:
+	case readWriteModel.APDUConfirmedRequest:
 		//assume no errors found
 		var errorFound error
 		if !readWriteModel.BACnetConfirmedServiceChoiceKnows(uint8(_apdu.GetServiceRequest().GetServiceChoice())) {
@@ -100,7 +100,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 			// TODO: map it to a error... code temporary placeholder
 			return a.Response(NewArgs(NewPDU(readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0))), NoKWArgs)
 		}
-	case readWriteModel.APDUUnconfirmedRequestExactly:
+	case readWriteModel.APDUUnconfirmedRequest:
 		//assume no errors found
 		var errorFound error
 		if !readWriteModel.BACnetUnconfirmedServiceChoiceKnows(uint8(_apdu.GetServiceRequest().GetServiceChoice())) {
@@ -135,11 +135,11 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) 
 	isConfirmed := false
 	var xpdu APDU
 	switch apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUConfirmedRequestExactly:
+	case readWriteModel.APDUConfirmedRequest:
 
 		isConfirmed = true
 		panic("todo implement me")
-	case readWriteModel.APDUUnconfirmedRequestExactly:
+	case readWriteModel.APDUUnconfirmedRequest:
 		panic("todo implement me")
 	default:
 		return errors.Errorf("unknown _PDU type %T", apdu)

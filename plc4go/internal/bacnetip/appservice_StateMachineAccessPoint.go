@@ -216,7 +216,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 	var pduSource = apdu.GetPDUSource()
 
 	switch _apdu := apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUConfirmedRequestExactly:
+	case readWriteModel.APDUConfirmedRequest:
 		// Find duplicates of this request
 		var tr *ServerSSM
 		for _, serverTransactionElement := range s.serverTransactions {
@@ -239,12 +239,12 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 		if err := tr.Indication(NewArgs(apdu), NoKWArgs); err != nil {
 			return errors.Wrap(err, "error runnning indication")
 		}
-	case readWriteModel.APDUUnconfirmedRequestExactly:
+	case readWriteModel.APDUUnconfirmedRequest:
 		// deliver directly to the application
 		if err := s.SapRequest(NewArgs(apdu), NoKWArgs); err != nil {
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
-	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
+	case readWriteModel.APDUSimpleAck, readWriteModel.APDUComplexAck, readWriteModel.APDUError, readWriteModel.APDUReject:
 		// find the client transaction this is acking
 		var tr *ClientSSM
 		for _, _tr := range s.clientTransactions {
@@ -262,7 +262,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 		if err := tr.Confirmation(NewArgs(apdu), NoKWArgs); err != nil {
 			return errors.Wrap(err, "error running confirmation")
 		}
-	case readWriteModel.APDUAbortExactly:
+	case readWriteModel.APDUAbort:
 		// find the transaction being aborted
 		if _apdu.GetServer() {
 			var tr *ClientSSM
@@ -298,7 +298,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 				return errors.Wrap(err, "error running indication")
 			}
 		}
-	case readWriteModel.APDUSegmentAckExactly:
+	case readWriteModel.APDUSegmentAck:
 		// find the transaction being aborted
 		if _apdu.GetServer() {
 			var tr *ClientSSM
@@ -366,12 +366,12 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwargs KWArgs) error 
 	}
 
 	switch _apdu := apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUUnconfirmedRequestExactly:
+	case readWriteModel.APDUUnconfirmedRequest:
 		// deliver to the device
 		if err := s.Request(NewArgs(apdu), NoKWArgs); err != nil {
 			s.log.Debug().Err(err).Msg("error sending the request")
 		}
-	case readWriteModel.APDUConfirmedRequestExactly:
+	case readWriteModel.APDUConfirmedRequest:
 		// make sure it has an invoke ID
 		// TODO: here it is getting slightly different: usually we give the invoke id from the outside as it is build already. So maybe we need to adjust that (we never create it, we need to check for collisions but maybe we should change that so we move the creation down here)
 		// s.getNextInvokeId()...
@@ -412,7 +412,7 @@ func (s *StateMachineAccessPoint) SapConfirmation(args Args, kwargs KWArgs) erro
 	apdu := args.Get0PDU()
 	pduDestination := apdu.GetPDUDestination()
 	switch apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
+	case readWriteModel.APDUSimpleAck, readWriteModel.APDUComplexAck, readWriteModel.APDUError, readWriteModel.APDUReject:
 		// find the client transaction this is acking
 		var tr *ServerSSM
 		for _, tr := range s.serverTransactions {

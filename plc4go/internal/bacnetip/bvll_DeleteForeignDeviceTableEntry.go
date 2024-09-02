@@ -93,7 +93,7 @@ func (d *DeleteForeignDeviceTableEntry) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case readWriteModel.BVLCDeleteForeignDeviceTableEntryExactly:
+		case readWriteModel.BVLCDeleteForeignDeviceTableEntry:
 			switch bvlc := rm.(type) {
 			case readWriteModel.BVLCDeleteForeignDeviceTableEntry:
 				d.bvlciAddress = d.buildAddress(bvlc.GetIp(), bvlc.GetPort())

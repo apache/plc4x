@@ -86,9 +86,9 @@ func (i *IAmRouterToNetwork) Decode(npdu Arg) error {
 			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
-		case model.NPDUExactly:
+		case model.NPDU:
 			switch nlm := pduUserData.GetNlm().(type) {
-			case model.NLMIAmRouterToNetworkExactly:
+			case model.NLMIAmRouterToNetwork:
 				i.setNLM(nlm)
 				i.iartnNetworkList = nlm.GetDestinationNetworkAddresses()
 			}

@@ -74,3 +74,8 @@ func (a *__APDU) DeepCopy() any {
 func (a *__APDU) String() string {
 	return fmt.Sprintf("__APDU{%s}", a._PCI)
 }
+
+func (a *__APDU) IsAPDU() {
+	//TODO implement me
+	panic("implement me")
+}

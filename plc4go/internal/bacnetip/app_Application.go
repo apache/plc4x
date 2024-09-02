@@ -234,7 +234,7 @@ func (a *Application) Request(args Args, kwargs KWArgs) error {
 
 	// double-check the input is the right kind of APDU
 	switch apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUUnconfirmedRequestExactly, readWriteModel.APDUConfirmedRequestExactly:
+	case readWriteModel.APDUUnconfirmedRequest, readWriteModel.APDUConfirmedRequest:
 	default:
 		return errors.New("APDU expected")
 	}
@@ -255,7 +255,7 @@ func (a *Application) Indication(args Args, kwargs KWArgs) error {
 
 	// send back a reject for unrecognized services
 	if helperFn == nil {
-		if _, ok := apdu.(readWriteModel.APDUConfirmedRequestExactly); ok {
+		if _, ok := apdu.(readWriteModel.APDUConfirmedRequest); ok {
 			return errors.Errorf("no function %s", helperName)
 		}
 		return nil

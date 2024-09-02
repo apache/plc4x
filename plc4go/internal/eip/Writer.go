@@ -128,11 +128,11 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 					transaction.Submit(func(transaction transactions.RequestTransaction) {
 						// Send the  over the wire
 						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
-							eipPacket := message.(readWriteModel.EipPacketExactly)
+							eipPacket := message.(readWriteModel.EipPacket)
 							if eipPacket == nil {
 								return false
 							}
-							cipRRData := eipPacket.(readWriteModel.CipRRDataExactly)
+							cipRRData := eipPacket.(readWriteModel.CipRRData)
 							if cipRRData == nil {
 								return false
 							}
@@ -221,18 +221,18 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 							ctx,
 							pkt,
 							func(message spi.Message) bool {
-							eipPacket := message.(readWriteModel.EipPacketExactly)
+							eipPacket := message.(readWriteModel.EipPacket)
 							if eipPacket == nil {
 								return false
 							}
-							cipRRData := eipPacket.(readWriteModel.CipRRDataExactly)
+							cipRRData := eipPacket.(readWriteModel.CipRRData)
 							if cipRRData == nil {
 								return false
 							}
 							if eipPacket.GetSessionHandle() != *m.sessionHandle {
 								return false
 							}
-							multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponseExactly)
+							multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
 							if multipleServiceResponse == nil {
 								return false
 							}
@@ -316,12 +316,12 @@ func encodeValue(value apiValues.PlcValue, _type readWriteModel.CIPDataTypeCode,
 func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRequest apiModel.PlcWriteRequest) (apiModel.PlcWriteResponse, error) {
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	switch response := response.(type) {
-	case readWriteModel.CipWriteResponseExactly: // only 1 tag
+	case readWriteModel.CipWriteResponse: // only 1 tag
 		cipReadResponse := response
 		tagName := writeRequest.GetTagNames()[0]
 		code := decodeResponseCode(cipReadResponse.GetStatus())
 		responseCodes[tagName] = code
-	case readWriteModel.MultipleServiceResponseExactly: //Multiple response
+	case readWriteModel.MultipleServiceResponse: //Multiple response
 		/*		multipleServiceResponse := response
 						nb := multipleServiceResponse.GetServiceNb()
 						arr := make([]readWriteModel.CipService, nb)

@@ -89,7 +89,7 @@ func NewAPCI(pduUserData spi.Message) APCI {
 	a := &_APCI{}
 	a._PCI = newPCI(pduUserData, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
 	switch ud := pduUserData.(type) {
-	case readWriteModel.APDUExactly:
+	case readWriteModel.APDU:
 		_ = ud // TODO: WIP
 	}
 	return a
@@ -309,7 +309,7 @@ func (a *_APCI) Decode(pdu Arg) error {
 		a.rootMessage = parse
 	}
 	switch rm := a.rootMessage.(type) {
-	case readWriteModel.APDUExactly:
+	case readWriteModel.APDU:
 		_ = rm
 		panic("implement me")
 	}

@@ -96,7 +96,7 @@ func (c *ClientSSM) Indication(args Args, kwargs KWArgs) error {
 	apdu := args.Get0PDU()
 	// make sure we're getting confirmed requests
 	var apduConfirmedRequest readWriteModel.APDUConfirmedRequest
-	if apduCasted, ok := apdu.GetRootMessage().(readWriteModel.APDUConfirmedRequestExactly); !ok {
+	if apduCasted, ok := apdu.GetRootMessage().(readWriteModel.APDUConfirmedRequest); !ok {
 		return errors.Errorf("Invalid APDU type %T", apduCasted)
 	} else {
 		apduConfirmedRequest = apduCasted
@@ -262,7 +262,7 @@ func (c *ClientSSM) segmentedRequest(apdu PDU) error {
 
 	switch _apdu := apdu.GetRootMessage().(type) {
 	// server is ready for the next segment
-	case readWriteModel.APDUSegmentAckExactly:
+	case readWriteModel.APDUSegmentAck:
 		c.log.Debug().Msg("segment ack")
 		getActualWindowSize := _apdu.GetActualWindowSize()
 		c.actualWindowSize = &getActualWindowSize
@@ -288,7 +288,7 @@ func (c *ClientSSM) segmentedRequest(apdu PDU) error {
 			c.RestartTimer(c.segmentTimeout)
 		}
 	// simple ack
-	case readWriteModel.APDUSimpleAckExactly:
+	case readWriteModel.APDUSimpleAck:
 		c.log.Debug().Msg("simple ack")
 
 		if !c.sentAllSegments {
@@ -308,7 +308,7 @@ func (c *ClientSSM) segmentedRequest(apdu PDU) error {
 			}
 		}
 	// complex ack
-	case readWriteModel.APDUComplexAckExactly:
+	case readWriteModel.APDUComplexAck:
 		c.log.Debug().Msg("complex ack")
 		if !c.sentAllSegments {
 			abort, err := c.abort(readWriteModel.BACnetAbortReason_INVALID_APDU_IN_THIS_STATE)
@@ -344,7 +344,7 @@ func (c *ClientSSM) segmentedRequest(apdu PDU) error {
 				return errors.Wrap(err, "error switching state")
 			}
 		}
-	case readWriteModel.APDUErrorExactly:
+	case readWriteModel.APDUError:
 		c.log.Debug().Msg("error/reject/abort")
 		if err := c.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "error switching state")
@@ -398,7 +398,7 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 	c.log.Debug().Stringer("apdu", apdu).Msg("awaitConfirmation")
 
 	switch _apdu := apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUAbortExactly:
+	case readWriteModel.APDUAbort:
 		c.log.Debug().Msg("Server aborted")
 
 		if err := c.setState(SSMState_ABORTED, nil); err != nil {
@@ -407,7 +407,7 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 		if err := c.Response(NewArgs(apdu), NoKWArgs); err != nil {
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
-	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
+	case readWriteModel.APDUSimpleAck, readWriteModel.APDUError, readWriteModel.APDUReject:
 		c.log.Debug().Msg("simple ack, error or reject")
 
 		if err := c.setState(SSMState_COMPLETED, nil); err != nil {
@@ -416,7 +416,7 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 		if err := c.Response(NewArgs(apdu), NoKWArgs); err != nil {
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
-	case readWriteModel.APDUComplexAckExactly:
+	case readWriteModel.APDUComplexAck:
 		c.log.Debug().Msg("complex ack")
 
 		if !_apdu.GetSegmentedMessage() {
@@ -472,7 +472,7 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 				c.log.Debug().Err(err).Msg("error sending response")
 			}
 		}
-	case readWriteModel.APDUSegmentAckExactly:
+	case readWriteModel.APDUSegmentAck:
 		c.log.Debug().Msg("segment ack(!?)")
 		c.RestartTimer(c.segmentTimeout)
 	default:
@@ -519,7 +519,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 	c.log.Debug().Stringer("apdu", apdu).Msg("segmentedConfirmation")
 
 	// the only messages we should be getting are complex acks
-	apduComplexAck, ok := apdu.(readWriteModel.APDUComplexAckExactly)
+	apduComplexAck, ok := apdu.(readWriteModel.APDUComplexAck)
 	if !ok {
 		c.log.Debug().Msg("complex ack required")
 
