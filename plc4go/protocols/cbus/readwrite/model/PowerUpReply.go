@@ -93,6 +93,7 @@ func NewPowerUpReply(powerUpIndicator PowerUp, peekedByte byte, cBusOptions CBus
 		ReplyContract:    NewReply(peekedByte, cBusOptions, requestContext),
 		PowerUpIndicator: powerUpIndicator,
 	}
+	_result.ReplyContract.(*_Reply)._SubType = _result
 	return _result
 }
 

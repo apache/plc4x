@@ -97,6 +97,7 @@ func NewSALDataTemperatureBroadcast(temperatureBroadcastData TemperatureBroadcas
 		SALDataContract:          NewSALData(salData),
 		TemperatureBroadcastData: temperatureBroadcastData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

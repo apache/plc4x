@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesProtocolLevel(protocolLevel BACnetProtocolLevelTagge
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		ProtocolLevel:                protocolLevel,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

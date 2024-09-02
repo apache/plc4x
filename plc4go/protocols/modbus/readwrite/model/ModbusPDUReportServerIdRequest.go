@@ -85,6 +85,7 @@ func NewModbusPDUReportServerIdRequest() *_ModbusPDUReportServerIdRequest {
 	_result := &_ModbusPDUReportServerIdRequest{
 		ModbusPDUContract: NewModbusPDU(),
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

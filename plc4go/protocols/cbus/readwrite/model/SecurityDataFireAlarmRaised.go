@@ -73,6 +73,7 @@ func NewSecurityDataFireAlarmRaised(commandTypeContainer SecurityCommandTypeCont
 	_result := &_SecurityDataFireAlarmRaised{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

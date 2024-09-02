@@ -113,6 +113,7 @@ func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSeg
 		ClassSegment:       classSegment,
 		InstanceSegment:    instanceSegment,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

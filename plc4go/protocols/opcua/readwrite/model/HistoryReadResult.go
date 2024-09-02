@@ -113,6 +113,7 @@ func NewHistoryReadResult(statusCode StatusCode, continuationPoint PascalByteStr
 		ContinuationPoint:                 continuationPoint,
 		HistoryData:                       historyData,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

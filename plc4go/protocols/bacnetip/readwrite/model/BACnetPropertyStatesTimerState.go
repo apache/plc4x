@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesTimerState(timerState BACnetTimerStateTagged, peeked
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		TimerState:                   timerState,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

@@ -185,6 +185,7 @@ func NewProgramDiagnosticDataType(createSessionId NodeId, createClientName Pasca
 		LastMethodCallTime:                lastMethodCallTime,
 		LastMethodReturnStatus:            lastMethodReturnStatus,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

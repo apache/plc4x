@@ -117,6 +117,7 @@ func NewLevelInformationCorrupted(corruptedNibble1 uint8, corruptedNibble2 uint8
 		CorruptedNibble3:         corruptedNibble3,
 		CorruptedNibble4:         corruptedNibble4,
 	}
+	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewKnxNetObjectServer(version uint8) *_KnxNetObjectServer {
 		ServiceIdContract: NewServiceId(),
 		Version:           version,
 	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
 

@@ -126,6 +126,7 @@ func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace strin
 		Volts:                        volts,
 		VoltsDecimalPlace:            voltsDecimalPlace,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

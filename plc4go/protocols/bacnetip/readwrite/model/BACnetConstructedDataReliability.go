@@ -118,6 +118,7 @@ func NewBACnetConstructedDataReliability(reliability BACnetReliabilityTagged, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Reliability:                   reliability,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewBACnetChannelValueEnumerated(enumeratedValue BACnetApplicationTagEnumera
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		EnumeratedValue:            enumeratedValue,
 	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 

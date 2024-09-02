@@ -119,6 +119,7 @@ func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, 
 		MaxAmqCallee:        maxAmqCallee,
 		PduLength:           pduLength,
 	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
 

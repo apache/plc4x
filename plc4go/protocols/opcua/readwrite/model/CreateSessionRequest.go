@@ -161,6 +161,7 @@ func NewCreateSessionRequest(requestHeader ExtensionObjectDefinition, clientDesc
 		RequestedSessionTimeout:           requestedSessionTimeout,
 		MaxResponseMessageSize:            maxResponseMessageSize,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

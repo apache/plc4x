@@ -128,6 +128,7 @@ func NewBACnetConstructedDataSupportedFormatClasses(numberOfDataElements BACnetA
 		NumberOfDataElements:          numberOfDataElements,
 		SupportedFormats:              supportedFormats,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

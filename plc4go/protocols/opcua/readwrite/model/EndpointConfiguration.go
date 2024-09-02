@@ -163,6 +163,7 @@ func NewEndpointConfiguration(operationTimeout int32, useBinaryEncoding bool, ma
 		ChannelLifetime:                   channelLifetime,
 		SecurityTokenLifetime:             securityTokenLifetime,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -129,6 +129,7 @@ func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyI
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

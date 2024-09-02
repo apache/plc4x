@@ -441,6 +441,7 @@ func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, c
 		RegisterNodesCount:                 registerNodesCount,
 		UnregisterNodesCount:               unregisterNodesCount,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewSALDataAirConditioning(airConditioningData AirConditioningData, salData 
 		SALDataContract:     NewSALData(salData),
 		AirConditioningData: airConditioningData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

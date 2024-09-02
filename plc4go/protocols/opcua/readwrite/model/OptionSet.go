@@ -105,6 +105,7 @@ func NewOptionSet(value PascalByteString, validBits PascalByteString) *_OptionSe
 		Value:                             value,
 		ValidBits:                         validBits,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

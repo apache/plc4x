@@ -125,6 +125,7 @@ func NewReplyEncodedReply(encodedReply EncodedReply, chksum Checksum, peekedByte
 		EncodedReply:  encodedReply,
 		Chksum:        chksum,
 	}
+	_result.ReplyContract.(*_Reply)._SubType = _result
 	return _result
 }
 

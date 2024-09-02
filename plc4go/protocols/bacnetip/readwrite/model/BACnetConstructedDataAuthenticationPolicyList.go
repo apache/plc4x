@@ -128,6 +128,7 @@ func NewBACnetConstructedDataAuthenticationPolicyList(numberOfDataElements BACne
 		NumberOfDataElements:          numberOfDataElements,
 		AuthenticationPolicyList:      authenticationPolicyList,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

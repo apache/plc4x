@@ -93,6 +93,7 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(enum
 		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		EnumeratedValue: enumeratedValue,
 	}
+	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
 	return _result
 }
 

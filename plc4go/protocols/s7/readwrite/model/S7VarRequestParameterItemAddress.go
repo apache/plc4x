@@ -97,6 +97,7 @@ func NewS7VarRequestParameterItemAddress(address S7Address) *_S7VarRequestParame
 		S7VarRequestParameterItemContract: NewS7VarRequestParameterItem(),
 		Address:                           address,
 	}
+	_result.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = _result
 	return _result
 }
 

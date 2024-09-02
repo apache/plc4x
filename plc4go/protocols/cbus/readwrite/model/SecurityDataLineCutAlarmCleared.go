@@ -73,6 +73,7 @@ func NewSecurityDataLineCutAlarmCleared(commandTypeContainer SecurityCommandType
 	_result := &_SecurityDataLineCutAlarmCleared{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

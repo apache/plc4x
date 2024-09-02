@@ -105,6 +105,7 @@ func NewRange(low float64, high float64) *_Range {
 		Low:                               low,
 		High:                              high,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -77,6 +77,7 @@ func NewApduDataExtReadRouterStatusRequest(length uint8) *_ApduDataExtReadRouter
 	_result := &_ApduDataExtReadRouterStatusRequest{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

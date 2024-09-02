@@ -117,6 +117,7 @@ func NewBACnetEventParameterChangeOfStatusFlags(openingTag BACnetOpeningTag, tim
 		SelectedFlags:                selectedFlags,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 

@@ -85,6 +85,7 @@ func NewEipListIdentityRequest(sessionHandle uint32, status uint32, senderContex
 	_result := &_EipListIdentityRequest{
 		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 

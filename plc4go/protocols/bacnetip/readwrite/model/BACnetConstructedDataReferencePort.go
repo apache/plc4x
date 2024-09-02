@@ -118,6 +118,7 @@ func NewBACnetConstructedDataReferencePort(referencePort BACnetApplicationTagUns
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ReferencePort:                 referencePort,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

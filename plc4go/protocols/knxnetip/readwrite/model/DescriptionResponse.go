@@ -107,6 +107,7 @@ func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBS
 		DibDeviceInfo:           dibDeviceInfo,
 		DibSuppSvcFamilies:      dibSuppSvcFamilies,
 	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 

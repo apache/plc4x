@@ -105,6 +105,7 @@ func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength u
 		DataFirstByte:    dataFirstByte,
 		Data:             data,
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

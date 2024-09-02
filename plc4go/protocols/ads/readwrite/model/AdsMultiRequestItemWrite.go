@@ -113,6 +113,7 @@ func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, 
 		ItemIndexOffset:             itemIndexOffset,
 		ItemWriteLength:             itemWriteLength,
 	}
+	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
 	return _result
 }
 

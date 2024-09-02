@@ -97,6 +97,7 @@ func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSigned
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		FileStartPosition:        fileStartPosition,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

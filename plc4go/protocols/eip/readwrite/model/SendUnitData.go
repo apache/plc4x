@@ -129,6 +129,7 @@ func NewSendUnitData(timeout uint16, typeIds []TypeId, sessionHandle uint32, sta
 		Timeout:           timeout,
 		TypeIds:           typeIds,
 	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 

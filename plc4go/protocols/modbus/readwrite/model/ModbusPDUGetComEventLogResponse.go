@@ -129,6 +129,7 @@ func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messag
 		MessageCount:      messageCount,
 		Events:            events,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

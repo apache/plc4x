@@ -113,6 +113,7 @@ func NewFindServersResponse(responseHeader ExtensionObjectDefinition, noOfServer
 		NoOfServers:                       noOfServers,
 		Servers:                           servers,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

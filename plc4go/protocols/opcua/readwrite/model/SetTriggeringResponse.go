@@ -161,6 +161,7 @@ func NewSetTriggeringResponse(responseHeader ExtensionObjectDefinition, noOfAddR
 		NoOfRemoveDiagnosticInfos:         noOfRemoveDiagnosticInfos,
 		RemoveDiagnosticInfos:             removeDiagnosticInfos,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

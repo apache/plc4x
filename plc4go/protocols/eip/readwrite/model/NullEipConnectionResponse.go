@@ -85,6 +85,7 @@ func NewNullEipConnectionResponse(sessionHandle uint32, status uint32, senderCon
 	_result := &_NullEipConnectionResponse{
 		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDoorStatus(doorStatus BACnetDoorStatusTagged, openi
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DoorStatus:                    doorStatus,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

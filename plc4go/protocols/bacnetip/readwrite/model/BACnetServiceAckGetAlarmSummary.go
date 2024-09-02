@@ -113,6 +113,7 @@ func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObj
 		EventState:               eventState,
 		AcknowledgedTransitions:  acknowledgedTransitions,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

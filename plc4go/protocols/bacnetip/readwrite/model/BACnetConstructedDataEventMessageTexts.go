@@ -158,6 +158,7 @@ func NewBACnetConstructedDataEventMessageTexts(numberOfDataElements BACnetApplic
 		NumberOfDataElements:          numberOfDataElements,
 		EventMessageTexts:             eventMessageTexts,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

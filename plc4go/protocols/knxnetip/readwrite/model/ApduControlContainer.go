@@ -97,6 +97,7 @@ func NewApduControlContainer(controlApdu ApduControl, numbered bool, counter uin
 		ApduContract: NewApdu(numbered, counter, dataLength),
 		ControlApdu:  controlApdu,
 	}
+	_result.ApduContract.(*_Apdu)._SubType = _result
 	return _result
 }
 

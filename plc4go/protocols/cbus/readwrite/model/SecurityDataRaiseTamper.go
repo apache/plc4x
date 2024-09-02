@@ -73,6 +73,7 @@ func NewSecurityDataRaiseTamper(commandTypeContainer SecurityCommandTypeContaine
 	_result := &_SecurityDataRaiseTamper{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

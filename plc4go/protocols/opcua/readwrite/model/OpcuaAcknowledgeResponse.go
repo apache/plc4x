@@ -109,6 +109,7 @@ func NewOpcuaAcknowledgeResponse(version uint32, limits OpcuaProtocolLimits, chu
 		Version:            version,
 		Limits:             limits,
 	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
 

@@ -81,6 +81,7 @@ func NewBACnetConstructedDataAveragingAll(openingTag BACnetOpeningTag, peekedTag
 	_result := &_BACnetConstructedDataAveragingAll{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

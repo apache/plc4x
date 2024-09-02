@@ -137,6 +137,7 @@ func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress ui
 		WriteQuantity:        writeQuantity,
 		Value:                value,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

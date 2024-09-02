@@ -97,6 +97,7 @@ func NewSALDataSecurity(securityData SecurityData, salData SALData) *_SALDataSec
 		SALDataContract: NewSALData(salData),
 		SecurityData:    securityData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

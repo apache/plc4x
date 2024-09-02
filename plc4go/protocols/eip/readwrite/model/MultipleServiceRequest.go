@@ -126,6 +126,7 @@ func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServi
 		CipServiceContract: NewCipService(serviceLen),
 		Data:               data,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

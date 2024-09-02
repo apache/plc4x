@@ -93,6 +93,7 @@ func NewBACnetChannelValueTime(timeValue BACnetApplicationTagTime, peekedTagHead
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		TimeValue:                  timeValue,
 	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 

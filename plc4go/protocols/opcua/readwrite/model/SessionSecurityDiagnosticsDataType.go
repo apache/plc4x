@@ -169,6 +169,7 @@ func NewSessionSecurityDiagnosticsDataType(sessionId NodeId, clientUserIdOfSessi
 		SecurityPolicyUri:                 securityPolicyUri,
 		ClientCertificate:                 clientCertificate,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

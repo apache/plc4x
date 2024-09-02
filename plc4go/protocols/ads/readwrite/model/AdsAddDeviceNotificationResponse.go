@@ -109,6 +109,7 @@ func NewAdsAddDeviceNotificationResponse(result ReturnCode, notificationHandle u
 		Result:             result,
 		NotificationHandle: notificationHandle,
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

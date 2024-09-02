@@ -109,6 +109,7 @@ func NewBACnetEventParameterChangeOfDiscreteValue(openingTag BACnetOpeningTag, t
 		TimeDelay:                    timeDelay,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewParameterValueInterfaceOptions1PowerUpSettings(value InterfaceOptions1Po
 		ParameterValueContract: NewParameterValue(numBytes),
 		Value:                  value,
 	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
 

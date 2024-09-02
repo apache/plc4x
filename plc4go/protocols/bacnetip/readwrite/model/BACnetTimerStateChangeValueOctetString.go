@@ -93,6 +93,7 @@ func NewBACnetTimerStateChangeValueOctetString(octetStringValue BACnetApplicatio
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		OctetStringValue:                    octetStringValue,
 	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
 

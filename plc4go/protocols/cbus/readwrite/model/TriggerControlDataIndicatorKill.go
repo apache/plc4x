@@ -73,6 +73,7 @@ func NewTriggerControlDataIndicatorKill(commandTypeContainer TriggerControlComma
 	_result := &_TriggerControlDataIndicatorKill{
 		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
 	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
 	return _result
 }
 

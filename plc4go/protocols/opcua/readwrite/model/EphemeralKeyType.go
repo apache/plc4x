@@ -105,6 +105,7 @@ func NewEphemeralKeyType(publicKey PascalByteString, signature PascalByteString)
 		PublicKey:                         publicKey,
 		Signature:                         signature,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

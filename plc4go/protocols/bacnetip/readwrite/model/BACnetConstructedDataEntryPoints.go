@@ -101,6 +101,7 @@ func NewBACnetConstructedDataEntryPoints(entryPoints []BACnetDeviceObjectReferen
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EntryPoints:                   entryPoints,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

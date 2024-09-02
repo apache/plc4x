@@ -105,6 +105,7 @@ func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObj
 		NoOfParameters:                    noOfParameters,
 		Parameters:                        parameters,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

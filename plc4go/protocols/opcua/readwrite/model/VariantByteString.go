@@ -105,6 +105,7 @@ func NewVariantByteString(arrayLength *int32, value []ByteStringArray, arrayLeng
 		ArrayLength:     arrayLength,
 		Value:           value,
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

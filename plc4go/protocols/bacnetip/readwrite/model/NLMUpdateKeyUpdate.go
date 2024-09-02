@@ -177,6 +177,7 @@ func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyR
 		Set2KeyCount:       set2KeyCount,
 		Set2Keys:           set2Keys,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

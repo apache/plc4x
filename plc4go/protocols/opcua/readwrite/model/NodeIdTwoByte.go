@@ -114,6 +114,7 @@ func NewNodeIdTwoByte(id uint8) *_NodeIdTwoByte {
 		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
 		Id:                           id,
 	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
 	return _result
 }
 

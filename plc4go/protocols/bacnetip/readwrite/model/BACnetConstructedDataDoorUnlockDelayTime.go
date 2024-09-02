@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDoorUnlockDelayTime(doorUnlockDelayTime BACnetAppli
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DoorUnlockDelayTime:           doorUnlockDelayTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

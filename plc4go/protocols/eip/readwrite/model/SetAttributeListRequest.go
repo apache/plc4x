@@ -85,6 +85,7 @@ func NewSetAttributeListRequest(serviceLen uint16) *_SetAttributeListRequest {
 	_result := &_SetAttributeListRequest{
 		CipServiceContract: NewCipService(serviceLen),
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

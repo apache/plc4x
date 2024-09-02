@@ -153,6 +153,7 @@ func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8,
 		LastDataUnit:                    lastDataUnit,
 		ErrorCode:                       errorCode,
 	}
+	_result.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem)._SubType = _result
 	return _result
 }
 

@@ -113,6 +113,7 @@ func NewUserManagementDataType(userName PascalString, userConfiguration UserConf
 		UserConfiguration:                 userConfiguration,
 		Description:                       description,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

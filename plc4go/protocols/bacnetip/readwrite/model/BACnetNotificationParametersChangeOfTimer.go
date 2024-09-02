@@ -149,6 +149,7 @@ func NewBACnetNotificationParametersChangeOfTimer(innerOpeningTag BACnetOpeningT
 		ExpirationTime:                       expirationTime,
 		InnerClosingTag:                      innerClosingTag,
 	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
 	return _result
 }
 

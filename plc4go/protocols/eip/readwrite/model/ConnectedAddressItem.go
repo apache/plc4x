@@ -99,6 +99,7 @@ func NewConnectedAddressItem(connectionId uint32) *_ConnectedAddressItem {
 		TypeIdContract: NewTypeId(),
 		ConnectionId:   connectionId,
 	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
 	return _result
 }
 

@@ -125,6 +125,7 @@ func NewBACnetNotificationParametersBufferReady(innerOpeningTag BACnetOpeningTag
 		CurrentNotification:                  currentNotification,
 		InnerClosingTag:                      innerClosingTag,
 	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
 	return _result
 }
 

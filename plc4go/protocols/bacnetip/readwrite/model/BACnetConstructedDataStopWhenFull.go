@@ -118,6 +118,7 @@ func NewBACnetConstructedDataStopWhenFull(stopWhenFull BACnetApplicationTagBoole
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		StopWhenFull:                  stopWhenFull,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

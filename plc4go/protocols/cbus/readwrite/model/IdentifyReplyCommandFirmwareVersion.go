@@ -97,6 +97,7 @@ func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string, numBytes uin
 		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
 		FirmwareVersion:              firmwareVersion,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

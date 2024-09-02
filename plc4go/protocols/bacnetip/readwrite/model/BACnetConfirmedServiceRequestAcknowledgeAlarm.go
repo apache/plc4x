@@ -137,6 +137,7 @@ func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdenti
 		AcknowledgmentSource:                  acknowledgmentSource,
 		TimeOfAcknowledgment:                  timeOfAcknowledgment,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

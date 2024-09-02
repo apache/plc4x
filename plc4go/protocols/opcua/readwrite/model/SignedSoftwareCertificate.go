@@ -105,6 +105,7 @@ func NewSignedSoftwareCertificate(certificateData PascalByteString, signature Pa
 		CertificateData:                   certificateData,
 		Signature:                         signature,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

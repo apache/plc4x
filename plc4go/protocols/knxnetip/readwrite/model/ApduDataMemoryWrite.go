@@ -77,6 +77,7 @@ func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
 	_result := &_ApduDataMemoryWrite{
 		ApduDataContract: NewApduData(dataLength),
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

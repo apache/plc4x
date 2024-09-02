@@ -105,6 +105,7 @@ func NewHistoryEventFieldList(noOfEventFields int32, eventFields []Variant) *_Hi
 		NoOfEventFields:                   noOfEventFields,
 		EventFields:                       eventFields,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

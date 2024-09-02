@@ -118,6 +118,7 @@ func NewBACnetConstructedDataCarDoorZone(carDoorZone BACnetApplicationTagBoolean
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CarDoorZone:                   carDoorZone,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

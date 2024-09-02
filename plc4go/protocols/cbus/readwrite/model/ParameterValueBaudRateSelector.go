@@ -105,6 +105,7 @@ func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numB
 		Value:                  value,
 		Data:                   data,
 	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
 

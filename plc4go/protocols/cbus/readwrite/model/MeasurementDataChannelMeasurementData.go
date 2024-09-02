@@ -158,6 +158,7 @@ func NewMeasurementDataChannelMeasurementData(deviceId uint8, channel uint8, uni
 		Msb:                     msb,
 		Lsb:                     lsb,
 	}
+	_result.MeasurementDataContract.(*_MeasurementData)._SubType = _result
 	return _result
 }
 

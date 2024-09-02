@@ -145,6 +145,7 @@ func NewResponseHeader(timestamp int64, requestHandle uint32, serviceResult Stat
 		StringTable:                       stringTable,
 		AdditionalHeader:                  additionalHeader,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

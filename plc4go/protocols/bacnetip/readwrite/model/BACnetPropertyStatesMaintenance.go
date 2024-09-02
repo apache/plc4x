@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesMaintenance(maintenance BACnetMaintenanceTagged, pee
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		Maintenance:                  maintenance,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

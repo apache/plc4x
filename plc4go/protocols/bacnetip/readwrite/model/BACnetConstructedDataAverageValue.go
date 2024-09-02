@@ -118,6 +118,7 @@ func NewBACnetConstructedDataAverageValue(averageValue BACnetApplicationTagReal,
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AverageValue:                  averageValue,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

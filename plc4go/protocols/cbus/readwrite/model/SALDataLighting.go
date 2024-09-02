@@ -97,6 +97,7 @@ func NewSALDataLighting(lightingData LightingData, salData SALData) *_SALDataLig
 		SALDataContract: NewSALData(salData),
 		LightingData:    lightingData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

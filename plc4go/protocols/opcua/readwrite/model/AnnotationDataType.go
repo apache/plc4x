@@ -113,6 +113,7 @@ func NewAnnotationDataType(annotation PascalString, discipline PascalString, uri
 		Discipline:                        discipline,
 		Uri:                               uri,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

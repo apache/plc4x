@@ -97,6 +97,7 @@ func NewParameterValueRaw(data []byte, numBytes uint8) *_ParameterValueRaw {
 		ParameterValueContract: NewParameterValue(numBytes),
 		Data:                   data,
 	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
 

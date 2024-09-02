@@ -129,6 +129,7 @@ func NewSessionlessInvokeResponseType(noOfNamespaceUris int32, namespaceUris []P
 		ServerUris:                        serverUris,
 		ServiceId:                         serviceId,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataEffectivePeriod(dateRange BACnetDateRange, openingT
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DateRange:                     dateRange,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

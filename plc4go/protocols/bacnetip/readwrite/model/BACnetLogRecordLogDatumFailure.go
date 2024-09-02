@@ -93,6 +93,7 @@ func NewBACnetLogRecordLogDatumFailure(failure ErrorEnclosed, openingTag BACnetO
 		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		Failure:                         failure,
 	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 

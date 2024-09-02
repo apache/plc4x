@@ -77,6 +77,7 @@ func NewDataSetWriterMessageDataType() *_DataSetWriterMessageDataType {
 	_result := &_DataSetWriterMessageDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

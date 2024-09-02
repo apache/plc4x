@@ -121,6 +121,7 @@ func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId
 		OriginalTimestamp:  originalTimestamp,
 		VariableParameters: variableParameters,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

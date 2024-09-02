@@ -93,6 +93,7 @@ func NewBACnetLandingCallStatusCommandDestination(destination BACnetContextTagUn
 		BACnetLandingCallStatusCommandContract: NewBACnetLandingCallStatusCommand(peekedTagHeader),
 		Destination:                            destination,
 	}
+	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
 	return _result
 }
 

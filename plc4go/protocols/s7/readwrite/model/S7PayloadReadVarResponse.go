@@ -101,6 +101,7 @@ func NewS7PayloadReadVarResponse(items []S7VarPayloadDataItem, parameter S7Param
 		S7PayloadContract: NewS7Payload(parameter),
 		Items:             items,
 	}
+	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesBoolean(booleanValue BACnetContextTagBoolean, peeked
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		BooleanValue:                 booleanValue,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

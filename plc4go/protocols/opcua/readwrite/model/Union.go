@@ -77,6 +77,7 @@ func NewUnion() *_Union {
 	_result := &_Union{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

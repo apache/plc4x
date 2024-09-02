@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDoNotHide(doNotHide BACnetApplicationTagBoolean, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DoNotHide:                     doNotHide,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

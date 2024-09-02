@@ -101,6 +101,7 @@ func NewS7ParameterWriteVarResponse(numItems uint8) *_S7ParameterWriteVarRespons
 		S7ParameterContract: NewS7Parameter(),
 		NumItems:            numItems,
 	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewUnConnectedDataItem(service CipService) *_UnConnectedDataItem {
 		TypeIdContract: NewTypeId(),
 		Service:        service,
 	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
 	return _result
 }
 

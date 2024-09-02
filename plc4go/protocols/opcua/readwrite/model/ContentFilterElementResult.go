@@ -129,6 +129,7 @@ func NewContentFilterElementResult(statusCode StatusCode, noOfOperandStatusCodes
 		NoOfOperandDiagnosticInfos:        noOfOperandDiagnosticInfos,
 		OperandDiagnosticInfos:            operandDiagnosticInfos,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

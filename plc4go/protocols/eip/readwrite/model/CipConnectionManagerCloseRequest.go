@@ -187,6 +187,7 @@ func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment Pat
 		ConnectionPathSize:     connectionPathSize,
 		ConnectionPaths:        connectionPaths,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

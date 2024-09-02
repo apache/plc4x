@@ -73,6 +73,7 @@ func NewSecurityDataTamperOn(commandTypeContainer SecurityCommandTypeContainer, 
 	_result := &_SecurityDataTamperOn{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

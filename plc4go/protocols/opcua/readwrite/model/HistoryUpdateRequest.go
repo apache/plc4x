@@ -113,6 +113,7 @@ func NewHistoryUpdateRequest(requestHeader ExtensionObjectDefinition, noOfHistor
 		NoOfHistoryUpdateDetails:          noOfHistoryUpdateDetails,
 		HistoryUpdateDetails:              historyUpdateDetails,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

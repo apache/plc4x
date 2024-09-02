@@ -216,6 +216,7 @@ func NewCipIdentity(encapsulationProtocolVersion uint16, socketAddressFamily uin
 		ProductName:                     productName,
 		State:                           state,
 	}
+	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
 	return _result
 }
 

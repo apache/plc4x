@@ -73,6 +73,7 @@ func NewSecurityDataLowBatteryCorrected(commandTypeContainer SecurityCommandType
 	_result := &_SecurityDataLowBatteryCorrected{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

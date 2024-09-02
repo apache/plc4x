@@ -109,6 +109,7 @@ func NewCALDataWrite(paramNo Parameter, code byte, parameterValue ParameterValue
 		Code:            code,
 		ParameterValue:  parameterValue,
 	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 

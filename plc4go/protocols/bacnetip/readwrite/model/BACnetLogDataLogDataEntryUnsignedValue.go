@@ -93,6 +93,7 @@ func NewBACnetLogDataLogDataEntryUnsignedValue(unsignedValue BACnetContextTagUns
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		UnsignedValue:                     unsignedValue,
 	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 

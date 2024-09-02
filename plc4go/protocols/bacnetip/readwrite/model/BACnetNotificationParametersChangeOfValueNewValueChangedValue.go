@@ -93,6 +93,7 @@ func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(changedVal
 		BACnetNotificationParametersChangeOfValueNewValueContract: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		ChangedValue: changedValue,
 	}
+	_result.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = _result
 	return _result
 }
 

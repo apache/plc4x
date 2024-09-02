@@ -118,6 +118,7 @@ func NewBACnetConstructedDataFileType(fileType BACnetApplicationTagCharacterStri
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FileType:                      fileType,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

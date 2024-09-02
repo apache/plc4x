@@ -101,6 +101,7 @@ func NewAdsWriteResponse(result ReturnCode, targetAmsNetId AmsNetId, targetAmsPo
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal(realValue BACnetAp
 		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		RealValue: realValue,
 	}
+	_result.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = _result
 	return _result
 }
 

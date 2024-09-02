@@ -118,6 +118,7 @@ func NewBACnetConstructedDataVendorIdentifier(vendorIdentifier BACnetVendorIdTag
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		VendorIdentifier:              vendorIdentifier,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

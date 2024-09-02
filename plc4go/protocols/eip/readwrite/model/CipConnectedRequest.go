@@ -108,6 +108,7 @@ func NewCipConnectedRequest(pathSegments []byte, serviceLen uint16) *_CipConnect
 		CipServiceContract: NewCipService(serviceLen),
 		PathSegments:       pathSegments,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

@@ -129,6 +129,7 @@ func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessI
 		LifetimeInSeconds:                     lifetimeInSeconds,
 		ListOfValues:                          listOfValues,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

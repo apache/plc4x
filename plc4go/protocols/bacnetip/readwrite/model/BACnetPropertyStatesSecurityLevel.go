@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesSecurityLevel(securityLevel BACnetSecurityLevelTagge
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		SecurityLevel:                securityLevel,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

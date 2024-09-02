@@ -96,6 +96,7 @@ func NewStatusRequestBinaryStateDeprecated(application ApplicationIdContainer, s
 		StatusRequestContract: NewStatusRequest(statusType),
 		Application:           application,
 	}
+	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
 	return _result
 }
 

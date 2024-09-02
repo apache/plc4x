@@ -121,6 +121,7 @@ func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIden
 		ArrayIndex:               arrayIndex,
 		Values:                   values,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

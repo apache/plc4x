@@ -113,6 +113,7 @@ func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference
 		SourceReference:      sourceReference,
 		ProtocolClass:        protocolClass,
 	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
 

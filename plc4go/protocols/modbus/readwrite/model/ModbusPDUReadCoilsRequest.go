@@ -113,6 +113,7 @@ func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) *_Mod
 		StartingAddress:   startingAddress,
 		Quantity:          quantity,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

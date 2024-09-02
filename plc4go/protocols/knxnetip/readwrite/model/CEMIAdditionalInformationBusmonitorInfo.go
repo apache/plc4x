@@ -153,6 +153,7 @@ func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFla
 		LostFlag:                          lostFlag,
 		SequenceNumber:                    sequenceNumber,
 	}
+	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
 	return _result
 }
 

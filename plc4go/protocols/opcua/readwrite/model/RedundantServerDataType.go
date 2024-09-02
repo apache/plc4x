@@ -113,6 +113,7 @@ func NewRedundantServerDataType(serverId PascalString, serviceLevel uint8, serve
 		ServiceLevel:                      serviceLevel,
 		ServerState:                       serverState,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -85,6 +85,7 @@ func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext 
 	_result := &_EipDisconnectRequest{
 		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 

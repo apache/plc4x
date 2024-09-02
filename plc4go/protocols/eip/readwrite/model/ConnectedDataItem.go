@@ -105,6 +105,7 @@ func NewConnectedDataItem(sequenceCount uint16, service CipService) *_ConnectedD
 		SequenceCount:  sequenceCount,
 		Service:        service,
 	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
 	return _result
 }
 

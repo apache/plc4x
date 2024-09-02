@@ -97,6 +97,7 @@ func NewKnxNetIpCore(version uint8) *_KnxNetIpCore {
 		ServiceIdContract: NewServiceId(),
 		Version:           version,
 	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
 

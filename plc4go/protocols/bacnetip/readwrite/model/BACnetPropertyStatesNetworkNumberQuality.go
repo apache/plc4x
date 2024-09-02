@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesNetworkNumberQuality(networkNumberQuality BACnetNetw
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		NetworkNumberQuality:         networkNumberQuality,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

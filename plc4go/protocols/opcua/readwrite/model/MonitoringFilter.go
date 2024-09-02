@@ -77,6 +77,7 @@ func NewMonitoringFilter() *_MonitoringFilter {
 	_result := &_MonitoringFilter{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

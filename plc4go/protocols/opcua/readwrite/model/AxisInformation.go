@@ -137,6 +137,7 @@ func NewAxisInformation(engineeringUnits ExtensionObjectDefinition, eURange Exte
 		NoOfAxisSteps:                     noOfAxisSteps,
 		AxisSteps:                         axisSteps,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -113,6 +113,7 @@ func NewWriteRequest(requestHeader ExtensionObjectDefinition, noOfNodesToWrite i
 		NoOfNodesToWrite:                  noOfNodesToWrite,
 		NodesToWrite:                      nodesToWrite,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

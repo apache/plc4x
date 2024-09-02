@@ -105,6 +105,7 @@ func NewVariantString(arrayLength *int32, value []PascalString, arrayLengthSpeci
 		ArrayLength:     arrayLength,
 		Value:           value,
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

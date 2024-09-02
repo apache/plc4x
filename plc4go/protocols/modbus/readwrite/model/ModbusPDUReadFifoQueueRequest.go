@@ -105,6 +105,7 @@ func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *_ModbusPDURead
 		ModbusPDUContract:  NewModbusPDU(),
 		FifoPointerAddress: fifoPointerAddress,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

@@ -121,6 +121,7 @@ func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnit
 		GavStoreEnabledByte2:                gavStoreEnabledByte2,
 		TimeFromLastRecoverOfMainsInSeconds: timeFromLastRecoverOfMainsInSeconds,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

@@ -123,6 +123,7 @@ func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes b
 		NoOfDataToReturn:                  noOfDataToReturn,
 		DataToReturn:                      dataToReturn,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

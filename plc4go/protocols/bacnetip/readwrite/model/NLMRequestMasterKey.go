@@ -105,6 +105,7 @@ func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndS
 		NumberOfSupportedKeyAlgorithms:   numberOfSupportedKeyAlgorithms,
 		EncryptionAndSignatureAlgorithms: encryptionAndSignatureAlgorithms,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

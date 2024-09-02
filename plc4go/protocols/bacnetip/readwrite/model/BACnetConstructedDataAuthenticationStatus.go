@@ -118,6 +118,7 @@ func NewBACnetConstructedDataAuthenticationStatus(authenticationStatus BACnetAut
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AuthenticationStatus:          authenticationStatus,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

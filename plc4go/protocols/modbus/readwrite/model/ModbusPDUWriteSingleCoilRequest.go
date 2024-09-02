@@ -113,6 +113,7 @@ func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) *_ModbusPD
 		Address:           address,
 		Value:             value,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

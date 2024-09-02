@@ -129,6 +129,7 @@ func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier BACnetAppl
 		FileData:                              fileData,
 		ClosingTag:                            closingTag,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

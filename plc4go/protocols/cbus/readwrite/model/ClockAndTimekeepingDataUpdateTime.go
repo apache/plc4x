@@ -158,6 +158,7 @@ func NewClockAndTimekeepingDataUpdateTime(hours uint8, minute uint8, second uint
 		Second:                          second,
 		DaylightSaving:                  daylightSaving,
 	}
+	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
 	return _result
 }
 

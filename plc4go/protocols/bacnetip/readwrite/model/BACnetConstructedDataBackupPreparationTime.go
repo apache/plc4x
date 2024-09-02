@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBackupPreparationTime(backupPreparationTime BACnetA
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BackupPreparationTime:         backupPreparationTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

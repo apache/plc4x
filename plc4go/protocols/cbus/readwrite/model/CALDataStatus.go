@@ -109,6 +109,7 @@ func NewCALDataStatus(application ApplicationIdContainer, blockStart uint8, stat
 		BlockStart:      blockStart,
 		StatusBytes:     statusBytes,
 	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 

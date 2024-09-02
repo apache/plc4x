@@ -97,6 +97,7 @@ func NewSALDataEnableControl(enableControlData EnableControlData, salData SALDat
 		SALDataContract:   NewSALData(salData),
 		EnableControlData: enableControlData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

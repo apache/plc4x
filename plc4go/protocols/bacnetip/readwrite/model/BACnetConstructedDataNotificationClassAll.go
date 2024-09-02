@@ -81,6 +81,7 @@ func NewBACnetConstructedDataNotificationClassAll(openingTag BACnetOpeningTag, p
 	_result := &_BACnetConstructedDataNotificationClassAll{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

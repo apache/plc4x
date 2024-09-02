@@ -187,6 +187,7 @@ func NewPubSubConnectionDataType(name PascalString, enabled bool, publisherId Va
 		NoOfReaderGroups:                  noOfReaderGroups,
 		ReaderGroups:                      readerGroups,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

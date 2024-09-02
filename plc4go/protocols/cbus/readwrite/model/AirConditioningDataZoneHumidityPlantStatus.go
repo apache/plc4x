@@ -125,6 +125,7 @@ func NewAirConditioningDataZoneHumidityPlantStatus(zoneGroup byte, zoneList HVAC
 		HumidityStatus:              humidityStatus,
 		HumidityErrorCode:           humidityErrorCode,
 	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 

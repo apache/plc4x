@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBufferSize(bufferSize BACnetApplicationTagUnsignedI
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BufferSize:                    bufferSize,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

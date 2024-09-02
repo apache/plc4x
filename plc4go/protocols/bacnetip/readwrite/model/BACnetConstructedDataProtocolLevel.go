@@ -118,6 +118,7 @@ func NewBACnetConstructedDataProtocolLevel(protocolLevel BACnetProtocolLevelTagg
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProtocolLevel:                 protocolLevel,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

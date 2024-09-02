@@ -101,6 +101,7 @@ func NewBACnetConstructedDataUTCTimeSynchronizationRecipients(utcTimeSynchroniza
 		BACnetConstructedDataContract:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		UtcTimeSynchronizationRecipients: utcTimeSynchronizationRecipients,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

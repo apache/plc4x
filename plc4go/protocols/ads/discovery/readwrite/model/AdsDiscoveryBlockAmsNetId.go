@@ -113,6 +113,7 @@ func NewAdsDiscoveryBlockAmsNetId(amsNetId AmsNetId) *_AdsDiscoveryBlockAmsNetId
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		AmsNetId:                  amsNetId,
 	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 

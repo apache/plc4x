@@ -145,6 +145,7 @@ func NewFieldTargetDataType(dataSetFieldId GuidValue, receiverIndexRange PascalS
 		OverrideValueHandling:             overrideValueHandling,
 		OverrideValue:                     overrideValue,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

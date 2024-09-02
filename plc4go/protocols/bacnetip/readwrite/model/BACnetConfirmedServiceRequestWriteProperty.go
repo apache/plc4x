@@ -129,6 +129,7 @@ func NewBACnetConfirmedServiceRequestWriteProperty(objectIdentifier BACnetContex
 		PropertyValue:                         propertyValue,
 		Priority:                              priority,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataFDBBMDAddress(fDBBMDAddress BACnetHostNPort, openin
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FDBBMDAddress:                 fDBBMDAddress,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

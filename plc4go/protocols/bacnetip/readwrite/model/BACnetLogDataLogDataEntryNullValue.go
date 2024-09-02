@@ -93,6 +93,7 @@ func NewBACnetLogDataLogDataEntryNullValue(nullValue BACnetContextTagNull, peeke
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		NullValue:                         nullValue,
 	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 

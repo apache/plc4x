@@ -118,6 +118,7 @@ func NewMediaTransportControlDataShuffleOnOff(state byte, commandTypeContainer M
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		State:                             state,
 	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 

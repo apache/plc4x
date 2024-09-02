@@ -107,6 +107,7 @@ func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool, a
 		NetworkNumber:           networkNumber,
 		NetworkNumberConfigured: networkNumberConfigured,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

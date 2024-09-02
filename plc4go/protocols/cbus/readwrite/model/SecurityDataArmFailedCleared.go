@@ -73,6 +73,7 @@ func NewSecurityDataArmFailedCleared(commandTypeContainer SecurityCommandTypeCon
 	_result := &_SecurityDataArmFailedCleared{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

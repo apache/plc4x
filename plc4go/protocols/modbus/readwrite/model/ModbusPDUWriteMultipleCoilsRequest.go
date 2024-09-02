@@ -121,6 +121,7 @@ func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint
 		Quantity:          quantity,
 		Value:             value,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

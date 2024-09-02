@@ -105,6 +105,7 @@ func NewIdentifyReplyCommandDelays(terminalLevels []byte, reStrikeDelay byte, nu
 		TerminalLevels:               terminalLevels,
 		ReStrikeDelay:                reStrikeDelay,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

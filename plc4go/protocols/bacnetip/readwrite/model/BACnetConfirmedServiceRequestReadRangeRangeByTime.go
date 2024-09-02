@@ -101,6 +101,7 @@ func NewBACnetConfirmedServiceRequestReadRangeRangeByTime(referenceTime BACnetDa
 		ReferenceTime: referenceTime,
 		Count:         count,
 	}
+	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
 	return _result
 }
 

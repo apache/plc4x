@@ -93,6 +93,7 @@ func NewSecurityDataArmReadyNotReady(zoneNumber uint8, commandTypeContainer Secu
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		ZoneNumber:           zoneNumber,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

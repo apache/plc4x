@@ -118,6 +118,7 @@ func NewBACnetConstructedDataPositiveIntegerValueResolution(resolution BACnetApp
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Resolution:                    resolution,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

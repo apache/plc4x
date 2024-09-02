@@ -147,6 +147,7 @@ func NewCreateSubscriptionRequest(requestHeader ExtensionObjectDefinition, reque
 		PublishingEnabled:                 publishingEnabled,
 		Priority:                          priority,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

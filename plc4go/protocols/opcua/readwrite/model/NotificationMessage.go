@@ -121,6 +121,7 @@ func NewNotificationMessage(sequenceNumber uint32, publishTime int64, noOfNotifi
 		NoOfNotificationData:              noOfNotificationData,
 		NotificationData:                  notificationData,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

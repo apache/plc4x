@@ -97,6 +97,7 @@ func NewBACnetContextTagOctetString(payload BACnetTagPayloadOctetString, header 
 		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
 		Payload:                  payload,
 	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
 

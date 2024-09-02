@@ -115,6 +115,7 @@ func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoi
 		ErrorChoice:      errorChoice,
 		Error:            error,
 	}
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 

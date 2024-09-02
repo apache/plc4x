@@ -113,6 +113,7 @@ func NewViewDescription(viewId NodeId, timestamp int64, viewVersion uint32) *_Vi
 		Timestamp:                         timestamp,
 		ViewVersion:                       viewVersion,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

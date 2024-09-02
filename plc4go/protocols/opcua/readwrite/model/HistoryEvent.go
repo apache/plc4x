@@ -105,6 +105,7 @@ func NewHistoryEvent(noOfEvents int32, events []ExtensionObjectDefinition) *_His
 		NoOfEvents:                        noOfEvents,
 		Events:                            events,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

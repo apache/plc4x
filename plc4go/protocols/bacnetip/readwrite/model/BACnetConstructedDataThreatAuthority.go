@@ -118,6 +118,7 @@ func NewBACnetConstructedDataThreatAuthority(threatAuthority BACnetAccessThreatL
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ThreatAuthority:               threatAuthority,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

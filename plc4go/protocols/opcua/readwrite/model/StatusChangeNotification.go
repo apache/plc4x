@@ -105,6 +105,7 @@ func NewStatusChangeNotification(status StatusCode, diagnosticInfo DiagnosticInf
 		Status:                            status,
 		DiagnosticInfo:                    diagnosticInfo,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -121,6 +121,7 @@ func NewHistoryReadValueId(nodeId NodeId, indexRange PascalString, dataEncoding 
 		DataEncoding:                      dataEncoding,
 		ContinuationPoint:                 continuationPoint,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

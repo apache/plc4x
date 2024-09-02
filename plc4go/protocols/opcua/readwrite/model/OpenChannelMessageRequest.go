@@ -121,6 +121,7 @@ func NewOpenChannelMessageRequest(secureChannelId int32, endpoint PascalString, 
 		SenderCertificate:             senderCertificate,
 		ReceiverCertificateThumbprint: receiverCertificateThumbprint,
 	}
+	_result.OpenChannelMessageContract.(*_OpenChannelMessage)._SubType = _result
 	return _result
 }
 

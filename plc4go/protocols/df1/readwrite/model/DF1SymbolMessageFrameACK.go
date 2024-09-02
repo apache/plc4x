@@ -78,6 +78,7 @@ func NewDF1SymbolMessageFrameACK() *_DF1SymbolMessageFrameACK {
 	_result := &_DF1SymbolMessageFrameACK{
 		DF1SymbolContract: NewDF1Symbol(),
 	}
+	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesExtendedValue(extendedValue BACnetContextTagUnsigned
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		ExtendedValue:                extendedValue,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

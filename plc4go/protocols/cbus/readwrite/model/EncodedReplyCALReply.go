@@ -93,6 +93,7 @@ func NewEncodedReplyCALReply(calReply CALReply, peekedByte byte, cBusOptions CBu
 		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
 		CalReply:             calReply,
 	}
+	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
 	return _result
 }
 

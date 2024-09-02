@@ -101,6 +101,7 @@ func NewReplyOrConfirmationConfirmation(confirmation Confirmation, embeddedReply
 		Confirmation:                confirmation,
 		EmbeddedReply:               embeddedReply,
 	}
+	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
 	return _result
 }
 

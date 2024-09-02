@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLastKeyServer(lastKeyServer BACnetAddressBinding, o
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastKeyServer:                 lastKeyServer,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

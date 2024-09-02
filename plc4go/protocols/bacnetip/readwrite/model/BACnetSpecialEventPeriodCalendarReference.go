@@ -93,6 +93,7 @@ func NewBACnetSpecialEventPeriodCalendarReference(calendarReference BACnetContex
 		BACnetSpecialEventPeriodContract: NewBACnetSpecialEventPeriod(peekedTagHeader),
 		CalendarReference:                calendarReference,
 	}
+	_result.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = _result
 	return _result
 }
 

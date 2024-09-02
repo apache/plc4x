@@ -118,6 +118,7 @@ func NewBACnetConstructedDataThreatLevel(threatLevel BACnetAccessThreatLevel, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ThreatLevel:                   threatLevel,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

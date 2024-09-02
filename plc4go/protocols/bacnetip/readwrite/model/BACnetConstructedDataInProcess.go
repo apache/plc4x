@@ -118,6 +118,7 @@ func NewBACnetConstructedDataInProcess(inProcess BACnetApplicationTagBoolean, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InProcess:                     inProcess,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewMeteringDataGasConsumption(mJ uint32, commandTypeContainer MeteringComma
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 		MJ:                   mJ,
 	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 

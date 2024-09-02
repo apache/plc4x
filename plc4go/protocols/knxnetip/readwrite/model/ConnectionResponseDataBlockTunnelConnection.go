@@ -97,6 +97,7 @@ func NewConnectionResponseDataBlockTunnelConnection(knxAddress KnxAddress) *_Con
 		ConnectionResponseDataBlockContract: NewConnectionResponseDataBlock(),
 		KnxAddress:                          knxAddress,
 	}
+	_result.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = _result
 	return _result
 }
 

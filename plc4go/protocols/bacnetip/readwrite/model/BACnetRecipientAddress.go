@@ -93,6 +93,7 @@ func NewBACnetRecipientAddress(addressValue BACnetAddressEnclosed, peekedTagHead
 		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
 		AddressValue:            addressValue,
 	}
+	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
 	return _result
 }
 

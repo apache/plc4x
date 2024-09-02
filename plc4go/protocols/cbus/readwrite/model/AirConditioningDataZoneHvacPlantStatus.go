@@ -125,6 +125,7 @@ func NewAirConditioningDataZoneHvacPlantStatus(zoneGroup byte, zoneList HVACZone
 		HvacStatus:                  hvacStatus,
 		HvacErrorCode:               hvacErrorCode,
 	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 

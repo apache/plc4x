@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesSilencedState(silencedState BACnetSilencedStateTagge
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		SilencedState:                silencedState,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

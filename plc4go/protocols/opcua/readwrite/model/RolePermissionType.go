@@ -105,6 +105,7 @@ func NewRolePermissionType(roleId NodeId, permissions PermissionType) *_RolePerm
 		RoleId:                            roleId,
 		Permissions:                       permissions,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -129,6 +129,7 @@ func NewCreateSubscriptionResponse(responseHeader ExtensionObjectDefinition, sub
 		RevisedLifetimeCount:              revisedLifetimeCount,
 		RevisedMaxKeepAliveCount:          revisedMaxKeepAliveCount,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

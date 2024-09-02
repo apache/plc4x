@@ -97,6 +97,7 @@ func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress *uint16, apduLength ui
 		NLMContract:               NewNLM(apduLength),
 		DestinationNetworkAddress: destinationNetworkAddress,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

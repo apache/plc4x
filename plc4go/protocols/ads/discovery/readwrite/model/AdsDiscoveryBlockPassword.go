@@ -97,6 +97,7 @@ func NewAdsDiscoveryBlockPassword(password AmsString) *_AdsDiscoveryBlockPasswor
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		Password:                  password,
 	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 

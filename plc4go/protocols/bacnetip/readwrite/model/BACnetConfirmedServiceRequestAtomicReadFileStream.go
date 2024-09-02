@@ -101,6 +101,7 @@ func NewBACnetConfirmedServiceRequestAtomicReadFileStream(fileStartPosition BACn
 		FileStartPosition: fileStartPosition,
 		RequestOctetCount: requestOctetCount,
 	}
+	_result.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract.(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)._SubType = _result
 	return _result
 }
 

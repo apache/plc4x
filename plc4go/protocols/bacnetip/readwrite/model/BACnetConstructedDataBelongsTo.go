@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBelongsTo(belongsTo BACnetDeviceObjectReference, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BelongsTo:                     belongsTo,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -121,6 +121,7 @@ func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdenti
 		Request:                               request,
 		ObjectIdentifier:                      objectIdentifier,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

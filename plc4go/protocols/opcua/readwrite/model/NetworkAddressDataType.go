@@ -97,6 +97,7 @@ func NewNetworkAddressDataType(networkInterface PascalString) *_NetworkAddressDa
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NetworkInterface:                  networkInterface,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

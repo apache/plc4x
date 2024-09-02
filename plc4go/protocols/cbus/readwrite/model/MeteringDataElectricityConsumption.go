@@ -93,6 +93,7 @@ func NewMeteringDataElectricityConsumption(kWhr uint32, commandTypeContainer Met
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 		KWhr:                 kWhr,
 	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 

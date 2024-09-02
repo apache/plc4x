@@ -99,6 +99,7 @@ func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock DeviceConfigurati
 		KnxNetIpMessageContract:         NewKnxNetIpMessage(),
 		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,
 	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 

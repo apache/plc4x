@@ -77,6 +77,7 @@ func NewReaderGroupMessageDataType() *_ReaderGroupMessageDataType {
 	_result := &_ReaderGroupMessageDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

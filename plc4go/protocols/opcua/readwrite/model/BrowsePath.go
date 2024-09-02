@@ -105,6 +105,7 @@ func NewBrowsePath(startingNode NodeId, relativePath ExtensionObjectDefinition) 
 		StartingNode:                      startingNode,
 		RelativePath:                      relativePath,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

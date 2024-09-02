@@ -141,6 +141,7 @@ func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uin
 		DestinationAddress:  destinationAddress,
 		Apdu:                apdu,
 	}
+	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
 	return _result
 }
 

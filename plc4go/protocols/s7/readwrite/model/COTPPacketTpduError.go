@@ -105,6 +105,7 @@ func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, para
 		DestinationReference: destinationReference,
 		RejectCause:          rejectCause,
 	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
 

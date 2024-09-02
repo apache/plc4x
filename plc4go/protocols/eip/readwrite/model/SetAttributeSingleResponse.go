@@ -85,6 +85,7 @@ func NewSetAttributeSingleResponse(serviceLen uint16) *_SetAttributeSingleRespon
 	_result := &_SetAttributeSingleResponse{
 		CipServiceContract: NewCipService(serviceLen),
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

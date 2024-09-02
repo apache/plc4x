@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesEscalatorMode(escalatorMode BACnetEscalatorModeTagge
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		EscalatorMode:                escalatorMode,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

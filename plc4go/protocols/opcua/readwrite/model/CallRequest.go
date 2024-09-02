@@ -113,6 +113,7 @@ func NewCallRequest(requestHeader ExtensionObjectDefinition, noOfMethodsToCall i
 		NoOfMethodsToCall:                 noOfMethodsToCall,
 		MethodsToCall:                     methodsToCall,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

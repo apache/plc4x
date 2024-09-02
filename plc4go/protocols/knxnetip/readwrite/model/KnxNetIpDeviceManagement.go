@@ -97,6 +97,7 @@ func NewKnxNetIpDeviceManagement(version uint8) *_KnxNetIpDeviceManagement {
 		ServiceIdContract: NewServiceId(),
 		Version:           version,
 	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
 

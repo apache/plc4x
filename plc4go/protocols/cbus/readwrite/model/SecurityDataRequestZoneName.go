@@ -93,6 +93,7 @@ func NewSecurityDataRequestZoneName(zoneNumber uint8, commandTypeContainer Secur
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		ZoneNumber:           zoneNumber,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

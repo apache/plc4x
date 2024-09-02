@@ -121,6 +121,7 @@ func NewLinearConversionDataType(initialAddend float32, multiplicand float32, di
 		Divisor:                           divisor,
 		FinalAddend:                       finalAddend,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

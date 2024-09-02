@@ -93,6 +93,7 @@ func NewSecurityDataSystemArmedDisarmed(armCodeType SecurityArmCode, commandType
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		ArmCodeType:          armCodeType,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

@@ -101,6 +101,7 @@ func NewBACnetConstructedDataDateList(dateList []BACnetCalendarEntry, openingTag
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DateList:                      dateList,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

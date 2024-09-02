@@ -115,6 +115,7 @@ func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortRe
 		OriginalInvokeId: originalInvokeId,
 		AbortReason:      abortReason,
 	}
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 

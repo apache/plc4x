@@ -105,6 +105,7 @@ func NewChangeListRemoveError(errorType ErrorEnclosed, firstFailedElementNumber 
 		ErrorType:                errorType,
 		FirstFailedElementNumber: firstFailedElementNumber,
 	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 

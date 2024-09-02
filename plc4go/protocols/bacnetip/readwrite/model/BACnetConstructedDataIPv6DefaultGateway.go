@@ -118,6 +118,7 @@ func NewBACnetConstructedDataIPv6DefaultGateway(ipv6DefaultGateway BACnetApplica
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Ipv6DefaultGateway:            ipv6DefaultGateway,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

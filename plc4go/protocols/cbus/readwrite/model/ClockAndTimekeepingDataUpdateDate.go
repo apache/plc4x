@@ -125,6 +125,7 @@ func NewClockAndTimekeepingDataUpdateDate(yearHigh byte, yearLow byte, month uin
 		Day:                             day,
 		DayOfWeek:                       dayOfWeek,
 	}
+	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
 	return _result
 }
 

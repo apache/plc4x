@@ -100,6 +100,7 @@ func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		ListOfRemoteVtSessionIdentifiers:      listOfRemoteVtSessionIdentifiers,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

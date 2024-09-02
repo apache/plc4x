@@ -97,6 +97,7 @@ func NewCOTPParameterCallingTsap(tsapId uint16, rest uint8) *_COTPParameterCalli
 		COTPParameterContract: NewCOTPParameter(rest),
 		TsapId:                tsapId,
 	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
 	return _result
 }
 

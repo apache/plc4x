@@ -121,6 +121,7 @@ func NewBACnetConfirmedServiceRequestReadRange(objectIdentifier BACnetContextTag
 		PropertyArrayIndex:                    propertyArrayIndex,
 		ReadRange:                             readRange,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

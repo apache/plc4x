@@ -118,6 +118,7 @@ func NewBACnetConstructedDataInitialTimeout(initialTimeout BACnetApplicationTagU
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InitialTimeout:                initialTimeout,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

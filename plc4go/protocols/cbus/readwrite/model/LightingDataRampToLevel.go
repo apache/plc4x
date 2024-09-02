@@ -101,6 +101,7 @@ func NewLightingDataRampToLevel(group byte, level byte, commandTypeContainer Lig
 		Group:                group,
 		Level:                level,
 	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
 	return _result
 }
 

@@ -113,6 +113,7 @@ func NewDeleteNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToD
 		NoOfNodesToDelete:                 noOfNodesToDelete,
 		NodesToDelete:                     nodesToDelete,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -105,6 +105,7 @@ func NewWritePropertyMultipleError(errorType ErrorEnclosed, firstFailedWriteAtte
 		ErrorType:               errorType,
 		FirstFailedWriteAttempt: firstFailedWriteAttempt,
 	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 

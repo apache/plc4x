@@ -117,6 +117,7 @@ func NewRequestReset(tildePeek RequestType, secondTilde *RequestType, tildePeek2
 		TildePeek2:      tildePeek2,
 		ThirdTilde:      thirdTilde,
 	}
+	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
 

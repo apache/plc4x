@@ -93,6 +93,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryBoolean(booleanValue BAC
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		BooleanValue: booleanValue,
 	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 

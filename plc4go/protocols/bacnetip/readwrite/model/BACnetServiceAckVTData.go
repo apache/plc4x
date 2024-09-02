@@ -113,6 +113,7 @@ func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedI
 		VtNewData:                vtNewData,
 		VtDataFlag:               vtDataFlag,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

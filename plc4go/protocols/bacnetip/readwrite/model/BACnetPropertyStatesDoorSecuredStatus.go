@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesDoorSecuredStatus(doorSecuredStatus BACnetDoorSecure
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		DoorSecuredStatus:            doorSecuredStatus,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

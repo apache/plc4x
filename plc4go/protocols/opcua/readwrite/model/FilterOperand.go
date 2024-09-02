@@ -77,6 +77,7 @@ func NewFilterOperand() *_FilterOperand {
 	_result := &_FilterOperand{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

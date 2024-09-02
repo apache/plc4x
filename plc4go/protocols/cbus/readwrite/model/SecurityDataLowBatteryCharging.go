@@ -118,6 +118,7 @@ func NewSecurityDataLowBatteryCharging(startStop byte, commandTypeContainer Secu
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		StartStop:            startStop,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

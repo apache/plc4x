@@ -121,6 +121,7 @@ func NewQueryNextResponse(responseHeader ExtensionObjectDefinition, noOfQueryDat
 		QueryDataSets:                     queryDataSets,
 		RevisedContinuationPoint:          revisedContinuationPoint,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

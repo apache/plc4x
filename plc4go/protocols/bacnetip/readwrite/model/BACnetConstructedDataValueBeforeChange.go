@@ -118,6 +118,7 @@ func NewBACnetConstructedDataValueBeforeChange(valuesBeforeChange BACnetApplicat
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ValuesBeforeChange:            valuesBeforeChange,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewParameterValueCustomTypes(value CustomTypes, numBytes uint8) *_Parameter
 		ParameterValueContract: NewParameterValue(numBytes),
 		Value:                  value,
 	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
 

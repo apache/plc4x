@@ -118,6 +118,7 @@ func NewBACnetConstructedDataUserInformationReference(userInformationReference B
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		UserInformationReference:      userInformationReference,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

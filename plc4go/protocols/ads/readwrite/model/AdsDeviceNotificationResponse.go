@@ -81,6 +81,7 @@ func NewAdsDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uin
 	_result := &_AdsDeviceNotificationResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

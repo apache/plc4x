@@ -118,6 +118,7 @@ func NewBACnetConstructedDataIPv6AutoAddressingEnable(autoAddressingEnable BACne
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AutoAddressingEnable:          autoAddressingEnable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16, apduLe
 		NLMContract:                 NewNLM(apduLength),
 		DestinationNetworkAddresses: destinationNetworkAddresses,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

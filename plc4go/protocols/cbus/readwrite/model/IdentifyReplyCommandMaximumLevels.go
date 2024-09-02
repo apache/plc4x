@@ -97,6 +97,7 @@ func NewIdentifyReplyCommandMaximumLevels(maximumLevels []byte, numBytes uint8) 
 		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
 		MaximumLevels:                maximumLevels,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

@@ -85,6 +85,7 @@ func NewModbusPDUGetComEventLogRequest() *_ModbusPDUGetComEventLogRequest {
 	_result := &_ModbusPDUGetComEventLogRequest{
 		ModbusPDUContract: NewModbusPDU(),
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

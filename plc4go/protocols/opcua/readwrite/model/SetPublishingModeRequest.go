@@ -123,6 +123,7 @@ func NewSetPublishingModeRequest(requestHeader ExtensionObjectDefinition, publis
 		NoOfSubscriptionIds:               noOfSubscriptionIds,
 		SubscriptionIds:                   subscriptionIds,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

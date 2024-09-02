@@ -101,6 +101,7 @@ func NewBACnetConstructedDataListOfGroupMembers(listOfGroupMembers []BACnetReadA
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ListOfGroupMembers:            listOfGroupMembers,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

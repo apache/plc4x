@@ -105,6 +105,7 @@ func NewAddNodesResult(statusCode StatusCode, addedNodeId NodeId) *_AddNodesResu
 		StatusCode:                        statusCode,
 		AddedNodeId:                       addedNodeId,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewBACnetOptionalCharacterStringNull(nullValue BACnetApplicationTagNull, pe
 		BACnetOptionalCharacterStringContract: NewBACnetOptionalCharacterString(peekedTagHeader),
 		NullValue:                             nullValue,
 	}
+	_result.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = _result
 	return _result
 }
 

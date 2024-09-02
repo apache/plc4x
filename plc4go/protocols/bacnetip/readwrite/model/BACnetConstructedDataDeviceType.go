@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDeviceType(deviceType BACnetApplicationTagCharacter
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DeviceType:                    deviceType,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

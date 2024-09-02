@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesDoorValue(doorValue BACnetDoorValueTagged, peekedTag
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		DoorValue:                    doorValue,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

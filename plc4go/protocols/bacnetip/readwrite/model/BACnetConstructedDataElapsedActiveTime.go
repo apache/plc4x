@@ -118,6 +118,7 @@ func NewBACnetConstructedDataElapsedActiveTime(elapsedActiveTime BACnetApplicati
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ElapsedActiveTime:             elapsedActiveTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

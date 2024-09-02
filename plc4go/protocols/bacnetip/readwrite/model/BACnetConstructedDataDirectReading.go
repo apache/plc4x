@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDirectReading(directReading BACnetApplicationTagRea
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DirectReading:                 directReading,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

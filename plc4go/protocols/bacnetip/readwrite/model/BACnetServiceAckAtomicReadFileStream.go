@@ -101,6 +101,7 @@ func NewBACnetServiceAckAtomicReadFileStream(fileStartPosition BACnetApplication
 		FileStartPosition: fileStartPosition,
 		FileData:          fileData,
 	}
+	_result.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = _result
 	return _result
 }
 

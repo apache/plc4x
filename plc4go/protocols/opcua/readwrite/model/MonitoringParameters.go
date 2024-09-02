@@ -131,6 +131,7 @@ func NewMonitoringParameters(clientHandle uint32, samplingInterval float64, filt
 		QueueSize:                         queueSize,
 		DiscardOldest:                     discardOldest,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -105,6 +105,7 @@ func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTClose
 		ErrorType:                  errorType,
 		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
 	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 

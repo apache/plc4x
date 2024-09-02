@@ -97,6 +97,7 @@ func NewCloseSecureChannelRequest(requestHeader ExtensionObjectDefinition) *_Clo
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

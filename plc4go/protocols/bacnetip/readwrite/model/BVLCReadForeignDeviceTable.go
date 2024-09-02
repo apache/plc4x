@@ -78,6 +78,7 @@ func NewBVLCReadForeignDeviceTable() *_BVLCReadForeignDeviceTable {
 	_result := &_BVLCReadForeignDeviceTable{
 		BVLCContract: NewBVLC(),
 	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataSilenced(silenced BACnetSilencedStateTagged, openin
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Silenced:                      silenced,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

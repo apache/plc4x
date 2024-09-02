@@ -99,6 +99,7 @@ func NewBVLCRegisterForeignDevice(ttl uint16) *_BVLCRegisterForeignDevice {
 		BVLCContract: NewBVLC(),
 		Ttl:          ttl,
 	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 

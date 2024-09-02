@@ -118,6 +118,7 @@ func NewBACnetConstructedDataAbsenteeLimit(absenteeLimit BACnetApplicationTagUns
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AbsenteeLimit:                 absenteeLimit,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

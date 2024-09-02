@@ -118,6 +118,7 @@ func NewBACnetConstructedDataUnits(units BACnetEngineeringUnitsTagged, openingTa
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Units:                         units,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

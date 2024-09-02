@@ -118,6 +118,7 @@ func NewBACnetConstructedDataVerificationTime(verificationTime BACnetApplication
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		VerificationTime:              verificationTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

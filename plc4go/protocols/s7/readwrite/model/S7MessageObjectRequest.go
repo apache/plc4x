@@ -137,6 +137,7 @@ func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarm
 		QueryType:                  queryType,
 		AlarmType:                  alarmType,
 	}
+	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
 	return _result
 }
 

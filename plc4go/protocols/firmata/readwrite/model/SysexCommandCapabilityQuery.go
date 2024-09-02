@@ -81,6 +81,7 @@ func NewSysexCommandCapabilityQuery() *_SysexCommandCapabilityQuery {
 	_result := &_SysexCommandCapabilityQuery{
 		SysexCommandContract: NewSysexCommand(),
 	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 

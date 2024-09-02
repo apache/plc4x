@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesNetworkPortCommand(networkPortCommand BACnetNetworkP
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		NetworkPortCommand:           networkPortCommand,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

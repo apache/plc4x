@@ -113,6 +113,7 @@ func NewModbusPDUWriteMultipleHoldingRegistersResponse(startingAddress uint16, q
 		StartingAddress:   startingAddress,
 		Quantity:          quantity,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

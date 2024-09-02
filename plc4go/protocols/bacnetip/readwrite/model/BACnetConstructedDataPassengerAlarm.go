@@ -118,6 +118,7 @@ func NewBACnetConstructedDataPassengerAlarm(passengerAlarm BACnetApplicationTagB
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PassengerAlarm:                passengerAlarm,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

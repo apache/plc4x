@@ -113,6 +113,7 @@ func NewMonitoredItemCreateRequest(itemToMonitor ExtensionObjectDefinition, moni
 		MonitoringMode:                    monitoringMode,
 		RequestedParameters:               requestedParameters,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

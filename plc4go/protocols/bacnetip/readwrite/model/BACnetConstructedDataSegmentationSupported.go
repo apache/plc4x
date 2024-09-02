@@ -118,6 +118,7 @@ func NewBACnetConstructedDataSegmentationSupported(segmentationSupported BACnetS
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		SegmentationSupported:         segmentationSupported,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

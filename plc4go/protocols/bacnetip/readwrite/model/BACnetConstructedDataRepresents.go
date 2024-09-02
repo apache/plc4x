@@ -118,6 +118,7 @@ func NewBACnetConstructedDataRepresents(represents BACnetDeviceObjectReference, 
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Represents:                    represents,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

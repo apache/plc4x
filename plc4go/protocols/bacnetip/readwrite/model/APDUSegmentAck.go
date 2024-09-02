@@ -131,6 +131,7 @@ func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, se
 		SequenceNumber:   sequenceNumber,
 		ActualWindowSize: actualWindowSize,
 	}
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 

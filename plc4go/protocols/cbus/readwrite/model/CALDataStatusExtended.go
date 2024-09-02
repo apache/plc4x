@@ -152,6 +152,7 @@ func NewCALDataStatusExtended(coding StatusCoding, application ApplicationIdCont
 		StatusBytes:      statusBytes,
 		LevelInformation: levelInformation,
 	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 

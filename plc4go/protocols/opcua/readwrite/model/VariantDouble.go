@@ -105,6 +105,7 @@ func NewVariantDouble(arrayLength *int32, value []float64, arrayLengthSpecified 
 		ArrayLength:     arrayLength,
 		Value:           value,
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

@@ -113,6 +113,7 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(functionId uint8, messa
 		FunctionId:                    functionId,
 		MessageObjects:                messageObjects,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

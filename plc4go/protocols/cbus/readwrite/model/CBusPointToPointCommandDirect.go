@@ -95,6 +95,7 @@ func NewCBusPointToPointCommandDirect(unitAddress UnitAddress, bridgeAddressCoun
 		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
 		UnitAddress:                     unitAddress,
 	}
+	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
 	return _result
 }
 

@@ -101,6 +101,7 @@ func NewBACnetConstructedDataBBMDBroadcastDistributionTable(bbmdBroadcastDistrib
 		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BbmdBroadcastDistributionTable: bbmdBroadcastDistributionTable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

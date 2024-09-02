@@ -117,6 +117,7 @@ func NewSecurityDataStatusReport1(armCodeType SecurityArmCode, tamperStatus Tamp
 		PanicStatus:          panicStatus,
 		ZoneStatus:           zoneStatus,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

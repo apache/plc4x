@@ -129,6 +129,7 @@ func NewUserTokenPolicy(policyId PascalString, tokenType UserTokenType, issuedTo
 		IssuerEndpointUrl:                 issuerEndpointUrl,
 		SecurityPolicyUri:                 securityPolicyUri,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

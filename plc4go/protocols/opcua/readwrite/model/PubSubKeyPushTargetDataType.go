@@ -185,6 +185,7 @@ func NewPubSubKeyPushTargetDataType(applicationUri PascalString, noOfPushTargetF
 		NoOfSecurityGroups:                noOfSecurityGroups,
 		SecurityGroups:                    securityGroups,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

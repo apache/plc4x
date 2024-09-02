@@ -93,6 +93,7 @@ func NewSecurityDataDisplayMessage(message string, commandTypeContainer Security
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		Message:              message,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

@@ -117,6 +117,7 @@ func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *
 		PinMode:              pinMode,
 		PinState:             pinState,
 	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 

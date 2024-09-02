@@ -112,6 +112,7 @@ func NewOpcuaOpenRequest(openRequest OpenChannelMessage, message Payload, chunk 
 		OpenRequest:        openRequest,
 		Message:            message,
 	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
 

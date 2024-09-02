@@ -93,6 +93,7 @@ func NewAirConditioningDataSetZoneGroupOff(zoneGroup byte, commandTypeContainer 
 		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
 		ZoneGroup:                   zoneGroup,
 	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 

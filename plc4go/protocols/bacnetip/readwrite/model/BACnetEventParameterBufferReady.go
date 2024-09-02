@@ -117,6 +117,7 @@ func NewBACnetEventParameterBufferReady(openingTag BACnetOpeningTag, notificatio
 		PreviousNotificationCount:    previousNotificationCount,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 

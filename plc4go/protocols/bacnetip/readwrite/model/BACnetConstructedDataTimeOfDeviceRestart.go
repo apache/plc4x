@@ -118,6 +118,7 @@ func NewBACnetConstructedDataTimeOfDeviceRestart(timeOfDeviceRestart BACnetTimeS
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		TimeOfDeviceRestart:           timeOfDeviceRestart,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

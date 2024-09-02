@@ -97,6 +97,7 @@ func NewDataSegment(segmentType DataSegmentType) *_DataSegment {
 		PathSegmentContract: NewPathSegment(),
 		SegmentType:         segmentType,
 	}
+	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
 	return _result
 }
 

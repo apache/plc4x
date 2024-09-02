@@ -93,6 +93,7 @@ func NewBACnetPriorityValueDateTime(dateTimeValue BACnetDateTimeEnclosed, peeked
 		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 		DateTimeValue:               dateTimeValue,
 	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
 

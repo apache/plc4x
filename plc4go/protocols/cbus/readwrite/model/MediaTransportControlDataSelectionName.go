@@ -93,6 +93,7 @@ func NewMediaTransportControlDataSelectionName(selectionName string, commandType
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		SelectionName:                     selectionName,
 	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 

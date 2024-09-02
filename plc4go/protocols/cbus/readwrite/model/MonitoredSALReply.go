@@ -93,6 +93,7 @@ func NewMonitoredSALReply(monitoredSAL MonitoredSAL, peekedByte byte, cBusOption
 		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
 		MonitoredSAL:         monitoredSAL,
 	}
+	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
 	return _result
 }
 

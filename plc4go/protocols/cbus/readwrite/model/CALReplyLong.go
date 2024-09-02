@@ -160,6 +160,7 @@ func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddr
 		ReservedByte:           reservedByte,
 		ReplyNetwork:           replyNetwork,
 	}
+	_result.CALReplyContract.(*_CALReply)._SubType = _result
 	return _result
 }
 

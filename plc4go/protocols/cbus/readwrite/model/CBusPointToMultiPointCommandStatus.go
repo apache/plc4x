@@ -96,6 +96,7 @@ func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, peekedAp
 		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
 		StatusRequest:                        statusRequest,
 	}
+	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
 	return _result
 }
 

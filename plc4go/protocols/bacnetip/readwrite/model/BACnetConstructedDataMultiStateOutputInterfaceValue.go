@@ -118,6 +118,7 @@ func NewBACnetConstructedDataMultiStateOutputInterfaceValue(interfaceValue BACne
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InterfaceValue:                interfaceValue,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

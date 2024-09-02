@@ -128,6 +128,7 @@ func NewBACnetConstructedDataPriority(numberOfDataElements BACnetApplicationTagU
 		NumberOfDataElements:          numberOfDataElements,
 		Priority:                      priority,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataProportionalConstant(proportionalConstant BACnetApp
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProportionalConstant:          proportionalConstant,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

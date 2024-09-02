@@ -105,6 +105,7 @@ func NewKeyValuePair(key QualifiedName, value Variant) *_KeyValuePair {
 		Key:                               key,
 		Value:                             value,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

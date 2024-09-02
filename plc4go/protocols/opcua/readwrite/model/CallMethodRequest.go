@@ -121,6 +121,7 @@ func NewCallMethodRequest(objectId NodeId, methodId NodeId, noOfInputArguments i
 		NoOfInputArguments:                noOfInputArguments,
 		InputArguments:                    inputArguments,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

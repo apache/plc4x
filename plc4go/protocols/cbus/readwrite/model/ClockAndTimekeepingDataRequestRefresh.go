@@ -73,6 +73,7 @@ func NewClockAndTimekeepingDataRequestRefresh(commandTypeContainer ClockAndTimek
 	_result := &_ClockAndTimekeepingDataRequestRefresh{
 		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
 	}
+	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
 	return _result
 }
 

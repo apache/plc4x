@@ -97,6 +97,7 @@ func NewSALDataClockAndTimekeeping(clockAndTimekeepingData ClockAndTimekeepingDa
 		SALDataContract:         NewSALData(salData),
 		ClockAndTimekeepingData: clockAndTimekeepingData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

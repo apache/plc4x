@@ -121,6 +121,7 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessage(textMessageSourceDevic
 		MessagePriority:                       messagePriority,
 		Message:                               message,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

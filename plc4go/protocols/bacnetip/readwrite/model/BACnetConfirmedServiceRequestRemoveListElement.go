@@ -121,6 +121,7 @@ func NewBACnetConfirmedServiceRequestRemoveListElement(objectIdentifier BACnetCo
 		ArrayIndex:                            arrayIndex,
 		ListOfElements:                        listOfElements,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

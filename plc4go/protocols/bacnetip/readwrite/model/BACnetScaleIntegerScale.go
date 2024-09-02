@@ -93,6 +93,7 @@ func NewBACnetScaleIntegerScale(integerScale BACnetContextTagSignedInteger, peek
 		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
 		IntegerScale:        integerScale,
 	}
+	_result.BACnetScaleContract.(*_BACnetScale)._SubType = _result
 	return _result
 }
 

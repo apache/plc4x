@@ -101,6 +101,7 @@ func NewBACnetConstructedDataReasonForDisable(reasonForDisable []BACnetAccessCre
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ReasonForDisable:              reasonForDisable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

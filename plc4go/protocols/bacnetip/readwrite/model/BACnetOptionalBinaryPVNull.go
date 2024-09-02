@@ -93,6 +93,7 @@ func NewBACnetOptionalBinaryPVNull(nullValue BACnetApplicationTagNull, peekedTag
 		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
 		NullValue:                      nullValue,
 	}
+	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
 	return _result
 }
 

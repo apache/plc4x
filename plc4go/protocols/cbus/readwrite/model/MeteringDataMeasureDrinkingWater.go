@@ -73,6 +73,7 @@ func NewMeteringDataMeasureDrinkingWater(commandTypeContainer MeteringCommandTyp
 	_result := &_MeteringDataMeasureDrinkingWater{
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 

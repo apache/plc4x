@@ -93,6 +93,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryDate(dateValue BACnetApp
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		DateValue: dateValue,
 	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 

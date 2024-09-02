@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLowDiffLimit(lowDiffLimit BACnetOptionalREAL, openi
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LowDiffLimit:                  lowDiffLimit,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

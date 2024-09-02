@@ -73,6 +73,7 @@ func NewSecurityDataAlarmOn(commandTypeContainer SecurityCommandTypeContainer, a
 	_result := &_SecurityDataAlarmOn{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

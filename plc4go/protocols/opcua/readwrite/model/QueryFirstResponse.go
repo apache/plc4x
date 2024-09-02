@@ -161,6 +161,7 @@ func NewQueryFirstResponse(responseHeader ExtensionObjectDefinition, noOfQueryDa
 		DiagnosticInfos:                   diagnosticInfos,
 		FilterResult:                      filterResult,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

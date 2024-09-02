@@ -121,6 +121,7 @@ func NewWriteValue(nodeId NodeId, attributeId uint32, indexRange PascalString, v
 		IndexRange:                        indexRange,
 		Value:                             value,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

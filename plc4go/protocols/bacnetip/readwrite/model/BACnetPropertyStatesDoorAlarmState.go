@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesDoorAlarmState(doorAlarmState BACnetDoorAlarmStateTa
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		DoorAlarmState:               doorAlarmState,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

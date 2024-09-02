@@ -100,6 +100,7 @@ func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []BACnetReadAcces
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		Data:                                  data,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

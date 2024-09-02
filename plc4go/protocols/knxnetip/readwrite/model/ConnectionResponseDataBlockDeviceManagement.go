@@ -77,6 +77,7 @@ func NewConnectionResponseDataBlockDeviceManagement() *_ConnectionResponseDataBl
 	_result := &_ConnectionResponseDataBlockDeviceManagement{
 		ConnectionResponseDataBlockContract: NewConnectionResponseDataBlock(),
 	}
+	_result.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = _result
 	return _result
 }
 

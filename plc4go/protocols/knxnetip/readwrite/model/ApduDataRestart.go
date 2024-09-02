@@ -77,6 +77,7 @@ func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
 	_result := &_ApduDataRestart{
 		ApduDataContract: NewApduData(dataLength),
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

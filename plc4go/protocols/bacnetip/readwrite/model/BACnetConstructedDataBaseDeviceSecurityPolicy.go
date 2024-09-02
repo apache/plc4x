@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy B
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BaseDeviceSecurityPolicy:      baseDeviceSecurityPolicy,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

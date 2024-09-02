@@ -105,6 +105,7 @@ func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *_A
 		NumBytes:         numBytes,
 		Address:          address,
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

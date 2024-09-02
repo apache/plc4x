@@ -93,6 +93,7 @@ func NewBACnetLogRecordLogDatumBitStringValue(bitStringValue BACnetContextTagBit
 		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		BitStringValue:                  bitStringValue,
 	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 

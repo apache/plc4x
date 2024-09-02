@@ -96,6 +96,7 @@ func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter
 		DF1CommandContract: NewDF1Command(status, transactionCounter),
 		Data:               data,
 	}
+	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
 	return _result
 }
 

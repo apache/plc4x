@@ -113,6 +113,7 @@ func NewRepublishRequest(requestHeader ExtensionObjectDefinition, subscriptionId
 		SubscriptionId:                    subscriptionId,
 		RetransmitSequenceNumber:          retransmitSequenceNumber,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

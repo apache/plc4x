@@ -156,6 +156,7 @@ func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint3
 		OtApi:                  otApi,
 		ToApi:                  toApi,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

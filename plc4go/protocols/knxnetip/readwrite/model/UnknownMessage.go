@@ -102,6 +102,7 @@ func NewUnknownMessage(unknownData []byte, totalLength uint16) *_UnknownMessage 
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 		UnknownData:             unknownData,
 	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 

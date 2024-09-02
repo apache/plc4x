@@ -118,6 +118,7 @@ func NewBACnetConstructedDataAllowGroupDelayInhibit(allowGroupDelayInhibit BACne
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AllowGroupDelayInhibit:        allowGroupDelayInhibit,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

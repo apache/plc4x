@@ -118,6 +118,7 @@ func NewBACnetConstructedDataFileAccessMethod(fileAccessMethod BACnetFileAccessM
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FileAccessMethod:              fileAccessMethod,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

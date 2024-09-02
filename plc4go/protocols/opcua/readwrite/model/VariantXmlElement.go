@@ -105,6 +105,7 @@ func NewVariantXmlElement(arrayLength *int32, value []PascalString, arrayLengthS
 		ArrayLength:     arrayLength,
 		Value:           value,
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

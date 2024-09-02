@@ -132,6 +132,7 @@ func NewAggregateConfiguration(treatUncertainAsBad bool, useServerCapabilitiesDe
 		PercentDataGood:                   percentDataGood,
 		UseSlopedExtrapolation:            useSlopedExtrapolation,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

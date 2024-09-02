@@ -113,6 +113,7 @@ func NewAddNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToAdd 
 		NoOfNodesToAdd:                    noOfNodesToAdd,
 		NodesToAdd:                        nodesToAdd,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -73,6 +73,7 @@ func NewMeteringDataMeasureOtherWater(commandTypeContainer MeteringCommandTypeCo
 	_result := &_MeteringDataMeasureOtherWater{
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 

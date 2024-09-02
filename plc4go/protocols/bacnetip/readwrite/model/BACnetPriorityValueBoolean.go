@@ -93,6 +93,7 @@ func NewBACnetPriorityValueBoolean(booleanValue BACnetApplicationTagBoolean, pee
 		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 		BooleanValue:                booleanValue,
 	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
 

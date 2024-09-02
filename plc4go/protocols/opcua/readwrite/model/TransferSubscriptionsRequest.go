@@ -123,6 +123,7 @@ func NewTransferSubscriptionsRequest(requestHeader ExtensionObjectDefinition, no
 		SubscriptionIds:                   subscriptionIds,
 		SendInitialValues:                 sendInitialValues,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

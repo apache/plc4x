@@ -99,6 +99,7 @@ func NewBVLCResult(code BVLCResultCode) *_BVLCResult {
 		BVLCContract: NewBVLC(),
 		Code:         code,
 	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 

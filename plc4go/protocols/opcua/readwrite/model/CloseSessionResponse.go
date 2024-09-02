@@ -97,6 +97,7 @@ func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSe
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

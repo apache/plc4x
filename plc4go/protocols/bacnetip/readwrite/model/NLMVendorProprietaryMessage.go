@@ -105,6 +105,7 @@ func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage 
 		VendorId:           vendorId,
 		ProprietaryMessage: proprietaryMessage,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

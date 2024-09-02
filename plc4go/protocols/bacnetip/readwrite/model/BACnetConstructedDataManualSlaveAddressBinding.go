@@ -101,6 +101,7 @@ func NewBACnetConstructedDataManualSlaveAddressBinding(manualSlaveAddressBinding
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ManualSlaveAddressBinding:     manualSlaveAddressBinding,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

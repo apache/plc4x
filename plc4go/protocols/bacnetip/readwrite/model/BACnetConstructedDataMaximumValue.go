@@ -118,6 +118,7 @@ func NewBACnetConstructedDataMaximumValue(maximumValue BACnetApplicationTagReal,
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaximumValue:                  maximumValue,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -101,6 +101,7 @@ func NewBACnetConfirmedServiceRequestReadRangeRangeByPosition(referenceIndex BAC
 		ReferenceIndex: referenceIndex,
 		Count:          count,
 	}
+	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
 	return _result
 }
 

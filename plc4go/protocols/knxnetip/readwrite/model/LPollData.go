@@ -119,6 +119,7 @@ func NewLPollData(sourceAddress KnxAddress, targetAddress []byte, numberExpected
 		TargetAddress:          targetAddress,
 		NumberExpectedPollData: numberExpectedPollData,
 	}
+	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
 	return _result
 }
 

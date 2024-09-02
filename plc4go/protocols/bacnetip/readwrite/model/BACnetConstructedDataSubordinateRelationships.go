@@ -128,6 +128,7 @@ func NewBACnetConstructedDataSubordinateRelationships(numberOfDataElements BACne
 		NumberOfDataElements:          numberOfDataElements,
 		SubordinateRelationships:      subordinateRelationships,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

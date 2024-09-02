@@ -107,6 +107,7 @@ func NewConnectionStateResponse(communicationChannelId uint8, status Status) *_C
 		CommunicationChannelId:  communicationChannelId,
 		Status:                  status,
 	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 

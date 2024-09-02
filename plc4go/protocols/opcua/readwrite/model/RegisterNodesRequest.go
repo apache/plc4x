@@ -113,6 +113,7 @@ func NewRegisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesT
 		NoOfNodesToRegister:               noOfNodesToRegister,
 		NodesToRegister:                   nodesToRegister,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

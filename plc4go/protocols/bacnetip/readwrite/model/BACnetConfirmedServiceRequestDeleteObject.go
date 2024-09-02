@@ -97,6 +97,7 @@ func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplica
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		ObjectIdentifier:                      objectIdentifier,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

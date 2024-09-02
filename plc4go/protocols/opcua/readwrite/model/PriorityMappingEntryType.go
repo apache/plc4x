@@ -121,6 +121,7 @@ func NewPriorityMappingEntryType(mappingUri PascalString, priorityLabel PascalSt
 		PriorityValue_PCP:                 priorityValue_PCP,
 		PriorityValue_DSCP:                priorityValue_DSCP,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

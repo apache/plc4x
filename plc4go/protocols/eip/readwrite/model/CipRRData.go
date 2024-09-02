@@ -121,6 +121,7 @@ func NewCipRRData(interfaceHandle uint32, timeout uint16, typeIds []TypeId, sess
 		Timeout:           timeout,
 		TypeIds:           typeIds,
 	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 

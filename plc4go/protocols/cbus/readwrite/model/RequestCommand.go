@@ -154,6 +154,7 @@ func NewRequestCommand(cbusCommand CBusCommand, chksum Checksum, alpha Alpha, pe
 		Chksum:          chksum,
 		Alpha:           alpha,
 	}
+	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
 

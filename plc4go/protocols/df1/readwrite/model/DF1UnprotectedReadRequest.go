@@ -105,6 +105,7 @@ func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, tran
 		Address:            address,
 		Size:               size,
 	}
+	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
 	return _result
 }
 

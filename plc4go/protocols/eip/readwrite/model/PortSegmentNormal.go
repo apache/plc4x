@@ -105,6 +105,7 @@ func NewPortSegmentNormal(port uint8, linkAddress uint8) *_PortSegmentNormal {
 		Port:                    port,
 		LinkAddress:             linkAddress,
 	}
+	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
 	return _result
 }
 

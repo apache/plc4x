@@ -137,6 +137,7 @@ func NewOpenSecureChannelRequest(requestHeader ExtensionObjectDefinition, client
 		ClientNonce:                       clientNonce,
 		RequestedLifetime:                 requestedLifetime,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

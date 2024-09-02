@@ -121,6 +121,7 @@ func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier BA
 		IssueConfirmed:                        issueConfirmed,
 		LifetimeInSeconds:                     lifetimeInSeconds,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

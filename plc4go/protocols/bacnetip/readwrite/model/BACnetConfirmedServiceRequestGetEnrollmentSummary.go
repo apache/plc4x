@@ -137,6 +137,7 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(acknowledgmentFilter B
 		PriorityFilter:                        priorityFilter,
 		NotificationClassFilter:               notificationClassFilter,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

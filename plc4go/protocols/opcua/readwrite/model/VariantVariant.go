@@ -105,6 +105,7 @@ func NewVariantVariant(arrayLength *int32, value []Variant, arrayLengthSpecified
 		ArrayLength:     arrayLength,
 		Value:           value,
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDescriptionOfHalt(descriptionForHalt BACnetApplicat
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DescriptionForHalt:            descriptionForHalt,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

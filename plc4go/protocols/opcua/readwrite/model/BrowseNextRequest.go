@@ -123,6 +123,7 @@ func NewBrowseNextRequest(requestHeader ExtensionObjectDefinition, releaseContin
 		NoOfContinuationPoints:            noOfContinuationPoints,
 		ContinuationPoints:                continuationPoints,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

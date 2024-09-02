@@ -118,6 +118,7 @@ func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(covIncrement BACne
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CovIncrement:                  covIncrement,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

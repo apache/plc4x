@@ -73,6 +73,7 @@ func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode 
 	_result := &_RequestEmpty{
 		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 	}
+	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
 

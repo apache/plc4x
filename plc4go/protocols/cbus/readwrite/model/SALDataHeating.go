@@ -97,6 +97,7 @@ func NewSALDataHeating(heatingData LightingData, salData SALData) *_SALDataHeati
 		SALDataContract: NewSALData(salData),
 		HeatingData:     heatingData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

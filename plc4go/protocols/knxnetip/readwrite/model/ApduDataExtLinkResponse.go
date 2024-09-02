@@ -77,6 +77,7 @@ func NewApduDataExtLinkResponse(length uint8) *_ApduDataExtLinkResponse {
 	_result := &_ApduDataExtLinkResponse{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

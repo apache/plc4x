@@ -118,6 +118,7 @@ func NewBACnetConstructedDataValueSource(valueSource BACnetValueSource, openingT
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ValueSource:                   valueSource,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

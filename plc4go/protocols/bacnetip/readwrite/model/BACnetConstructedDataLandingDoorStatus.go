@@ -128,6 +128,7 @@ func NewBACnetConstructedDataLandingDoorStatus(numberOfDataElements BACnetApplic
 		NumberOfDataElements:          numberOfDataElements,
 		LandingDoorStatus:             landingDoorStatus,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

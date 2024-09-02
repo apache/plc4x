@@ -121,6 +121,7 @@ func NewChannelSecurityToken(channelId uint32, tokenId uint32, createdAt int64, 
 		CreatedAt:                         createdAt,
 		RevisedLifetime:                   revisedLifetime,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

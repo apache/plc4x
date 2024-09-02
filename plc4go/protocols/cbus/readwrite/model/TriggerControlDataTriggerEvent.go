@@ -93,6 +93,7 @@ func NewTriggerControlDataTriggerEvent(actionSelector byte, commandTypeContainer
 		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
 		ActionSelector:             actionSelector,
 	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
 	return _result
 }
 

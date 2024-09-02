@@ -113,6 +113,7 @@ func NewTranslateBrowsePathsToNodeIdsRequest(requestHeader ExtensionObjectDefini
 		NoOfBrowsePaths:                   noOfBrowsePaths,
 		BrowsePaths:                       browsePaths,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

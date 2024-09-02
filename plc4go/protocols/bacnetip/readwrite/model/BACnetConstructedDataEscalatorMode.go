@@ -118,6 +118,7 @@ func NewBACnetConstructedDataEscalatorMode(escalatorMode BACnetEscalatorModeTagg
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EscalatorMode:                 escalatorMode,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewApduDataContainer(dataApdu ApduData, numbered bool, counter uint8, dataL
 		ApduContract: NewApdu(numbered, counter, dataLength),
 		DataApdu:     dataApdu,
 	}
+	_result.ApduContract.(*_Apdu)._SubType = _result
 	return _result
 }
 

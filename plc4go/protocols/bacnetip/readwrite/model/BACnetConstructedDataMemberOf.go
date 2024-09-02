@@ -101,6 +101,7 @@ func NewBACnetConstructedDataMemberOf(zones []BACnetDeviceObjectReference, openi
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Zones:                         zones,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -105,6 +105,7 @@ func NewAnsiExtendedSymbolSegment(symbol string, pad *uint8) *_AnsiExtendedSymbo
 		Symbol:                  symbol,
 		Pad:                     pad,
 	}
+	_result.DataSegmentTypeContract.(*_DataSegmentType)._SubType = _result
 	return _result
 }
 

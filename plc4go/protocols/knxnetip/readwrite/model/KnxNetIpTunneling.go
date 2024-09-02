@@ -97,6 +97,7 @@ func NewKnxNetIpTunneling(version uint8) *_KnxNetIpTunneling {
 		ServiceIdContract: NewServiceId(),
 		Version:           version,
 	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
 

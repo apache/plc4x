@@ -110,6 +110,7 @@ func NewBACnetApplicationTagUnsignedInteger(payload BACnetTagPayloadUnsignedInte
 		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
 		Payload:                      payload,
 	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
 	return _result
 }
 

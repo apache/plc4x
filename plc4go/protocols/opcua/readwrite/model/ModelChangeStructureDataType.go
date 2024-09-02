@@ -113,6 +113,7 @@ func NewModelChangeStructureDataType(affected NodeId, affectedType NodeId, verb 
 		AffectedType:                      affectedType,
 		Verb:                              verb,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

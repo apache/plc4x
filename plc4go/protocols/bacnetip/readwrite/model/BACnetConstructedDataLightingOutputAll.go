@@ -81,6 +81,7 @@ func NewBACnetConstructedDataLightingOutputAll(openingTag BACnetOpeningTag, peek
 	_result := &_BACnetConstructedDataLightingOutputAll{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

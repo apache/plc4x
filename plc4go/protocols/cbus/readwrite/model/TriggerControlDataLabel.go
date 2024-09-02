@@ -117,6 +117,7 @@ func NewTriggerControlDataLabel(triggerControlOptions TriggerControlLabelOptions
 		Language:                   language,
 		Data:                       data,
 	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
 	return _result
 }
 

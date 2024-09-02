@@ -108,6 +108,7 @@ func NewS7PayloadUserDataItemClkSetRequest(timeStamp DateAndTime, returnCode Dat
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		TimeStamp:                     timeStamp,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

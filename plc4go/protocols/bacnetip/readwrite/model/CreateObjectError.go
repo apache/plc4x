@@ -105,6 +105,7 @@ func NewCreateObjectError(errorType ErrorEnclosed, firstFailedElementNumber BACn
 		ErrorType:                errorType,
 		FirstFailedElementNumber: firstFailedElementNumber,
 	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 

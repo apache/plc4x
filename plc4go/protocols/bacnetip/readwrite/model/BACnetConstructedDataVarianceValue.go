@@ -118,6 +118,7 @@ func NewBACnetConstructedDataVarianceValue(varianceValue BACnetApplicationTagRea
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		VarianceValue:                 varianceValue,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

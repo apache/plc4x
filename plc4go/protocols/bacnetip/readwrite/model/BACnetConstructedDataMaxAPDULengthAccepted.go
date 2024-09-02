@@ -118,6 +118,7 @@ func NewBACnetConstructedDataMaxAPDULengthAccepted(maxApduLengthAccepted BACnetA
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaxApduLengthAccepted:         maxApduLengthAccepted,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdent
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		LastReceivedObjectIdentifier:          lastReceivedObjectIdentifier,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

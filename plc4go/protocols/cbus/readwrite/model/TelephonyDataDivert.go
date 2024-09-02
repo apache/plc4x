@@ -93,6 +93,7 @@ func NewTelephonyDataDivert(number string, commandTypeContainer TelephonyCommand
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		Number:                number,
 	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 

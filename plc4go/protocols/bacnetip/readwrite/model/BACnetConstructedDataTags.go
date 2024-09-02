@@ -128,6 +128,7 @@ func NewBACnetConstructedDataTags(numberOfDataElements BACnetApplicationTagUnsig
 		NumberOfDataElements:          numberOfDataElements,
 		Tags:                          tags,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewBACnetSpecialEventPeriodCalendarEntry(calendarEntry BACnetCalendarEntryE
 		BACnetSpecialEventPeriodContract: NewBACnetSpecialEventPeriod(peekedTagHeader),
 		CalendarEntry:                    calendarEntry,
 	}
+	_result.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = _result
 	return _result
 }
 

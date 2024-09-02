@@ -118,6 +118,7 @@ func NewBACnetConstructedDataSetpointReference(setpointReference BACnetSetpointR
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		SetpointReference:             setpointReference,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -77,6 +77,7 @@ func NewHistoryUpdateDetails() *_HistoryUpdateDetails {
 	_result := &_HistoryUpdateDetails{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -128,6 +128,7 @@ func NewBACnetConstructedDataIPDNSServer(numberOfDataElements BACnetApplicationT
 		NumberOfDataElements:          numberOfDataElements,
 		IpDnsServer:                   ipDnsServer,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

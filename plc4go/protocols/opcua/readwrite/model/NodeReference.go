@@ -131,6 +131,7 @@ func NewNodeReference(nodeId NodeId, referenceTypeId NodeId, isForward bool, noO
 		NoOfReferencedNodeIds:             noOfReferencedNodeIds,
 		ReferencedNodeIds:                 referencedNodeIds,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

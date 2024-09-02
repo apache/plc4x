@@ -101,6 +101,7 @@ func NewS7ParameterUserData(items []S7ParameterUserDataItem) *_S7ParameterUserDa
 		S7ParameterContract: NewS7Parameter(),
 		Items:               items,
 	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
 

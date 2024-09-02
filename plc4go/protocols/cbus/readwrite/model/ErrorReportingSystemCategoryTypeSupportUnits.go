@@ -97,6 +97,7 @@ func NewErrorReportingSystemCategoryTypeSupportUnits(categoryForType ErrorReport
 		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
 		CategoryForType:                          categoryForType,
 	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
 	return _result
 }
 

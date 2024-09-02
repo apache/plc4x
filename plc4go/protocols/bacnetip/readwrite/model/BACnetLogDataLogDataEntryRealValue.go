@@ -93,6 +93,7 @@ func NewBACnetLogDataLogDataEntryRealValue(realValue BACnetContextTagReal, peeke
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		RealValue:                         realValue,
 	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 

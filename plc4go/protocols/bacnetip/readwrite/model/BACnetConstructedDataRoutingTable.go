@@ -101,6 +101,7 @@ func NewBACnetConstructedDataRoutingTable(routingTable []BACnetRouterEntry, open
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RoutingTable:                  routingTable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

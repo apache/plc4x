@@ -105,6 +105,7 @@ func NewCancelRequest(requestHeader ExtensionObjectDefinition, requestHandle uin
 		RequestHeader:                     requestHeader,
 		RequestHandle:                     requestHandle,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

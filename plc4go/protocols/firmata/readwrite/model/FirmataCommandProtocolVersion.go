@@ -105,6 +105,7 @@ func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, re
 		MajorVersion:           majorVersion,
 		MinorVersion:           minorVersion,
 	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
 

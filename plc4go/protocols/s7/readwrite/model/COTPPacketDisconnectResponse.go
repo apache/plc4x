@@ -105,6 +105,7 @@ func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReferenc
 		DestinationReference: destinationReference,
 		SourceReference:      sourceReference,
 	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
 

@@ -77,6 +77,7 @@ func NewApduDataExtLinkWrite(length uint8) *_ApduDataExtLinkWrite {
 	_result := &_ApduDataExtLinkWrite{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

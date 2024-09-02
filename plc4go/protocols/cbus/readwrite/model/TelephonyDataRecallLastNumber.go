@@ -126,6 +126,7 @@ func NewTelephonyDataRecallLastNumber(recallLastNumberType byte, number string, 
 		RecallLastNumberType:  recallLastNumberType,
 		Number:                number,
 	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 

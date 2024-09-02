@@ -105,6 +105,7 @@ func NewS7MessageResponse(errorClass uint8, errorCode uint8, tpduReference uint1
 		ErrorClass:        errorClass,
 		ErrorCode:         errorCode,
 	}
+	_result.S7MessageContract.(*_S7Message)._SubType = _result
 	return _result
 }
 

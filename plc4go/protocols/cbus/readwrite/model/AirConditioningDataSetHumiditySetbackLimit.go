@@ -117,6 +117,7 @@ func NewAirConditioningDataSetHumiditySetbackLimit(zoneGroup byte, zoneList HVAC
 		Limit:                       limit,
 		HvacModeAndFlags:            hvacModeAndFlags,
 	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 

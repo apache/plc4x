@@ -101,6 +101,7 @@ func NewCALDataReply(paramNo Parameter, parameterValue ParameterValue, commandTy
 		ParamNo:         paramNo,
 		ParameterValue:  parameterValue,
 	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 

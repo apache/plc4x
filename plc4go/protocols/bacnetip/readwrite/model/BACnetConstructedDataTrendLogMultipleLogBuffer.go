@@ -101,6 +101,7 @@ func NewBACnetConstructedDataTrendLogMultipleLogBuffer(floorText []BACnetLogMult
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FloorText:                     floorText,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

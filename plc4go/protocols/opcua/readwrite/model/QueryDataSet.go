@@ -121,6 +121,7 @@ func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, n
 		NoOfValues:                        noOfValues,
 		Values:                            values,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

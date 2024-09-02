@@ -118,6 +118,7 @@ func NewBACnetConstructedDataNextStoppingFloor(nextStoppingFloor BACnetApplicati
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NextStoppingFloor:             nextStoppingFloor,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

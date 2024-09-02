@@ -137,6 +137,7 @@ func NewFindServersRequest(requestHeader ExtensionObjectDefinition, endpointUrl 
 		NoOfServerUris:                    noOfServerUris,
 		ServerUris:                        serverUris,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

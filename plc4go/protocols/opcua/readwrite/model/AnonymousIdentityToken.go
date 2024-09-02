@@ -77,6 +77,7 @@ func NewAnonymousIdentityToken() *_AnonymousIdentityToken {
 	_result := &_AnonymousIdentityToken{
 		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
 	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
 	return _result
 }
 

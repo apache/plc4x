@@ -113,6 +113,7 @@ func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, ori
 		OriginalMessageId: originalMessageId,
 		OriginalTimestamp: originalTimestamp,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

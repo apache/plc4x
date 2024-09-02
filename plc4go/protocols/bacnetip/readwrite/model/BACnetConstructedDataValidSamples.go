@@ -118,6 +118,7 @@ func NewBACnetConstructedDataValidSamples(validSamples BACnetApplicationTagUnsig
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ValidSamples:                  validSamples,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

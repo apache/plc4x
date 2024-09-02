@@ -97,6 +97,7 @@ func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduL
 		NLMContract:               NewNLM(apduLength),
 		DestinationNetworkAddress: destinationNetworkAddress,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

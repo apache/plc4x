@@ -118,6 +118,7 @@ func NewBACnetConstructedDataSetting(setting BACnetApplicationTagUnsignedInteger
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Setting:                       setting,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

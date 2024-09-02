@@ -78,6 +78,7 @@ func NewRoutingIndication() *_RoutingIndication {
 	_result := &_RoutingIndication{
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 

@@ -128,6 +128,7 @@ func NewBACnetConstructedDataLinkSpeeds(numberOfDataElements BACnetApplicationTa
 		NumberOfDataElements:          numberOfDataElements,
 		LinkSpeeds:                    linkSpeeds,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

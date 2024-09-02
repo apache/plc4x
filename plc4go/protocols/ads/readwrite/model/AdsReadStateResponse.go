@@ -117,6 +117,7 @@ func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uin
 		AdsState:          adsState,
 		DeviceState:       deviceState,
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

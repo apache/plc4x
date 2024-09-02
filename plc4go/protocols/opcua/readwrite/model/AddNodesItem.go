@@ -145,6 +145,7 @@ func NewAddNodesItem(parentNodeId ExpandedNodeId, referenceTypeId NodeId, reques
 		NodeAttributes:                    nodeAttributes,
 		TypeDefinition:                    typeDefinition,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

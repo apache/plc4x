@@ -77,6 +77,7 @@ func NewDataSetReaderTransportDataType() *_DataSetReaderTransportDataType {
 	_result := &_DataSetReaderTransportDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewExtensiblePayload(payload ExtensionObject, sequenceHeader SequenceHeader
 		PayloadContract: NewPayload(sequenceHeader, byteCount),
 		Payload:         payload,
 	}
+	_result.PayloadContract.(*_Payload)._SubType = _result
 	return _result
 }
 

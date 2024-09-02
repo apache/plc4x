@@ -77,6 +77,7 @@ func NewApduDataIndividualAddressResponse(dataLength uint8) *_ApduDataIndividual
 	_result := &_ApduDataIndividualAddressResponse{
 		ApduDataContract: NewApduData(dataLength),
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

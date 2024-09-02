@@ -93,6 +93,7 @@ func NewBACnetLandingCallStatusCommandDirection(direction BACnetLiftCarDirection
 		BACnetLandingCallStatusCommandContract: NewBACnetLandingCallStatusCommand(peekedTagHeader),
 		Direction:                              direction,
 	}
+	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
 	return _result
 }
 

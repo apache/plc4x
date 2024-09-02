@@ -107,6 +107,7 @@ func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_Fi
 		Pin:                    pin,
 		On:                     on,
 	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataIsUTC(isUtc BACnetApplicationTagBoolean, openingTag
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		IsUtc:                         isUtc,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

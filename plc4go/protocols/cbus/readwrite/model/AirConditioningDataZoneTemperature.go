@@ -117,6 +117,7 @@ func NewAirConditioningDataZoneTemperature(zoneGroup byte, zoneList HVACZoneList
 		Temperature:                 temperature,
 		SensorStatus:                sensorStatus,
 	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataOperationDirection(operationDirection BACnetEscalat
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		OperationDirection:            operationDirection,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

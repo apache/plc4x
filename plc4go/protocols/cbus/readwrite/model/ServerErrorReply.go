@@ -92,6 +92,7 @@ func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContex
 	_result := &_ServerErrorReply{
 		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
 	}
+	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDeadband(deadband BACnetApplicationTagReal, opening
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Deadband:                      deadband,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

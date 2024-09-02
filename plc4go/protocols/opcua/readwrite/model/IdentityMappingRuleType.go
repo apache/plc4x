@@ -105,6 +105,7 @@ func NewIdentityMappingRuleType(criteriaType IdentityCriteriaType, criteria Pasc
 		CriteriaType:                      criteriaType,
 		Criteria:                          criteria,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

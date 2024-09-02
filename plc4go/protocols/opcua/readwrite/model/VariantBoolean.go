@@ -105,6 +105,7 @@ func NewVariantBoolean(arrayLength *int32, value []byte, arrayLengthSpecified bo
 		ArrayLength:     arrayLength,
 		Value:           value,
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

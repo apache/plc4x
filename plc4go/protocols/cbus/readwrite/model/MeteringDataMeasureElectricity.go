@@ -73,6 +73,7 @@ func NewMeteringDataMeasureElectricity(commandTypeContainer MeteringCommandTypeC
 	_result := &_MeteringDataMeasureElectricity{
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 

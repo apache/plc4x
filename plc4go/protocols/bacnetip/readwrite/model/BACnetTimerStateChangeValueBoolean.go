@@ -93,6 +93,7 @@ func NewBACnetTimerStateChangeValueBoolean(booleanValue BACnetApplicationTagBool
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		BooleanValue:                        booleanValue,
 	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
 

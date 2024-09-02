@@ -129,6 +129,7 @@ func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, 
 		ElementNb:          elementNb,
 		Data:               data,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

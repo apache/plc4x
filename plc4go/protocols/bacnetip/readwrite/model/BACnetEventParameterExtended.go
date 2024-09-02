@@ -125,6 +125,7 @@ func NewBACnetEventParameterExtended(openingTag BACnetOpeningTag, vendorId BACne
 		Parameters:                   parameters,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 

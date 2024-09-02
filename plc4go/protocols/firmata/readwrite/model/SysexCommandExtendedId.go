@@ -101,6 +101,7 @@ func NewSysexCommandExtendedId(id []int8) *_SysexCommandExtendedId {
 		SysexCommandContract: NewSysexCommand(),
 		Id:                   id,
 	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 

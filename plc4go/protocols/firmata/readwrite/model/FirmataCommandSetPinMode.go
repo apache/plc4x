@@ -105,6 +105,7 @@ func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_Firma
 		Pin:                    pin,
 		Mode:                   mode,
 	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
 

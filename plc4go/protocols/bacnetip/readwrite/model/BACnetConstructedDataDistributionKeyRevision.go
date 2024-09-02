@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDistributionKeyRevision(distributionKeyRevision BAC
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DistributionKeyRevision:       distributionKeyRevision,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

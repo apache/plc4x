@@ -93,6 +93,7 @@ func NewBACnetLogRecordLogDatumUnsignedValue(unsignedValue BACnetContextTagUnsig
 		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		UnsignedValue:                   unsignedValue,
 	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 

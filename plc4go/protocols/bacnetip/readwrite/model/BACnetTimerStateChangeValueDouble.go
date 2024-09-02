@@ -93,6 +93,7 @@ func NewBACnetTimerStateChangeValueDouble(doubleValue BACnetApplicationTagDouble
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		DoubleValue:                         doubleValue,
 	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
 

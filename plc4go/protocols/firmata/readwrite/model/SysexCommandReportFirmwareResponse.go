@@ -117,6 +117,7 @@ func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint
 		MinorVersion:         minorVersion,
 		FileName:             fileName,
 	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 

@@ -107,6 +107,7 @@ func NewCloseSessionRequest(requestHeader ExtensionObjectDefinition, deleteSubsc
 		RequestHeader:                     requestHeader,
 		DeleteSubscriptions:               deleteSubscriptions,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

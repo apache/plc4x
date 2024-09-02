@@ -101,6 +101,7 @@ func NewBACnetConstructedDataExitPoints(exitPoints []BACnetDeviceObjectReference
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ExitPoints:                    exitPoints,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

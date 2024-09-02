@@ -97,6 +97,7 @@ func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUns
 		BACnetServiceAckContract:  NewBACnetServiceAck(serviceAckLength),
 		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesAccessEvent(accessEvent BACnetAccessEventTagged, pee
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		AccessEvent:                  accessEvent,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

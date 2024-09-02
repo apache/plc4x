@@ -107,6 +107,7 @@ func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *_FirmataM
 		Pin:                    pin,
 		Data:                   data,
 	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
 	return _result
 }
 

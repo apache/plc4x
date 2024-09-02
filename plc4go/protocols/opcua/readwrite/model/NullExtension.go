@@ -77,6 +77,7 @@ func NewNullExtension() *_NullExtension {
 	_result := &_NullExtension{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

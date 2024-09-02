@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDerivativeConstant(derivativeConstant BACnetApplica
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DerivativeConstant:            derivativeConstant,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

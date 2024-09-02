@@ -105,6 +105,7 @@ func NewEndpointUrlListDataType(noOfEndpointUrlList int32, endpointUrlList []Pas
 		NoOfEndpointUrlList:               noOfEndpointUrlList,
 		EndpointUrlList:                   endpointUrlList,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

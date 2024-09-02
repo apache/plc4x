@@ -102,6 +102,7 @@ func NewBVLCReadBroadcastDistributionTableAck(table []BVLCBroadcastDistributionT
 		BVLCContract: NewBVLC(),
 		Table:        table,
 	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 

@@ -73,6 +73,7 @@ func NewTelephonyDataLineOnHook(commandTypeContainer TelephonyCommandTypeContain
 	_result := &_TelephonyDataLineOnHook{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 

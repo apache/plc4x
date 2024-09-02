@@ -147,6 +147,7 @@ func NewReferenceDescription(referenceTypeId NodeId, isForward bool, nodeId Expa
 		NodeClass:                         nodeClass,
 		TypeDefinition:                    typeDefinition,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

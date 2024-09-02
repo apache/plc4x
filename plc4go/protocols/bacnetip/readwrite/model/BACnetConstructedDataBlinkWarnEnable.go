@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBlinkWarnEnable(blinkWarnEnable BACnetApplicationTa
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BlinkWarnEnable:               blinkWarnEnable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

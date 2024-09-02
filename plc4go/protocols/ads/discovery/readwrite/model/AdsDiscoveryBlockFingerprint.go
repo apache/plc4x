@@ -97,6 +97,7 @@ func NewAdsDiscoveryBlockFingerprint(data []byte) *_AdsDiscoveryBlockFingerprint
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		Data:                      data,
 	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 

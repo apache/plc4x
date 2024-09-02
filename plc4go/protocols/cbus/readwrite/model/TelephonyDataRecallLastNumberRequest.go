@@ -118,6 +118,7 @@ func NewTelephonyDataRecallLastNumberRequest(recallLastNumberType byte, commandT
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		RecallLastNumberType:  recallLastNumberType,
 	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 

@@ -77,6 +77,7 @@ func NewLevelInformationAbsent(raw uint16) *_LevelInformationAbsent {
 	_result := &_LevelInformationAbsent{
 		LevelInformationContract: NewLevelInformation(raw),
 	}
+	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
 	return _result
 }
 

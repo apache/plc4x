@@ -118,6 +118,7 @@ func NewBACnetConstructedDataCOVResubscriptionInterval(covResubscriptionInterval
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CovResubscriptionInterval:     covResubscriptionInterval,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

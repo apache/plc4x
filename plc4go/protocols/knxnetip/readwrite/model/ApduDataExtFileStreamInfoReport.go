@@ -77,6 +77,7 @@ func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInf
 	_result := &_ApduDataExtFileStreamInfoReport{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

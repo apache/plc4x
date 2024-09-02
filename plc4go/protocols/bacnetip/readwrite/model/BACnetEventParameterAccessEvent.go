@@ -117,6 +117,7 @@ func NewBACnetEventParameterAccessEvent(openingTag BACnetOpeningTag, listOfAcces
 		AccessEventTimeReference:     accessEventTimeReference,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 

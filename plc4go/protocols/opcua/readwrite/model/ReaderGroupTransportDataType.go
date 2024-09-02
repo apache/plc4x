@@ -77,6 +77,7 @@ func NewReaderGroupTransportDataType() *_ReaderGroupTransportDataType {
 	_result := &_ReaderGroupTransportDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

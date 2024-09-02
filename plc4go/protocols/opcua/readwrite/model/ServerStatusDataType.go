@@ -137,6 +137,7 @@ func NewServerStatusDataType(startTime int64, currentTime int64, state ServerSta
 		SecondsTillShutdown:               secondsTillShutdown,
 		ShutdownReason:                    shutdownReason,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

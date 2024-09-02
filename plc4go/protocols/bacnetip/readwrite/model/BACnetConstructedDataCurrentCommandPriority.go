@@ -118,6 +118,7 @@ func NewBACnetConstructedDataCurrentCommandPriority(currentCommandPriority BACne
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CurrentCommandPriority:        currentCommandPriority,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

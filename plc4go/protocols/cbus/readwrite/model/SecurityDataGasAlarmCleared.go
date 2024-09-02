@@ -73,6 +73,7 @@ func NewSecurityDataGasAlarmCleared(commandTypeContainer SecurityCommandTypeCont
 	_result := &_SecurityDataGasAlarmCleared{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

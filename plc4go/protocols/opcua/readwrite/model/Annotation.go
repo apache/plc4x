@@ -113,6 +113,7 @@ func NewAnnotation(message PascalString, userName PascalString, annotationTime i
 		UserName:                          userName,
 		AnnotationTime:                    annotationTime,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

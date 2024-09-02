@@ -121,6 +121,7 @@ func NewRegisterServer2Request(requestHeader ExtensionObjectDefinition, server E
 		NoOfDiscoveryConfiguration:        noOfDiscoveryConfiguration,
 		DiscoveryConfiguration:            discoveryConfiguration,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

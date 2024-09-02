@@ -113,6 +113,7 @@ func NewModificationInfo(modificationTime int64, updateType HistoryUpdateType, u
 		UpdateType:                        updateType,
 		UserName:                          userName,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

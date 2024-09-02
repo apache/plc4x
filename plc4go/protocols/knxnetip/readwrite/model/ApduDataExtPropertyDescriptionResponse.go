@@ -156,6 +156,7 @@ func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uin
 		ReadLevel:           readLevel,
 		WriteLevel:          writeLevel,
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

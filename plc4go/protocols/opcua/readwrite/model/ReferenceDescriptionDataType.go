@@ -123,6 +123,7 @@ func NewReferenceDescriptionDataType(sourceNode NodeId, referenceType NodeId, is
 		IsForward:                         isForward,
 		TargetNode:                        targetNode,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

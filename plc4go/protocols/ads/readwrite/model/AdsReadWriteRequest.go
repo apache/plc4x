@@ -133,6 +133,7 @@ func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength ui
 		Items:             items,
 		Data:              data,
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

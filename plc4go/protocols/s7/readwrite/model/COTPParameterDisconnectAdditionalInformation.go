@@ -97,6 +97,7 @@ func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *_
 		COTPParameterContract: NewCOTPParameter(rest),
 		Data:                  data,
 	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
 	return _result
 }
 

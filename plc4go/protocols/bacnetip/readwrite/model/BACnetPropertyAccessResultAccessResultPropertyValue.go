@@ -93,6 +93,7 @@ func NewBACnetPropertyAccessResultAccessResultPropertyValue(propertyValue BACnet
 		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
 		PropertyValue: propertyValue,
 	}
+	_result.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = _result
 	return _result
 }
 

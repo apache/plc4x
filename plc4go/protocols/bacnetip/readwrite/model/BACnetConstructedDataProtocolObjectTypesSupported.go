@@ -118,6 +118,7 @@ func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSup
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProtocolObjectTypesSupported:  protocolObjectTypesSupported,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewIdentifyReplyCommandMinimumLevels(minimumLevels []byte, numBytes uint8) 
 		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
 		MinimumLevels:                minimumLevels,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

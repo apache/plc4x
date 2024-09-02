@@ -113,6 +113,7 @@ func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer ui
 		RamFlagsTablePointer:   ramFlagsTablePointer,
 		ComObjectDescriptors:   comObjectDescriptors,
 	}
+	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
 	return _result
 }
 

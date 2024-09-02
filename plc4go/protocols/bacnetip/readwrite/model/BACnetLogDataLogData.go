@@ -109,6 +109,7 @@ func NewBACnetLogDataLogData(innerOpeningTag BACnetOpeningTag, logData []BACnetL
 		LogData:               logData,
 		InnerClosingTag:       innerClosingTag,
 	}
+	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
 	return _result
 }
 

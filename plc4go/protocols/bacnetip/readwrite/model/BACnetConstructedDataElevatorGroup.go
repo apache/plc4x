@@ -118,6 +118,7 @@ func NewBACnetConstructedDataElevatorGroup(elevatorGroup BACnetApplicationTagObj
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ElevatorGroup:                 elevatorGroup,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

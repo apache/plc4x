@@ -93,6 +93,7 @@ func NewLightingDataTerminateRamp(group byte, commandTypeContainer LightingComma
 		LightingDataContract: NewLightingData(commandTypeContainer),
 		Group:                group,
 	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
 	return _result
 }
 

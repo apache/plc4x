@@ -118,6 +118,7 @@ func NewBACnetConstructedDataUpdateInterval(updateInterval BACnetApplicationTagU
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		UpdateInterval:                updateInterval,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

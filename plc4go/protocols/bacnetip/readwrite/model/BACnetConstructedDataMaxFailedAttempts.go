@@ -118,6 +118,7 @@ func NewBACnetConstructedDataMaxFailedAttempts(maxFailedAttempts BACnetApplicati
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaxFailedAttempts:             maxFailedAttempts,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -125,6 +125,7 @@ func NewCycServiceItemAnyType(transportSize TransportSize, length uint16, dbNumb
 		MemoryArea:                 memoryArea,
 		Address:                    address,
 	}
+	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
 	return _result
 }
 

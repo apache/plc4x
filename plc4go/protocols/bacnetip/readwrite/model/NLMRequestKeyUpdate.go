@@ -145,6 +145,7 @@ func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set
 		Set2ExpirationTime:      set2ExpirationTime,
 		DistributionKeyRevision: distributionKeyRevision,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

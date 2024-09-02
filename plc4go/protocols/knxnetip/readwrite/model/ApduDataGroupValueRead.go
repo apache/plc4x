@@ -81,6 +81,7 @@ func NewApduDataGroupValueRead(dataLength uint8) *_ApduDataGroupValueRead {
 	_result := &_ApduDataGroupValueRead{
 		ApduDataContract: NewApduData(dataLength),
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

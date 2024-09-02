@@ -128,6 +128,7 @@ func NewBACnetConstructedDataExecutionDelay(numberOfDataElements BACnetApplicati
 		NumberOfDataElements:          numberOfDataElements,
 		ExecutionDelay:                executionDelay,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

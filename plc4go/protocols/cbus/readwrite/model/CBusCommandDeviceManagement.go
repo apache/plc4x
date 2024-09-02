@@ -117,6 +117,7 @@ func NewCBusCommandDeviceManagement(paramNo Parameter, parameterValue byte, head
 		ParamNo:             paramNo,
 		ParameterValue:      parameterValue,
 	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
 	return _result
 }
 

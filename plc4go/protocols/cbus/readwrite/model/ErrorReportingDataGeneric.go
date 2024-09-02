@@ -182,6 +182,7 @@ func NewErrorReportingDataGeneric(systemCategory ErrorReportingSystemCategory, m
 		ErrorData1:                 errorData1,
 		ErrorData2:                 errorData2,
 	}
+	_result.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = _result
 	return _result
 }
 

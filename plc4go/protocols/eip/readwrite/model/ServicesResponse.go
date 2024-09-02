@@ -124,6 +124,7 @@ func NewServicesResponse(encapsulationProtocol uint16, supportsCIPEncapsulation 
 		SupportsUDP:              supportsUDP,
 		Data:                     data,
 	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
 	return _result
 }
 

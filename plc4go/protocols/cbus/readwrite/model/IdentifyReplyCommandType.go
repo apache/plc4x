@@ -97,6 +97,7 @@ func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyRepl
 		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
 		UnitType:                     unitType,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

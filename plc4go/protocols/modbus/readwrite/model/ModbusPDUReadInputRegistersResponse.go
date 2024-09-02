@@ -105,6 +105,7 @@ func NewModbusPDUReadInputRegistersResponse(value []byte) *_ModbusPDUReadInputRe
 		ModbusPDUContract: NewModbusPDU(),
 		Value:             value,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

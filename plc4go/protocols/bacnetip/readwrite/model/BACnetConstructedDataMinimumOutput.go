@@ -118,6 +118,7 @@ func NewBACnetConstructedDataMinimumOutput(minimumOutput BACnetApplicationTagRea
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MinimumOutput:                 minimumOutput,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

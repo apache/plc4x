@@ -77,6 +77,7 @@ func NewTDataIndividualReq(size uint16) *_TDataIndividualReq {
 	_result := &_TDataIndividualReq{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

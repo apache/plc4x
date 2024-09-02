@@ -105,6 +105,7 @@ func NewServiceCounterDataType(totalCount uint32, errorCount uint32) *_ServiceCo
 		TotalCount:                        totalCount,
 		ErrorCount:                        errorCount,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

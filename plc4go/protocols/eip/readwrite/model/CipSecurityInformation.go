@@ -97,6 +97,7 @@ func NewCipSecurityInformation(todoImplement []uint8) *_CipSecurityInformation {
 		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
 		TodoImplement:                   todoImplement,
 	}
+	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
 	return _result
 }
 

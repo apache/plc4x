@@ -93,6 +93,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryOctetString(octetStringV
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		OctetStringValue: octetStringValue,
 	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 

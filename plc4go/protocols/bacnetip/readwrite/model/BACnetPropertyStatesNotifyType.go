@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesNotifyType(notifyType BACnetNotifyTypeTagged, peeked
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		NotifyType:                   notifyType,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

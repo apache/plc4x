@@ -118,6 +118,7 @@ func NewBACnetConstructedDataEventDetectionEnable(eventDetectionEnable BACnetApp
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EventDetectionEnable:          eventDetectionEnable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

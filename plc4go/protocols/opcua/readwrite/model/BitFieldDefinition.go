@@ -124,6 +124,7 @@ func NewBitFieldDefinition(name PascalString, description LocalizedText, startin
 		StartingBitPosition:               startingBitPosition,
 		EndingBitPosition:                 endingBitPosition,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -117,6 +117,7 @@ func NewLightingDataLabel(group byte, labelOptions LightingLabelOptions, languag
 		Language:             language,
 		Data:                 data,
 	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
 	return _result
 }
 

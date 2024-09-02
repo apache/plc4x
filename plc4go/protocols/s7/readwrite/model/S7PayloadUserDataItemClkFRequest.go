@@ -85,6 +85,7 @@ func NewS7PayloadUserDataItemClkFRequest(returnCode DataTransportErrorCode, tran
 	_result := &_S7PayloadUserDataItemClkFRequest{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

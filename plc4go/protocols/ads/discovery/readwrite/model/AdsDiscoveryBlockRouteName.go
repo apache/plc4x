@@ -97,6 +97,7 @@ func NewAdsDiscoveryBlockRouteName(routeName AmsString) *_AdsDiscoveryBlockRoute
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		RouteName:                 routeName,
 	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 

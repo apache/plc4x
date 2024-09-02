@@ -118,6 +118,7 @@ func NewBACnetConstructedDataReasonForHalt(programError BACnetProgramErrorTagged
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProgramError:                  programError,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

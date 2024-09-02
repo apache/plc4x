@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesLockStatus(lockStatus BACnetLockStatusTagged, peeked
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LockStatus:                   lockStatus,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

@@ -262,6 +262,7 @@ func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication Application
 		InternalStackOverflow:        internalStackOverflow,
 		MicroPowerReset:              microPowerReset,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

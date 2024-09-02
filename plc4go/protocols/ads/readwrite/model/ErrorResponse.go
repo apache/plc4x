@@ -81,6 +81,7 @@ func NewErrorResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNe
 	_result := &_ErrorResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

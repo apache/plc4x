@@ -101,6 +101,7 @@ func NewBACnetConstructedDataSlaveAddressBinding(slaveAddressBinding []BACnetAdd
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		SlaveAddressBinding:           slaveAddressBinding,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDeviceMaxInfoFrames(maxInfoFrames BACnetApplication
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaxInfoFrames:                 maxInfoFrames,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

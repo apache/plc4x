@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesLifeSafetyState(lifeSafetyState BACnetLifeSafetyStat
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LifeSafetyState:              lifeSafetyState,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

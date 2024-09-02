@@ -118,6 +118,7 @@ func NewBACnetConstructedDataNumberOfStates(numberOfState BACnetApplicationTagUn
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NumberOfState:                 numberOfState,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

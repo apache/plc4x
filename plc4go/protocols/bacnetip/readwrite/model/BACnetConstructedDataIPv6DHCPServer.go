@@ -118,6 +118,7 @@ func NewBACnetConstructedDataIPv6DHCPServer(dhcpServer BACnetApplicationTagOctet
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DhcpServer:                    dhcpServer,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

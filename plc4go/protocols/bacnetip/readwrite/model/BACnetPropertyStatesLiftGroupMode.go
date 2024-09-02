@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesLiftGroupMode(liftGroupMode BACnetLiftGroupModeTagge
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LiftGroupMode:                liftGroupMode,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

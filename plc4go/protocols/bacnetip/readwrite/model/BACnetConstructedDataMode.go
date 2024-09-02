@@ -118,6 +118,7 @@ func NewBACnetConstructedDataMode(mode BACnetLifeSafetyModeTagged, openingTag BA
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Mode:                          mode,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

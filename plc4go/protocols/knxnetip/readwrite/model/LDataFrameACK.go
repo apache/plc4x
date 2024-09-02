@@ -81,6 +81,7 @@ func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, a
 	_result := &_LDataFrameACK{
 		LDataFrameContract: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 	}
+	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
 	return _result
 }
 

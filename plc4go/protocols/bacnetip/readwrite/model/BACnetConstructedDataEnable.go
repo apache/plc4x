@@ -118,6 +118,7 @@ func NewBACnetConstructedDataEnable(enable BACnetApplicationTagBoolean, openingT
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Enable:                        enable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

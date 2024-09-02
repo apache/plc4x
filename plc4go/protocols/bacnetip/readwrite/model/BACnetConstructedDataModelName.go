@@ -118,6 +118,7 @@ func NewBACnetConstructedDataModelName(modelName BACnetApplicationTagCharacterSt
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ModelName:                     modelName,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -125,6 +125,7 @@ func NewBACnetEventParameterUnsignedRange(openingTag BACnetOpeningTag, timeDelay
 		HighLimit:                    highLimit,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 

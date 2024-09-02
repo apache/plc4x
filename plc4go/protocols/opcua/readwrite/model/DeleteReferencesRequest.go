@@ -113,6 +113,7 @@ func NewDeleteReferencesRequest(requestHeader ExtensionObjectDefinition, noOfRef
 		NoOfReferencesToDelete:            noOfReferencesToDelete,
 		ReferencesToDelete:                referencesToDelete,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

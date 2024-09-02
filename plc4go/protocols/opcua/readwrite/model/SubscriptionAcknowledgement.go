@@ -105,6 +105,7 @@ func NewSubscriptionAcknowledgement(subscriptionId uint32, sequenceNumber uint32
 		SubscriptionId:                    subscriptionId,
 		SequenceNumber:                    sequenceNumber,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

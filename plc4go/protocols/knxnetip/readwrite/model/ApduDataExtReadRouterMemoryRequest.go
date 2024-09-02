@@ -77,6 +77,7 @@ func NewApduDataExtReadRouterMemoryRequest(length uint8) *_ApduDataExtReadRouter
 	_result := &_ApduDataExtReadRouterMemoryRequest{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

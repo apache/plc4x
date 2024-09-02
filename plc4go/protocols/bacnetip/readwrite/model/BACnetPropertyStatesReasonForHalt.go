@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesReasonForHalt(reasonForHalt BACnetProgramErrorTagged
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		ReasonForHalt:                reasonForHalt,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

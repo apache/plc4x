@@ -145,6 +145,7 @@ func NewSetTriggeringRequest(requestHeader ExtensionObjectDefinition, subscripti
 		NoOfLinksToRemove:                 noOfLinksToRemove,
 		LinksToRemove:                     linksToRemove,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

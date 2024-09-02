@@ -77,6 +77,7 @@ func NewApduDataExtIndividualAddressSerialNumberResponse(length uint8) *_ApduDat
 	_result := &_ApduDataExtIndividualAddressSerialNumberResponse{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

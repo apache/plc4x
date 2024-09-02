@@ -101,6 +101,7 @@ func NewCALDataGetStatus(paramNo Parameter, count uint8, commandTypeContainer CA
 		ParamNo:         paramNo,
 		Count:           count,
 	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 

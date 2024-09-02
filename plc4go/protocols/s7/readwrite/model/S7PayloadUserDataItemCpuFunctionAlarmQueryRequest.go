@@ -155,6 +155,7 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(syntaxId SyntaxIdType,
 		QueryType:                     queryType,
 		AlarmType:                     alarmType,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

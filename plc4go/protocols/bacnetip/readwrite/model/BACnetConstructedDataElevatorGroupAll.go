@@ -81,6 +81,7 @@ func NewBACnetConstructedDataElevatorGroupAll(openingTag BACnetOpeningTag, peeke
 	_result := &_BACnetConstructedDataElevatorGroupAll{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

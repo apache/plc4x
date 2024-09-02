@@ -113,6 +113,7 @@ func NewAdsDiscoveryBlockStatus(status Status) *_AdsDiscoveryBlockStatus {
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		Status:                    status,
 	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 

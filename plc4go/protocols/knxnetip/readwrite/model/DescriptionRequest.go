@@ -99,6 +99,7 @@ func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) *_Descriptio
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 		HpaiControlEndpoint:     hpaiControlEndpoint,
 	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 

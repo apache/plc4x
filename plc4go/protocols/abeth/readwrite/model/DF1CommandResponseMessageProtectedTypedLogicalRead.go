@@ -97,6 +97,7 @@ func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destina
 		DF1ResponseMessageContract: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
 		Data:                       data,
 	}
+	_result.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = _result
 	return _result
 }
 

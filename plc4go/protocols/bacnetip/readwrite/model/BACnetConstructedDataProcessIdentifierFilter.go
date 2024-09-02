@@ -118,6 +118,7 @@ func NewBACnetConstructedDataProcessIdentifierFilter(processIdentifierFilter BAC
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProcessIdentifierFilter:       processIdentifierFilter,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

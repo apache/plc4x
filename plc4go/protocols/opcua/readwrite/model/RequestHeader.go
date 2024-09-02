@@ -145,6 +145,7 @@ func NewRequestHeader(authenticationToken NodeId, timestamp int64, requestHandle
 		TimeoutHint:                       timeoutHint,
 		AdditionalHeader:                  additionalHeader,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

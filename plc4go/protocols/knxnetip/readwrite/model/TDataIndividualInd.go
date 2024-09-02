@@ -77,6 +77,7 @@ func NewTDataIndividualInd(size uint16) *_TDataIndividualInd {
 	_result := &_TDataIndividualInd{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

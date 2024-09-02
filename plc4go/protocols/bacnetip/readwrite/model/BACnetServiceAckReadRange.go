@@ -145,6 +145,7 @@ func NewBACnetServiceAckReadRange(objectIdentifier BACnetContextTagObjectIdentif
 		ItemData:                 itemData,
 		FirstSequenceNumber:      firstSequenceNumber,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

@@ -105,6 +105,7 @@ func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uin
 		Value:                  value,
 		Data:                   data,
 	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
 

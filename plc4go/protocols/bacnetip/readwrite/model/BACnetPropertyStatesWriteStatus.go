@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesWriteStatus(writeStatus BACnetWriteStatusTagged, pee
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		WriteStatus:                  writeStatus,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

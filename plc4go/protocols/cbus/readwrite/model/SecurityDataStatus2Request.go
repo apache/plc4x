@@ -73,6 +73,7 @@ func NewSecurityDataStatus2Request(commandTypeContainer SecurityCommandTypeConta
 	_result := &_SecurityDataStatus2Request{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

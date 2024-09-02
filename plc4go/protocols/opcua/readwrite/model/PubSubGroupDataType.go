@@ -163,6 +163,7 @@ func NewPubSubGroupDataType(name PascalString, enabled bool, securityMode Messag
 		NoOfGroupProperties:               noOfGroupProperties,
 		GroupProperties:                   groupProperties,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

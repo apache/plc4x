@@ -77,6 +77,7 @@ func NewLPollDataCon(size uint16) *_LPollDataCon {
 	_result := &_LPollDataCon{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

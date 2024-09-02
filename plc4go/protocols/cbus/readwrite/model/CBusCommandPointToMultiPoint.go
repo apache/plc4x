@@ -93,6 +93,7 @@ func NewCBusCommandPointToMultiPoint(command CBusPointToMultiPointCommand, heade
 		CBusCommandContract: NewCBusCommand(header, cBusOptions),
 		Command:             command,
 	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
 	return _result
 }
 

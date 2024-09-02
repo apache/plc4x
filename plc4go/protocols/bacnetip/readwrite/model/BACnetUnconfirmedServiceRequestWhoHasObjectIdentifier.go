@@ -93,6 +93,7 @@ func NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(objectIdentifier B
 		BACnetUnconfirmedServiceRequestWhoHasObjectContract: NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader),
 		ObjectIdentifier: objectIdentifier,
 	}
+	_result.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = _result
 	return _result
 }
 

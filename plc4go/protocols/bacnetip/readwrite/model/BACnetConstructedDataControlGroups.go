@@ -128,6 +128,7 @@ func NewBACnetConstructedDataControlGroups(numberOfDataElements BACnetApplicatio
 		NumberOfDataElements:          numberOfDataElements,
 		ControlGroups:                 controlGroups,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

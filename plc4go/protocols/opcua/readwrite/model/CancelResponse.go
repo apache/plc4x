@@ -105,6 +105,7 @@ func NewCancelResponse(responseHeader ExtensionObjectDefinition, cancelCount uin
 		ResponseHeader:                    responseHeader,
 		CancelCount:                       cancelCount,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

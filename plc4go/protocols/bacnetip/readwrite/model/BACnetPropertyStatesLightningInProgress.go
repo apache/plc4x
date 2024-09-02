@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesLightningInProgress(lightningInProgress BACnetLighti
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LightningInProgress:          lightningInProgress,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

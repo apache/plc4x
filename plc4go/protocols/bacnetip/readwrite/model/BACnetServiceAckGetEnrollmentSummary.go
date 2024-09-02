@@ -129,6 +129,7 @@ func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationT
 		Priority:                 priority,
 		NotificationClass:        notificationClass,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

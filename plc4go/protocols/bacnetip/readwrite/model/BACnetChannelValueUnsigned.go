@@ -93,6 +93,7 @@ func NewBACnetChannelValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInt
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		UnsignedValue:              unsignedValue,
 	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 

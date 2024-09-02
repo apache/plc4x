@@ -107,6 +107,7 @@ func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize
 		ReturnCode:                 returnCode,
 		TransportSize:              transportSize,
 	}
+	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
 	return _result
 }
 

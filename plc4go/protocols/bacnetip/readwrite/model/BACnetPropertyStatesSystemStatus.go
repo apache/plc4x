@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesSystemStatus(systemStatus BACnetDeviceStatusTagged, 
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		SystemStatus:                 systemStatus,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

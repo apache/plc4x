@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLastStateChange(lastStateChange BACnetTimerTransiti
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastStateChange:               lastStateChange,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

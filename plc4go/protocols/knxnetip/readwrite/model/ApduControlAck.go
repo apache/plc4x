@@ -77,6 +77,7 @@ func NewApduControlAck() *_ApduControlAck {
 	_result := &_ApduControlAck{
 		ApduControlContract: NewApduControl(),
 	}
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataCredentialStatus(binaryPv BACnetBinaryPVTagged, ope
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BinaryPv:                      binaryPv,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

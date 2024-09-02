@@ -137,6 +137,7 @@ func NewArgument(name PascalString, dataType NodeId, valueRank int32, noOfArrayD
 		ArrayDimensions:                   arrayDimensions,
 		Description:                       description,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

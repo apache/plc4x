@@ -77,6 +77,7 @@ func NewApduDataExtWriteRoutingTableRequest(length uint8) *_ApduDataExtWriteRout
 	_result := &_ApduDataExtWriteRoutingTableRequest{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

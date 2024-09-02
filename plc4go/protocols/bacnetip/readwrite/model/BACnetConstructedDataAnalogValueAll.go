@@ -81,6 +81,7 @@ func NewBACnetConstructedDataAnalogValueAll(openingTag BACnetOpeningTag, peekedT
 	_result := &_BACnetConstructedDataAnalogValueAll{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

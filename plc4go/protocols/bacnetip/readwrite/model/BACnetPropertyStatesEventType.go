@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesEventType(eventType BACnetEventTypeTagged, peekedTag
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		EventType:                    eventType,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

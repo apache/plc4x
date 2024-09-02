@@ -105,6 +105,7 @@ func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []COTPParameter, payl
 		Eot:                eot,
 		TpduRef:            tpduRef,
 	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
 

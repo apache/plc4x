@@ -93,6 +93,7 @@ func NewBACnetPriorityValueBitString(bitStringValue BACnetApplicationTagBitStrin
 		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 		BitStringValue:              bitStringValue,
 	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
 

@@ -128,6 +128,7 @@ func NewBACnetConstructedDataShedLevels(numberOfDataElements BACnetApplicationTa
 		NumberOfDataElements:          numberOfDataElements,
 		ShedLevels:                    shedLevels,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

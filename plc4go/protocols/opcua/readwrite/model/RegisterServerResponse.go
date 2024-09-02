@@ -97,6 +97,7 @@ func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_Regis
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

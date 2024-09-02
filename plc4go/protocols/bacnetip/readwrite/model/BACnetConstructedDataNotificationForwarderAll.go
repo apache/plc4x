@@ -81,6 +81,7 @@ func NewBACnetConstructedDataNotificationForwarderAll(openingTag BACnetOpeningTa
 	_result := &_BACnetConstructedDataNotificationForwarderAll{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

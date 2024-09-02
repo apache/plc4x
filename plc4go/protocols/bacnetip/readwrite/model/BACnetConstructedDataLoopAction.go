@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLoopAction(action BACnetActionTagged, openingTag BA
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Action:                        action,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

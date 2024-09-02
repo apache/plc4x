@@ -101,6 +101,7 @@ func NewBACnetConstructedDataVirtualMACAddressTable(virtualMacAddressTable []BAC
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		VirtualMacAddressTable:        virtualMacAddressTable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

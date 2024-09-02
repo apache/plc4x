@@ -105,6 +105,7 @@ func NewUserIdentityToken(policyId PascalString, userIdentityTokenDefinition Use
 		PolicyId:                          policyId,
 		UserIdentityTokenDefinition:       userIdentityTokenDefinition,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

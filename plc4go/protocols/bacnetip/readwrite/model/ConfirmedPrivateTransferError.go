@@ -121,6 +121,7 @@ func NewConfirmedPrivateTransferError(errorType ErrorEnclosed, vendorId BACnetVe
 		ServiceNumber:       serviceNumber,
 		ErrorParameters:     errorParameters,
 	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 

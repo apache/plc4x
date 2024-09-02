@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesPolarity(polarity BACnetPolarityTagged, peekedTagHea
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		Polarity:                     polarity,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

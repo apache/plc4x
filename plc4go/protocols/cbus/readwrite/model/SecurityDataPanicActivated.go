@@ -73,6 +73,7 @@ func NewSecurityDataPanicActivated(commandTypeContainer SecurityCommandTypeConta
 	_result := &_SecurityDataPanicActivated{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

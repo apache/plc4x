@@ -105,6 +105,7 @@ func NewBrowsePathTarget(targetId ExpandedNodeId, remainingPathIndex uint32) *_B
 		TargetId:                          targetId,
 		RemainingPathIndex:                remainingPathIndex,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataRestoreCompletionTime(completionTime BACnetApplicat
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CompletionTime:                completionTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

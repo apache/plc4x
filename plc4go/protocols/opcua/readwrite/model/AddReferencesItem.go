@@ -139,6 +139,7 @@ func NewAddReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward
 		TargetNodeId:                      targetNodeId,
 		TargetNodeClass:                   targetNodeClass,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

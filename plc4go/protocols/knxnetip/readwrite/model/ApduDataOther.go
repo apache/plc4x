@@ -97,6 +97,7 @@ func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOthe
 		ApduDataContract: NewApduData(dataLength),
 		ExtendedApdu:     extendedApdu,
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

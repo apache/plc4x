@@ -118,6 +118,7 @@ func NewBACnetConstructedDataObjectPropertyReference(propertyReference BACnetDev
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PropertyReference:             propertyReference,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

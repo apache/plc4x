@@ -153,6 +153,7 @@ func NewApplicationDescription(applicationUri PascalString, productUri PascalStr
 		NoOfDiscoveryUrls:                 noOfDiscoveryUrls,
 		DiscoveryUrls:                     discoveryUrls,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

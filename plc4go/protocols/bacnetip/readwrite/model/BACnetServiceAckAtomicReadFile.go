@@ -105,6 +105,7 @@ func NewBACnetServiceAckAtomicReadFile(endOfFile BACnetApplicationTagBoolean, ac
 		EndOfFile:                endOfFile,
 		AccessMethod:             accessMethod,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

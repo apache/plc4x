@@ -101,6 +101,7 @@ func NewBACnetConstructedDataTimeSynchronizationRecipients(timeSynchronizationRe
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		TimeSynchronizationRecipients: timeSynchronizationRecipients,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

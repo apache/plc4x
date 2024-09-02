@@ -97,6 +97,7 @@ func NewBinaryPayload(payload []byte, sequenceHeader SequenceHeader, byteCount u
 		PayloadContract: NewPayload(sequenceHeader, byteCount),
 		Payload:         payload,
 	}
+	_result.PayloadContract.(*_Payload)._SubType = _result
 	return _result
 }
 

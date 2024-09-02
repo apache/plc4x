@@ -93,6 +93,7 @@ func NewBACnetChannelValueBitString(bitStringValue BACnetApplicationTagBitString
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		BitStringValue:             bitStringValue,
 	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataGlobalIdentifier(globalIdentifier BACnetApplication
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		GlobalIdentifier:              globalIdentifier,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -117,6 +117,7 @@ func NewBACnetFaultParameterFaultOutOfRange(openingTag BACnetOpeningTag, minNorm
 		MaxNormalValue:               maxNormalValue,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
 	return _result
 }
 

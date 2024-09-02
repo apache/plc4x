@@ -145,6 +145,7 @@ func NewCallMethodResult(statusCode StatusCode, noOfInputArgumentResults int32, 
 		NoOfOutputArguments:               noOfOutputArguments,
 		OutputArguments:                   outputArguments,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

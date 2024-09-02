@@ -93,6 +93,7 @@ func NewBACnetLogRecordLogDatumLogStatus(logStatus BACnetLogStatusTagged, openin
 		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		LogStatus:                       logStatus,
 	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 

@@ -121,6 +121,7 @@ func NewEndpointType(endpointUrl PascalString, securityMode MessageSecurityMode,
 		SecurityPolicyUri:                 securityPolicyUri,
 		TransportProfileUri:               transportProfileUri,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

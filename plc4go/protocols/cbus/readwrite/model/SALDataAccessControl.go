@@ -97,6 +97,7 @@ func NewSALDataAccessControl(accessControlData AccessControlData, salData SALDat
 		SALDataContract:   NewSALData(salData),
 		AccessControlData: accessControlData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

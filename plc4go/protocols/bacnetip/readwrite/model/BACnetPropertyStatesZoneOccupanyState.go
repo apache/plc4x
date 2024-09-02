@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesZoneOccupanyState(zoneOccupanyState BACnetAccessZone
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		ZoneOccupanyState:            zoneOccupanyState,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

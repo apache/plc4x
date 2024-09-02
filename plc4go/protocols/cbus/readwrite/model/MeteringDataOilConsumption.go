@@ -93,6 +93,7 @@ func NewMeteringDataOilConsumption(L uint32, commandTypeContainer MeteringComman
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 		L:                    L,
 	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 

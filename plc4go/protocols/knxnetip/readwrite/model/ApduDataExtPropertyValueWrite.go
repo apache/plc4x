@@ -129,6 +129,7 @@ func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count
 		Index:               index,
 		Data:                data,
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

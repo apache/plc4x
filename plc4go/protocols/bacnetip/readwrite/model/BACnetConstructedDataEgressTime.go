@@ -118,6 +118,7 @@ func NewBACnetConstructedDataEgressTime(egressTime BACnetApplicationTagUnsignedI
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EgressTime:                    egressTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

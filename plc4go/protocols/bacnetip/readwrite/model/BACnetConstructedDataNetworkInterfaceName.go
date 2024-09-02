@@ -118,6 +118,7 @@ func NewBACnetConstructedDataNetworkInterfaceName(networkInterfaceName BACnetApp
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NetworkInterfaceName:          networkInterfaceName,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

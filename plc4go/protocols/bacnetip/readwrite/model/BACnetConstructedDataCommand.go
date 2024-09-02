@@ -118,6 +118,7 @@ func NewBACnetConstructedDataCommand(command BACnetNetworkPortCommandTagged, ope
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Command:                       command,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

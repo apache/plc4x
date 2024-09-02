@@ -101,6 +101,7 @@ func NewBACnetConstructedDataLandingCalls(landingCallStatus []BACnetLandingCallS
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LandingCallStatus:             landingCallStatus,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

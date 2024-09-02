@@ -77,6 +77,7 @@ func NewConnectionRequestInformationDeviceManagement() *_ConnectionRequestInform
 	_result := &_ConnectionRequestInformationDeviceManagement{
 		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
 	}
+	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
 	return _result
 }
 

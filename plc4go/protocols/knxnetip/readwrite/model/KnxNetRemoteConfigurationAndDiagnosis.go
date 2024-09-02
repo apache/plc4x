@@ -97,6 +97,7 @@ func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *_KnxNetRemoteConfi
 		ServiceIdContract: NewServiceId(),
 		Version:           version,
 	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
 

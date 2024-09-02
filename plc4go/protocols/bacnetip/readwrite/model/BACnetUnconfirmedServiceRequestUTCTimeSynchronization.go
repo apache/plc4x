@@ -105,6 +105,7 @@ func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(synchronizedDate B
 		SynchronizedDate:                        synchronizedDate,
 		SynchronizedTime:                        synchronizedTime,
 	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

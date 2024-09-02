@@ -113,6 +113,7 @@ func NewBACnetConfirmedServiceRequestReadProperty(objectIdentifier BACnetContext
 		PropertyIdentifier:                    propertyIdentifier,
 		ArrayIndex:                            arrayIndex,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

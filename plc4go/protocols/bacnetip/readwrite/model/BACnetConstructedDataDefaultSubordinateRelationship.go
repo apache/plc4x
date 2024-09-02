@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDefaultSubordinateRelationship(defaultSubordinateRe
 		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DefaultSubordinateRelationship: defaultSubordinateRelationship,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -101,6 +101,7 @@ func NewCycServiceItemDbReadType(numberOfAreas uint8, items []SubItem, byteLengt
 		NumberOfAreas:              numberOfAreas,
 		Items:                      items,
 	}
+	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
 	return _result
 }
 

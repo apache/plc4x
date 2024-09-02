@@ -73,6 +73,7 @@ func NewSecurityDataExitDelayStarted(commandTypeContainer SecurityCommandTypeCon
 	_result := &_SecurityDataExitDelayStarted{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

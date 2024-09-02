@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesIntegerValue(integerValue BACnetContextTagSignedInte
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		IntegerValue:                 integerValue,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

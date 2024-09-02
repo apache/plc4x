@@ -93,6 +93,7 @@ func NewBACnetOptionalUnsignedNull(nullValue BACnetApplicationTagNull, peekedTag
 		BACnetOptionalUnsignedContract: NewBACnetOptionalUnsigned(peekedTagHeader),
 		NullValue:                      nullValue,
 	}
+	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
 	return _result
 }
 

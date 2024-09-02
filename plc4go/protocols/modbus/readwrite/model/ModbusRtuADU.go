@@ -107,6 +107,7 @@ func NewModbusRtuADU(address uint8, pdu ModbusPDU, response bool) *_ModbusRtuADU
 		Address:           address,
 		Pdu:               pdu,
 	}
+	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
 	return _result
 }
 

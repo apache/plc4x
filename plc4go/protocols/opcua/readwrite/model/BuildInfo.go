@@ -137,6 +137,7 @@ func NewBuildInfo(productUri PascalString, manufacturerName PascalString, produc
 		BuildNumber:                       buildNumber,
 		BuildDate:                         buildDate,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

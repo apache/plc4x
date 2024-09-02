@@ -113,6 +113,7 @@ func NewGetEndpointsResponse(responseHeader ExtensionObjectDefinition, noOfEndpo
 		NoOfEndpoints:                     noOfEndpoints,
 		Endpoints:                         endpoints,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

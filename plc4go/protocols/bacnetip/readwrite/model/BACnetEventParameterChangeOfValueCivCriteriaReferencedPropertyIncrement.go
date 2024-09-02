@@ -93,6 +93,7 @@ func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(
 		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
 		ReferencedPropertyIncrement:                          referencedPropertyIncrement,
 	}
+	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
 	return _result
 }
 

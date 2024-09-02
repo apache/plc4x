@@ -99,6 +99,7 @@ func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *_Connec
 		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
 		KnxLayer:                             knxLayer,
 	}
+	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
 	return _result
 }
 

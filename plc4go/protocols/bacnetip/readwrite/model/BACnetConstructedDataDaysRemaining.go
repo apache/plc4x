@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDaysRemaining(daysRemaining BACnetApplicationTagSig
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DaysRemaining:                 daysRemaining,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

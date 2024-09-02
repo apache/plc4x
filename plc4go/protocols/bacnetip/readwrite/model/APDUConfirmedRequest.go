@@ -220,6 +220,7 @@ func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedR
 		SegmentServiceChoice:      segmentServiceChoice,
 		Segment:                   segment,
 	}
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 

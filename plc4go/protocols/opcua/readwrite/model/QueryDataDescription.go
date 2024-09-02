@@ -113,6 +113,7 @@ func NewQueryDataDescription(relativePath ExtensionObjectDefinition, attributeId
 		AttributeId:                       attributeId,
 		IndexRange:                        indexRange,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

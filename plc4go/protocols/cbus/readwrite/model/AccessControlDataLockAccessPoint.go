@@ -73,6 +73,7 @@ func NewAccessControlDataLockAccessPoint(commandTypeContainer AccessControlComma
 	_result := &_AccessControlDataLockAccessPoint{
 		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
 	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
 

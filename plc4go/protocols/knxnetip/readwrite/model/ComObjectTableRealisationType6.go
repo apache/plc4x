@@ -97,6 +97,7 @@ func NewComObjectTableRealisationType6(comObjectDescriptors GroupObjectDescripto
 		ComObjectTableContract: NewComObjectTable(),
 		ComObjectDescriptors:   comObjectDescriptors,
 	}
+	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
 	return _result
 }
 

@@ -105,6 +105,7 @@ func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVt
 		VtClass:                               vtClass,
 		LocalVtSessionIdentifier:              localVtSessionIdentifier,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

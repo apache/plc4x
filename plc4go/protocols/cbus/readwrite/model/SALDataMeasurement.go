@@ -97,6 +97,7 @@ func NewSALDataMeasurement(measurementData MeasurementData, salData SALData) *_S
 		SALDataContract: NewSALData(salData),
 		MeasurementData: measurementData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

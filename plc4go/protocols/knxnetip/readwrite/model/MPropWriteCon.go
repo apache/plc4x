@@ -77,6 +77,7 @@ func NewMPropWriteCon(size uint16) *_MPropWriteCon {
 	_result := &_MPropWriteCon{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

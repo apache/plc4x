@@ -101,6 +101,7 @@ func NewBACnetConstructedDataListOfObjectPropertyReferences(references []BACnetD
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		References:                    references,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

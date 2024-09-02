@@ -118,6 +118,7 @@ func NewBACnetConstructedDataIPDHCPEnable(ipDhcpEnable BACnetApplicationTagBoole
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		IpDhcpEnable:                  ipDhcpEnable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

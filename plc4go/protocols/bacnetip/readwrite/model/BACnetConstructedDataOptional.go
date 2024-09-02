@@ -81,6 +81,7 @@ func NewBACnetConstructedDataOptional(openingTag BACnetOpeningTag, peekedTagHead
 	_result := &_BACnetConstructedDataOptional{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

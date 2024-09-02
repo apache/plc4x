@@ -105,6 +105,7 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(items []byte, returnCode
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		Items:                         items,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

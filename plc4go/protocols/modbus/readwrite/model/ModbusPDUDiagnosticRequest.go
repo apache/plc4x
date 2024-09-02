@@ -113,6 +113,7 @@ func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *_ModbusPDUD
 		SubFunction:       subFunction,
 		Data:              data,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

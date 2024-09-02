@@ -77,6 +77,7 @@ func NewApduDataExtGroupPropertyValueInfoReport(length uint8) *_ApduDataExtGroup
 	_result := &_ApduDataExtGroupPropertyValueInfoReport{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

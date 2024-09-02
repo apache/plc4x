@@ -118,6 +118,7 @@ func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries BACnetAppli
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NumberOfApduRetries:           numberOfApduRetries,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -105,6 +105,7 @@ func NewDoubleComplexNumberType(real float64, imaginary float64) *_DoubleComplex
 		Real:                              real,
 		Imaginary:                         imaginary,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

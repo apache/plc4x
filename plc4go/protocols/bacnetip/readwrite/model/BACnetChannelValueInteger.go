@@ -93,6 +93,7 @@ func NewBACnetChannelValueInteger(integerValue BACnetApplicationTagSignedInteger
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		IntegerValue:               integerValue,
 	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 

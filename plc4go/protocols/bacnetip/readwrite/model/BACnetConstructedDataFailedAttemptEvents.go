@@ -101,6 +101,7 @@ func NewBACnetConstructedDataFailedAttemptEvents(failedAttemptEvents []BACnetAcc
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FailedAttemptEvents:           failedAttemptEvents,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

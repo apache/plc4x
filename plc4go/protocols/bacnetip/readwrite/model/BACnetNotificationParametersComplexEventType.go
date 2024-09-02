@@ -93,6 +93,7 @@ func NewBACnetNotificationParametersComplexEventType(listOfValues BACnetProperty
 		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 		ListOfValues:                         listOfValues,
 	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
 	return _result
 }
 

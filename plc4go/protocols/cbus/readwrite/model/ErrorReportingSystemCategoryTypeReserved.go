@@ -97,6 +97,7 @@ func NewErrorReportingSystemCategoryTypeReserved(reservedValue uint8) *_ErrorRep
 		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
 		ReservedValue:                            reservedValue,
 	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
 	return _result
 }
 

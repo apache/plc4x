@@ -148,6 +148,7 @@ func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords ui
 		OriginatorSerialNumber: originatorSerialNumber,
 		ApplicationReplySize:   applicationReplySize,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

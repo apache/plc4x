@@ -121,6 +121,7 @@ func NewContentFilterResult(noOfElementResults int32, elementResults []Extension
 		NoOfElementDiagnosticInfos:        noOfElementDiagnosticInfos,
 		ElementDiagnosticInfos:            elementDiagnosticInfos,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

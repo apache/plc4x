@@ -118,6 +118,7 @@ func NewBACnetConstructedDataOccupancyLowerLimit(occupancyLowerLimit BACnetAppli
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		OccupancyLowerLimit:           occupancyLowerLimit,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

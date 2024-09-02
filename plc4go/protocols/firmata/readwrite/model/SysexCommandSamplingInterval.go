@@ -81,6 +81,7 @@ func NewSysexCommandSamplingInterval() *_SysexCommandSamplingInterval {
 	_result := &_SysexCommandSamplingInterval{
 		SysexCommandContract: NewSysexCommand(),
 	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 

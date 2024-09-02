@@ -113,6 +113,7 @@ func NewIdentifyReplyCommandSummary(partName string, unitServiceType byte, versi
 		UnitServiceType:              unitServiceType,
 		Version:                      version,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

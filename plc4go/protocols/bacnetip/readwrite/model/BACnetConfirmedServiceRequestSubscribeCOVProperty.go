@@ -137,6 +137,7 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVProperty(subscriberProcessIdent
 		MonitoredPropertyIdentifier:           monitoredPropertyIdentifier,
 		CovIncrement:                          covIncrement,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataInstallationID(installationId BACnetApplicationTagU
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InstallationId:                installationId,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

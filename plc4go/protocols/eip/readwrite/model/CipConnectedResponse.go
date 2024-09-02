@@ -123,6 +123,7 @@ func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIP
 		AdditionalStatusWords: additionalStatusWords,
 		Data:                  data,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

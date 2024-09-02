@@ -101,6 +101,7 @@ func NewTelephonyDataLineOffHook(reason LineOffHookReason, number string, comman
 		Reason:                reason,
 		Number:                number,
 	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 

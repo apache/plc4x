@@ -97,6 +97,7 @@ func NewSALDataMediaTransport(mediaTransportControlData MediaTransportControlDat
 		SALDataContract:           NewSALData(salData),
 		MediaTransportControlData: mediaTransportControlData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

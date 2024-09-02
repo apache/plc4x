@@ -73,6 +73,7 @@ func NewAccessControlDataAccessPointForcedOpen(commandTypeContainer AccessContro
 	_result := &_AccessControlDataAccessPointForcedOpen{
 		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
 	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
 

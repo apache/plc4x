@@ -105,6 +105,7 @@ func NewParameterValueApplicationAddress2(value ApplicationAddress2, data []byte
 		Value:                  value,
 		Data:                   data,
 	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
 

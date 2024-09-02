@@ -105,6 +105,7 @@ func NewIssuedIdentityToken(tokenData PascalByteString, encryptionAlgorithm Pasc
 		TokenData:                           tokenData,
 		EncryptionAlgorithm:                 encryptionAlgorithm,
 	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
 	return _result
 }
 

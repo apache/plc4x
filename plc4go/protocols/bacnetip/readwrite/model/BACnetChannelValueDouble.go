@@ -93,6 +93,7 @@ func NewBACnetChannelValueDouble(doubleValue BACnetApplicationTagDouble, peekedT
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		DoubleValue:                doubleValue,
 	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
 

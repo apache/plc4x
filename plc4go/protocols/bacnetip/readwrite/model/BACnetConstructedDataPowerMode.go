@@ -118,6 +118,7 @@ func NewBACnetConstructedDataPowerMode(powerMode BACnetApplicationTagBoolean, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PowerMode:                     powerMode,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

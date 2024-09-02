@@ -118,6 +118,7 @@ func NewBACnetConstructedDataAccompaniment(accompaniment BACnetDeviceObjectRefer
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Accompaniment:                 accompaniment,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

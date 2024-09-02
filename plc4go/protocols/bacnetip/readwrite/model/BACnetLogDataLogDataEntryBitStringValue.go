@@ -93,6 +93,7 @@ func NewBACnetLogDataLogDataEntryBitStringValue(bitStringValue BACnetContextTagB
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		BitStringValue:                    bitStringValue,
 	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 

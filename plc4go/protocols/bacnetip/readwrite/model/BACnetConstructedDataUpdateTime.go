@@ -118,6 +118,7 @@ func NewBACnetConstructedDataUpdateTime(updateTime BACnetDateTime, openingTag BA
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		UpdateTime:                    updateTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

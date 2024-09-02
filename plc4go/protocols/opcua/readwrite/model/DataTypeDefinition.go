@@ -77,6 +77,7 @@ func NewDataTypeDefinition() *_DataTypeDefinition {
 	_result := &_DataTypeDefinition{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

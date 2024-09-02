@@ -149,6 +149,7 @@ func NewAirConditioningDataHumidityScheduleEntry(zoneGroup byte, zoneList HVACZo
 		Level:                       level,
 		RawLevel:                    rawLevel,
 	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 

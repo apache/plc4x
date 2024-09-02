@@ -128,6 +128,7 @@ func NewBACnetConstructedDataCommandTimeArray(numberOfDataElements BACnetApplica
 		NumberOfDataElements:          numberOfDataElements,
 		CommandTimeArray:              commandTimeArray,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

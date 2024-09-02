@@ -93,6 +93,7 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(c
 		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
 		CharacterValue: characterValue,
 	}
+	_result.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = _result
 	return _result
 }
 

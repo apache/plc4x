@@ -105,6 +105,7 @@ func NewXVType(x float64, value float32) *_XVType {
 		X:                                 x,
 		Value:                             value,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesLiftCarDirection(liftCarDirection BACnetLiftCarDirec
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LiftCarDirection:             liftCarDirection,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

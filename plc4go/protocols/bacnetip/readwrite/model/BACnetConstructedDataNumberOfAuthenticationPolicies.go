@@ -118,6 +118,7 @@ func NewBACnetConstructedDataNumberOfAuthenticationPolicies(numberOfAuthenticati
 		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NumberOfAuthenticationPolicies: numberOfAuthenticationPolicies,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

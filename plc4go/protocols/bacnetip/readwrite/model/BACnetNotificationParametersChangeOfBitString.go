@@ -117,6 +117,7 @@ func NewBACnetNotificationParametersChangeOfBitString(innerOpeningTag BACnetOpen
 		StatusFlags:                          statusFlags,
 		InnerClosingTag:                      innerClosingTag,
 	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
 	return _result
 }
 

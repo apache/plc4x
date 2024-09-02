@@ -118,6 +118,7 @@ func NewBACnetConstructedDataCarPosition(carPosition BACnetApplicationTagUnsigne
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CarPosition:                   carPosition,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -73,6 +73,7 @@ func NewTriggerControlDataTriggerMax(commandTypeContainer TriggerControlCommandT
 	_result := &_TriggerControlDataTriggerMax{
 		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
 	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
 	return _result
 }
 

@@ -102,6 +102,7 @@ func NewBVLCSecureBVLL(securityWrapper []byte, bvlcPayloadLength uint16) *_BVLCS
 		BVLCContract:    NewBVLC(),
 		SecurityWrapper: securityWrapper,
 	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 

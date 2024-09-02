@@ -133,6 +133,7 @@ func NewBACnetNotificationParametersSignedOutOfRange(innerOpeningTag BACnetOpeni
 		ExceededLimit:                        exceededLimit,
 		InnerClosingTag:                      innerClosingTag,
 	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
 	return _result
 }
 

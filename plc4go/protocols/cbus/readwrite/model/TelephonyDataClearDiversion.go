@@ -73,6 +73,7 @@ func NewTelephonyDataClearDiversion(commandTypeContainer TelephonyCommandTypeCon
 	_result := &_TelephonyDataClearDiversion{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 

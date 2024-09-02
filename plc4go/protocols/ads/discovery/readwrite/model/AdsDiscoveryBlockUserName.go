@@ -97,6 +97,7 @@ func NewAdsDiscoveryBlockUserName(userName AmsString) *_AdsDiscoveryBlockUserNam
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		UserName:                  userName,
 	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 

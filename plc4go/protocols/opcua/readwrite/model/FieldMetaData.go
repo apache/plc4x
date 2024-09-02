@@ -185,6 +185,7 @@ func NewFieldMetaData(name PascalString, description LocalizedText, fieldFlags D
 		NoOfProperties:                    noOfProperties,
 		Properties:                        properties,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

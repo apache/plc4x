@@ -109,6 +109,7 @@ func NewOpcuaMessageError(error OpcuaStatusCode, reason PascalString, chunk Chun
 		Error:              error,
 		Reason:             reason,
 	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
 

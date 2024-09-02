@@ -105,6 +105,7 @@ func NewRationalNumber(numerator int32, denominator uint32) *_RationalNumber {
 		Numerator:                         numerator,
 		Denominator:                       denominator,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

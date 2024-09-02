@@ -109,6 +109,7 @@ func NewOpcuaCloseRequest(securityHeader SecurityHeader, message Payload, chunk 
 		SecurityHeader:     securityHeader,
 		Message:            message,
 	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
 

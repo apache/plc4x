@@ -118,6 +118,7 @@ func NewBACnetConstructedDataInstantaneousPower(instantaneousPower BACnetApplica
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InstantaneousPower:            instantaneousPower,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

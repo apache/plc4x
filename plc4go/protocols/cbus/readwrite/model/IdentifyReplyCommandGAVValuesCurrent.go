@@ -97,6 +97,7 @@ func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_Id
 		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
 		Values:                       values,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataTrigger(trigger BACnetApplicationTagBoolean, openin
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Trigger:                       trigger,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

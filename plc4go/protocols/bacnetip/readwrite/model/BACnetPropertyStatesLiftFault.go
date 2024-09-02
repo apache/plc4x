@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesLiftFault(liftFault BACnetLiftFaultTagged, peekedTag
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LiftFault:                    liftFault,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

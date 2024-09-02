@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDoorPulseTime(doorPulseTime BACnetApplicationTagUns
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DoorPulseTime:                 doorPulseTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

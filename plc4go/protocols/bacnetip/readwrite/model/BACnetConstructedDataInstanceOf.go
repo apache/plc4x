@@ -118,6 +118,7 @@ func NewBACnetConstructedDataInstanceOf(instanceOf BACnetApplicationTagCharacter
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InstanceOf:                    instanceOf,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -122,6 +122,7 @@ func NewNodeIdString(namespaceIndex uint16, id PascalString) *_NodeIdString {
 		NamespaceIndex:               namespaceIndex,
 		Id:                           id,
 	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
 	return _result
 }
 

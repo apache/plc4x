@@ -107,6 +107,7 @@ func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged
 		OriginalInvokeId: originalInvokeId,
 		RejectReason:     rejectReason,
 	}
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 

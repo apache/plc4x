@@ -81,6 +81,7 @@ func NewAdsInvalidRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceA
 	_result := &_AdsInvalidRequest{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

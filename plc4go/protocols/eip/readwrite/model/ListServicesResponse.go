@@ -105,6 +105,7 @@ func NewListServicesResponse(typeIds []TypeId, sessionHandle uint32, status uint
 		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 		TypeIds:           typeIds,
 	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 

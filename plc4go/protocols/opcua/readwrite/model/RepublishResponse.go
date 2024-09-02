@@ -105,6 +105,7 @@ func NewRepublishResponse(responseHeader ExtensionObjectDefinition, notification
 		ResponseHeader:                    responseHeader,
 		NotificationMessage:               notificationMessage,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

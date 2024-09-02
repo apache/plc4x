@@ -118,6 +118,7 @@ func NewBACnetConstructedDataIntegralConstant(integralConstant BACnetApplication
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		IntegralConstant:              integralConstant,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

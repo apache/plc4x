@@ -93,6 +93,7 @@ func NewBACnetCalendarEntryDate(dateValue BACnetContextTagDate, peekedTagHeader 
 		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
 		DateValue:                   dateValue,
 	}
+	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
 	return _result
 }
 

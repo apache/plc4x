@@ -93,6 +93,7 @@ func NewBACnetValueSourceAddress(address BACnetAddressEnclosed, peekedTagHeader 
 		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
 		Address:                   address,
 	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
 	return _result
 }
 

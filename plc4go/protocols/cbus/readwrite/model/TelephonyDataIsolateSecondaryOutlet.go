@@ -118,6 +118,7 @@ func NewTelephonyDataIsolateSecondaryOutlet(isolateStatus byte, commandTypeConta
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		IsolateStatus:         isolateStatus,
 	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 

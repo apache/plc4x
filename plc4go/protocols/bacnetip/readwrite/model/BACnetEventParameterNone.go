@@ -93,6 +93,7 @@ func NewBACnetEventParameterNone(none BACnetContextTagNull, peekedTagHeader BACn
 		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
 		None:                         none,
 	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 

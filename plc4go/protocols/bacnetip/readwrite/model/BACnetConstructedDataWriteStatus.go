@@ -118,6 +118,7 @@ func NewBACnetConstructedDataWriteStatus(writeStatus BACnetWriteStatusTagged, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		WriteStatus:                   writeStatus,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

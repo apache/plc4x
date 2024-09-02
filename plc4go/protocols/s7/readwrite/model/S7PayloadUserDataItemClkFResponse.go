@@ -121,6 +121,7 @@ func NewS7PayloadUserDataItemClkFResponse(res uint8, year1 uint8, timeStamp Date
 		Year1:                         year1,
 		TimeStamp:                     timeStamp,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

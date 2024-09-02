@@ -118,6 +118,7 @@ func NewBACnetConstructedDataCarLoad(carLoad BACnetApplicationTagReal, openingTa
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CarLoad:                       carLoad,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

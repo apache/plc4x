@@ -109,6 +109,7 @@ func NewBACnetEventLogRecordLogDatumNotification(innerOpeningTag BACnetOpeningTa
 		Notification:                         notification,
 		InnerClosingTag:                      innerClosingTag,
 	}
+	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
 	return _result
 }
 

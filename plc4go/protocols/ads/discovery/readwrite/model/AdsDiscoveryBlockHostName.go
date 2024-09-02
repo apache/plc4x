@@ -97,6 +97,7 @@ func NewAdsDiscoveryBlockHostName(hostName AmsString) *_AdsDiscoveryBlockHostNam
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		HostName:                  hostName,
 	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 

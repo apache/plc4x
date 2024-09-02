@@ -115,6 +115,7 @@ func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DI
 		DibDeviceInfo:           dibDeviceInfo,
 		DibSuppSvcFamilies:      dibSuppSvcFamilies,
 	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 

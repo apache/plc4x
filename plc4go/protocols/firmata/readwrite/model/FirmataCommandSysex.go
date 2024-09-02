@@ -99,6 +99,7 @@ func NewFirmataCommandSysex(command SysexCommand, response bool) *_FirmataComman
 		FirmataCommandContract: NewFirmataCommand(response),
 		Command:                command,
 	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
 

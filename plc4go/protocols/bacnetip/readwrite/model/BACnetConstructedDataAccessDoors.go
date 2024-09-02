@@ -128,6 +128,7 @@ func NewBACnetConstructedDataAccessDoors(numberOfDataElements BACnetApplicationT
 		NumberOfDataElements:          numberOfDataElements,
 		AccessDoors:                   accessDoors,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -107,6 +107,7 @@ func NewTimeZoneDataType(offset int16, daylightSavingInOffset bool) *_TimeZoneDa
 		Offset:                            offset,
 		DaylightSavingInOffset:            daylightSavingInOffset,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

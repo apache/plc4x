@@ -153,6 +153,7 @@ func NewSessionlessInvokeRequestType(urisVersion uint32, noOfNamespaceUris int32
 		LocaleIds:                         localeIds,
 		ServiceId:                         serviceId,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

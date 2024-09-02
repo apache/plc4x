@@ -118,6 +118,7 @@ func NewBACnetConstructedDataReadOnly(readOnly BACnetApplicationTagBoolean, open
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ReadOnly:                      readOnly,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

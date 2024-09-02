@@ -97,6 +97,7 @@ func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObject
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		ObjectIdentifier:         objectIdentifier,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

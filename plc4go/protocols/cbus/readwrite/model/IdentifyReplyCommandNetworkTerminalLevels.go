@@ -97,6 +97,7 @@ func NewIdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels []byte, 
 		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
 		NetworkTerminalLevels:        networkTerminalLevels,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

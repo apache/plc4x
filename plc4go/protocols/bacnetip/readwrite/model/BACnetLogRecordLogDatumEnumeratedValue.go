@@ -93,6 +93,7 @@ func NewBACnetLogRecordLogDatumEnumeratedValue(enumeratedValue BACnetContextTagE
 		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		EnumeratedValue:                 enumeratedValue,
 	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 

@@ -114,6 +114,7 @@ func NewBACnetContextTagUnsignedInteger(payload BACnetTagPayloadUnsignedInteger,
 		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
 		Payload:                  payload,
 	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
 

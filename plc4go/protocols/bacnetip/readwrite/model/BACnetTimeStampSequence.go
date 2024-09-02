@@ -93,6 +93,7 @@ func NewBACnetTimeStampSequence(sequenceNumber BACnetContextTagUnsignedInteger, 
 		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
 		SequenceNumber:          sequenceNumber,
 	}
+	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
 	return _result
 }
 

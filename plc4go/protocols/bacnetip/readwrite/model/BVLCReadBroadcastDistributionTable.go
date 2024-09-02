@@ -78,6 +78,7 @@ func NewBVLCReadBroadcastDistributionTable() *_BVLCReadBroadcastDistributionTabl
 	_result := &_BVLCReadBroadcastDistributionTable{
 		BVLCContract: NewBVLC(),
 	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 

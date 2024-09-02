@@ -115,6 +115,7 @@ func NewQueryNextRequest(requestHeader ExtensionObjectDefinition, releaseContinu
 		ReleaseContinuationPoint:          releaseContinuationPoint,
 		ContinuationPoint:                 continuationPoint,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

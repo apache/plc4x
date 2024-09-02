@@ -100,6 +100,7 @@ func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckPaylo
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		BytesOfRemovedService:    bytesOfRemovedService,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

@@ -85,6 +85,7 @@ func NewNullListServicesResponse(sessionHandle uint32, status uint32, senderCont
 	_result := &_NullListServicesResponse{
 		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 

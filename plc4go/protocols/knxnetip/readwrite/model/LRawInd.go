@@ -77,6 +77,7 @@ func NewLRawInd(size uint16) *_LRawInd {
 	_result := &_LRawInd{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

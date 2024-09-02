@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLimitMonitoringInterval(limitMonitoringInterval BAC
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LimitMonitoringInterval:       limitMonitoringInterval,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

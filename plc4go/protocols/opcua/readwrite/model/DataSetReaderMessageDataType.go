@@ -77,6 +77,7 @@ func NewDataSetReaderMessageDataType() *_DataSetReaderMessageDataType {
 	_result := &_DataSetReaderMessageDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

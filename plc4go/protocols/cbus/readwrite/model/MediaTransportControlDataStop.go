@@ -73,6 +73,7 @@ func NewMediaTransportControlDataStop(commandTypeContainer MediaTransportControl
 	_result := &_MediaTransportControlDataStop{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 

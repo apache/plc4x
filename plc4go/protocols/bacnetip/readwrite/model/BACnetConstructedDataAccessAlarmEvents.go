@@ -101,6 +101,7 @@ func NewBACnetConstructedDataAccessAlarmEvents(accessAlarmEvents []BACnetAccessE
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AccessAlarmEvents:             accessAlarmEvents,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

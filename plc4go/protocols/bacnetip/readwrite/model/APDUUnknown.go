@@ -105,6 +105,7 @@ func NewAPDUUnknown(unknownTypeRest uint8, unknownBytes []byte, apduLength uint1
 		UnknownTypeRest: unknownTypeRest,
 		UnknownBytes:    unknownBytes,
 	}
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 

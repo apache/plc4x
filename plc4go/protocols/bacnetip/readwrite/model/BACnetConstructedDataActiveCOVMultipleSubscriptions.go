@@ -101,6 +101,7 @@ func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(activeCOVMultipleSub
 		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

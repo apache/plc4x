@@ -129,6 +129,7 @@ func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl P
 		NoOfServerCapabilities:            noOfServerCapabilities,
 		ServerCapabilities:                serverCapabilities,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

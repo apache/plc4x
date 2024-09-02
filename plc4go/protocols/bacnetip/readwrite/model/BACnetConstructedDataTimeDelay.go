@@ -118,6 +118,7 @@ func NewBACnetConstructedDataTimeDelay(timeDelay BACnetApplicationTagUnsignedInt
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		TimeDelay:                     timeDelay,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

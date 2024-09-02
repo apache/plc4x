@@ -77,6 +77,7 @@ func NewApduDataExtNetworkParameterRead(length uint8) *_ApduDataExtNetworkParame
 	_result := &_ApduDataExtNetworkParameterRead{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

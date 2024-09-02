@@ -81,6 +81,7 @@ func NewSysexCommandStringData() *_SysexCommandStringData {
 	_result := &_SysexCommandStringData{
 		SysexCommandContract: NewSysexCommand(),
 	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 

@@ -105,6 +105,7 @@ func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSumm
 		ListOfEventSummaries:     listOfEventSummaries,
 		MoreEvents:               moreEvents,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

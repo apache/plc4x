@@ -101,6 +101,7 @@ func NewSysexCommandPinStateQuery(pin uint8) *_SysexCommandPinStateQuery {
 		SysexCommandContract: NewSysexCommand(),
 		Pin:                  pin,
 	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 

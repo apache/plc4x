@@ -97,6 +97,7 @@ func NewSALDataPoolsSpasPondsFountainsControl(poolsSpaPondsFountainsData Lightin
 		SALDataContract:            NewSALData(salData),
 		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

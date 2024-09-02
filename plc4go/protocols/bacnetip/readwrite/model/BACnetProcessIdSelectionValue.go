@@ -93,6 +93,7 @@ func NewBACnetProcessIdSelectionValue(processIdentifier BACnetApplicationTagUnsi
 		BACnetProcessIdSelectionContract: NewBACnetProcessIdSelection(peekedTagHeader),
 		ProcessIdentifier:                processIdentifier,
 	}
+	_result.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = _result
 	return _result
 }
 

@@ -81,6 +81,7 @@ func NewBACnetConstructedDataBinaryInputAll(openingTag BACnetOpeningTag, peekedT
 	_result := &_BACnetConstructedDataBinaryInputAll{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesReliability(reliability BACnetReliabilityTagged, pee
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		Reliability:                  reliability,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

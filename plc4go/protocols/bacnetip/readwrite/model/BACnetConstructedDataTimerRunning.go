@@ -118,6 +118,7 @@ func NewBACnetConstructedDataTimerRunning(timerRunning BACnetApplicationTagBoole
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		TimerRunning:                  timerRunning,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

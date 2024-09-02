@@ -193,6 +193,7 @@ func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifie
 		ToState:                               toState,
 		EventValues:                           eventValues,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

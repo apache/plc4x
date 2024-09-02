@@ -77,6 +77,7 @@ func NewApduDataExtNetworkParameterWrite(length uint8) *_ApduDataExtNetworkParam
 	_result := &_ApduDataExtNetworkParameterWrite{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

@@ -129,6 +129,7 @@ func NewSetMonitoringModeRequest(requestHeader ExtensionObjectDefinition, subscr
 		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
 		MonitoredItemIds:                  monitoredItemIds,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

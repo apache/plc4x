@@ -105,6 +105,7 @@ func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint
 		PayloadLength: payloadLength,
 		Payload:       payload,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

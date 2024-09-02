@@ -129,6 +129,7 @@ func NewReadRequest(requestHeader ExtensionObjectDefinition, maxAge float64, tim
 		NoOfNodesToRead:                   noOfNodesToRead,
 		NodesToRead:                       nodesToRead,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

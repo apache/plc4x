@@ -93,6 +93,7 @@ func NewBACnetScaleFloatScale(floatScale BACnetContextTagReal, peekedTagHeader B
 		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
 		FloatScale:          floatScale,
 	}
+	_result.BACnetScaleContract.(*_BACnetScale)._SubType = _result
 	return _result
 }
 

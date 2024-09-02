@@ -113,6 +113,7 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(szlId SzlId, szlIndex uin
 		SzlId:                         szlId,
 		SzlIndex:                      szlIndex,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewBACnetLogRecordLogDatumTimeChange(timeChange BACnetContextTagReal, openi
 		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		TimeChange:                      timeChange,
 	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 

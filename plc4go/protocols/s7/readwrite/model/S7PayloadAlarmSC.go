@@ -105,6 +105,7 @@ func NewS7PayloadAlarmSC(alarmMessage AlarmMessagePushType, returnCode DataTrans
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		AlarmMessage:                  alarmMessage,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

@@ -128,6 +128,7 @@ func NewBACnetConstructedDataCarDoorText(numberOfDataElements BACnetApplicationT
 		NumberOfDataElements:          numberOfDataElements,
 		CarDoorText:                   carDoorText,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

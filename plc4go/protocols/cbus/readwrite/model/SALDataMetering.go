@@ -97,6 +97,7 @@ func NewSALDataMetering(meteringData MeteringData, salData SALData) *_SALDataMet
 		SALDataContract: NewSALData(salData),
 		MeteringData:    meteringData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

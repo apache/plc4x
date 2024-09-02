@@ -139,6 +139,7 @@ func NewBrowseDescription(nodeId NodeId, browseDirection BrowseDirection, refere
 		NodeClassMask:                     nodeClassMask,
 		ResultMask:                        resultMask,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -129,6 +129,7 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(subscriberProc
 		MaxNotificationDelay:                  maxNotificationDelay,
 		ListOfCovSubscriptionSpecifications:   listOfCovSubscriptionSpecifications,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

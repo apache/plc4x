@@ -149,6 +149,7 @@ func NewAirConditioningDataHvacScheduleEntry(zoneGroup byte, zoneList HVACZoneLi
 		Level:                       level,
 		RawLevel:                    rawLevel,
 	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 

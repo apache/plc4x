@@ -93,6 +93,7 @@ func NewBACnetLogDataLogDataEntryFailure(failure ErrorEnclosed, peekedTagHeader 
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		Failure:                           failure,
 	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 

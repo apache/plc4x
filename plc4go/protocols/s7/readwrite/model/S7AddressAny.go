@@ -139,6 +139,7 @@ func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNum
 		ByteAddress:       byteAddress,
 		BitAddress:        bitAddress,
 	}
+	_result.S7AddressContract.(*_S7Address)._SubType = _result
 	return _result
 }
 

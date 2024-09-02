@@ -131,6 +131,7 @@ func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu Mod
 		UnitIdentifier:        unitIdentifier,
 		Pdu:                   pdu,
 	}
+	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
 	return _result
 }
 

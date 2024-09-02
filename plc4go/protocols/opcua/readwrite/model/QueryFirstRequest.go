@@ -145,6 +145,7 @@ func NewQueryFirstRequest(requestHeader ExtensionObjectDefinition, view Extensio
 		MaxDataSetsToReturn:               maxDataSetsToReturn,
 		MaxReferencesToReturn:             maxReferencesToReturn,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

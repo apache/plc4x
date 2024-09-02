@@ -77,6 +77,7 @@ func NewOrientation() *_Orientation {
 	_result := &_Orientation{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

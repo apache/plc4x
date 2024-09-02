@@ -118,6 +118,7 @@ func NewBACnetConstructedDataStrikeCount(strikeCount BACnetApplicationTagUnsigne
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		StrikeCount:                   strikeCount,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

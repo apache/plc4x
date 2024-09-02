@@ -77,6 +77,7 @@ func NewSALDataTesting(salData SALData) *_SALDataTesting {
 	_result := &_SALDataTesting{
 		SALDataContract: NewSALData(salData),
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

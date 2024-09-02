@@ -107,6 +107,7 @@ func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServi
 		OriginalInvokeId: originalInvokeId,
 		ServiceChoice:    serviceChoice,
 	}
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 

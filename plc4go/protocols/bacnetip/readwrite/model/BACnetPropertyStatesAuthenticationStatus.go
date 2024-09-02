@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesAuthenticationStatus(authenticationStatus BACnetAuth
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		AuthenticationStatus:         authenticationStatus,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

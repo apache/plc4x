@@ -93,6 +93,7 @@ func NewBACnetHostAddressName(name BACnetContextTagCharacterString, peekedTagHea
 		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
 		Name:                      name,
 	}
+	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
 	return _result
 }
 

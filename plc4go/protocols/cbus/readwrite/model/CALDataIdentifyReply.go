@@ -101,6 +101,7 @@ func NewCALDataIdentifyReply(attribute Attribute, identifyReplyCommand IdentifyR
 		Attribute:            attribute,
 		IdentifyReplyCommand: identifyReplyCommand,
 	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 

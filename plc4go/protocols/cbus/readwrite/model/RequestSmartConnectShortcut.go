@@ -117,6 +117,7 @@ func NewRequestSmartConnectShortcut(pipePeek RequestType, secondPipe *byte, peek
 		PipePeek:        pipePeek,
 		SecondPipe:      secondPipe,
 	}
+	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
 

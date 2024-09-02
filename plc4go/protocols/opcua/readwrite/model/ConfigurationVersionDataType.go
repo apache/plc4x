@@ -105,6 +105,7 @@ func NewConfigurationVersionDataType(majorVersion uint32, minorVersion uint32) *
 		MajorVersion:                      majorVersion,
 		MinorVersion:                      minorVersion,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

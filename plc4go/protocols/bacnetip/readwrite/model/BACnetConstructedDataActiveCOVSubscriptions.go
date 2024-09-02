@@ -101,6 +101,7 @@ func NewBACnetConstructedDataActiveCOVSubscriptions(activeCOVSubscriptions []BAC
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ActiveCOVSubscriptions:        activeCOVSubscriptions,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

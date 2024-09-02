@@ -129,6 +129,7 @@ func NewCreateMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, sub
 		NoOfItemsToCreate:                 noOfItemsToCreate,
 		ItemsToCreate:                     itemsToCreate,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

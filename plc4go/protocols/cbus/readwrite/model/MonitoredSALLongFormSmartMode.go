@@ -170,6 +170,7 @@ func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAd
 		ReplyNetwork:         replyNetwork,
 		SalData:              salData,
 	}
+	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
 	return _result
 }
 

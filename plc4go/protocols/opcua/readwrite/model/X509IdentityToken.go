@@ -97,6 +97,7 @@ func NewX509IdentityToken(certificateData PascalByteString) *_X509IdentityToken 
 		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
 		CertificateData:                     certificateData,
 	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
 	return _result
 }
 

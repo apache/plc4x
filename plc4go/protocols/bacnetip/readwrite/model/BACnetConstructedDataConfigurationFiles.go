@@ -128,6 +128,7 @@ func NewBACnetConstructedDataConfigurationFiles(numberOfDataElements BACnetAppli
 		NumberOfDataElements:          numberOfDataElements,
 		ConfigurationFiles:            configurationFiles,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

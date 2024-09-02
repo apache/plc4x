@@ -118,6 +118,7 @@ func NewBACnetConstructedDataRequestedShedLevel(requestedShedLevel BACnetShedLev
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RequestedShedLevel:            requestedShedLevel,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewCOTPParameterChecksum(crc uint8, rest uint8) *_COTPParameterChecksum {
 		COTPParameterContract: NewCOTPParameter(rest),
 		Crc:                   crc,
 	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewKnxGroupAddressFreeLevel(subGroup uint16) *_KnxGroupAddressFreeLevel {
 		KnxGroupAddressContract: NewKnxGroupAddress(),
 		SubGroup:                subGroup,
 	}
+	_result.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = _result
 	return _result
 }
 

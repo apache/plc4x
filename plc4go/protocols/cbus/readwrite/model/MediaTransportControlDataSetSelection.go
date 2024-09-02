@@ -101,6 +101,7 @@ func NewMediaTransportControlDataSetSelection(selectionHi byte, selectionLo byte
 		SelectionHi:                       selectionHi,
 		SelectionLo:                       selectionLo,
 	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 

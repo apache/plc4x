@@ -77,6 +77,7 @@ func NewCartesianCoordinates() *_CartesianCoordinates {
 	_result := &_CartesianCoordinates{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

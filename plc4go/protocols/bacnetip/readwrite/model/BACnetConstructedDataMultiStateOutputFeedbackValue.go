@@ -118,6 +118,7 @@ func NewBACnetConstructedDataMultiStateOutputFeedbackValue(feedbackValue BACnetA
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FeedbackValue:                 feedbackValue,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

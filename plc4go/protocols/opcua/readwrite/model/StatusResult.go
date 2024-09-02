@@ -105,6 +105,7 @@ func NewStatusResult(statusCode StatusCode, diagnosticInfo DiagnosticInfo) *_Sta
 		StatusCode:                        statusCode,
 		DiagnosticInfo:                    diagnosticInfo,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -109,6 +109,7 @@ func NewBACnetFaultParameterFaultStatusFlags(openingTag BACnetOpeningTag, status
 		StatusFlagsReference:         statusFlagsReference,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
 	return _result
 }
 

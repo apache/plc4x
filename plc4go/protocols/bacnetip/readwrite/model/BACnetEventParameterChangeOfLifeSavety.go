@@ -133,6 +133,7 @@ func NewBACnetEventParameterChangeOfLifeSavety(openingTag BACnetOpeningTag, time
 		ModePropertyReference:        modePropertyReference,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 

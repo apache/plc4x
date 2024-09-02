@@ -129,6 +129,7 @@ func NewBrowseRequest(requestHeader ExtensionObjectDefinition, view ExtensionObj
 		NoOfNodesToBrowse:                 noOfNodesToBrowse,
 		NodesToBrowse:                     nodesToBrowse,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

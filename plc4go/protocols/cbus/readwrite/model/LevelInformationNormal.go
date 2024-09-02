@@ -126,6 +126,7 @@ func NewLevelInformationNormal(pair1 LevelInformationNibblePair, pair2 LevelInfo
 		Pair1:                    pair1,
 		Pair2:                    pair2,
 	}
+	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
 	return _result
 }
 

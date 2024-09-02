@@ -77,6 +77,7 @@ func NewTDataConnectedInd(size uint16) *_TDataConnectedInd {
 	_result := &_TDataConnectedInd{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

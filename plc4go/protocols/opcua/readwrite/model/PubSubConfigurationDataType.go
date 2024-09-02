@@ -131,6 +131,7 @@ func NewPubSubConfigurationDataType(noOfPublishedDataSets int32, publishedDataSe
 		Connections:                       connections,
 		Enabled:                           enabled,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

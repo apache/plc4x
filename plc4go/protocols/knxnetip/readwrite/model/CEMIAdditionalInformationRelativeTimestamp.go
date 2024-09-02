@@ -113,6 +113,7 @@ func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTim
 		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
 		RelativeTimestamp:                 relativeTimestamp,
 	}
+	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
 	return _result
 }
 

@@ -77,6 +77,7 @@ func NewApduDataExtKeyResponse(length uint8) *_ApduDataExtKeyResponse {
 	_result := &_ApduDataExtKeyResponse{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

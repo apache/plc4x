@@ -118,6 +118,7 @@ func NewBACnetConstructedDataArchive(archive BACnetApplicationTagBoolean, openin
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Archive:                       archive,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

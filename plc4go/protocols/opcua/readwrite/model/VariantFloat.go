@@ -105,6 +105,7 @@ func NewVariantFloat(arrayLength *int32, value []float32, arrayLengthSpecified b
 		ArrayLength:     arrayLength,
 		Value:           value,
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

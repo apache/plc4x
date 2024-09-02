@@ -105,6 +105,7 @@ func NewModbusPDUReadFileRecordRequest(items []ModbusPDUReadFileRecordRequestIte
 		ModbusPDUContract: NewModbusPDU(),
 		Items:             items,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

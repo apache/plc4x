@@ -99,6 +99,7 @@ func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) *_SearchRequ
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 		HpaiIDiscoveryEndpoint:  hpaiIDiscoveryEndpoint,
 	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 

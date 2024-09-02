@@ -105,6 +105,7 @@ func NewUnsignedRationalNumber(numerator uint32, denominator uint32) *_UnsignedR
 		Numerator:                         numerator,
 		Denominator:                       denominator,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

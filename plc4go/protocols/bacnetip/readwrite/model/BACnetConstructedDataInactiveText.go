@@ -118,6 +118,7 @@ func NewBACnetConstructedDataInactiveText(inactiveText BACnetApplicationTagChara
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InactiveText:                  inactiveText,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

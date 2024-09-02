@@ -100,6 +100,7 @@ func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serv
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		Data:                     data,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

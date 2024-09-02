@@ -102,6 +102,7 @@ func NewCIPEncapsulationReadResponse(response DF1ResponseMessage, sessionHandle 
 		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
 		Response:                       response,
 	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
 	return _result
 }
 

@@ -101,6 +101,7 @@ func NewBACnetConstructedDataCredentialsInZone(credentialsInZone []BACnetDeviceO
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CredentialsInZone:             credentialsInZone,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

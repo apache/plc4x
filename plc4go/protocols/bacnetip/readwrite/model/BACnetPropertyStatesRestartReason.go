@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesRestartReason(restartReason BACnetRestartReasonTagge
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		RestartReason:                restartReason,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

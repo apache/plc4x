@@ -93,6 +93,7 @@ func NewBACnetOptionalREALValue(realValue BACnetApplicationTagReal, peekedTagHea
 		BACnetOptionalREALContract: NewBACnetOptionalREAL(peekedTagHeader),
 		RealValue:                  realValue,
 	}
+	_result.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = _result
 	return _result
 }
 

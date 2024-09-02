@@ -171,6 +171,7 @@ func NewRegisteredServer(serverUri PascalString, productUri PascalString, noOfSe
 		SemaphoreFilePath:                 semaphoreFilePath,
 		IsOnline:                          isOnline,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

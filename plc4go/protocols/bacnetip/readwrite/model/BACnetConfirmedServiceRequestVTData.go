@@ -113,6 +113,7 @@ func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicatio
 		VtNewData:                             vtNewData,
 		VtDataFlag:                            vtDataFlag,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

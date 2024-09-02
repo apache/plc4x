@@ -93,6 +93,7 @@ func NewBACnetClientCOVNone(defaultIncrement BACnetApplicationTagNull, peekedTag
 		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
 		DefaultIncrement:        defaultIncrement,
 	}
+	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
 	return _result
 }
 

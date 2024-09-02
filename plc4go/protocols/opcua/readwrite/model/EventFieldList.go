@@ -113,6 +113,7 @@ func NewEventFieldList(clientHandle uint32, noOfEventFields int32, eventFields [
 		NoOfEventFields:                   noOfEventFields,
 		EventFields:                       eventFields,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

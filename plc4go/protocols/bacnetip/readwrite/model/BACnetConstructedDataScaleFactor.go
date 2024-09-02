@@ -118,6 +118,7 @@ func NewBACnetConstructedDataScaleFactor(scaleFactor BACnetApplicationTagReal, o
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ScaleFactor:                   scaleFactor,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

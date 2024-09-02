@@ -118,6 +118,7 @@ func NewBACnetConstructedDataProgramLocation(programLocation BACnetApplicationTa
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProgramLocation:               programLocation,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

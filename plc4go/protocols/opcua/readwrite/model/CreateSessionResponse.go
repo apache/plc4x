@@ -185,6 +185,7 @@ func NewCreateSessionResponse(responseHeader ExtensionObjectDefinition, sessionI
 		ServerSignature:                   serverSignature,
 		MaxRequestMessageSize:             maxRequestMessageSize,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

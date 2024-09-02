@@ -115,6 +115,7 @@ func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_Cip
 		Status:             status,
 		ExtStatus:          extStatus,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

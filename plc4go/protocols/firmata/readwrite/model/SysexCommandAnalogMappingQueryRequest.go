@@ -81,6 +81,7 @@ func NewSysexCommandAnalogMappingQueryRequest() *_SysexCommandAnalogMappingQuery
 	_result := &_SysexCommandAnalogMappingQueryRequest{
 		SysexCommandContract: NewSysexCommand(),
 	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 

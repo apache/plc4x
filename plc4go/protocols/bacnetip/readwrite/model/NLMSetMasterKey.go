@@ -97,6 +97,7 @@ func NewNLMSetMasterKey(key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLM
 		NLMContract: NewNLM(apduLength),
 		Key:         key,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataIPv6DHCPLeaseTime(ipv6DhcpLeaseTime BACnetApplicati
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Ipv6DhcpLeaseTime:             ipv6DhcpLeaseTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

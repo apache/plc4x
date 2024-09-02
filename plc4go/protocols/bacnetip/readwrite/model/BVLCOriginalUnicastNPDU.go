@@ -102,6 +102,7 @@ func NewBVLCOriginalUnicastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOrigi
 		BVLCContract: NewBVLC(),
 		Npdu:         npdu,
 	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 

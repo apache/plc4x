@@ -109,6 +109,7 @@ func NewAdsReadWriteResponse(result ReturnCode, data []byte, targetAmsNetId AmsN
 		Result:            result,
 		Data:              data,
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

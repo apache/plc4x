@@ -118,6 +118,7 @@ func NewBACnetConstructedDataTimeSynchronizationInterval(timeSynchronization BAC
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		TimeSynchronization:           timeSynchronization,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

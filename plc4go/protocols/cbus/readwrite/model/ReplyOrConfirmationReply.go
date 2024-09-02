@@ -101,6 +101,7 @@ func NewReplyOrConfirmationReply(reply Reply, termination ResponseTermination, p
 		Reply:                       reply,
 		Termination:                 termination,
 	}
+	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
 	return _result
 }
 

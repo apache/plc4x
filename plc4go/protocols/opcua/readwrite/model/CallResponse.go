@@ -129,6 +129,7 @@ func NewCallResponse(responseHeader ExtensionObjectDefinition, noOfResults int32
 		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

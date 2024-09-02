@@ -105,6 +105,7 @@ func NewGenericAttributeValue(attributeId uint32, value Variant) *_GenericAttrib
 		AttributeId:                       attributeId,
 		Value:                             value,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

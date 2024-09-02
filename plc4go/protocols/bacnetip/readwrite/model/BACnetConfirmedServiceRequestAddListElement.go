@@ -121,6 +121,7 @@ func NewBACnetConfirmedServiceRequestAddListElement(objectIdentifier BACnetConte
 		ArrayIndex:                            arrayIndex,
 		ListOfElements:                        listOfElements,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

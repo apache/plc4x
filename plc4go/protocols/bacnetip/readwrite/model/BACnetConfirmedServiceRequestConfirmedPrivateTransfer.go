@@ -113,6 +113,7 @@ func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(vendorId BACnetVen
 		ServiceNumber:                         serviceNumber,
 		ServiceParameters:                     serviceParameters,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

@@ -77,6 +77,7 @@ func NewDataSetWriterTransportDataType() *_DataSetWriterTransportDataType {
 	_result := &_DataSetWriterTransportDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

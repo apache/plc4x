@@ -101,6 +101,7 @@ func NewCALDataAcknowledge(paramNo Parameter, code uint8, commandTypeContainer C
 		ParamNo:         paramNo,
 		Code:            code,
 	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 

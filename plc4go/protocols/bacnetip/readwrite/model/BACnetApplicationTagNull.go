@@ -73,6 +73,7 @@ func NewBACnetApplicationTagNull(header BACnetTagHeader) *_BACnetApplicationTagN
 	_result := &_BACnetApplicationTagNull{
 		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
 	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
 	return _result
 }
 

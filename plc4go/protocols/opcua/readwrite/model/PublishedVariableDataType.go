@@ -161,6 +161,7 @@ func NewPublishedVariableDataType(publishedVariable NodeId, attributeId uint32, 
 		NoOfMetaDataProperties:            noOfMetaDataProperties,
 		MetaDataProperties:                metaDataProperties,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -153,6 +153,7 @@ func NewDataTypeSchemaHeader(noOfNamespaces int32, namespaces []PascalString, no
 		NoOfSimpleDataTypes:               noOfSimpleDataTypes,
 		SimpleDataTypes:                   simpleDataTypes,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

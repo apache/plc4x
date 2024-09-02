@@ -117,6 +117,7 @@ func NewMediaTransportControlDataSetTrack(trackMSB byte, trackMMSB byte, trackML
 		TrackMLSB:                         trackMLSB,
 		TrackLSB:                          trackLSB,
 	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 

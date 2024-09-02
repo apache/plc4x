@@ -99,6 +99,7 @@ func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMe
 		FirmataMessageContract: NewFirmataMessage(response),
 		Command:                command,
 	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
 	return _result
 }
 

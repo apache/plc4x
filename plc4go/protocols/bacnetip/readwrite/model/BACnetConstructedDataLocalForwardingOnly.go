@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLocalForwardingOnly(localForwardingOnly BACnetAppli
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LocalForwardingOnly:           localForwardingOnly,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -123,6 +123,7 @@ func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAtt
 		ExtStatus:          extStatus,
 		Attributes:         attributes,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

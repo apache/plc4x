@@ -93,6 +93,7 @@ func NewBACnetFaultParameterNone(none BACnetContextTagNull, peekedTagHeader BACn
 		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
 		None:                         none,
 	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
 	return _result
 }
 

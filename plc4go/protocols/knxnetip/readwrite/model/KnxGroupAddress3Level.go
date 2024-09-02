@@ -113,6 +113,7 @@ func NewKnxGroupAddress3Level(mainGroup uint8, middleGroup uint8, subGroup uint8
 		MiddleGroup:             middleGroup,
 		SubGroup:                subGroup,
 	}
+	_result.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = _result
 	return _result
 }
 

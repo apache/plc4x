@@ -77,6 +77,7 @@ func NewApduDataExtKeyWrite(length uint8) *_ApduDataExtKeyWrite {
 	_result := &_ApduDataExtKeyWrite{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

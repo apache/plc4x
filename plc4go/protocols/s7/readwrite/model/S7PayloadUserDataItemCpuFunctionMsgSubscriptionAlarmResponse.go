@@ -137,6 +137,7 @@ func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(result uint
 		Reserved02:                    reserved02,
 		Reserved03:                    reserved03,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

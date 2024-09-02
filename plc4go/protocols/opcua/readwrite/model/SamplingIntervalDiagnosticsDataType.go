@@ -121,6 +121,7 @@ func NewSamplingIntervalDiagnosticsDataType(samplingInterval float64, monitoredI
 		MaxMonitoredItemCount:             maxMonitoredItemCount,
 		DisabledMonitoredItemCount:        disabledMonitoredItemCount,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

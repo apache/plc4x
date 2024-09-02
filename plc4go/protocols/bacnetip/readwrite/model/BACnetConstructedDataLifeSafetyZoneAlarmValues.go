@@ -101,6 +101,7 @@ func NewBACnetConstructedDataLifeSafetyZoneAlarmValues(alarmValues []BACnetLifeS
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AlarmValues:                   alarmValues,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

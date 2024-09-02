@@ -93,6 +93,7 @@ func NewBACnetShedLevelPercent(percent BACnetContextTagUnsignedInteger, peekedTa
 		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
 		Percent:                 percent,
 	}
+	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
 	return _result
 }
 

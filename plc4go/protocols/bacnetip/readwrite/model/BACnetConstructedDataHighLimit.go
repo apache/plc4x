@@ -118,6 +118,7 @@ func NewBACnetConstructedDataHighLimit(highLimit BACnetApplicationTagReal, openi
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		HighLimit:                     highLimit,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

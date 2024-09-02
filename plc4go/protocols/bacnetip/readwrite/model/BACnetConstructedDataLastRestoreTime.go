@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLastRestoreTime(lastRestoreTime BACnetTimeStamp, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastRestoreTime:               lastRestoreTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

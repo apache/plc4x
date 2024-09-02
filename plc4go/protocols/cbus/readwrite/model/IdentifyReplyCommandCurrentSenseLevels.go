@@ -97,6 +97,7 @@ func NewIdentifyReplyCommandCurrentSenseLevels(currentSenseLevels []byte, numByt
 		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
 		CurrentSenseLevels:           currentSenseLevels,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

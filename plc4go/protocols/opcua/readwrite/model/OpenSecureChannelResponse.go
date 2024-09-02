@@ -121,6 +121,7 @@ func NewOpenSecureChannelResponse(responseHeader ExtensionObjectDefinition, serv
 		SecurityToken:                     securityToken,
 		ServerNonce:                       serverNonce,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

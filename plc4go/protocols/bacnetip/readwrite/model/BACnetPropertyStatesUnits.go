@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesUnits(units BACnetEngineeringUnitsTagged, peekedTagH
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		Units:                        units,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

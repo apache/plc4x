@@ -133,6 +133,7 @@ func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *uint8, networkN
 		Application:          application,
 		SalData:              salData,
 	}
+	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
 	return _result
 }
 

@@ -117,6 +117,7 @@ func NewOpcuaHelloRequest(version uint32, limits OpcuaProtocolLimits, endpoint P
 		Limits:             limits,
 		Endpoint:           endpoint,
 	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
 

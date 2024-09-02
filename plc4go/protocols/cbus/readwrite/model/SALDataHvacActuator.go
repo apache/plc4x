@@ -97,6 +97,7 @@ func NewSALDataHvacActuator(hvacActuatorData LightingData, salData SALData) *_SA
 		SALDataContract:  NewSALData(salData),
 		HvacActuatorData: hvacActuatorData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

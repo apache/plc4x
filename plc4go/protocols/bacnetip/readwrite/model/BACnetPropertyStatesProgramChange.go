@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesProgramChange(programState BACnetProgramStateTagged,
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		ProgramState:                 programState,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

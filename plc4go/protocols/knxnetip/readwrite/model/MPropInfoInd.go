@@ -77,6 +77,7 @@ func NewMPropInfoInd(size uint16) *_MPropInfoInd {
 	_result := &_MPropInfoInd{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

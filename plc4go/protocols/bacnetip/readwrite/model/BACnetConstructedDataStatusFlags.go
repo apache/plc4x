@@ -118,6 +118,7 @@ func NewBACnetConstructedDataStatusFlags(statusFlags BACnetStatusFlagsTagged, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		StatusFlags:                   statusFlags,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -121,6 +121,7 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmAckRequest(messageObjects []AlarmMe
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		MessageObjects:                messageObjects,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

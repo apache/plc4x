@@ -93,6 +93,7 @@ func NewBACnetLogDataLogDataTimeChange(timeChange BACnetContextTagReal, openingT
 		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
 		TimeChange:            timeChange,
 	}
+	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
 	return _result
 }
 

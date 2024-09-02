@@ -77,6 +77,7 @@ func NewMResetReq(size uint16) *_MResetReq {
 	_result := &_MResetReq{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

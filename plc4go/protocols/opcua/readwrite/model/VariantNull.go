@@ -77,6 +77,7 @@ func NewVariantNull(arrayLengthSpecified bool, arrayDimensionsSpecified bool, no
 	_result := &_VariantNull{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

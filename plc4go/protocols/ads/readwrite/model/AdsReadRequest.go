@@ -117,6 +117,7 @@ func NewAdsReadRequest(indexGroup uint32, indexOffset uint32, length uint32, tar
 		IndexOffset:       indexOffset,
 		Length:            length,
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

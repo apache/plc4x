@@ -118,6 +118,7 @@ func NewBACnetConstructedDataGroupID(groupId BACnetApplicationTagUnsignedInteger
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		GroupId:                       groupId,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

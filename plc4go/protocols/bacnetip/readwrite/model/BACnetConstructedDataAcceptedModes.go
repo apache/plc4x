@@ -101,6 +101,7 @@ func NewBACnetConstructedDataAcceptedModes(acceptedModes []BACnetLifeSafetyModeT
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AcceptedModes:                 acceptedModes,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

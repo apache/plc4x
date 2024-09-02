@@ -97,6 +97,7 @@ func NewPortSegment(segmentType PortSegmentType) *_PortSegment {
 		PathSegmentContract: NewPathSegment(),
 		SegmentType:         segmentType,
 	}
+	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
 	return _result
 }
 

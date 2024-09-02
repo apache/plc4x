@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLogInterval(logInterval BACnetApplicationTagUnsigne
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LogInterval:                   logInterval,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

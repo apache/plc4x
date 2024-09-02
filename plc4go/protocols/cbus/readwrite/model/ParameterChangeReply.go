@@ -93,6 +93,7 @@ func NewParameterChangeReply(parameterChange ParameterChange, peekedByte byte, c
 		ReplyContract:   NewReply(peekedByte, cBusOptions, requestContext),
 		ParameterChange: parameterChange,
 	}
+	_result.ReplyContract.(*_Reply)._SubType = _result
 	return _result
 }
 

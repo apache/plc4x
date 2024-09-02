@@ -77,6 +77,7 @@ func NewLPollDataReq(size uint16) *_LPollDataReq {
 	_result := &_LPollDataReq{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

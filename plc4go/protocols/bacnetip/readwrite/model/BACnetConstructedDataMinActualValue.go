@@ -118,6 +118,7 @@ func NewBACnetConstructedDataMinActualValue(minActualValue BACnetApplicationTagR
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MinActualValue:                minActualValue,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

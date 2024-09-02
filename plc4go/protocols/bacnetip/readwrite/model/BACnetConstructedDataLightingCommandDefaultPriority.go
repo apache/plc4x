@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLightingCommandDefaultPriority(lightingCommandDefau
 		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LightingCommandDefaultPriority: lightingCommandDefaultPriority,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

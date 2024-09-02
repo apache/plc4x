@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBACnetIPGlobalAddress(bacnetIpGlobalAddress BACnetH
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BacnetIpGlobalAddress:         bacnetIpGlobalAddress,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -113,6 +113,7 @@ func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscription
 		NoOfSubscriptionAcknowledgements:  noOfSubscriptionAcknowledgements,
 		SubscriptionAcknowledgements:      subscriptionAcknowledgements,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

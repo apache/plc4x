@@ -142,6 +142,7 @@ func NewMediaTransportControlDataEnumerateCategoriesSelectionTracks(enumerateTyp
 		EnumerateType:                     enumerateType,
 		Start:                             start,
 	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 

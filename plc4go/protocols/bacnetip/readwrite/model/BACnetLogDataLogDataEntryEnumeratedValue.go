@@ -93,6 +93,7 @@ func NewBACnetLogDataLogDataEntryEnumeratedValue(enumeratedValue BACnetContextTa
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		EnumeratedValue:                   enumeratedValue,
 	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 

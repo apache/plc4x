@@ -105,6 +105,7 @@ func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevi
 		ReinitializedStateOfDevice:            reinitializedStateOfDevice,
 		Password:                              password,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

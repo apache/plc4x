@@ -105,6 +105,7 @@ func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, data
 		DescriptorType:   descriptorType,
 		Data:             data,
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

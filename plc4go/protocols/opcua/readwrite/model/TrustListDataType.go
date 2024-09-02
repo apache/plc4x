@@ -161,6 +161,7 @@ func NewTrustListDataType(specifiedLists uint32, noOfTrustedCertificates int32, 
 		NoOfIssuerCrls:                    noOfIssuerCrls,
 		IssuerCrls:                        issuerCrls,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -77,6 +77,7 @@ func NewWriterGroupMessageDataType() *_WriterGroupMessageDataType {
 	_result := &_WriterGroupMessageDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

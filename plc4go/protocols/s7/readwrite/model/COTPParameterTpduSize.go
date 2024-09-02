@@ -97,6 +97,7 @@ func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameter
 		COTPParameterContract: NewCOTPParameter(rest),
 		TpduSize:              tpduSize,
 	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
 	return _result
 }
 

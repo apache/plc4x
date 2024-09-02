@@ -93,6 +93,7 @@ func NewSecurityDataOn(data []byte, commandTypeContainer SecurityCommandTypeCont
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		Data:                 data,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

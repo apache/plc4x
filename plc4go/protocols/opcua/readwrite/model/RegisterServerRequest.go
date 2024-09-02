@@ -105,6 +105,7 @@ func NewRegisterServerRequest(requestHeader ExtensionObjectDefinition, server Ex
 		RequestHeader:                     requestHeader,
 		Server:                            server,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

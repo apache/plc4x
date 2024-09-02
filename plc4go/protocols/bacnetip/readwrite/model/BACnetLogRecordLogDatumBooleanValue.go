@@ -93,6 +93,7 @@ func NewBACnetLogRecordLogDatumBooleanValue(booleanValue BACnetContextTagBoolean
 		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		BooleanValue:                    booleanValue,
 	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 

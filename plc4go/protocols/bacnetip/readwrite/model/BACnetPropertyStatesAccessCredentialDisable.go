@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesAccessCredentialDisable(accessCredentialDisable BACn
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		AccessCredentialDisable:      accessCredentialDisable,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

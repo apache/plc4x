@@ -113,6 +113,7 @@ func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfRefere
 		NoOfReferencesToAdd:               noOfReferencesToAdd,
 		ReferencesToAdd:                   referencesToAdd,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -93,6 +93,7 @@ func NewSecurityDataStatusReport2(zoneStatus []ZoneStatus, commandTypeContainer 
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		ZoneStatus:           zoneStatus,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

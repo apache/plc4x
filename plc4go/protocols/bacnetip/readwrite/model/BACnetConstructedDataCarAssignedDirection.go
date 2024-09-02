@@ -118,6 +118,7 @@ func NewBACnetConstructedDataCarAssignedDirection(assignedDirection BACnetLiftCa
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AssignedDirection:             assignedDirection,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -129,6 +129,7 @@ func NewModifyMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, sub
 		NoOfItemsToModify:                 noOfItemsToModify,
 		ItemsToModify:                     itemsToModify,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

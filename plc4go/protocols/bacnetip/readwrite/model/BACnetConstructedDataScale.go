@@ -118,6 +118,7 @@ func NewBACnetConstructedDataScale(scale BACnetScale, openingTag BACnetOpeningTa
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Scale:                         scale,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

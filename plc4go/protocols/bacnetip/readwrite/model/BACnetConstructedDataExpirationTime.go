@@ -118,6 +118,7 @@ func NewBACnetConstructedDataExpirationTime(expirationTime BACnetDateTime, openi
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ExpirationTime:                expirationTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -101,6 +101,7 @@ func NewSecurityDataZoneName(zoneNumber uint8, zoneName string, commandTypeConta
 		ZoneNumber:           zoneNumber,
 		ZoneName:             zoneName,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

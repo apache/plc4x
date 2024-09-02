@@ -97,6 +97,7 @@ func NewKnxNetIpRouting(version uint8) *_KnxNetIpRouting {
 		ServiceIdContract: NewServiceId(),
 		Version:           version,
 	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
 

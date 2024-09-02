@@ -78,6 +78,7 @@ func NewCIPEncapsulationConnectionRequest(sessionHandle uint32, status uint32, s
 	_result := &_CIPEncapsulationConnectionRequest{
 		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
 	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewSALDataAudioAndVideo(audioVideoData LightingData, salData SALData) *_SAL
 		SALDataContract: NewSALData(salData),
 		AudioVideoData:  audioVideoData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

@@ -128,6 +128,7 @@ func NewBACnetConstructedDataExceptionSchedule(numberOfDataElements BACnetApplic
 		NumberOfDataElements:          numberOfDataElements,
 		ExceptionSchedule:             exceptionSchedule,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -109,6 +109,7 @@ func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool, response b
 		Pin:                    pin,
 		Enable:                 enable,
 	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
 	return _result
 }
 

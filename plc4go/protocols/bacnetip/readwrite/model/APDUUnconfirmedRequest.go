@@ -99,6 +99,7 @@ func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest, a
 		APDUContract:   NewAPDU(apduLength),
 		ServiceRequest: serviceRequest,
 	}
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 

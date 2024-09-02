@@ -118,6 +118,7 @@ func NewBACnetConstructedDataNotifyType(notifyType BACnetNotifyTypeTagged, openi
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NotifyType:                    notifyType,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

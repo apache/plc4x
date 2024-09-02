@@ -118,6 +118,7 @@ func NewBACnetConstructedDataSlaveProxyEnable(slaveProxyEnable BACnetApplication
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		SlaveProxyEnable:              slaveProxyEnable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

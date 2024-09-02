@@ -101,6 +101,7 @@ func NewBACnetConstructedDataAuthorizationExemptions(authorizationExemption []BA
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AuthorizationExemption:        authorizationExemption,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

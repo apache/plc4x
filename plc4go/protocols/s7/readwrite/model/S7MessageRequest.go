@@ -77,6 +77,7 @@ func NewS7MessageRequest(tpduReference uint16, parameter S7Parameter, payload S7
 	_result := &_S7MessageRequest{
 		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
 	}
+	_result.S7MessageContract.(*_S7Message)._SubType = _result
 	return _result
 }
 

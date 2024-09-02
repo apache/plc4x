@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBackupFailureTimeout(backupFailureTimeout BACnetApp
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BackupFailureTimeout:          backupFailureTimeout,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

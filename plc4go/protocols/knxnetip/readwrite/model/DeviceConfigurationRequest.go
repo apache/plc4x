@@ -110,6 +110,7 @@ func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceCon
 		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
 		Cemi:                                cemi,
 	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 

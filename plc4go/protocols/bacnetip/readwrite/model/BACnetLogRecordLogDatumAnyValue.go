@@ -93,6 +93,7 @@ func NewBACnetLogRecordLogDatumAnyValue(anyValue BACnetConstructedData, openingT
 		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		AnyValue:                        anyValue,
 	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
 

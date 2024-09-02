@@ -101,6 +101,7 @@ func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32, targetAmsN
 		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		NotificationHandle: notificationHandle,
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

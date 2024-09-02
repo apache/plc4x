@@ -73,6 +73,7 @@ func NewCALDataReset(commandTypeContainer CALCommandTypeContainer, additionalDat
 	_result := &_CALDataReset{
 		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
 	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 

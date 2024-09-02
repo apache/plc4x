@@ -97,6 +97,7 @@ func NewSALDataTelephonyStatusAndControl(telephonyData TelephonyData, salData SA
 		SALDataContract: NewSALData(salData),
 		TelephonyData:   telephonyData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

@@ -105,6 +105,7 @@ func NewParameterValueInterfaceOptions1(value InterfaceOptions1, data []byte, nu
 		Value:                  value,
 		Data:                   data,
 	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
 

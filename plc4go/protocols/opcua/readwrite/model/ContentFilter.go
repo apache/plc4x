@@ -105,6 +105,7 @@ func NewContentFilter(noOfElements int32, elements []ExtensionObjectDefinition) 
 		NoOfElements:                      noOfElements,
 		Elements:                          elements,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

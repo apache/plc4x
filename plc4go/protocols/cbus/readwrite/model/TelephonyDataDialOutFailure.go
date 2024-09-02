@@ -93,6 +93,7 @@ func NewTelephonyDataDialOutFailure(reason DialOutFailureReason, commandTypeCont
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		Reason:                reason,
 	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 

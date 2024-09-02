@@ -97,6 +97,7 @@ func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment, 
 		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
 		LogicAssigment:               logicAssigment,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

@@ -129,6 +129,7 @@ func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLe
 		Level:             level,
 		ObjectId:          objectId,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

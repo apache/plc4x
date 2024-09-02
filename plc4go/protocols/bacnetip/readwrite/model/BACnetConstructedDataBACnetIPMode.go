@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBACnetIPMode(bacnetIpMode BACnetIPModeTagged, openi
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BacnetIpMode:                  bacnetIpMode,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

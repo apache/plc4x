@@ -113,6 +113,7 @@ func NewModbusPDUWriteMultipleCoilsResponse(startingAddress uint16, quantity uin
 		StartingAddress:   startingAddress,
 		Quantity:          quantity,
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

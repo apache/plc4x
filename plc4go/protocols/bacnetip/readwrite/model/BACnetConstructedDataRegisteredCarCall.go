@@ -128,6 +128,7 @@ func NewBACnetConstructedDataRegisteredCarCall(numberOfDataElements BACnetApplic
 		NumberOfDataElements:          numberOfDataElements,
 		RegisteredCarCall:             registeredCarCall,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

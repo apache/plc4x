@@ -73,6 +73,7 @@ func NewTelephonyDataRejectIncomingCall(commandTypeContainer TelephonyCommandTyp
 	_result := &_TelephonyDataRejectIncomingCall{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 

@@ -121,6 +121,7 @@ func NewPubSubConfigurationRefDataType(configurationMask PubSubConfigurationRefM
 		ConnectionIndex:                   connectionIndex,
 		GroupIndex:                        groupIndex,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -97,6 +97,7 @@ func NewBACnetErrorGeneral(error Error) *_BACnetErrorGeneral {
 		BACnetErrorContract: NewBACnetError(),
 		Error:               error,
 	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 

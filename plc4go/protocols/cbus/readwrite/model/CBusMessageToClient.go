@@ -97,6 +97,7 @@ func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestCon
 		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
 		Reply:               reply,
 	}
+	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataFaultType(faultType BACnetFaultTypeTagged, openingT
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FaultType:                     faultType,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

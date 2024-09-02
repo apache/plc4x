@@ -185,6 +185,7 @@ func NewSecurityGroupDataType(name PascalString, noOfSecurityGroupFolder int32, 
 		NoOfGroupProperties:               noOfGroupProperties,
 		GroupProperties:                   groupProperties,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

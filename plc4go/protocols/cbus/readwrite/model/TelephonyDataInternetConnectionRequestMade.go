@@ -73,6 +73,7 @@ func NewTelephonyDataInternetConnectionRequestMade(commandTypeContainer Telephon
 	_result := &_TelephonyDataInternetConnectionRequestMade{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
 

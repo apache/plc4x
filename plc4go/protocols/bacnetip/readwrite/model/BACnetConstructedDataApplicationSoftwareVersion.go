@@ -118,6 +118,7 @@ func NewBACnetConstructedDataApplicationSoftwareVersion(applicationSoftwareVersi
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ApplicationSoftwareVersion:    applicationSoftwareVersion,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataMusterPoint(musterPoint BACnetApplicationTagBoolean
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MusterPoint:                   musterPoint,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

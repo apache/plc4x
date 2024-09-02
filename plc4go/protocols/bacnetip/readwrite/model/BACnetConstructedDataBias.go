@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBias(bias BACnetApplicationTagReal, openingTag BACn
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Bias:                          bias,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

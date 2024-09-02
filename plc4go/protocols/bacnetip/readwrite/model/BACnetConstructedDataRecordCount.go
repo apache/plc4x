@@ -118,6 +118,7 @@ func NewBACnetConstructedDataRecordCount(recordCount BACnetApplicationTagUnsigne
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RecordCount:                   recordCount,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

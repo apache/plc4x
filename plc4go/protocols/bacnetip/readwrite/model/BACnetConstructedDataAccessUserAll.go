@@ -81,6 +81,7 @@ func NewBACnetConstructedDataAccessUserAll(openingTag BACnetOpeningTag, peekedTa
 	_result := &_BACnetConstructedDataAccessUserAll{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -123,6 +123,7 @@ func NewRelativePathElement(referenceTypeId NodeId, includeSubtypes bool, isInve
 		IsInverse:                         isInverse,
 		TargetName:                        targetName,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

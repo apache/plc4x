@@ -121,6 +121,7 @@ func NewReadValueId(nodeId NodeId, attributeId uint32, indexRange PascalString, 
 		IndexRange:                        indexRange,
 		DataEncoding:                      dataEncoding,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

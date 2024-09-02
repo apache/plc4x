@@ -118,6 +118,7 @@ func NewBACnetConstructedDataMaxSegmentsAccepted(maxSegmentsAccepted BACnetAppli
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaxSegmentsAccepted:           maxSegmentsAccepted,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

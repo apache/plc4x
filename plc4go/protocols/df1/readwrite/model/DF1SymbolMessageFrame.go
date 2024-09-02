@@ -136,6 +136,7 @@ func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, com
 		SourceAddress:      sourceAddress,
 		Command:            command,
 	}
+	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
 	return _result
 }
 

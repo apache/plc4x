@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLowerDeck(lowerDeck BACnetApplicationTagObjectIdent
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LowerDeck:                     lowerDeck,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -81,6 +81,7 @@ func NewNullAddressItem() *_NullAddressItem {
 	_result := &_NullAddressItem{
 		TypeIdContract: NewTypeId(),
 	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
 	return _result
 }
 

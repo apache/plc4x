@@ -113,6 +113,7 @@ func NewS7PayloadUserDataItemCyclicServicesChangeDrivenPush(itemsCount uint16, i
 		ItemsCount:                    itemsCount,
 		Items:                         items,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

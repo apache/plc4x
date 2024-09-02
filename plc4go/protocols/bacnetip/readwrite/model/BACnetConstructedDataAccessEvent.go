@@ -118,6 +118,7 @@ func NewBACnetConstructedDataAccessEvent(accessEvent BACnetAccessEventTagged, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AccessEvent:                   accessEvent,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

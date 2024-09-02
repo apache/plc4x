@@ -73,6 +73,7 @@ func NewTriggerControlDataTriggerMin(commandTypeContainer TriggerControlCommandT
 	_result := &_TriggerControlDataTriggerMin{
 		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
 	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
 	return _result
 }
 

@@ -73,6 +73,7 @@ func NewSecurityDataMainsRestoredOrApplied(commandTypeContainer SecurityCommandT
 	_result := &_SecurityDataMainsRestoredOrApplied{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

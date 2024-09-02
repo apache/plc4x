@@ -129,6 +129,7 @@ func NewNodeAttributes(specifiedAttributes uint32, displayName LocalizedText, de
 		WriteMask:                         writeMask,
 		UserWriteMask:                     userWriteMask,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

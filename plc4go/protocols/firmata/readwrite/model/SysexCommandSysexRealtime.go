@@ -81,6 +81,7 @@ func NewSysexCommandSysexRealtime() *_SysexCommandSysexRealtime {
 	_result := &_SysexCommandSysexRealtime{
 		SysexCommandContract: NewSysexCommand(),
 	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 

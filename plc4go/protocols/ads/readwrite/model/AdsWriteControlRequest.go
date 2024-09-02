@@ -117,6 +117,7 @@ func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte,
 		DeviceState:       deviceState,
 		Data:              data,
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

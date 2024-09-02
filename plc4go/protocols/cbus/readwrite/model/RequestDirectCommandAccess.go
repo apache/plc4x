@@ -136,6 +136,7 @@ func NewRequestDirectCommandAccess(calData CALData, alpha Alpha, peekedByte Requ
 		CalData:         calData,
 		Alpha:           alpha,
 	}
+	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
 

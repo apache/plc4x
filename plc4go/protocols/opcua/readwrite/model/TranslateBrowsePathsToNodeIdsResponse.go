@@ -129,6 +129,7 @@ func NewTranslateBrowsePathsToNodeIdsResponse(responseHeader ExtensionObjectDefi
 		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

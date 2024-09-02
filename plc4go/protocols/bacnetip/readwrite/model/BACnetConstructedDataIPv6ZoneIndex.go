@@ -118,6 +118,7 @@ func NewBACnetConstructedDataIPv6ZoneIndex(ipv6ZoneIndex BACnetApplicationTagCha
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Ipv6ZoneIndex:                 ipv6ZoneIndex,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

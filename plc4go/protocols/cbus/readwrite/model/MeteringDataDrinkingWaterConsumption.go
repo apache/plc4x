@@ -93,6 +93,7 @@ func NewMeteringDataDrinkingWaterConsumption(kL uint32, commandTypeContainer Met
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 		KL:                   kL,
 	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
 

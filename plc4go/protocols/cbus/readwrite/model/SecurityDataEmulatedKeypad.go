@@ -190,6 +190,7 @@ func NewSecurityDataEmulatedKeypad(key byte, commandTypeContainer SecurityComman
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		Key:                  key,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

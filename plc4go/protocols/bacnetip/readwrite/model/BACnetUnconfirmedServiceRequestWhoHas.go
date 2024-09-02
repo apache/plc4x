@@ -113,6 +113,7 @@ func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnet
 		DeviceInstanceRangeHighLimit:            deviceInstanceRangeHighLimit,
 		Object:                                  object,
 	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

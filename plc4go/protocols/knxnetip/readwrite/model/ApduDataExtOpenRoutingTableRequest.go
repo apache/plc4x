@@ -77,6 +77,7 @@ func NewApduDataExtOpenRoutingTableRequest(length uint8) *_ApduDataExtOpenRoutin
 	_result := &_ApduDataExtOpenRoutingTableRequest{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

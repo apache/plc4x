@@ -109,6 +109,7 @@ func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRout
 		NetworkRoute:                    networkRoute,
 		UnitAddress:                     unitAddress,
 	}
+	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
 	return _result
 }
 

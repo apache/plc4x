@@ -112,6 +112,7 @@ func NewOpcuaMessageResponse(securityHeader SecurityHeader, message Payload, chu
 		SecurityHeader:     securityHeader,
 		Message:            message,
 	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
 

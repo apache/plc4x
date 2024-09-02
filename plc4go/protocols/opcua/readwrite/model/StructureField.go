@@ -155,6 +155,7 @@ func NewStructureField(name PascalString, description LocalizedText, dataType No
 		MaxStringLength:                   maxStringLength,
 		IsOptional:                        isOptional,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

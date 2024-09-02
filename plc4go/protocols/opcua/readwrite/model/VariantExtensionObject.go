@@ -105,6 +105,7 @@ func NewVariantExtensionObject(arrayLength *int32, value []ExtensionObject, arra
 		ArrayLength:     arrayLength,
 		Value:           value,
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

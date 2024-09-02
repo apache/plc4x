@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesLiftCarMode(liftCarMode BACnetLiftCarModeTagged, pee
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LiftCarMode:                  liftCarMode,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

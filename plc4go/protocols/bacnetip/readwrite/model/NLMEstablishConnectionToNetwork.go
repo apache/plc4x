@@ -105,6 +105,7 @@ func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, termin
 		DestinationNetworkAddress: destinationNetworkAddress,
 		TerminationTime:           terminationTime,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

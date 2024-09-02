@@ -118,6 +118,7 @@ func NewBACnetConstructedDataPulseRate(pulseRate BACnetApplicationTagUnsignedInt
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PulseRate:                     pulseRate,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

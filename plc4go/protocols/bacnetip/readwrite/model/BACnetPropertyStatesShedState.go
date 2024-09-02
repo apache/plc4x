@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesShedState(shedState BACnetShedStateTagged, peekedTag
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		ShedState:                    shedState,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

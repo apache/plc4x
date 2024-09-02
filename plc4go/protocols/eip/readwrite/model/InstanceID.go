@@ -105,6 +105,7 @@ func NewInstanceID(format uint8, instance uint8) *_InstanceID {
 		Format:                     format,
 		Instance:                   instance,
 	}
+	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
 	return _result
 }
 

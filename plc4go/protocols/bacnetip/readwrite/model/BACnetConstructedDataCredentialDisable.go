@@ -118,6 +118,7 @@ func NewBACnetConstructedDataCredentialDisable(credentialDisable BACnetAccessCre
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CredentialDisable:             credentialDisable,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -105,6 +105,7 @@ func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectRe
 		RejectReason:              rejectReason,
 		DestinationNetworkAddress: destinationNetworkAddress,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

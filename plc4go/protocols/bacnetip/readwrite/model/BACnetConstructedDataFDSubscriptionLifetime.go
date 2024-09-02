@@ -118,6 +118,7 @@ func NewBACnetConstructedDataFDSubscriptionLifetime(fdSubscriptionLifetime BACne
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FdSubscriptionLifetime:        fdSubscriptionLifetime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

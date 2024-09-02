@@ -81,6 +81,7 @@ func NewSysexCommandExtendedAnalog() *_SysexCommandExtendedAnalog {
 	_result := &_SysexCommandExtendedAnalog{
 		SysexCommandContract: NewSysexCommand(),
 	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataTrendLogLogDeviceObjectProperty(logDeviceObjectProp
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LogDeviceObjectProperty:       logDeviceObjectProperty,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

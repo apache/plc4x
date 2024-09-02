@@ -93,6 +93,7 @@ func NewBACnetShedLevelLevel(level BACnetContextTagUnsignedInteger, peekedTagHea
 		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
 		Level:                   level,
 	}
+	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
 	return _result
 }
 

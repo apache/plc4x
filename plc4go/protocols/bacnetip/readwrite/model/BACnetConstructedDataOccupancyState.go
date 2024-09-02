@@ -118,6 +118,7 @@ func NewBACnetConstructedDataOccupancyState(occupancyState BACnetAccessZoneOccup
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		OccupancyState:                occupancyState,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

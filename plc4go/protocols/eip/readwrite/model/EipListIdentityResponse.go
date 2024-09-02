@@ -105,6 +105,7 @@ func NewEipListIdentityResponse(items []CommandSpecificDataItem, sessionHandle u
 		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 		Items:             items,
 	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
 

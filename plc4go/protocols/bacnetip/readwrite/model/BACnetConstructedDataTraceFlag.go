@@ -118,6 +118,7 @@ func NewBACnetConstructedDataTraceFlag(traceFlag BACnetApplicationTagBoolean, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		TraceFlag:                     traceFlag,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

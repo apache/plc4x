@@ -85,6 +85,7 @@ func NewModbusPDUReadExceptionStatusRequest() *_ModbusPDUReadExceptionStatusRequ
 	_result := &_ModbusPDUReadExceptionStatusRequest{
 		ModbusPDUContract: NewModbusPDU(),
 	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
 

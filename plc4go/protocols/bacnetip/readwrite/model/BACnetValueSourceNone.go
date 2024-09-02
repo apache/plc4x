@@ -93,6 +93,7 @@ func NewBACnetValueSourceNone(none BACnetContextTagNull, peekedTagHeader BACnetT
 		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
 		None:                      none,
 	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
 	return _result
 }
 

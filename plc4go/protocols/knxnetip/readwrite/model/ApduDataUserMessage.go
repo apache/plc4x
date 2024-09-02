@@ -77,6 +77,7 @@ func NewApduDataUserMessage(dataLength uint8) *_ApduDataUserMessage {
 	_result := &_ApduDataUserMessage{
 		ApduDataContract: NewApduData(dataLength),
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

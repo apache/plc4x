@@ -142,6 +142,7 @@ func NewSecurityDataPasswordEntryStatus(code byte, commandTypeContainer Security
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		Code:                 code,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

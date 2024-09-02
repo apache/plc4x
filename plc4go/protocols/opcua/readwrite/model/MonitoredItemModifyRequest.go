@@ -105,6 +105,7 @@ func NewMonitoredItemModifyRequest(monitoredItemId uint32, requestedParameters E
 		MonitoredItemId:                   monitoredItemId,
 		RequestedParameters:               requestedParameters,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -145,6 +145,7 @@ func NewModifySubscriptionRequest(requestHeader ExtensionObjectDefinition, subsc
 		MaxNotificationsPerPublish:        maxNotificationsPerPublish,
 		Priority:                          priority,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

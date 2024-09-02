@@ -121,6 +121,7 @@ func NewCurrencyUnitType(numericCode int16, exponent int8, alphabeticCode Pascal
 		AlphabeticCode:                    alphabeticCode,
 		Currency:                          currency,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -113,6 +113,7 @@ func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, 
 		ServiceNumber:            serviceNumber,
 		ResultBlock:              resultBlock,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

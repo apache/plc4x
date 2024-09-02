@@ -113,6 +113,7 @@ func NewEnumValueType(value int64, displayName LocalizedText, description Locali
 		DisplayName:                       displayName,
 		Description:                       description,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

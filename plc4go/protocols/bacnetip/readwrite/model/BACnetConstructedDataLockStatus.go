@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLockStatus(lockStatus BACnetLockStatusTagged, openi
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LockStatus:                    lockStatus,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

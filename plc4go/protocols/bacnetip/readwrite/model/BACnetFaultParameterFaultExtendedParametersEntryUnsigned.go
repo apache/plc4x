@@ -93,6 +93,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned(unsignedValue B
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		UnsignedValue: unsignedValue,
 	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
 

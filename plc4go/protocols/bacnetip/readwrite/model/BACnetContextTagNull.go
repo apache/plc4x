@@ -77,6 +77,7 @@ func NewBACnetContextTagNull(header BACnetTagHeader, tagNumberArgument uint8) *_
 	_result := &_BACnetContextTagNull{
 		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
 	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
 

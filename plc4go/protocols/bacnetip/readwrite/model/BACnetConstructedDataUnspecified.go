@@ -128,6 +128,7 @@ func NewBACnetConstructedDataUnspecified(numberOfDataElements BACnetApplicationT
 		NumberOfDataElements:          numberOfDataElements,
 		Data:                          data,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

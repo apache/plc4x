@@ -93,6 +93,7 @@ func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(bitmask BACnetContex
 		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
 		Bitmask: bitmask,
 	}
+	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
 	return _result
 }
 

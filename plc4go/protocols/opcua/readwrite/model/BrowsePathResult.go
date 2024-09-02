@@ -113,6 +113,7 @@ func NewBrowsePathResult(statusCode StatusCode, noOfTargets int32, targets []Ext
 		NoOfTargets:                       noOfTargets,
 		Targets:                           targets,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

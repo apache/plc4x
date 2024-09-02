@@ -113,6 +113,7 @@ func NewUnregisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNode
 		NoOfNodesToUnregister:             noOfNodesToUnregister,
 		NodesToUnregister:                 nodesToUnregister,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

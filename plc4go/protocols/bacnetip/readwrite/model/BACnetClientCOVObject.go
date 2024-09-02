@@ -93,6 +93,7 @@ func NewBACnetClientCOVObject(realIncrement BACnetApplicationTagReal, peekedTagH
 		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
 		RealIncrement:           realIncrement,
 	}
+	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
 	return _result
 }
 

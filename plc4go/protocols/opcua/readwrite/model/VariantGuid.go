@@ -105,6 +105,7 @@ func NewVariantGuid(arrayLength *int32, value []GuidValue, arrayLengthSpecified 
 		ArrayLength:     arrayLength,
 		Value:           value,
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

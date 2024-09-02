@@ -77,6 +77,7 @@ func NewSALDataFreeUsage(salData SALData) *_SALDataFreeUsage {
 	_result := &_SALDataFreeUsage{
 		SALDataContract: NewSALData(salData),
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

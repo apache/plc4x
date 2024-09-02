@@ -128,6 +128,7 @@ func NewBACnetConstructedDataGlobalGroupGroupMembers(numberOfDataElements BACnet
 		NumberOfDataElements:          numberOfDataElements,
 		GroupMembers:                  groupMembers,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

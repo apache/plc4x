@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesFileAccessMethod(fileAccessMethod BACnetFileAccessMe
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		FileAccessMethod:             fileAccessMethod,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

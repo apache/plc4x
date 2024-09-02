@@ -196,6 +196,7 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
 		SegmentServiceChoice: segmentServiceChoice,
 		Segment:              segment,
 	}
+	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
 

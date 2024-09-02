@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBACnetIPMulticastAddress(ipMulticastAddress BACnetA
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		IpMulticastAddress:            ipMulticastAddress,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

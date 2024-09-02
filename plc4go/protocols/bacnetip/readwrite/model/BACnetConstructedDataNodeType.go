@@ -118,6 +118,7 @@ func NewBACnetConstructedDataNodeType(nodeType BACnetNodeTypeTagged, openingTag 
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NodeType:                      nodeType,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

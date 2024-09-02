@@ -113,6 +113,7 @@ func NewNetworkGroupDataType(serverUri PascalString, noOfNetworkPaths int32, net
 		NoOfNetworkPaths:                  noOfNetworkPaths,
 		NetworkPaths:                      networkPaths,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

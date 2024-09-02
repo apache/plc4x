@@ -128,6 +128,7 @@ func NewBACnetConstructedDataStructuredObjectList(numberOfDataElements BACnetApp
 		NumberOfDataElements:          numberOfDataElements,
 		StructuredObjectList:          structuredObjectList,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

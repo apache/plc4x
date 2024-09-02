@@ -118,6 +118,7 @@ func NewBACnetConstructedDataTransition(transition BACnetLightingTransitionTagge
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Transition:                    transition,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLoggingType(loggingType BACnetLoggingTypeTagged, op
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LoggingType:                   loggingType,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

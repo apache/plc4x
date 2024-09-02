@@ -118,6 +118,7 @@ func NewBACnetConstructedDataBACnetIPUDPPort(ipUdpPort BACnetApplicationTagUnsig
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		IpUdpPort:                     ipUdpPort,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

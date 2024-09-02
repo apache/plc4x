@@ -105,6 +105,7 @@ func NewNLMInitializeRoutingTableAck(numberOfPorts uint8, portMappings []NLMInit
 		NumberOfPorts: numberOfPorts,
 		PortMappings:  portMappings,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

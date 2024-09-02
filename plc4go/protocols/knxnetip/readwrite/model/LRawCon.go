@@ -77,6 +77,7 @@ func NewLRawCon(size uint16) *_LRawCon {
 	_result := &_LRawCon{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

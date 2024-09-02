@@ -97,6 +97,7 @@ func NewSALDataErrorReporting(errorReportingData ErrorReportingData, salData SAL
 		SALDataContract:    NewSALData(salData),
 		ErrorReportingData: errorReportingData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

@@ -101,6 +101,7 @@ func NewBACnetConstructedDataAccessTransactionEvents(accessTransactionEvents []B
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AccessTransactionEvents:       accessTransactionEvents,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

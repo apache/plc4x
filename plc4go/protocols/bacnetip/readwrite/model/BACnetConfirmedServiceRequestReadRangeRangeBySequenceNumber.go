@@ -101,6 +101,7 @@ func NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(referenceSeq
 		ReferenceSequenceNumber:                             referenceSequenceNumber,
 		Count:                                               count,
 	}
+	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
 	return _result
 }
 

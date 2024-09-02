@@ -93,6 +93,7 @@ func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned(unsignedValue 
 		BACnetFaultParameterFaultOutOfRangeMinNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		UnsignedValue: unsignedValue,
 	}
+	_result.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = _result
 	return _result
 }
 

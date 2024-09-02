@@ -132,6 +132,7 @@ func NewDeleteReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForw
 		TargetNodeId:                      targetNodeId,
 		DeleteBidirectional:               deleteBidirectional,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

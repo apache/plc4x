@@ -100,6 +100,7 @@ func NewBACnetContextTagUnknown(unknownData []byte, header BACnetTagHeader, actu
 		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
 		UnknownData:              unknownData,
 	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
 

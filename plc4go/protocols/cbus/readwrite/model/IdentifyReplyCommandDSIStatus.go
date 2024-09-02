@@ -169,6 +169,7 @@ func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatu
 		UnitStatus:                   unitStatus,
 		DimmingUCRevisionNumber:      dimmingUCRevisionNumber,
 	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
 

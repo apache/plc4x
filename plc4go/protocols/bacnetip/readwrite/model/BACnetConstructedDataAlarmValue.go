@@ -118,6 +118,7 @@ func NewBACnetConstructedDataAlarmValue(binaryPv BACnetBinaryPVTagged, openingTa
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BinaryPv:                      binaryPv,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

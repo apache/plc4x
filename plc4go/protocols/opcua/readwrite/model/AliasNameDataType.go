@@ -113,6 +113,7 @@ func NewAliasNameDataType(aliasName QualifiedName, noOfReferencedNodes int32, re
 		NoOfReferencedNodes:               noOfReferencedNodes,
 		ReferencedNodes:                   referencedNodes,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

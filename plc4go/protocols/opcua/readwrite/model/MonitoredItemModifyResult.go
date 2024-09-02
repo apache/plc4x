@@ -121,6 +121,7 @@ func NewMonitoredItemModifyResult(statusCode StatusCode, revisedSamplingInterval
 		RevisedQueueSize:                  revisedQueueSize,
 		FilterResult:                      filterResult,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

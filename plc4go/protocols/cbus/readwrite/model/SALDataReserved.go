@@ -77,6 +77,7 @@ func NewSALDataReserved(salData SALData) *_SALDataReserved {
 	_result := &_SALDataReserved{
 		SALDataContract: NewSALData(salData),
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

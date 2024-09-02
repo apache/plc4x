@@ -105,6 +105,7 @@ func NewSubscribeCOVPropertyMultipleError(errorType ErrorEnclosed, firstFailedSu
 		ErrorType:               errorType,
 		FirstFailedSubscription: firstFailedSubscription,
 	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
 

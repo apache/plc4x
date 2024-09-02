@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesBacnetIpMode(bacnetIpMode BACnetIPModeTagged, peeked
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		BacnetIpMode:                 bacnetIpMode,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

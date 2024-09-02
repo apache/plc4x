@@ -128,6 +128,7 @@ func NewBACnetConstructedDataStateChangeValues(numberOfDataElements BACnetApplic
 		NumberOfDataElements:          numberOfDataElements,
 		StateChangeValues:             stateChangeValues,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

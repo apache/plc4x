@@ -97,6 +97,7 @@ func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *_A
 		ApduDataContract: NewApduData(dataLength),
 		DescriptorType:   descriptorType,
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

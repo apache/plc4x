@@ -93,6 +93,7 @@ func NewBACnetRecipientDevice(deviceValue BACnetContextTagObjectIdentifier, peek
 		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
 		DeviceValue:             deviceValue,
 	}
+	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
 	return _result
 }
 

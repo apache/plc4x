@@ -97,6 +97,7 @@ func NewSALDataTriggerControl(triggerControlData TriggerControlData, salData SAL
 		SALDataContract:    NewSALData(salData),
 		TriggerControlData: triggerControlData,
 	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
 

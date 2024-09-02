@@ -398,6 +398,7 @@ func New${type.name}(
 		${field.name?cap_first}: ${field.name},
 	</#list>
 	}
+	_result.${type.parentType.orElseThrow().name}Contract.(*_${type.parentType.orElseThrow().name})._SubType=_result
 	return _result
 <#else>
 	<@compress single_line=true>

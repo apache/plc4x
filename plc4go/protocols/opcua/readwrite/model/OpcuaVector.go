@@ -77,6 +77,7 @@ func NewOpcuaVector() *_OpcuaVector {
 	_result := &_OpcuaVector{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

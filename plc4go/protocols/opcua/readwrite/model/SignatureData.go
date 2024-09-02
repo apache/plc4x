@@ -105,6 +105,7 @@ func NewSignatureData(algorithm PascalString, signature PascalByteString) *_Sign
 		Algorithm:                         algorithm,
 		Signature:                         signature,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataFullDutyBaseline(fullDutyBaseLine BACnetApplication
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FullDutyBaseLine:              fullDutyBaseLine,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

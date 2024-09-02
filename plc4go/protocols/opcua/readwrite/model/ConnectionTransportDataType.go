@@ -77,6 +77,7 @@ func NewConnectionTransportDataType() *_ConnectionTransportDataType {
 	_result := &_ConnectionTransportDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

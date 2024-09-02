@@ -105,6 +105,7 @@ func NewPortableQualifiedName(namespaceUri PascalString, name PascalString) *_Po
 		NamespaceUri:                      namespaceUri,
 		Name:                              name,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

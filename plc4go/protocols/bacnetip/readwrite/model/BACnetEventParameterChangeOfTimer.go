@@ -125,6 +125,7 @@ func NewBACnetEventParameterChangeOfTimer(openingTag BACnetOpeningTag, timeDelay
 		UpdateTimeReference:          updateTimeReference,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 

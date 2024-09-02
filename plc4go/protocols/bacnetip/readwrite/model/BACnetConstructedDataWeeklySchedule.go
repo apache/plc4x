@@ -128,6 +128,7 @@ func NewBACnetConstructedDataWeeklySchedule(numberOfDataElements BACnetApplicati
 		NumberOfDataElements:          numberOfDataElements,
 		WeeklySchedule:                weeklySchedule,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

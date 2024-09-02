@@ -101,6 +101,7 @@ func NewCALDataRecall(paramNo Parameter, count uint8, commandTypeContainer CALCo
 		ParamNo:         paramNo,
 		Count:           count,
 	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 

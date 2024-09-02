@@ -128,6 +128,7 @@ func NewBACnetConstructedDataNegativeAccessRules(numberOfDataElements BACnetAppl
 		NumberOfDataElements:          numberOfDataElements,
 		NegativeAccessRules:           negativeAccessRules,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

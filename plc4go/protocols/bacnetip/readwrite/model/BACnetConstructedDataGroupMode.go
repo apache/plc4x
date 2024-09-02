@@ -118,6 +118,7 @@ func NewBACnetConstructedDataGroupMode(groupMode BACnetLiftGroupModeTagged, open
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		GroupMode:                     groupMode,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

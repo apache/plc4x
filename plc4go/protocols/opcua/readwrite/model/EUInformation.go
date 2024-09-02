@@ -121,6 +121,7 @@ func NewEUInformation(namespaceUri PascalString, unitId int32, displayName Local
 		DisplayName:                       displayName,
 		Description:                       description,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

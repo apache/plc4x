@@ -97,6 +97,7 @@ func NewAdsDiscoveryBlockOsData(osData []byte) *_AdsDiscoveryBlockOsData {
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		OsData:                    osData,
 	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
 

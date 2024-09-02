@@ -129,6 +129,7 @@ func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fi
 		ElementNumber:             elementNumber,
 		SubElementNumber:          subElementNumber,
 	}
+	_result.DF1RequestCommandContract.(*_DF1RequestCommand)._SubType = _result
 	return _result
 }
 

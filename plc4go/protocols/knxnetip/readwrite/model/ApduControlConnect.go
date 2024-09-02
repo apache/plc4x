@@ -77,6 +77,7 @@ func NewApduControlConnect() *_ApduControlConnect {
 	_result := &_ApduControlConnect{
 		ApduControlContract: NewApduControl(),
 	}
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
 	return _result
 }
 

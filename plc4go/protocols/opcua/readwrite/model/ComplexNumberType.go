@@ -105,6 +105,7 @@ func NewComplexNumberType(real float32, imaginary float32) *_ComplexNumberType {
 		Real:                              real,
 		Imaginary:                         imaginary,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

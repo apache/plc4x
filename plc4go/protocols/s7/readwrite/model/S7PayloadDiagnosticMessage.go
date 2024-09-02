@@ -153,6 +153,7 @@ func NewS7PayloadDiagnosticMessage(eventId uint16, priorityClass uint8, obNumber
 		Info2:                         info2,
 		TimeStamp:                     timeStamp,
 	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
 

@@ -117,6 +117,7 @@ func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeade
 		Stamps:            stamps,
 		AdsStampHeaders:   adsStampHeaders,
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

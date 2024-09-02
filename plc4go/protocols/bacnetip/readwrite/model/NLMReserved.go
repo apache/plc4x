@@ -97,6 +97,7 @@ func NewNLMReserved(unknownBytes []byte, apduLength uint16) *_NLMReserved {
 		NLMContract:  NewNLM(apduLength),
 		UnknownBytes: unknownBytes,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

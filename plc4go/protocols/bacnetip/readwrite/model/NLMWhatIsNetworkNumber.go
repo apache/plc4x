@@ -77,6 +77,7 @@ func NewNLMWhatIsNetworkNumber(apduLength uint16) *_NLMWhatIsNetworkNumber {
 	_result := &_NLMWhatIsNetworkNumber{
 		NLMContract: NewNLM(apduLength),
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

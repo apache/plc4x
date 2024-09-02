@@ -113,6 +113,7 @@ func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BAC
 		EnableDisable:                         enableDisable,
 		Password:                              password,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

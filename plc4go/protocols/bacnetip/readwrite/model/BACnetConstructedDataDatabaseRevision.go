@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDatabaseRevision(databaseRevision BACnetApplication
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DatabaseRevision:              databaseRevision,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -73,6 +73,7 @@ func NewAccessControlDataRequestToExit(commandTypeContainer AccessControlCommand
 	_result := &_AccessControlDataRequestToExit{
 		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
 	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
 

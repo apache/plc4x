@@ -118,6 +118,7 @@ func NewBACnetConstructedDataCOVUPeriod(covuPeriod BACnetApplicationTagUnsignedI
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CovuPeriod:                    covuPeriod,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

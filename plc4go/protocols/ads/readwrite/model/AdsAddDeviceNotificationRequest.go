@@ -144,6 +144,7 @@ func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, l
 		MaxDelayInMs:      maxDelayInMs,
 		CycleTimeInMs:     cycleTimeInMs,
 	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
 

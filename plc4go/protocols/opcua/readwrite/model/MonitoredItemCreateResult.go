@@ -129,6 +129,7 @@ func NewMonitoredItemCreateResult(statusCode StatusCode, monitoredItemId uint32,
 		RevisedQueueSize:                  revisedQueueSize,
 		FilterResult:                      filterResult,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

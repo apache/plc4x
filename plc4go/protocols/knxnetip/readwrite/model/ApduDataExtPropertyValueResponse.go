@@ -129,6 +129,7 @@ func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, co
 		Index:               index,
 		Data:                data,
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

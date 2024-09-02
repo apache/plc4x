@@ -113,6 +113,7 @@ func NewTransactionErrorType(targetId NodeId, error StatusCode, message Localize
 		Error:                             error,
 		Message:                           message,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

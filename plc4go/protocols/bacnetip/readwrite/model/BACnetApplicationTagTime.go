@@ -93,6 +93,7 @@ func NewBACnetApplicationTagTime(payload BACnetTagPayloadTime, header BACnetTagH
 		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
 		Payload:                      payload,
 	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
 	return _result
 }
 

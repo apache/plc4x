@@ -118,6 +118,7 @@ func NewBACnetConstructedDataUpdateKeySetTimeout(updateKeySetTimeout BACnetAppli
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		UpdateKeySetTimeout:           updateKeySetTimeout,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

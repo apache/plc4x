@@ -139,6 +139,7 @@ func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16,
 		Offsets:            offsets,
 		ServicesData:       servicesData,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

@@ -104,6 +104,7 @@ func NewStatusRequestLevel(application ApplicationIdContainer, startingGroupAddr
 		Application:               application,
 		StartingGroupAddressLabel: startingGroupAddressLabel,
 	}
+	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
 	return _result
 }
 

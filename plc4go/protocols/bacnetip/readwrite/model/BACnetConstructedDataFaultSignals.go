@@ -101,6 +101,7 @@ func NewBACnetConstructedDataFaultSignals(faultSignals []BACnetLiftFaultTagged, 
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FaultSignals:                  faultSignals,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

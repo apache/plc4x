@@ -133,6 +133,7 @@ func NewBACnetEventParameterOutOfRange(openingTag BACnetOpeningTag, timeDelay BA
 		Deadband:                     deadband,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
 

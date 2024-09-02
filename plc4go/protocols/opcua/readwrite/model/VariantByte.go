@@ -105,6 +105,7 @@ func NewVariantByte(arrayLength *int32, value []uint8, arrayLengthSpecified bool
 		ArrayLength:     arrayLength,
 		Value:           value,
 	}
+	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
 

@@ -123,6 +123,7 @@ func NewCipReadResponse(status uint8, extStatus uint8, data CIPData, serviceLen 
 		ExtStatus:          extStatus,
 		Data:               data,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

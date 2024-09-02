@@ -101,6 +101,7 @@ func NewAccessControlDataValidAccessRequest(accessControlDirection AccessControl
 		AccessControlDirection:    accessControlDirection,
 		Data:                      data,
 	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
 

@@ -125,6 +125,7 @@ func NewBACnetNotificationParametersExtended(innerOpeningTag BACnetOpeningTag, v
 		Parameters:                           parameters,
 		InnerClosingTag:                      innerClosingTag,
 	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
 	return _result
 }
 

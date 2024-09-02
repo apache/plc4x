@@ -122,6 +122,7 @@ func NewBACnetContextTagBoolean(value uint8, payload BACnetTagPayloadBoolean, he
 		Value:                    value,
 		Payload:                  payload,
 	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
 

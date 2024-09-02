@@ -193,6 +193,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(processIdent
 		ToState:                                 toState,
 		EventValues:                             eventValues,
 	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

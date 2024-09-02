@@ -118,6 +118,7 @@ func NewBACnetConstructedDataDeployedProfileLocation(deployedProfileLocation BAC
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DeployedProfileLocation:       deployedProfileLocation,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

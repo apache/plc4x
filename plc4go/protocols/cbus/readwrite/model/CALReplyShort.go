@@ -73,6 +73,7 @@ func NewCALReplyShort(calType byte, calData CALData, cBusOptions CBusOptions, re
 	_result := &_CALReplyShort{
 		CALReplyContract: NewCALReply(calType, calData, cBusOptions, requestContext),
 	}
+	_result.CALReplyContract.(*_CALReply)._SubType = _result
 	return _result
 }
 

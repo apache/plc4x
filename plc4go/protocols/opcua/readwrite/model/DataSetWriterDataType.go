@@ -171,6 +171,7 @@ func NewDataSetWriterDataType(name PascalString, enabled bool, dataSetWriterId u
 		TransportSettings:                 transportSettings,
 		MessageSettings:                   messageSettings,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

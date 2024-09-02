@@ -100,6 +100,7 @@ func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequest
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		UnknownBytes:                          unknownBytes,
 	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
 

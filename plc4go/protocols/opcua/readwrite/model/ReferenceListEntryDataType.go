@@ -115,6 +115,7 @@ func NewReferenceListEntryDataType(referenceType NodeId, isForward bool, targetN
 		IsForward:                         isForward,
 		TargetNode:                        targetNode,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

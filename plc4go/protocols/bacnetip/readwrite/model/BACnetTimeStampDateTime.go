@@ -93,6 +93,7 @@ func NewBACnetTimeStampDateTime(dateTimeValue BACnetDateTimeEnclosed, peekedTagH
 		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
 		DateTimeValue:           dateTimeValue,
 	}
+	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
 	return _result
 }
 

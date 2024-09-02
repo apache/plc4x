@@ -101,6 +101,7 @@ func NewBACnetConstructedDataCredentials(credentials []BACnetDeviceObjectReferen
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Credentials:                   credentials,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

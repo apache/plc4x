@@ -126,6 +126,7 @@ func NewMediaTransportControlDataRepeatOnOff(repeatType byte, commandTypeContain
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		RepeatType:                        repeatType,
 	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 

@@ -120,6 +120,7 @@ func NewRequestObsolete(calData CALData, alpha Alpha, peekedByte RequestType, st
 		CalData:         calData,
 		Alpha:           alpha,
 	}
+	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
 

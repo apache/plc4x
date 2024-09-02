@@ -137,6 +137,7 @@ func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl
 		NoOfProfileUris:                   noOfProfileUris,
 		ProfileUris:                       profileUris,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

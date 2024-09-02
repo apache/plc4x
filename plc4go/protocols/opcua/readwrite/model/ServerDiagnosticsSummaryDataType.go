@@ -185,6 +185,7 @@ func NewServerDiagnosticsSummaryDataType(serverViewCount uint32, currentSessionC
 		SecurityRejectedRequestsCount:     securityRejectedRequestsCount,
 		RejectedRequestsCount:             rejectedRequestsCount,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

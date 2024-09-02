@@ -105,6 +105,7 @@ func NewClassID(format uint8, segmentClass uint8) *_ClassID {
 		Format:                     format,
 		SegmentClass:               segmentClass,
 	}
+	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
 	return _result
 }
 

@@ -135,6 +135,7 @@ func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFuncti
 		CurrentMode:         currentMode,
 		SequenceNumber:      sequenceNumber,
 	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
 

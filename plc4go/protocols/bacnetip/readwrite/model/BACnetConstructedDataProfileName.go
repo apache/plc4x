@@ -118,6 +118,7 @@ func NewBACnetConstructedDataProfileName(profileName BACnetApplicationTagCharact
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProfileName:                   profileName,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

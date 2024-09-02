@@ -93,6 +93,7 @@ func NewBACnetShedLevelAmount(amount BACnetContextTagReal, peekedTagHeader BACne
 		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
 		Amount:                  amount,
 	}
+	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
 	return _result
 }
 

@@ -101,6 +101,7 @@ func NewBACnetConstructedDataRestartNotificationRecipients(restartNotificationRe
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RestartNotificationRecipients: restartNotificationRecipients,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -101,6 +101,7 @@ func NewCBusPointToPointToMultiPointCommandNormal(application ApplicationIdConta
 		Application: application,
 		SalData:     salData,
 	}
+	_result.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = _result
 	return _result
 }
 

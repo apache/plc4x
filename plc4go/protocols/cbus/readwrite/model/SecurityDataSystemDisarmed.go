@@ -73,6 +73,7 @@ func NewSecurityDataSystemDisarmed(commandTypeContainer SecurityCommandTypeConta
 	_result := &_SecurityDataSystemDisarmed{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

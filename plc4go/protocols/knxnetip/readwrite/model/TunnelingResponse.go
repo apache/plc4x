@@ -99,6 +99,7 @@ func NewTunnelingResponse(tunnelingResponseDataBlock TunnelingResponseDataBlock)
 		KnxNetIpMessageContract:    NewKnxNetIpMessage(),
 		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
 	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
 

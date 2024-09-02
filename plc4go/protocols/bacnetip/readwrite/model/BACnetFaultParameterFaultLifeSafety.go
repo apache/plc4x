@@ -117,6 +117,7 @@ func NewBACnetFaultParameterFaultLifeSafety(openingTag BACnetOpeningTag, listOfF
 		ModePropertyReference:        modePropertyReference,
 		ClosingTag:                   closingTag,
 	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
 	return _result
 }
 

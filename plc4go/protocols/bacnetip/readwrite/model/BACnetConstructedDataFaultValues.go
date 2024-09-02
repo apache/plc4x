@@ -128,6 +128,7 @@ func NewBACnetConstructedDataFaultValues(numberOfDataElements BACnetApplicationT
 		NumberOfDataElements:          numberOfDataElements,
 		FaultValues:                   faultValues,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

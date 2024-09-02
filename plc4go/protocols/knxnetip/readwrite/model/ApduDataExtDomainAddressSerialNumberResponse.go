@@ -77,6 +77,7 @@ func NewApduDataExtDomainAddressSerialNumberResponse(length uint8) *_ApduDataExt
 	_result := &_ApduDataExtDomainAddressSerialNumberResponse{
 		ApduDataExtContract: NewApduDataExt(length),
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

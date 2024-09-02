@@ -118,6 +118,7 @@ func NewBACnetConstructedDataControlledVariableValue(controlledVariableValue BAC
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ControlledVariableValue:       controlledVariableValue,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -77,6 +77,7 @@ func NewMFuncPropCommandReq(size uint16) *_MFuncPropCommandReq {
 	_result := &_MFuncPropCommandReq{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

@@ -118,6 +118,7 @@ func NewBACnetConstructedDataShedDuration(shedDuration BACnetApplicationTagUnsig
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ShedDuration:                  shedDuration,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

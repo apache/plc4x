@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLastNotifyRecord(lastNotifyRecord BACnetApplication
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastNotifyRecord:              lastNotifyRecord,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

@@ -122,6 +122,7 @@ func NewNodeIdGuid(namespaceIndex uint16, id []byte) *_NodeIdGuid {
 		NamespaceIndex:               namespaceIndex,
 		Id:                           id,
 	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
 	return _result
 }
 

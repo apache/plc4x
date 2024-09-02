@@ -141,6 +141,7 @@ func NewAirConditioningDataSetPlantHvacLevel(zoneGroup byte, zoneList HVACZoneLi
 		RawLevel:                    rawLevel,
 		AuxLevel:                    auxLevel,
 	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
 

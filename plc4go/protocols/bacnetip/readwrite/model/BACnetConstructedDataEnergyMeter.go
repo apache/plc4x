@@ -118,6 +118,7 @@ func NewBACnetConstructedDataEnergyMeter(energyMeter BACnetApplicationTagReal, o
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EnergyMeter:                   energyMeter,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

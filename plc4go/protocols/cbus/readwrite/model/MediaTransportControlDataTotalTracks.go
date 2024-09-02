@@ -117,6 +117,7 @@ func NewMediaTransportControlDataTotalTracks(totalTracksMSB byte, totalTracksMMS
 		TotalTracksMLSB:                   totalTracksMLSB,
 		TotalTracksLSB:                    totalTracksLSB,
 	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
 

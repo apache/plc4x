@@ -105,6 +105,7 @@ func NewHistoryData(noOfDataValues int32, dataValues []DataValue) *_HistoryData 
 		NoOfDataValues:                    noOfDataValues,
 		DataValues:                        dataValues,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

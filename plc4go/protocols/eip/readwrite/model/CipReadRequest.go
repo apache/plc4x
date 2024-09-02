@@ -113,6 +113,7 @@ func NewCipReadRequest(tag []byte, elementNb uint16, serviceLen uint16) *_CipRea
 		Tag:                tag,
 		ElementNb:          elementNb,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

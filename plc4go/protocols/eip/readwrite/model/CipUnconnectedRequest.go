@@ -155,6 +155,7 @@ func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegm
 		BackPlane:          backPlane,
 		Slot:               slot,
 	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
 

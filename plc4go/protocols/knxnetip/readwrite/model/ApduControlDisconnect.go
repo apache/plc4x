@@ -77,6 +77,7 @@ func NewApduControlDisconnect() *_ApduControlDisconnect {
 	_result := &_ApduControlDisconnect{
 		ApduControlContract: NewApduControl(),
 	}
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
 	return _result
 }
 

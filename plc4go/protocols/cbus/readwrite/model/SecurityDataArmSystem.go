@@ -150,6 +150,7 @@ func NewSecurityDataArmSystem(armMode byte, commandTypeContainer SecurityCommand
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		ArmMode:              armMode,
 	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
 

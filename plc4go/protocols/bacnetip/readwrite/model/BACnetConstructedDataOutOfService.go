@@ -118,6 +118,7 @@ func NewBACnetConstructedDataOutOfService(outOfService BACnetApplicationTagBoole
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		OutOfService:                  outOfService,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

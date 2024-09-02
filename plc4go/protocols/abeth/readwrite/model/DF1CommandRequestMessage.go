@@ -97,6 +97,7 @@ func NewDF1CommandRequestMessage(command DF1RequestCommand, destinationAddress u
 		DF1RequestMessageContract: NewDF1RequestMessage(destinationAddress, sourceAddress, status, transactionCounter),
 		Command:                   command,
 	}
+	_result.DF1RequestMessageContract.(*_DF1RequestMessage)._SubType = _result
 	return _result
 }
 

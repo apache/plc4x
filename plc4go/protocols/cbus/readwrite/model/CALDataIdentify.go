@@ -93,6 +93,7 @@ func NewCALDataIdentify(attribute Attribute, commandTypeContainer CALCommandType
 		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
 		Attribute:       attribute,
 	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
 

@@ -77,6 +77,7 @@ func NewApduDataAdcResponse(dataLength uint8) *_ApduDataAdcResponse {
 	_result := &_ApduDataAdcResponse{
 		ApduDataContract: NewApduData(dataLength),
 	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
 

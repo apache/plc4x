@@ -105,6 +105,7 @@ func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performance
 		DestinationNetworkAddress: destinationNetworkAddress,
 		PerformanceIndex:          performanceIndex,
 	}
+	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
 

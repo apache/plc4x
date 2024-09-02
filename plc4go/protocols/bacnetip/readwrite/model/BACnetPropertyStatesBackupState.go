@@ -93,6 +93,7 @@ func NewBACnetPropertyStatesBackupState(backupState BACnetBackupStateTagged, pee
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		BackupState:                  backupState,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

@@ -77,6 +77,7 @@ func NewLRawReq(size uint16) *_LRawReq {
 	_result := &_LRawReq{
 		CEMIContract: NewCEMI(size),
 	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
 

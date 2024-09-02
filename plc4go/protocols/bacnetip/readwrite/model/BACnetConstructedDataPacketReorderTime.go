@@ -118,6 +118,7 @@ func NewBACnetConstructedDataPacketReorderTime(packetReorderTime BACnetApplicati
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PacketReorderTime:             packetReorderTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

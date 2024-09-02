@@ -101,6 +101,7 @@ func NewS7ParameterReadVarRequest(items []S7VarRequestParameterItem) *_S7Paramet
 		S7ParameterContract: NewS7Parameter(),
 		Items:               items,
 	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
 

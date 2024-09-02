@@ -118,6 +118,7 @@ func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength 
 		Port:         port,
 		Npdu:         npdu,
 	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
 

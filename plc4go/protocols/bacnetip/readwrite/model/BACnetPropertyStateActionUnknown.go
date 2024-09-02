@@ -93,6 +93,7 @@ func NewBACnetPropertyStateActionUnknown(unknownValue BACnetContextTagUnknown, p
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		UnknownValue:                 unknownValue,
 	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
 

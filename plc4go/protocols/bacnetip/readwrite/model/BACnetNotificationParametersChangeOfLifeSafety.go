@@ -133,6 +133,7 @@ func NewBACnetNotificationParametersChangeOfLifeSafety(innerOpeningTag BACnetOpe
 		OperationExpected:                    operationExpected,
 		InnerClosingTag:                      innerClosingTag,
 	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
 	return _result
 }
 

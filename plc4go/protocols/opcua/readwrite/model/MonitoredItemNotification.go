@@ -105,6 +105,7 @@ func NewMonitoredItemNotification(clientHandle uint32, value DataValue) *_Monito
 		ClientHandle:                      clientHandle,
 		Value:                             value,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

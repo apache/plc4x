@@ -77,6 +77,7 @@ func NewFirmataCommandSystemReset(response bool) *_FirmataCommandSystemReset {
 	_result := &_FirmataCommandSystemReset{
 		FirmataCommandContract: NewFirmataCommand(response),
 	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
 

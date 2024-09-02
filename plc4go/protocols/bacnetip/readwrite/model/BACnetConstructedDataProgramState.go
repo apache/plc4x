@@ -118,6 +118,7 @@ func NewBACnetConstructedDataProgramState(programState BACnetProgramStateTagged,
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProgramState:                  programState,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

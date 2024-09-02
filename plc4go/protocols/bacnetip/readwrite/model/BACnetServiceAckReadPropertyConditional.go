@@ -100,6 +100,7 @@ func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, se
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		BytesOfRemovedService:    bytesOfRemovedService,
 	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
 

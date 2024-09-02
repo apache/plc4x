@@ -97,6 +97,7 @@ func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAut
 		ApduDataExtContract: NewApduDataExt(length),
 		Level:               level,
 	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
 

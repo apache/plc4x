@@ -77,6 +77,7 @@ func NewHistoryReadDetails() *_HistoryReadDetails {
 	_result := &_HistoryReadDetails{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

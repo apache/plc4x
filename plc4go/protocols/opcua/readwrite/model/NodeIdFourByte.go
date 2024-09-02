@@ -122,6 +122,7 @@ func NewNodeIdFourByte(namespaceIndex uint8, id uint16) *_NodeIdFourByte {
 		NamespaceIndex:               namespaceIndex,
 		Id:                           id,
 	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
 	return _result
 }
 

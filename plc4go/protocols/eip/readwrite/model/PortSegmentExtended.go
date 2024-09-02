@@ -130,6 +130,7 @@ func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *
 		LinkAddressSize:         linkAddressSize,
 		Address:                 address,
 	}
+	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
 	return _result
 }
 

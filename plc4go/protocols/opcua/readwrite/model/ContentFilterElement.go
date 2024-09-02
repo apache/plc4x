@@ -113,6 +113,7 @@ func NewContentFilterElement(filterOperator FilterOperator, noOfFilterOperands i
 		NoOfFilterOperands:                noOfFilterOperands,
 		FilterOperands:                    filterOperands,
 	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
 

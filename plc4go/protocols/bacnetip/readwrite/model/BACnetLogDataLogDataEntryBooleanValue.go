@@ -93,6 +93,7 @@ func NewBACnetLogDataLogDataEntryBooleanValue(booleanValue BACnetContextTagBoole
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		BooleanValue:                      booleanValue,
 	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
 

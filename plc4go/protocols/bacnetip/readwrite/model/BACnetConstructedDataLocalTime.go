@@ -118,6 +118,7 @@ func NewBACnetConstructedDataLocalTime(localTime BACnetApplicationTagTime, openi
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LocalTime:                     localTime,
 	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
 

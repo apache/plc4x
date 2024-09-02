@@ -93,6 +93,7 @@ func NewBACnetValueSourceObject(object BACnetDeviceObjectReferenceEnclosed, peek
 		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
 		Object:                    object,
 	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
 	return _result
 }
 
