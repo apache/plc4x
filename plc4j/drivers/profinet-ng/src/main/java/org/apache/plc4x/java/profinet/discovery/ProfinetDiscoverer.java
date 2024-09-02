@@ -99,7 +99,12 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
             try {
                 Packet packet = EthernetPacket.newPacket(buffer.getBytes(), 0, identificationRequest.getLengthInBytes());
                 handle.sendPacket(packet);
-            } catch (PcapNativeException | NotOpenException | IllegalRawDataException e) {
+            } catch (PcapNativeException e) {
+                // This occurs, if for example the Wi-Fi network is disabled.
+                if(!e.getMessage().contains("Network is down")) {
+                    throw new RuntimeException(e);
+                }
+             } catch (NotOpenException | IllegalRawDataException e) {
                 throw new RuntimeException(e);
             }
         }
