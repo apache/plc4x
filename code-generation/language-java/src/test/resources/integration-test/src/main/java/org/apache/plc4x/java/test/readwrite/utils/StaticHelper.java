@@ -71,7 +71,7 @@ public class StaticHelper {
     public static void serializeString(WriteBuffer io, String data) {
     }
 
-    public static short readManualField(ReadBuffer io, short simpleField) {
+    public static short readManualAField(ReadBuffer io, short simpleField) {
         return 0;
     }
 
