@@ -126,6 +126,12 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 func (b *BIPSimpleApplication) Close() error {
 	b.log.Debug().Msg("close socket")
 
+	if b.ApplicationIOController != nil {
+		if err := b.ApplicationIOController.Close(); err != nil {
+			b.log.Warn().Err(err).Msg("error closing applicationIOController")
+		}
+	}
+
 	// pass to the multiplexer, then down to the sockets
 	return b.mux.Close()
 }

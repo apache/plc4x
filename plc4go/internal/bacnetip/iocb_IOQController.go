@@ -278,3 +278,10 @@ func (i *IOQController) _waitTrigger(_ Args, _ KWArgs) error {
 	// look for more to do
 	return i._trigger(NoArgs, NoKWArgs)
 }
+
+func (i *IOQController) Close() error {
+	if i.ioQueue != nil {
+		return i.ioQueue.Close()
+	}
+	return nil
+}

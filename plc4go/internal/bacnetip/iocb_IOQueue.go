@@ -36,6 +36,8 @@ type IOQueue struct {
 	notEmpty sync.Cond
 	queue    PriorityQueue[int, _IOCB]
 
+	wg sync.WaitGroup
+
 	log zerolog.Logger `ignore:"true"`
 }
 
@@ -84,7 +86,9 @@ func (i *IOQueue) Get(block bool, delay *time.Duration) (_IOCB, error) {
 	if len(i.queue) == 0 {
 		if delay != nil {
 			gotSomething := make(chan any)
+			i.wg.Add(1)
 			go func() {
+				defer i.wg.Done()
 				i.notEmpty.Wait()
 				close(gotSomething)
 			}()
@@ -142,4 +146,14 @@ func (i *IOQueue) Abort(err error) {
 
 	// the queue is now empty, clear the event
 	i.notEmpty.Broadcast()
+}
+
+func (i *IOQueue) Close() error {
+	i.log.Debug().Msg("IOQueue closing")
+	defer func() {
+		i.log.Debug().Msg("waiting for running tasks to finnish")
+		i.wg.Wait()
+		i.log.Debug().Msg("waiting done")
+	}()
+	return nil
 }

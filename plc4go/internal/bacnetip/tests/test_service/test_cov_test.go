@@ -39,6 +39,9 @@ func TestBasic(t *testing.T) {
 	// create a network
 	anet, err := NewApplicationNetwork(testingLogger)
 	require.NoError(t, err)
+	t.Cleanup(func() {
+		require.NoError(t, anet.Close())
+	})
 
 	// add the service capability
 	anet.iut.AddCapability(new(service.ChangeOfValuesServices))

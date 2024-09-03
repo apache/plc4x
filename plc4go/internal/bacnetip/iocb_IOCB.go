@@ -91,6 +91,8 @@ type IOCB struct {
 	ioTimoutCancel chan any
 	priority       int
 
+	wg sync.WaitGroup
+
 	log zerolog.Logger `ignore:"true"`
 }
 
@@ -236,7 +238,9 @@ func (i *IOCB) SetTimeout(delay time.Duration) {
 		now := GetTaskManagerTime()
 		i.ioTimeout = time.NewTimer(delay)
 		i.ioTimoutCancel = make(chan any)
+		i.wg.Add(1)
 		go func() {
+			defer i.wg.Done()
 			select {
 			case timeout := <-i.ioTimeout.C:
 				_ = i.Abort(utils.NewTimeoutError(now.Sub(timeout)))
@@ -280,4 +284,14 @@ func (i *IOCB) getPriority() int {
 
 func (i *IOCB) clearQueue() {
 	i.ioQueue = nil
+}
+
+func (i *IOCB) Close() error { // TODO: ensure this is getting called
+	i.log.Debug().Msg("IOCB closing")
+	defer func() {
+		i.log.Debug().Msg("waiting for running tasks to finnish")
+		i.wg.Wait()
+		i.log.Debug().Msg("waiting done")
+	}()
+	return nil
 }

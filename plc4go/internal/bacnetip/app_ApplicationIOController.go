@@ -30,7 +30,7 @@ type ApplicationIOController struct {
 	*IOController
 	*Application
 
-	queueByAddress map[string]SieveQueue
+	queueByAddress map[string]*SieveQueue
 
 	// pass through args
 	argDeviceInfoCache *DeviceInfoCache
@@ -42,7 +42,7 @@ type ApplicationIOController struct {
 func NewApplicationIOController(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(controller *ApplicationIOController)) (*ApplicationIOController, error) {
 	a := &ApplicationIOController{
 		// queues for each address
-		queueByAddress: make(map[string]SieveQueue),
+		queueByAddress: make(map[string]*SieveQueue),
 		log:            localLog,
 	}
 	for _, opt := range opts {
@@ -86,10 +86,10 @@ func (a *ApplicationIOController) ProcessIO(iocb _IOCB) error {
 	queue, ok := a.queueByAddress[destinationAddress.String()]
 	if !ok {
 		newQueue, _ := NewSieveQueue(a.log, a._AppRequest, destinationAddress)
-		queue = *newQueue
+		queue = newQueue
 		a.queueByAddress[destinationAddress.String()] = queue
 	}
-	a.log.Debug().Stringer("queue", &queue).Msg("working with queue")
+	a.log.Debug().Stringer("queue", queue).Msg("working with queue")
 
 	// ask the queue to process the request
 	return queue.RequestIO(iocb)
@@ -107,7 +107,7 @@ func (a *ApplicationIOController) _AppComplete(address *Address, apdu PDU) error
 		a.log.Debug().Stringer("address", address).Msg("no queue for")
 		return nil
 	}
-	a.log.Debug().Stringer("queue", &queue).Msg("working with queue")
+	a.log.Debug().Stringer("queue", queue).Msg("working with queue")
 
 	// make sure it has an active iocb
 	if queue.activeIOCB == nil {
@@ -174,4 +174,14 @@ func (a *ApplicationIOController) Confirmation(args Args, kwargs KWArgs) error {
 
 	// this is an ack, error, reject or abort
 	return a._AppComplete(apdu.GetPDUSource(), apdu)
+}
+
+func (a *ApplicationIOController) Close() error {
+	for addr, queue := range a.queueByAddress {
+		a.log.Debug().Str("addr", addr).Msg("Closing")
+		if err := queue.Close(); err != nil {
+			a.log.Warn().Str("addr", addr).Err(err).Stringer("queue", queue).Msg("error closing")
+		}
+	}
+	return nil
 }

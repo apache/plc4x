@@ -157,6 +157,16 @@ func (a *ApplicationNetwork) _debug(format string, args bacnetip.Args) {
 	a.log.Debug().Msgf(format, args)
 }
 
+func (a *ApplicationNetwork) Close() error {
+	if err := a.td.Close(); err != nil {
+		a.log.Warn().Err(err).Msg("error closing td")
+	}
+	if err := a.iut.Close(); err != nil {
+		a.log.Warn().Err(err).Msg("error closing iut")
+	}
+	return nil
+}
+
 type SnifferNode struct {
 	bacnetip.Client
 

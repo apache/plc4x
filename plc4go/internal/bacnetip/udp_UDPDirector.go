@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"sync"
 
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
@@ -45,6 +46,8 @@ type UDPDirector struct {
 	request    chan PDU
 	peers      map[string]*UDPActor
 	running    bool
+
+	wg sync.WaitGroup
 
 	passLogToModel bool
 	log            zerolog.Logger
@@ -99,7 +102,9 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 	}
 
 	d.running = true
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		for d.running {
 			d.handleRead()
 		}
@@ -107,7 +112,9 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 
 	// create the request queue
 	d.request = make(chan PDU)
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		for d.running {
 			pdu := <-d.request
 			serialize, err := pdu.GetRootMessage().Serialize()
@@ -184,6 +191,12 @@ func (d *UDPDirector) ActorError(actor *UDPActor, err error) {
 }
 
 func (d *UDPDirector) Close() error {
+	d.log.Debug().Msg("UDPDirector closing")
+	defer func() {
+		d.log.Debug().Msg("waiting for running tasks to finnish")
+		d.wg.Wait()
+		d.log.Debug().Msg("waiting done")
+	}()
 	d.running = false
 	return d.udpConn.Close()
 }
@@ -222,7 +235,9 @@ func (d *UDPDirector) handleRead() {
 	}
 	pdu := NewPDU(bvlc, WithPDUSource(saddr), WithPDUDestination(daddr))
 	// send the _PDU up to the client
+	d.wg.Add(1)
 	go func() {
+		defer d.wg.Done()
 		if err := d._response(pdu); err != nil {
 			d.log.Debug().Err(err).Msg("errored")
 		}
