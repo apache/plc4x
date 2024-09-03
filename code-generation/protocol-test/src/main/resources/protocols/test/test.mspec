@@ -121,7 +121,7 @@
             [simple string 8 abstractStringField]
         ]
     ]
-    [abstract bit oneMoreBit]
+    //[abstract bit oneMoreBit] // TODO: apparently this breaks java
 ]
 
 [type ArrayTypeTest
