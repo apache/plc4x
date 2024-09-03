@@ -183,7 +183,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                             }
 
                             try {
-                                Thread.sleep(3000);
+                                Thread.sleep(100);
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
