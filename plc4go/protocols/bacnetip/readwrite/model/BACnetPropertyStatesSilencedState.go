@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesSilencedState) GetSilencedState() BACnetSilencedSt
 
 // NewBACnetPropertyStatesSilencedState factory function for _BACnetPropertyStatesSilencedState
 func NewBACnetPropertyStatesSilencedState(silencedState BACnetSilencedStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesSilencedState {
+	if silencedState == nil {
+		panic("silencedState of type BACnetSilencedStateTagged for BACnetPropertyStatesSilencedState must not be nil")
+	}
 	_result := &_BACnetPropertyStatesSilencedState{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		SilencedState:                silencedState,

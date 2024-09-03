@@ -137,6 +137,18 @@ func (m *_ActivateSessionRequest) GetUserTokenSignature() ExtensionObjectDefinit
 
 // NewActivateSessionRequest factory function for _ActivateSessionRequest
 func NewActivateSessionRequest(requestHeader ExtensionObjectDefinition, clientSignature ExtensionObjectDefinition, noOfClientSoftwareCertificates int32, clientSoftwareCertificates []ExtensionObjectDefinition, noOfLocaleIds int32, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature ExtensionObjectDefinition) *_ActivateSessionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+	}
+	if clientSignature == nil {
+		panic("clientSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+	}
+	if userIdentityToken == nil {
+		panic("userIdentityToken of type ExtensionObject for ActivateSessionRequest must not be nil")
+	}
+	if userTokenSignature == nil {
+		panic("userTokenSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+	}
 	_result := &_ActivateSessionRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

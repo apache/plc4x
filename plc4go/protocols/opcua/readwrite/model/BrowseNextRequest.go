@@ -111,6 +111,9 @@ func (m *_BrowseNextRequest) GetContinuationPoints() []PascalByteString {
 
 // NewBrowseNextRequest factory function for _BrowseNextRequest
 func NewBrowseNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoints bool, noOfContinuationPoints int32, continuationPoints []PascalByteString) *_BrowseNextRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for BrowseNextRequest must not be nil")
+	}
 	_result := &_BrowseNextRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

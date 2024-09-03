@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataProtocolRevision) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataProtocolRevision factory function for _BACnetConstructedDataProtocolRevision
 func NewBACnetConstructedDataProtocolRevision(protocolRevision BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolRevision {
+	if protocolRevision == nil {
+		panic("protocolRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProtocolRevision must not be nil")
+	}
 	_result := &_BACnetConstructedDataProtocolRevision{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProtocolRevision:              protocolRevision,

@@ -78,6 +78,9 @@ func (m *_BACnetProgramRequestTagged) GetValue() BACnetProgramRequest {
 
 // NewBACnetProgramRequestTagged factory function for _BACnetProgramRequestTagged
 func NewBACnetProgramRequestTagged(header BACnetTagHeader, value BACnetProgramRequest, tagNumber uint8, tagClass TagClass) *_BACnetProgramRequestTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetProgramRequestTagged must not be nil")
+	}
 	return &_BACnetProgramRequestTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

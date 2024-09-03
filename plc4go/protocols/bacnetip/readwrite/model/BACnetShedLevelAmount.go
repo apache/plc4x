@@ -84,6 +84,9 @@ func (m *_BACnetShedLevelAmount) GetAmount() BACnetContextTagReal {
 
 // NewBACnetShedLevelAmount factory function for _BACnetShedLevelAmount
 func NewBACnetShedLevelAmount(amount BACnetContextTagReal, peekedTagHeader BACnetTagHeader) *_BACnetShedLevelAmount {
+	if amount == nil {
+		panic("amount of type BACnetContextTagReal for BACnetShedLevelAmount must not be nil")
+	}
 	_result := &_BACnetShedLevelAmount{
 		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
 		Amount:                  amount,

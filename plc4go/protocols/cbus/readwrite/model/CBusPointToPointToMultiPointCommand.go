@@ -103,6 +103,12 @@ func (m *_CBusPointToPointToMultiPointCommand) GetPeekedApplication() byte {
 
 // NewCBusPointToPointToMultiPointCommand factory function for _CBusPointToPointToMultiPointCommand
 func NewCBusPointToPointToMultiPointCommand(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommand {
+	if bridgeAddress == nil {
+		panic("bridgeAddress of type BridgeAddress for CBusPointToPointToMultiPointCommand must not be nil")
+	}
+	if networkRoute == nil {
+		panic("networkRoute of type NetworkRoute for CBusPointToPointToMultiPointCommand must not be nil")
+	}
 	return &_CBusPointToPointToMultiPointCommand{BridgeAddress: bridgeAddress, NetworkRoute: networkRoute, PeekedApplication: peekedApplication, CBusOptions: cBusOptions}
 }
 

@@ -84,6 +84,15 @@ func (m *_BACnetRecipientEnclosed) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetRecipientEnclosed factory function for _BACnetRecipientEnclosed
 func NewBACnetRecipientEnclosed(openingTag BACnetOpeningTag, recipient BACnetRecipient, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetRecipientEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetRecipientEnclosed must not be nil")
+	}
+	if recipient == nil {
+		panic("recipient of type BACnetRecipient for BACnetRecipientEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetRecipientEnclosed must not be nil")
+	}
 	return &_BACnetRecipientEnclosed{OpeningTag: openingTag, Recipient: recipient, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

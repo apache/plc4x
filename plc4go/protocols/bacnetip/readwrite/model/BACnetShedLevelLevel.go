@@ -84,6 +84,9 @@ func (m *_BACnetShedLevelLevel) GetLevel() BACnetContextTagUnsignedInteger {
 
 // NewBACnetShedLevelLevel factory function for _BACnetShedLevelLevel
 func NewBACnetShedLevelLevel(level BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetShedLevelLevel {
+	if level == nil {
+		panic("level of type BACnetContextTagUnsignedInteger for BACnetShedLevelLevel must not be nil")
+	}
 	_result := &_BACnetShedLevelLevel{
 		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
 		Level:                   level,

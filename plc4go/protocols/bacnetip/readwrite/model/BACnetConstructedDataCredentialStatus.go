@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCredentialStatus) GetActualValue() BACnetBinaryPV
 
 // NewBACnetConstructedDataCredentialStatus factory function for _BACnetConstructedDataCredentialStatus
 func NewBACnetConstructedDataCredentialStatus(binaryPv BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialStatus {
+	if binaryPv == nil {
+		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataCredentialStatus must not be nil")
+	}
 	_result := &_BACnetConstructedDataCredentialStatus{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BinaryPv:                      binaryPv,

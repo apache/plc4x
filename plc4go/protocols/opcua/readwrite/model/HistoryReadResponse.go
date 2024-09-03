@@ -116,6 +116,9 @@ func (m *_HistoryReadResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewHistoryReadResponse factory function for _HistoryReadResponse
 func NewHistoryReadResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryReadResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for HistoryReadResponse must not be nil")
+	}
 	_result := &_HistoryReadResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

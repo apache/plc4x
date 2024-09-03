@@ -78,6 +78,9 @@ func (m *_NPDUNetworkPriorityTagged) GetValue() NPDUNetworkPriority {
 
 // NewNPDUNetworkPriorityTagged factory function for _NPDUNetworkPriorityTagged
 func NewNPDUNetworkPriorityTagged(header BACnetTagHeader, value NPDUNetworkPriority, tagNumber uint8, tagClass TagClass) *_NPDUNetworkPriorityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for NPDUNetworkPriorityTagged must not be nil")
+	}
 	return &_NPDUNetworkPriorityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

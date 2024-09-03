@@ -67,6 +67,9 @@ func (m *_BACnetLiftCarCallList) GetFloorNumbers() BACnetLiftCarCallListFloorLis
 
 // NewBACnetLiftCarCallList factory function for _BACnetLiftCarCallList
 func NewBACnetLiftCarCallList(floorNumbers BACnetLiftCarCallListFloorList) *_BACnetLiftCarCallList {
+	if floorNumbers == nil {
+		panic("floorNumbers of type BACnetLiftCarCallListFloorList for BACnetLiftCarCallList must not be nil")
+	}
 	return &_BACnetLiftCarCallList{FloorNumbers: floorNumbers}
 }
 

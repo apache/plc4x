@@ -78,6 +78,9 @@ func (m *_SecurityResponseCodeTagged) GetValue() SecurityResponseCode {
 
 // NewSecurityResponseCodeTagged factory function for _SecurityResponseCodeTagged
 func NewSecurityResponseCodeTagged(header BACnetTagHeader, value SecurityResponseCode, tagNumber uint8, tagClass TagClass) *_SecurityResponseCodeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for SecurityResponseCodeTagged must not be nil")
+	}
 	return &_SecurityResponseCodeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

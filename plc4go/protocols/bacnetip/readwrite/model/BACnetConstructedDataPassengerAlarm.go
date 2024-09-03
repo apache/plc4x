@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataPassengerAlarm) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataPassengerAlarm factory function for _BACnetConstructedDataPassengerAlarm
 func NewBACnetConstructedDataPassengerAlarm(passengerAlarm BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassengerAlarm {
+	if passengerAlarm == nil {
+		panic("passengerAlarm of type BACnetApplicationTagBoolean for BACnetConstructedDataPassengerAlarm must not be nil")
+	}
 	_result := &_BACnetConstructedDataPassengerAlarm{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PassengerAlarm:                passengerAlarm,

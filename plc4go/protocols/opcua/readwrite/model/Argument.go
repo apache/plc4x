@@ -123,6 +123,15 @@ func (m *_Argument) GetDescription() LocalizedText {
 
 // NewArgument factory function for _Argument
 func NewArgument(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) *_Argument {
+	if name == nil {
+		panic("name of type PascalString for Argument must not be nil")
+	}
+	if dataType == nil {
+		panic("dataType of type NodeId for Argument must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for Argument must not be nil")
+	}
 	_result := &_Argument{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Name:                              name,

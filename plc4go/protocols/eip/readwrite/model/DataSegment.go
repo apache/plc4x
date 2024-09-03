@@ -88,6 +88,9 @@ func (m *_DataSegment) GetSegmentType() DataSegmentType {
 
 // NewDataSegment factory function for _DataSegment
 func NewDataSegment(segmentType DataSegmentType) *_DataSegment {
+	if segmentType == nil {
+		panic("segmentType of type DataSegmentType for DataSegment must not be nil")
+	}
 	_result := &_DataSegment{
 		PathSegmentContract: NewPathSegment(),
 		SegmentType:         segmentType,

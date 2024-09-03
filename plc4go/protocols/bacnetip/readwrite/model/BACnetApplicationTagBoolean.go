@@ -101,6 +101,9 @@ func (m *_BACnetApplicationTagBoolean) GetActualValue() bool {
 
 // NewBACnetApplicationTagBoolean factory function for _BACnetApplicationTagBoolean
 func NewBACnetApplicationTagBoolean(payload BACnetTagPayloadBoolean, header BACnetTagHeader) *_BACnetApplicationTagBoolean {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBoolean for BACnetApplicationTagBoolean must not be nil")
+	}
 	_result := &_BACnetApplicationTagBoolean{
 		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
 		Payload:                      payload,

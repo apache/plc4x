@@ -88,6 +88,9 @@ func (m *_SALDataHeating) GetHeatingData() LightingData {
 
 // NewSALDataHeating factory function for _SALDataHeating
 func NewSALDataHeating(heatingData LightingData, salData SALData) *_SALDataHeating {
+	if heatingData == nil {
+		panic("heatingData of type LightingData for SALDataHeating must not be nil")
+	}
 	_result := &_SALDataHeating{
 		SALDataContract: NewSALData(salData),
 		HeatingData:     heatingData,

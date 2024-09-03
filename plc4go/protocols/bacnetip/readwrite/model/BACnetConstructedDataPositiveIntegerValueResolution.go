@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetActualValue() 
 
 // NewBACnetConstructedDataPositiveIntegerValueResolution factory function for _BACnetConstructedDataPositiveIntegerValueResolution
 func NewBACnetConstructedDataPositiveIntegerValueResolution(resolution BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueResolution {
+	if resolution == nil {
+		panic("resolution of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueResolution must not be nil")
+	}
 	_result := &_BACnetConstructedDataPositiveIntegerValueResolution{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Resolution:                    resolution,

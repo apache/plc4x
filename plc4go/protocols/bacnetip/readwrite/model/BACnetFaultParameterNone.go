@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterNone) GetNone() BACnetContextTagNull {
 
 // NewBACnetFaultParameterNone factory function for _BACnetFaultParameterNone
 func NewBACnetFaultParameterNone(none BACnetContextTagNull, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterNone {
+	if none == nil {
+		panic("none of type BACnetContextTagNull for BACnetFaultParameterNone must not be nil")
+	}
 	_result := &_BACnetFaultParameterNone{
 		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
 		None:                         none,

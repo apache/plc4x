@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataStopTime) GetActualValue() BACnetDateTime {
 
 // NewBACnetConstructedDataStopTime factory function for _BACnetConstructedDataStopTime
 func NewBACnetConstructedDataStopTime(stopTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStopTime {
+	if stopTime == nil {
+		panic("stopTime of type BACnetDateTime for BACnetConstructedDataStopTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataStopTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		StopTime:                      stopTime,

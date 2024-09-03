@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLoggingType) GetActualValue() BACnetLoggingTypeTa
 
 // NewBACnetConstructedDataLoggingType factory function for _BACnetConstructedDataLoggingType
 func NewBACnetConstructedDataLoggingType(loggingType BACnetLoggingTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingType {
+	if loggingType == nil {
+		panic("loggingType of type BACnetLoggingTypeTagged for BACnetConstructedDataLoggingType must not be nil")
+	}
 	_result := &_BACnetConstructedDataLoggingType{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LoggingType:                   loggingType,

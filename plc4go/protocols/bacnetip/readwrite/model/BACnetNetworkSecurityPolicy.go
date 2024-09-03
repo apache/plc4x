@@ -74,6 +74,12 @@ func (m *_BACnetNetworkSecurityPolicy) GetSecurityLevel() BACnetSecurityPolicyTa
 
 // NewBACnetNetworkSecurityPolicy factory function for _BACnetNetworkSecurityPolicy
 func NewBACnetNetworkSecurityPolicy(portId BACnetContextTagUnsignedInteger, securityLevel BACnetSecurityPolicyTagged) *_BACnetNetworkSecurityPolicy {
+	if portId == nil {
+		panic("portId of type BACnetContextTagUnsignedInteger for BACnetNetworkSecurityPolicy must not be nil")
+	}
+	if securityLevel == nil {
+		panic("securityLevel of type BACnetSecurityPolicyTagged for BACnetNetworkSecurityPolicy must not be nil")
+	}
 	return &_BACnetNetworkSecurityPolicy{PortId: portId, SecurityLevel: securityLevel}
 }
 

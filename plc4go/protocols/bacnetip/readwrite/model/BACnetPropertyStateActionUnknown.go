@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStateActionUnknown) GetUnknownValue() BACnetContextTagUn
 
 // NewBACnetPropertyStateActionUnknown factory function for _BACnetPropertyStateActionUnknown
 func NewBACnetPropertyStateActionUnknown(unknownValue BACnetContextTagUnknown, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStateActionUnknown {
+	if unknownValue == nil {
+		panic("unknownValue of type BACnetContextTagUnknown for BACnetPropertyStateActionUnknown must not be nil")
+	}
 	_result := &_BACnetPropertyStateActionUnknown{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		UnknownValue:                 unknownValue,

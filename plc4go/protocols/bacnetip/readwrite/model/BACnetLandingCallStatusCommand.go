@@ -102,6 +102,9 @@ func (pm *_BACnetLandingCallStatusCommand) GetPeekedTagNumber() uint8 {
 
 // NewBACnetLandingCallStatusCommand factory function for _BACnetLandingCallStatusCommand
 func NewBACnetLandingCallStatusCommand(peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommand {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetLandingCallStatusCommand must not be nil")
+	}
 	return &_BACnetLandingCallStatusCommand{PeekedTagHeader: peekedTagHeader}
 }
 

@@ -116,6 +116,12 @@ func (m *_AlarmMessageObjectAckType) GetLength() uint8 {
 
 // NewAlarmMessageObjectAckType factory function for _AlarmMessageObjectAckType
 func NewAlarmMessageObjectAckType(syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageObjectAckType {
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageObjectAckType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageObjectAckType must not be nil")
+	}
 	return &_AlarmMessageObjectAckType{SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
 }
 

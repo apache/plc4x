@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataValueSet) GetActualValue() BACnetApplicationTagUn
 
 // NewBACnetConstructedDataValueSet factory function for _BACnetConstructedDataValueSet
 func NewBACnetConstructedDataValueSet(valueSet BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSet {
+	if valueSet == nil {
+		panic("valueSet of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValueSet must not be nil")
+	}
 	_result := &_BACnetConstructedDataValueSet{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ValueSet:                      valueSet,

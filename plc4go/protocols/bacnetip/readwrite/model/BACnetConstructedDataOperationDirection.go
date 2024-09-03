@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataOperationDirection) GetActualValue() BACnetEscala
 
 // NewBACnetConstructedDataOperationDirection factory function for _BACnetConstructedDataOperationDirection
 func NewBACnetConstructedDataOperationDirection(operationDirection BACnetEscalatorOperationDirectionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationDirection {
+	if operationDirection == nil {
+		panic("operationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetConstructedDataOperationDirection must not be nil")
+	}
 	_result := &_BACnetConstructedDataOperationDirection{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		OperationDirection:            operationDirection,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCredentialDataInputPresentValue) GetActualValue()
 
 // NewBACnetConstructedDataCredentialDataInputPresentValue factory function for _BACnetConstructedDataCredentialDataInputPresentValue
 func NewBACnetConstructedDataCredentialDataInputPresentValue(presentValue BACnetAuthenticationFactor, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetAuthenticationFactor for BACnetConstructedDataCredentialDataInputPresentValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataCredentialDataInputPresentValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PresentValue:                  presentValue,

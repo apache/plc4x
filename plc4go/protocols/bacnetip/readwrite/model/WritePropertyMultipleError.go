@@ -95,6 +95,12 @@ func (m *_WritePropertyMultipleError) GetFirstFailedWriteAttempt() BACnetObjectP
 
 // NewWritePropertyMultipleError factory function for _WritePropertyMultipleError
 func NewWritePropertyMultipleError(errorType ErrorEnclosed, firstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed) *_WritePropertyMultipleError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for WritePropertyMultipleError must not be nil")
+	}
+	if firstFailedWriteAttempt == nil {
+		panic("firstFailedWriteAttempt of type BACnetObjectPropertyReferenceEnclosed for WritePropertyMultipleError must not be nil")
+	}
 	_result := &_WritePropertyMultipleError{
 		BACnetErrorContract:     NewBACnetError(),
 		ErrorType:               errorType,

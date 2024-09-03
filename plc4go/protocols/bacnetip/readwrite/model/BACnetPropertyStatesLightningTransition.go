@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesLightningTransition) GetLightningTransition() BACn
 
 // NewBACnetPropertyStatesLightningTransition factory function for _BACnetPropertyStatesLightningTransition
 func NewBACnetPropertyStatesLightningTransition(lightningTransition BACnetLightingTransitionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLightningTransition {
+	if lightningTransition == nil {
+		panic("lightningTransition of type BACnetLightingTransitionTagged for BACnetPropertyStatesLightningTransition must not be nil")
+	}
 	_result := &_BACnetPropertyStatesLightningTransition{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LightningTransition:          lightningTransition,

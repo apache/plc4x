@@ -121,6 +121,15 @@ func (pm *_BACnetLogRecordLogDatum) GetPeekedTagNumber() uint8 {
 
 // NewBACnetLogRecordLogDatum factory function for _BACnetLogRecordLogDatum
 func NewBACnetLogRecordLogDatum(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatum {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetLogRecordLogDatum must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetLogRecordLogDatum must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetLogRecordLogDatum must not be nil")
+	}
 	return &_BACnetLogRecordLogDatum{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

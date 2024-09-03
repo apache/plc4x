@@ -102,6 +102,15 @@ func (m *_AnnotationDataType) GetUri() PascalString {
 
 // NewAnnotationDataType factory function for _AnnotationDataType
 func NewAnnotationDataType(annotation PascalString, discipline PascalString, uri PascalString) *_AnnotationDataType {
+	if annotation == nil {
+		panic("annotation of type PascalString for AnnotationDataType must not be nil")
+	}
+	if discipline == nil {
+		panic("discipline of type PascalString for AnnotationDataType must not be nil")
+	}
+	if uri == nil {
+		panic("uri of type PascalString for AnnotationDataType must not be nil")
+	}
 	_result := &_AnnotationDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Annotation:                        annotation,

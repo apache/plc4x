@@ -95,6 +95,12 @@ func (m *_OptionSet) GetValidBits() PascalByteString {
 
 // NewOptionSet factory function for _OptionSet
 func NewOptionSet(value PascalByteString, validBits PascalByteString) *_OptionSet {
+	if value == nil {
+		panic("value of type PascalByteString for OptionSet must not be nil")
+	}
+	if validBits == nil {
+		panic("validBits of type PascalByteString for OptionSet must not be nil")
+	}
 	_result := &_OptionSet{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Value:                             value,

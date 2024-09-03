@@ -105,6 +105,18 @@ func (m *_BACnetFaultParameterFaultLifeSafety) GetClosingTag() BACnetClosingTag 
 
 // NewBACnetFaultParameterFaultLifeSafety factory function for _BACnetFaultParameterFaultLifeSafety
 func NewBACnetFaultParameterFaultLifeSafety(openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultLifeSafetyListOfFaultValues, modePropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultLifeSafety {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	if listOfFaultValues == nil {
+		panic("listOfFaultValues of type BACnetFaultParameterFaultLifeSafetyListOfFaultValues for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	if modePropertyReference == nil {
+		panic("modePropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultLifeSafety{
 		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
 		OpeningTag:                   openingTag,

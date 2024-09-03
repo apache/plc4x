@@ -102,6 +102,9 @@ func (m *_RegisterNodesRequest) GetNodesToRegister() []NodeId {
 
 // NewRegisterNodesRequest factory function for _RegisterNodesRequest
 func NewRegisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) *_RegisterNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RegisterNodesRequest must not be nil")
+	}
 	_result := &_RegisterNodesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

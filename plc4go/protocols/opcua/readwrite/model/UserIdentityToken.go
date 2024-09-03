@@ -95,6 +95,12 @@ func (m *_UserIdentityToken) GetUserIdentityTokenDefinition() UserIdentityTokenD
 
 // NewUserIdentityToken factory function for _UserIdentityToken
 func NewUserIdentityToken(policyId PascalString, userIdentityTokenDefinition UserIdentityTokenDefinition) *_UserIdentityToken {
+	if policyId == nil {
+		panic("policyId of type PascalString for UserIdentityToken must not be nil")
+	}
+	if userIdentityTokenDefinition == nil {
+		panic("userIdentityTokenDefinition of type UserIdentityTokenDefinition for UserIdentityToken must not be nil")
+	}
 	_result := &_UserIdentityToken{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		PolicyId:                          policyId,

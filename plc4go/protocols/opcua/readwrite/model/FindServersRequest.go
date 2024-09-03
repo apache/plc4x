@@ -123,6 +123,12 @@ func (m *_FindServersRequest) GetServerUris() []PascalString {
 
 // NewFindServersRequest factory function for _FindServersRequest
 func NewFindServersRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) *_FindServersRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for FindServersRequest must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for FindServersRequest must not be nil")
+	}
 	_result := &_FindServersRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

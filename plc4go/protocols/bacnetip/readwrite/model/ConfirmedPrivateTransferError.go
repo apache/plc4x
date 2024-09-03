@@ -109,6 +109,15 @@ func (m *_ConfirmedPrivateTransferError) GetErrorParameters() BACnetConstructedD
 
 // NewConfirmedPrivateTransferError factory function for _ConfirmedPrivateTransferError
 func NewConfirmedPrivateTransferError(errorType ErrorEnclosed, vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, errorParameters BACnetConstructedData) *_ConfirmedPrivateTransferError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for ConfirmedPrivateTransferError must not be nil")
+	}
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for ConfirmedPrivateTransferError must not be nil")
+	}
+	if serviceNumber == nil {
+		panic("serviceNumber of type BACnetContextTagUnsignedInteger for ConfirmedPrivateTransferError must not be nil")
+	}
 	_result := &_ConfirmedPrivateTransferError{
 		BACnetErrorContract: NewBACnetError(),
 		ErrorType:           errorType,

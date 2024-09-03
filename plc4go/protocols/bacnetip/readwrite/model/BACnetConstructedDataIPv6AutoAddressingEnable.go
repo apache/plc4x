@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetActualValue() BACnet
 
 // NewBACnetConstructedDataIPv6AutoAddressingEnable factory function for _BACnetConstructedDataIPv6AutoAddressingEnable
 func NewBACnetConstructedDataIPv6AutoAddressingEnable(autoAddressingEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6AutoAddressingEnable {
+	if autoAddressingEnable == nil {
+		panic("autoAddressingEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataIPv6AutoAddressingEnable must not be nil")
+	}
 	_result := &_BACnetConstructedDataIPv6AutoAddressingEnable{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AutoAddressingEnable:          autoAddressingEnable,

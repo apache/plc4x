@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLargeAnalogValueMaxPresValue) GetActualValue() BA
 
 // NewBACnetConstructedDataLargeAnalogValueMaxPresValue factory function for _BACnetConstructedDataLargeAnalogValueMaxPresValue
 func NewBACnetConstructedDataLargeAnalogValueMaxPresValue(maxPresValue BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueMaxPresValue {
+	if maxPresValue == nil {
+		panic("maxPresValue of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueMaxPresValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataLargeAnalogValueMaxPresValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaxPresValue:                  maxPresValue,

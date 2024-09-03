@@ -144,6 +144,9 @@ func (m *_SetTriggeringResponse) GetRemoveDiagnosticInfos() []DiagnosticInfo {
 
 // NewSetTriggeringResponse factory function for _SetTriggeringResponse
 func NewSetTriggeringResponse(responseHeader ExtensionObjectDefinition, noOfAddResults int32, addResults []StatusCode, noOfAddDiagnosticInfos int32, addDiagnosticInfos []DiagnosticInfo, noOfRemoveResults int32, removeResults []StatusCode, noOfRemoveDiagnosticInfos int32, removeDiagnosticInfos []DiagnosticInfo) *_SetTriggeringResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for SetTriggeringResponse must not be nil")
+	}
 	_result := &_SetTriggeringResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

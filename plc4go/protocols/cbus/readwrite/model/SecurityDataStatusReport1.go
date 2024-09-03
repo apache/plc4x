@@ -105,6 +105,15 @@ func (m *_SecurityDataStatusReport1) GetZoneStatus() []ZoneStatus {
 
 // NewSecurityDataStatusReport1 factory function for _SecurityDataStatusReport1
 func NewSecurityDataStatusReport1(armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatusReport1 {
+	if armCodeType == nil {
+		panic("armCodeType of type SecurityArmCode for SecurityDataStatusReport1 must not be nil")
+	}
+	if tamperStatus == nil {
+		panic("tamperStatus of type TamperStatus for SecurityDataStatusReport1 must not be nil")
+	}
+	if panicStatus == nil {
+		panic("panicStatus of type PanicStatus for SecurityDataStatusReport1 must not be nil")
+	}
 	_result := &_SecurityDataStatusReport1{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		ArmCodeType:          armCodeType,

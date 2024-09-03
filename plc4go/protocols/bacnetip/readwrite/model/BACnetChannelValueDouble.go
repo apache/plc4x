@@ -84,6 +84,9 @@ func (m *_BACnetChannelValueDouble) GetDoubleValue() BACnetApplicationTagDouble 
 
 // NewBACnetChannelValueDouble factory function for _BACnetChannelValueDouble
 func NewBACnetChannelValueDouble(doubleValue BACnetApplicationTagDouble, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueDouble {
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetChannelValueDouble must not be nil")
+	}
 	_result := &_BACnetChannelValueDouble{
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		DoubleValue:                doubleValue,

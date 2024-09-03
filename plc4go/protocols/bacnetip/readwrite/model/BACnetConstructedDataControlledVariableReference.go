@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataControlledVariableReference) GetActualValue() BAC
 
 // NewBACnetConstructedDataControlledVariableReference factory function for _BACnetConstructedDataControlledVariableReference
 func NewBACnetConstructedDataControlledVariableReference(controlledVariableReference BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableReference {
+	if controlledVariableReference == nil {
+		panic("controlledVariableReference of type BACnetObjectPropertyReference for BACnetConstructedDataControlledVariableReference must not be nil")
+	}
 	_result := &_BACnetConstructedDataControlledVariableReference{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ControlledVariableReference:   controlledVariableReference,

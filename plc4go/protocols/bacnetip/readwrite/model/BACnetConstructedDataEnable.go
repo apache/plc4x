@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataEnable) GetActualValue() BACnetApplicationTagBool
 
 // NewBACnetConstructedDataEnable factory function for _BACnetConstructedDataEnable
 func NewBACnetConstructedDataEnable(enable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnable {
+	if enable == nil {
+		panic("enable of type BACnetApplicationTagBoolean for BACnetConstructedDataEnable must not be nil")
+	}
 	_result := &_BACnetConstructedDataEnable{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Enable:                        enable,

@@ -116,6 +116,9 @@ func (m *_AddReferencesResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewAddReferencesResponse factory function for _AddReferencesResponse
 func NewAddReferencesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_AddReferencesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for AddReferencesResponse must not be nil")
+	}
 	_result := &_AddReferencesResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

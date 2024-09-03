@@ -109,6 +109,9 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetTimeFromLastRecoverOfMainsIn
 
 // NewIdentifyReplyCommandOutputUnitSummary factory function for _IdentifyReplyCommandOutputUnitSummary
 func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 *byte, gavStoreEnabledByte2 *byte, timeFromLastRecoverOfMainsInSeconds uint8, numBytes uint8) *_IdentifyReplyCommandOutputUnitSummary {
+	if unitFlags == nil {
+		panic("unitFlags of type IdentifyReplyCommandUnitSummary for IdentifyReplyCommandOutputUnitSummary must not be nil")
+	}
 	_result := &_IdentifyReplyCommandOutputUnitSummary{
 		IdentifyReplyCommandContract:        NewIdentifyReplyCommand(numBytes),
 		UnitFlags:                           unitFlags,

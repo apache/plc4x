@@ -91,6 +91,12 @@ func (m *_ReplyOrConfirmationReply) GetTermination() ResponseTermination {
 
 // NewReplyOrConfirmationReply factory function for _ReplyOrConfirmationReply
 func NewReplyOrConfirmationReply(reply Reply, termination ResponseTermination, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationReply {
+	if reply == nil {
+		panic("reply of type Reply for ReplyOrConfirmationReply must not be nil")
+	}
+	if termination == nil {
+		panic("termination of type ResponseTermination for ReplyOrConfirmationReply must not be nil")
+	}
 	_result := &_ReplyOrConfirmationReply{
 		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
 		Reply:                       reply,

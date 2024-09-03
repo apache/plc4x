@@ -95,6 +95,12 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetAccessMethod() BACnetC
 
 // NewBACnetConfirmedServiceRequestAtomicReadFile factory function for _BACnetConfirmedServiceRequestAtomicReadFile
 func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier BACnetApplicationTagObjectIdentifier, accessMethod BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAtomicReadFile {
+	if fileIdentifier == nil {
+		panic("fileIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestAtomicReadFile must not be nil")
+	}
+	if accessMethod == nil {
+		panic("accessMethod of type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord for BACnetConfirmedServiceRequestAtomicReadFile must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestAtomicReadFile{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		FileIdentifier:                        fileIdentifier,

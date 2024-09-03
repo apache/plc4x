@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataExpirationTime) GetActualValue() BACnetDateTime {
 
 // NewBACnetConstructedDataExpirationTime factory function for _BACnetConstructedDataExpirationTime
 func NewBACnetConstructedDataExpirationTime(expirationTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExpirationTime {
+	if expirationTime == nil {
+		panic("expirationTime of type BACnetDateTime for BACnetConstructedDataExpirationTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataExpirationTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ExpirationTime:                expirationTime,

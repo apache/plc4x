@@ -74,6 +74,12 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetDirection() BACnet
 
 // NewBACnetAssignedLandingCallsLandingCallsListEntry factory function for _BACnetAssignedLandingCallsLandingCallsListEntry
 func NewBACnetAssignedLandingCallsLandingCallsListEntry(floorNumber BACnetContextTagUnsignedInteger, direction BACnetLiftCarDirectionTagged) *_BACnetAssignedLandingCallsLandingCallsListEntry {
+	if floorNumber == nil {
+		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetAssignedLandingCallsLandingCallsListEntry must not be nil")
+	}
+	if direction == nil {
+		panic("direction of type BACnetLiftCarDirectionTagged for BACnetAssignedLandingCallsLandingCallsListEntry must not be nil")
+	}
 	return &_BACnetAssignedLandingCallsLandingCallsListEntry{FloorNumber: floorNumber, Direction: direction}
 }
 

@@ -78,6 +78,9 @@ func (m *_BACnetShedStateTagged) GetValue() BACnetShedState {
 
 // NewBACnetShedStateTagged factory function for _BACnetShedStateTagged
 func NewBACnetShedStateTagged(header BACnetTagHeader, value BACnetShedState, tagNumber uint8, tagClass TagClass) *_BACnetShedStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetShedStateTagged must not be nil")
+	}
 	return &_BACnetShedStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

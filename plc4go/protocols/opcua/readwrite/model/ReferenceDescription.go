@@ -132,6 +132,21 @@ func (m *_ReferenceDescription) GetTypeDefinition() ExpandedNodeId {
 
 // NewReferenceDescription factory function for _ReferenceDescription
 func NewReferenceDescription(referenceTypeId NodeId, isForward bool, nodeId ExpandedNodeId, browseName QualifiedName, displayName LocalizedText, nodeClass NodeClass, typeDefinition ExpandedNodeId) *_ReferenceDescription {
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for ReferenceDescription must not be nil")
+	}
+	if nodeId == nil {
+		panic("nodeId of type ExpandedNodeId for ReferenceDescription must not be nil")
+	}
+	if browseName == nil {
+		panic("browseName of type QualifiedName for ReferenceDescription must not be nil")
+	}
+	if displayName == nil {
+		panic("displayName of type LocalizedText for ReferenceDescription must not be nil")
+	}
+	if typeDefinition == nil {
+		panic("typeDefinition of type ExpandedNodeId for ReferenceDescription must not be nil")
+	}
 	_result := &_ReferenceDescription{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ReferenceTypeId:                   referenceTypeId,

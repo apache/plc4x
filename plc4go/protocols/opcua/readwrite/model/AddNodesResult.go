@@ -95,6 +95,12 @@ func (m *_AddNodesResult) GetAddedNodeId() NodeId {
 
 // NewAddNodesResult factory function for _AddNodesResult
 func NewAddNodesResult(statusCode StatusCode, addedNodeId NodeId) *_AddNodesResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for AddNodesResult must not be nil")
+	}
+	if addedNodeId == nil {
+		panic("addedNodeId of type NodeId for AddNodesResult must not be nil")
+	}
 	_result := &_AddNodesResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,

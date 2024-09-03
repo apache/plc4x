@@ -153,6 +153,18 @@ func (m *_DataSetWriterDataType) GetMessageSettings() ExtensionObject {
 
 // NewDataSetWriterDataType factory function for _DataSetWriterDataType
 func NewDataSetWriterDataType(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, noOfDataSetWriterProperties int32, dataSetWriterProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, messageSettings ExtensionObject) *_DataSetWriterDataType {
+	if name == nil {
+		panic("name of type PascalString for DataSetWriterDataType must not be nil")
+	}
+	if dataSetName == nil {
+		panic("dataSetName of type PascalString for DataSetWriterDataType must not be nil")
+	}
+	if transportSettings == nil {
+		panic("transportSettings of type ExtensionObject for DataSetWriterDataType must not be nil")
+	}
+	if messageSettings == nil {
+		panic("messageSettings of type ExtensionObject for DataSetWriterDataType must not be nil")
+	}
 	_result := &_DataSetWriterDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Name:                              name,

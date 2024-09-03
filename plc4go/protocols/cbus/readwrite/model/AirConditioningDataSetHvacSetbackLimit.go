@@ -105,6 +105,15 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) GetHvacModeAndFlags() HVACMode
 
 // NewAirConditioningDataSetHvacSetbackLimit factory function for _AirConditioningDataSetHvacSetbackLimit
 func NewAirConditioningDataSetHvacSetbackLimit(zoneGroup byte, zoneList HVACZoneList, limit HVACTemperature, hvacModeAndFlags HVACModeAndFlags, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetHvacSetbackLimit {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetHvacSetbackLimit must not be nil")
+	}
+	if limit == nil {
+		panic("limit of type HVACTemperature for AirConditioningDataSetHvacSetbackLimit must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataSetHvacSetbackLimit must not be nil")
+	}
 	_result := &_AirConditioningDataSetHvacSetbackLimit{
 		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
 		ZoneGroup:                   zoneGroup,

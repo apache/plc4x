@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetRealValue() 
 
 // NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal factory function for _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
 func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal(realValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal{
 		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		RealValue: realValue,

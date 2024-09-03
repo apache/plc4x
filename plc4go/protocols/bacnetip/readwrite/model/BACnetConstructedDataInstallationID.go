@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataInstallationID) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataInstallationID factory function for _BACnetConstructedDataInstallationID
 func NewBACnetConstructedDataInstallationID(installationId BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstallationID {
+	if installationId == nil {
+		panic("installationId of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataInstallationID must not be nil")
+	}
 	_result := &_BACnetConstructedDataInstallationID{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InstallationId:                installationId,

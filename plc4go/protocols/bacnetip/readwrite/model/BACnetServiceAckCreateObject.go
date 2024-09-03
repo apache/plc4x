@@ -88,6 +88,9 @@ func (m *_BACnetServiceAckCreateObject) GetObjectIdentifier() BACnetApplicationT
 
 // NewBACnetServiceAckCreateObject factory function for _BACnetServiceAckCreateObject
 func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceAckLength uint32) *_BACnetServiceAckCreateObject {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckCreateObject must not be nil")
+	}
 	_result := &_BACnetServiceAckCreateObject{
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		ObjectIdentifier:         objectIdentifier,

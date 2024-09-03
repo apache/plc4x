@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetActualValue() BACnetApplic
 
 // NewBACnetConstructedDataSecurityTimeWindow factory function for _BACnetConstructedDataSecurityTimeWindow
 func NewBACnetConstructedDataSecurityTimeWindow(securityTimeWindow BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityTimeWindow {
+	if securityTimeWindow == nil {
+		panic("securityTimeWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSecurityTimeWindow must not be nil")
+	}
 	_result := &_BACnetConstructedDataSecurityTimeWindow{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		SecurityTimeWindow:            securityTimeWindow,

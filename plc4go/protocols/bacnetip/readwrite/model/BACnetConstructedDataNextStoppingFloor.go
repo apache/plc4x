@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataNextStoppingFloor factory function for _BACnetConstructedDataNextStoppingFloor
 func NewBACnetConstructedDataNextStoppingFloor(nextStoppingFloor BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNextStoppingFloor {
+	if nextStoppingFloor == nil {
+		panic("nextStoppingFloor of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNextStoppingFloor must not be nil")
+	}
 	_result := &_BACnetConstructedDataNextStoppingFloor{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NextStoppingFloor:             nextStoppingFloor,

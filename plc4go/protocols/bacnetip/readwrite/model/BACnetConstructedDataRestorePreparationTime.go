@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataRestorePreparationTime) GetActualValue() BACnetAp
 
 // NewBACnetConstructedDataRestorePreparationTime factory function for _BACnetConstructedDataRestorePreparationTime
 func NewBACnetConstructedDataRestorePreparationTime(restorePreparationTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestorePreparationTime {
+	if restorePreparationTime == nil {
+		panic("restorePreparationTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRestorePreparationTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataRestorePreparationTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RestorePreparationTime:        restorePreparationTime,

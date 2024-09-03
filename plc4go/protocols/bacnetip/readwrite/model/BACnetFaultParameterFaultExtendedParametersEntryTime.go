@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) GetTimeValue() B
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryTime factory function for _BACnetFaultParameterFaultExtendedParametersEntryTime
 func NewBACnetFaultParameterFaultExtendedParametersEntryTime(timeValue BACnetApplicationTagTime, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetFaultParameterFaultExtendedParametersEntryTime must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryTime{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		TimeValue: timeValue,

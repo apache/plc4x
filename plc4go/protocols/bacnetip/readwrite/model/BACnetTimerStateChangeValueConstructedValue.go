@@ -84,6 +84,9 @@ func (m *_BACnetTimerStateChangeValueConstructedValue) GetConstructedValue() BAC
 
 // NewBACnetTimerStateChangeValueConstructedValue factory function for _BACnetTimerStateChangeValueConstructedValue
 func NewBACnetTimerStateChangeValueConstructedValue(constructedValue BACnetConstructedData, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueConstructedValue {
+	if constructedValue == nil {
+		panic("constructedValue of type BACnetConstructedData for BACnetTimerStateChangeValueConstructedValue must not be nil")
+	}
 	_result := &_BACnetTimerStateChangeValueConstructedValue{
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		ConstructedValue:                    constructedValue,

@@ -88,6 +88,9 @@ func (m *_CloseSecureChannelRequest) GetRequestHeader() ExtensionObjectDefinitio
 
 // NewCloseSecureChannelRequest factory function for _CloseSecureChannelRequest
 func NewCloseSecureChannelRequest(requestHeader ExtensionObjectDefinition) *_CloseSecureChannelRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CloseSecureChannelRequest must not be nil")
+	}
 	_result := &_CloseSecureChannelRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

@@ -91,6 +91,18 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) GetCl
 
 // NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
 func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(openingTag BACnetOpeningTag, minPriority BACnetContextTagUnsignedInteger, maxPriority BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
+	if minPriority == nil {
+		panic("minPriority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
+	if maxPriority == nil {
+		panic("maxPriority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
 	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{OpeningTag: openingTag, MinPriority: minPriority, MaxPriority: maxPriority, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

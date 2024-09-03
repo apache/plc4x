@@ -95,6 +95,9 @@ func (m *_ParameterValueInterfaceOptions2) GetData() []byte {
 
 // NewParameterValueInterfaceOptions2 factory function for _ParameterValueInterfaceOptions2
 func NewParameterValueInterfaceOptions2(value InterfaceOptions2, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions2 {
+	if value == nil {
+		panic("value of type InterfaceOptions2 for ParameterValueInterfaceOptions2 must not be nil")
+	}
 	_result := &_ParameterValueInterfaceOptions2{
 		ParameterValueContract: NewParameterValue(numBytes),
 		Value:                  value,

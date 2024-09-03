@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataOccupancyState) GetActualValue() BACnetAccessZone
 
 // NewBACnetConstructedDataOccupancyState factory function for _BACnetConstructedDataOccupancyState
 func NewBACnetConstructedDataOccupancyState(occupancyState BACnetAccessZoneOccupancyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyState {
+	if occupancyState == nil {
+		panic("occupancyState of type BACnetAccessZoneOccupancyStateTagged for BACnetConstructedDataOccupancyState must not be nil")
+	}
 	_result := &_BACnetConstructedDataOccupancyState{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		OccupancyState:                occupancyState,

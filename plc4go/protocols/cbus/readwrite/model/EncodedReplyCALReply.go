@@ -84,6 +84,9 @@ func (m *_EncodedReplyCALReply) GetCalReply() CALReply {
 
 // NewEncodedReplyCALReply factory function for _EncodedReplyCALReply
 func NewEncodedReplyCALReply(calReply CALReply, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReplyCALReply {
+	if calReply == nil {
+		panic("calReply of type CALReply for EncodedReplyCALReply must not be nil")
+	}
 	_result := &_EncodedReplyCALReply{
 		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
 		CalReply:             calReply,

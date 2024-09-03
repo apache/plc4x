@@ -119,6 +119,15 @@ func (m *_DeleteReferencesItem) GetDeleteBidirectional() bool {
 
 // NewDeleteReferencesItem factory function for _DeleteReferencesItem
 func NewDeleteReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetNodeId ExpandedNodeId, deleteBidirectional bool) *_DeleteReferencesItem {
+	if sourceNodeId == nil {
+		panic("sourceNodeId of type NodeId for DeleteReferencesItem must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for DeleteReferencesItem must not be nil")
+	}
+	if targetNodeId == nil {
+		panic("targetNodeId of type ExpandedNodeId for DeleteReferencesItem must not be nil")
+	}
 	_result := &_DeleteReferencesItem{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		SourceNodeId:                      sourceNodeId,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataUserType) GetActualValue() BACnetAccessUserTypeTa
 
 // NewBACnetConstructedDataUserType factory function for _BACnetConstructedDataUserType
 func NewBACnetConstructedDataUserType(userType BACnetAccessUserTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserType {
+	if userType == nil {
+		panic("userType of type BACnetAccessUserTypeTagged for BACnetConstructedDataUserType must not be nil")
+	}
 	_result := &_BACnetConstructedDataUserType{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		UserType:                      userType,

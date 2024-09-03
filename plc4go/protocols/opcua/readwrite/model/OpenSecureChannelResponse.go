@@ -109,6 +109,15 @@ func (m *_OpenSecureChannelResponse) GetServerNonce() PascalByteString {
 
 // NewOpenSecureChannelResponse factory function for _OpenSecureChannelResponse
 func NewOpenSecureChannelResponse(responseHeader ExtensionObjectDefinition, serverProtocolVersion uint32, securityToken ExtensionObjectDefinition, serverNonce PascalByteString) *_OpenSecureChannelResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
+	}
+	if securityToken == nil {
+		panic("securityToken of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
+	}
+	if serverNonce == nil {
+		panic("serverNonce of type PascalByteString for OpenSecureChannelResponse must not be nil")
+	}
 	_result := &_OpenSecureChannelResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

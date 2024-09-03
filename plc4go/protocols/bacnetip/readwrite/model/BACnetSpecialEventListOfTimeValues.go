@@ -84,6 +84,12 @@ func (m *_BACnetSpecialEventListOfTimeValues) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetSpecialEventListOfTimeValues factory function for _BACnetSpecialEventListOfTimeValues
 func NewBACnetSpecialEventListOfTimeValues(openingTag BACnetOpeningTag, listOfTimeValues []BACnetTimeValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSpecialEventListOfTimeValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetSpecialEventListOfTimeValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetSpecialEventListOfTimeValues must not be nil")
+	}
 	return &_BACnetSpecialEventListOfTimeValues{OpeningTag: openingTag, ListOfTimeValues: listOfTimeValues, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

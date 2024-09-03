@@ -132,6 +132,9 @@ func (m *_CreateSubscriptionRequest) GetPriority() uint8 {
 
 // NewCreateSubscriptionRequest factory function for _CreateSubscriptionRequest
 func NewCreateSubscriptionRequest(requestHeader ExtensionObjectDefinition, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) *_CreateSubscriptionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CreateSubscriptionRequest must not be nil")
+	}
 	_result := &_CreateSubscriptionRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

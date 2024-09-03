@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) GetActualValue() BAC
 
 // NewBACnetConstructedDataAlertEnrollmentPresentValue factory function for _BACnetConstructedDataAlertEnrollmentPresentValue
 func NewBACnetConstructedDataAlertEnrollmentPresentValue(presentValue BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlertEnrollmentPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataAlertEnrollmentPresentValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataAlertEnrollmentPresentValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PresentValue:                  presentValue,

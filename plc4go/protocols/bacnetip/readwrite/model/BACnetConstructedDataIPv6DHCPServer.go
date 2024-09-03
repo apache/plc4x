@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataIPv6DHCPServer factory function for _BACnetConstructedDataIPv6DHCPServer
 func NewBACnetConstructedDataIPv6DHCPServer(dhcpServer BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DHCPServer {
+	if dhcpServer == nil {
+		panic("dhcpServer of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6DHCPServer must not be nil")
+	}
 	_result := &_BACnetConstructedDataIPv6DHCPServer{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DhcpServer:                    dhcpServer,

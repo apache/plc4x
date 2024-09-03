@@ -123,6 +123,12 @@ func (m *_ServerStatusDataType) GetShutdownReason() LocalizedText {
 
 // NewServerStatusDataType factory function for _ServerStatusDataType
 func NewServerStatusDataType(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) *_ServerStatusDataType {
+	if buildInfo == nil {
+		panic("buildInfo of type ExtensionObjectDefinition for ServerStatusDataType must not be nil")
+	}
+	if shutdownReason == nil {
+		panic("shutdownReason of type LocalizedText for ServerStatusDataType must not be nil")
+	}
 	_result := &_ServerStatusDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StartTime:                         startTime,

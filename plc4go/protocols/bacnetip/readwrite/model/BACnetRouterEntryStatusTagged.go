@@ -78,6 +78,9 @@ func (m *_BACnetRouterEntryStatusTagged) GetValue() BACnetRouterEntryStatus {
 
 // NewBACnetRouterEntryStatusTagged factory function for _BACnetRouterEntryStatusTagged
 func NewBACnetRouterEntryStatusTagged(header BACnetTagHeader, value BACnetRouterEntryStatus, tagNumber uint8, tagClass TagClass) *_BACnetRouterEntryStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetRouterEntryStatusTagged must not be nil")
+	}
 	return &_BACnetRouterEntryStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

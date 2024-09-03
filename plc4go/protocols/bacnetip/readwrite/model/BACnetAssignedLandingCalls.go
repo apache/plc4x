@@ -67,6 +67,9 @@ func (m *_BACnetAssignedLandingCalls) GetLandingCalls() BACnetAssignedLandingCal
 
 // NewBACnetAssignedLandingCalls factory function for _BACnetAssignedLandingCalls
 func NewBACnetAssignedLandingCalls(landingCalls BACnetAssignedLandingCallsLandingCallsList) *_BACnetAssignedLandingCalls {
+	if landingCalls == nil {
+		panic("landingCalls of type BACnetAssignedLandingCallsLandingCallsList for BACnetAssignedLandingCalls must not be nil")
+	}
 	return &_BACnetAssignedLandingCalls{LandingCalls: landingCalls}
 }
 

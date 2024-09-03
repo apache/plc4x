@@ -93,6 +93,9 @@ func (m *_BVLCDistributeBroadcastToNetwork) GetNpdu() NPDU {
 
 // NewBVLCDistributeBroadcastToNetwork factory function for _BVLCDistributeBroadcastToNetwork
 func NewBVLCDistributeBroadcastToNetwork(npdu NPDU, bvlcPayloadLength uint16) *_BVLCDistributeBroadcastToNetwork {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCDistributeBroadcastToNetwork must not be nil")
+	}
 	_result := &_BVLCDistributeBroadcastToNetwork{
 		BVLCContract: NewBVLC(),
 		Npdu:         npdu,

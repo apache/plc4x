@@ -84,6 +84,9 @@ func (m *_BACnetOptionalBinaryPVNull) GetNullValue() BACnetApplicationTagNull {
 
 // NewBACnetOptionalBinaryPVNull factory function for _BACnetOptionalBinaryPVNull
 func NewBACnetOptionalBinaryPVNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPVNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalBinaryPVNull must not be nil")
+	}
 	_result := &_BACnetOptionalBinaryPVNull{
 		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
 		NullValue:                      nullValue,

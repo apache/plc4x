@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLastAccessPoint) GetActualValue() BACnetDeviceObj
 
 // NewBACnetConstructedDataLastAccessPoint factory function for _BACnetConstructedDataLastAccessPoint
 func NewBACnetConstructedDataLastAccessPoint(lastAccessPoint BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastAccessPoint {
+	if lastAccessPoint == nil {
+		panic("lastAccessPoint of type BACnetDeviceObjectReference for BACnetConstructedDataLastAccessPoint must not be nil")
+	}
 	_result := &_BACnetConstructedDataLastAccessPoint{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastAccessPoint:               lastAccessPoint,

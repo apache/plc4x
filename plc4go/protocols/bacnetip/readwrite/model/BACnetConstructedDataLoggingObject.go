@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLoggingObject) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataLoggingObject factory function for _BACnetConstructedDataLoggingObject
 func NewBACnetConstructedDataLoggingObject(loggingObject BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingObject {
+	if loggingObject == nil {
+		panic("loggingObject of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataLoggingObject must not be nil")
+	}
 	_result := &_BACnetConstructedDataLoggingObject{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LoggingObject:                 loggingObject,

@@ -84,6 +84,9 @@ func (m *_BACnetTimerStateChangeValueDate) GetDateValue() BACnetApplicationTagDa
 
 // NewBACnetTimerStateChangeValueDate factory function for _BACnetTimerStateChangeValueDate
 func NewBACnetTimerStateChangeValueDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetTimerStateChangeValueDate must not be nil")
+	}
 	_result := &_BACnetTimerStateChangeValueDate{
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		DateValue:                           dateValue,

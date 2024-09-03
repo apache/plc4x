@@ -119,6 +119,24 @@ func (m *_BACnetEventParameterChangeOfLifeSavety) GetClosingTag() BACnetClosingT
 
 // NewBACnetEventParameterChangeOfLifeSavety factory function for _BACnetEventParameterChangeOfLifeSavety
 func NewBACnetEventParameterChangeOfLifeSavety(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfLifeSavetyAlarmValues BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, listOfAlarmValues BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, modePropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfLifeSavety {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	if listOfLifeSavetyAlarmValues == nil {
+		panic("listOfLifeSavetyAlarmValues of type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	if listOfAlarmValues == nil {
+		panic("listOfAlarmValues of type BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	if modePropertyReference == nil {
+		panic("modePropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
 	_result := &_BACnetEventParameterChangeOfLifeSavety{
 		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
 		OpeningTag:                   openingTag,

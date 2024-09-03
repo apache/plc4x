@@ -102,6 +102,12 @@ func (m *_ModelChangeStructureDataType) GetVerb() uint8 {
 
 // NewModelChangeStructureDataType factory function for _ModelChangeStructureDataType
 func NewModelChangeStructureDataType(affected NodeId, affectedType NodeId, verb uint8) *_ModelChangeStructureDataType {
+	if affected == nil {
+		panic("affected of type NodeId for ModelChangeStructureDataType must not be nil")
+	}
+	if affectedType == nil {
+		panic("affectedType of type NodeId for ModelChangeStructureDataType must not be nil")
+	}
 	_result := &_ModelChangeStructureDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Affected:                          affected,

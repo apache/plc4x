@@ -102,6 +102,9 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetObject() BACnetUnconfirmedSe
 
 // NewBACnetUnconfirmedServiceRequestWhoHas factory function for _BACnetUnconfirmedServiceRequestWhoHas
 func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, object BACnetUnconfirmedServiceRequestWhoHasObject, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoHas {
+	if object == nil {
+		panic("object of type BACnetUnconfirmedServiceRequestWhoHasObject for BACnetUnconfirmedServiceRequestWhoHas must not be nil")
+	}
 	_result := &_BACnetUnconfirmedServiceRequestWhoHas{
 		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 		DeviceInstanceRangeLowLimit:             deviceInstanceRangeLowLimit,

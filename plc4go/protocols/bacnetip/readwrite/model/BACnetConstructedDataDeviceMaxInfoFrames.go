@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDeviceMaxInfoFrames) GetActualValue() BACnetAppli
 
 // NewBACnetConstructedDataDeviceMaxInfoFrames factory function for _BACnetConstructedDataDeviceMaxInfoFrames
 func NewBACnetConstructedDataDeviceMaxInfoFrames(maxInfoFrames BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceMaxInfoFrames {
+	if maxInfoFrames == nil {
+		panic("maxInfoFrames of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDeviceMaxInfoFrames must not be nil")
+	}
 	_result := &_BACnetConstructedDataDeviceMaxInfoFrames{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaxInfoFrames:                 maxInfoFrames,

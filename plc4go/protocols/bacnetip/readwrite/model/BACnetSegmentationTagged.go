@@ -78,6 +78,9 @@ func (m *_BACnetSegmentationTagged) GetValue() BACnetSegmentation {
 
 // NewBACnetSegmentationTagged factory function for _BACnetSegmentationTagged
 func NewBACnetSegmentationTagged(header BACnetTagHeader, value BACnetSegmentation, tagNumber uint8, tagClass TagClass) *_BACnetSegmentationTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetSegmentationTagged must not be nil")
+	}
 	return &_BACnetSegmentationTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

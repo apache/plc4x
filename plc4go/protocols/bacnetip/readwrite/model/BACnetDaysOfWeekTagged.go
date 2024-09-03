@@ -143,6 +143,12 @@ func (m *_BACnetDaysOfWeekTagged) GetSunday() bool {
 
 // NewBACnetDaysOfWeekTagged factory function for _BACnetDaysOfWeekTagged
 func NewBACnetDaysOfWeekTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetDaysOfWeekTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDaysOfWeekTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetDaysOfWeekTagged must not be nil")
+	}
 	return &_BACnetDaysOfWeekTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
 }
 

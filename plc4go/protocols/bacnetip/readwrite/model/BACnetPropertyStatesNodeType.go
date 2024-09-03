@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesNodeType) GetNodeType() BACnetNodeTypeTagged {
 
 // NewBACnetPropertyStatesNodeType factory function for _BACnetPropertyStatesNodeType
 func NewBACnetPropertyStatesNodeType(nodeType BACnetNodeTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNodeType {
+	if nodeType == nil {
+		panic("nodeType of type BACnetNodeTypeTagged for BACnetPropertyStatesNodeType must not be nil")
+	}
 	_result := &_BACnetPropertyStatesNodeType{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		NodeType:                     nodeType,

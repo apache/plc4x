@@ -84,6 +84,9 @@ func (m *_BACnetOptionalCharacterStringValue) GetCharacterstring() BACnetApplica
 
 // NewBACnetOptionalCharacterStringValue factory function for _BACnetOptionalCharacterStringValue
 func NewBACnetOptionalCharacterStringValue(characterstring BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader) *_BACnetOptionalCharacterStringValue {
+	if characterstring == nil {
+		panic("characterstring of type BACnetApplicationTagCharacterString for BACnetOptionalCharacterStringValue must not be nil")
+	}
 	_result := &_BACnetOptionalCharacterStringValue{
 		BACnetOptionalCharacterStringContract: NewBACnetOptionalCharacterString(peekedTagHeader),
 		Characterstring:                       characterstring,

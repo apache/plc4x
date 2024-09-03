@@ -165,6 +165,18 @@ func (m *_FieldMetaData) GetProperties() []ExtensionObjectDefinition {
 
 // NewFieldMetaData factory function for _FieldMetaData
 func NewFieldMetaData(name PascalString, description LocalizedText, fieldFlags DataSetFieldFlags, builtInType uint8, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, dataSetFieldId GuidValue, noOfProperties int32, properties []ExtensionObjectDefinition) *_FieldMetaData {
+	if name == nil {
+		panic("name of type PascalString for FieldMetaData must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for FieldMetaData must not be nil")
+	}
+	if dataType == nil {
+		panic("dataType of type NodeId for FieldMetaData must not be nil")
+	}
+	if dataSetFieldId == nil {
+		panic("dataSetFieldId of type GuidValue for FieldMetaData must not be nil")
+	}
 	_result := &_FieldMetaData{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Name:                              name,

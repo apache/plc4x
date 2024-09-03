@@ -109,6 +109,15 @@ func (m *_WriteValue) GetValue() DataValue {
 
 // NewWriteValue factory function for _WriteValue
 func NewWriteValue(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) *_WriteValue {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for WriteValue must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for WriteValue must not be nil")
+	}
+	if value == nil {
+		panic("value of type DataValue for WriteValue must not be nil")
+	}
 	_result := &_WriteValue{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NodeId:                            nodeId,

@@ -102,6 +102,9 @@ func (m *_RegisterNodesResponse) GetRegisteredNodeIds() []NodeId {
 
 // NewRegisterNodesResponse factory function for _RegisterNodesResponse
 func NewRegisterNodesResponse(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) *_RegisterNodesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterNodesResponse must not be nil")
+	}
 	_result := &_RegisterNodesResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

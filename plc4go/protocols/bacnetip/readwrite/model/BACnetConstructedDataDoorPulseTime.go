@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDoorPulseTime) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataDoorPulseTime factory function for _BACnetConstructedDataDoorPulseTime
 func NewBACnetConstructedDataDoorPulseTime(doorPulseTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorPulseTime {
+	if doorPulseTime == nil {
+		panic("doorPulseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorPulseTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataDoorPulseTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DoorPulseTime:                 doorPulseTime,

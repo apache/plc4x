@@ -165,6 +165,18 @@ func (m *_PubSubKeyPushTargetDataType) GetSecurityGroups() []PascalString {
 
 // NewPubSubKeyPushTargetDataType factory function for _PubSubKeyPushTargetDataType
 func NewPubSubKeyPushTargetDataType(applicationUri PascalString, noOfPushTargetFolder int32, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType ExtensionObjectDefinition, requestedKeyCount uint16, retryInterval float64, noOfPushTargetProperties int32, pushTargetProperties []ExtensionObjectDefinition, noOfSecurityGroups int32, securityGroups []PascalString) *_PubSubKeyPushTargetDataType {
+	if applicationUri == nil {
+		panic("applicationUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if userTokenType == nil {
+		panic("userTokenType of type ExtensionObjectDefinition for PubSubKeyPushTargetDataType must not be nil")
+	}
 	_result := &_PubSubKeyPushTargetDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ApplicationUri:                    applicationUri,

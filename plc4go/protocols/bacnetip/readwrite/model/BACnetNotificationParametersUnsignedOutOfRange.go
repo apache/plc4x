@@ -119,6 +119,24 @@ func (m *_BACnetNotificationParametersUnsignedOutOfRange) GetInnerClosingTag() B
 
 // NewBACnetNotificationParametersUnsignedOutOfRange factory function for _BACnetNotificationParametersUnsignedOutOfRange
 func NewBACnetNotificationParametersUnsignedOutOfRange(innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagUnsignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersUnsignedOutOfRange {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersUnsignedOutOfRange must not be nil")
+	}
+	if exceedingValue == nil {
+		panic("exceedingValue of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersUnsignedOutOfRange must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersUnsignedOutOfRange must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersUnsignedOutOfRange must not be nil")
+	}
+	if exceededLimit == nil {
+		panic("exceededLimit of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersUnsignedOutOfRange must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersUnsignedOutOfRange must not be nil")
+	}
 	_result := &_BACnetNotificationParametersUnsignedOutOfRange{
 		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 		InnerOpeningTag:                      innerOpeningTag,

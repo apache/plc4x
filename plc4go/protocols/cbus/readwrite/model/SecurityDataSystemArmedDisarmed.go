@@ -84,6 +84,9 @@ func (m *_SecurityDataSystemArmedDisarmed) GetArmCodeType() SecurityArmCode {
 
 // NewSecurityDataSystemArmedDisarmed factory function for _SecurityDataSystemArmedDisarmed
 func NewSecurityDataSystemArmedDisarmed(armCodeType SecurityArmCode, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataSystemArmedDisarmed {
+	if armCodeType == nil {
+		panic("armCodeType of type SecurityArmCode for SecurityDataSystemArmedDisarmed must not be nil")
+	}
 	_result := &_SecurityDataSystemArmedDisarmed{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		ArmCodeType:          armCodeType,

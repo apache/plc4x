@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataMinimumOutput) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataMinimumOutput factory function for _BACnetConstructedDataMinimumOutput
 func NewBACnetConstructedDataMinimumOutput(minimumOutput BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOutput {
+	if minimumOutput == nil {
+		panic("minimumOutput of type BACnetApplicationTagReal for BACnetConstructedDataMinimumOutput must not be nil")
+	}
 	_result := &_BACnetConstructedDataMinimumOutput{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MinimumOutput:                 minimumOutput,

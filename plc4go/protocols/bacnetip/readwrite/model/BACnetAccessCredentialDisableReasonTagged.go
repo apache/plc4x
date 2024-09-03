@@ -102,6 +102,9 @@ func (m *_BACnetAccessCredentialDisableReasonTagged) GetIsProprietary() bool {
 
 // NewBACnetAccessCredentialDisableReasonTagged factory function for _BACnetAccessCredentialDisableReasonTagged
 func NewBACnetAccessCredentialDisableReasonTagged(header BACnetTagHeader, value BACnetAccessCredentialDisableReason, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessCredentialDisableReasonTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessCredentialDisableReasonTagged must not be nil")
+	}
 	return &_BACnetAccessCredentialDisableReasonTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

@@ -105,6 +105,15 @@ func (m *_AirConditioningDataSetHumidityUpperGuardLimit) GetHvacModeAndFlags() H
 
 // NewAirConditioningDataSetHumidityUpperGuardLimit factory function for _AirConditioningDataSetHumidityUpperGuardLimit
 func NewAirConditioningDataSetHumidityUpperGuardLimit(zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetHumidityUpperGuardLimit {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetHumidityUpperGuardLimit must not be nil")
+	}
+	if limit == nil {
+		panic("limit of type HVACHumidity for AirConditioningDataSetHumidityUpperGuardLimit must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataSetHumidityUpperGuardLimit must not be nil")
+	}
 	_result := &_AirConditioningDataSetHumidityUpperGuardLimit{
 		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
 		ZoneGroup:                   zoneGroup,

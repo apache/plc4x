@@ -84,6 +84,9 @@ func (m *_BACnetChannelValueDate) GetDateValue() BACnetApplicationTagDate {
 
 // NewBACnetChannelValueDate factory function for _BACnetChannelValueDate
 func NewBACnetChannelValueDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetChannelValueDate must not be nil")
+	}
 	_result := &_BACnetChannelValueDate{
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		DateValue:                  dateValue,

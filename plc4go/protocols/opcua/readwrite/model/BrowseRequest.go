@@ -116,6 +116,12 @@ func (m *_BrowseRequest) GetNodesToBrowse() []ExtensionObjectDefinition {
 
 // NewBrowseRequest factory function for _BrowseRequest
 func NewBrowseRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, requestedMaxReferencesPerNode uint32, noOfNodesToBrowse int32, nodesToBrowse []ExtensionObjectDefinition) *_BrowseRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for BrowseRequest must not be nil")
+	}
+	if view == nil {
+		panic("view of type ExtensionObjectDefinition for BrowseRequest must not be nil")
+	}
 	_result := &_BrowseRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

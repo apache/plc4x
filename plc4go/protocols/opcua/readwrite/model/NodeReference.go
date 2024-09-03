@@ -118,6 +118,12 @@ func (m *_NodeReference) GetReferencedNodeIds() []NodeId {
 
 // NewNodeReference factory function for _NodeReference
 func NewNodeReference(nodeId NodeId, referenceTypeId NodeId, isForward bool, noOfReferencedNodeIds int32, referencedNodeIds []NodeId) *_NodeReference {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for NodeReference must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for NodeReference must not be nil")
+	}
 	_result := &_NodeReference{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NodeId:                            nodeId,

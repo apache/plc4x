@@ -116,6 +116,9 @@ func (pm *_BACnetContextTag) GetActualLength() uint32 {
 
 // NewBACnetContextTag factory function for _BACnetContextTag
 func NewBACnetContextTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTag {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetContextTag must not be nil")
+	}
 	return &_BACnetContextTag{Header: header, TagNumberArgument: tagNumberArgument}
 }
 

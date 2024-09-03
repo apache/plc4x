@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataNotificationClass) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataNotificationClass factory function for _BACnetConstructedDataNotificationClass
 func NewBACnetConstructedDataNotificationClass(notificationClass BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationClass {
+	if notificationClass == nil {
+		panic("notificationClass of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationClass must not be nil")
+	}
 	_result := &_BACnetConstructedDataNotificationClass{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NotificationClass:             notificationClass,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataNotifyType) GetActualValue() BACnetNotifyTypeTagg
 
 // NewBACnetConstructedDataNotifyType factory function for _BACnetConstructedDataNotifyType
 func NewBACnetConstructedDataNotifyType(notifyType BACnetNotifyTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotifyType {
+	if notifyType == nil {
+		panic("notifyType of type BACnetNotifyTypeTagged for BACnetConstructedDataNotifyType must not be nil")
+	}
 	_result := &_BACnetConstructedDataNotifyType{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NotifyType:                    notifyType,

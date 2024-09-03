@@ -100,6 +100,9 @@ func (m *_Confirmation) GetIsSuccess() bool {
 
 // NewConfirmation factory function for _Confirmation
 func NewConfirmation(alpha Alpha, secondAlpha Alpha, confirmationType ConfirmationType) *_Confirmation {
+	if alpha == nil {
+		panic("alpha of type Alpha for Confirmation must not be nil")
+	}
 	return &_Confirmation{Alpha: alpha, SecondAlpha: secondAlpha, ConfirmationType: confirmationType}
 }
 

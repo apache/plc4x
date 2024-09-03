@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataElevatorGroup) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataElevatorGroup factory function for _BACnetConstructedDataElevatorGroup
 func NewBACnetConstructedDataElevatorGroup(elevatorGroup BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElevatorGroup {
+	if elevatorGroup == nil {
+		panic("elevatorGroup of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataElevatorGroup must not be nil")
+	}
 	_result := &_BACnetConstructedDataElevatorGroup{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ElevatorGroup:                 elevatorGroup,

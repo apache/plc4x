@@ -102,6 +102,9 @@ func (m *_HistoryUpdateRequest) GetHistoryUpdateDetails() []ExtensionObject {
 
 // NewHistoryUpdateRequest factory function for _HistoryUpdateRequest
 func NewHistoryUpdateRequest(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) *_HistoryUpdateRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for HistoryUpdateRequest must not be nil")
+	}
 	_result := &_HistoryUpdateRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

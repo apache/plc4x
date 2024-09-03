@@ -114,6 +114,9 @@ func (pm *_CBusPointToPointCommand) GetIsDirect() bool {
 
 // NewCBusPointToPointCommand factory function for _CBusPointToPointCommand
 func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommand {
+	if calData == nil {
+		panic("calData of type CALData for CBusPointToPointCommand must not be nil")
+	}
 	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, CBusOptions: cBusOptions}
 }
 

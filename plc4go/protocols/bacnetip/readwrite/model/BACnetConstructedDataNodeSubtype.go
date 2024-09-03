@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataNodeSubtype) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataNodeSubtype factory function for _BACnetConstructedDataNodeSubtype
 func NewBACnetConstructedDataNodeSubtype(nodeSubType BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeSubtype {
+	if nodeSubType == nil {
+		panic("nodeSubType of type BACnetApplicationTagCharacterString for BACnetConstructedDataNodeSubtype must not be nil")
+	}
 	_result := &_BACnetConstructedDataNodeSubtype{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NodeSubType:                   nodeSubType,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetActualValue() BACnet
 
 // NewBACnetConstructedDataBACnetIPMulticastAddress factory function for _BACnetConstructedDataBACnetIPMulticastAddress
 func NewBACnetConstructedDataBACnetIPMulticastAddress(ipMulticastAddress BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPMulticastAddress {
+	if ipMulticastAddress == nil {
+		panic("ipMulticastAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataBACnetIPMulticastAddress must not be nil")
+	}
 	_result := &_BACnetConstructedDataBACnetIPMulticastAddress{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		IpMulticastAddress:            ipMulticastAddress,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataInProgress) GetActualValue() BACnetLightingInProg
 
 // NewBACnetConstructedDataInProgress factory function for _BACnetConstructedDataInProgress
 func NewBACnetConstructedDataInProgress(inProgress BACnetLightingInProgressTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProgress {
+	if inProgress == nil {
+		panic("inProgress of type BACnetLightingInProgressTagged for BACnetConstructedDataInProgress must not be nil")
+	}
 	_result := &_BACnetConstructedDataInProgress{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InProgress:                    inProgress,

@@ -88,6 +88,9 @@ func (m *_BACnetErrorGeneral) GetError() Error {
 
 // NewBACnetErrorGeneral factory function for _BACnetErrorGeneral
 func NewBACnetErrorGeneral(error Error) *_BACnetErrorGeneral {
+	if error == nil {
+		panic("error of type Error for BACnetErrorGeneral must not be nil")
+	}
 	_result := &_BACnetErrorGeneral{
 		BACnetErrorContract: NewBACnetError(),
 		Error:               error,

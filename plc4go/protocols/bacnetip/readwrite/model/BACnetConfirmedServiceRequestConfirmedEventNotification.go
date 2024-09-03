@@ -172,6 +172,33 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) GetEventValue
 
 // NewBACnetConfirmedServiceRequestConfirmedEventNotification factory function for _BACnetConfirmedServiceRequestConfirmedEventNotification
 func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, eventObjectIdentifier BACnetContextTagObjectIdentifier, timestamp BACnetTimeStampEnclosed, notificationClass BACnetContextTagUnsignedInteger, priority BACnetContextTagUnsignedInteger, eventType BACnetEventTypeTagged, messageText BACnetContextTagCharacterString, notifyType BACnetNotifyTypeTagged, ackRequired BACnetContextTagBoolean, fromState BACnetEventStateTagged, toState BACnetEventStateTagged, eventValues BACnetNotificationParameters, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedEventNotification {
+	if processIdentifier == nil {
+		panic("processIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if initiatingDeviceIdentifier == nil {
+		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if eventObjectIdentifier == nil {
+		panic("eventObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if timestamp == nil {
+		panic("timestamp of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if notificationClass == nil {
+		panic("notificationClass of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if priority == nil {
+		panic("priority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if eventType == nil {
+		panic("eventType of type BACnetEventTypeTagged for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if notifyType == nil {
+		panic("notifyType of type BACnetNotifyTypeTagged for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if toState == nil {
+		panic("toState of type BACnetEventStateTagged for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestConfirmedEventNotification{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		ProcessIdentifier:                     processIdentifier,

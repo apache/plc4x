@@ -102,6 +102,15 @@ func (m *_HistoryReadResult) GetHistoryData() ExtensionObject {
 
 // NewHistoryReadResult factory function for _HistoryReadResult
 func NewHistoryReadResult(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) *_HistoryReadResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for HistoryReadResult must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for HistoryReadResult must not be nil")
+	}
+	if historyData == nil {
+		panic("historyData of type ExtensionObject for HistoryReadResult must not be nil")
+	}
 	_result := &_HistoryReadResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,

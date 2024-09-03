@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataPriorityArray) GetActualValue() BACnetPriorityArr
 
 // NewBACnetConstructedDataPriorityArray factory function for _BACnetConstructedDataPriorityArray
 func NewBACnetConstructedDataPriorityArray(priorityArray BACnetPriorityArray, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriorityArray {
+	if priorityArray == nil {
+		panic("priorityArray of type BACnetPriorityArray for BACnetConstructedDataPriorityArray must not be nil")
+	}
 	_result := &_BACnetConstructedDataPriorityArray{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PriorityArray:                 priorityArray,

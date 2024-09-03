@@ -1123,11 +1123,15 @@ func Test_producePointToPointCommand(t *testing.T) {
 	}{
 		{
 			name: "no bridge",
+			args: args{
+				unitAddress: readWriteModel.NewUnitAddress(0),
+				calData:     readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+			},
 			want: readWriteModel.NewCBusCommandPointToPoint(
 				readWriteModel.NewCBusPointToPointCommandDirect(
-					nil,
+					readWriteModel.NewUnitAddress(0),
 					0,
-					nil,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 					nil,
 				),
 				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
@@ -1138,9 +1142,11 @@ func Test_producePointToPointCommand(t *testing.T) {
 		{
 			name: "one bridge",
 			args: args{
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
 				},
+				calData: readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 			},
 			want: readWriteModel.NewCBusCommandPointToPoint(
 				readWriteModel.NewCBusPointToPointCommandIndirect(
@@ -1149,9 +1155,9 @@ func Test_producePointToPointCommand(t *testing.T) {
 						readWriteModel.NewNetworkProtocolControlInformation(1, 1),
 						[]readWriteModel.BridgeAddress{},
 					),
-					nil,
+					readWriteModel.NewUnitAddress(0),
 					0,
-					nil,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 					nil,
 				),
 				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
@@ -1162,6 +1168,7 @@ func Test_producePointToPointCommand(t *testing.T) {
 		{
 			name: "6 bridges",
 			args: args{
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewBridgeAddress(2),
@@ -1170,6 +1177,7 @@ func Test_producePointToPointCommand(t *testing.T) {
 					readWriteModel.NewBridgeAddress(5),
 					readWriteModel.NewBridgeAddress(6),
 				},
+				calData: readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 			},
 			want: readWriteModel.NewCBusCommandPointToPoint(
 				readWriteModel.NewCBusPointToPointCommandIndirect(
@@ -1184,9 +1192,9 @@ func Test_producePointToPointCommand(t *testing.T) {
 							readWriteModel.NewBridgeAddress(6),
 						},
 					),
-					nil,
+					readWriteModel.NewUnitAddress(0),
 					0,
-					nil,
+					readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
 					nil,
 				), readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
 				nil,
@@ -1195,8 +1203,8 @@ func Test_producePointToPointCommand(t *testing.T) {
 		},
 		{
 			name: "7 bridges",
-
 			args: args{
+				unitAddress: readWriteModel.NewUnitAddress(0),
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewBridgeAddress(2),
@@ -1236,8 +1244,11 @@ func Test_producePointToMultiPointCommandStatus(t *testing.T) {
 	}{
 		{
 			name: "no bridge",
+			args: args{
+				statusRequest: readWriteModel.NewStatusRequestBinaryState(readWriteModel.ApplicationIdContainer_RESERVED_00, 9),
+			},
 			want: readWriteModel.NewCBusCommandPointToMultiPoint(
-				readWriteModel.NewCBusPointToMultiPointCommandStatus(nil, 0, nil),
+				readWriteModel.NewCBusPointToMultiPointCommandStatus(readWriteModel.NewStatusRequestBinaryState(readWriteModel.ApplicationIdContainer_RESERVED_00, 9), 0, nil),
 				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint),
 				nil,
 			),
@@ -1249,10 +1260,11 @@ func Test_producePointToMultiPointCommandStatus(t *testing.T) {
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
 				},
+				statusRequest: readWriteModel.NewStatusRequestBinaryState(readWriteModel.ApplicationIdContainer_RESERVED_00, 9),
 			},
 			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
 				readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
-					nil,
+					readWriteModel.NewStatusRequestBinaryState(readWriteModel.ApplicationIdContainer_RESERVED_00, 9),
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewNetworkRoute(
 						readWriteModel.NewNetworkProtocolControlInformation(1, 1),
@@ -1277,10 +1289,11 @@ func Test_producePointToMultiPointCommandStatus(t *testing.T) {
 					readWriteModel.NewBridgeAddress(5),
 					readWriteModel.NewBridgeAddress(6),
 				},
+				statusRequest: readWriteModel.NewStatusRequestBinaryState(readWriteModel.ApplicationIdContainer_RESERVED_00, 9),
 			},
 			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
 				readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
-					nil,
+					readWriteModel.NewStatusRequestBinaryState(readWriteModel.ApplicationIdContainer_RESERVED_00, 9),
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewNetworkRoute(
 						readWriteModel.NewNetworkProtocolControlInformation(6, 6),
@@ -1302,7 +1315,6 @@ func Test_producePointToMultiPointCommandStatus(t *testing.T) {
 		},
 		{
 			name: "7 bridges",
-
 			args: args{
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
@@ -1313,6 +1325,7 @@ func Test_producePointToMultiPointCommandStatus(t *testing.T) {
 					readWriteModel.NewBridgeAddress(6),
 					readWriteModel.NewBridgeAddress(7),
 				},
+				statusRequest: readWriteModel.NewStatusRequestBinaryState(readWriteModel.ApplicationIdContainer_RESERVED_00, 9),
 			},
 			wantErr: assert.Error,
 		},
@@ -1343,8 +1356,11 @@ func Test_producePointToMultiPointCommandNormal(t *testing.T) {
 	}{
 		{
 			name: "no bridge",
+			args: args{
+				salData: readWriteModel.NewSALDataFreeUsage(nil),
+			},
 			want: readWriteModel.NewCBusCommandPointToMultiPoint(
-				readWriteModel.NewCBusPointToMultiPointCommandNormal(0, nil, 0, nil),
+				readWriteModel.NewCBusPointToMultiPointCommandNormal(0, readWriteModel.NewSALDataFreeUsage(nil), 0, nil),
 				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
 				nil,
 			),
@@ -1356,11 +1372,12 @@ func Test_producePointToMultiPointCommandNormal(t *testing.T) {
 				bridgeAddresses: []readWriteModel.BridgeAddress{
 					readWriteModel.NewBridgeAddress(1),
 				},
+				salData: readWriteModel.NewSALDataFreeUsage(nil),
 			},
 			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
 				readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(
 					0,
-					nil,
+					readWriteModel.NewSALDataFreeUsage(nil),
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewNetworkRoute(
 						readWriteModel.NewNetworkProtocolControlInformation(1, 1),
@@ -1385,11 +1402,12 @@ func Test_producePointToMultiPointCommandNormal(t *testing.T) {
 					readWriteModel.NewBridgeAddress(5),
 					readWriteModel.NewBridgeAddress(6),
 				},
+				salData: readWriteModel.NewSALDataFreeUsage(nil),
 			},
 			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
 				readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(
 					0,
-					nil,
+					readWriteModel.NewSALDataFreeUsage(nil),
 					readWriteModel.NewBridgeAddress(1),
 					readWriteModel.NewNetworkRoute(
 						readWriteModel.NewNetworkProtocolControlInformation(6, 6),

@@ -102,6 +102,9 @@ func (pm *_BACnetShedLevel) GetPeekedTagNumber() uint8 {
 
 // NewBACnetShedLevel factory function for _BACnetShedLevel
 func NewBACnetShedLevel(peekedTagHeader BACnetTagHeader) *_BACnetShedLevel {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetShedLevel must not be nil")
+	}
 	return &_BACnetShedLevel{PeekedTagHeader: peekedTagHeader}
 }
 

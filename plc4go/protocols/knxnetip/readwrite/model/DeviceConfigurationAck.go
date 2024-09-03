@@ -90,6 +90,9 @@ func (m *_DeviceConfigurationAck) GetDeviceConfigurationAckDataBlock() DeviceCon
 
 // NewDeviceConfigurationAck factory function for _DeviceConfigurationAck
 func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) *_DeviceConfigurationAck {
+	if deviceConfigurationAckDataBlock == nil {
+		panic("deviceConfigurationAckDataBlock of type DeviceConfigurationAckDataBlock for DeviceConfigurationAck must not be nil")
+	}
 	_result := &_DeviceConfigurationAck{
 		KnxNetIpMessageContract:         NewKnxNetIpMessage(),
 		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,

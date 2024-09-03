@@ -88,6 +88,9 @@ func (m *_RegisterServerResponse) GetResponseHeader() ExtensionObjectDefinition 
 
 // NewRegisterServerResponse factory function for _RegisterServerResponse
 func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_RegisterServerResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterServerResponse must not be nil")
+	}
 	_result := &_RegisterServerResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

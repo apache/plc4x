@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDoNotHide) GetActualValue() BACnetApplicationTagB
 
 // NewBACnetConstructedDataDoNotHide factory function for _BACnetConstructedDataDoNotHide
 func NewBACnetConstructedDataDoNotHide(doNotHide BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoNotHide {
+	if doNotHide == nil {
+		panic("doNotHide of type BACnetApplicationTagBoolean for BACnetConstructedDataDoNotHide must not be nil")
+	}
 	_result := &_BACnetConstructedDataDoNotHide{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DoNotHide:                     doNotHide,

@@ -102,6 +102,9 @@ func (m *_WriteRequest) GetNodesToWrite() []ExtensionObjectDefinition {
 
 // NewWriteRequest factory function for _WriteRequest
 func NewWriteRequest(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) *_WriteRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for WriteRequest must not be nil")
+	}
 	_result := &_WriteRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

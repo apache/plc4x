@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataStatusFlags) GetActualValue() BACnetStatusFlagsTa
 
 // NewBACnetConstructedDataStatusFlags factory function for _BACnetConstructedDataStatusFlags
 func NewBACnetConstructedDataStatusFlags(statusFlags BACnetStatusFlagsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStatusFlags {
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetConstructedDataStatusFlags must not be nil")
+	}
 	_result := &_BACnetConstructedDataStatusFlags{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		StatusFlags:                   statusFlags,

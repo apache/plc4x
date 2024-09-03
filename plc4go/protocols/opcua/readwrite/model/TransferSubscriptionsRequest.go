@@ -111,6 +111,9 @@ func (m *_TransferSubscriptionsRequest) GetSendInitialValues() bool {
 
 // NewTransferSubscriptionsRequest factory function for _TransferSubscriptionsRequest
 func NewTransferSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) *_TransferSubscriptionsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for TransferSubscriptionsRequest must not be nil")
+	}
 	_result := &_TransferSubscriptionsRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

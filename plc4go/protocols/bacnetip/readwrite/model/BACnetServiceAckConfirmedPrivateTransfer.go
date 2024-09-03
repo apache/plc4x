@@ -102,6 +102,12 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetResultBlock() BACnetConst
 
 // NewBACnetServiceAckConfirmedPrivateTransfer factory function for _BACnetServiceAckConfirmedPrivateTransfer
 func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckConfirmedPrivateTransfer {
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
+	}
+	if serviceNumber == nil {
+		panic("serviceNumber of type BACnetContextTagUnsignedInteger for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
+	}
 	_result := &_BACnetServiceAckConfirmedPrivateTransfer{
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		VendorId:                 vendorId,

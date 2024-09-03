@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataMultiStateOutputRelinquishDefault) GetActualValue
 
 // NewBACnetConstructedDataMultiStateOutputRelinquishDefault factory function for _BACnetConstructedDataMultiStateOutputRelinquishDefault
 func NewBACnetConstructedDataMultiStateOutputRelinquishDefault(relinquishDefault BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMultiStateOutputRelinquishDefault must not be nil")
+	}
 	_result := &_BACnetConstructedDataMultiStateOutputRelinquishDefault{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RelinquishDefault:             relinquishDefault,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) GetActualValue() BACnetApplic
 
 // NewBACnetConstructedDataFailedAttemptsTime factory function for _BACnetConstructedDataFailedAttemptsTime
 func NewBACnetConstructedDataFailedAttemptsTime(failedAttemptsTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFailedAttemptsTime {
+	if failedAttemptsTime == nil {
+		panic("failedAttemptsTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFailedAttemptsTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataFailedAttemptsTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FailedAttemptsTime:            failedAttemptsTime,

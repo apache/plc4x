@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) GetActualValue() BACnetAppl
 
 // NewBACnetConstructedDataBackupFailureTimeout factory function for _BACnetConstructedDataBackupFailureTimeout
 func NewBACnetConstructedDataBackupFailureTimeout(backupFailureTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupFailureTimeout {
+	if backupFailureTimeout == nil {
+		panic("backupFailureTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBackupFailureTimeout must not be nil")
+	}
 	_result := &_BACnetConstructedDataBackupFailureTimeout{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BackupFailureTimeout:          backupFailureTimeout,

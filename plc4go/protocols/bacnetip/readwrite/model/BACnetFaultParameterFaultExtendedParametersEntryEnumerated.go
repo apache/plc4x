@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetEnumera
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated factory function for _BACnetFaultParameterFaultExtendedParametersEntryEnumerated
 func NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetFaultParameterFaultExtendedParametersEntryEnumerated must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		EnumeratedValue: enumeratedValue,

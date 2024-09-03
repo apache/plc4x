@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataProgramLocation) GetActualValue() BACnetApplicati
 
 // NewBACnetConstructedDataProgramLocation factory function for _BACnetConstructedDataProgramLocation
 func NewBACnetConstructedDataProgramLocation(programLocation BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramLocation {
+	if programLocation == nil {
+		panic("programLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProgramLocation must not be nil")
+	}
 	_result := &_BACnetConstructedDataProgramLocation{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProgramLocation:               programLocation,

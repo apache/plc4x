@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetActualValue() BACn
 
 // NewBACnetConstructedDataApplicationSoftwareVersion factory function for _BACnetConstructedDataApplicationSoftwareVersion
 func NewBACnetConstructedDataApplicationSoftwareVersion(applicationSoftwareVersion BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataApplicationSoftwareVersion {
+	if applicationSoftwareVersion == nil {
+		panic("applicationSoftwareVersion of type BACnetApplicationTagCharacterString for BACnetConstructedDataApplicationSoftwareVersion must not be nil")
+	}
 	_result := &_BACnetConstructedDataApplicationSoftwareVersion{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ApplicationSoftwareVersion:    applicationSoftwareVersion,

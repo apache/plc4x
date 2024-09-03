@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetActualValue() BA
 
 // NewBACnetConstructedDataProtocolObjectTypesSupported factory function for _BACnetConstructedDataProtocolObjectTypesSupported
 func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSupported BACnetObjectTypesSupportedTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolObjectTypesSupported {
+	if protocolObjectTypesSupported == nil {
+		panic("protocolObjectTypesSupported of type BACnetObjectTypesSupportedTagged for BACnetConstructedDataProtocolObjectTypesSupported must not be nil")
+	}
 	_result := &_BACnetConstructedDataProtocolObjectTypesSupported{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProtocolObjectTypesSupported:  protocolObjectTypesSupported,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAnalogOutputRelinquishDefault) GetActualValue() B
 
 // NewBACnetConstructedDataAnalogOutputRelinquishDefault factory function for _BACnetConstructedDataAnalogOutputRelinquishDefault
 func NewBACnetConstructedDataAnalogOutputRelinquishDefault(relinquishDefault BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogOutputRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagReal for BACnetConstructedDataAnalogOutputRelinquishDefault must not be nil")
+	}
 	_result := &_BACnetConstructedDataAnalogOutputRelinquishDefault{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RelinquishDefault:             relinquishDefault,

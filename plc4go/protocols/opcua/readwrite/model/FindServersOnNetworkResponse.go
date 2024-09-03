@@ -109,6 +109,9 @@ func (m *_FindServersOnNetworkResponse) GetServers() []ExtensionObjectDefinition
 
 // NewFindServersOnNetworkResponse factory function for _FindServersOnNetworkResponse
 func NewFindServersOnNetworkResponse(responseHeader ExtensionObjectDefinition, lastCounterResetTime int64, noOfServers int32, servers []ExtensionObjectDefinition) *_FindServersOnNetworkResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for FindServersOnNetworkResponse must not be nil")
+	}
 	_result := &_FindServersOnNetworkResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

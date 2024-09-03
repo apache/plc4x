@@ -88,6 +88,9 @@ func (m *_S7VarRequestParameterItemAddress) GetAddress() S7Address {
 
 // NewS7VarRequestParameterItemAddress factory function for _S7VarRequestParameterItemAddress
 func NewS7VarRequestParameterItemAddress(address S7Address) *_S7VarRequestParameterItemAddress {
+	if address == nil {
+		panic("address of type S7Address for S7VarRequestParameterItemAddress must not be nil")
+	}
 	_result := &_S7VarRequestParameterItemAddress{
 		S7VarRequestParameterItemContract: NewS7VarRequestParameterItem(),
 		Address:                           address,

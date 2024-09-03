@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataUsesRemaining) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataUsesRemaining factory function for _BACnetConstructedDataUsesRemaining
 func NewBACnetConstructedDataUsesRemaining(usesRemaining BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUsesRemaining {
+	if usesRemaining == nil {
+		panic("usesRemaining of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUsesRemaining must not be nil")
+	}
 	_result := &_BACnetConstructedDataUsesRemaining{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		UsesRemaining:                 usesRemaining,

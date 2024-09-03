@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDoorStatus) GetActualValue() BACnetDoorStatusTagg
 
 // NewBACnetConstructedDataDoorStatus factory function for _BACnetConstructedDataDoorStatus
 func NewBACnetConstructedDataDoorStatus(doorStatus BACnetDoorStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorStatus {
+	if doorStatus == nil {
+		panic("doorStatus of type BACnetDoorStatusTagged for BACnetConstructedDataDoorStatus must not be nil")
+	}
 	_result := &_BACnetConstructedDataDoorStatus{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DoorStatus:                    doorStatus,

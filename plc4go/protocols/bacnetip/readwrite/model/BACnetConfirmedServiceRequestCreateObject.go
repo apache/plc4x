@@ -95,6 +95,9 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) GetListOfValues() BACnetPro
 
 // NewBACnetConfirmedServiceRequestCreateObject factory function for _BACnetConfirmedServiceRequestCreateObject
 func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestCreateObject {
+	if objectSpecifier == nil {
+		panic("objectSpecifier of type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier for BACnetConfirmedServiceRequestCreateObject must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestCreateObject{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		ObjectSpecifier:                       objectSpecifier,

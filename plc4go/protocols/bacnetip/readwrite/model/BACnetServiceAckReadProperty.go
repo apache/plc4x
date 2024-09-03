@@ -109,6 +109,12 @@ func (m *_BACnetServiceAckReadProperty) GetValues() BACnetConstructedData {
 
 // NewBACnetServiceAckReadProperty factory function for _BACnetServiceAckReadProperty
 func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, values BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckReadProperty {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetServiceAckReadProperty must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetServiceAckReadProperty must not be nil")
+	}
 	_result := &_BACnetServiceAckReadProperty{
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		ObjectIdentifier:         objectIdentifier,

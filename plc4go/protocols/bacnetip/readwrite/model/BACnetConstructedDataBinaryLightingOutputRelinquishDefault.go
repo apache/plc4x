@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) GetActualV
 
 // NewBACnetConstructedDataBinaryLightingOutputRelinquishDefault factory function for _BACnetConstructedDataBinaryLightingOutputRelinquishDefault
 func NewBACnetConstructedDataBinaryLightingOutputRelinquishDefault(relinquishDefault BACnetBinaryLightingPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetBinaryLightingPVTagged for BACnetConstructedDataBinaryLightingOutputRelinquishDefault must not be nil")
+	}
 	_result := &_BACnetConstructedDataBinaryLightingOutputRelinquishDefault{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RelinquishDefault:             relinquishDefault,

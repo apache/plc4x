@@ -84,6 +84,9 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetChang
 
 // NewBACnetNotificationParametersChangeOfValueNewValueChangedBits factory function for _BACnetNotificationParametersChangeOfValueNewValueChangedBits
 func NewBACnetNotificationParametersChangeOfValueNewValueChangedBits(changedBits BACnetContextTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfValueNewValueChangedBits {
+	if changedBits == nil {
+		panic("changedBits of type BACnetContextTagBitString for BACnetNotificationParametersChangeOfValueNewValueChangedBits must not be nil")
+	}
 	_result := &_BACnetNotificationParametersChangeOfValueNewValueChangedBits{
 		BACnetNotificationParametersChangeOfValueNewValueContract: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		ChangedBits: changedBits,

@@ -153,6 +153,18 @@ func (m *_RegisteredServer) GetIsOnline() bool {
 
 // NewRegisteredServer factory function for _RegisteredServer
 func NewRegisteredServer(serverUri PascalString, productUri PascalString, noOfServerNames int32, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) *_RegisteredServer {
+	if serverUri == nil {
+		panic("serverUri of type PascalString for RegisteredServer must not be nil")
+	}
+	if productUri == nil {
+		panic("productUri of type PascalString for RegisteredServer must not be nil")
+	}
+	if gatewayServerUri == nil {
+		panic("gatewayServerUri of type PascalString for RegisteredServer must not be nil")
+	}
+	if semaphoreFilePath == nil {
+		panic("semaphoreFilePath of type PascalString for RegisteredServer must not be nil")
+	}
 	_result := &_RegisteredServer{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ServerUri:                         serverUri,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetActualValue() 
 
 // NewBACnetConstructedDataDefaultSubordinateRelationship factory function for _BACnetConstructedDataDefaultSubordinateRelationship
 func NewBACnetConstructedDataDefaultSubordinateRelationship(defaultSubordinateRelationship BACnetRelationshipTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultSubordinateRelationship {
+	if defaultSubordinateRelationship == nil {
+		panic("defaultSubordinateRelationship of type BACnetRelationshipTagged for BACnetConstructedDataDefaultSubordinateRelationship must not be nil")
+	}
 	_result := &_BACnetConstructedDataDefaultSubordinateRelationship{
 		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DefaultSubordinateRelationship: defaultSubordinateRelationship,

@@ -102,6 +102,9 @@ func (m *_AddNodesRequest) GetNodesToAdd() []ExtensionObjectDefinition {
 
 // NewAddNodesRequest factory function for _AddNodesRequest
 func NewAddNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToAdd int32, nodesToAdd []ExtensionObjectDefinition) *_AddNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for AddNodesRequest must not be nil")
+	}
 	_result := &_AddNodesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

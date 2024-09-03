@@ -104,6 +104,15 @@ func (m *_ConnectionRequest) GetConnectionRequestInformation() ConnectionRequest
 
 // NewConnectionRequest factory function for _ConnectionRequest
 func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) *_ConnectionRequest {
+	if hpaiDiscoveryEndpoint == nil {
+		panic("hpaiDiscoveryEndpoint of type HPAIDiscoveryEndpoint for ConnectionRequest must not be nil")
+	}
+	if hpaiDataEndpoint == nil {
+		panic("hpaiDataEndpoint of type HPAIDataEndpoint for ConnectionRequest must not be nil")
+	}
+	if connectionRequestInformation == nil {
+		panic("connectionRequestInformation of type ConnectionRequestInformation for ConnectionRequest must not be nil")
+	}
 	_result := &_ConnectionRequest{
 		KnxNetIpMessageContract:      NewKnxNetIpMessage(),
 		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,

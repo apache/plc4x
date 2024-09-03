@@ -109,6 +109,9 @@ func (m *_DeleteMonitoredItemsRequest) GetMonitoredItemIds() []uint32 {
 
 // NewDeleteMonitoredItemsRequest factory function for _DeleteMonitoredItemsRequest
 func NewDeleteMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_DeleteMonitoredItemsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteMonitoredItemsRequest must not be nil")
+	}
 	_result := &_DeleteMonitoredItemsRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

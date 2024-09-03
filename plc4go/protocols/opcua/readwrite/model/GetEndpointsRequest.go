@@ -123,6 +123,12 @@ func (m *_GetEndpointsRequest) GetProfileUris() []PascalString {
 
 // NewGetEndpointsRequest factory function for _GetEndpointsRequest
 func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) *_GetEndpointsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for GetEndpointsRequest must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for GetEndpointsRequest must not be nil")
+	}
 	_result := &_GetEndpointsRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

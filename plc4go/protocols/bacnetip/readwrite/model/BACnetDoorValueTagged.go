@@ -78,6 +78,9 @@ func (m *_BACnetDoorValueTagged) GetValue() BACnetDoorValue {
 
 // NewBACnetDoorValueTagged factory function for _BACnetDoorValueTagged
 func NewBACnetDoorValueTagged(header BACnetTagHeader, value BACnetDoorValue, tagNumber uint8, tagClass TagClass) *_BACnetDoorValueTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDoorValueTagged must not be nil")
+	}
 	return &_BACnetDoorValueTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

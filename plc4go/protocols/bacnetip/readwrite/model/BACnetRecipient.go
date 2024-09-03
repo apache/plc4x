@@ -102,6 +102,9 @@ func (pm *_BACnetRecipient) GetPeekedTagNumber() uint8 {
 
 // NewBACnetRecipient factory function for _BACnetRecipient
 func NewBACnetRecipient(peekedTagHeader BACnetTagHeader) *_BACnetRecipient {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetRecipient must not be nil")
+	}
 	return &_BACnetRecipient{PeekedTagHeader: peekedTagHeader}
 }
 

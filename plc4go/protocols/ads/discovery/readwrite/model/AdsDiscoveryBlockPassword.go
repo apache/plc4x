@@ -88,6 +88,9 @@ func (m *_AdsDiscoveryBlockPassword) GetPassword() AmsString {
 
 // NewAdsDiscoveryBlockPassword factory function for _AdsDiscoveryBlockPassword
 func NewAdsDiscoveryBlockPassword(password AmsString) *_AdsDiscoveryBlockPassword {
+	if password == nil {
+		panic("password of type AmsString for AdsDiscoveryBlockPassword must not be nil")
+	}
 	_result := &_AdsDiscoveryBlockPassword{
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		Password:                  password,

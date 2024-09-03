@@ -95,6 +95,12 @@ func (m *_DataTypeDescription) GetName() QualifiedName {
 
 // NewDataTypeDescription factory function for _DataTypeDescription
 func NewDataTypeDescription(dataTypeId NodeId, name QualifiedName) *_DataTypeDescription {
+	if dataTypeId == nil {
+		panic("dataTypeId of type NodeId for DataTypeDescription must not be nil")
+	}
+	if name == nil {
+		panic("name of type QualifiedName for DataTypeDescription must not be nil")
+	}
 	_result := &_DataTypeDescription{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		DataTypeId:                        dataTypeId,

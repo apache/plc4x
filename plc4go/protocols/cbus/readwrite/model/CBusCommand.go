@@ -118,6 +118,9 @@ func (pm *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
 
 // NewCBusCommand factory function for _CBusCommand
 func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
+	if header == nil {
+		panic("header of type CBusHeader for CBusCommand must not be nil")
+	}
 	return &_CBusCommand{Header: header, CBusOptions: cBusOptions}
 }
 

@@ -88,6 +88,9 @@ func (m *_CloseSecureChannelResponse) GetResponseHeader() ExtensionObjectDefinit
 
 // NewCloseSecureChannelResponse factory function for _CloseSecureChannelResponse
 func NewCloseSecureChannelResponse(responseHeader ExtensionObjectDefinition) *_CloseSecureChannelResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CloseSecureChannelResponse must not be nil")
+	}
 	_result := &_CloseSecureChannelResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

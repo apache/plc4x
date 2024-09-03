@@ -102,6 +102,9 @@ func (m *_LDataReq) GetDataFrame() LDataFrame {
 
 // NewLDataReq factory function for _LDataReq
 func NewLDataReq(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataReq {
+	if dataFrame == nil {
+		panic("dataFrame of type LDataFrame for LDataReq must not be nil")
+	}
 	_result := &_LDataReq{
 		CEMIContract:                NewCEMI(size),
 		AdditionalInformationLength: additionalInformationLength,

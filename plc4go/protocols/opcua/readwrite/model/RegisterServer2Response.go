@@ -116,6 +116,9 @@ func (m *_RegisterServer2Response) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewRegisterServer2Response factory function for _RegisterServer2Response
 func NewRegisterServer2Response(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_RegisterServer2Response {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterServer2Response must not be nil")
+	}
 	_result := &_RegisterServer2Response{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

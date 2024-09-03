@@ -102,6 +102,9 @@ func (m *_CallRequest) GetMethodsToCall() []ExtensionObjectDefinition {
 
 // NewCallRequest factory function for _CallRequest
 func NewCallRequest(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) *_CallRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CallRequest must not be nil")
+	}
 	_result := &_CallRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

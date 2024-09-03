@@ -102,6 +102,9 @@ func (m *_BACnetLightingOperationTagged) GetIsProprietary() bool {
 
 // NewBACnetLightingOperationTagged factory function for _BACnetLightingOperationTagged
 func NewBACnetLightingOperationTagged(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingOperationTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLightingOperationTagged must not be nil")
+	}
 	return &_BACnetLightingOperationTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

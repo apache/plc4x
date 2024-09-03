@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetActualValue() BACnetLift
 
 // NewBACnetConstructedDataCarAssignedDirection factory function for _BACnetConstructedDataCarAssignedDirection
 func NewBACnetConstructedDataCarAssignedDirection(assignedDirection BACnetLiftCarDirectionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarAssignedDirection {
+	if assignedDirection == nil {
+		panic("assignedDirection of type BACnetLiftCarDirectionTagged for BACnetConstructedDataCarAssignedDirection must not be nil")
+	}
 	_result := &_BACnetConstructedDataCarAssignedDirection{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AssignedDirection:             assignedDirection,

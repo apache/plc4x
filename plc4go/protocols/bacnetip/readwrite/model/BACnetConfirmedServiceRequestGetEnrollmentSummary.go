@@ -123,6 +123,9 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetNotificationClas
 
 // NewBACnetConfirmedServiceRequestGetEnrollmentSummary factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummary
 func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(acknowledgmentFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, enrollmentFilter BACnetRecipientProcessEnclosed, eventStateFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, eventTypeFilter BACnetEventTypeTagged, priorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, notificationClassFilter BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestGetEnrollmentSummary {
+	if acknowledgmentFilter == nil {
+		panic("acknowledgmentFilter of type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged for BACnetConfirmedServiceRequestGetEnrollmentSummary must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestGetEnrollmentSummary{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		AcknowledgmentFilter:                  acknowledgmentFilter,

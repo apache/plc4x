@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesLifeSafetyMode) GetLifeSafetyMode() BACnetLifeSafe
 
 // NewBACnetPropertyStatesLifeSafetyMode factory function for _BACnetPropertyStatesLifeSafetyMode
 func NewBACnetPropertyStatesLifeSafetyMode(lifeSafetyMode BACnetLifeSafetyModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLifeSafetyMode {
+	if lifeSafetyMode == nil {
+		panic("lifeSafetyMode of type BACnetLifeSafetyModeTagged for BACnetPropertyStatesLifeSafetyMode must not be nil")
+	}
 	_result := &_BACnetPropertyStatesLifeSafetyMode{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LifeSafetyMode:               lifeSafetyMode,

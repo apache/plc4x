@@ -102,6 +102,9 @@ func (m *_BACnetLightingCommand) GetPriority() BACnetContextTagUnsignedInteger {
 
 // NewBACnetLightingCommand factory function for _BACnetLightingCommand
 func NewBACnetLightingCommand(lightningOperation BACnetLightingOperationTagged, targetLevel BACnetContextTagReal, rampRate BACnetContextTagReal, stepIncrement BACnetContextTagReal, fadeTime BACnetContextTagUnsignedInteger, priority BACnetContextTagUnsignedInteger) *_BACnetLightingCommand {
+	if lightningOperation == nil {
+		panic("lightningOperation of type BACnetLightingOperationTagged for BACnetLightingCommand must not be nil")
+	}
 	return &_BACnetLightingCommand{LightningOperation: lightningOperation, TargetLevel: targetLevel, RampRate: rampRate, StepIncrement: stepIncrement, FadeTime: fadeTime, Priority: priority}
 }
 

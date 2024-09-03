@@ -78,6 +78,9 @@ func (m *_BVLCResultCodeTagged) GetValue() BVLCResultCode {
 
 // NewBVLCResultCodeTagged factory function for _BVLCResultCodeTagged
 func NewBVLCResultCodeTagged(header BACnetTagHeader, value BVLCResultCode, tagNumber uint8, tagClass TagClass) *_BVLCResultCodeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BVLCResultCodeTagged must not be nil")
+	}
 	return &_BVLCResultCodeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

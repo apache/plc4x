@@ -102,6 +102,9 @@ func (m *_BACnetNetworkTypeTagged) GetIsProprietary() bool {
 
 // NewBACnetNetworkTypeTagged factory function for _BACnetNetworkTypeTagged
 func NewBACnetNetworkTypeTagged(header BACnetTagHeader, value BACnetNetworkType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetNetworkTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNetworkTypeTagged must not be nil")
+	}
 	return &_BACnetNetworkTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

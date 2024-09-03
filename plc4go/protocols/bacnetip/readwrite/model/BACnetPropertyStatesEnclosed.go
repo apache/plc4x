@@ -84,6 +84,15 @@ func (m *_BACnetPropertyStatesEnclosed) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetPropertyStatesEnclosed factory function for _BACnetPropertyStatesEnclosed
 func NewBACnetPropertyStatesEnclosed(openingTag BACnetOpeningTag, propertyState BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetPropertyStatesEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetPropertyStatesEnclosed must not be nil")
+	}
+	if propertyState == nil {
+		panic("propertyState of type BACnetPropertyStates for BACnetPropertyStatesEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetPropertyStatesEnclosed must not be nil")
+	}
 	return &_BACnetPropertyStatesEnclosed{OpeningTag: openingTag, PropertyState: propertyState, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

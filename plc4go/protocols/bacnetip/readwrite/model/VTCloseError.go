@@ -95,6 +95,9 @@ func (m *_VTCloseError) GetListOfVtSessionIdentifiers() VTCloseErrorListOfVTSess
 
 // NewVTCloseError factory function for _VTCloseError
 func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) *_VTCloseError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for VTCloseError must not be nil")
+	}
 	_result := &_VTCloseError{
 		BACnetErrorContract:        NewBACnetError(),
 		ErrorType:                  errorType,

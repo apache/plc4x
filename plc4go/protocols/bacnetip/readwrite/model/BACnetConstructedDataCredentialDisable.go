@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCredentialDisable) GetActualValue() BACnetAccessC
 
 // NewBACnetConstructedDataCredentialDisable factory function for _BACnetConstructedDataCredentialDisable
 func NewBACnetConstructedDataCredentialDisable(credentialDisable BACnetAccessCredentialDisableTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDisable {
+	if credentialDisable == nil {
+		panic("credentialDisable of type BACnetAccessCredentialDisableTagged for BACnetConstructedDataCredentialDisable must not be nil")
+	}
 	_result := &_BACnetConstructedDataCredentialDisable{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CredentialDisable:             credentialDisable,

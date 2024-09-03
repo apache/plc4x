@@ -165,6 +165,21 @@ func (m *_ProgramDiagnosticDataType) GetLastMethodReturnStatus() ExtensionObject
 
 // NewProgramDiagnosticDataType factory function for _ProgramDiagnosticDataType
 func NewProgramDiagnosticDataType(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, lastMethodCallTime int64, lastMethodReturnStatus ExtensionObjectDefinition) *_ProgramDiagnosticDataType {
+	if createSessionId == nil {
+		panic("createSessionId of type NodeId for ProgramDiagnosticDataType must not be nil")
+	}
+	if createClientName == nil {
+		panic("createClientName of type PascalString for ProgramDiagnosticDataType must not be nil")
+	}
+	if lastMethodCall == nil {
+		panic("lastMethodCall of type PascalString for ProgramDiagnosticDataType must not be nil")
+	}
+	if lastMethodSessionId == nil {
+		panic("lastMethodSessionId of type NodeId for ProgramDiagnosticDataType must not be nil")
+	}
+	if lastMethodReturnStatus == nil {
+		panic("lastMethodReturnStatus of type ExtensionObjectDefinition for ProgramDiagnosticDataType must not be nil")
+	}
 	_result := &_ProgramDiagnosticDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		CreateSessionId:                   createSessionId,

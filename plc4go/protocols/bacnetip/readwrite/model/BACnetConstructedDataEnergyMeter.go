@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataEnergyMeter) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataEnergyMeter factory function for _BACnetConstructedDataEnergyMeter
 func NewBACnetConstructedDataEnergyMeter(energyMeter BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnergyMeter {
+	if energyMeter == nil {
+		panic("energyMeter of type BACnetApplicationTagReal for BACnetConstructedDataEnergyMeter must not be nil")
+	}
 	_result := &_BACnetConstructedDataEnergyMeter{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EnergyMeter:                   energyMeter,

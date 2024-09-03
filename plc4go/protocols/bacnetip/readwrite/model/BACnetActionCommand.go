@@ -123,6 +123,18 @@ func (m *_BACnetActionCommand) GetWriteSuccessful() BACnetContextTagBoolean {
 
 // NewBACnetActionCommand factory function for _BACnetActionCommand
 func NewBACnetActionCommand(deviceIdentifier BACnetContextTagObjectIdentifier, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, postDelay BACnetContextTagBoolean, quitOnFailure BACnetContextTagBoolean, writeSuccessful BACnetContextTagBoolean) *_BACnetActionCommand {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetActionCommand must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetActionCommand must not be nil")
+	}
+	if quitOnFailure == nil {
+		panic("quitOnFailure of type BACnetContextTagBoolean for BACnetActionCommand must not be nil")
+	}
+	if writeSuccessful == nil {
+		panic("writeSuccessful of type BACnetContextTagBoolean for BACnetActionCommand must not be nil")
+	}
 	return &_BACnetActionCommand{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, PostDelay: postDelay, QuitOnFailure: quitOnFailure, WriteSuccessful: writeSuccessful}
 }
 

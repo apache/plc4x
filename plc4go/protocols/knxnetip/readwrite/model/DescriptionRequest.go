@@ -90,6 +90,9 @@ func (m *_DescriptionRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 
 // NewDescriptionRequest factory function for _DescriptionRequest
 func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) *_DescriptionRequest {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DescriptionRequest must not be nil")
+	}
 	_result := &_DescriptionRequest{
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 		HpaiControlEndpoint:     hpaiControlEndpoint,

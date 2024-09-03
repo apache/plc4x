@@ -109,6 +109,12 @@ func (m *_QueryDataSet) GetValues() []Variant {
 
 // NewQueryDataSet factory function for _QueryDataSet
 func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) *_QueryDataSet {
+	if nodeId == nil {
+		panic("nodeId of type ExpandedNodeId for QueryDataSet must not be nil")
+	}
+	if typeDefinitionNode == nil {
+		panic("typeDefinitionNode of type ExpandedNodeId for QueryDataSet must not be nil")
+	}
 	_result := &_QueryDataSet{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NodeId:                            nodeId,

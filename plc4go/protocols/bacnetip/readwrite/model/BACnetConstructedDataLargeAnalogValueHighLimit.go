@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetActualValue() BACne
 
 // NewBACnetConstructedDataLargeAnalogValueHighLimit factory function for _BACnetConstructedDataLargeAnalogValueHighLimit
 func NewBACnetConstructedDataLargeAnalogValueHighLimit(highLimit BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueHighLimit {
+	if highLimit == nil {
+		panic("highLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueHighLimit must not be nil")
+	}
 	_result := &_BACnetConstructedDataLargeAnalogValueHighLimit{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		HighLimit:                     highLimit,

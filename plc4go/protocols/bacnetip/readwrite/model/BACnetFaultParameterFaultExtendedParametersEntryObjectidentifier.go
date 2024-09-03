@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetO
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier factory function for _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
 func NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier(objectidentifierValue BACnetApplicationTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier {
+	if objectidentifierValue == nil {
+		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		ObjectidentifierValue: objectidentifierValue,

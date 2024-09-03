@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataIPv6PrefixLength factory function for _BACnetConstructedDataIPv6PrefixLength
 func NewBACnetConstructedDataIPv6PrefixLength(ipv6PrefixLength BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6PrefixLength {
+	if ipv6PrefixLength == nil {
+		panic("ipv6PrefixLength of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPv6PrefixLength must not be nil")
+	}
 	_result := &_BACnetConstructedDataIPv6PrefixLength{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Ipv6PrefixLength:              ipv6PrefixLength,

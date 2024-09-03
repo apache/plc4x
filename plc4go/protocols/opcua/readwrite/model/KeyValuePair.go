@@ -95,6 +95,12 @@ func (m *_KeyValuePair) GetValue() Variant {
 
 // NewKeyValuePair factory function for _KeyValuePair
 func NewKeyValuePair(key QualifiedName, value Variant) *_KeyValuePair {
+	if key == nil {
+		panic("key of type QualifiedName for KeyValuePair must not be nil")
+	}
+	if value == nil {
+		panic("value of type Variant for KeyValuePair must not be nil")
+	}
 	_result := &_KeyValuePair{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Key:                               key,

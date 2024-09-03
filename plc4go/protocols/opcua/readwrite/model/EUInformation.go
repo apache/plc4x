@@ -109,6 +109,15 @@ func (m *_EUInformation) GetDescription() LocalizedText {
 
 // NewEUInformation factory function for _EUInformation
 func NewEUInformation(namespaceUri PascalString, unitId int32, displayName LocalizedText, description LocalizedText) *_EUInformation {
+	if namespaceUri == nil {
+		panic("namespaceUri of type PascalString for EUInformation must not be nil")
+	}
+	if displayName == nil {
+		panic("displayName of type LocalizedText for EUInformation must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for EUInformation must not be nil")
+	}
 	_result := &_EUInformation{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NamespaceUri:                      namespaceUri,

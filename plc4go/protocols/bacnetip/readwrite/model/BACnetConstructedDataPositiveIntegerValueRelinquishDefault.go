@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault) GetActualV
 
 // NewBACnetConstructedDataPositiveIntegerValueRelinquishDefault factory function for _BACnetConstructedDataPositiveIntegerValueRelinquishDefault
 func NewBACnetConstructedDataPositiveIntegerValueRelinquishDefault(relinquishDefault BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueRelinquishDefault must not be nil")
+	}
 	_result := &_BACnetConstructedDataPositiveIntegerValueRelinquishDefault{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RelinquishDefault:             relinquishDefault,

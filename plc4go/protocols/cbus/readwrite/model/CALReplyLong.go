@@ -146,6 +146,9 @@ func (m *_CALReplyLong) GetIsUnitAddress() bool {
 
 // NewCALReplyLong factory function for _CALReplyLong
 func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyLong {
+	if serialInterfaceAddress == nil {
+		panic("serialInterfaceAddress of type SerialInterfaceAddress for CALReplyLong must not be nil")
+	}
 	_result := &_CALReplyLong{
 		CALReplyContract:       NewCALReply(calType, calData, cBusOptions, requestContext),
 		TerminatingByte:        terminatingByte,

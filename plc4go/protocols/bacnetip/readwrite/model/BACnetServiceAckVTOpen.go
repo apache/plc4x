@@ -88,6 +88,9 @@ func (m *_BACnetServiceAckVTOpen) GetRemoteVtSessionIdentifier() BACnetApplicati
 
 // NewBACnetServiceAckVTOpen factory function for _BACnetServiceAckVTOpen
 func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTOpen {
+	if remoteVtSessionIdentifier == nil {
+		panic("remoteVtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTOpen must not be nil")
+	}
 	_result := &_BACnetServiceAckVTOpen{
 		BACnetServiceAckContract:  NewBACnetServiceAck(serviceAckLength),
 		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataBias) GetActualValue() BACnetApplicationTagReal {
 
 // NewBACnetConstructedDataBias factory function for _BACnetConstructedDataBias
 func NewBACnetConstructedDataBias(bias BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBias {
+	if bias == nil {
+		panic("bias of type BACnetApplicationTagReal for BACnetConstructedDataBias must not be nil")
+	}
 	_result := &_BACnetConstructedDataBias{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Bias:                          bias,

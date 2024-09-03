@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataIntegerValueDeadband) GetActualValue() BACnetAppl
 
 // NewBACnetConstructedDataIntegerValueDeadband factory function for _BACnetConstructedDataIntegerValueDeadband
 func NewBACnetConstructedDataIntegerValueDeadband(deadband BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueDeadband {
+	if deadband == nil {
+		panic("deadband of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIntegerValueDeadband must not be nil")
+	}
 	_result := &_BACnetConstructedDataIntegerValueDeadband{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Deadband:                      deadband,

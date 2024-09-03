@@ -84,6 +84,9 @@ func (m *_BACnetTimerStateChangeValueBitString) GetBitStringValue() BACnetApplic
 
 // NewBACnetTimerStateChangeValueBitString factory function for _BACnetTimerStateChangeValueBitString
 func NewBACnetTimerStateChangeValueBitString(bitStringValue BACnetApplicationTagBitString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueBitString {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetTimerStateChangeValueBitString must not be nil")
+	}
 	_result := &_BACnetTimerStateChangeValueBitString{
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		BitStringValue:                      bitStringValue,

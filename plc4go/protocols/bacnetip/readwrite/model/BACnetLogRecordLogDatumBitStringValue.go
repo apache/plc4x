@@ -84,6 +84,9 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) GetBitStringValue() BACnetConte
 
 // NewBACnetLogRecordLogDatumBitStringValue factory function for _BACnetLogRecordLogDatumBitStringValue
 func NewBACnetLogRecordLogDatumBitStringValue(bitStringValue BACnetContextTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumBitStringValue {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogRecordLogDatumBitStringValue must not be nil")
+	}
 	_result := &_BACnetLogRecordLogDatumBitStringValue{
 		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		BitStringValue:                  bitStringValue,

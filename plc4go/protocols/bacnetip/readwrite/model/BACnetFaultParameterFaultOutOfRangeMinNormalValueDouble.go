@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) GetDoubleValu
 
 // NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble factory function for _BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
 func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble(doubleValue BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble{
 		BACnetFaultParameterFaultOutOfRangeMinNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		DoubleValue: doubleValue,

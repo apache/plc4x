@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLowDiffLimit) GetActualValue() BACnetOptionalREAL
 
 // NewBACnetConstructedDataLowDiffLimit factory function for _BACnetConstructedDataLowDiffLimit
 func NewBACnetConstructedDataLowDiffLimit(lowDiffLimit BACnetOptionalREAL, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLowDiffLimit {
+	if lowDiffLimit == nil {
+		panic("lowDiffLimit of type BACnetOptionalREAL for BACnetConstructedDataLowDiffLimit must not be nil")
+	}
 	_result := &_BACnetConstructedDataLowDiffLimit{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LowDiffLimit:                  lowDiffLimit,

@@ -84,6 +84,9 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Get
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime(dateTimeValue BACnetDateTimeEnclosed, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime {
+	if dateTimeValue == nil {
+		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime must not be nil")
+	}
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime{
 		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		DateTimeValue: dateTimeValue,

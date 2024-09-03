@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataEventParameters) GetActualValue() BACnetEventPara
 
 // NewBACnetConstructedDataEventParameters factory function for _BACnetConstructedDataEventParameters
 func NewBACnetConstructedDataEventParameters(eventParameter BACnetEventParameter, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventParameters {
+	if eventParameter == nil {
+		panic("eventParameter of type BACnetEventParameter for BACnetConstructedDataEventParameters must not be nil")
+	}
 	_result := &_BACnetConstructedDataEventParameters{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EventParameter:                eventParameter,

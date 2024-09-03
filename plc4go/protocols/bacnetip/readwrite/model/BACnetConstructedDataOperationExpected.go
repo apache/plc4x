@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataOperationExpected) GetActualValue() BACnetLifeSaf
 
 // NewBACnetConstructedDataOperationExpected factory function for _BACnetConstructedDataOperationExpected
 func NewBACnetConstructedDataOperationExpected(lifeSafetyOperations BACnetLifeSafetyOperationTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationExpected {
+	if lifeSafetyOperations == nil {
+		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetConstructedDataOperationExpected must not be nil")
+	}
 	_result := &_BACnetConstructedDataOperationExpected{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LifeSafetyOperations:          lifeSafetyOperations,

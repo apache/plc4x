@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) GetActualValue() BACnetApplicati
 
 // NewBACnetConstructedDataDeviceMaxMaster factory function for _BACnetConstructedDataDeviceMaxMaster
 func NewBACnetConstructedDataDeviceMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceMaxMaster {
+	if maxMaster == nil {
+		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDeviceMaxMaster must not be nil")
+	}
 	_result := &_BACnetConstructedDataDeviceMaxMaster{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaxMaster:                     maxMaster,

@@ -116,6 +116,9 @@ func (m *_CreateSubscriptionResponse) GetRevisedMaxKeepAliveCount() uint32 {
 
 // NewCreateSubscriptionResponse factory function for _CreateSubscriptionResponse
 func NewCreateSubscriptionResponse(responseHeader ExtensionObjectDefinition, subscriptionId uint32, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_CreateSubscriptionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CreateSubscriptionResponse must not be nil")
+	}
 	_result := &_CreateSubscriptionResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

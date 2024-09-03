@@ -88,6 +88,15 @@ func (m *_BACnetReadAccessSpecification) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetReadAccessSpecification factory function for _BACnetReadAccessSpecification
 func NewBACnetReadAccessSpecification(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyReferences []BACnetPropertyReference, closingTag BACnetClosingTag) *_BACnetReadAccessSpecification {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetReadAccessSpecification must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetReadAccessSpecification must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetReadAccessSpecification must not be nil")
+	}
 	return &_BACnetReadAccessSpecification{ObjectIdentifier: objectIdentifier, OpeningTag: openingTag, ListOfPropertyReferences: listOfPropertyReferences, ClosingTag: closingTag}
 }
 

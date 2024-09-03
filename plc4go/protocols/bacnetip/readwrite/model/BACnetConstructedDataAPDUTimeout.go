@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAPDUTimeout) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataAPDUTimeout factory function for _BACnetConstructedDataAPDUTimeout
 func NewBACnetConstructedDataAPDUTimeout(apduTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDUTimeout {
+	if apduTimeout == nil {
+		panic("apduTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDUTimeout must not be nil")
+	}
 	_result := &_BACnetConstructedDataAPDUTimeout{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ApduTimeout:                   apduTimeout,

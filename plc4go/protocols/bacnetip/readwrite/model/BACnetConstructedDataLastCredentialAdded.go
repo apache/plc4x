@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLastCredentialAdded) GetActualValue() BACnetDevic
 
 // NewBACnetConstructedDataLastCredentialAdded factory function for _BACnetConstructedDataLastCredentialAdded
 func NewBACnetConstructedDataLastCredentialAdded(lastCredentialAdded BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAdded {
+	if lastCredentialAdded == nil {
+		panic("lastCredentialAdded of type BACnetDeviceObjectReference for BACnetConstructedDataLastCredentialAdded must not be nil")
+	}
 	_result := &_BACnetConstructedDataLastCredentialAdded{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastCredentialAdded:           lastCredentialAdded,

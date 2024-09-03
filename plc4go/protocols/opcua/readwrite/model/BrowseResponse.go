@@ -116,6 +116,9 @@ func (m *_BrowseResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewBrowseResponse factory function for _BrowseResponse
 func NewBrowseResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_BrowseResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for BrowseResponse must not be nil")
+	}
 	_result := &_BrowseResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

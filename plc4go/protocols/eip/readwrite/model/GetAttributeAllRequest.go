@@ -103,6 +103,12 @@ func (m *_GetAttributeAllRequest) GetInstanceSegment() PathSegment {
 
 // NewGetAttributeAllRequest factory function for _GetAttributeAllRequest
 func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSegment, serviceLen uint16) *_GetAttributeAllRequest {
+	if classSegment == nil {
+		panic("classSegment of type PathSegment for GetAttributeAllRequest must not be nil")
+	}
+	if instanceSegment == nil {
+		panic("instanceSegment of type PathSegment for GetAttributeAllRequest must not be nil")
+	}
 	_result := &_GetAttributeAllRequest{
 		CipServiceContract: NewCipService(serviceLen),
 		ClassSegment:       classSegment,

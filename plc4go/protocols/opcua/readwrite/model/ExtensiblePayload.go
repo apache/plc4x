@@ -88,6 +88,9 @@ func (m *_ExtensiblePayload) GetPayload() ExtensionObject {
 
 // NewExtensiblePayload factory function for _ExtensiblePayload
 func NewExtensiblePayload(payload ExtensionObject, sequenceHeader SequenceHeader, byteCount uint32) *_ExtensiblePayload {
+	if payload == nil {
+		panic("payload of type ExtensionObject for ExtensiblePayload must not be nil")
+	}
 	_result := &_ExtensiblePayload{
 		PayloadContract: NewPayload(sequenceHeader, byteCount),
 		Payload:         payload,

@@ -91,6 +91,12 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetCount() BACnetAp
 
 // NewBACnetConfirmedServiceRequestReadRangeRangeByTime factory function for _BACnetConfirmedServiceRequestReadRangeRangeByTime
 func NewBACnetConfirmedServiceRequestReadRangeRangeByTime(referenceTime BACnetDateTime, count BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRangeByTime {
+	if referenceTime == nil {
+		panic("referenceTime of type BACnetDateTime for BACnetConfirmedServiceRequestReadRangeRangeByTime must not be nil")
+	}
+	if count == nil {
+		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByTime must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestReadRangeRangeByTime{
 		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
 		ReferenceTime: referenceTime,

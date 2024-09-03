@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataChangeOfStateTime) GetActualValue() BACnetDateTim
 
 // NewBACnetConstructedDataChangeOfStateTime factory function for _BACnetConstructedDataChangeOfStateTime
 func NewBACnetConstructedDataChangeOfStateTime(changeOfStateTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangeOfStateTime {
+	if changeOfStateTime == nil {
+		panic("changeOfStateTime of type BACnetDateTime for BACnetConstructedDataChangeOfStateTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataChangeOfStateTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ChangeOfStateTime:             changeOfStateTime,

@@ -81,6 +81,12 @@ func (m *_BACnetLogRecord) GetStatusFlags() BACnetStatusFlagsTagged {
 
 // NewBACnetLogRecord factory function for _BACnetLogRecord
 func NewBACnetLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetLogRecordLogDatum, statusFlags BACnetStatusFlagsTagged) *_BACnetLogRecord {
+	if timestamp == nil {
+		panic("timestamp of type BACnetDateTimeEnclosed for BACnetLogRecord must not be nil")
+	}
+	if logDatum == nil {
+		panic("logDatum of type BACnetLogRecordLogDatum for BACnetLogRecord must not be nil")
+	}
 	return &_BACnetLogRecord{Timestamp: timestamp, LogDatum: logDatum, StatusFlags: statusFlags}
 }
 

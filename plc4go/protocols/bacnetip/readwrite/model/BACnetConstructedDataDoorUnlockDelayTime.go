@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetActualValue() BACnetAppli
 
 // NewBACnetConstructedDataDoorUnlockDelayTime factory function for _BACnetConstructedDataDoorUnlockDelayTime
 func NewBACnetConstructedDataDoorUnlockDelayTime(doorUnlockDelayTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorUnlockDelayTime {
+	if doorUnlockDelayTime == nil {
+		panic("doorUnlockDelayTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorUnlockDelayTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataDoorUnlockDelayTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DoorUnlockDelayTime:           doorUnlockDelayTime,

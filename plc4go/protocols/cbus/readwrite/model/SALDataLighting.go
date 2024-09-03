@@ -88,6 +88,9 @@ func (m *_SALDataLighting) GetLightingData() LightingData {
 
 // NewSALDataLighting factory function for _SALDataLighting
 func NewSALDataLighting(lightingData LightingData, salData SALData) *_SALDataLighting {
+	if lightingData == nil {
+		panic("lightingData of type LightingData for SALDataLighting must not be nil")
+	}
 	_result := &_SALDataLighting{
 		SALDataContract: NewSALData(salData),
 		LightingData:    lightingData,

@@ -127,6 +127,12 @@ func (m *_LDataExtended) GetApdu() Apdu {
 
 // NewLDataExtended factory function for _LDataExtended
 func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress KnxAddress, destinationAddress []byte, apdu Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataExtended {
+	if sourceAddress == nil {
+		panic("sourceAddress of type KnxAddress for LDataExtended must not be nil")
+	}
+	if apdu == nil {
+		panic("apdu of type Apdu for LDataExtended must not be nil")
+	}
 	_result := &_LDataExtended{
 		LDataFrameContract:  NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 		GroupAddress:        groupAddress,

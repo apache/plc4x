@@ -84,6 +84,9 @@ func (m *_BACnetTimerStateChangeValueInteger) GetIntegerValue() BACnetApplicatio
 
 // NewBACnetTimerStateChangeValueInteger factory function for _BACnetTimerStateChangeValueInteger
 func NewBACnetTimerStateChangeValueInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueInteger {
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetTimerStateChangeValueInteger must not be nil")
+	}
 	_result := &_BACnetTimerStateChangeValueInteger{
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		IntegerValue:                        integerValue,

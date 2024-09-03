@@ -84,6 +84,9 @@ func (m *_BACnetApplicationTagBitString) GetPayload() BACnetTagPayloadBitString 
 
 // NewBACnetApplicationTagBitString factory function for _BACnetApplicationTagBitString
 func NewBACnetApplicationTagBitString(payload BACnetTagPayloadBitString, header BACnetTagHeader) *_BACnetApplicationTagBitString {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetApplicationTagBitString must not be nil")
+	}
 	_result := &_BACnetApplicationTagBitString{
 		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
 		Payload:                      payload,

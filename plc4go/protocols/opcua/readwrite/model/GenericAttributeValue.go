@@ -95,6 +95,9 @@ func (m *_GenericAttributeValue) GetValue() Variant {
 
 // NewGenericAttributeValue factory function for _GenericAttributeValue
 func NewGenericAttributeValue(attributeId uint32, value Variant) *_GenericAttributeValue {
+	if value == nil {
+		panic("value of type Variant for GenericAttributeValue must not be nil")
+	}
 	_result := &_GenericAttributeValue{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		AttributeId:                       attributeId,

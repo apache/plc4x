@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataNotificationThreshold) GetActualValue() BACnetApp
 
 // NewBACnetConstructedDataNotificationThreshold factory function for _BACnetConstructedDataNotificationThreshold
 func NewBACnetConstructedDataNotificationThreshold(notificationThreshold BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationThreshold {
+	if notificationThreshold == nil {
+		panic("notificationThreshold of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationThreshold must not be nil")
+	}
 	_result := &_BACnetConstructedDataNotificationThreshold{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NotificationThreshold:         notificationThreshold,

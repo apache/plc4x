@@ -109,6 +109,9 @@ func (m *_AmsSerialFrame) GetCrc() uint16 {
 
 // NewAmsSerialFrame factory function for _AmsSerialFrame
 func NewAmsSerialFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata AmsPacket, crc uint16) *_AmsSerialFrame {
+	if userdata == nil {
+		panic("userdata of type AmsPacket for AmsSerialFrame must not be nil")
+	}
 	return &_AmsSerialFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Userdata: userdata, Crc: crc}
 }
 

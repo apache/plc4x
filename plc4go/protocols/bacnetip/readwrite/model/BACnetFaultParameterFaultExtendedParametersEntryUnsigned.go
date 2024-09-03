@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) GetUnsignedV
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned factory function for _BACnetFaultParameterFaultExtendedParametersEntryUnsigned
 func NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetFaultParameterFaultExtendedParametersEntryUnsigned must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryUnsigned{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		UnsignedValue: unsignedValue,

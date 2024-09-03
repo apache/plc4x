@@ -74,6 +74,9 @@ func (m *_GuidNodeId) GetIdentifier() GuidValue {
 
 // NewGuidNodeId factory function for _GuidNodeId
 func NewGuidNodeId(namespaceIndex uint16, identifier GuidValue) *_GuidNodeId {
+	if identifier == nil {
+		panic("identifier of type GuidValue for GuidNodeId must not be nil")
+	}
 	return &_GuidNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
 }
 

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataIPDHCPEnable) GetActualValue() BACnetApplicationT
 
 // NewBACnetConstructedDataIPDHCPEnable factory function for _BACnetConstructedDataIPDHCPEnable
 func NewBACnetConstructedDataIPDHCPEnable(ipDhcpEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPEnable {
+	if ipDhcpEnable == nil {
+		panic("ipDhcpEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataIPDHCPEnable must not be nil")
+	}
 	_result := &_BACnetConstructedDataIPDHCPEnable{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		IpDhcpEnable:                  ipDhcpEnable,

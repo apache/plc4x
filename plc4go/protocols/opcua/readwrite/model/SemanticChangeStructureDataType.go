@@ -95,6 +95,12 @@ func (m *_SemanticChangeStructureDataType) GetAffectedType() NodeId {
 
 // NewSemanticChangeStructureDataType factory function for _SemanticChangeStructureDataType
 func NewSemanticChangeStructureDataType(affected NodeId, affectedType NodeId) *_SemanticChangeStructureDataType {
+	if affected == nil {
+		panic("affected of type NodeId for SemanticChangeStructureDataType must not be nil")
+	}
+	if affectedType == nil {
+		panic("affectedType of type NodeId for SemanticChangeStructureDataType must not be nil")
+	}
 	_result := &_SemanticChangeStructureDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Affected:                          affected,

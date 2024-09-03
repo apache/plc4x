@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesReliability) GetReliability() BACnetReliabilityTag
 
 // NewBACnetPropertyStatesReliability factory function for _BACnetPropertyStatesReliability
 func NewBACnetPropertyStatesReliability(reliability BACnetReliabilityTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesReliability {
+	if reliability == nil {
+		panic("reliability of type BACnetReliabilityTagged for BACnetPropertyStatesReliability must not be nil")
+	}
 	_result := &_BACnetPropertyStatesReliability{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		Reliability:                  reliability,

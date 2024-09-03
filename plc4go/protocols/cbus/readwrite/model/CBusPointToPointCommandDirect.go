@@ -86,6 +86,9 @@ func (m *_CBusPointToPointCommandDirect) GetUnitAddress() UnitAddress {
 
 // NewCBusPointToPointCommandDirect factory function for _CBusPointToPointCommandDirect
 func NewCBusPointToPointCommandDirect(unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommandDirect {
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for CBusPointToPointCommandDirect must not be nil")
+	}
 	_result := &_CBusPointToPointCommandDirect{
 		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
 		UnitAddress:                     unitAddress,

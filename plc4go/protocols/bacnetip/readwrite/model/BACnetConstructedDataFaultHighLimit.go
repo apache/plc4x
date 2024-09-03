@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataFaultHighLimit) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataFaultHighLimit factory function for _BACnetConstructedDataFaultHighLimit
 func NewBACnetConstructedDataFaultHighLimit(faultHighLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultHighLimit {
+	if faultHighLimit == nil {
+		panic("faultHighLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFaultHighLimit must not be nil")
+	}
 	_result := &_BACnetConstructedDataFaultHighLimit{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FaultHighLimit:                faultHighLimit,

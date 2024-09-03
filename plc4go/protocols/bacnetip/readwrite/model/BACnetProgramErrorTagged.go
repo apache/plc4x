@@ -102,6 +102,9 @@ func (m *_BACnetProgramErrorTagged) GetIsProprietary() bool {
 
 // NewBACnetProgramErrorTagged factory function for _BACnetProgramErrorTagged
 func NewBACnetProgramErrorTagged(header BACnetTagHeader, value BACnetProgramError, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetProgramErrorTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetProgramErrorTagged must not be nil")
+	}
 	return &_BACnetProgramErrorTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

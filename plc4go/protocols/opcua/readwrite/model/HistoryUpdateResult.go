@@ -116,6 +116,9 @@ func (m *_HistoryUpdateResult) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewHistoryUpdateResult factory function for _HistoryUpdateResult
 func NewHistoryUpdateResult(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for HistoryUpdateResult must not be nil")
+	}
 	_result := &_HistoryUpdateResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,

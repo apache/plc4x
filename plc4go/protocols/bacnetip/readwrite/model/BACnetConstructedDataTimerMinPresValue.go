@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataTimerMinPresValue) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataTimerMinPresValue factory function for _BACnetConstructedDataTimerMinPresValue
 func NewBACnetConstructedDataTimerMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerMinPresValue {
+	if minPresValue == nil {
+		panic("minPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimerMinPresValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataTimerMinPresValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MinPresValue:                  minPresValue,

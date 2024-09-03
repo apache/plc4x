@@ -167,6 +167,12 @@ func (m *_BACnetObjectTypesSupportedTagged) GetLift() bool {
 
 // NewBACnetObjectTypesSupportedTagged factory function for _BACnetObjectTypesSupportedTagged
 func NewBACnetObjectTypesSupportedTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetObjectTypesSupportedTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetObjectTypesSupportedTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetObjectTypesSupportedTagged must not be nil")
+	}
 	return &_BACnetObjectTypesSupportedTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
 }
 

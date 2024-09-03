@@ -116,6 +116,9 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) GetDiagnosticInfos() []Diagnost
 
 // NewTranslateBrowsePathsToNodeIdsResponse factory function for _TranslateBrowsePathsToNodeIdsResponse
 func NewTranslateBrowsePathsToNodeIdsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_TranslateBrowsePathsToNodeIdsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for TranslateBrowsePathsToNodeIdsResponse must not be nil")
+	}
 	_result := &_TranslateBrowsePathsToNodeIdsResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

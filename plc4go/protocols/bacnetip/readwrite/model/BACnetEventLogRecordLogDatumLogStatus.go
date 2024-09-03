@@ -84,6 +84,9 @@ func (m *_BACnetEventLogRecordLogDatumLogStatus) GetLogStatus() BACnetLogStatusT
 
 // NewBACnetEventLogRecordLogDatumLogStatus factory function for _BACnetEventLogRecordLogDatumLogStatus
 func NewBACnetEventLogRecordLogDatumLogStatus(logStatus BACnetLogStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatumLogStatus {
+	if logStatus == nil {
+		panic("logStatus of type BACnetLogStatusTagged for BACnetEventLogRecordLogDatumLogStatus must not be nil")
+	}
 	_result := &_BACnetEventLogRecordLogDatumLogStatus{
 		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		LogStatus:                            logStatus,

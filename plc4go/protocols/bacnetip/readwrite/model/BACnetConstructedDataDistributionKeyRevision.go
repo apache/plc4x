@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetActualValue() BACnetA
 
 // NewBACnetConstructedDataDistributionKeyRevision factory function for _BACnetConstructedDataDistributionKeyRevision
 func NewBACnetConstructedDataDistributionKeyRevision(distributionKeyRevision BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDistributionKeyRevision {
+	if distributionKeyRevision == nil {
+		panic("distributionKeyRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDistributionKeyRevision must not be nil")
+	}
 	_result := &_BACnetConstructedDataDistributionKeyRevision{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DistributionKeyRevision:       distributionKeyRevision,

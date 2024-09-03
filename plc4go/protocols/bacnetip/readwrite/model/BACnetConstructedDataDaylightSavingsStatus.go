@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) GetActualValue() BACnetApp
 
 // NewBACnetConstructedDataDaylightSavingsStatus factory function for _BACnetConstructedDataDaylightSavingsStatus
 func NewBACnetConstructedDataDaylightSavingsStatus(daylightSavingsStatus BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaylightSavingsStatus {
+	if daylightSavingsStatus == nil {
+		panic("daylightSavingsStatus of type BACnetApplicationTagBoolean for BACnetConstructedDataDaylightSavingsStatus must not be nil")
+	}
 	_result := &_BACnetConstructedDataDaylightSavingsStatus{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DaylightSavingsStatus:         daylightSavingsStatus,

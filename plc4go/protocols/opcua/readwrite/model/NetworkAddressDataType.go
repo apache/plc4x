@@ -88,6 +88,9 @@ func (m *_NetworkAddressDataType) GetNetworkInterface() PascalString {
 
 // NewNetworkAddressDataType factory function for _NetworkAddressDataType
 func NewNetworkAddressDataType(networkInterface PascalString) *_NetworkAddressDataType {
+	if networkInterface == nil {
+		panic("networkInterface of type PascalString for NetworkAddressDataType must not be nil")
+	}
 	_result := &_NetworkAddressDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NetworkInterface:                  networkInterface,

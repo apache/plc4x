@@ -88,6 +88,9 @@ func (m *_AdsDiscoveryBlockUserName) GetUserName() AmsString {
 
 // NewAdsDiscoveryBlockUserName factory function for _AdsDiscoveryBlockUserName
 func NewAdsDiscoveryBlockUserName(userName AmsString) *_AdsDiscoveryBlockUserName {
+	if userName == nil {
+		panic("userName of type AmsString for AdsDiscoveryBlockUserName must not be nil")
+	}
 	_result := &_AdsDiscoveryBlockUserName{
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		UserName:                  userName,

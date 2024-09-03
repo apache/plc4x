@@ -134,6 +134,27 @@ func (m *_AlarmMessageObjectQueryType) GetVariableSpec() uint8 {
 
 // NewAlarmMessageObjectQueryType factory function for _AlarmMessageObjectQueryType
 func NewAlarmMessageObjectQueryType(lengthDataset uint8, eventState State, ackStateGoing State, ackStateComing State, timeComing DateAndTime, valueComing AssociatedValueType, timeGoing DateAndTime, valueGoing AssociatedValueType) *_AlarmMessageObjectQueryType {
+	if eventState == nil {
+		panic("eventState of type State for AlarmMessageObjectQueryType must not be nil")
+	}
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageObjectQueryType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageObjectQueryType must not be nil")
+	}
+	if timeComing == nil {
+		panic("timeComing of type DateAndTime for AlarmMessageObjectQueryType must not be nil")
+	}
+	if valueComing == nil {
+		panic("valueComing of type AssociatedValueType for AlarmMessageObjectQueryType must not be nil")
+	}
+	if timeGoing == nil {
+		panic("timeGoing of type DateAndTime for AlarmMessageObjectQueryType must not be nil")
+	}
+	if valueGoing == nil {
+		panic("valueGoing of type AssociatedValueType for AlarmMessageObjectQueryType must not be nil")
+	}
 	return &_AlarmMessageObjectQueryType{LengthDataset: lengthDataset, EventState: eventState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, TimeComing: timeComing, ValueComing: valueComing, TimeGoing: timeGoing, ValueGoing: valueGoing}
 }
 

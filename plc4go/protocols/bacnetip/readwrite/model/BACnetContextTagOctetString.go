@@ -88,6 +88,9 @@ func (m *_BACnetContextTagOctetString) GetPayload() BACnetTagPayloadOctetString 
 
 // NewBACnetContextTagOctetString factory function for _BACnetContextTagOctetString
 func NewBACnetContextTagOctetString(payload BACnetTagPayloadOctetString, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagOctetString {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadOctetString for BACnetContextTagOctetString must not be nil")
+	}
 	_result := &_BACnetContextTagOctetString{
 		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
 		Payload:                  payload,

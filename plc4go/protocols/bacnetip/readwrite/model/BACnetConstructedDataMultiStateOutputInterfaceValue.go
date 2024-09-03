@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) GetActualValue() 
 
 // NewBACnetConstructedDataMultiStateOutputInterfaceValue factory function for _BACnetConstructedDataMultiStateOutputInterfaceValue
 func NewBACnetConstructedDataMultiStateOutputInterfaceValue(interfaceValue BACnetOptionalBinaryPV, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputInterfaceValue {
+	if interfaceValue == nil {
+		panic("interfaceValue of type BACnetOptionalBinaryPV for BACnetConstructedDataMultiStateOutputInterfaceValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataMultiStateOutputInterfaceValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InterfaceValue:                interfaceValue,

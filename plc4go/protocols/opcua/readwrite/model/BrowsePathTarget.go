@@ -95,6 +95,9 @@ func (m *_BrowsePathTarget) GetRemainingPathIndex() uint32 {
 
 // NewBrowsePathTarget factory function for _BrowsePathTarget
 func NewBrowsePathTarget(targetId ExpandedNodeId, remainingPathIndex uint32) *_BrowsePathTarget {
+	if targetId == nil {
+		panic("targetId of type ExpandedNodeId for BrowsePathTarget must not be nil")
+	}
 	_result := &_BrowsePathTarget{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		TargetId:                          targetId,

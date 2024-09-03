@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataReferencePort) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataReferencePort factory function for _BACnetConstructedDataReferencePort
 func NewBACnetConstructedDataReferencePort(referencePort BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReferencePort {
+	if referencePort == nil {
+		panic("referencePort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataReferencePort must not be nil")
+	}
 	_result := &_BACnetConstructedDataReferencePort{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ReferencePort:                 referencePort,

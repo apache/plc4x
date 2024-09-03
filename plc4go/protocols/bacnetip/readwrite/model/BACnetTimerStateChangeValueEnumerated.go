@@ -84,6 +84,9 @@ func (m *_BACnetTimerStateChangeValueEnumerated) GetEnumeratedValue() BACnetAppl
 
 // NewBACnetTimerStateChangeValueEnumerated factory function for _BACnetTimerStateChangeValueEnumerated
 func NewBACnetTimerStateChangeValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueEnumerated {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetTimerStateChangeValueEnumerated must not be nil")
+	}
 	_result := &_BACnetTimerStateChangeValueEnumerated{
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		EnumeratedValue:                     enumeratedValue,

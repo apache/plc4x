@@ -102,6 +102,9 @@ func (pm *_BACnetHostAddress) GetPeekedTagNumber() uint8 {
 
 // NewBACnetHostAddress factory function for _BACnetHostAddress
 func NewBACnetHostAddress(peekedTagHeader BACnetTagHeader) *_BACnetHostAddress {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetHostAddress must not be nil")
+	}
 	return &_BACnetHostAddress{PeekedTagHeader: peekedTagHeader}
 }
 

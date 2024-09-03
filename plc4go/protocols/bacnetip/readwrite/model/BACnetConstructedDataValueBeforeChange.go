@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataValueBeforeChange) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataValueBeforeChange factory function for _BACnetConstructedDataValueBeforeChange
 func NewBACnetConstructedDataValueBeforeChange(valuesBeforeChange BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueBeforeChange {
+	if valuesBeforeChange == nil {
+		panic("valuesBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValueBeforeChange must not be nil")
+	}
 	_result := &_BACnetConstructedDataValueBeforeChange{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ValuesBeforeChange:            valuesBeforeChange,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) GetActualValue() BACnet
 
 // NewBACnetConstructedDataNetworkPortMaxInfoFrames factory function for _BACnetConstructedDataNetworkPortMaxInfoFrames
 func NewBACnetConstructedDataNetworkPortMaxInfoFrames(maxInfoFrames BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkPortMaxInfoFrames {
+	if maxInfoFrames == nil {
+		panic("maxInfoFrames of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkPortMaxInfoFrames must not be nil")
+	}
 	_result := &_BACnetConstructedDataNetworkPortMaxInfoFrames{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaxInfoFrames:                 maxInfoFrames,

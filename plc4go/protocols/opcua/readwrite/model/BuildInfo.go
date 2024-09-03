@@ -123,6 +123,21 @@ func (m *_BuildInfo) GetBuildDate() int64 {
 
 // NewBuildInfo factory function for _BuildInfo
 func NewBuildInfo(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) *_BuildInfo {
+	if productUri == nil {
+		panic("productUri of type PascalString for BuildInfo must not be nil")
+	}
+	if manufacturerName == nil {
+		panic("manufacturerName of type PascalString for BuildInfo must not be nil")
+	}
+	if productName == nil {
+		panic("productName of type PascalString for BuildInfo must not be nil")
+	}
+	if softwareVersion == nil {
+		panic("softwareVersion of type PascalString for BuildInfo must not be nil")
+	}
+	if buildNumber == nil {
+		panic("buildNumber of type PascalString for BuildInfo must not be nil")
+	}
 	_result := &_BuildInfo{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ProductUri:                        productUri,

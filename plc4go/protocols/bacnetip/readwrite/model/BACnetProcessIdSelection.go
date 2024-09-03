@@ -102,6 +102,9 @@ func (pm *_BACnetProcessIdSelection) GetPeekedTagNumber() uint8 {
 
 // NewBACnetProcessIdSelection factory function for _BACnetProcessIdSelection
 func NewBACnetProcessIdSelection(peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelection {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetProcessIdSelection must not be nil")
+	}
 	return &_BACnetProcessIdSelection{PeekedTagHeader: peekedTagHeader}
 }
 

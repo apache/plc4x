@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLastAccessEvent) GetActualValue() BACnetAccessEve
 
 // NewBACnetConstructedDataLastAccessEvent factory function for _BACnetConstructedDataLastAccessEvent
 func NewBACnetConstructedDataLastAccessEvent(lastAccessEvent BACnetAccessEventTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastAccessEvent {
+	if lastAccessEvent == nil {
+		panic("lastAccessEvent of type BACnetAccessEventTagged for BACnetConstructedDataLastAccessEvent must not be nil")
+	}
 	_result := &_BACnetConstructedDataLastAccessEvent{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastAccessEvent:               lastAccessEvent,

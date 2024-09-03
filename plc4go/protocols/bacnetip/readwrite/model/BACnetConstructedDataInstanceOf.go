@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataInstanceOf) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataInstanceOf factory function for _BACnetConstructedDataInstanceOf
 func NewBACnetConstructedDataInstanceOf(instanceOf BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstanceOf {
+	if instanceOf == nil {
+		panic("instanceOf of type BACnetApplicationTagCharacterString for BACnetConstructedDataInstanceOf must not be nil")
+	}
 	_result := &_BACnetConstructedDataInstanceOf{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InstanceOf:                    instanceOf,

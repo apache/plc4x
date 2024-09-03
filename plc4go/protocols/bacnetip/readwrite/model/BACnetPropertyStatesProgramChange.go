@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesProgramChange) GetProgramState() BACnetProgramStat
 
 // NewBACnetPropertyStatesProgramChange factory function for _BACnetPropertyStatesProgramChange
 func NewBACnetPropertyStatesProgramChange(programState BACnetProgramStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesProgramChange {
+	if programState == nil {
+		panic("programState of type BACnetProgramStateTagged for BACnetPropertyStatesProgramChange must not be nil")
+	}
 	_result := &_BACnetPropertyStatesProgramChange{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		ProgramState:                 programState,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAccessEventTime) GetActualValue() BACnetTimeStamp
 
 // NewBACnetConstructedDataAccessEventTime factory function for _BACnetConstructedDataAccessEventTime
 func NewBACnetConstructedDataAccessEventTime(accessEventTime BACnetTimeStamp, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventTime {
+	if accessEventTime == nil {
+		panic("accessEventTime of type BACnetTimeStamp for BACnetConstructedDataAccessEventTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataAccessEventTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AccessEventTime:               accessEventTime,

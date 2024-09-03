@@ -84,6 +84,9 @@ func (m *_BACnetChannelValueEnumerated) GetEnumeratedValue() BACnetApplicationTa
 
 // NewBACnetChannelValueEnumerated factory function for _BACnetChannelValueEnumerated
 func NewBACnetChannelValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueEnumerated {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetChannelValueEnumerated must not be nil")
+	}
 	_result := &_BACnetChannelValueEnumerated{
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		EnumeratedValue:            enumeratedValue,

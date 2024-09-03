@@ -99,6 +99,9 @@ func (m *_DisconnectRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 
 // NewDisconnectRequest factory function for _DisconnectRequest
 func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_DisconnectRequest {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DisconnectRequest must not be nil")
+	}
 	_result := &_DisconnectRequest{
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 		CommunicationChannelId:  communicationChannelId,

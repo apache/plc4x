@@ -95,6 +95,12 @@ func (m *_EphemeralKeyType) GetSignature() PascalByteString {
 
 // NewEphemeralKeyType factory function for _EphemeralKeyType
 func NewEphemeralKeyType(publicKey PascalByteString, signature PascalByteString) *_EphemeralKeyType {
+	if publicKey == nil {
+		panic("publicKey of type PascalByteString for EphemeralKeyType must not be nil")
+	}
+	if signature == nil {
+		panic("signature of type PascalByteString for EphemeralKeyType must not be nil")
+	}
 	_result := &_EphemeralKeyType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		PublicKey:                         publicKey,

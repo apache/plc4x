@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetReferenc
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryReference factory function for _BACnetFaultParameterFaultExtendedParametersEntryReference
 func NewBACnetFaultParameterFaultExtendedParametersEntryReference(reference BACnetDeviceObjectPropertyReferenceEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryReference {
+	if reference == nil {
+		panic("reference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultExtendedParametersEntryReference must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		Reference: reference,

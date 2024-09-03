@@ -88,6 +88,9 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) GetObjectIdentifier() BACne
 
 // NewBACnetConfirmedServiceRequestDeleteObject factory function for _BACnetConfirmedServiceRequestDeleteObject
 func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeleteObject {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestDeleteObject must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestDeleteObject{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		ObjectIdentifier:                      objectIdentifier,

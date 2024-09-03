@@ -78,6 +78,9 @@ func (m *_BACnetFileAccessMethodTagged) GetValue() BACnetFileAccessMethod {
 
 // NewBACnetFileAccessMethodTagged factory function for _BACnetFileAccessMethodTagged
 func NewBACnetFileAccessMethodTagged(header BACnetTagHeader, value BACnetFileAccessMethod, tagNumber uint8, tagClass TagClass) *_BACnetFileAccessMethodTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetFileAccessMethodTagged must not be nil")
+	}
 	return &_BACnetFileAccessMethodTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

@@ -78,6 +78,9 @@ func (m *_BACnetSecurityPolicyTagged) GetValue() BACnetSecurityPolicy {
 
 // NewBACnetSecurityPolicyTagged factory function for _BACnetSecurityPolicyTagged
 func NewBACnetSecurityPolicyTagged(header BACnetTagHeader, value BACnetSecurityPolicy, tagNumber uint8, tagClass TagClass) *_BACnetSecurityPolicyTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetSecurityPolicyTagged must not be nil")
+	}
 	return &_BACnetSecurityPolicyTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

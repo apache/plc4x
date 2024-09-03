@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) GetZoneOccupanyState() BACnetAc
 
 // NewBACnetPropertyStatesZoneOccupanyState factory function for _BACnetPropertyStatesZoneOccupanyState
 func NewBACnetPropertyStatesZoneOccupanyState(zoneOccupanyState BACnetAccessZoneOccupancyStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesZoneOccupanyState {
+	if zoneOccupanyState == nil {
+		panic("zoneOccupanyState of type BACnetAccessZoneOccupancyStateTagged for BACnetPropertyStatesZoneOccupanyState must not be nil")
+	}
 	_result := &_BACnetPropertyStatesZoneOccupanyState{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		ZoneOccupanyState:            zoneOccupanyState,

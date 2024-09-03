@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetOctetS
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryOctetString factory function for _BACnetFaultParameterFaultExtendedParametersEntryOctetString
 func NewBACnetFaultParameterFaultExtendedParametersEntryOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetFaultParameterFaultExtendedParametersEntryOctetString must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryOctetString{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		OctetStringValue: octetStringValue,

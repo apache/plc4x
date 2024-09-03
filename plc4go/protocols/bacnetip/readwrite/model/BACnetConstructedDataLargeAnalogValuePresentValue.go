@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLargeAnalogValuePresentValue) GetActualValue() BA
 
 // NewBACnetConstructedDataLargeAnalogValuePresentValue factory function for _BACnetConstructedDataLargeAnalogValuePresentValue
 func NewBACnetConstructedDataLargeAnalogValuePresentValue(presentValue BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValuePresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValuePresentValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataLargeAnalogValuePresentValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PresentValue:                  presentValue,

@@ -95,6 +95,9 @@ func (m *_IdentityMappingRuleType) GetCriteria() PascalString {
 
 // NewIdentityMappingRuleType factory function for _IdentityMappingRuleType
 func NewIdentityMappingRuleType(criteriaType IdentityCriteriaType, criteria PascalString) *_IdentityMappingRuleType {
+	if criteria == nil {
+		panic("criteria of type PascalString for IdentityMappingRuleType must not be nil")
+	}
 	_result := &_IdentityMappingRuleType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		CriteriaType:                      criteriaType,

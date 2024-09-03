@@ -112,6 +112,21 @@ func (m *_BACnetNotificationParametersChangeOfCharacterString) GetInnerClosingTa
 
 // NewBACnetNotificationParametersChangeOfCharacterString factory function for _BACnetNotificationParametersChangeOfCharacterString
 func NewBACnetNotificationParametersChangeOfCharacterString(innerOpeningTag BACnetOpeningTag, changedValue BACnetContextTagCharacterString, statusFlags BACnetStatusFlagsTagged, alarmValue BACnetContextTagCharacterString, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfCharacterString {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfCharacterString must not be nil")
+	}
+	if changedValue == nil {
+		panic("changedValue of type BACnetContextTagCharacterString for BACnetNotificationParametersChangeOfCharacterString must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfCharacterString must not be nil")
+	}
+	if alarmValue == nil {
+		panic("alarmValue of type BACnetContextTagCharacterString for BACnetNotificationParametersChangeOfCharacterString must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfCharacterString must not be nil")
+	}
 	_result := &_BACnetNotificationParametersChangeOfCharacterString{
 		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 		InnerOpeningTag:                      innerOpeningTag,

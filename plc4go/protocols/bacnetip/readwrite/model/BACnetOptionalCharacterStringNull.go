@@ -84,6 +84,9 @@ func (m *_BACnetOptionalCharacterStringNull) GetNullValue() BACnetApplicationTag
 
 // NewBACnetOptionalCharacterStringNull factory function for _BACnetOptionalCharacterStringNull
 func NewBACnetOptionalCharacterStringNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetOptionalCharacterStringNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalCharacterStringNull must not be nil")
+	}
 	_result := &_BACnetOptionalCharacterStringNull{
 		BACnetOptionalCharacterStringContract: NewBACnetOptionalCharacterString(peekedTagHeader),
 		NullValue:                             nullValue,

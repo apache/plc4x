@@ -74,6 +74,12 @@ func (m *_BACnetTimeValue) GetValue() BACnetConstructedDataElement {
 
 // NewBACnetTimeValue factory function for _BACnetTimeValue
 func NewBACnetTimeValue(timeValue BACnetApplicationTagTime, value BACnetConstructedDataElement) *_BACnetTimeValue {
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetTimeValue must not be nil")
+	}
+	if value == nil {
+		panic("value of type BACnetConstructedDataElement for BACnetTimeValue must not be nil")
+	}
 	return &_BACnetTimeValue{TimeValue: timeValue, Value: value}
 }
 

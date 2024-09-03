@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetActualValue() BACnetFileAcce
 
 // NewBACnetConstructedDataFileAccessMethod factory function for _BACnetConstructedDataFileAccessMethod
 func NewBACnetConstructedDataFileAccessMethod(fileAccessMethod BACnetFileAccessMethodTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAccessMethod {
+	if fileAccessMethod == nil {
+		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetConstructedDataFileAccessMethod must not be nil")
+	}
 	_result := &_BACnetConstructedDataFileAccessMethod{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FileAccessMethod:              fileAccessMethod,

@@ -102,6 +102,9 @@ func (m *_RepublishRequest) GetRetransmitSequenceNumber() uint32 {
 
 // NewRepublishRequest factory function for _RepublishRequest
 func NewRepublishRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) *_RepublishRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RepublishRequest must not be nil")
+	}
 	_result := &_RepublishRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

@@ -74,6 +74,9 @@ func (m *_ByteStringNodeId) GetIdentifier() PascalByteString {
 
 // NewByteStringNodeId factory function for _ByteStringNodeId
 func NewByteStringNodeId(namespaceIndex uint16, identifier PascalByteString) *_ByteStringNodeId {
+	if identifier == nil {
+		panic("identifier of type PascalByteString for ByteStringNodeId must not be nil")
+	}
 	return &_ByteStringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
 }
 

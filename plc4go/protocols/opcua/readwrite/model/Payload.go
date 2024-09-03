@@ -89,6 +89,9 @@ func (m *_Payload) GetSequenceHeader() SequenceHeader {
 
 // NewPayload factory function for _Payload
 func NewPayload(sequenceHeader SequenceHeader, byteCount uint32) *_Payload {
+	if sequenceHeader == nil {
+		panic("sequenceHeader of type SequenceHeader for Payload must not be nil")
+	}
 	return &_Payload{SequenceHeader: sequenceHeader, ByteCount: byteCount}
 }
 

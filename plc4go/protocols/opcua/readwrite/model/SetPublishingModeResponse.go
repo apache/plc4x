@@ -116,6 +116,9 @@ func (m *_SetPublishingModeResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewSetPublishingModeResponse factory function for _SetPublishingModeResponse
 func NewSetPublishingModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetPublishingModeResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for SetPublishingModeResponse must not be nil")
+	}
 	_result := &_SetPublishingModeResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

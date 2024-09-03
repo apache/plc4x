@@ -105,6 +105,18 @@ func (m *_BACnetEventParameterAccessEvent) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetEventParameterAccessEvent factory function for _BACnetEventParameterAccessEvent
 func NewBACnetEventParameterAccessEvent(openingTag BACnetOpeningTag, listOfAccessEvents BACnetEventParameterAccessEventListOfAccessEvents, accessEventTimeReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterAccessEvent {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterAccessEvent must not be nil")
+	}
+	if listOfAccessEvents == nil {
+		panic("listOfAccessEvents of type BACnetEventParameterAccessEventListOfAccessEvents for BACnetEventParameterAccessEvent must not be nil")
+	}
+	if accessEventTimeReference == nil {
+		panic("accessEventTimeReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterAccessEvent must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterAccessEvent must not be nil")
+	}
 	_result := &_BACnetEventParameterAccessEvent{
 		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
 		OpeningTag:                   openingTag,

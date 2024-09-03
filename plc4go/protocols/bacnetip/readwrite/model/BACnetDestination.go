@@ -109,6 +109,27 @@ func (m *_BACnetDestination) GetTransitions() BACnetEventTransitionBitsTagged {
 
 // NewBACnetDestination factory function for _BACnetDestination
 func NewBACnetDestination(validDays BACnetDaysOfWeekTagged, fromTime BACnetApplicationTagTime, toTime BACnetApplicationTagTime, recipient BACnetRecipient, processIdentifier BACnetApplicationTagUnsignedInteger, issueConfirmedNotifications BACnetApplicationTagBoolean, transitions BACnetEventTransitionBitsTagged) *_BACnetDestination {
+	if validDays == nil {
+		panic("validDays of type BACnetDaysOfWeekTagged for BACnetDestination must not be nil")
+	}
+	if fromTime == nil {
+		panic("fromTime of type BACnetApplicationTagTime for BACnetDestination must not be nil")
+	}
+	if toTime == nil {
+		panic("toTime of type BACnetApplicationTagTime for BACnetDestination must not be nil")
+	}
+	if recipient == nil {
+		panic("recipient of type BACnetRecipient for BACnetDestination must not be nil")
+	}
+	if processIdentifier == nil {
+		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetDestination must not be nil")
+	}
+	if issueConfirmedNotifications == nil {
+		panic("issueConfirmedNotifications of type BACnetApplicationTagBoolean for BACnetDestination must not be nil")
+	}
+	if transitions == nil {
+		panic("transitions of type BACnetEventTransitionBitsTagged for BACnetDestination must not be nil")
+	}
 	return &_BACnetDestination{ValidDays: validDays, FromTime: fromTime, ToTime: toTime, Recipient: recipient, ProcessIdentifier: processIdentifier, IssueConfirmedNotifications: issueConfirmedNotifications, Transitions: transitions}
 }
 

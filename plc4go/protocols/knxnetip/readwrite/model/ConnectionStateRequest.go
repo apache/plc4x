@@ -99,6 +99,9 @@ func (m *_ConnectionStateRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 
 // NewConnectionStateRequest factory function for _ConnectionStateRequest
 func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_ConnectionStateRequest {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for ConnectionStateRequest must not be nil")
+	}
 	_result := &_ConnectionStateRequest{
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 		CommunicationChannelId:  communicationChannelId,

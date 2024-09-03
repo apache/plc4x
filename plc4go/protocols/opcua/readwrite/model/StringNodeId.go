@@ -74,6 +74,9 @@ func (m *_StringNodeId) GetIdentifier() PascalString {
 
 // NewStringNodeId factory function for _StringNodeId
 func NewStringNodeId(namespaceIndex uint16, identifier PascalString) *_StringNodeId {
+	if identifier == nil {
+		panic("identifier of type PascalString for StringNodeId must not be nil")
+	}
 	return &_StringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
 }
 

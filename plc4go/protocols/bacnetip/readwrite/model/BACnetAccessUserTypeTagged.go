@@ -102,6 +102,9 @@ func (m *_BACnetAccessUserTypeTagged) GetIsProprietary() bool {
 
 // NewBACnetAccessUserTypeTagged factory function for _BACnetAccessUserTypeTagged
 func NewBACnetAccessUserTypeTagged(header BACnetTagHeader, value BACnetAccessUserType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessUserTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessUserTypeTagged must not be nil")
+	}
 	return &_BACnetAccessUserTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

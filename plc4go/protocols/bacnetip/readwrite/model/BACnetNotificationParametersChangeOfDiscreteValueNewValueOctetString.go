@@ -84,6 +84,9 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) 
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString(octetStringValue BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString must not be nil")
+	}
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString{
 		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		OctetStringValue: octetStringValue,

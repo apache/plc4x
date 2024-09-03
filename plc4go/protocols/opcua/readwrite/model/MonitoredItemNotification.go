@@ -95,6 +95,9 @@ func (m *_MonitoredItemNotification) GetValue() DataValue {
 
 // NewMonitoredItemNotification factory function for _MonitoredItemNotification
 func NewMonitoredItemNotification(clientHandle uint32, value DataValue) *_MonitoredItemNotification {
+	if value == nil {
+		panic("value of type DataValue for MonitoredItemNotification must not be nil")
+	}
 	_result := &_MonitoredItemNotification{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ClientHandle:                      clientHandle,

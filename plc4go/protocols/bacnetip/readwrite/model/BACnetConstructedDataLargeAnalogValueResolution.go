@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetActualValue() BACn
 
 // NewBACnetConstructedDataLargeAnalogValueResolution factory function for _BACnetConstructedDataLargeAnalogValueResolution
 func NewBACnetConstructedDataLargeAnalogValueResolution(resolution BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueResolution {
+	if resolution == nil {
+		panic("resolution of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueResolution must not be nil")
+	}
 	_result := &_BACnetConstructedDataLargeAnalogValueResolution{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Resolution:                    resolution,

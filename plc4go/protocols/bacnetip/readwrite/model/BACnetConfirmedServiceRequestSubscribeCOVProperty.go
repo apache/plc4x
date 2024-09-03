@@ -123,6 +123,15 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetCovIncrement() B
 
 // NewBACnetConfirmedServiceRequestSubscribeCOVProperty factory function for _BACnetConfirmedServiceRequestSubscribeCOVProperty
 func NewBACnetConfirmedServiceRequestSubscribeCOVProperty(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmedNotifications BACnetContextTagBoolean, lifetime BACnetContextTagUnsignedInteger, monitoredPropertyIdentifier BACnetPropertyReferenceEnclosed, covIncrement BACnetContextTagReal, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOVProperty {
+	if subscriberProcessIdentifier == nil {
+		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestSubscribeCOVProperty must not be nil")
+	}
+	if monitoredObjectIdentifier == nil {
+		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestSubscribeCOVProperty must not be nil")
+	}
+	if monitoredPropertyIdentifier == nil {
+		panic("monitoredPropertyIdentifier of type BACnetPropertyReferenceEnclosed for BACnetConfirmedServiceRequestSubscribeCOVProperty must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestSubscribeCOVProperty{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		SubscriberProcessIdentifier:           subscriberProcessIdentifier,

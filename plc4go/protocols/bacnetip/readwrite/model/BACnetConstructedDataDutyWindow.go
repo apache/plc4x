@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDutyWindow) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataDutyWindow factory function for _BACnetConstructedDataDutyWindow
 func NewBACnetConstructedDataDutyWindow(dutyWindow BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDutyWindow {
+	if dutyWindow == nil {
+		panic("dutyWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDutyWindow must not be nil")
+	}
 	_result := &_BACnetConstructedDataDutyWindow{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DutyWindow:                    dutyWindow,

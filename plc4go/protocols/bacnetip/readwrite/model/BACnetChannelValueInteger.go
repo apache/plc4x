@@ -84,6 +84,9 @@ func (m *_BACnetChannelValueInteger) GetIntegerValue() BACnetApplicationTagSigne
 
 // NewBACnetChannelValueInteger factory function for _BACnetChannelValueInteger
 func NewBACnetChannelValueInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueInteger {
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetChannelValueInteger must not be nil")
+	}
 	_result := &_BACnetChannelValueInteger{
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		IntegerValue:               integerValue,

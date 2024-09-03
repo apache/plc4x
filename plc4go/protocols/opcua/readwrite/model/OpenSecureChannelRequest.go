@@ -123,6 +123,12 @@ func (m *_OpenSecureChannelRequest) GetRequestedLifetime() uint32 {
 
 // NewOpenSecureChannelRequest factory function for _OpenSecureChannelRequest
 func NewOpenSecureChannelRequest(requestHeader ExtensionObjectDefinition, clientProtocolVersion uint32, requestType SecurityTokenRequestType, securityMode MessageSecurityMode, clientNonce PascalByteString, requestedLifetime uint32) *_OpenSecureChannelRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for OpenSecureChannelRequest must not be nil")
+	}
+	if clientNonce == nil {
+		panic("clientNonce of type PascalByteString for OpenSecureChannelRequest must not be nil")
+	}
 	_result := &_OpenSecureChannelRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

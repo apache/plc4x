@@ -74,6 +74,9 @@ func (m *_BACnetReadAccessResult) GetListOfResults() BACnetReadAccessResultListO
 
 // NewBACnetReadAccessResult factory function for _BACnetReadAccessResult
 func NewBACnetReadAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, listOfResults BACnetReadAccessResultListOfResults) *_BACnetReadAccessResult {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetReadAccessResult must not be nil")
+	}
 	return &_BACnetReadAccessResult{ObjectIdentifier: objectIdentifier, ListOfResults: listOfResults}
 }
 

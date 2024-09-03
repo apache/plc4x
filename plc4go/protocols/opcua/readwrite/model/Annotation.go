@@ -102,6 +102,12 @@ func (m *_Annotation) GetAnnotationTime() int64 {
 
 // NewAnnotation factory function for _Annotation
 func NewAnnotation(message PascalString, userName PascalString, annotationTime int64) *_Annotation {
+	if message == nil {
+		panic("message of type PascalString for Annotation must not be nil")
+	}
+	if userName == nil {
+		panic("userName of type PascalString for Annotation must not be nil")
+	}
 	_result := &_Annotation{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Message:                           message,

@@ -130,6 +130,18 @@ func (m *_BACnetServiceAckReadRange) GetFirstSequenceNumber() BACnetContextTagUn
 
 // NewBACnetServiceAckReadRange factory function for _BACnetServiceAckReadRange
 func NewBACnetServiceAckReadRange(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, resultFlags BACnetResultFlagsTagged, itemCount BACnetContextTagUnsignedInteger, itemData BACnetConstructedData, firstSequenceNumber BACnetContextTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckReadRange {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetServiceAckReadRange must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetServiceAckReadRange must not be nil")
+	}
+	if resultFlags == nil {
+		panic("resultFlags of type BACnetResultFlagsTagged for BACnetServiceAckReadRange must not be nil")
+	}
+	if itemCount == nil {
+		panic("itemCount of type BACnetContextTagUnsignedInteger for BACnetServiceAckReadRange must not be nil")
+	}
 	_result := &_BACnetServiceAckReadRange{
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		ObjectIdentifier:         objectIdentifier,

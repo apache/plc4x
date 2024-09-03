@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) GetNullValue() B
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryNull factory function for _BACnetFaultParameterFaultExtendedParametersEntryNull
 func NewBACnetFaultParameterFaultExtendedParametersEntryNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetFaultParameterFaultExtendedParametersEntryNull must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryNull{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		NullValue: nullValue,

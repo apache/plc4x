@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataSegmentationSupported) GetActualValue() BACnetSeg
 
 // NewBACnetConstructedDataSegmentationSupported factory function for _BACnetConstructedDataSegmentationSupported
 func NewBACnetConstructedDataSegmentationSupported(segmentationSupported BACnetSegmentationTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSegmentationSupported {
+	if segmentationSupported == nil {
+		panic("segmentationSupported of type BACnetSegmentationTagged for BACnetConstructedDataSegmentationSupported must not be nil")
+	}
 	_result := &_BACnetConstructedDataSegmentationSupported{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		SegmentationSupported:         segmentationSupported,

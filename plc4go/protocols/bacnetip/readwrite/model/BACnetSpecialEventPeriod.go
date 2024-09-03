@@ -102,6 +102,9 @@ func (pm *_BACnetSpecialEventPeriod) GetPeekedTagNumber() uint8 {
 
 // NewBACnetSpecialEventPeriod factory function for _BACnetSpecialEventPeriod
 func NewBACnetSpecialEventPeriod(peekedTagHeader BACnetTagHeader) *_BACnetSpecialEventPeriod {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetSpecialEventPeriod must not be nil")
+	}
 	return &_BACnetSpecialEventPeriod{PeekedTagHeader: peekedTagHeader}
 }
 

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) GetActualValue() BACnetA
 
 // NewBACnetConstructedDataLimitMonitoringInterval factory function for _BACnetConstructedDataLimitMonitoringInterval
 func NewBACnetConstructedDataLimitMonitoringInterval(limitMonitoringInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
+	if limitMonitoringInterval == nil {
+		panic("limitMonitoringInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLimitMonitoringInterval must not be nil")
+	}
 	_result := &_BACnetConstructedDataLimitMonitoringInterval{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LimitMonitoringInterval:       limitMonitoringInterval,

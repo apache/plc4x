@@ -125,6 +125,12 @@ func (m *_HistoryReadRequest) GetNodesToRead() []ExtensionObjectDefinition {
 
 // NewHistoryReadRequest factory function for _HistoryReadRequest
 func NewHistoryReadRequest(requestHeader ExtensionObjectDefinition, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_HistoryReadRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for HistoryReadRequest must not be nil")
+	}
+	if historyReadDetails == nil {
+		panic("historyReadDetails of type ExtensionObject for HistoryReadRequest must not be nil")
+	}
 	_result := &_HistoryReadRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

@@ -84,6 +84,12 @@ func (m *_BACnetAuthenticationPolicyList) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetAuthenticationPolicyList factory function for _BACnetAuthenticationPolicyList
 func NewBACnetAuthenticationPolicyList(openingTag BACnetOpeningTag, entries []BACnetAuthenticationPolicyListEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAuthenticationPolicyList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetAuthenticationPolicyList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetAuthenticationPolicyList must not be nil")
+	}
 	return &_BACnetAuthenticationPolicyList{OpeningTag: openingTag, Entries: entries, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

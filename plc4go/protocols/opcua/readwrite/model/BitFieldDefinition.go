@@ -112,6 +112,12 @@ func (m *_BitFieldDefinition) GetEndingBitPosition() uint32 {
 
 // NewBitFieldDefinition factory function for _BitFieldDefinition
 func NewBitFieldDefinition(name PascalString, description LocalizedText, startingBitPosition uint32, endingBitPosition uint32) *_BitFieldDefinition {
+	if name == nil {
+		panic("name of type PascalString for BitFieldDefinition must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for BitFieldDefinition must not be nil")
+	}
 	_result := &_BitFieldDefinition{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Name:                              name,

@@ -84,6 +84,9 @@ func (m *_BACnetLogDataLogDataEntryRealValue) GetRealValue() BACnetContextTagRea
 
 // NewBACnetLogDataLogDataEntryRealValue factory function for _BACnetLogDataLogDataEntryRealValue
 func NewBACnetLogDataLogDataEntryRealValue(realValue BACnetContextTagReal, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryRealValue {
+	if realValue == nil {
+		panic("realValue of type BACnetContextTagReal for BACnetLogDataLogDataEntryRealValue must not be nil")
+	}
 	_result := &_BACnetLogDataLogDataEntryRealValue{
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		RealValue:                         realValue,

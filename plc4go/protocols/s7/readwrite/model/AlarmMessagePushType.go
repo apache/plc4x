@@ -88,6 +88,9 @@ func (m *_AlarmMessagePushType) GetMessageObjects() []AlarmMessageObjectPushType
 
 // NewAlarmMessagePushType factory function for _AlarmMessagePushType
 func NewAlarmMessagePushType(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectPushType) *_AlarmMessagePushType {
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for AlarmMessagePushType must not be nil")
+	}
 	return &_AlarmMessagePushType{TimeStamp: timeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
 }
 

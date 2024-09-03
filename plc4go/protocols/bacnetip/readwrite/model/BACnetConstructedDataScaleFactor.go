@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataScaleFactor) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataScaleFactor factory function for _BACnetConstructedDataScaleFactor
 func NewBACnetConstructedDataScaleFactor(scaleFactor BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScaleFactor {
+	if scaleFactor == nil {
+		panic("scaleFactor of type BACnetApplicationTagReal for BACnetConstructedDataScaleFactor must not be nil")
+	}
 	_result := &_BACnetConstructedDataScaleFactor{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ScaleFactor:                   scaleFactor,

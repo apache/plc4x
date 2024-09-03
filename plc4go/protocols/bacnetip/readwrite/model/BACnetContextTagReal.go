@@ -105,6 +105,9 @@ func (m *_BACnetContextTagReal) GetActualValue() float32 {
 
 // NewBACnetContextTagReal factory function for _BACnetContextTagReal
 func NewBACnetContextTagReal(payload BACnetTagPayloadReal, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagReal {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadReal for BACnetContextTagReal must not be nil")
+	}
 	_result := &_BACnetContextTagReal{
 		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
 		Payload:                  payload,

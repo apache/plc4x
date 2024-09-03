@@ -116,6 +116,15 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) GetPeekedTagNumber() uin
 
 // NewBACnetConfirmedServiceRequestReadRangeRange factory function for _BACnetConfirmedServiceRequestReadRangeRange
 func NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRange {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
+	}
 	return &_BACnetConfirmedServiceRequestReadRangeRange{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
 }
 

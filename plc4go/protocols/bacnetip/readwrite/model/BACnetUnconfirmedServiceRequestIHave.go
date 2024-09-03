@@ -102,6 +102,15 @@ func (m *_BACnetUnconfirmedServiceRequestIHave) GetObjectName() BACnetApplicatio
 
 // NewBACnetUnconfirmedServiceRequestIHave factory function for _BACnetUnconfirmedServiceRequestIHave
 func NewBACnetUnconfirmedServiceRequestIHave(deviceIdentifier BACnetApplicationTagObjectIdentifier, objectIdentifier BACnetApplicationTagObjectIdentifier, objectName BACnetApplicationTagCharacterString, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestIHave {
+	if deviceIdentifier == nil {
+		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetUnconfirmedServiceRequestIHave must not be nil")
+	}
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetUnconfirmedServiceRequestIHave must not be nil")
+	}
+	if objectName == nil {
+		panic("objectName of type BACnetApplicationTagCharacterString for BACnetUnconfirmedServiceRequestIHave must not be nil")
+	}
 	_result := &_BACnetUnconfirmedServiceRequestIHave{
 		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 		DeviceIdentifier:                        deviceIdentifier,

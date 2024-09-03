@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDatabaseRevision) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataDatabaseRevision factory function for _BACnetConstructedDataDatabaseRevision
 func NewBACnetConstructedDataDatabaseRevision(databaseRevision BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatabaseRevision {
+	if databaseRevision == nil {
+		panic("databaseRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDatabaseRevision must not be nil")
+	}
 	_result := &_BACnetConstructedDataDatabaseRevision{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DatabaseRevision:              databaseRevision,

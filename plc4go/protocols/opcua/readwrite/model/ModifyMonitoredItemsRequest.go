@@ -116,6 +116,9 @@ func (m *_ModifyMonitoredItemsRequest) GetItemsToModify() []ExtensionObjectDefin
 
 // NewModifyMonitoredItemsRequest factory function for _ModifyMonitoredItemsRequest
 func NewModifyMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToModify int32, itemsToModify []ExtensionObjectDefinition) *_ModifyMonitoredItemsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for ModifyMonitoredItemsRequest must not be nil")
+	}
 	_result := &_ModifyMonitoredItemsRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

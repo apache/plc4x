@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLastNotifyRecord) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataLastNotifyRecord factory function for _BACnetConstructedDataLastNotifyRecord
 func NewBACnetConstructedDataLastNotifyRecord(lastNotifyRecord BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastNotifyRecord {
+	if lastNotifyRecord == nil {
+		panic("lastNotifyRecord of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLastNotifyRecord must not be nil")
+	}
 	_result := &_BACnetConstructedDataLastNotifyRecord{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastNotifyRecord:              lastNotifyRecord,

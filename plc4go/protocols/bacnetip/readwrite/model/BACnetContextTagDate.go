@@ -88,6 +88,9 @@ func (m *_BACnetContextTagDate) GetPayload() BACnetTagPayloadDate {
 
 // NewBACnetContextTagDate factory function for _BACnetContextTagDate
 func NewBACnetContextTagDate(payload BACnetTagPayloadDate, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagDate {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadDate for BACnetContextTagDate must not be nil")
+	}
 	_result := &_BACnetContextTagDate{
 		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
 		Payload:                  payload,

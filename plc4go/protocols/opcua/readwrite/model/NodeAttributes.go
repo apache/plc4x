@@ -116,6 +116,12 @@ func (m *_NodeAttributes) GetUserWriteMask() uint32 {
 
 // NewNodeAttributes factory function for _NodeAttributes
 func NewNodeAttributes(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32) *_NodeAttributes {
+	if displayName == nil {
+		panic("displayName of type LocalizedText for NodeAttributes must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for NodeAttributes must not be nil")
+	}
 	_result := &_NodeAttributes{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		SpecifiedAttributes:               specifiedAttributes,

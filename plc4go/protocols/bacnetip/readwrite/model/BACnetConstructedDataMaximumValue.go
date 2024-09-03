@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataMaximumValue) GetActualValue() BACnetApplicationT
 
 // NewBACnetConstructedDataMaximumValue factory function for _BACnetConstructedDataMaximumValue
 func NewBACnetConstructedDataMaximumValue(maximumValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValue {
+	if maximumValue == nil {
+		panic("maximumValue of type BACnetApplicationTagReal for BACnetConstructedDataMaximumValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataMaximumValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaximumValue:                  maximumValue,

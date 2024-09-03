@@ -84,6 +84,9 @@ func (m *_BACnetHostAddressName) GetName() BACnetContextTagCharacterString {
 
 // NewBACnetHostAddressName factory function for _BACnetHostAddressName
 func NewBACnetHostAddressName(name BACnetContextTagCharacterString, peekedTagHeader BACnetTagHeader) *_BACnetHostAddressName {
+	if name == nil {
+		panic("name of type BACnetContextTagCharacterString for BACnetHostAddressName must not be nil")
+	}
 	_result := &_BACnetHostAddressName{
 		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
 		Name:                      name,

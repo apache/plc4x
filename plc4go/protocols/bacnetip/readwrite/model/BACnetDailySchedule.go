@@ -81,6 +81,12 @@ func (m *_BACnetDailySchedule) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetDailySchedule factory function for _BACnetDailySchedule
 func NewBACnetDailySchedule(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) *_BACnetDailySchedule {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDailySchedule must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDailySchedule must not be nil")
+	}
 	return &_BACnetDailySchedule{OpeningTag: openingTag, DaySchedule: daySchedule, ClosingTag: closingTag}
 }
 

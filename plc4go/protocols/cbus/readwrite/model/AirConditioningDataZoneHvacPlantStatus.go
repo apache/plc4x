@@ -112,6 +112,12 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) GetHvacErrorCode() HVACError {
 
 // NewAirConditioningDataZoneHvacPlantStatus factory function for _AirConditioningDataZoneHvacPlantStatus
 func NewAirConditioningDataZoneHvacPlantStatus(zoneGroup byte, zoneList HVACZoneList, hvacType HVACType, hvacStatus HVACStatusFlags, hvacErrorCode HVACError, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataZoneHvacPlantStatus {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHvacPlantStatus must not be nil")
+	}
+	if hvacStatus == nil {
+		panic("hvacStatus of type HVACStatusFlags for AirConditioningDataZoneHvacPlantStatus must not be nil")
+	}
 	_result := &_AirConditioningDataZoneHvacPlantStatus{
 		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
 		ZoneGroup:                   zoneGroup,

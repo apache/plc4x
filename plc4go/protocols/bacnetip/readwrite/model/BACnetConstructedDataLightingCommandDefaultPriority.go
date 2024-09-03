@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetActualValue() 
 
 // NewBACnetConstructedDataLightingCommandDefaultPriority factory function for _BACnetConstructedDataLightingCommandDefaultPriority
 func NewBACnetConstructedDataLightingCommandDefaultPriority(lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommandDefaultPriority {
+	if lightingCommandDefaultPriority == nil {
+		panic("lightingCommandDefaultPriority of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLightingCommandDefaultPriority must not be nil")
+	}
 	_result := &_BACnetConstructedDataLightingCommandDefaultPriority{
 		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LightingCommandDefaultPriority: lightingCommandDefaultPriority,

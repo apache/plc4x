@@ -98,6 +98,15 @@ func (m *_BACnetEventParameterChangeOfDiscreteValue) GetClosingTag() BACnetClosi
 
 // NewBACnetEventParameterChangeOfDiscreteValue factory function for _BACnetEventParameterChangeOfDiscreteValue
 func NewBACnetEventParameterChangeOfDiscreteValue(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfDiscreteValue {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfDiscreteValue must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfDiscreteValue must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfDiscreteValue must not be nil")
+	}
 	_result := &_BACnetEventParameterChangeOfDiscreteValue{
 		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
 		OpeningTag:                   openingTag,

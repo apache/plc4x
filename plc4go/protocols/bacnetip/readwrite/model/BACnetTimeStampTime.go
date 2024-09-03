@@ -84,6 +84,9 @@ func (m *_BACnetTimeStampTime) GetTimeValue() BACnetContextTagTime {
 
 // NewBACnetTimeStampTime factory function for _BACnetTimeStampTime
 func NewBACnetTimeStampTime(timeValue BACnetContextTagTime, peekedTagHeader BACnetTagHeader) *_BACnetTimeStampTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetContextTagTime for BACnetTimeStampTime must not be nil")
+	}
 	_result := &_BACnetTimeStampTime{
 		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
 		TimeValue:               timeValue,

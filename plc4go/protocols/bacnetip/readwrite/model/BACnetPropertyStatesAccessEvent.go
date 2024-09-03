@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesAccessEvent) GetAccessEvent() BACnetAccessEventTag
 
 // NewBACnetPropertyStatesAccessEvent factory function for _BACnetPropertyStatesAccessEvent
 func NewBACnetPropertyStatesAccessEvent(accessEvent BACnetAccessEventTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesAccessEvent {
+	if accessEvent == nil {
+		panic("accessEvent of type BACnetAccessEventTagged for BACnetPropertyStatesAccessEvent must not be nil")
+	}
 	_result := &_BACnetPropertyStatesAccessEvent{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		AccessEvent:                  accessEvent,

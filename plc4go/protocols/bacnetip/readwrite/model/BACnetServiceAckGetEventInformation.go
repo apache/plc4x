@@ -95,6 +95,12 @@ func (m *_BACnetServiceAckGetEventInformation) GetMoreEvents() BACnetContextTagB
 
 // NewBACnetServiceAckGetEventInformation factory function for _BACnetServiceAckGetEventInformation
 func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint32) *_BACnetServiceAckGetEventInformation {
+	if listOfEventSummaries == nil {
+		panic("listOfEventSummaries of type BACnetEventSummariesList for BACnetServiceAckGetEventInformation must not be nil")
+	}
+	if moreEvents == nil {
+		panic("moreEvents of type BACnetContextTagBoolean for BACnetServiceAckGetEventInformation must not be nil")
+	}
 	_result := &_BACnetServiceAckGetEventInformation{
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		ListOfEventSummaries:     listOfEventSummaries,

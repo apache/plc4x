@@ -102,6 +102,12 @@ func (m *_UserManagementDataType) GetDescription() PascalString {
 
 // NewUserManagementDataType factory function for _UserManagementDataType
 func NewUserManagementDataType(userName PascalString, userConfiguration UserConfigurationMask, description PascalString) *_UserManagementDataType {
+	if userName == nil {
+		panic("userName of type PascalString for UserManagementDataType must not be nil")
+	}
+	if description == nil {
+		panic("description of type PascalString for UserManagementDataType must not be nil")
+	}
 	_result := &_UserManagementDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		UserName:                          userName,

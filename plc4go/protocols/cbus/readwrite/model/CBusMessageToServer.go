@@ -88,6 +88,9 @@ func (m *_CBusMessageToServer) GetRequest() Request {
 
 // NewCBusMessageToServer factory function for _CBusMessageToServer
 func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToServer {
+	if request == nil {
+		panic("request of type Request for CBusMessageToServer must not be nil")
+	}
 	_result := &_CBusMessageToServer{
 		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
 		Request:             request,

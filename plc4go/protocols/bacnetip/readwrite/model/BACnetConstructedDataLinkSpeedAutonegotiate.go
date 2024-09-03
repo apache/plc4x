@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetActualValue() BACnetAp
 
 // NewBACnetConstructedDataLinkSpeedAutonegotiate factory function for _BACnetConstructedDataLinkSpeedAutonegotiate
 func NewBACnetConstructedDataLinkSpeedAutonegotiate(linkSpeedAutonegotiate BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeedAutonegotiate {
+	if linkSpeedAutonegotiate == nil {
+		panic("linkSpeedAutonegotiate of type BACnetApplicationTagBoolean for BACnetConstructedDataLinkSpeedAutonegotiate must not be nil")
+	}
 	_result := &_BACnetConstructedDataLinkSpeedAutonegotiate{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LinkSpeedAutonegotiate:        linkSpeedAutonegotiate,

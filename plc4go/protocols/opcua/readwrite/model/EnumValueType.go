@@ -102,6 +102,12 @@ func (m *_EnumValueType) GetDescription() LocalizedText {
 
 // NewEnumValueType factory function for _EnumValueType
 func NewEnumValueType(value int64, displayName LocalizedText, description LocalizedText) *_EnumValueType {
+	if displayName == nil {
+		panic("displayName of type LocalizedText for EnumValueType must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for EnumValueType must not be nil")
+	}
 	_result := &_EnumValueType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Value:                             value,

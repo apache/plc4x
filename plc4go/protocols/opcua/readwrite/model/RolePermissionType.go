@@ -95,6 +95,9 @@ func (m *_RolePermissionType) GetPermissions() PermissionType {
 
 // NewRolePermissionType factory function for _RolePermissionType
 func NewRolePermissionType(roleId NodeId, permissions PermissionType) *_RolePermissionType {
+	if roleId == nil {
+		panic("roleId of type NodeId for RolePermissionType must not be nil")
+	}
 	_result := &_RolePermissionType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RoleId:                            roleId,

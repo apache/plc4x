@@ -102,6 +102,12 @@ func (m *_QueryDataDescription) GetIndexRange() PascalString {
 
 // NewQueryDataDescription factory function for _QueryDataDescription
 func NewQueryDataDescription(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) *_QueryDataDescription {
+	if relativePath == nil {
+		panic("relativePath of type ExtensionObjectDefinition for QueryDataDescription must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for QueryDataDescription must not be nil")
+	}
 	_result := &_QueryDataDescription{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RelativePath:                      relativePath,

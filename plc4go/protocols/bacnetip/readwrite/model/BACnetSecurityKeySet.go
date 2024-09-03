@@ -88,6 +88,18 @@ func (m *_BACnetSecurityKeySet) GetKeyIds() BACnetSecurityKeySetKeyIds {
 
 // NewBACnetSecurityKeySet factory function for _BACnetSecurityKeySet
 func NewBACnetSecurityKeySet(keyRevision BACnetContextTagUnsignedInteger, activationTime BACnetDateTimeEnclosed, expirationTime BACnetDateTimeEnclosed, keyIds BACnetSecurityKeySetKeyIds) *_BACnetSecurityKeySet {
+	if keyRevision == nil {
+		panic("keyRevision of type BACnetContextTagUnsignedInteger for BACnetSecurityKeySet must not be nil")
+	}
+	if activationTime == nil {
+		panic("activationTime of type BACnetDateTimeEnclosed for BACnetSecurityKeySet must not be nil")
+	}
+	if expirationTime == nil {
+		panic("expirationTime of type BACnetDateTimeEnclosed for BACnetSecurityKeySet must not be nil")
+	}
+	if keyIds == nil {
+		panic("keyIds of type BACnetSecurityKeySetKeyIds for BACnetSecurityKeySet must not be nil")
+	}
 	return &_BACnetSecurityKeySet{KeyRevision: keyRevision, ActivationTime: activationTime, ExpirationTime: expirationTime, KeyIds: keyIds}
 }
 

@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesEscalatorFault) GetEscalatorFault() BACnetEscalato
 
 // NewBACnetPropertyStatesEscalatorFault factory function for _BACnetPropertyStatesEscalatorFault
 func NewBACnetPropertyStatesEscalatorFault(escalatorFault BACnetEscalatorFaultTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEscalatorFault {
+	if escalatorFault == nil {
+		panic("escalatorFault of type BACnetEscalatorFaultTagged for BACnetPropertyStatesEscalatorFault must not be nil")
+	}
 	_result := &_BACnetPropertyStatesEscalatorFault{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		EscalatorFault:               escalatorFault,

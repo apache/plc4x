@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataProgramState) GetActualValue() BACnetProgramState
 
 // NewBACnetConstructedDataProgramState factory function for _BACnetConstructedDataProgramState
 func NewBACnetConstructedDataProgramState(programState BACnetProgramStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramState {
+	if programState == nil {
+		panic("programState of type BACnetProgramStateTagged for BACnetConstructedDataProgramState must not be nil")
+	}
 	_result := &_BACnetConstructedDataProgramState{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProgramState:                  programState,

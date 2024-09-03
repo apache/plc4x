@@ -84,6 +84,9 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) GetBooleanValue() BACnetContext
 
 // NewBACnetLogDataLogDataEntryBooleanValue factory function for _BACnetLogDataLogDataEntryBooleanValue
 func NewBACnetLogDataLogDataEntryBooleanValue(booleanValue BACnetContextTagBoolean, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryBooleanValue {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetContextTagBoolean for BACnetLogDataLogDataEntryBooleanValue must not be nil")
+	}
 	_result := &_BACnetLogDataLogDataEntryBooleanValue{
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		BooleanValue:                      booleanValue,

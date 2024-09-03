@@ -84,6 +84,9 @@ func (m *_BACnetScaleIntegerScale) GetIntegerScale() BACnetContextTagSignedInteg
 
 // NewBACnetScaleIntegerScale factory function for _BACnetScaleIntegerScale
 func NewBACnetScaleIntegerScale(integerScale BACnetContextTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetScaleIntegerScale {
+	if integerScale == nil {
+		panic("integerScale of type BACnetContextTagSignedInteger for BACnetScaleIntegerScale must not be nil")
+	}
 	_result := &_BACnetScaleIntegerScale{
 		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
 		IntegerScale:        integerScale,

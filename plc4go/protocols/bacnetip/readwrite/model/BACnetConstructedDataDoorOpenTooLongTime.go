@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDoorOpenTooLongTime) GetActualValue() BACnetAppli
 
 // NewBACnetConstructedDataDoorOpenTooLongTime factory function for _BACnetConstructedDataDoorOpenTooLongTime
 func NewBACnetConstructedDataDoorOpenTooLongTime(doorOpenTooLongTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorOpenTooLongTime {
+	if doorOpenTooLongTime == nil {
+		panic("doorOpenTooLongTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorOpenTooLongTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataDoorOpenTooLongTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DoorOpenTooLongTime:           doorOpenTooLongTime,

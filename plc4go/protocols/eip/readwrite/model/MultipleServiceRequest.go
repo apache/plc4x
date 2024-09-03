@@ -117,6 +117,9 @@ func (m *_MultipleServiceRequest) GetRequestPath() uint32 {
 
 // NewMultipleServiceRequest factory function for _MultipleServiceRequest
 func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServiceRequest {
+	if data == nil {
+		panic("data of type Services for MultipleServiceRequest must not be nil")
+	}
 	_result := &_MultipleServiceRequest{
 		CipServiceContract: NewCipService(serviceLen),
 		Data:               data,

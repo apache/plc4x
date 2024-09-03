@@ -104,6 +104,9 @@ func (m *_APDUError) GetError() BACnetError {
 
 // NewAPDUError factory function for _APDUError
 func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError, apduLength uint16) *_APDUError {
+	if error == nil {
+		panic("error of type BACnetError for APDUError must not be nil")
+	}
 	_result := &_APDUError{
 		APDUContract:     NewAPDU(apduLength),
 		OriginalInvokeId: originalInvokeId,

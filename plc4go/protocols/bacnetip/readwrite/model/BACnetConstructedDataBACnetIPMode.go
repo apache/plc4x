@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataBACnetIPMode) GetActualValue() BACnetIPModeTagged
 
 // NewBACnetConstructedDataBACnetIPMode factory function for _BACnetConstructedDataBACnetIPMode
 func NewBACnetConstructedDataBACnetIPMode(bacnetIpMode BACnetIPModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPMode {
+	if bacnetIpMode == nil {
+		panic("bacnetIpMode of type BACnetIPModeTagged for BACnetConstructedDataBACnetIPMode must not be nil")
+	}
 	_result := &_BACnetConstructedDataBACnetIPMode{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BacnetIpMode:                  bacnetIpMode,

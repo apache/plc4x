@@ -116,6 +116,9 @@ func (m *_CreateMonitoredItemsRequest) GetItemsToCreate() []ExtensionObjectDefin
 
 // NewCreateMonitoredItemsRequest factory function for _CreateMonitoredItemsRequest
 func NewCreateMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToCreate int32, itemsToCreate []ExtensionObjectDefinition) *_CreateMonitoredItemsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CreateMonitoredItemsRequest must not be nil")
+	}
 	_result := &_CreateMonitoredItemsRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

@@ -109,6 +109,15 @@ func (m *_ReadValueId) GetDataEncoding() QualifiedName {
 
 // NewReadValueId factory function for _ReadValueId
 func NewReadValueId(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) *_ReadValueId {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for ReadValueId must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for ReadValueId must not be nil")
+	}
+	if dataEncoding == nil {
+		panic("dataEncoding of type QualifiedName for ReadValueId must not be nil")
+	}
 	_result := &_ReadValueId{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NodeId:                            nodeId,

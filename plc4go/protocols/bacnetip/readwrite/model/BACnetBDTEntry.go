@@ -74,6 +74,9 @@ func (m *_BACnetBDTEntry) GetBroadcastMask() BACnetContextTagOctetString {
 
 // NewBACnetBDTEntry factory function for _BACnetBDTEntry
 func NewBACnetBDTEntry(bbmdAddress BACnetHostNPortEnclosed, broadcastMask BACnetContextTagOctetString) *_BACnetBDTEntry {
+	if bbmdAddress == nil {
+		panic("bbmdAddress of type BACnetHostNPortEnclosed for BACnetBDTEntry must not be nil")
+	}
 	return &_BACnetBDTEntry{BbmdAddress: bbmdAddress, BroadcastMask: broadcastMask}
 }
 

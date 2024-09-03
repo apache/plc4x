@@ -70,6 +70,9 @@ func (m *_BACnetOpeningTag) GetHeader() BACnetTagHeader {
 
 // NewBACnetOpeningTag factory function for _BACnetOpeningTag
 func NewBACnetOpeningTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetOpeningTag {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetOpeningTag must not be nil")
+	}
 	return &_BACnetOpeningTag{Header: header, TagNumberArgument: tagNumberArgument}
 }
 

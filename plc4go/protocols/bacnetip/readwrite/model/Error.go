@@ -74,6 +74,12 @@ func (m *_Error) GetErrorCode() ErrorCodeTagged {
 
 // NewError factory function for _Error
 func NewError(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) *_Error {
+	if errorClass == nil {
+		panic("errorClass of type ErrorClassTagged for Error must not be nil")
+	}
+	if errorCode == nil {
+		panic("errorCode of type ErrorCodeTagged for Error must not be nil")
+	}
 	return &_Error{ErrorClass: errorClass, ErrorCode: errorCode}
 }
 

@@ -125,6 +125,9 @@ func (m *_DF1SymbolMessageFrame) GetEndTransaction() uint8 {
 
 // NewDF1SymbolMessageFrame factory function for _DF1SymbolMessageFrame
 func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, command DF1Command) *_DF1SymbolMessageFrame {
+	if command == nil {
+		panic("command of type DF1Command for DF1SymbolMessageFrame must not be nil")
+	}
 	_result := &_DF1SymbolMessageFrame{
 		DF1SymbolContract:  NewDF1Symbol(),
 		DestinationAddress: destinationAddress,

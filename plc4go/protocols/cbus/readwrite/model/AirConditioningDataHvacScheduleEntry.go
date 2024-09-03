@@ -133,6 +133,15 @@ func (m *_AirConditioningDataHvacScheduleEntry) GetRawLevel() HVACRawLevels {
 
 // NewAirConditioningDataHvacScheduleEntry factory function for _AirConditioningDataHvacScheduleEntry
 func NewAirConditioningDataHvacScheduleEntry(zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, hvacModeAndFlags HVACModeAndFlags, startTime HVACStartTime, level HVACTemperature, rawLevel HVACRawLevels, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataHvacScheduleEntry {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataHvacScheduleEntry must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataHvacScheduleEntry must not be nil")
+	}
+	if startTime == nil {
+		panic("startTime of type HVACStartTime for AirConditioningDataHvacScheduleEntry must not be nil")
+	}
 	_result := &_AirConditioningDataHvacScheduleEntry{
 		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
 		ZoneGroup:                   zoneGroup,

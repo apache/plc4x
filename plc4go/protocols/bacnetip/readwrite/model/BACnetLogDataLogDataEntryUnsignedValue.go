@@ -84,6 +84,9 @@ func (m *_BACnetLogDataLogDataEntryUnsignedValue) GetUnsignedValue() BACnetConte
 
 // NewBACnetLogDataLogDataEntryUnsignedValue factory function for _BACnetLogDataLogDataEntryUnsignedValue
 func NewBACnetLogDataLogDataEntryUnsignedValue(unsignedValue BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryUnsignedValue {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogDataLogDataEntryUnsignedValue must not be nil")
+	}
 	_result := &_BACnetLogDataLogDataEntryUnsignedValue{
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		UnsignedValue:                     unsignedValue,

@@ -102,6 +102,15 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetAcknowledgedTransitions() BACnetEv
 
 // NewBACnetServiceAckGetAlarmSummary factory function for _BACnetServiceAckGetAlarmSummary
 func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, serviceAckLength uint32) *_BACnetServiceAckGetAlarmSummary {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckGetAlarmSummary must not be nil")
+	}
+	if eventState == nil {
+		panic("eventState of type BACnetEventStateTagged for BACnetServiceAckGetAlarmSummary must not be nil")
+	}
+	if acknowledgedTransitions == nil {
+		panic("acknowledgedTransitions of type BACnetEventTransitionBitsTagged for BACnetServiceAckGetAlarmSummary must not be nil")
+	}
 	_result := &_BACnetServiceAckGetAlarmSummary{
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		ObjectIdentifier:         objectIdentifier,

@@ -95,6 +95,9 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetPassword() BACnetC
 
 // NewBACnetConfirmedServiceRequestReinitializeDevice factory function for _BACnetConfirmedServiceRequestReinitializeDevice
 func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReinitializeDevice {
+	if reinitializedStateOfDevice == nil {
+		panic("reinitializedStateOfDevice of type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged for BACnetConfirmedServiceRequestReinitializeDevice must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestReinitializeDevice{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		ReinitializedStateOfDevice:            reinitializedStateOfDevice,

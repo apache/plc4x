@@ -102,6 +102,9 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) GetBrowsePaths() []ExtensionObje
 
 // NewTranslateBrowsePathsToNodeIdsRequest factory function for _TranslateBrowsePathsToNodeIdsRequest
 func NewTranslateBrowsePathsToNodeIdsRequest(requestHeader ExtensionObjectDefinition, noOfBrowsePaths int32, browsePaths []ExtensionObjectDefinition) *_TranslateBrowsePathsToNodeIdsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for TranslateBrowsePathsToNodeIdsRequest must not be nil")
+	}
 	_result := &_TranslateBrowsePathsToNodeIdsRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

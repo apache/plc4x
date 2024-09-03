@@ -102,6 +102,9 @@ func (m *_RedundantServerDataType) GetServerState() ServerState {
 
 // NewRedundantServerDataType factory function for _RedundantServerDataType
 func NewRedundantServerDataType(serverId PascalString, serviceLevel uint8, serverState ServerState) *_RedundantServerDataType {
+	if serverId == nil {
+		panic("serverId of type PascalString for RedundantServerDataType must not be nil")
+	}
 	_result := &_RedundantServerDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ServerId:                          serverId,

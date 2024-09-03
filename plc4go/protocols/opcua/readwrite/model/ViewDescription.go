@@ -102,6 +102,9 @@ func (m *_ViewDescription) GetViewVersion() uint32 {
 
 // NewViewDescription factory function for _ViewDescription
 func NewViewDescription(viewId NodeId, timestamp int64, viewVersion uint32) *_ViewDescription {
+	if viewId == nil {
+		panic("viewId of type NodeId for ViewDescription must not be nil")
+	}
 	_result := &_ViewDescription{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ViewId:                            viewId,

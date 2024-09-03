@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) GetActualValue() BAC
 
 // NewBACnetConstructedDataLifeSafetyPointPresentValue factory function for _BACnetConstructedDataLifeSafetyPointPresentValue
 func NewBACnetConstructedDataLifeSafetyPointPresentValue(presentValue BACnetLifeSafetyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyPointPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetLifeSafetyStateTagged for BACnetConstructedDataLifeSafetyPointPresentValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataLifeSafetyPointPresentValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PresentValue:                  presentValue,

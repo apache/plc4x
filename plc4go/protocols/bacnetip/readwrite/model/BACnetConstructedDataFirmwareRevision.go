@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataFirmwareRevision) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataFirmwareRevision factory function for _BACnetConstructedDataFirmwareRevision
 func NewBACnetConstructedDataFirmwareRevision(firmwareRevision BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFirmwareRevision {
+	if firmwareRevision == nil {
+		panic("firmwareRevision of type BACnetApplicationTagCharacterString for BACnetConstructedDataFirmwareRevision must not be nil")
+	}
 	_result := &_BACnetConstructedDataFirmwareRevision{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FirmwareRevision:              firmwareRevision,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAckedTransitions) GetActualValue() BACnetEventTra
 
 // NewBACnetConstructedDataAckedTransitions factory function for _BACnetConstructedDataAckedTransitions
 func NewBACnetConstructedDataAckedTransitions(ackedTransitions BACnetEventTransitionBitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAckedTransitions {
+	if ackedTransitions == nil {
+		panic("ackedTransitions of type BACnetEventTransitionBitsTagged for BACnetConstructedDataAckedTransitions must not be nil")
+	}
 	_result := &_BACnetConstructedDataAckedTransitions{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AckedTransitions:              ackedTransitions,

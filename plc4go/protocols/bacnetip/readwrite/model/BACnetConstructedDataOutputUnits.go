@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataOutputUnits) GetActualValue() BACnetEngineeringUn
 
 // NewBACnetConstructedDataOutputUnits factory function for _BACnetConstructedDataOutputUnits
 func NewBACnetConstructedDataOutputUnits(units BACnetEngineeringUnitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutputUnits {
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataOutputUnits must not be nil")
+	}
 	_result := &_BACnetConstructedDataOutputUnits{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Units:                         units,

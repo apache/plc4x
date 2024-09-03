@@ -102,6 +102,15 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetVtDataFlag() BACnetApplication
 
 // NewBACnetConfirmedServiceRequestVTData factory function for _BACnetConfirmedServiceRequestVTData
 func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTData {
+	if vtSessionIdentifier == nil {
+		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTData must not be nil")
+	}
+	if vtNewData == nil {
+		panic("vtNewData of type BACnetApplicationTagOctetString for BACnetConfirmedServiceRequestVTData must not be nil")
+	}
+	if vtDataFlag == nil {
+		panic("vtDataFlag of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTData must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestVTData{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		VtSessionIdentifier:                   vtSessionIdentifier,

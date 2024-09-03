@@ -67,6 +67,9 @@ func (m *_BACnetAccessThreatLevel) GetThreatLevel() BACnetApplicationTagUnsigned
 
 // NewBACnetAccessThreatLevel factory function for _BACnetAccessThreatLevel
 func NewBACnetAccessThreatLevel(threatLevel BACnetApplicationTagUnsignedInteger) *_BACnetAccessThreatLevel {
+	if threatLevel == nil {
+		panic("threatLevel of type BACnetApplicationTagUnsignedInteger for BACnetAccessThreatLevel must not be nil")
+	}
 	return &_BACnetAccessThreatLevel{ThreatLevel: threatLevel}
 }
 

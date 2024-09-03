@@ -81,6 +81,9 @@ func (m *_HPAIDataEndpoint) GetIpPort() uint16 {
 
 // NewHPAIDataEndpoint factory function for _HPAIDataEndpoint
 func NewHPAIDataEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIDataEndpoint {
+	if ipAddress == nil {
+		panic("ipAddress of type IPAddress for HPAIDataEndpoint must not be nil")
+	}
 	return &_HPAIDataEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
 }
 

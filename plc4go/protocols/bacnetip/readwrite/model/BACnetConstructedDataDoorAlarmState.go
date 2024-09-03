@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDoorAlarmState) GetActualValue() BACnetDoorAlarmS
 
 // NewBACnetConstructedDataDoorAlarmState factory function for _BACnetConstructedDataDoorAlarmState
 func NewBACnetConstructedDataDoorAlarmState(doorAlarmState BACnetDoorAlarmStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorAlarmState {
+	if doorAlarmState == nil {
+		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetConstructedDataDoorAlarmState must not be nil")
+	}
 	_result := &_BACnetConstructedDataDoorAlarmState{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DoorAlarmState:                doorAlarmState,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLocalTime) GetActualValue() BACnetApplicationTagT
 
 // NewBACnetConstructedDataLocalTime factory function for _BACnetConstructedDataLocalTime
 func NewBACnetConstructedDataLocalTime(localTime BACnetApplicationTagTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalTime {
+	if localTime == nil {
+		panic("localTime of type BACnetApplicationTagTime for BACnetConstructedDataLocalTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataLocalTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LocalTime:                     localTime,

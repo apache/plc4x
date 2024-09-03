@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesRestartReason) GetRestartReason() BACnetRestartRea
 
 // NewBACnetPropertyStatesRestartReason factory function for _BACnetPropertyStatesRestartReason
 func NewBACnetPropertyStatesRestartReason(restartReason BACnetRestartReasonTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesRestartReason {
+	if restartReason == nil {
+		panic("restartReason of type BACnetRestartReasonTagged for BACnetPropertyStatesRestartReason must not be nil")
+	}
 	_result := &_BACnetPropertyStatesRestartReason{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		RestartReason:                restartReason,

@@ -86,6 +86,9 @@ func (m *_NodeId) GetId() string {
 
 // NewNodeId factory function for _NodeId
 func NewNodeId(nodeId NodeIdTypeDefinition) *_NodeId {
+	if nodeId == nil {
+		panic("nodeId of type NodeIdTypeDefinition for NodeId must not be nil")
+	}
 	return &_NodeId{NodeId: nodeId}
 }
 

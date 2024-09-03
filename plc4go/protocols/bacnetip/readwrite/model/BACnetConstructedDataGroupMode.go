@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataGroupMode) GetActualValue() BACnetLiftGroupModeTa
 
 // NewBACnetConstructedDataGroupMode factory function for _BACnetConstructedDataGroupMode
 func NewBACnetConstructedDataGroupMode(groupMode BACnetLiftGroupModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupMode {
+	if groupMode == nil {
+		panic("groupMode of type BACnetLiftGroupModeTagged for BACnetConstructedDataGroupMode must not be nil")
+	}
 	_result := &_BACnetConstructedDataGroupMode{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		GroupMode:                     groupMode,

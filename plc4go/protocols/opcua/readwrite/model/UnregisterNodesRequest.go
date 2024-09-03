@@ -102,6 +102,9 @@ func (m *_UnregisterNodesRequest) GetNodesToUnregister() []NodeId {
 
 // NewUnregisterNodesRequest factory function for _UnregisterNodesRequest
 func NewUnregisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) *_UnregisterNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for UnregisterNodesRequest must not be nil")
+	}
 	_result := &_UnregisterNodesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

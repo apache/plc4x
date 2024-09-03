@@ -130,6 +130,24 @@ func (m *_AddNodesItem) GetTypeDefinition() ExpandedNodeId {
 
 // NewAddNodesItem factory function for _AddNodesItem
 func NewAddNodesItem(parentNodeId ExpandedNodeId, referenceTypeId NodeId, requestedNewNodeId ExpandedNodeId, browseName QualifiedName, nodeClass NodeClass, nodeAttributes ExtensionObject, typeDefinition ExpandedNodeId) *_AddNodesItem {
+	if parentNodeId == nil {
+		panic("parentNodeId of type ExpandedNodeId for AddNodesItem must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for AddNodesItem must not be nil")
+	}
+	if requestedNewNodeId == nil {
+		panic("requestedNewNodeId of type ExpandedNodeId for AddNodesItem must not be nil")
+	}
+	if browseName == nil {
+		panic("browseName of type QualifiedName for AddNodesItem must not be nil")
+	}
+	if nodeAttributes == nil {
+		panic("nodeAttributes of type ExtensionObject for AddNodesItem must not be nil")
+	}
+	if typeDefinition == nil {
+		panic("typeDefinition of type ExpandedNodeId for AddNodesItem must not be nil")
+	}
 	_result := &_AddNodesItem{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ParentNodeId:                      parentNodeId,

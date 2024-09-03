@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCOVUPeriod) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataCOVUPeriod factory function for _BACnetConstructedDataCOVUPeriod
 func NewBACnetConstructedDataCOVUPeriod(covuPeriod BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVUPeriod {
+	if covuPeriod == nil {
+		panic("covuPeriod of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCOVUPeriod must not be nil")
+	}
 	_result := &_BACnetConstructedDataCOVUPeriod{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CovuPeriod:                    covuPeriod,

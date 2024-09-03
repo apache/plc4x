@@ -102,6 +102,9 @@ func (m *_BACnetAuthorizationExemptionTagged) GetIsProprietary() bool {
 
 // NewBACnetAuthorizationExemptionTagged factory function for _BACnetAuthorizationExemptionTagged
 func NewBACnetAuthorizationExemptionTagged(header BACnetTagHeader, value BACnetAuthorizationExemption, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAuthorizationExemptionTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAuthorizationExemptionTagged must not be nil")
+	}
 	return &_BACnetAuthorizationExemptionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

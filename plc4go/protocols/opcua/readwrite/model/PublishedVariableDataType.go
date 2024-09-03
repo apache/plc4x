@@ -144,6 +144,15 @@ func (m *_PublishedVariableDataType) GetMetaDataProperties() []QualifiedName {
 
 // NewPublishedVariableDataType factory function for _PublishedVariableDataType
 func NewPublishedVariableDataType(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, noOfMetaDataProperties int32, metaDataProperties []QualifiedName) *_PublishedVariableDataType {
+	if publishedVariable == nil {
+		panic("publishedVariable of type NodeId for PublishedVariableDataType must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for PublishedVariableDataType must not be nil")
+	}
+	if substituteValue == nil {
+		panic("substituteValue of type Variant for PublishedVariableDataType must not be nil")
+	}
 	_result := &_PublishedVariableDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		PublishedVariable:                 publishedVariable,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetActualValue() BACne
 
 // NewBACnetConstructedDataCOVResubscriptionInterval factory function for _BACnetConstructedDataCOVResubscriptionInterval
 func NewBACnetConstructedDataCOVResubscriptionInterval(covResubscriptionInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVResubscriptionInterval {
+	if covResubscriptionInterval == nil {
+		panic("covResubscriptionInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCOVResubscriptionInterval must not be nil")
+	}
 	_result := &_BACnetConstructedDataCOVResubscriptionInterval{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CovResubscriptionInterval:     covResubscriptionInterval,

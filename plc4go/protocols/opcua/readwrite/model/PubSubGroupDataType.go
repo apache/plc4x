@@ -146,6 +146,12 @@ func (m *_PubSubGroupDataType) GetGroupProperties() []ExtensionObjectDefinition 
 
 // NewPubSubGroupDataType factory function for _PubSubGroupDataType
 func NewPubSubGroupDataType(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, noOfSecurityKeyServices int32, securityKeyServices []ExtensionObjectDefinition, maxNetworkMessageSize uint32, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) *_PubSubGroupDataType {
+	if name == nil {
+		panic("name of type PascalString for PubSubGroupDataType must not be nil")
+	}
+	if securityGroupId == nil {
+		panic("securityGroupId of type PascalString for PubSubGroupDataType must not be nil")
+	}
 	_result := &_PubSubGroupDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Name:                              name,

@@ -116,6 +116,9 @@ func (m *_TransferSubscriptionsResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewTransferSubscriptionsResponse factory function for _TransferSubscriptionsResponse
 func NewTransferSubscriptionsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_TransferSubscriptionsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for TransferSubscriptionsResponse must not be nil")
+	}
 	_result := &_TransferSubscriptionsResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

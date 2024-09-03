@@ -90,6 +90,9 @@ func (m *_FirmataMessageCommand) GetCommand() FirmataCommand {
 
 // NewFirmataMessageCommand factory function for _FirmataMessageCommand
 func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMessageCommand {
+	if command == nil {
+		panic("command of type FirmataCommand for FirmataMessageCommand must not be nil")
+	}
 	_result := &_FirmataMessageCommand{
 		FirmataMessageContract: NewFirmataMessage(response),
 		Command:                command,
