@@ -84,7 +84,7 @@ func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
 
 	// encode it as a generic BVLL PDU
 	bvlpdu := NewBVLPDU(nil)
-	if err := rpdu.(interface{ Encode(Arg) error }).Encode(bvlpdu); err != nil {
+	if err := rpdu.(Encoder).Encode(bvlpdu); err != nil {
 		return errors.Wrap(err, "error encoding PDU")
 	}
 

@@ -136,11 +136,24 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) 
 	var xpdu APDU
 	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequest:
-
+		var err error
+		xpdu, err = NewConfirmedRequestPDU(nil)
+		if err != nil {
+			return errors.Wrap(err, "error creating unconfirmed request")
+		}
+		if err := apdu.Encode(xpdu); err != nil {
+			return errors.Wrap(err, "error encoding APDU")
+		}
 		isConfirmed = true
-		panic("todo implement me")
 	case readWriteModel.APDUUnconfirmedRequest:
-		panic("todo implement me")
+		var err error
+		xpdu, err = NewUnconfirmedRequestPDU(nil)
+		if err != nil {
+			return errors.Wrap(err, "error creating unconfirmed request")
+		}
+		if err := apdu.Encode(xpdu); err != nil {
+			return errors.Wrap(err, "error encoding APDU")
+		}
 	default:
 		return errors.Errorf("unknown _PDU type %T", apdu)
 	}
@@ -153,10 +166,9 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) 
 
 	// if the upper layers of the application did not assign an invoke ID,
 	// copy the one that was assigned on its way down the stack
-	//if isConfirmed && apdu.GetApduInvokeID() != nil {
-	//apdu.invokeId = xpud.apduInvokeId // TODO: implement me
-	//}
-	_ = isConfirmed
+	if isConfirmed && apdu.getApduInvokeID() != nil {
+		apdu.setApduInvokeID(xpdu.getApduInvokeID())
+	}
 	return err
 }
 

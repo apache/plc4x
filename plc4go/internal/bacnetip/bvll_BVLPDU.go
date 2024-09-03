@@ -22,6 +22,7 @@ package bacnetip
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi"
 
 	"github.com/pkg/errors"
 
@@ -32,101 +33,80 @@ type BVLPDU interface {
 	readWriteModel.BVLC
 	BVLCI
 	PDUData
-
-	setBVLC(readWriteModel.BVLC)
-	getBVLC() readWriteModel.BVLC
 }
 
 type _BVLPDU struct {
 	*_BVLCI
 	*_PDUData
-
-	bvlc readWriteModel.BVLC
 }
 
 var _ BVLPDU = (*_BVLPDU)(nil)
 
 func NewBVLPDU(bvlc readWriteModel.BVLC) BVLPDU {
-	b := &_BVLPDU{
-		bvlc: bvlc,
-	}
-	b._BVLCI = NewBVLCI(bvlc).(*_BVLCI)
+	b := &_BVLPDU{}
+	b._BVLCI = NewBVLCI(b, bvlc).(*_BVLCI)
 	b._PDUData = NewPDUData(NoArgs).(*_PDUData)
+	if b.rootMessage != nil {
+		b.data, _ = b.rootMessage.Serialize()
+		b.data = b.data[4:]
+	}
 	return b
-}
-
-// Deprecated: check if needed as we do it in update
-func (b *_BVLPDU) setBVLC(bvlc readWriteModel.BVLC) {
-	b.bvlc = bvlc
-}
-
-func (b *_BVLPDU) getBVLC() readWriteModel.BVLC {
-	return b.bvlc
-}
-
-func (b *_BVLPDU) Update(bvlci Arg) error {
-	if err := b._BVLCI.Update(bvlci); err != nil {
-		return errors.Wrap(err, "Update BVLCI")
-	}
-	switch bvlci := bvlci.(type) {
-	case BVLCI:
-		b.bvlc = b.getBVLC()
-		// TODO: update coordinates....
-		return nil
-	default:
-		return errors.Errorf("invalid BVLCI type %T", bvlci)
-	}
 }
 
 func (b *_BVLPDU) Encode(pdu Arg) error {
 	if err := b._BVLCI.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding _BVLCI")
 	}
-	serialize, err := b.bvlc.Serialize()
-	if err != nil {
-		return errors.Wrap(err, "error serializing BVLC")
+	switch pdu := pdu.(type) {
+	case PDUData:
+		pdu.PutData(b.GetPduData()...)
 	}
-	pdu.(interface{ PutData(n ...byte) }).PutData(serialize...) // TODO: ugly cast...
 	return nil
 }
 
 func (b *_BVLPDU) Decode(pdu Arg) error {
+	var rootMessage spi.Message
+	switch pdu := pdu.(type) { // Save a root message as long as we have enough data
+	case PDUData:
+		rootMessage, _ = readWriteModel.BVLCParse[readWriteModel.BVLC](context.Background(), pdu.GetPduData())
+	}
 	if err := b._BVLCI.Decode(pdu); err != nil {
 		return errors.Wrap(err, "error decoding _BVLCI")
 	}
 	switch pdu := pdu.(type) {
 	case PDUData:
-		data := pdu.GetPduData()
-		b.PutData(data...)
-		var err error
-		b.bvlc, err = readWriteModel.BVLCParse[readWriteModel.BVLC](context.Background(), data)
-		if err != nil {
-			return errors.Wrap(err, "error parsing NPDU")
-		}
-		b.rootMessage = b.bvlc
+		b.PutData(pdu.GetPduData()...)
+	}
+	if rootMessage != nil {
+		// Overwrite the root message again so we can use it for matching
+		b.rootMessage = rootMessage
 	}
 	return nil
 }
 
 func (b *_BVLPDU) GetBvlcFunction() uint8 {
-	if b.bvlc == nil {
+	switch rm := b.rootMessage.(type) {
+	case readWriteModel.BVLC:
+		return rm.GetBvlcFunction()
+	default:
 		return 0
 	}
-	return b.bvlc.GetBvlcFunction()
 }
 
 func (b *_BVLPDU) GetBvlcPayloadLength() uint16 {
-	if b.bvlc == nil {
+	switch rm := b.rootMessage.(type) {
+	case readWriteModel.BVLC:
+		return rm.GetBvlcPayloadLength()
+	default:
 		return 0
 	}
-	return b.bvlc.GetBvlcPayloadLength()
 }
 
 func (b *_BVLPDU) IsBVLC() {
 }
 
 func (b *_BVLPDU) deepCopy() *_BVLPDU {
-	return &_BVLPDU{_BVLCI: b._BVLCI.deepCopy(), _PDUData: b._PDUData.deepCopy(), bvlc: b.bvlc}
+	return &_BVLPDU{_BVLCI: b._BVLCI.deepCopy(), _PDUData: b._PDUData.deepCopy()}
 }
 
 func (b *_BVLPDU) DeepCopy() any {

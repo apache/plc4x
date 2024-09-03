@@ -75,43 +75,49 @@ func (n *NetworkNumberIs) GetNniFlag() bool {
 
 func (n *NetworkNumberIs) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
-	case NPDU:
-		if err := npdu.Update(n); err != nil {
+	case NPCI:
+		if err := npdu.getNPCI().Update(n); err != nil {
 			return errors.Wrap(err, "error updating NPDU")
 		}
+	}
+	switch npdu := npdu.(type) {
+	case PDUData:
 		npdu.PutShort(n.nniNet)
 		flag := uint8(0)
 		if n.nniFlag {
 			flag = 1
 		}
 		npdu.Put(flag)
-		npdu.setNLM(n.nlm)
-		npdu.setAPDU(n.apdu)
-		return nil
 	default:
 		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	return nil
 }
 
 func (n *NetworkNumberIs) Decode(npdu Arg) error {
+	if err := n._NPCI.Update(npdu); err != nil {
+		return errors.Wrap(err, "error updating NPCI")
+	}
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := n.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating NPDU")
 		}
-		switch pduUserData := npdu.GetRootMessage().(type) {
+		switch rm := npdu.GetRootMessage().(type) {
 		case model.NPDU:
-			switch nlm := pduUserData.GetNlm().(type) {
+			switch nlm := rm.GetNlm().(type) {
 			case model.NLMNetworkNumberIs:
-				n.setNLM(nlm)
 				n.nniNet = nlm.GetNetworkNumber()
 				n.nniFlag = nlm.GetNetworkNumberConfigured()
+				n.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	switch npdu := npdu.(type) {
+	case PDUData:
+		n.SetPduData(npdu.GetPduData())
+	}
+	return nil
 }
 
 func (n *NetworkNumberIs) String() string {

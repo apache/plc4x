@@ -88,40 +88,36 @@ func (o *OriginalBroadcastNPDU) produceInnerNPDU(inNpdu model.NPDU) (npdu model.
 
 func (o *OriginalBroadcastNPDU) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := bvlpdu.Update(o); err != nil {
+	case BVLCI:
+		if err := bvlpdu.getBVLCI().Update(o); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-
+	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
 		bvlpdu.PutData(o.GetPduData()...)
-
-		bvlpdu.setBVLC(o.bvlc)
-		return nil
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
 func (o *OriginalBroadcastNPDU) Decode(bvlpdu Arg) error {
+	if err := o._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := o.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case model.BVLCOriginalBroadcastNPDU:
-			npdu := rm.GetNpdu()
-			pduData, err := npdu.Serialize()
-			if err != nil {
-				return errors.Wrap(err, "error serializing NPDU")
-			}
-			o.SetPduData(pduData)
-			o.setBVLC(rm)
+			o.rootMessage = rm
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		o.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
 func (o *OriginalBroadcastNPDU) String() string {

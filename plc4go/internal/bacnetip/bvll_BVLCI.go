@@ -20,29 +20,56 @@
 package bacnetip
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 )
+
+type BVLCIRequirements interface {
+	GetPduData() []uint8
+}
 
 type BVLCI interface {
 	PCI
 
 	Encode(pdu Arg) error
 	Decode(pdu Arg) error
+
+	setBvlciType(bvlciType uint8)
+	getBvlciType() uint8
+	setBvlciFunction(bvlciFunction uint8)
+	getBvlciFunction() uint8
+	setBvlciLength(bvlciLength uint16)
+	getBvlciLength() uint16
+
+	getBVLCI() BVLCI
 }
 
 type _BVLCI struct {
 	*_PCI
 	*DebugContents
+
+	requirements BVLCIRequirements
+
+	bvlciType     uint8
+	bvlciFunction uint8
+	bvlciLength   uint16
 }
 
 var _ BVLCI = (*_BVLCI)(nil)
 
-func NewBVLCI(pdu spi.Message) BVLCI {
-	b := &_BVLCI{}
-	b._PCI = newPCI(pdu, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+func NewBVLCI(requirements BVLCIRequirements, bvlc readWriteModel.BVLC) BVLCI {
+	b := &_BVLCI{
+		bvlciType:    0x81,
+		requirements: requirements,
+	}
+	b._PCI = newPCI(bvlc, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+	if bvlc != nil {
+		b.bvlciFunction = bvlc.GetBvlcFunction()
+		b.bvlciLength = bvlc.GetLengthInBytes(context.Background())
+	}
 	return b
 }
 
@@ -52,7 +79,9 @@ func (b *_BVLCI) Update(bvlci Arg) error {
 	}
 	switch bvlci := bvlci.(type) {
 	case BVLCI:
-		// TODO: update coordinates....
+		b.bvlciType = bvlci.getBvlciType()
+		b.bvlciFunction = bvlci.getBvlciFunction()
+		b.bvlciLength = bvlci.getBvlciLength()
 		return nil
 	default:
 		return errors.Errorf("invalid BVLCI type %T", bvlci)
@@ -60,10 +89,23 @@ func (b *_BVLCI) Update(bvlci Arg) error {
 }
 
 func (b *_BVLCI) Encode(pdu Arg) error {
-	if err := pdu.(interface{ Update(Arg) error }).Update(b); err != nil { // TODO: better validate that arg is really PDUData... use switch similar to Update
-		return errors.Wrap(err, "error updating pdu")
+	switch pdu := pdu.(type) {
+	case PCI:
+		if err := pdu.GetPCI().Update(b); err != nil {
+			return errors.Wrap(err, "error updating pdu")
+		}
 	}
-	// TODO: what should we do here??
+	switch pdu := pdu.(type) {
+	case PDUData:
+		pdu.Put(b.bvlciType)
+		pdu.Put(b.bvlciFunction)
+
+		if int(b.bvlciLength) != len(b.requirements.GetPduData())+4 {
+			return errors.Errorf("invalid BVLCI length %d != %d", b.bvlciLength, len(b.requirements.GetPduData())+4)
+		}
+
+		pdu.PutShort(b.bvlciLength)
+	}
 	return nil
 }
 
@@ -71,8 +113,59 @@ func (b *_BVLCI) Decode(pdu Arg) error {
 	if err := b._PCI.Update(pdu); err != nil {
 		return errors.Wrap(err, "error updating pdu")
 	}
-	// TODO: what should we do here??
+	switch pdu := pdu.(type) {
+	case PDUData:
+		var err error
+		b.bvlciType, err = pdu.Get()
+		if err != nil {
+			return errors.Wrap(err, "error reading bvlci type")
+		}
+		if b.bvlciType != 0x81 {
+			return errors.New("invalid BVLCI type")
+		}
+
+		b.bvlciFunction, err = pdu.Get()
+		if err != nil {
+			return errors.Wrap(err, "error reading bvlci function")
+		}
+		bvlciLength, err := pdu.GetShort()
+		if err != nil {
+			return errors.Wrap(err, "error reading bvlci length")
+		}
+		b.bvlciLength = uint16(bvlciLength)
+		if int(b.bvlciLength) != len(pdu.GetPduData())+4 {
+			return errors.Errorf("invalid BVLCI length %d != %d", b.bvlciLength, len(pdu.GetPduData())+4)
+		}
+	}
 	return nil
+}
+
+func (b *_BVLCI) setBvlciType(bvlciType uint8) {
+	b.bvlciType = bvlciType
+}
+
+func (b *_BVLCI) getBvlciType() uint8 {
+	return b.bvlciType
+}
+
+func (b *_BVLCI) setBvlciFunction(bvlciFunction uint8) {
+	b.bvlciFunction = bvlciFunction
+}
+
+func (b *_BVLCI) getBvlciFunction() uint8 {
+	return b.bvlciFunction
+}
+
+func (b *_BVLCI) setBvlciLength(bvlciLength uint16) {
+	b.bvlciLength = bvlciLength
+}
+
+func (b *_BVLCI) getBvlciLength() uint16 {
+	return b.bvlciLength
+}
+
+func (b *_BVLCI) getBVLCI() BVLCI {
+	return b
 }
 
 func (b *_BVLCI) deepCopy() *_BVLCI {

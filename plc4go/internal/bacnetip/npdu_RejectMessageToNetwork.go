@@ -65,51 +65,57 @@ func WithRejectMessageToNetworkDnet(dnet uint16) func(*RejectMessageToNetwork) {
 	}
 }
 
-func (n *RejectMessageToNetwork) GetRmtnRejectionReason() model.NLMRejectMessageToNetworkRejectReason {
-	return n.rmtnRejectionReason
+func (r *RejectMessageToNetwork) GetRmtnRejectionReason() model.NLMRejectMessageToNetworkRejectReason {
+	return r.rmtnRejectionReason
 }
 
-func (n *RejectMessageToNetwork) GetRmtnDNET() uint16 {
-	return n.rmtnDNET
+func (r *RejectMessageToNetwork) GetRmtnDNET() uint16 {
+	return r.rmtnDNET
 }
 
-func (n *RejectMessageToNetwork) Encode(npdu Arg) error {
+func (r *RejectMessageToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
-	case NPDU:
-		if err := npdu.Update(n); err != nil {
+	case NPCI:
+		if err := npdu.getNPCI().Update(r); err != nil {
 			return errors.Wrap(err, "error updating NPDU")
 		}
-		npdu.Put(byte(n.rmtnRejectionReason))
-		npdu.PutShort(n.rmtnDNET)
-		npdu.setNLM(n.nlm)
-		npdu.setAPDU(n.apdu)
-		return nil
+	}
+	switch npdu := npdu.(type) {
+	case PDUData:
+		npdu.Put(byte(r.rmtnRejectionReason))
+		npdu.PutShort(r.rmtnDNET)
 	default:
 		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	return nil
 }
 
-func (n *RejectMessageToNetwork) Decode(npdu Arg) error {
+func (r *RejectMessageToNetwork) Decode(npdu Arg) error {
+	if err := r._NPCI.Update(npdu); err != nil {
+		return errors.Wrap(err, "error updating NPCI")
+	}
 	switch npdu := npdu.(type) {
 	case NPDU:
-		if err := n.Update(npdu); err != nil {
+		if err := r.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating NPDU")
 		}
-		switch pduUserData := npdu.GetRootMessage().(type) {
+		switch rm := npdu.GetRootMessage().(type) {
 		case model.NPDU:
-			switch nlm := pduUserData.GetNlm().(type) {
+			switch nlm := rm.GetNlm().(type) {
 			case model.NLMRejectMessageToNetwork:
-				n.setNLM(nlm)
-				n.rmtnRejectionReason = nlm.GetRejectReason()
-				n.rmtnDNET = nlm.GetDestinationNetworkAddress()
+				r.rmtnRejectionReason = nlm.GetRejectReason()
+				r.rmtnDNET = nlm.GetDestinationNetworkAddress()
+				r.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	switch npdu := npdu.(type) {
+	case PDUData:
+		r.SetPduData(npdu.GetPduData())
+	}
+	return nil
 }
 
-func (n *RejectMessageToNetwork) String() string {
-	return fmt.Sprintf("RejectMessageToNetwork{%s, rmtnRejectionReason: %s, rmtnDNET: %v}", n._NPDU, n.rmtnRejectionReason, n.rmtnDNET)
+func (r *RejectMessageToNetwork) String() string {
+	return fmt.Sprintf("RejectMessageToNetwork{%s, rmtnRejectionReason: %s, rmtnDNET: %v}", r._NPDU, r.rmtnRejectionReason, r.rmtnDNET)
 }

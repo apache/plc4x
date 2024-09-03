@@ -27,9 +27,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 type TNetwork3 struct {
@@ -125,7 +126,6 @@ func (t *TNetwork3) Run(timeLimit time.Duration) {
 }
 
 func TestNet3(t *testing.T) {
-	t.Skip("needs capabilities and constructed data to work") // TODO: finish me
 	t.Run("TestSimple", func(t *testing.T) {
 		t.Run("testIdle", func(t *testing.T) {
 			// create a network
@@ -162,8 +162,8 @@ func TestNet3(t *testing.T) {
 			tnet.sniffer1.GetStartState().Doc("1-2-0").
 				Receive(NewArgs((PDU)(nil)),
 					NewKWArgs(KWPDUData, xtob(
-						"01.80"+ //version, network layer
-							"10 00", // unconfirmed Who-Is
+						"01.00"+ //version, network layer
+							"10 08", // unconfirmed Who-Is
 					),
 					),
 				).Doc("1-2-1").
@@ -177,6 +177,7 @@ func TestNet3(t *testing.T) {
 			tnet.Run(0)
 		})
 		t.Run("test_remote_broadcast_2", func(t *testing.T) {
+			t.Skip("not yet ready") // TODO: finish it
 			//Test broadcast, matching device.
 			tests.ExclusiveGlobalTimeMachine(t)
 
@@ -184,7 +185,7 @@ func TestNet3(t *testing.T) {
 			tnet := NewTNetwork3(t)
 
 			// test device sends request, no response
-			whois, err := NewWhoIsRouterToNetwork()
+			whois, err := NewWhoIsRequest()
 			require.NoError(t, err)
 			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
 			tnet.td.GetStartState().Doc("2-1-0").
@@ -232,6 +233,100 @@ func TestNet3(t *testing.T) {
 					)),
 				).Doc("2-3-1").
 				Timeout(3*time.Second, nil).Doc("2-3-2").
+				Success("")
+
+			// run the group
+			tnet.Run(0)
+		})
+		t.Run("test_remote_broadcast_3", func(t *testing.T) {
+
+			//Test broadcast, matching device.
+			tests.ExclusiveGlobalTimeMachine(t)
+
+			// create a network
+			tnet := NewTNetwork3(t)
+
+			// test device sends request, no response
+			whois, err := NewWhoIsRequest()
+			require.NoError(t, err)
+			whois.SetPDUDestination(NewRemoteBroadcast(3, nil)) // TODO: upstream does this inline
+			tnet.td.GetStartState().Doc("3-1-0").
+				Send(whois, nil).Doc("3-1-1").
+				Success("")
+
+			// sniffer on network 1 sees the request and the response
+			tnet.sniffer1.GetStartState().Doc("3-2-0").
+				Receive(NewArgs((PDU)(nil)),
+					NewKWArgs(KWPDUData, xtob(
+						"01.80.00.00.03", // who is router to network
+					)),
+				).Doc("3-2-1").
+				Timeout(3*time.Second, nil).Doc("3-2-3").
+				Success("")
+
+			// network 2 sees local broadcast looking for network 3
+			tnet.sniffer2.GetStartState().
+				Receive(NewArgs((PDU)(nil)),
+					NewKWArgs(KWPDUData, xtob(
+						"01.88.00.01.01.01.00.00.03",
+					)),
+				).Doc("3-3-1").
+				Timeout(3*time.Second, nil).Doc("3-3-2").
+				Success("")
+
+			// run the group
+			tnet.Run(0)
+		})
+		t.Run("test_global_broadcast", func(t *testing.T) {
+			t.Skip("not yet ready") // TODO: finish it
+
+			//Test broadcast, matching device.
+			tests.ExclusiveGlobalTimeMachine(t)
+
+			// create a network
+			tnet := NewTNetwork3(t)
+
+			// test device sends request, no response
+			whois, err := NewWhoIsRequest()
+			require.NoError(t, err)
+			whois.SetPDUDestination(NewGlobalBroadcast(nil)) // TODO: upstream does this inline
+			tnet.td.GetStartState().Doc("4-1-0").
+				Send(whois, nil).Doc("4-1-1").
+				Receive(NewArgs((*IAmRequest)(nil)), NoKWArgs).Doc("4-1-2").
+				Success("")
+
+			// sniffer on network 1 sees the request and the response
+			tnet.sniffer1.GetStartState().Doc("3-2-0").
+				Receive(NewArgs((PDU)(nil)),
+					NewKWArgs(KWPDUData, xtob(
+						"01.20.ff.ff.00.ff"+
+							"10.08",
+					)),
+				).Doc("4-2-1").
+				Receive(NewArgs((PDU)(nil)),
+					NewKWArgs(KWPDUData, xtob(
+						"01.08.00.02.01.04"+
+							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",
+					)),
+				).Doc("4-2-2").
+				Timeout(3*time.Second, nil).Doc("4-2-3").
+				Success("")
+
+			// network 2 sees local broadcast v
+			tnet.sniffer2.GetStartState().Doc("4-3-0").
+				Receive(NewArgs((PDU)(nil)),
+					NewKWArgs(KWPDUData, xtob(
+						"01.28.ff.ff.00.00.01.01.01.fe"+
+							"10.08",
+					)),
+				).Doc("4-3-1").
+				Receive(NewArgs((PDU)(nil)),
+					NewKWArgs(KWPDUData, xtob(
+						"01.20.00.01.01.01.ff"+
+							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",
+					)),
+				).Doc("4-3-3").
+				Timeout(3*time.Second, nil).Doc("4-3-3").
 				Success("")
 
 			// run the group

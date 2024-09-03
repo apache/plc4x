@@ -26,8 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type NPCI interface {
@@ -50,14 +49,10 @@ type NPCI interface {
 	getNpduHopCount() *uint8
 	setNpduNetMessage(*uint8)
 	getNpduNetMessage() *uint8
-	setNpduVendorID(*model.BACnetVendorId)
-	getNpduVendorID() *model.BACnetVendorId
-	setNPDU(model.NPDU)
-	getNPDU() model.NPDU
-	setNLM(model.NLM)
-	getNLM() model.NLM
-	setAPDU(model.APDU)
-	getAPDU() model.APDU
+	setNpduVendorID(*readWriteModel.BACnetVendorId)
+	getNpduVendorID() *readWriteModel.BACnetVendorId
+
+	getNPCI() NPCI
 }
 
 type _NPCI struct {
@@ -70,120 +65,19 @@ type _NPCI struct {
 	npduSADR       *Address
 	npduHopCount   *uint8
 	npduNetMessage *uint8
-	npduVendorID   *model.BACnetVendorId
-
-	npdu model.NPDU
-	nlm  model.NLM
-	apdu model.APDU
+	npduVendorID   *readWriteModel.BACnetVendorId
 }
 
 var _ NPCI = (*_NPCI)(nil)
 
-func NewNPCI(pduUserData spi.Message, nlm model.NLM, apdu model.APDU) NPCI {
+func NewNPCI(nlm readWriteModel.NLM, apdu readWriteModel.APDU) NPCI {
 	n := &_NPCI{
-		nlm:  nlm,
-		apdu: apdu,
-
 		npduVersion: 1,
 	}
-	n._PCI = newPCI(pduUserData, nil, nil, nil, false, model.NPDUNetworkPriority_NORMAL_MESSAGE)
-	switch ud := pduUserData.(type) {
-	case model.NLM:
-		n.nlm = ud
-	case model.APDU:
-		n.apdu = ud
-	}
+	npdu, _ := n.buildNPDU(0, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
+	n._PCI = newPCI(npdu, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
 	return n
 }
-
-func (n *_NPCI) GetNPDUNetMessage() *uint8 {
-	if n.nlm == nil {
-		return nil
-	}
-	messageType := n.nlm.GetMessageType()
-	return &messageType
-}
-
-func (n *_NPCI) setNpduVersion(u uint8) {
-	n.npduVersion = u
-}
-
-func (n *_NPCI) getNpduVersion() uint8 {
-	return n.npduVersion
-}
-
-func (n *_NPCI) setNpduControl(u uint8) {
-	n.npduControl = u
-}
-
-func (n *_NPCI) getNpduControl() uint8 {
-	return n.npduControl
-}
-
-func (n *_NPCI) setNpduDADR(address *Address) {
-	n.npduDADR = address
-}
-
-func (n *_NPCI) getNpduDADR() *Address {
-	return n.npduDADR
-}
-
-func (n *_NPCI) setNpduSADR(address *Address) {
-	n.npduSADR = address
-}
-
-func (n *_NPCI) getNpduSADR() *Address {
-	return n.npduSADR
-}
-
-func (n *_NPCI) setNpduHopCount(u *uint8) {
-	n.npduHopCount = u
-}
-
-func (n *_NPCI) getNpduHopCount() *uint8 {
-	return n.npduHopCount
-}
-
-func (n *_NPCI) setNpduNetMessage(u *uint8) {
-	n.npduNetMessage = u
-}
-
-func (n *_NPCI) getNpduNetMessage() *uint8 {
-	return n.npduNetMessage
-}
-
-func (n *_NPCI) setNpduVendorID(u *model.BACnetVendorId) {
-	n.npduVendorID = u
-}
-
-func (n *_NPCI) getNpduVendorID() *model.BACnetVendorId {
-	return n.npduVendorID
-}
-
-func (n *_NPCI) setNPDU(npdu model.NPDU) {
-	n.npdu = npdu
-}
-
-func (n *_NPCI) getNPDU() model.NPDU {
-	return n.npdu
-}
-
-func (n *_NPCI) setNLM(nlm model.NLM) {
-	n.nlm = nlm
-}
-
-func (n *_NPCI) getNLM() model.NLM {
-	return n.nlm
-}
-
-func (n *_NPCI) setAPDU(apdu model.APDU) {
-	n.apdu = apdu
-}
-
-func (n *_NPCI) getAPDU() model.APDU {
-	return n.apdu
-}
-
 func (n *_NPCI) Update(npci Arg) error {
 	if err := n._PCI.Update(npci); err != nil {
 		return errors.Wrap(err, "error updating _PCI")
@@ -197,74 +91,20 @@ func (n *_NPCI) Update(npci Arg) error {
 		n.npduHopCount = npci.getNpduHopCount()
 		n.npduNetMessage = npci.getNpduNetMessage()
 		n.npduVendorID = npci.getNpduVendorID()
-
-		n.npdu = npci.getNPDU()
-		n.nlm = npci.getNLM()
-		n.apdu = npci.getAPDU()
 		return nil
 	default:
 		return errors.Errorf("invalid NPCI type %T", npci)
 	}
 }
-
-// TODO: this needs work as it doesn't do anything any more right now...
-func (n *_NPCI) buildNPDU(hopCount uint8, source *Address, destination *Address, expectingReply bool, networkPriority model.NPDUNetworkPriority, nlm model.NLM, apdu model.APDU) (model.NPDU, error) {
-	switch {
-	case nlm != nil && apdu != nil:
-		return nil, errors.New("either specify a NLM or a APDU exclusive")
-	case nlm == nil && apdu == nil:
-		return nil, errors.New("either specify a NLM or a APDU")
-	}
-	sourceSpecified := source != nil
-	var sourceNetworkAddress *uint16
-	var sourceLength *uint8
-	var sourceAddress []uint8
-	if sourceSpecified {
-		sourceSpecified = true
-		sourceNetworkAddress = source.AddrNet
-		sourceLengthValue := *source.AddrLen
-		if sourceLengthValue > math.MaxUint8 {
-			return nil, errors.New("source address length overflows")
-		}
-		sourceLengthValueUint8 := sourceLengthValue
-		sourceLength = &sourceLengthValueUint8
-		sourceAddress = source.AddrAddress
-		if sourceLengthValueUint8 == 0 {
-			// If we define the len 0 we must not send the array
-			sourceAddress = nil
-		}
-	}
-	destinationSpecified := destination != nil && destination.AddrType != LOCAL_BROADCAST_ADDRESS // TODO: check if this is right... (exclude local broadcast)
-	var destinationNetworkAddress *uint16
-	var destinationLength *uint8
-	var destinationAddress []uint8
-	var destinationHopCount *uint8
-	if destinationSpecified {
-		destinationSpecified = true
-		destinationNetworkAddress = destination.AddrNet
-		destinationLengthValue := *destination.AddrLen
-		if destinationLengthValue > math.MaxUint8 {
-			return nil, errors.New("source address length overflows")
-		}
-		destinationLengthValueUint8 := destinationLengthValue
-		destinationLength = &destinationLengthValueUint8
-		destinationAddress = destination.AddrAddress
-		if destinationLengthValueUint8 == 0 {
-			// If we define the len 0 we must not send the array
-			destinationAddress = nil
-		}
-		destinationHopCount = &hopCount
-	}
-	control := model.NewNPDUControl(nlm != nil, destinationSpecified, sourceSpecified, expectingReply, networkPriority)
-	return model.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, destinationHopCount, nlm, apdu, 0), nil
-}
-
 func (n *_NPCI) Encode(pdu Arg) error {
 	switch pdu := pdu.(type) {
-	case PDU:
-		if err := pdu.Update(n); err != nil {
-			return errors.Wrap(err, "error updating NPCI")
+	case PCI:
+		if err := pdu.GetPCI().Update(n); err != nil {
+			return errors.Wrap(err, "error updating pdu")
 		}
+	}
+	switch pdu := pdu.(type) {
+	case PDU:
 		// only version 1 messages supported
 		pdu.Put(n.npduVersion)
 
@@ -334,12 +174,6 @@ func (n *_NPCI) Encode(pdu Arg) error {
 				pdu.PutShort(uint16(*n.npduVendorID))
 			}
 		}
-		switch pdu := pdu.(type) {
-		case NPDU:
-			pdu.setNPDU(n.npdu)
-			pdu.setNLM(n.nlm)
-			pdu.setAPDU(n.apdu)
-		}
 	}
 	return nil
 }
@@ -351,18 +185,14 @@ func (n *_NPCI) Decode(pdu Arg) error {
 	switch rm := n.rootMessage.(type) {
 	case *messageBridge:
 		data := rm.GetPduData()
-		parse, err := model.NPDUParse(context.Background(), data, uint16(len(data)))
+		parse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
 		if err != nil {
 			return errors.Wrap(err, "error parsing npdu")
 		}
 		n.rootMessage = parse
 	}
 	switch rm := n.rootMessage.(type) {
-	case model.NPDU:
-		n.npdu = rm
-		n.nlm = rm.GetNlm()
-		n.apdu = rm.GetApdu()
-
+	case readWriteModel.NPDU:
 		n.npduVersion = rm.GetProtocolVersionNumber()
 		control := rm.GetControl()
 		cs, _ := control.Serialize()
@@ -421,7 +251,7 @@ func (n *_NPCI) Decode(pdu Arg) error {
 				n.npduNetMessage = &messageType
 				if rm.GetNlm().GetIsVendorProprietaryMessage() {
 					// extract the vendor ID
-					vendorId := rm.GetNlm().(model.NLMVendorProprietaryMessage).GetVendorId()
+					vendorId := rm.GetNlm().(readWriteModel.NLMVendorProprietaryMessage).GetVendorId()
 					n.npduVendorID = &vendorId
 				}
 			}
@@ -434,6 +264,131 @@ func (n *_NPCI) Decode(pdu Arg) error {
 	return nil
 }
 
+func (n *_NPCI) GetNPDUNetMessage() *uint8 {
+	switch rm := n.rootMessage.(type) {
+	case readWriteModel.NPDU:
+		if nlm := rm.GetNlm(); nlm != nil {
+			messageType := nlm.GetMessageType()
+			return &messageType
+		}
+		return nil
+	default:
+		return nil
+	}
+}
+
+func (n *_NPCI) setNpduVersion(u uint8) {
+	n.npduVersion = u
+}
+
+func (n *_NPCI) getNpduVersion() uint8 {
+	return n.npduVersion
+}
+
+func (n *_NPCI) setNpduControl(u uint8) {
+	n.npduControl = u
+}
+
+func (n *_NPCI) getNpduControl() uint8 {
+	return n.npduControl
+}
+
+func (n *_NPCI) setNpduDADR(address *Address) {
+	n.npduDADR = address
+}
+
+func (n *_NPCI) getNpduDADR() *Address {
+	return n.npduDADR
+}
+
+func (n *_NPCI) setNpduSADR(address *Address) {
+	n.npduSADR = address
+}
+
+func (n *_NPCI) getNpduSADR() *Address {
+	return n.npduSADR
+}
+
+func (n *_NPCI) setNpduHopCount(u *uint8) {
+	n.npduHopCount = u
+}
+
+func (n *_NPCI) getNpduHopCount() *uint8 {
+	return n.npduHopCount
+}
+
+func (n *_NPCI) setNpduNetMessage(u *uint8) {
+	n.npduNetMessage = u
+}
+
+func (n *_NPCI) getNpduNetMessage() *uint8 {
+	return n.npduNetMessage
+}
+
+func (n *_NPCI) setNpduVendorID(u *readWriteModel.BACnetVendorId) {
+	n.npduVendorID = u
+}
+
+func (n *_NPCI) getNpduVendorID() *readWriteModel.BACnetVendorId {
+	return n.npduVendorID
+}
+
+func (n *_NPCI) getNPCI() NPCI {
+	return n
+}
+
+// TODO: this needs work as it doesn't do anything any more right now... // we could hook it to update
+func (n *_NPCI) buildNPDU(hopCount uint8, source *Address, destination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority, nlm readWriteModel.NLM, apdu readWriteModel.APDU) (readWriteModel.NPDU, error) {
+	switch {
+	case nlm != nil && apdu != nil:
+		return nil, errors.New("either specify a NLM or a APDU exclusive")
+	case nlm == nil && apdu == nil:
+		return nil, errors.New("either specify a NLM or a APDU")
+	}
+	sourceSpecified := source != nil
+	var sourceNetworkAddress *uint16
+	var sourceLength *uint8
+	var sourceAddress []uint8
+	if sourceSpecified {
+		sourceSpecified = true
+		sourceNetworkAddress = source.AddrNet
+		sourceLengthValue := *source.AddrLen
+		if sourceLengthValue > math.MaxUint8 {
+			return nil, errors.New("source address length overflows")
+		}
+		sourceLengthValueUint8 := sourceLengthValue
+		sourceLength = &sourceLengthValueUint8
+		sourceAddress = source.AddrAddress
+		if sourceLengthValueUint8 == 0 {
+			// If we define the len 0 we must not send the array
+			sourceAddress = nil
+		}
+	}
+	destinationSpecified := destination != nil && destination.AddrType != LOCAL_BROADCAST_ADDRESS // TODO: check if this is right... (exclude local broadcast)
+	var destinationNetworkAddress *uint16
+	var destinationLength *uint8
+	var destinationAddress []uint8
+	var destinationHopCount *uint8
+	if destinationSpecified {
+		destinationSpecified = true
+		destinationNetworkAddress = destination.AddrNet
+		destinationLengthValue := *destination.AddrLen
+		if destinationLengthValue > math.MaxUint8 {
+			return nil, errors.New("source address length overflows")
+		}
+		destinationLengthValueUint8 := destinationLengthValue
+		destinationLength = &destinationLengthValueUint8
+		destinationAddress = destination.AddrAddress
+		if destinationLengthValueUint8 == 0 {
+			// If we define the len 0 we must not send the array
+			destinationAddress = nil
+		}
+		destinationHopCount = &hopCount
+	}
+	control := readWriteModel.NewNPDUControl(nlm != nil, destinationSpecified, sourceSpecified, expectingReply, networkPriority)
+	return readWriteModel.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, destinationHopCount, nlm, apdu, 0), nil
+}
+
 func (n *_NPCI) deepCopy() *_NPCI {
 	return &_NPCI{
 		_PCI:           n._PCI.deepCopy(),
@@ -444,8 +399,5 @@ func (n *_NPCI) deepCopy() *_NPCI {
 		npduHopCount:   CopyPtr(n.npduHopCount),
 		npduNetMessage: CopyPtr(n.npduNetMessage),
 		npduVendorID:   CopyPtr(n.npduVendorID),
-		npdu:           n.npdu,
-		nlm:            n.nlm,
-		apdu:           n.apdu,
 	}
 }

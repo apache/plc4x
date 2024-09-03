@@ -212,17 +212,17 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("localAdapter", localAdapter).Msg("localAdapter")
 
 	// build a generic APDU
-	apdu, err := new_APDU()
+	apdu, err := NewAPDU(nil, WithAPDUUserData(pdu.GetPDUUserData())) // Note: upstream makes a _APDU instance which looks like a programming error as this class is only useful in an extension context...
 	if err != nil {
 		return errors.Wrap(err, "error creating _APDU")
 	}
-	if err := pdu.(interface{ Encode(Arg) error }).Encode(apdu); err != nil { // TODO: check hard cast
+	if err := pdu.(Encoder).Encode(apdu); err != nil {
 		return errors.Wrap(err, "error encoding APDU")
 	}
 	n.log.Debug().Stringer("_APDU", apdu).Msg("apdu")
 
 	// build an NPDU specific to where it is going
-	npdu, err := NewNPDU(nil, apdu)
+	npdu, err := NewNPDU(nil, nil)
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}

@@ -52,12 +52,12 @@ func WithReadBroadcastDistributionTableAckBDT(bdt ...*Address) func(*ReadBroadca
 	}
 }
 
-func (w *ReadBroadcastDistributionTableAck) GetBvlciBDT() []*Address {
-	return w.bvlciBDT
+func (r *ReadBroadcastDistributionTableAck) GetBvlciBDT() []*Address {
+	return r.bvlciBDT
 }
 
-func (w *ReadBroadcastDistributionTableAck) produceBroadcastDistributionTable() (entries []model.BVLCBroadcastDistributionTableEntry) {
-	for _, address := range w.bvlciBDT {
+func (r *ReadBroadcastDistributionTableAck) produceBroadcastDistributionTable() (entries []model.BVLCBroadcastDistributionTableEntry) {
+	for _, address := range r.bvlciBDT {
 		addr := address.AddrAddress[:4]
 		port := uint16(47808)
 		if address.AddrPort != nil {
@@ -72,7 +72,7 @@ func (w *ReadBroadcastDistributionTableAck) produceBroadcastDistributionTable() 
 	return
 }
 
-func (w *ReadBroadcastDistributionTableAck) produceBvlciBDT(entries []model.BVLCBroadcastDistributionTableEntry) (bvlciBDT []*Address) {
+func (r *ReadBroadcastDistributionTableAck) produceBvlciBDT(entries []model.BVLCBroadcastDistributionTableEntry) (bvlciBDT []*Address) {
 	for _, entry := range entries {
 		addr := entry.GetIp()
 		port := entry.GetPort()
@@ -86,43 +86,47 @@ func (w *ReadBroadcastDistributionTableAck) produceBvlciBDT(entries []model.BVLC
 	return
 }
 
-func (w *ReadBroadcastDistributionTableAck) Encode(bvlpdu Arg) error {
+func (r *ReadBroadcastDistributionTableAck) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := bvlpdu.Update(w); err != nil {
+	case BVLCI:
+		if err := bvlpdu.getBVLCI().Update(r); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		for _, bdte := range w.bvlciBDT {
+	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		for _, bdte := range r.bvlciBDT {
 			bvlpdu.PutData(bdte.AddrAddress...)
 			bvlpdu.PutLong(*bdte.AddrMask)
 		}
-		bvlpdu.setBVLC(w.bvlc)
-		return nil
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
-func (w *ReadBroadcastDistributionTableAck) Decode(bvlpdu Arg) error {
+func (r *ReadBroadcastDistributionTableAck) Decode(bvlpdu Arg) error {
+	if err := r._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := w.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case model.BVLCReadBroadcastDistributionTableAck:
 			switch bvlc := rm.(type) {
 			case model.BVLCReadBroadcastDistributionTableAck:
-				w.setBVLC(bvlc)
-				w.bvlciBDT = w.produceBvlciBDT(bvlc.GetTable())
+				r.bvlciBDT = r.produceBvlciBDT(bvlc.GetTable())
+				r.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		r.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
-func (w *ReadBroadcastDistributionTableAck) String() string {
-	return fmt.Sprintf("ReadBroadcastDistributionTableAck{%v, bvlciBDT: %v}", w._BVLPDU, w.bvlciBDT)
+func (r *ReadBroadcastDistributionTableAck) String() string {
+	return fmt.Sprintf("ReadBroadcastDistributionTableAck{%v, bvlciBDT: %v}", r._BVLPDU, r.bvlciBDT)
 }

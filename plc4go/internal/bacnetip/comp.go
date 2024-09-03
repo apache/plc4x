@@ -321,3 +321,15 @@ func CopyPtr[T any](t *T) *T {
 	tc := *t
 	return &tc
 }
+
+type Updater interface {
+	Update(Arg) error
+}
+
+type Encoder interface {
+	Encode(Arg) error
+}
+
+type Decoder interface {
+	Decode(Arg) error
+}

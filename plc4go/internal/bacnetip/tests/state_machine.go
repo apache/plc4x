@@ -27,8 +27,9 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 )
 
 // Transition Instances of this class are transitions betweeen getStates of a state machine.
@@ -466,7 +467,11 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacnet
 				return false
 			}
 			equals := slices.EqualFunc(ifdt, oifdt, func(a *bacnetip.FDTEntry, b *bacnetip.FDTEntry) bool {
-				return a.Equals(b)
+				equals := a.Equals(b)
+				if !equals {
+					attrLog.Trace().Stringer("a", a).Stringer("b", b).Msg("doesn't match")
+				}
+				return equals
 			})
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")

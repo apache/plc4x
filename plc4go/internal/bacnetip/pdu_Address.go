@@ -141,12 +141,24 @@ func NewAddress(localLog zerolog.Logger, args ...any) (*Address, error) {
 		switch a.AddrType {
 		case LOCAL_STATION_ADDRESS:
 			a.AddrType = REMOTE_STATION_ADDRESS
-			var addrNet = (args[0]).(uint16)
-			a.AddrNet = &addrNet
+			var addrNet *uint16
+			switch arg0 := args[0].(type) {
+			case uint16:
+				addrNet = &arg0
+			case *uint16:
+				addrNet = arg0
+			}
+			a.AddrNet = addrNet
 		case LOCAL_BROADCAST_ADDRESS:
 			a.AddrType = REMOTE_BROADCAST_ADDRESS
-			var addrNet = (args[0]).(uint16)
-			a.AddrNet = &addrNet
+			var addrNet *uint16
+			switch arg0 := args[0].(type) {
+			case uint16:
+				addrNet = &arg0
+			case *uint16:
+				addrNet = arg0
+			}
+			a.AddrNet = addrNet
 		default:
 			return nil, errors.New("unrecognized address ctor form")
 		}

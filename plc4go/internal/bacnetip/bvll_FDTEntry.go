@@ -19,6 +19,8 @@
 
 package bacnetip
 
+import "fmt"
+
 type FDTEntry struct {
 	FDAddress *Address
 	FDTTL     uint16
@@ -34,4 +36,8 @@ func (f *FDTEntry) Equals(other any) bool {
 		return false
 	}
 	return f.FDAddress.Equals(otherEntry.FDAddress) && f.FDTTL == otherEntry.FDTTL && f.FDRemain == otherEntry.FDRemain
+}
+
+func (f *FDTEntry) String() string {
+	return fmt.Sprintf("%s (ttl: %d, remain: %d)", f.FDAddress, f.FDTTL, f.FDRemain)
 }

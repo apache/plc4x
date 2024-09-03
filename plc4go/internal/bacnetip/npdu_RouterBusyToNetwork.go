@@ -64,39 +64,42 @@ func (r *RouterBusyToNetwork) GetRbtnNetworkList() []uint16 {
 
 func (r *RouterBusyToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
-	case NPDU:
-		if err := npdu.Update(r); err != nil {
+	case NPCI:
+		if err := npdu.getNPCI().Update(r); err != nil {
 			return errors.Wrap(err, "error updating NPDU")
 		}
+	}
+	switch npdu := npdu.(type) {
+	case PDUData:
 		for _, net := range r.GetRbtnNetworkList() {
 			npdu.PutShort(net)
 		}
-		npdu.setNLM(r.nlm)
-		npdu.setAPDU(r.apdu)
-		return nil
 	default:
 		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	return nil
 }
 
 func (r *RouterBusyToNetwork) Decode(npdu Arg) error {
+	if err := r._NPCI.Update(npdu); err != nil {
+		return errors.Wrap(err, "error updating NPCI")
+	}
 	switch npdu := npdu.(type) {
 	case NPDU:
-		if err := r.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating NPDU")
-		}
-		switch pduUserData := npdu.GetRootMessage().(type) {
+		switch rm := npdu.GetRootMessage().(type) {
 		case model.NPDU:
-			switch nlm := pduUserData.GetNlm().(type) {
+			switch nlm := rm.GetNlm().(type) {
 			case model.NLMRouterBusyToNetwork:
-				r.setNLM(nlm)
 				r.rbtnNetworkList = nlm.GetDestinationNetworkAddresses()
+				r.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	switch npdu := npdu.(type) {
+	case PDUData:
+		r.SetPduData(npdu.GetPduData())
+	}
+	return nil
 }
 
 func (r *RouterBusyToNetwork) String() string {

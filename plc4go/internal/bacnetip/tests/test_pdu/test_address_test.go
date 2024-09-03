@@ -26,8 +26,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 )
 
 // Assert that the type, network, length, and address are what

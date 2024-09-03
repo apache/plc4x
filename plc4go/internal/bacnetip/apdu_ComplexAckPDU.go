@@ -22,61 +22,63 @@ package bacnetip
 import readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 
 // TODO: implement it...
-type SimpleAckPDU struct {
+type ComplexAckPDU struct {
 	*___APDU
 }
 
-var _ readWriteModel.APDUComplexAck = (*SimpleAckPDU)(nil)
+var _ readWriteModel.APDUComplexAck = (*ComplexAckPDU)(nil)
 
-func (s *SimpleAckPDU) GetSegmentedMessage() bool {
+func (c *ComplexAckPDU) GetSegmentedMessage() bool {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *SimpleAckPDU) GetMoreFollows() bool {
+func (c *ComplexAckPDU) GetMoreFollows() bool {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *SimpleAckPDU) GetOriginalInvokeId() uint8 {
+func (c *ComplexAckPDU) GetOriginalInvokeId() uint8 {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *SimpleAckPDU) GetSequenceNumber() *uint8 {
+func (c *ComplexAckPDU) GetSequenceNumber() *uint8 {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *SimpleAckPDU) GetProposedWindowSize() *uint8 {
+func (c *ComplexAckPDU) GetProposedWindowSize() *uint8 {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *SimpleAckPDU) GetServiceAck() readWriteModel.BACnetServiceAck {
+func (c *ComplexAckPDU) GetServiceAck() readWriteModel.BACnetServiceAck {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *SimpleAckPDU) GetSegmentServiceChoice() *readWriteModel.BACnetConfirmedServiceChoice {
+func (c *ComplexAckPDU) GetSegmentServiceChoice() *readWriteModel.BACnetConfirmedServiceChoice {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *SimpleAckPDU) GetSegment() []byte {
+func (c *ComplexAckPDU) GetSegment() []byte {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *SimpleAckPDU) GetApduHeaderReduction() uint16 {
+func (c *ComplexAckPDU) GetApduHeaderReduction() uint16 {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *SimpleAckPDU) GetSegmentReduction() uint16 {
+func (c *ComplexAckPDU) GetSegmentReduction() uint16 {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *SimpleAckPDU) IsAPDUComplexAck() {
+func (c *ComplexAckPDU) IsAPDUComplexAck() {
+	//TODO implement me
+	panic("implement me")
 }

@@ -42,38 +42,34 @@ func NewReadBroadcastDistributionTable(opts ...func(*ReadBroadcastDistributionTa
 	return b, nil
 }
 
-func (w *ReadBroadcastDistributionTable) Encode(bvlpdu Arg) error {
+func (r *ReadBroadcastDistributionTable) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := bvlpdu.Update(w); err != nil {
+	case BVLCI:
+		if err := bvlpdu.getBVLCI().Update(r); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		bvlpdu.setBVLC(w.bvlc)
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
-func (w *ReadBroadcastDistributionTable) Decode(bvlpdu Arg) error {
+func (r *ReadBroadcastDistributionTable) Decode(bvlpdu Arg) error {
+	if err := r._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := w.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case model.BVLCReadBroadcastDistributionTable:
-			switch bvlc := rm.(type) {
-			case model.BVLCReadBroadcastDistributionTable:
-				w.setBVLC(bvlc)
-			}
+			r.rootMessage = rm
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		r.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
-func (w *ReadBroadcastDistributionTable) String() string {
-	return fmt.Sprintf("ReadBroadcastDistributionTable{%v}", w._BVLPDU)
+func (r *ReadBroadcastDistributionTable) String() string {
+	return fmt.Sprintf("ReadBroadcastDistributionTable{%v}", r._BVLPDU)
 }

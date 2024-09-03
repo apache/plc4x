@@ -20,8 +20,9 @@
 package constructors
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 )
 
 func WhoIsRouterToNetwork(net uint16) *bacnetip.WhoIsRouterToNetwork {

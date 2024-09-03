@@ -21,6 +21,8 @@ package bacnetip
 
 import (
 	"github.com/pkg/errors"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 // APCISequenceContract provides a set of functions which can be overwritten by a sub struct
@@ -35,7 +37,6 @@ type APCISequenceContractRequirement interface {
 	SetAPCISequence(a *APCISequence)
 }
 
-// TODO: implement it...
 type APCISequence struct {
 	*_APCI
 	*Sequence
@@ -45,7 +46,7 @@ type APCISequence struct {
 	tagList *TagList
 }
 
-func NewAPCISequence(opts ...func(*APCISequence)) (*APCISequence, error) {
+func NewAPCISequence(apdu readWriteModel.APDU, opts ...func(*APCISequence)) (*APCISequence, error) {
 	a := &APCISequence{}
 	for _, opt := range opts {
 		opt(a)
@@ -55,7 +56,7 @@ func NewAPCISequence(opts ...func(*APCISequence)) (*APCISequence, error) {
 	} else {
 		a._contract.(APCISequenceContractRequirement).SetAPCISequence(a)
 	}
-	a._APCI = NewAPCI(nil).(*_APCI) // TODO: what to pass up?
+	a._APCI = NewAPCI(apdu).(*_APCI)
 	var err error
 	a.Sequence, err = NewSequence(NoKWArgs, WithSequenceExtension(a._contract))
 	if err != nil {
@@ -79,45 +80,52 @@ func (a *APCISequence) SetSequence(sequence *Sequence) {
 
 func (a *APCISequence) Encode(apdu Arg) error {
 	switch apdu := apdu.(type) {
-	case APDU:
+	case Updater:
 		if err := apdu.Update(a); err != nil {
 			return errors.Wrap(err, "error updating APDU")
 		}
+	}
 
-		// create a tag list
-		a.tagList = NewTagList(nil)
-		if err := a.Sequence.Encode(a.tagList); err != nil {
-			return errors.Wrap(err, "error encoding TagList")
-		}
+	// create a tag list
+	a.tagList = NewTagList(nil)
 
+	if err := a.Sequence.Encode(a.tagList); err != nil {
+		return errors.Wrap(err, "error encoding TagList")
+	}
+
+	switch apdu := apdu.(type) {
+	case PDUData:
 		// encode the tag list
 		a.tagList.Encode(apdu)
-		return nil
 	default:
 		return errors.Errorf("invalid APDU type %T", apdu)
 	}
+	return nil
 }
 
 func (a *APCISequence) Decode(apdu Arg) error {
+	// copy the header fields
+	if err := a.Update(apdu); err != nil {
+		return errors.Wrap(err, "error updating APDU")
+	}
+
+	// create a tag list and decode the rest of the data
+	a.tagList = NewTagList(nil)
 	switch apdu := apdu.(type) {
-	case APDU:
-		if err := a.Update(apdu); err != nil {
-			return errors.Wrap(err, "error updating APDU")
-		}
-		a.tagList = NewTagList(nil)
+	case PDUData:
 		if err := a.tagList.Decode(apdu); err != nil {
 			return errors.Wrap(err, "error decoding TagList")
 		}
-		// pass the taglist to the Sequence for additional decoding
-		if err := a.Sequence.Decode(a.tagList); err != nil {
-			return errors.Wrap(err, "error encoding TagList")
-		}
-
-		if len(a.tagList.GetTagList()) > 0 {
-			return errors.New("trailing unmatched tags")
-		}
-		return nil
 	default:
 		return errors.Errorf("invalid APDU type %T", apdu)
 	}
+	// pass the taglist to the Sequence for additional decoding
+	if err := a.Sequence.Decode(a.tagList); err != nil {
+		return errors.Wrap(err, "error encoding TagList")
+	}
+
+	if len(a.tagList.GetTagList()) > 0 {
+		return errors.New("trailing unmatched tags")
+	}
+	return nil
 }

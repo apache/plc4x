@@ -58,47 +58,50 @@ func WithWhoIsRouterToNetworkNet(net uint16) func(*WhoIsRouterToNetwork) {
 	}
 }
 
-func (n *WhoIsRouterToNetwork) GetWirtnNetwork() *uint16 {
-	return n.wirtnNetwork
+func (w *WhoIsRouterToNetwork) GetWirtnNetwork() *uint16 {
+	return w.wirtnNetwork
 }
 
-func (n *WhoIsRouterToNetwork) Encode(npdu Arg) error {
+func (w *WhoIsRouterToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
-	case NPDU:
-		if err := npdu.Update(n); err != nil {
+	case NPCI:
+		if err := npdu.getNPCI().Update(w); err != nil {
 			return errors.Wrap(err, "error updating NPDU")
 		}
-		if n.wirtnNetwork != nil {
-			npdu.PutShort(*n.wirtnNetwork)
+	}
+	switch npdu := npdu.(type) {
+	case PDUData:
+		if w.wirtnNetwork != nil {
+			npdu.PutShort(*w.wirtnNetwork)
 		}
-		npdu.setNLM(n.nlm)
-		npdu.setAPDU(n.apdu)
-		return nil
 	default:
 		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	return nil
 }
 
-func (n *WhoIsRouterToNetwork) Decode(npdu Arg) error {
+func (w *WhoIsRouterToNetwork) Decode(npdu Arg) error {
+	if err := w._NPCI.Update(npdu); err != nil {
+		return errors.Wrap(err, "error updating NPCI")
+	}
 	switch npdu := npdu.(type) {
 	case NPDU:
-		if err := n.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating NPDU")
-		}
-		switch pduUserData := npdu.GetRootMessage().(type) {
+		switch rm := npdu.GetRootMessage().(type) {
 		case model.NPDU:
-			switch nlm := pduUserData.GetNlm().(type) {
+			switch nlm := rm.GetNlm().(type) {
 			case model.NLMWhoIsRouterToNetwork:
-				n.setNLM(nlm)
-				n.wirtnNetwork = nlm.GetDestinationNetworkAddress()
+				w.wirtnNetwork = nlm.GetDestinationNetworkAddress()
+				w.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	switch npdu := npdu.(type) {
+	case PDUData:
+		w.SetPduData(npdu.GetPduData())
+	}
+	return nil
 }
 
-func (n *WhoIsRouterToNetwork) String() string {
-	return fmt.Sprintf("WhoIsRouterToNetwork{%s, wirtnNetwork: %d}", n._NPDU, n.wirtnNetwork)
+func (w *WhoIsRouterToNetwork) String() string {
+	return fmt.Sprintf("WhoIsRouterToNetwork{%s, wirtnNetwork: %d}", w._NPDU, w.wirtnNetwork)
 }

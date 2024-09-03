@@ -74,36 +74,37 @@ func (d *DeleteForeignDeviceTableEntry) GetBvlciAddress() *Address {
 
 func (d *DeleteForeignDeviceTableEntry) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := bvlpdu.Update(d); err != nil {
+	case BVLCI:
+		if err := bvlpdu.getBVLCI().Update(d); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
+	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
 		bvlpdu.PutData(d.bvlciAddress.AddrAddress...)
-		bvlpdu.setBVLC(d.bvlc)
-		return nil
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
 func (d *DeleteForeignDeviceTableEntry) Decode(bvlpdu Arg) error {
+	if err := d._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := d.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCDeleteForeignDeviceTableEntry:
-			switch bvlc := rm.(type) {
-			case readWriteModel.BVLCDeleteForeignDeviceTableEntry:
-				d.bvlciAddress = d.buildAddress(bvlc.GetIp(), bvlc.GetPort())
-				d.setBVLC(bvlc)
-			}
+			d.bvlciAddress = d.buildAddress(rm.GetIp(), rm.GetPort())
+			d.rootMessage = rm
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		d.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
 func (d *DeleteForeignDeviceTableEntry) String() string {

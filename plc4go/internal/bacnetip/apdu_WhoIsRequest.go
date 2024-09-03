@@ -41,10 +41,18 @@ func NewWhoIsRequest() (*WhoIsRequest, error) {
 		},
 	}
 	var err error
-	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(WithUnconfirmedRequestSequenceExtension(w))
+	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(
+		readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(
+			readWriteModel.CreateBACnetContextTagUnsignedInteger(0, 0),
+			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0),
+			0,
+		),
+		WithUnconfirmedRequestSequenceExtension(w),
+	)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating UnconfirmedRequestSequence")
 	}
+
 	return w, nil
 }
 

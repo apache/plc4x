@@ -31,10 +31,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 type TIPNetwork struct {

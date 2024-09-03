@@ -20,13 +20,17 @@
 package bacnetip
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/pkg/errors"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
 )
 
 type APDU interface {
-	model.APDU
+	readWriteModel.APDU
 	APCI
 	PDUData
 }
@@ -34,33 +38,91 @@ type APDU interface {
 type __APDU struct {
 	*_APCI
 	*_PDUData
+
+	// post construct function
+	_postConstruct []func()
 }
 
 var _ APDU = (*__APDU)(nil)
 
-func NewAPDU() (APDU, error) {
+// TODO: optimize with options and smart non-recoding...
+func NewAPDU(apdu readWriteModel.APDU, opts ...func(*__APDU)) (APDU, error) {
 	a := &__APDU{}
-
-	a._APCI = NewAPCI(nil).(*_APCI)
+	for _, opt := range opts {
+		opt(a)
+	}
+	a._APCI = NewAPCI(apdu).(*_APCI)
 	a._PDUData = NewPDUData(NoArgs).(*_PDUData)
+	// Do a post construct for a bit more easy initialization
+	for _, f := range a._postConstruct {
+		f()
+	}
+	a._postConstruct = nil
+	if a.rootMessage != nil {
+		a.data, _ = a.rootMessage.Serialize()
+	}
 	return a, nil
 }
 
+func WithAPDUUserData(userData spi.Message) func(*__APDU) {
+	return func(apdu *__APDU) {
+		apdu._postConstruct = append(apdu._postConstruct, func() {
+			apdu.pduUserData = userData
+		})
+	}
+}
+
 func (a *__APDU) Encode(pdu Arg) error {
-	panic("implement me")
+	if err := a._APCI.Encode(pdu); err != nil {
+		return errors.Wrap(err, "error encoding APCI")
+	}
+	switch pdu := pdu.(type) {
+	case PDUData:
+		pdu.PutData(a.data...)
+	}
+	return nil
 }
 
 func (a *__APDU) Decode(pdu Arg) error {
-	panic("implement me")
+	var rootMessage spi.Message
+	switch pdu := pdu.(type) { // Save a root message as long as we have enough data
+	case PDUData:
+		data := pdu.GetPduData()
+		rootMessage, _ = readWriteModel.APDUParse[readWriteModel.APDU](context.Background(), data, uint16(len(data)))
+	}
+	if err := a._APCI.Decode(pdu); err != nil {
+		return errors.Wrap(err, "error decoding APCI")
+	}
+	switch pdu := pdu.(type) {
+	case PDUData:
+		a.PutData(pdu.GetPduData()...)
+	}
+	if rootMessage != nil {
+		// Overwrite the root message again so we can use it for matching
+		a.rootMessage = rootMessage
+	}
+	return nil
+}
+
+func (a *__APDU) GetApduType() readWriteModel.ApduType {
+	switch rm := a.rootMessage.(type) {
+	case readWriteModel.APDU:
+		return rm.GetApduType()
+	default:
+		return 0
+	}
 }
 
 func (a *__APDU) GetApduLength() uint16 {
-	//TODO implement me
-	panic("implement me")
+	switch rm := a.rootMessage.(type) {
+	case readWriteModel.APDU:
+		return rm.GetApduLength()
+	default:
+		return 0
+	}
 }
 
-func (a *__APDU) GetApduType() model.ApduType {
-	panic("implement me")
+func (a *__APDU) IsAPDU() {
 }
 
 func (a *__APDU) deepCopy() *__APDU {
@@ -72,10 +134,5 @@ func (a *__APDU) DeepCopy() any {
 }
 
 func (a *__APDU) String() string {
-	return fmt.Sprintf("__APDU{%s}", a._PCI)
-}
-
-func (a *__APDU) IsAPDU() {
-	//TODO implement me
-	panic("implement me")
+	return fmt.Sprintf("APDU{%s}", a._PCI)
 }

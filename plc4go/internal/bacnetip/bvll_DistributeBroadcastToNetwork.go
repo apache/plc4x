@@ -81,49 +81,46 @@ func WithDistributeBroadcastToNetworkUserData(userData spi.Message) func(*Distri
 	}
 }
 
-func (o *DistributeBroadcastToNetwork) produceInnerNPDU(inNpdu model.NPDU) (npdu model.NPDU, bvlcPayloadLength uint16) {
+func (d *DistributeBroadcastToNetwork) produceInnerNPDU(inNpdu model.NPDU) (npdu model.NPDU, bvlcPayloadLength uint16) {
 	npdu = inNpdu
 	return
 }
 
-func (o *DistributeBroadcastToNetwork) Encode(bvlpdu Arg) error {
+func (d *DistributeBroadcastToNetwork) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := bvlpdu.Update(o); err != nil {
+	case BVLCI:
+		if err := bvlpdu.getBVLCI().Update(d); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
+	}
 
-		bvlpdu.PutData(o.GetPduData()...)
-
-		bvlpdu.setBVLC(o.bvlc)
-		return nil
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		bvlpdu.PutData(d.GetPduData()...)
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
-func (o *DistributeBroadcastToNetwork) Decode(bvlpdu Arg) error {
+func (d *DistributeBroadcastToNetwork) Decode(bvlpdu Arg) error {
+	if err := d._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := o.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case model.BVLCDistributeBroadcastToNetwork:
-			npdu := rm.GetNpdu()
-			pduData, err := npdu.Serialize()
-			if err != nil {
-				return errors.Wrap(err, "error serializing NPDU")
-			}
-			o.SetPduData(pduData)
-			o.setBVLC(rm)
+			d.rootMessage = rm
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		d.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
-func (o *DistributeBroadcastToNetwork) String() string {
-	return fmt.Sprintf("DistributeBroadcastToNetwork{%s}", o._BVLPDU)
+func (d *DistributeBroadcastToNetwork) String() string {
+	return fmt.Sprintf("DistributeBroadcastToNetwork{%s}", d._BVLPDU)
 }

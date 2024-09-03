@@ -50,14 +50,17 @@ func NewForwardedNPDU(pdu PDU, opts ...func(*ForwardedNPDU)) (*ForwardedNPDU, er
 	case nil:
 		b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
 	default:
-		// TODO: re-encode seems expensive... check if there is a better option (e.g. only do it on the message bridge)
 		data := pdu.GetPduData()
-		parse, err := model.NPDUParse(context.Background(), data, uint16(len(data)))
+		parsedNPDU, err := model.NPDUParse(context.Background(), data, uint16(len(data)))
 		if err != nil {
-			return nil, errors.Wrap(err, "error re-encoding")
+			b._BVLPDU = NewBVLPDU(model.NewBVLCForwardedNPDU(b.produceInnerNPDU(parsedNPDU))).(*_BVLPDU)
+		} else {
+			b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
+			b._BVLPDU.SetPduData(data)
 		}
-		b._BVLPDU = NewBVLPDU(model.NewBVLCForwardedNPDU(b.produceInnerNPDU(parse))).(*_BVLPDU)
 	}
+	b.bvlciFunction = 0x04
+	b.bvlciLength = uint16(10 + len(b.GetPduData()))
 	return b, nil
 }
 
@@ -73,48 +76,53 @@ func WithForwardedNPDUUserData(userData spi.Message) func(*ForwardedNPDU) {
 	}
 }
 
-func (w *ForwardedNPDU) GetBvlciAddress() *Address {
-	return w.bvlciAddress
+func (f *ForwardedNPDU) GetBvlciAddress() *Address {
+	return f.bvlciAddress
 }
 
-func (w *ForwardedNPDU) produceInnerNPDU(inNpdu model.NPDU) (ip []uint8, port uint16, npdu model.NPDU, bvlcPayloadLength uint16) {
-	ip = w.bvlciAddress.AddrAddress[:4]
+func (f *ForwardedNPDU) produceInnerNPDU(inNpdu model.NPDU) (ip []uint8, port uint16, npdu model.NPDU, bvlcPayloadLength uint16) {
+	ip = f.bvlciAddress.AddrAddress[:4]
 	port = uint16(47808)
-	if w.bvlciAddress.AddrPort != nil {
-		port = *w.bvlciAddress.AddrPort
+	if f.bvlciAddress.AddrPort != nil {
+		port = *f.bvlciAddress.AddrPort
 	}
 	npdu = inNpdu
 	return
 }
 
-func (w *ForwardedNPDU) Encode(bvlpdu Arg) error {
+func (f *ForwardedNPDU) Encode(bvlpdu Arg) error {
+	// make sure the length is correct
+	f.bvlciLength = uint16(10 + len(f.GetPduData()))
+
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := bvlpdu.Update(w); err != nil {
+	case BVLCI:
+		if err := bvlpdu.getBVLCI().Update(f); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
+	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
 
 		// encode the addrress
-		bvlpdu.PutData(w.bvlciAddress.AddrAddress...)
+		bvlpdu.PutData(f.bvlciAddress.AddrAddress...)
 
 		// encode the rest of the data
-		bvlpdu.PutData(w.GetPduData()...)
-
-		bvlpdu.setBVLC(w.bvlc)
-		return nil
+		bvlpdu.PutData(f.GetPduData()...)
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
-func (w *ForwardedNPDU) Decode(bvlpdu Arg) error {
+func (f *ForwardedNPDU) Decode(bvlpdu Arg) error {
+	if err := f._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := w.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case model.BVLCForwardedNPDU:
+			_, _ = bvlpdu.GetData(6) // TODO: do we really want to discard that?
 			addr := rm.GetIp()
 			port := rm.GetPort()
 			var portArray = make([]byte, 2)
@@ -124,22 +132,17 @@ func (w *ForwardedNPDU) Decode(bvlpdu Arg) error {
 			if err != nil {
 				return errors.Wrap(err, "error creating address")
 			}
-			w.bvlciAddress = address
-			npdu := rm.GetNpdu()
-			pduData, err := npdu.Serialize()
-			if err != nil {
-				return errors.Wrap(err, "error serializing NPDU")
-			}
-			w.SetPduData(pduData)
-
-			w.setBVLC(rm)
+			f.bvlciAddress = address
+			f.rootMessage = rm
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		f.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
-func (w *ForwardedNPDU) String() string {
-	return fmt.Sprintf("ForwardedNPDU{%v, bvlciAddress: %v}", w._BVLPDU, w.bvlciAddress)
+func (f *ForwardedNPDU) String() string {
+	return fmt.Sprintf("ForwardedNPDU{%v, bvlciAddress: %v}", f._BVLPDU, f.bvlciAddress)
 }

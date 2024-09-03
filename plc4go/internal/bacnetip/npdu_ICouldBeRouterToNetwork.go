@@ -75,39 +75,42 @@ func (i *ICouldBeRouterToNetwork) GetIcbrtnPerformanceIndex() uint8 {
 
 func (i *ICouldBeRouterToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
-	case NPDU:
-		if err := npdu.Update(i); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+	case NPCI:
+		if err := npdu.getNPCI().Update(i); err != nil {
+			return errors.Wrap(err, "error updating NPDU")
 		}
+	}
+	switch npdu := npdu.(type) {
+	case PDUData:
 		npdu.PutShort(i.icbrtnNetwork)
 		npdu.Put(i.icbrtnPerformanceIndex)
-		npdu.setNLM(i.nlm)
-		npdu.setAPDU(i.apdu)
-		return nil
 	default:
 		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	return nil
 }
 
 func (i *ICouldBeRouterToNetwork) Decode(npdu Arg) error {
+	if err := i._NPCI.Update(npdu); err != nil {
+		return errors.Wrap(err, "error updating NPCI")
+	}
 	switch npdu := npdu.(type) {
 	case NPDU:
-		if err := i.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
-		}
-		switch pduUserData := npdu.GetRootMessage().(type) {
+		switch rm := npdu.GetRootMessage().(type) {
 		case model.NPDU:
-			switch nlm := pduUserData.GetNlm().(type) {
+			switch nlm := rm.GetNlm().(type) {
 			case model.NLMICouldBeRouterToNetwork:
-				i.setNLM(nlm)
 				i.icbrtnNetwork = nlm.GetDestinationNetworkAddress()
 				i.icbrtnPerformanceIndex = nlm.GetPerformanceIndex()
+				i.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	switch npdu := npdu.(type) {
+	case PDUData:
+		i.SetPduData(npdu.GetPduData())
+	}
+	return nil
 }
 
 func (i *ICouldBeRouterToNetwork) String() string {

@@ -30,10 +30,13 @@ import (
 
 type PCI interface {
 	IPCI
+
 	SetExpectingReply(bool)
 	GetExpectingReply() bool
 	SetNetworkPriority(model.NPDUNetworkPriority)
 	GetNetworkPriority() model.NPDUNetworkPriority
+
+	GetPCI() PCI
 }
 
 type _PCI struct {
@@ -80,6 +83,10 @@ func (p *_PCI) SetNetworkPriority(priority model.NPDUNetworkPriority) {
 
 func (p *_PCI) GetNetworkPriority() model.NPDUNetworkPriority {
 	return p.networkPriority
+}
+
+func (p *_PCI) GetPCI() PCI {
+	return p
 }
 
 func (p *_PCI) deepCopy() *_PCI {

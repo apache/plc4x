@@ -25,9 +25,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 func TagTuple(tag bacnetip.Tag) (tagClass model.TagClass, tagNumber uint, tagLVT int, tagData []byte) {

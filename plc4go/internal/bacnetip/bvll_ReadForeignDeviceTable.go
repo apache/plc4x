@@ -42,38 +42,36 @@ func NewReadForeignDeviceTable(opts ...func(*ReadForeignDeviceTable)) (*ReadFore
 	return b, nil
 }
 
-func (w *ReadForeignDeviceTable) Encode(bvlpdu Arg) error {
+func (r *ReadForeignDeviceTable) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := bvlpdu.Update(w); err != nil {
+		if err := bvlpdu.Update(r); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		bvlpdu.setBVLC(w.bvlc)
-		return nil
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
-func (w *ReadForeignDeviceTable) Decode(bvlpdu Arg) error {
+func (r *ReadForeignDeviceTable) Decode(bvlpdu Arg) error {
+	if err := r._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := w.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
+	case BVLCI:
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case model.BVLCReadForeignDeviceTable:
-			switch bvlc := rm.(type) {
-			case model.BVLCReadForeignDeviceTable:
-				w.setBVLC(bvlc)
-			}
+			r.rootMessage = rm
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		r.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
-func (w *ReadForeignDeviceTable) String() string {
-	return fmt.Sprintf("ReadForeignDeviceTable{%v}", w._BVLPDU)
+func (r *ReadForeignDeviceTable) String() string {
+	return fmt.Sprintf("ReadForeignDeviceTable{%v}", r._BVLPDU)
 }

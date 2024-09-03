@@ -20,15 +20,17 @@
 package bacnetip
 
 import (
+	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi"
 
 	"github.com/pkg/errors"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type NPDU interface {
-	model.NPDU
+	readWriteModel.NPDU
 	NPCI
 	PDUData
 
@@ -43,13 +45,12 @@ type _NPDU struct {
 var _ NPDU = (*_NPDU)(nil)
 
 // TODO: optimize with options and smart non-recoding...
-func NewNPDU(nlm model.NLM, apdu model.APDU) (NPDU, error) {
+func NewNPDU(nlm readWriteModel.NLM, apdu readWriteModel.APDU) (NPDU, error) {
 	n := &_NPDU{}
-	npdu, _ := n.buildNPDU(0, nil, nil, false, model.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
-	n._NPCI = NewNPCI(npdu, nlm, apdu).(*_NPCI)
+	n._NPCI = NewNPCI(nlm, apdu).(*_NPCI)
 	n._PDUData = NewPDUData(NoArgs).(*_PDUData)
-	if npdu != nil {
-		n.data, _ = npdu.Serialize()
+	if n.rootMessage != nil {
+		n.data, _ = n.rootMessage.Serialize()
 	}
 	return n, nil
 }
@@ -66,6 +67,12 @@ func (n *_NPDU) Encode(pdu Arg) error {
 }
 
 func (n *_NPDU) Decode(pdu Arg) error {
+	var rootMessage spi.Message
+	switch pdu := pdu.(type) { // Save a root message as long as we have enough data
+	case PDUData:
+		data := pdu.GetPduData()
+		rootMessage, _ = readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
+	}
 	if err := n._NPCI.Decode(pdu); err != nil {
 		return errors.Wrap(err, "error decoding _NPCI")
 	}
@@ -73,12 +80,16 @@ func (n *_NPDU) Decode(pdu Arg) error {
 	case PDUData:
 		n.PutData(pdu.GetPduData()...)
 	}
+	if rootMessage != nil {
+		// Overwrite the root message again so we can use it for matching
+		n.rootMessage = rootMessage
+	}
 	return nil
 }
 
-func (n *_NPDU) getNPDUModel() (model.NPDU, bool) {
+func (n *_NPDU) getNPDUModel() (readWriteModel.NPDU, bool) {
 	rm := n.GetRootMessage()
-	npdu, ok := rm.(model.NPDU)
+	npdu, ok := rm.(readWriteModel.NPDU)
 	return npdu, ok
 }
 
@@ -90,7 +101,7 @@ func (n *_NPDU) GetProtocolVersionNumber() uint8 {
 	return npdu.GetProtocolVersionNumber()
 }
 
-func (n *_NPDU) GetControl() model.NPDUControl {
+func (n *_NPDU) GetControl() readWriteModel.NPDUControl {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
 		return nil
@@ -154,7 +165,7 @@ func (n *_NPDU) GetHopCount() *uint8 {
 	return npdu.GetHopCount()
 }
 
-func (n *_NPDU) GetNlm() model.NLM {
+func (n *_NPDU) GetNlm() readWriteModel.NLM {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
 		return nil
@@ -162,7 +173,7 @@ func (n *_NPDU) GetNlm() model.NLM {
 	return npdu.GetNlm()
 }
 
-func (n *_NPDU) GetApdu() model.APDU {
+func (n *_NPDU) GetApdu() readWriteModel.APDU {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
 		return nil

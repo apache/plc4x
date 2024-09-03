@@ -24,13 +24,13 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type Result struct {
 	*_BVLPDU
 
-	bvlciResultCode model.BVLCResultCode
+	bvlciResultCode readWriteModel.BVLCResultCode
 }
 
 var _ BVLPDU = (*Result)(nil)
@@ -40,54 +40,58 @@ func NewResult(opts ...func(result *Result)) (*Result, error) {
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(model.NewBVLCResult(b.bvlciResultCode)).(*_BVLPDU)
+	b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCResult(b.bvlciResultCode)).(*_BVLPDU)
 	return b, nil
 }
 
-func WithResultBvlciResultCode(code model.BVLCResultCode) func(*Result) {
+func WithResultBvlciResultCode(code readWriteModel.BVLCResultCode) func(*Result) {
 	return func(b *Result) {
 		b.bvlciResultCode = code
 	}
 }
 
-func (n *Result) GetBvlciResultCode() model.BVLCResultCode {
-	return n.bvlciResultCode
+func (r *Result) GetBvlciResultCode() readWriteModel.BVLCResultCode {
+	return r.bvlciResultCode
 }
 
-func (n *Result) Encode(bvlpdu Arg) error {
+func (r *Result) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := bvlpdu.Update(n); err != nil {
+	case BVLCI:
+		if err := bvlpdu.getBVLCI().Update(r); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		bvlpdu.PutShort(uint16(n.bvlciResultCode))
-		bvlpdu.setBVLC(n.bvlc)
-		return nil
+	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		bvlpdu.PutShort(uint16(r.bvlciResultCode))
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
-func (n *Result) Decode(bvlpdu Arg) error {
+func (r *Result) Decode(bvlpdu Arg) error {
+	if err := r._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := n.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
-		case model.BVLCResult:
+		case readWriteModel.BVLCResult:
 			switch bvlc := rm.(type) {
-			case model.BVLCResult:
-				n.setBVLC(bvlc)
-				n.bvlciResultCode = bvlc.GetCode()
+			case readWriteModel.BVLCResult:
+				r.bvlciResultCode = bvlc.GetCode()
+				r.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		r.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
-func (n *Result) String() string {
-	return fmt.Sprintf("Result{%v, bvlciResultCode: %v}", n._BVLPDU, n.bvlciResultCode)
+func (r *Result) String() string {
+	return fmt.Sprintf("Result{%v, bvlciResultCode: %v}", r._BVLPDU, r.bvlciResultCode)
 }

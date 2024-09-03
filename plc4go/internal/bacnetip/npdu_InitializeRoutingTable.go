@@ -58,20 +58,20 @@ func WithInitializeRoutingTableIrtTable(irtTable ...*RoutingTableEntry) func(*In
 	}
 }
 
-func (r *InitializeRoutingTable) GetIrtTable() []*RoutingTableEntry {
-	return r.irtTable
+func (i *InitializeRoutingTable) GetIrtTable() []*RoutingTableEntry {
+	return i.irtTable
 }
 
-func (r *InitializeRoutingTable) produceNLMInitializeRoutingTablePortMapping() (numberOfPorts uint8, mappings []model.NLMInitializeRoutingTablePortMapping, _ uint16) {
-	numberOfPorts = uint8(len(r.irtTable))
+func (i *InitializeRoutingTable) produceNLMInitializeRoutingTablePortMapping() (numberOfPorts uint8, mappings []model.NLMInitializeRoutingTablePortMapping, _ uint16) {
+	numberOfPorts = uint8(len(i.irtTable))
 	mappings = make([]model.NLMInitializeRoutingTablePortMapping, numberOfPorts)
-	for i, entry := range r.irtTable {
+	for i, entry := range i.irtTable {
 		mappings[i] = model.NewNLMInitializeRoutingTablePortMapping(entry.tuple())
 	}
 	return
 }
 
-func (r *InitializeRoutingTable) produceIRTTable(mappings []model.NLMInitializeRoutingTablePortMapping) (irtTable []*RoutingTableEntry) {
+func (i *InitializeRoutingTable) produceIRTTable(mappings []model.NLMInitializeRoutingTablePortMapping) (irtTable []*RoutingTableEntry) {
 	irtTable = make([]*RoutingTableEntry, len(mappings))
 	for i, entry := range mappings {
 		irtTable[i] = NewRoutingTableEntry(
@@ -83,47 +83,53 @@ func (r *InitializeRoutingTable) produceIRTTable(mappings []model.NLMInitializeR
 	return
 }
 
-func (r *InitializeRoutingTable) Encode(npdu Arg) error {
+func (i *InitializeRoutingTable) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
-	case NPDU:
-		if err := npdu.Update(r); err != nil {
+	case NPCI:
+		if err := npdu.getNPCI().Update(i); err != nil {
 			return errors.Wrap(err, "error updating NPDU")
 		}
-		npdu.Put(uint8(len(r.irtTable)))
-		for _, rte := range r.irtTable {
+	}
+	switch npdu := npdu.(type) {
+	case PDUData:
+		npdu.Put(uint8(len(i.irtTable)))
+		for _, rte := range i.irtTable {
 			npdu.PutShort(rte.rtDNET)
 			npdu.Put(rte.rtPortId)
 			npdu.Put(byte(len(rte.rtPortInfo)))
 			npdu.PutData(rte.rtPortInfo...)
 		}
-		npdu.setNLM(r.nlm)
-		npdu.setAPDU(r.apdu)
-		return nil
 	default:
 		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	return nil
 }
 
-func (r *InitializeRoutingTable) Decode(npdu Arg) error {
+func (i *InitializeRoutingTable) Decode(npdu Arg) error {
+	if err := i._NPCI.Update(npdu); err != nil {
+		return errors.Wrap(err, "error updating NPCI")
+	}
 	switch npdu := npdu.(type) {
 	case NPDU:
-		if err := r.Update(npdu); err != nil {
+		if err := i.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating NPDU")
 		}
-		switch pduUserData := npdu.GetRootMessage().(type) {
+		switch rm := npdu.GetRootMessage().(type) {
 		case model.NPDU:
-			switch nlm := pduUserData.GetNlm().(type) {
+			switch nlm := rm.GetNlm().(type) {
 			case model.NLMInitializeRoutingTable:
-				r.setNLM(nlm)
-				r.irtTable = r.produceIRTTable(nlm.GetPortMappings())
+				i.irtTable = i.produceIRTTable(nlm.GetPortMappings())
+				i.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	switch npdu := npdu.(type) {
+	case PDUData:
+		i.SetPduData(npdu.GetPduData())
+	}
+	return nil
 }
 
-func (r *InitializeRoutingTable) String() string {
-	return fmt.Sprintf("InitializeRoutingTable{%s, irtTable: %v}", r._NPDU, r.irtTable)
+func (i *InitializeRoutingTable) String() string {
+	return fmt.Sprintf("InitializeRoutingTable{%s, irtTable: %v}", i._NPDU, i.irtTable)
 }

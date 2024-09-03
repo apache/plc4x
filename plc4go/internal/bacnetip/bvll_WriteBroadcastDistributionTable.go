@@ -88,39 +88,43 @@ func (w *WriteBroadcastDistributionTable) produceBvlciBDT(entries []readWriteMod
 
 func (w *WriteBroadcastDistributionTable) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := bvlpdu.Update(w); err != nil {
+	case BVLCI:
+		if err := bvlpdu.getBVLCI().Update(w); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
+	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
 		for _, bdte := range w.bvlciBDT {
 			bvlpdu.PutData(bdte.AddrAddress...)
 			bvlpdu.PutLong(*bdte.AddrMask)
 		}
-		bvlpdu.setBVLC(w.bvlc)
-		return nil
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
 func (w *WriteBroadcastDistributionTable) Decode(bvlpdu Arg) error {
+	if err := w._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := w.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCWriteBroadcastDistributionTable:
 			switch bvlc := rm.(type) {
 			case readWriteModel.BVLCWriteBroadcastDistributionTable:
-				w.setBVLC(bvlc)
 				w.bvlciBDT = w.produceBvlciBDT(bvlc.GetTable())
+				w.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		w.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
 func (w *WriteBroadcastDistributionTable) String() string {

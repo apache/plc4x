@@ -50,44 +50,48 @@ func WithRegisterForeignDeviceBvlciTimeToLive(ttl uint16) func(*RegisterForeignD
 	}
 }
 
-func (n *RegisterForeignDevice) GetBvlciTimeToLive() uint16 {
-	return n.bvlciTimeToLive
+func (r *RegisterForeignDevice) GetBvlciTimeToLive() uint16 {
+	return r.bvlciTimeToLive
 }
 
-func (n *RegisterForeignDevice) Encode(bvlpdu Arg) error {
+func (r *RegisterForeignDevice) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := bvlpdu.Update(n); err != nil {
+	case BVLCI:
+		if err := bvlpdu.getBVLCI().Update(r); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		bvlpdu.PutShort(n.bvlciTimeToLive)
-		bvlpdu.setBVLC(n.bvlc)
-		return nil
+	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		bvlpdu.PutShort(r.bvlciTimeToLive)
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
-func (n *RegisterForeignDevice) Decode(bvlpdu Arg) error {
+func (r *RegisterForeignDevice) Decode(bvlpdu Arg) error {
+	if err := r._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := n.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case model.BVLCRegisterForeignDevice:
 			switch bvlc := rm.(type) {
 			case model.BVLCRegisterForeignDevice:
-				n.setBVLC(bvlc)
-				n.bvlciTimeToLive = bvlc.GetTtl()
+				r.bvlciTimeToLive = bvlc.GetTtl()
+				r.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		r.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
-func (n *RegisterForeignDevice) String() string {
-	return fmt.Sprintf("RegisterForeignDevice{%v, bvlciTimeToLive: %v}", n._BVLPDU, n.bvlciTimeToLive)
+func (r *RegisterForeignDevice) String() string {
+	return fmt.Sprintf("RegisterForeignDevice{%v, bvlciTimeToLive: %v}", r._BVLPDU, r.bvlciTimeToLive)
 }

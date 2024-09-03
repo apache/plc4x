@@ -52,12 +52,12 @@ func WithReadForeignDeviceTableAckFDT(fdts ...*FDTEntry) func(*ReadForeignDevice
 	}
 }
 
-func (w *ReadForeignDeviceTableAck) GetBvlciFDT() []*FDTEntry {
-	return w.bvlciFDT
+func (r *ReadForeignDeviceTableAck) GetBvlciFDT() []*FDTEntry {
+	return r.bvlciFDT
 }
 
-func (w *ReadForeignDeviceTableAck) produceForeignDeviceTable() (entries []model.BVLCForeignDeviceTableEntry) {
-	for _, entry := range w.bvlciFDT {
+func (r *ReadForeignDeviceTableAck) produceForeignDeviceTable() (entries []model.BVLCForeignDeviceTableEntry) {
+	for _, entry := range r.bvlciFDT {
 		address := entry.FDAddress
 		addr := address.AddrAddress[:4]
 		port := uint16(47808)
@@ -69,7 +69,7 @@ func (w *ReadForeignDeviceTableAck) produceForeignDeviceTable() (entries []model
 	return
 }
 
-func (w *ReadForeignDeviceTableAck) produceBvlciFDT(entries []model.BVLCForeignDeviceTableEntry) (bvlciFDT []*FDTEntry) {
+func (r *ReadForeignDeviceTableAck) produceBvlciFDT(entries []model.BVLCForeignDeviceTableEntry) (bvlciFDT []*FDTEntry) {
 	for _, entry := range entries {
 		addr := entry.GetIp()
 		port := entry.GetPort()
@@ -85,44 +85,45 @@ func (w *ReadForeignDeviceTableAck) produceBvlciFDT(entries []model.BVLCForeignD
 	return
 }
 
-func (w *ReadForeignDeviceTableAck) Encode(bvlpdu Arg) error {
+func (r *ReadForeignDeviceTableAck) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
-	case BVLPDU:
-		if err := bvlpdu.Update(w); err != nil {
+	case BVLCI:
+		if err := bvlpdu.getBVLCI().Update(r); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		for _, fdte := range w.bvlciFDT {
+	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		for _, fdte := range r.bvlciFDT {
 			bvlpdu.PutData(fdte.FDAddress.AddrAddress...)
 			bvlpdu.PutShort(fdte.FDTTL)
 			bvlpdu.PutShort(fdte.FDRemain)
 		}
-		bvlpdu.setBVLC(w.bvlc)
-		return nil
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	return nil
 }
 
-func (w *ReadForeignDeviceTableAck) Decode(bvlpdu Arg) error {
+func (r *ReadForeignDeviceTableAck) Decode(bvlpdu Arg) error {
+	if err := r._BVLCI.Update(bvlpdu); err != nil {
+		return errors.Wrap(err, "error updating BVLCI")
+	}
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := w.Update(bvlpdu); err != nil {
-			return errors.Wrap(err, "error updating BVLPDU")
-		}
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case model.BVLCReadForeignDeviceTableAck:
-			switch bvlc := rm.(type) {
-			case model.BVLCReadForeignDeviceTableAck:
-				w.setBVLC(bvlc)
-				w.bvlciFDT = w.produceBvlciFDT(bvlc.GetTable())
-			}
+			r.bvlciFDT = r.produceBvlciFDT(rm.GetTable())
+			r.rootMessage = rm
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
+	switch bvlpdu := bvlpdu.(type) {
+	case PDUData:
+		r.SetPduData(bvlpdu.GetPduData())
+	}
+	return nil
 }
 
-func (w *ReadForeignDeviceTableAck) String() string {
-	return fmt.Sprintf("ReadForeignDeviceTableAck{%v, bvlciFDT: %v}", w._BVLPDU, w.bvlciFDT)
+func (r *ReadForeignDeviceTableAck) String() string {
+	return fmt.Sprintf("ReadForeignDeviceTableAck{%v, bvlciFDT: %v}", r._BVLPDU, r.bvlciFDT)
 }

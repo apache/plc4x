@@ -28,12 +28,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 )
 
 type TPDU struct {
@@ -186,6 +187,11 @@ func (t TPDU) PutShort(i uint16) {
 }
 
 func (t TPDU) PutLong(i uint32) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) GetPCI() bacnetip.PCI {
 	//TODO implement me
 	panic("implement me")
 }

@@ -50,39 +50,37 @@ func NewWhatIsNetworkNumber(opts ...func(*WhatIsNetworkNumber)) (*WhatIsNetworkN
 	return i, nil
 }
 
-func (n *WhatIsNetworkNumber) Encode(npdu Arg) error {
+func (w *WhatIsNetworkNumber) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
-	case NPDU:
-		if err := npdu.Update(n); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+	case NPCI:
+		if err := npdu.getNPCI().Update(w); err != nil {
+			return errors.Wrap(err, "error updating NPDU")
 		}
-		npdu.setNLM(n.nlm)
-		npdu.setAPDU(n.apdu)
-		return nil
-	default:
-		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	return nil
 }
 
-func (n *WhatIsNetworkNumber) Decode(npdu Arg) error {
+func (w *WhatIsNetworkNumber) Decode(npdu Arg) error {
+	if err := w._NPCI.Update(npdu); err != nil {
+		return errors.Wrap(err, "error updating NPCI")
+	}
 	switch npdu := npdu.(type) {
 	case NPDU:
-		if err := n.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
-		}
-		switch pduUserData := npdu.GetRootMessage().(type) {
+		switch rm := npdu.GetRootMessage().(type) {
 		case model.NPDU:
-			switch nlm := pduUserData.GetNlm().(type) {
+			switch rm := rm.GetNlm().(type) {
 			case model.NLMWhatIsNetworkNumber:
-				n.setNLM(nlm)
+				w.rootMessage = rm
 			}
 		}
-		return nil
-	default:
-		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
+	switch npdu := npdu.(type) {
+	case PDUData:
+		w.SetPduData(npdu.GetPduData())
+	}
+	return nil
 }
 
-func (n *WhatIsNetworkNumber) String() string {
-	return fmt.Sprintf("WhatIsNetworkNumber{%s}", n._NPDU)
+func (w *WhatIsNetworkNumber) String() string {
+	return fmt.Sprintf("WhatIsNetworkNumber{%s}", w._NPDU)
 }
