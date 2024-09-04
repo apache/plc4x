@@ -24,11 +24,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/tools/common"
 )
 
 var (
@@ -87,44 +86,18 @@ func main() {
 		baseName := fmt.Sprintf("%s_string.go", types[0])
 		outputName = filepath.Join(dir, strings.ToLower(baseName))
 	}
-	inputFile, err2 := os.ReadFile(outputName)
+	inputFile, err := os.ReadFile(outputName)
+	if err != nil {
+		log.Fatalf("error reading output file: %v", err)
+	}
 
-	licenseFileName := *licenseFile
-	isAbs := path.IsAbs(licenseFileName)
-	licenceContent := GetLicenseFileContent(isAbs, licenseFileName, err2)
+	licenceContent := common.GetLicenseFileContent(*licenseFile, *verbose)
+	licenceContent = append(licenceContent, '\n')
 
 	if err := os.WriteFile(outputName, append(licenceContent, inputFile...), 0644); err != nil {
 		log.Fatalf("writing output: %s", err)
 	}
 	fmt.Printf("Fixed plc4x license of %s\n", outputName)
-}
-
-func GetLicenseFileContent(isAbs bool, licenseFileName string, err2 error) []byte {
-	var licenceContent []byte
-	rootReached := false
-	currentDir, _ := os.Getwd()
-	var licenseFileNameWithPath string
-	for !isAbs && !rootReached {
-		if *verbose {
-			fmt.Printf("Looking for %s in %s\n", licenseFileName, currentDir)
-		}
-		licenseFileNameWithPath = filepath.Join(currentDir, licenseFileName)
-		if _, err := os.Stat(licenseFileNameWithPath); errors.Is(err, os.ErrNotExist) {
-			// path/to/whatever does not exist
-			currentDir = filepath.Join(currentDir, "..")
-			continue
-		}
-		if *verbose {
-			fmt.Printf("Found %s in %s\n", licenseFileName, currentDir)
-		}
-		rootReached = true
-		var err error
-		licenceContent, err = os.ReadFile(licenseFileNameWithPath)
-		if err != nil {
-			panic(err2)
-		}
-	}
-	return licenceContent
 }
 
 // isDirectory reports whether the named file is a directory.
