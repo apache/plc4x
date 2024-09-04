@@ -87,7 +87,7 @@ type defaultCodec struct {
 	stateChange             sync.Mutex
 	activeWorker            sync.WaitGroup
 
-	receiveTimeout                 time.Duration `stringer:"true"`
+	receiveTimeout                 time.Duration
 	traceDefaultMessageCodecWorker bool
 
 	log zerolog.Logger

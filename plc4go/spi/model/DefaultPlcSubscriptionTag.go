@@ -32,7 +32,7 @@ var _ apiModel.PlcSubscriptionTag = &DefaultPlcSubscriptionTag{}
 type DefaultPlcSubscriptionTag struct {
 	plcTag              apiModel.PlcTag              `stringer:"true"`
 	plcSubscriptionType apiModel.PlcSubscriptionType `stringer:"true"`
-	duration            time.Duration                `stringer:"true"`
+	duration            time.Duration
 }
 
 func NewDefaultPlcSubscriptionTag(plcSubscriptionType apiModel.PlcSubscriptionType, plcTag apiModel.PlcTag, duration time.Duration) *DefaultPlcSubscriptionTag {

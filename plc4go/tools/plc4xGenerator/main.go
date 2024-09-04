@@ -367,6 +367,12 @@ func (g *Generator) generate(typeName string) {
 						fmt.Printf("\t skipping field %s because it is %v.%v\n", fieldName, x, sel)
 						continue
 					}
+					if xIdent.Name == "time" {
+						if sel.Name == "Time" || sel.Name == "Duration" {
+							g.Printf(stringFieldSerialize, "fmt.Sprintf(\"%p\", d."+field.name+")", fieldNameUntitled)
+							continue
+						}
+					}
 				}
 			}
 			g.Printf(serializableFieldTemplate, "d."+field.name, fieldNameUntitled)
@@ -680,7 +686,7 @@ func (d *%s) String() string {
 `
 
 var serializableFieldTemplate = `
-	if any(%[1]s) != nil {
+	if %[1]s != nil {
 		if serializableField, ok := any(%[1]s).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext(%[2]s); err != nil {
 				return err

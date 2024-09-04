@@ -37,7 +37,7 @@ type IOQController struct {
 	state      IOQControllerStates
 	activeIOCB _IOCB
 	ioQueue    *IOQueue
-	waitTime   time.Duration `stringer:"true"`
+	waitTime   time.Duration
 
 	log      zerolog.Logger
 	stateLog zerolog.Logger

@@ -19,12 +19,43 @@
 
 package main
 
+import (
+	"context"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"time"
+)
+
 type Example struct {
+	*ExampleDelegate1
+	ExampleDelegate2
 	aField *uint16
 	bField string
 	cField int
 	dField ExampleStringer `stringer:"true"`
 	eField ExampleStringer `asPtr:"true"`
+	fField *ExampleStringer
+	gField *ExampleStringer
+	hField time.Time
+	iField time.Duration
+}
+
+type ExampleDelegate1 struct {
+}
+
+func (ExampleDelegate1) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	panic("no op")
+}
+
+type ExampleDelegate2 struct {
+}
+
+func (ExampleDelegate2) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	panic("no op")
+}
+
+type ExampleDelegate3 interface {
+	utils.Serializable
+	Example()
 }
 
 type ExampleStringer struct {
