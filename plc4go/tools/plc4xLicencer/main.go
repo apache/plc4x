@@ -35,7 +35,7 @@ var (
 	typeNames   = flag.String("type", "", "comma-separated list of type names; must be set")
 	output      = flag.String("output", "", "output file name; default srcdir/<type>_string.go")
 	buildTags   = flag.String("tags", "", "comma-separated list of build tags to apply")
-	licenseFile = flag.String("licenseFile", ".mockery.asl.header", "file containing the license (will be searched upwards)")
+	licenseFile = flag.String("licenseFile", ".plc4xLicencer.header", "file containing the license (will be searched upwards)")
 	verbose     = flag.Bool("verbose", false, "verbosity")
 )
 
