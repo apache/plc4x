@@ -120,7 +120,7 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new SingleTagOptimizer();//ModbusOptimizer();
+        return new /*SingleTagOptimizer();/*/ModbusOptimizer();
     }
 
     @Override
