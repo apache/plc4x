@@ -243,13 +243,19 @@ func (g *Generator) generate(typeName string) {
 
 	// Generate code that will fail if the constants change value.
 	g.Printf("func (d *%s) Serialize() ([]byte, error) {\n", typeName)
-	g.Printf("wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))\n")
+	g.Printf("\tif d == nil {\n")
+	g.Printf("\t\treturn nil, fmt.Errorf(\"(*DeviceInfoCache)(nil)\")\n")
+	g.Printf("\t}\n")
+	g.Printf("\twb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))\n")
 	g.Printf("\tif err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {\n")
 	g.Printf("\t\treturn nil, err\n")
 	g.Printf("\t}\n")
 	g.Printf("\treturn wb.GetBytes(), nil\n")
 	g.Printf("}\n\n")
 	g.Printf("func (d *%s) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {\n", typeName)
+	g.Printf("\tif d == nil {\n")
+	g.Printf("\t\treturn fmt.Errorf(\"(*DeviceInfoCache)(nil)\")\n")
+	g.Printf("\t}\n")
 	g.Printf("\tif err := writeBuffer.PushContext(%s); err != nil {\n", logicalTypeName)
 	g.Printf("\t\treturn err\n")
 	g.Printf("\t}\n")
@@ -291,6 +297,10 @@ func (g *Generator) generate(typeName string) {
 		}
 		if field.asPtr {
 			g.Printf(stringFieldSerialize, "fmt.Sprintf(\"%p\", d."+field.name+")", fieldNameUntitled)
+			continue
+		}
+		if field.directSerialize {
+			g.Printf(serializableDirectFieldTemplate, "d."+field.name+"", fieldNameUntitled)
 			continue
 		}
 		switch fieldType := fieldType.(type) {
@@ -556,12 +566,13 @@ func (g *Generator) format() []byte {
 
 // Field represents a declared field.
 type Field struct {
-	name       string
-	fieldType  ast.Expr
-	isDelegate bool
-	isStringer bool
-	asPtr      bool
-	hasLocker  string
+	name            string
+	fieldType       ast.Expr
+	isDelegate      bool
+	isStringer      bool
+	asPtr           bool
+	directSerialize bool
+	hasLocker       string
 }
 
 func (f *Field) String() string {
@@ -608,6 +619,10 @@ func (f *File) genDecl(node ast.Node) bool {
 			asPtr := false
 			if field.Tag != nil && field.Tag.Value == "`asPtr:\"true\"`" { // TODO: Check if we do that a bit smarter
 				asPtr = true
+			}
+			directSerialize := false
+			if field.Tag != nil && field.Tag.Value == "`directSerialize:\"true\"`" { // TODO: Check if we do that a bit smarter
+				directSerialize = true
 			}
 			if len(field.Names) == 0 {
 				fmt.Printf("\t adding delegate\n")
@@ -659,11 +674,12 @@ func (f *File) genDecl(node ast.Node) bool {
 			}
 			fmt.Printf("\t adding field %s %v\n", field.Names[0].Name, field.Type)
 			f.fields = append(f.fields, Field{
-				name:       field.Names[0].Name,
-				fieldType:  field.Type,
-				isStringer: isStringer,
-				asPtr:      asPtr,
-				hasLocker:  hasLocker,
+				name:            field.Names[0].Name,
+				fieldType:       field.Type,
+				isStringer:      isStringer,
+				asPtr:           asPtr,
+				directSerialize: directSerialize,
+				hasLocker:       hasLocker,
 			})
 		}
 	}
@@ -692,6 +708,18 @@ func (d *%s) String() string {
 	}
 	return writeBuffer.GetBox().String()
 }
+`
+
+var serializableDirectFieldTemplate = `
+	if err := writeBuffer.PushContext(%[2]s); err != nil {
+		return err
+	}
+	if err := %[1]s.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+		return err
+	}
+	if err := writeBuffer.PopContext(%[2]s); err != nil {
+		return err
+	}
 `
 
 var serializableFieldTemplate = `

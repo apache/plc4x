@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *DefaultPlcConsumerRegistration) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *DefaultPlcConsumerRegistration) Serialize() ([]byte, error) {
 }
 
 func (d *DefaultPlcConsumerRegistration) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("PlcConsumerRegistration"); err != nil {
 		return err
 	}
@@ -52,7 +58,7 @@ func (d *DefaultPlcConsumerRegistration) SerializeWithWriteBuffer(ctx context.Co
 	for _, elem := range d.handles {
 		var elem any = elem
 
-		if any(elem) != nil {
+		if elem != nil {
 			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
@@ -81,6 +87,11 @@ func (d *DefaultPlcConsumerRegistration) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (d *DefaultPlcConsumerRegistration) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

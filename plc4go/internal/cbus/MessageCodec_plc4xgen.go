@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *MessageCodec) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *MessageCodec) Serialize() ([]byte, error) {
 }
 
 func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("MessageCodec"); err != nil {
 		return err
 	}
@@ -46,7 +52,7 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if any(d.requestContext) != nil {
+	if d.requestContext != nil {
 		if serializableField, ok := any(d.requestContext).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("requestContext"); err != nil {
 				return err
@@ -65,7 +71,7 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 	}
 
-	if any(d.cbusOptions) != nil {
+	if d.cbusOptions != nil {
 		if serializableField, ok := any(d.cbusOptions).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("cbusOptions"); err != nil {
 				return err
@@ -112,6 +118,11 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (d *MessageCodec) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

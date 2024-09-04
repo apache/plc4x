@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *SecureChannel) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *SecureChannel) Serialize() ([]byte, error) {
 }
 
 func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("SecureChannel"); err != nil {
 		return err
 	}
@@ -54,7 +60,7 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if any(d.policyId) != nil {
+	if d.policyId != nil {
 		if serializableField, ok := any(d.policyId).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("policyId"); err != nil {
 				return err
@@ -96,7 +102,7 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 	}
 
-	if any(d.endpoint) != nil {
+	if d.endpoint != nil {
 		if serializableField, ok := any(d.endpoint).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("endpoint"); err != nil {
 				return err
@@ -127,7 +133,7 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if any(d.publicCertificate) != nil {
+	if d.publicCertificate != nil {
 		if serializableField, ok := any(d.publicCertificate).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("publicCertificate"); err != nil {
 				return err
@@ -146,7 +152,7 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 	}
 
-	if any(d.thumbprint) != nil {
+	if d.thumbprint != nil {
 		if serializableField, ok := any(d.thumbprint).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("thumbprint"); err != nil {
 				return err
@@ -175,7 +181,7 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if any(d.certificateThumbprint) != nil {
+	if d.certificateThumbprint != nil {
 		if serializableField, ok := any(d.certificateThumbprint).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("certificateThumbprint"); err != nil {
 				return err
@@ -197,11 +203,13 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if err := writeBuffer.WriteBit("checkedEndpoints", d.checkedEndpoints); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.encryptionHandler)
+	if d.encryptionHandler != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.encryptionHandler)
 
-		if err := writeBuffer.WriteString("encryptionHandler", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("encryptionHandler", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -217,7 +225,7 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if any(d.authenticationToken) != nil {
+	if d.authenticationToken != nil {
 		if serializableField, ok := any(d.authenticationToken).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("authenticationToken"); err != nil {
 				return err
@@ -235,18 +243,22 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			}
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.codec)
+	if d.codec != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.codec)
 
-		if err := writeBuffer.WriteString("codec", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("codec", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.channelTransactionManager)
+	if d.channelTransactionManager != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.channelTransactionManager)
 
-		if err := writeBuffer.WriteString("channelTransactionManager", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("channelTransactionManager", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -287,6 +299,11 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (d *SecureChannel) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

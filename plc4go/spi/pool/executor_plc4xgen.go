@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *executor) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *executor) Serialize() ([]byte, error) {
 }
 
 func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("executor"); err != nil {
 		return err
 	}
@@ -56,7 +62,7 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	for _, elem := range d.worker {
 		var elem any = elem
 
-		if any(elem) != nil {
+		if elem != nil {
 			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
@@ -94,6 +100,11 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (d *executor) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

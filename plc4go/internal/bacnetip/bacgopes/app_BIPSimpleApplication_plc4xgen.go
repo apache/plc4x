@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *BIPSimpleApplication) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *BIPSimpleApplication) Serialize() ([]byte, error) {
 }
 
 func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("BIPSimpleApplication"); err != nil {
 		return err
 	}
@@ -58,53 +64,67 @@ func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, wri
 			return err
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.asap)
+	if d.asap != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.asap)
 
-		if err := writeBuffer.WriteString("asap", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("asap", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.smap)
+	if d.smap != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.smap)
 
-		if err := writeBuffer.WriteString("smap", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("smap", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.nsap)
+	if d.nsap != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.nsap)
 
-		if err := writeBuffer.WriteString("nsap", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("nsap", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.nse)
+	if d.nse != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.nse)
 
-		if err := writeBuffer.WriteString("nse", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("nse", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.bip)
+	if d.bip != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.bip)
 
-		if err := writeBuffer.WriteString("bip", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("bip", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.annexj)
+	if d.annexj != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.annexj)
 
-		if err := writeBuffer.WriteString("annexj", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("annexj", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.mux)
+	if d.mux != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.mux)
 
-		if err := writeBuffer.WriteString("mux", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("mux", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
 	if err := writeBuffer.PopContext("BIPSimpleApplication"); err != nil {
@@ -114,6 +134,11 @@ func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (d *BIPSimpleApplication) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

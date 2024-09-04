@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *DefaultPlcSubscriptionEventItem) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *DefaultPlcSubscriptionEventItem) Serialize() ([]byte, error) {
 }
 
 func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("PlcSubscriptionEventItem"); err != nil {
 		return err
 	}
@@ -47,7 +53,7 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 		return err
 	}
 
-	if any(d.tag) != nil {
+	if d.tag != nil {
 		if serializableField, ok := any(d.tag).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("tag"); err != nil {
 				return err
@@ -70,11 +76,11 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 		return err
 	}
 
-	if err := writeBuffer.WriteString("interval", uint32(len(d.interval.String())*8), d.interval.String()); err != nil {
+	if err := writeBuffer.WriteString("interval", uint32(len(fmt.Sprintf("%p", d.interval))*8), fmt.Sprintf("%p", d.interval)); err != nil {
 		return err
 	}
 
-	if any(d.value) != nil {
+	if d.value != nil {
 		if serializableField, ok := any(d.value).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("value"); err != nil {
 				return err
@@ -99,6 +105,11 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (d *DefaultPlcSubscriptionEventItem) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

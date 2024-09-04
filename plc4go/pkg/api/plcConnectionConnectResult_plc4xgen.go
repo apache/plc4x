@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *plcConnectionConnectResult) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *plcConnectionConnectResult) Serialize() ([]byte, error) {
 }
 
 func (d *plcConnectionConnectResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("plcConnectionConnectResult"); err != nil {
 		return err
 	}
@@ -63,6 +69,11 @@ func (d *plcConnectionConnectResult) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (d *plcConnectionConnectResult) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

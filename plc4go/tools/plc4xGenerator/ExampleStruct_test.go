@@ -21,6 +21,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
 )
@@ -37,6 +38,9 @@ type Example struct {
 	gField *ExampleStringer
 	hField time.Time
 	iField time.Duration
+	jField TestStruct1
+	kField *TestStruct1
+	lField TestStruct2
 }
 
 type ExampleDelegate1 struct {
@@ -64,3 +68,25 @@ type ExampleStringer struct {
 func (ExampleStringer) String() string {
 	return ""
 }
+
+type TestStruct1 struct {
+}
+
+func (t *TestStruct1) Serialize() ([]byte, error) {
+	panic("no use")
+}
+
+func (t *TestStruct1) SerializeWithWriteBuffer(_ context.Context, _ utils.WriteBuffer) error {
+	panic("no use")
+}
+
+var _ utils.Serializable = (*TestStruct1)(nil)
+
+type TestStruct2 struct {
+}
+
+func (t TestStruct2) String() string {
+	panic("no use")
+}
+
+var _ fmt.Stringer = (*TestStruct2)(nil)

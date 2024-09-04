@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *UDPActor) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,25 +42,32 @@ func (d *UDPActor) Serialize() ([]byte, error) {
 }
 
 func (d *UDPActor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("UDPActor"); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.director)
+	if d.director != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.director)
 
-		if err := writeBuffer.WriteString("director", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("director", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
 
 	if err := writeBuffer.WriteUint32("timeout", 32, d.timeout); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.timer)
+	if d.timer != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.timer)
 
-		if err := writeBuffer.WriteString("timer", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("timer", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -71,6 +81,11 @@ func (d *UDPActor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (d *UDPActor) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

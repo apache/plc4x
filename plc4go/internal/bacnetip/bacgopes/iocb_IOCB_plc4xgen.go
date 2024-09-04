@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *IOCB) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *IOCB) Serialize() ([]byte, error) {
 }
 
 func (d *IOCB) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("IOCB"); err != nil {
 		return err
 	}
@@ -53,11 +59,13 @@ func (d *IOCB) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 			return err
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.destination)
+	if d.destination != nil {
+		{
+			_value := fmt.Sprintf("%v", *d.destination)
 
-		if err := writeBuffer.WriteString("destination", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("destination", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
 	{
@@ -121,6 +129,11 @@ func (d *IOCB) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 }
 
 func (d *IOCB) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
