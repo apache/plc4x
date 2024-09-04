@@ -96,7 +96,7 @@ func (d *DeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	}
 	if d.MaximumNpduLength != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.MaximumNpduLength)
+			_value := fmt.Sprintf("%v", d.MaximumNpduLength)
 
 			if err := writeBuffer.WriteString("maximumNpduLength", uint32(len(_value)*8), _value); err != nil {
 				return err

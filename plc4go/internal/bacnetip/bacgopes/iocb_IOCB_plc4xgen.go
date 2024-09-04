@@ -61,7 +61,7 @@ func (d *IOCB) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 	}
 	if d.destination != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.destination)
+			_value := fmt.Sprintf("%v", d.destination)
 
 			if err := writeBuffer.WriteString("destination", uint32(len(_value)*8), _value); err != nil {
 				return err

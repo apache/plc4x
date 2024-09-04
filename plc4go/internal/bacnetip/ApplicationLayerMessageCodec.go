@@ -41,7 +41,7 @@ import (
 type ApplicationLayerMessageCodec struct {
 	bipSimpleApplication *bacgopes.BIPSimpleApplication
 	messageCode          *MessageCodec
-	deviceInfoCache      bacgopes.DeviceInfoCache
+	deviceInfoCache      bacgopes.DeviceInfoCache `directSerialize:"true"`
 
 	localAddress  *net.UDPAddr `stringer:"true"`
 	remoteAddress *net.UDPAddr `stringer:"true"`

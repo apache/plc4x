@@ -60,7 +60,7 @@ func (d *WhoIsIAmServices) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	}
 	if d.localDevice != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.localDevice)
+			_value := fmt.Sprintf("%v", d.localDevice)
 
 			if err := writeBuffer.WriteString("localDevice", uint32(len(_value)*8), _value); err != nil {
 				return err

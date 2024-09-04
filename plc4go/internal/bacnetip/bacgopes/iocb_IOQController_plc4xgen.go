@@ -67,7 +67,7 @@ func (d *IOQController) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 	if d.ioQueue != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.ioQueue)
+			_value := fmt.Sprintf("%v", d.ioQueue)
 
 			if err := writeBuffer.WriteString("ioQueue", uint32(len(_value)*8), _value); err != nil {
 				return err

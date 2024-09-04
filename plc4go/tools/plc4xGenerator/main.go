@@ -432,7 +432,7 @@ func (g *Generator) generate(typeName string) {
 			default:
 				fmt.Printf("\t no support implemented for Ident with type %v\n", fieldType)
 				g.Printf("{\n")
-				g.Printf("_value := fmt.Sprintf(\"%%v\", "+deref+"d.%s)\n", fieldName)
+				g.Printf("_value := fmt.Sprintf(\"%%v\", d.%s)\n", fieldName)
 				g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
 				g.Printf("}\n")
 			}

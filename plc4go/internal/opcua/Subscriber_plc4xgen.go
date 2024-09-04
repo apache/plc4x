@@ -81,7 +81,7 @@ func (d *Subscriber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	}
 	if d.connection != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.connection)
+			_value := fmt.Sprintf("%v", d.connection)
 
 			if err := writeBuffer.WriteString("connection", uint32(len(_value)*8), _value); err != nil {
 				return err

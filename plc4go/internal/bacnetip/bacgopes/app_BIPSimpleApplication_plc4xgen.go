@@ -66,7 +66,7 @@ func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	if d.asap != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.asap)
+			_value := fmt.Sprintf("%v", d.asap)
 
 			if err := writeBuffer.WriteString("asap", uint32(len(_value)*8), _value); err != nil {
 				return err
@@ -75,7 +75,7 @@ func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	if d.smap != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.smap)
+			_value := fmt.Sprintf("%v", d.smap)
 
 			if err := writeBuffer.WriteString("smap", uint32(len(_value)*8), _value); err != nil {
 				return err
@@ -84,7 +84,7 @@ func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	if d.nsap != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.nsap)
+			_value := fmt.Sprintf("%v", d.nsap)
 
 			if err := writeBuffer.WriteString("nsap", uint32(len(_value)*8), _value); err != nil {
 				return err
@@ -93,7 +93,7 @@ func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	if d.nse != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.nse)
+			_value := fmt.Sprintf("%v", d.nse)
 
 			if err := writeBuffer.WriteString("nse", uint32(len(_value)*8), _value); err != nil {
 				return err
@@ -102,7 +102,7 @@ func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	if d.bip != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.bip)
+			_value := fmt.Sprintf("%v", d.bip)
 
 			if err := writeBuffer.WriteString("bip", uint32(len(_value)*8), _value); err != nil {
 				return err
@@ -111,7 +111,7 @@ func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	if d.annexj != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.annexj)
+			_value := fmt.Sprintf("%v", d.annexj)
 
 			if err := writeBuffer.WriteString("annexj", uint32(len(_value)*8), _value); err != nil {
 				return err
@@ -120,7 +120,7 @@ func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	if d.mux != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.mux)
+			_value := fmt.Sprintf("%v", d.mux)
 
 			if err := writeBuffer.WriteString("mux", uint32(len(_value)*8), _value); err != nil {
 				return err

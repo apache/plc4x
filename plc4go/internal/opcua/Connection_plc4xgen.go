@@ -53,7 +53,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	}
 	if d.messageCodec != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.messageCodec)
+			_value := fmt.Sprintf("%v", d.messageCodec)
 
 			if err := writeBuffer.WriteString("messageCodec", uint32(len(_value)*8), _value); err != nil {
 				return err
@@ -98,7 +98,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	}
 	if d.channel != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.channel)
+			_value := fmt.Sprintf("%v", d.channel)
 
 			if err := writeBuffer.WriteString("channel", uint32(len(_value)*8), _value); err != nil {
 				return err

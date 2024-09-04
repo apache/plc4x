@@ -205,7 +205,7 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 	if d.encryptionHandler != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.encryptionHandler)
+			_value := fmt.Sprintf("%v", d.encryptionHandler)
 
 			if err := writeBuffer.WriteString("encryptionHandler", uint32(len(_value)*8), _value); err != nil {
 				return err
@@ -245,7 +245,7 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 	if d.codec != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.codec)
+			_value := fmt.Sprintf("%v", d.codec)
 
 			if err := writeBuffer.WriteString("codec", uint32(len(_value)*8), _value); err != nil {
 				return err
@@ -254,7 +254,7 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 	if d.channelTransactionManager != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.channelTransactionManager)
+			_value := fmt.Sprintf("%v", d.channelTransactionManager)
 
 			if err := writeBuffer.WriteString("channelTransactionManager", uint32(len(_value)*8), _value); err != nil {
 				return err

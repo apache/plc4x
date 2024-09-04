@@ -69,7 +69,7 @@ func (d *ApplicationLayerMessageCodec) SerializeWithWriteBuffer(ctx context.Cont
 	}
 	if d.messageCode != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.messageCode)
+			_value := fmt.Sprintf("%v", d.messageCode)
 
 			if err := writeBuffer.WriteString("messageCode", uint32(len(_value)*8), _value); err != nil {
 				return err
@@ -77,23 +77,14 @@ func (d *ApplicationLayerMessageCodec) SerializeWithWriteBuffer(ctx context.Cont
 		}
 	}
 
-	if d.deviceInfoCache != nil {
-		if serializableField, ok := any(d.deviceInfoCache).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("deviceInfoCache"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("deviceInfoCache"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.deviceInfoCache)
-			if err := writeBuffer.WriteString("deviceInfoCache", uint32(len(stringValue)*8), stringValue); err != nil {
-				return err
-			}
-		}
+	if err := writeBuffer.PushContext("deviceInfoCache"); err != nil {
+		return err
+	}
+	if err := d.deviceInfoCache.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+		return err
+	}
+	if err := writeBuffer.PopContext("deviceInfoCache"); err != nil {
+		return err
 	}
 	if d.localAddress != nil {
 		if err := writeBuffer.WriteString("localAddress", uint32(len(d.localAddress.String())*8), d.localAddress.String()); err != nil {

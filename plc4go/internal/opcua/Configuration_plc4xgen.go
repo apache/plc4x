@@ -128,7 +128,7 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 	if d.Ckp != nil {
 		{
-			_value := fmt.Sprintf("%v", *d.Ckp)
+			_value := fmt.Sprintf("%v", d.Ckp)
 
 			if err := writeBuffer.WriteString("ckp", uint32(len(_value)*8), _value); err != nil {
 				return err
