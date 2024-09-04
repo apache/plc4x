@@ -45,7 +45,7 @@ type worker struct {
 	interrupted atomic.Bool
 	interrupter chan struct{}
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func newWorker(localLog zerolog.Logger, workerId int, executor interface {

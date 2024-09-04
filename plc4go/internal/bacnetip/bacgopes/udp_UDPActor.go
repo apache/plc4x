@@ -32,7 +32,7 @@ type UDPActor struct {
 	timer    *OneShotFunctionTask
 	peer     string
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *UDPActor {

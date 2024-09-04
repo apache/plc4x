@@ -111,7 +111,7 @@ type plcDriverManger struct {
 	drivers    map[string]PlcDriver
 	transports map[string]transports.Transport
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 type withDiscoveryOption struct {

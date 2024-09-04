@@ -90,7 +90,7 @@ type defaultCodec struct {
 	receiveTimeout                 time.Duration `stringer:"true"`
 	traceDefaultMessageCodecWorker bool
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {

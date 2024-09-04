@@ -53,7 +53,7 @@ type Configuration struct {
 	KeyStorePassword  string
 	Ckp               *CertificateKeyPair
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {

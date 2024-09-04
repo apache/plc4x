@@ -46,3 +46,8 @@ func CleanupTimer(timer *time.Timer) {
 		}
 	}
 }
+
+// MakePtr makes a pointer to T
+func MakePtr[T any](v T) *T {
+	return &v
+}

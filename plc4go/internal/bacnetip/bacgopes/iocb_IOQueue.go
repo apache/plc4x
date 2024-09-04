@@ -38,7 +38,7 @@ type IOQueue struct {
 
 	wg sync.WaitGroup
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewIOQueue(localLog zerolog.Logger, name string) *IOQueue {

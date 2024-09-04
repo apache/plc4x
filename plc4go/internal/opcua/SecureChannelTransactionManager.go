@@ -36,7 +36,7 @@ type SecureChannelTransactionManager struct {
 
 	lock sync.Mutex
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewSecureChannelTransactionManager(log zerolog.Logger) *SecureChannelTransactionManager {

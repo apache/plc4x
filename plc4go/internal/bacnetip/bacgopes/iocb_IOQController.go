@@ -39,8 +39,8 @@ type IOQController struct {
 	ioQueue    *IOQueue
 	waitTime   time.Duration `stringer:"true"`
 
-	log      zerolog.Logger `ignore:"true"`
-	stateLog zerolog.Logger `ignore:"true"` //TODO: add option so it can be logged to a different file
+	log      zerolog.Logger
+	stateLog zerolog.Logger
 }
 
 func NewIOQController(localLog zerolog.Logger, name string, requirements IOQControllerRequirements) (*IOQController, error) {

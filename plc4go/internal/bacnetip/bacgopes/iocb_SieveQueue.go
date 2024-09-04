@@ -30,7 +30,7 @@ type SieveQueue struct {
 	requestFn func(apdu PDU)
 	address   *Address
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewSieveQueue(localLog zerolog.Logger, fn func(apdu PDU), address *Address) (*SieveQueue, error) {

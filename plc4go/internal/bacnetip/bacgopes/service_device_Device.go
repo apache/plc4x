@@ -39,7 +39,7 @@ type WhoIsIAmServices struct {
 	*Capability
 	localDevice *LocalDeviceObject
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewWhoIsIAmServices(localLog zerolog.Logger, whoIsIAmServicesRequirements WhoIsIAmServicesRequirements) (*WhoIsIAmServices, error) {

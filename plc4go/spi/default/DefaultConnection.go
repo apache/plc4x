@@ -107,7 +107,7 @@ type defaultConnection struct {
 	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func buildDefaultConnection(requirements DefaultConnectionRequirements, _options ...options.WithOption) DefaultConnection {

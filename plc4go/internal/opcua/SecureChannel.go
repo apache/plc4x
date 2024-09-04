@@ -118,7 +118,7 @@ type SecureChannel struct {
 	endpoints                 []string
 	senderSequenceNumber      atomic.Int32
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Configuration) *SecureChannel {

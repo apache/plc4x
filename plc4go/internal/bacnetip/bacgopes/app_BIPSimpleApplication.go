@@ -39,7 +39,7 @@ type BIPSimpleApplication struct {
 	annexj       *AnnexJCodec
 	mux          *UDPMultiplexer
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPSimpleApplication, error) {

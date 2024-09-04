@@ -41,6 +41,7 @@ var (
 	typeNames   = flag.String("type", "", "comma-separated list of type names; must be set")
 	output      = flag.String("output", "", "output file name; default srcdir/<type>_plc4xgen.go")
 	prefix      = flag.String("prefix", "", "prefix for all generated files")
+	suffix      = flag.String("suffix", "", "suffix for all generated files")
 	buildTags   = flag.String("tags", "", "comma-separated list of build tags to apply")
 	licenseFile = flag.String("licenseFile", ".plc4xLicencer.header", "file containing the license (will be searched upwards)")
 	verbose     = flag.Bool("verbose", false, "verbosity")
@@ -126,6 +127,13 @@ func main() {
 		directory, file := filepath.Split(outputName)
 		outputName = filepath.Join(directory, *prefix+file)
 	}
+
+	if *suffix != "" {
+		directory, file := filepath.Split(outputName)
+		ext := filepath.Ext(file)
+		outputName = filepath.Join(directory, strings.ReplaceAll(file, ext, "")+*suffix+ext)
+	}
+
 	err := os.WriteFile(outputName, src, 0644)
 	if err != nil {
 		log.Fatalf("writing output: %s", err)
@@ -337,6 +345,10 @@ func (g *Generator) generate(typeName string) {
 							g.Printf("\treturn err\n")
 							g.Printf("}\n")
 						}
+						continue
+					}
+					if xIdent.Name == "zerolog" {
+						fmt.Printf("\t skipping field %s because it is %v.%v\n", fieldName, x, sel)
 						continue
 					}
 				}

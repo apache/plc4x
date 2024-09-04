@@ -93,7 +93,7 @@ type IOCB struct {
 
 	wg sync.WaitGroup
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewIOCB(localLog zerolog.Logger, request PDU, destination *Address) (*IOCB, error) {

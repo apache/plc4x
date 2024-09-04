@@ -57,7 +57,7 @@ type IOController struct {
 	name         string
 	requirements IOControllerRequirements
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewIOController(localLog zerolog.Logger, name string, requirements IOControllerRequirements) (*IOController, error) {
