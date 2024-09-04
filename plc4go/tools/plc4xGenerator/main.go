@@ -300,7 +300,15 @@ func (g *Generator) generate(typeName string) {
 			continue
 		}
 		if field.directSerialize {
-			g.Printf(serializableDirectFieldTemplate, "d."+field.name+"", fieldNameUntitled)
+			indentTimes := 0
+			if needsDereference {
+				indentTimes++
+				g.Printf("if d.%s != nil {", field.name)
+			}
+			g.Printf(indent(indentTimes, serializableDirectFieldTemplate), "d."+field.name+"", fieldNameUntitled)
+			if needsDereference {
+				g.Printf("}\n")
+			}
 			continue
 		}
 		switch fieldType := fieldType.(type) {
