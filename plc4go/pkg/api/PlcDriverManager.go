@@ -106,7 +106,7 @@ type WithDiscoveryOption interface {
 // Internal section
 //
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=plcDriverManger
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=plcDriverManger
 type plcDriverManger struct {
 	drivers    map[string]PlcDriver
 	transports map[string]transports.Transport

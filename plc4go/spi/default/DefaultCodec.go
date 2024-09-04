@@ -72,7 +72,7 @@ type withCustomMessageHandler struct {
 	customMessageHandler func(codec DefaultCodecRequirements, message spi.Message) bool
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultCodec
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=defaultCodec
 type defaultCodec struct {
 	DefaultCodecRequirements `ignore:"true"`
 

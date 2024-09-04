@@ -37,7 +37,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=Subscriber
 type Subscriber struct {
 	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 	addSubscriber func(subscriber *Subscriber)

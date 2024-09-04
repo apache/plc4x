@@ -41,9 +41,9 @@ var (
 
 // Usage is a replacement usage function for the flags package.
 func Usage() {
-	_, _ = fmt.Fprintf(os.Stderr, "Usage of plc4xlicenser:\n")
-	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xlicenser [flags] -type T [directory]\n")
-	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xlicenser [flags] -type T files... # Must be a single package\n")
+	_, _ = fmt.Fprintf(os.Stderr, "Usage of plc4xLicenser:\n")
+	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xLicenser [flags] -type T [directory]\n")
+	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xLicenser [flags] -type T files... # Must be a single package\n")
 	_, _ = fmt.Fprintf(os.Stderr, "Flags:\n")
 	flag.PrintDefaults()
 }

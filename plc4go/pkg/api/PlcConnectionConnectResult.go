@@ -33,7 +33,7 @@ type PlcConnectionConnectResult interface {
 // Internal section
 //
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=plcConnectionConnectResult
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=plcConnectionConnectResult
 type plcConnectionConnectResult struct {
 	connection PlcConnection
 	err        error

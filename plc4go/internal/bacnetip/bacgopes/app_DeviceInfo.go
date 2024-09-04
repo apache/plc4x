@@ -21,7 +21,7 @@ package bacgopes
 
 import readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 
-//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=DeviceInfo -prefix=app_
+//go:generate go run ../../../tools/plc4xGenerator/main.go -type=DeviceInfo -prefix=app_
 type DeviceInfo struct {
 	DeviceIdentifier readWriteModel.BACnetTagPayloadObjectIdentifier
 	Address          Address

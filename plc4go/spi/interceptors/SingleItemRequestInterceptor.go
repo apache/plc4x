@@ -98,7 +98,7 @@ func NewSingleItemRequestInterceptor(readRequestFactory readRequestFactory, writ
 // Internal section
 //
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=interceptedPlcReadRequestResult
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=interceptedPlcReadRequestResult
 type interceptedPlcReadRequestResult struct {
 	Request  apiModel.PlcReadRequest
 	Response apiModel.PlcReadResponse
@@ -117,7 +117,7 @@ func (d *interceptedPlcReadRequestResult) GetErr() error {
 	return d.Err
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=interceptedPlcWriteRequestResult
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=interceptedPlcWriteRequestResult
 type interceptedPlcWriteRequestResult struct {
 	Request  apiModel.PlcWriteRequest
 	Response apiModel.PlcWriteResponse

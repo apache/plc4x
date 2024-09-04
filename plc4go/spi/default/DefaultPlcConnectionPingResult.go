@@ -31,7 +31,7 @@ func NewDefaultPlcConnectionPingResult(err error) plc4go.PlcConnectionPingResult
 	}
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultPlcConnectionPingResult
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=defaultPlcConnectionPingResult
 type defaultPlcConnectionPingResult struct {
 	err error
 }

@@ -32,7 +32,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
 	expectationCounter int32

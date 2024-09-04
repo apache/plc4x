@@ -36,7 +36,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Connection
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=Connection
 type Connection struct {
 	_default.DefaultConnection
 	messageCodec *MessageCodec

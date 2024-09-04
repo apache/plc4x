@@ -19,7 +19,7 @@
 
 package bacgopes
 
-//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=ReadWritePropertyServices -prefix=object_
+//go:generate go run ../../../tools/plc4xGenerator/main.go -type=ReadWritePropertyServices -prefix=object_
 type ReadWritePropertyServices struct {
 }
 

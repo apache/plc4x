@@ -23,7 +23,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseResponseItem
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=DefaultPlcBrowseResponseItem
 type DefaultPlcBrowseResponseItem struct {
 	code    apiModel.PlcResponseCode `stringer:"true"`
 	results []apiModel.PlcBrowseItem

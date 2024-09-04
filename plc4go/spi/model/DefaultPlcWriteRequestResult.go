@@ -23,7 +23,7 @@ import apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 var _ apiModel.PlcWriteRequestResult = &DefaultPlcWriteRequestResult{}
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteRequestResult
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=DefaultPlcWriteRequestResult
 type DefaultPlcWriteRequestResult struct {
 	Request  apiModel.PlcWriteRequest
 	Response apiModel.PlcWriteResponse

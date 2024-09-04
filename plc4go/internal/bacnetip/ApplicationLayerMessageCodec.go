@@ -37,7 +37,7 @@ import (
 
 // ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.
 //
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=ApplicationLayerMessageCodec
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=ApplicationLayerMessageCodec
 type ApplicationLayerMessageCodec struct {
 	bipSimpleApplication *bacgopes.BIPSimpleApplication
 	messageCode          *MessageCodec

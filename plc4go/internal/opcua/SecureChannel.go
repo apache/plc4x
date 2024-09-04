@@ -80,7 +80,7 @@ var (
 	DEFAULT_CONNECTION_LIFETIME = uint32(36000000)
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=SecureChannel
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=SecureChannel
 type SecureChannel struct {
 	sessionName               string
 	clientNonce               []byte

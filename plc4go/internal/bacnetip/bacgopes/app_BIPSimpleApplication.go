@@ -24,7 +24,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=BIPSimpleApplication -prefix=app_
+//go:generate go run ../../../tools/plc4xGenerator/main.go -type=BIPSimpleApplication -prefix=app_
 type BIPSimpleApplication struct {
 	*ApplicationIOController
 	*WhoIsIAmServices

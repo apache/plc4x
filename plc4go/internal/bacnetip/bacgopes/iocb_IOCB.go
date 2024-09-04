@@ -74,7 +74,7 @@ type _IOCB interface {
 var _identNext = 1
 var _identLock sync.Mutex
 
-//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=IOCB -prefix=iocb_
+//go:generate go run ../../../tools/plc4xGenerator/main.go -type=IOCB -prefix=iocb_
 type IOCB struct {
 	ioID           int
 	request        PDU

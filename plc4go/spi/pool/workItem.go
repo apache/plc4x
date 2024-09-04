@@ -19,7 +19,7 @@
 
 package pool
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=workItem
+//go:generate go run ../../tools/plc4xGenerator/main.go -type=workItem
 type workItem struct {
 	workItemId       int32
 	runnable         Runnable `ignore:"true"`
