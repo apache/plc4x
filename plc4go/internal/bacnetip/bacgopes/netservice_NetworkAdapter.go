@@ -86,8 +86,6 @@ func (n *NetworkAdapter) Confirmation(args Args, kwargs KWArgs) error {
 	case model.NPDU:
 		nlm = pdu.GetNlm()
 		apdu = pdu.GetApdu()
-	default:
-		return errors.Errorf("Unmapped type %T", pdu)
 	}
 	npdu, err := NewNPDU(nlm, apdu)
 	if err != nil {

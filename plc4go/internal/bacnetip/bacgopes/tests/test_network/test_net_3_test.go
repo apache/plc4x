@@ -186,7 +186,7 @@ func TestNet3(t *testing.T) {
 			// test device sends request, no response
 			whois, err := NewWhoIsRequest()
 			require.NoError(t, err)
-			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
+			whois.SetPDUDestination(NewRemoteBroadcast(2, nil)) // TODO: upstream does this inline
 			tnet.td.GetStartState().Doc("2-1-0").
 				Send(whois, nil).Doc("2-1-1").
 				Success("")
@@ -218,7 +218,7 @@ func TestNet3(t *testing.T) {
 				Success("")
 
 			// network 2 sees local broadcast request and unicast response
-			tnet.sniffer2.GetStartState().
+			tnet.sniffer2.GetStartState().Doc("2-3-0").
 				Receive(NewArgs((PDU)(nil)),
 					NewKWArgs(KWPDUData, xtob(
 						"01.08.00.01.01.01"+ // local broadcast
@@ -227,7 +227,7 @@ func TestNet3(t *testing.T) {
 				).Doc("2-3-1").
 				Receive(NewArgs((PDU)(nil)),
 					NewKWArgs(KWPDUData, xtob(
-						"01.08.00.02.01.04"+ // unicast response
+						"01.20.00.01.01.01.ff"+ // unicast response
 							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",
 					)),
 				).Doc("2-3-1").

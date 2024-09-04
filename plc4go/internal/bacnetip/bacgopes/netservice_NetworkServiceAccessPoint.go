@@ -97,10 +97,6 @@ func WithNetworkServiceAccessPointRouterSID(sid int) func(*NetworkServiceAccessP
 	}
 }
 
-func (n *NetworkServiceAccessPoint) String() string {
-	return fmt.Sprintf("NetworkServiceAccessPoint(TBD...)") // TODO: fill some info here
-}
-
 /*
 Bind creates a network adapter object and bind.
 
@@ -460,7 +456,13 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 		n.log.Debug().Msg("application layer message")
 
 		// decode as a generic APDU
-		apdu := NewPDU(npdu.GetApdu()).(*_PDU)
+		apdu, err := NewAPDU(npdu.GetApdu())
+		if err != nil {
+			return errors.Wrap(err, "error creating APDU")
+		}
+		if err := apdu.Decode(DeepCopy[NPDU](npdu)); err != nil {
+			return errors.Wrap(err, "error decoding APDU")
+		}
 		n.log.Debug().Stringer("apdu", apdu).Msg("apdu")
 
 		// see if it needs to look routed
@@ -471,47 +473,48 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 				if err != nil {
 					return errors.Wrap(err, "error creating remote address")
 				}
-				apdu.pduSource = remoteStationAddress
+				apdu.SetPDUSource(remoteStationAddress)
 			} else {
-				apdu.pduSource = sourceAddress
+				apdu.SetPDUSource(sourceAddress)
 			}
 			if Settings.RouteAware {
-				apdu.pduSource.AddrRoute = npdu.GetPDUSource()
+				apdu.GetPDUSource().AddrRoute = npdu.GetPDUSource()
 			}
 
 			// map the destination
 			if !npdu.GetControl().GetDestinationSpecified() {
-				apdu.pduDestination = n.localAdapter.adapterAddr
+				apdu.SetPDUDestination(n.localAdapter.adapterAddr)
 			} else if destinationAddress.AddrType == GLOBAL_BROADCAST_ADDRESS {
-				apdu.pduDestination = NewGlobalBroadcast(nil)
+				apdu.SetPDUDestination(NewGlobalBroadcast(nil))
 			} else if destinationAddress.AddrType == GLOBAL_BROADCAST_ADDRESS {
-				apdu.pduDestination = NewLocalBroadcast(nil)
+				apdu.SetPDUDestination(NewLocalBroadcast(nil))
 			} else {
-				apdu.pduDestination = n.localAdapter.adapterAddr
+				apdu.SetPDUDestination(n.localAdapter.adapterAddr)
 			}
 		} else {
 			// combine the source address
 			if npdu.GetControl().GetSourceSpecified() {
-				apdu.pduSource = sourceAddress
+				apdu.SetPDUSource(sourceAddress)
 				if Settings.RouteAware {
 					n.log.Debug().Msg("adding route")
-					apdu.pduSource = npdu.GetPDUSource()
+					apdu.SetPDUSource(npdu.GetPDUSource())
 				}
 			} else {
-				apdu.pduSource = npdu.GetPDUSource()
+				apdu.SetPDUSource(npdu.GetPDUSource())
 			}
 
 			// pass along global broadcast
 			if npdu.GetControl().GetDestinationSpecified() && destinationAddress.AddrType == GLOBAL_BROADCAST_ADDRESS {
-				apdu.pduDestination = NewGlobalBroadcast(nil)
+				apdu.SetPDUDestination(NewGlobalBroadcast(nil))
 			} else {
-				apdu.pduDestination = npdu.GetPDUDestination()
+				apdu.SetPDUDestination(npdu.GetPDUDestination())
 			}
 		}
 
-		n.log.Debug().Stringer("pduSource", apdu.pduSource).Msg("apdu.pduSource")
-		n.log.Debug().Stringer("pduDestination", apdu.pduDestination).Msg("apdu.pduDestination")
+		n.log.Debug().Stringer("pduSource", apdu.GetPDUSource()).Msg("apdu.pduSource")
+		n.log.Debug().Stringer("pduDestination", apdu.GetPDUDestination()).Msg("apdu.pduDestination")
 
+		// pass upstream to the application layer
 		if err := n.Response(NewArgs(apdu), NoKWArgs); err != nil {
 			return errors.Wrap(err, "error passing response")
 		}
@@ -725,8 +728,8 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 
 func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
-	adapter := args.Get0NetworkAdapter()
-	npdu := args.Get1NPDU()
+	adapter := args.GetNetworkAdapter(0)
+	npdu := args.GetNPDU(1)
 
 	// encode it as a generic NPDU
 	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...
@@ -744,8 +747,8 @@ func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) erro
 
 func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
-	adapter := args.Get0NetworkAdapter()
-	npdu := args.Get1NPDU()
+	adapter := args.GetNetworkAdapter(0)
+	npdu := args.GetNPDU(1)
 
 	// encode it as a generic NPDU
 	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...
@@ -758,4 +761,8 @@ func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) er
 	// npdu._xpdu = xpdu
 
 	return adapter.ProcessNPDU(xpdu)
+}
+
+func (n *NetworkServiceAccessPoint) String() string {
+	return fmt.Sprintf("NetworkServiceAccessPoint(TBD...)") // TODO: fill some info here
 }

@@ -40,36 +40,84 @@ func NewArgs(args ...any) Args {
 	return args
 }
 
+// Deprecated: use index function
 func (a Args) Get0PDU() PDU {
 	return a[0].(PDU)
 }
 
+// Deprecated: use index function
 func (a Args) Get1PDU() PDU {
 	return a[1].(PDU)
 }
 
+func (a Args) GetNPDU(index int) NPDU {
+	return argsGetOrPanic[NPDU](a, index)
+}
+
+// Deprecated: use index function
 func (a Args) Get0NPDU() NPDU {
 	return a[0].(NPDU)
 }
 
+// Deprecated: use index function
 func (a Args) Get1NPDU() NPDU {
 	return a[1].(NPDU)
 }
 
+// Deprecated: use index function
 func (a Args) Get0APDU() APDU {
 	return a[0].(APDU)
 }
 
+func (a Args) GetAddressOptional(index int, defaultValue *Address) *Address {
+	return argsGetOrDefault(a, index, defaultValue)
+}
+
+func (a Args) GetNetworkOptional(index int, defaultValue []*uint16) []*uint16 {
+	return argsGetOrDefault(a, index, defaultValue)
+}
+
+func (a Args) GetNetworkAdapter(index int) *NetworkAdapter {
+	return argsGetOrPanic[*NetworkAdapter](a, index)
+}
+
+func (a Args) GetNetworkAdapterOptional(index int, defaultValue *NetworkAdapter) *NetworkAdapter {
+	return argsGetOrDefault(a, index, defaultValue)
+}
+
+// Deprecated: use index function
 func (a Args) Get0NetworkAdapter() *NetworkAdapter {
 	return a[0].(*NetworkAdapter)
 }
 
+// Deprecated: use index function
 func (a Args) Get0MultiplexClient() *_MultiplexClient {
 	return a[0].(*_MultiplexClient)
 }
 
+// Deprecated: use index function
 func (a Args) Get0MultiplexServer() *_MultiplexServer {
 	return a[0].(*_MultiplexServer)
+}
+
+func argsGetOrPanic[T any](args Args, index int) T {
+	if index > len(args)-1 {
+		panic(fmt.Sprintf("index out of bounds: %d(len %d of %s)", index, len(args), args))
+	}
+	aAtI := args[index]
+	v, ok := aAtI.(T)
+	if !ok {
+		var _type T
+		panic(fmt.Sprintf("argument #%d with type %T is not of type %T", index, aAtI, _type))
+	}
+	return v
+}
+
+func argsGetOrDefault[T any](args Args, index int, defaultValue T) T {
+	if index > len(args)-1 {
+		return defaultValue
+	}
+	return args[index].(T)
 }
 
 func (a Args) String() string {
