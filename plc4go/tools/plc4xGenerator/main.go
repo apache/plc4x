@@ -44,6 +44,8 @@ var (
 	suffix      = flag.String("suffix", "", "suffix for all generated files")
 	buildTags   = flag.String("tags", "", "comma-separated list of build tags to apply")
 	licenseFile = flag.String("licenseFile", ".plc4xLicencer.header", "file containing the license (will be searched upwards)")
+	tests       = flag.Bool("tests", false, "look at test files")
+	pkgIndex    = flag.Int("pkgIndex", -1, "package index (can enforce a different index if multiple packages are found)")
 	verbose     = flag.Bool("verbose", false, "verbosity")
 )
 
@@ -55,6 +57,8 @@ func Usage() {
 	_, _ = fmt.Fprintf(os.Stderr, "Flags:\n")
 	flag.PrintDefaults()
 }
+
+var outputFile string // only used for test
 
 func main() {
 	log.SetFlags(0)
@@ -134,10 +138,12 @@ func main() {
 		outputName = filepath.Join(directory, strings.ReplaceAll(file, ext, "")+*suffix+ext)
 	}
 
+	log.Printf("Writing to %s\n", outputName)
 	err := os.WriteFile(outputName, src, 0644)
 	if err != nil {
 		log.Fatalf("writing output: %s", err)
 	}
+	outputFile = outputName
 }
 
 // isDirectory reports whether the named file is a directory.
@@ -183,17 +189,23 @@ type Package struct {
 func (g *Generator) parsePackage(patterns []string, tags []string) {
 	cfg := &packages.Config{
 		Mode:       packages.NeedName | packages.NeedTypes | packages.NeedTypesInfo | packages.NeedSyntax,
-		Tests:      false,
+		Tests:      *tests,
 		BuildFlags: []string{fmt.Sprintf("-tags=%s", strings.Join(tags, " "))},
 	}
 	pkgs, err := packages.Load(cfg, patterns...)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if len(pkgs) != 1 {
-		log.Fatalf("error: %d packages found", len(pkgs))
+	index := 0
+	if *pkgIndex > 0 {
+		index = *pkgIndex
 	}
-	g.addPackage(pkgs[0])
+	if len(pkgs) != 1 {
+		if *pkgIndex < 0 {
+			log.Fatalf("error: %d packages found (%v)", len(pkgs), pkgs)
+		}
+	}
+	g.addPackage(pkgs[index])
 }
 
 // addPackage adds a type checked Package and its syntax files to the generator.
@@ -373,27 +385,39 @@ func (g *Generator) generate(typeName string) {
 			fmt.Printf("no support yet for %#q\n", fieldType)
 			continue
 		case *ast.Ident:
+			deref := ""
+			indentTimes := 0
+			if needsDereference {
+				deref = "*"
+				indentTimes++
+				g.Printf("if d.%s != nil {", field.name)
+			}
 			switch fieldType.Name {
 			case "byte":
-				g.Printf(byteFieldSerialize, "d."+field.name, fieldNameUntitled)
+				g.Printf(indent(indentTimes, byteFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			case "int":
-				g.Printf(int64FieldSerialize, "int64(d."+field.name+")", fieldNameUntitled)
+				g.Printf(indent(indentTimes, int64FieldSerialize), "int64("+deref+"d."+field.name+")", fieldNameUntitled)
 			case "int32":
-				g.Printf(int32FieldSerialize, "int32(d."+field.name+")", fieldNameUntitled)
+				g.Printf(indent(indentTimes, int32FieldSerialize), "int32("+deref+"d."+field.name+")", fieldNameUntitled)
+			case "uint16":
+				g.Printf(indent(indentTimes, uint16FieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			case "uint32":
-				g.Printf(uint32FieldSerialize, "d."+field.name, fieldNameUntitled)
+				g.Printf(indent(indentTimes, uint32FieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			case "bool":
-				g.Printf(boolFieldSerialize, "d."+field.name, fieldNameUntitled)
+				g.Printf(indent(indentTimes, boolFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			case "string":
-				g.Printf(stringFieldSerialize, "d."+field.name, fieldNameUntitled)
+				g.Printf(indent(indentTimes, stringFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			case "error":
-				g.Printf(errorFieldSerialize, "d."+field.name, fieldNameUntitled)
+				g.Printf(indent(indentTimes, errorFieldSerialize), deref+"d."+field.name, fieldNameUntitled)
 			default:
 				fmt.Printf("\t no support implemented for Ident with type %v\n", fieldType)
 				g.Printf("{\n")
-				g.Printf("_value := fmt.Sprintf(\"%%v\", d.%s)\n", fieldName)
+				g.Printf("_value := fmt.Sprintf(\"%%v\", "+deref+"d.%s)\n", fieldName)
 				g.Printf(stringFieldSerialize, "_value", fieldNameUntitled)
 				g.Printf("}\n")
+			}
+			if needsDereference {
+				g.Printf("}")
 			}
 		case *ast.ArrayType:
 			if eltType, ok := fieldType.Elt.(*ast.Ident); ok && eltType.Name == "byte" {
@@ -618,6 +642,15 @@ func (f *File) genDecl(node ast.Node) bool {
 	return false
 }
 
+func indent(times int, input string) string {
+	if times == 0 {
+		return input
+	}
+	lines := strings.Split(input, "\n")
+	indents := strings.Repeat("\t", times)
+	return indents + strings.Join(lines, "\n"+indents)
+}
+
 var stringerTemplate = `
 func (d *%s) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
@@ -685,6 +718,12 @@ var int32FieldSerialize = `
 
 var int64FieldSerialize = `
 	if err := writeBuffer.WriteInt64(%[2]s, 64, %[1]s); err != nil {
+		return err
+	}
+`
+
+var uint16FieldSerialize = `
+	if err := writeBuffer.WriteUint16(%[2]s, 16, %[1]s); err != nil {
 		return err
 	}
 `
