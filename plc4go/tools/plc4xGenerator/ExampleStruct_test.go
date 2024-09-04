@@ -23,4 +23,13 @@ type Example struct {
 	aField *uint16
 	bField string
 	cField int
+	dField ExampleStringer `stringer:"true"`
+	eField ExampleStringer `asPtr:"true"`
+}
+
+type ExampleStringer struct {
+}
+
+func (ExampleStringer) String() string {
+	return ""
 }

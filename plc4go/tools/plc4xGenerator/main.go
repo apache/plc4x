@@ -289,6 +289,10 @@ func (g *Generator) generate(typeName string) {
 			}
 			continue
 		}
+		if field.asPtr {
+			g.Printf(stringFieldSerialize, "fmt.Sprintf(\"%p\", d."+field.name+")", fieldNameUntitled)
+			continue
+		}
 		switch fieldType := fieldType.(type) {
 		case *ast.SelectorExpr:
 			{
@@ -417,7 +421,7 @@ func (g *Generator) generate(typeName string) {
 				g.Printf("}\n")
 			}
 			if needsDereference {
-				g.Printf("}")
+				g.Printf("}\n")
 			}
 		case *ast.ArrayType:
 			if eltType, ok := fieldType.Elt.(*ast.Ident); ok && eltType.Name == "byte" {
@@ -550,6 +554,7 @@ type Field struct {
 	fieldType  ast.Expr
 	isDelegate bool
 	isStringer bool
+	asPtr      bool
 	hasLocker  string
 }
 
@@ -594,6 +599,10 @@ func (f *File) genDecl(node ast.Node) bool {
 				hasLocker = strings.TrimPrefix(field.Tag.Value, "`hasLocker:\"")
 				hasLocker = strings.TrimSuffix(hasLocker, "\"`")
 			}
+			asPtr := false
+			if field.Tag != nil && field.Tag.Value == "`asPtr:\"true\"`" { // TODO: Check if we do that a bit smarter
+				asPtr = true
+			}
 			if len(field.Names) == 0 {
 				fmt.Printf("\t adding delegate\n")
 				switch ft := field.Type.(type) {
@@ -602,6 +611,7 @@ func (f *File) genDecl(node ast.Node) bool {
 						fieldType:  ft,
 						isDelegate: true,
 						isStringer: isStringer,
+						asPtr:      asPtr,
 						hasLocker:  hasLocker,
 					})
 					continue
@@ -612,6 +622,7 @@ func (f *File) genDecl(node ast.Node) bool {
 							fieldType:  set,
 							isDelegate: true,
 							isStringer: isStringer,
+							asPtr:      asPtr,
 							hasLocker:  hasLocker,
 						})
 						continue
@@ -623,6 +634,7 @@ func (f *File) genDecl(node ast.Node) bool {
 						fieldType:  ft.Sel,
 						isDelegate: true,
 						isStringer: isStringer,
+						asPtr:      asPtr,
 						hasLocker:  hasLocker,
 					})
 					continue
@@ -635,6 +647,7 @@ func (f *File) genDecl(node ast.Node) bool {
 				name:       field.Names[0].Name,
 				fieldType:  field.Type,
 				isStringer: isStringer,
+				asPtr:      asPtr,
 				hasLocker:  hasLocker,
 			})
 		}
