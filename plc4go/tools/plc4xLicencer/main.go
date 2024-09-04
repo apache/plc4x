@@ -41,9 +41,9 @@ var (
 
 // Usage is a replacement usage function for the flags package.
 func Usage() {
-	_, _ = fmt.Fprintf(os.Stderr, "Usage of plc4xLicenser:\n")
-	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xLicenser [flags] -type T [directory]\n")
-	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xLicenser [flags] -type T files... # Must be a single package\n")
+	_, _ = fmt.Fprintf(os.Stderr, "Usage of plc4xLicencer:\n")
+	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xLicencer [flags] -type T [directory]\n")
+	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xLicencer [flags] -type T files... # Must be a single package\n")
 	_, _ = fmt.Fprintf(os.Stderr, "Flags:\n")
 	flag.PrintDefaults()
 }
@@ -91,6 +91,15 @@ func main() {
 
 	licenseFileName := *licenseFile
 	isAbs := path.IsAbs(licenseFileName)
+	licenceContent := GetLicenseFileContent(isAbs, licenseFileName, err2)
+
+	if err := os.WriteFile(outputName, append(licenceContent, inputFile...), 0644); err != nil {
+		log.Fatalf("writing output: %s", err)
+	}
+	fmt.Printf("Fixed plc4x license of %s\n", outputName)
+}
+
+func GetLicenseFileContent(isAbs bool, licenseFileName string, err2 error) []byte {
 	var licenceContent []byte
 	rootReached := false
 	currentDir, _ := os.Getwd()
@@ -115,11 +124,7 @@ func main() {
 			panic(err2)
 		}
 	}
-
-	if err := os.WriteFile(outputName, append(licenceContent, inputFile...), 0644); err != nil {
-		log.Fatalf("writing output: %s", err)
-	}
-	fmt.Printf("Fixed plc4x license of %s\n", outputName)
+	return licenceContent
 }
 
 // isDirectory reports whether the named file is a directory.

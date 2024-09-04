@@ -43,12 +43,12 @@ To install `plc4xpcapanalyzer` run:
 To install `plc4xbrowser` run: 
 `go install github.com/apache/plc4x-extras/plc4go/tools/plc4xbrowser@latest`
 
-### plc4xLicenser
+### plc4xLicencer
 
-`plc4xLicenser` is a generator to add the Apache licence to files
+`plc4xLicencer` is a generator to add the Apache licence to files
 
-To install `plc4xLicenser` run: 
-`go install github.com/apache/plc4x-extras/plc4go/tools/plc4xLicenser@latest`
+To install `plc4xLicencer` run: 
+`go install github.com/apache/plc4x-extras/plc4go/tools/plc4xLicencer@latest`
 
 ### plc4xGenerator
 
