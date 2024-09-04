@@ -63,6 +63,8 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleCoilsRequest import
 from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest import (
     ModbusPDUWriteMultipleHoldingRegistersRequestBuilder,
 )
+
+from drivers.modbus.ModbusTag import ModbusTag
 from protocols.modbus.readwrite.ModbusDataType import ModbusDataType
 
 
@@ -206,6 +208,7 @@ class ModbusDevice:
                 "Modbus doesn't support writing to input registers"
             )
         elif isinstance(tag, ModbusTagHoldingRegister):
+            self._serialize_data_items(tag, values)
             pdu = ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(
                 tag.address, tag.quantity, [values]
             ).build()
@@ -234,3 +237,21 @@ class ModbusDevice:
         await message_future
         result = message_future.result()
         pass
+
+    def _serialize_data_items(self, tag: ModbusTag, values: List[PlcValue]) -> List[int]:
+        length: int = 0
+        length = tag.quantity * tag.data_type.data_type_size
+
+        write_buffer = WriteBufferByteBased(
+            length, ByteOrder.BIG_ENDIAN
+        )
+
+        DataItem.static_serialize(
+            write_buffer,
+            values,
+            tag.data_type,
+            tag.quantity,
+            True,
+            ByteOrder.BIG_ENDIAN
+        )
+        return write_buffer.get_bytes().tobytes()
