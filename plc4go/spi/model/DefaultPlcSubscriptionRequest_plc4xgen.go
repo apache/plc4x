@@ -100,8 +100,8 @@ func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Con
 		return err
 	}
 
-	if d.subscriber != nil {
-		if serializableField, ok := d.subscriber.(utils.Serializable); ok {
+	if any(d.subscriber) != nil {
+		if serializableField, ok := any(d.subscriber).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("subscriber"); err != nil {
 				return err
 			}

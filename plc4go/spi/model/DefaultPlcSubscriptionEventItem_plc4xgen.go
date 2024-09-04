@@ -47,8 +47,8 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 		return err
 	}
 
-	if d.tag != nil {
-		if serializableField, ok := d.tag.(utils.Serializable); ok {
+	if any(d.tag) != nil {
+		if serializableField, ok := any(d.tag).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("tag"); err != nil {
 				return err
 			}
@@ -74,8 +74,8 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 		return err
 	}
 
-	if d.value != nil {
-		if serializableField, ok := d.value.(utils.Serializable); ok {
+	if any(d.value) != nil {
+		if serializableField, ok := any(d.value).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("value"); err != nil {
 				return err
 			}

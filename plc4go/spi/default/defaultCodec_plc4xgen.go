@@ -43,8 +43,8 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if d.transportInstance != nil {
-		if serializableField, ok := d.transportInstance.(utils.Serializable); ok {
+	if any(d.transportInstance) != nil {
+		if serializableField, ok := any(d.transportInstance).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("transportInstance"); err != nil {
 				return err
 			}
@@ -67,8 +67,8 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	for _, elem := range d.expectations {
 		var elem any = elem
 
-		if elem != nil {
-			if serializableField, ok := elem.(utils.Serializable); ok {
+		if any(elem) != nil {
+			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
 				}

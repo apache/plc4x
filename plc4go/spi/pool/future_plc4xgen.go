@@ -59,8 +59,8 @@ func (d *future) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return err
 	}
 
-	if d.err.Load() != nil {
-		if serializableField, ok := d.err.Load().(utils.Serializable); ok {
+	if any(d.err.Load()) != nil {
+		if serializableField, ok := any(d.err.Load()).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("err"); err != nil {
 				return err
 			}

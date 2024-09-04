@@ -52,8 +52,8 @@ func (d *DefaultPlcConsumerRegistration) SerializeWithWriteBuffer(ctx context.Co
 	for _, elem := range d.handles {
 		var elem any = elem
 
-		if elem != nil {
-			if serializableField, ok := elem.(utils.Serializable); ok {
+		if any(elem) != nil {
+			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
 				}

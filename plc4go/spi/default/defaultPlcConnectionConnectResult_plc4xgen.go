@@ -43,8 +43,8 @@ func (d *defaultPlcConnectionConnectResult) SerializeWithWriteBuffer(ctx context
 		return err
 	}
 
-	if d.connection != nil {
-		if serializableField, ok := d.connection.(utils.Serializable); ok {
+	if any(d.connection) != nil {
+		if serializableField, ok := any(d.connection).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("connection"); err != nil {
 				return err
 			}

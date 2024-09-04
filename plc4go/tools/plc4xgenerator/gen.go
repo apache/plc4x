@@ -626,7 +626,7 @@ func (d *%s) String() string {
 `
 
 var serializableFieldTemplate = `
-	if %[1]s != nil {
+	if any(%[1]s) != nil {
 		if serializableField, ok := any(%[1]s).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext(%[2]s); err != nil {
 				return err

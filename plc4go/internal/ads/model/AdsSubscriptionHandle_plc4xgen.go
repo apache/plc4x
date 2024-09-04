@@ -43,8 +43,8 @@ func (d *AdsSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, wr
 		return err
 	}
 
-	if d.subscriber != nil {
-		if serializableField, ok := d.subscriber.(utils.Serializable); ok {
+	if any(d.subscriber) != nil {
+		if serializableField, ok := any(d.subscriber).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("subscriber"); err != nil {
 				return err
 			}
@@ -78,8 +78,8 @@ func (d *AdsSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, wr
 	for _, elem := range d.consumers {
 		var elem any = elem
 
-		if elem != nil {
-			if serializableField, ok := elem.(utils.Serializable); ok {
+		if any(elem) != nil {
+			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
 				}
@@ -106,8 +106,8 @@ func (d *AdsSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, wr
 	for _, elem := range d._options {
 		var elem any = elem
 
-		if elem != nil {
-			if serializableField, ok := elem.(utils.Serializable); ok {
+		if any(elem) != nil {
+			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
 				}

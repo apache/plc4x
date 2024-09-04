@@ -48,8 +48,8 @@ func (d *requestTransactionManager) SerializeWithWriteBuffer(ctx context.Context
 	for _, elem := range d.runningRequests {
 		var elem any = elem
 
-		if elem != nil {
-			if serializableField, ok := elem.(utils.Serializable); ok {
+		if any(elem) != nil {
+			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
 				}
@@ -79,8 +79,8 @@ func (d *requestTransactionManager) SerializeWithWriteBuffer(ctx context.Context
 		return err
 	}
 
-	if d.executor != nil {
-		if serializableField, ok := d.executor.(utils.Serializable); ok {
+	if any(d.executor) != nil {
+		if serializableField, ok := any(d.executor).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("executor"); err != nil {
 				return err
 			}

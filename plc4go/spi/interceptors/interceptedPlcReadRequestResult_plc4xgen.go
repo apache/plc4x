@@ -43,8 +43,8 @@ func (d *interceptedPlcReadRequestResult) SerializeWithWriteBuffer(ctx context.C
 		return err
 	}
 
-	if d.Request != nil {
-		if serializableField, ok := d.Request.(utils.Serializable); ok {
+	if any(d.Request) != nil {
+		if serializableField, ok := any(d.Request).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("request"); err != nil {
 				return err
 			}
@@ -62,8 +62,8 @@ func (d *interceptedPlcReadRequestResult) SerializeWithWriteBuffer(ctx context.C
 		}
 	}
 
-	if d.Response != nil {
-		if serializableField, ok := d.Response.(utils.Serializable); ok {
+	if any(d.Response) != nil {
+		if serializableField, ok := any(d.Response).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("response"); err != nil {
 				return err
 			}

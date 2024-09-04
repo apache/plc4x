@@ -46,8 +46,8 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if d.requestContext != nil {
-		if serializableField, ok := d.requestContext.(utils.Serializable); ok {
+	if any(d.requestContext) != nil {
+		if serializableField, ok := any(d.requestContext).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("requestContext"); err != nil {
 				return err
 			}
@@ -65,8 +65,8 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 	}
 
-	if d.cbusOptions != nil {
-		if serializableField, ok := d.cbusOptions.(utils.Serializable); ok {
+	if any(d.cbusOptions) != nil {
+		if serializableField, ok := any(d.cbusOptions).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("cbusOptions"); err != nil {
 				return err
 			}

@@ -43,8 +43,8 @@ func (d *DefaultPlcBrowseItem) SerializeWithWriteBuffer(ctx context.Context, wri
 		return err
 	}
 
-	if d.Tag != nil {
-		if serializableField, ok := d.Tag.(utils.Serializable); ok {
+	if any(d.Tag) != nil {
+		if serializableField, ok := any(d.Tag).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("tag"); err != nil {
 				return err
 			}

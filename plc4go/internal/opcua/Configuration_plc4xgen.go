@@ -71,8 +71,8 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if d.Thumbprint != nil {
-		if serializableField, ok := d.Thumbprint.(utils.Serializable); ok {
+	if any(d.Thumbprint) != nil {
+		if serializableField, ok := any(d.Thumbprint).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("thumbprint"); err != nil {
 				return err
 			}

@@ -58,8 +58,8 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	for _, elem := range d.subscribers {
 		var elem any = elem
 
-		if elem != nil {
-			if serializableField, ok := elem.(utils.Serializable); ok {
+		if any(elem) != nil {
+			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
 				}
@@ -118,8 +118,8 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 
-	if d.tracer != nil {
-		if serializableField, ok := d.tracer.(utils.Serializable); ok {
+	if any(d.tracer) != nil {
+		if serializableField, ok := any(d.tracer).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("tracer"); err != nil {
 				return err
 			}

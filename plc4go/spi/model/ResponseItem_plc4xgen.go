@@ -47,8 +47,8 @@ func (d *ResponseItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if d.value != nil {
-		if serializableField, ok := d.value.(utils.Serializable); ok {
+	if any(d.value) != nil {
+		if serializableField, ok := any(d.value).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("value"); err != nil {
 				return err
 			}

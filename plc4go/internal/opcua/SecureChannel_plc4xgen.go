@@ -54,8 +54,8 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if d.policyId != nil {
-		if serializableField, ok := d.policyId.(utils.Serializable); ok {
+	if any(d.policyId) != nil {
+		if serializableField, ok := any(d.policyId).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("policyId"); err != nil {
 				return err
 			}
@@ -96,8 +96,8 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 	}
 
-	if d.endpoint != nil {
-		if serializableField, ok := d.endpoint.(utils.Serializable); ok {
+	if any(d.endpoint) != nil {
+		if serializableField, ok := any(d.endpoint).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("endpoint"); err != nil {
 				return err
 			}
@@ -127,8 +127,8 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if d.publicCertificate != nil {
-		if serializableField, ok := d.publicCertificate.(utils.Serializable); ok {
+	if any(d.publicCertificate) != nil {
+		if serializableField, ok := any(d.publicCertificate).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("publicCertificate"); err != nil {
 				return err
 			}
@@ -146,8 +146,8 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 	}
 
-	if d.thumbprint != nil {
-		if serializableField, ok := d.thumbprint.(utils.Serializable); ok {
+	if any(d.thumbprint) != nil {
+		if serializableField, ok := any(d.thumbprint).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("thumbprint"); err != nil {
 				return err
 			}
@@ -175,8 +175,8 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if d.certificateThumbprint != nil {
-		if serializableField, ok := d.certificateThumbprint.(utils.Serializable); ok {
+	if any(d.certificateThumbprint) != nil {
+		if serializableField, ok := any(d.certificateThumbprint).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("certificateThumbprint"); err != nil {
 				return err
 			}
@@ -217,8 +217,8 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if d.authenticationToken != nil {
-		if serializableField, ok := d.authenticationToken.(utils.Serializable); ok {
+	if any(d.authenticationToken) != nil {
+		if serializableField, ok := any(d.authenticationToken).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("authenticationToken"); err != nil {
 				return err
 			}

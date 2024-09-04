@@ -51,8 +51,8 @@ func (d *defaultConnection) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return err
 	}
 
-	if d.tagHandler != nil {
-		if serializableField, ok := d.tagHandler.(utils.Serializable); ok {
+	if any(d.tagHandler) != nil {
+		if serializableField, ok := any(d.tagHandler).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("tagHandler"); err != nil {
 				return err
 			}
@@ -70,8 +70,8 @@ func (d *defaultConnection) SerializeWithWriteBuffer(ctx context.Context, writeB
 		}
 	}
 
-	if d.valueHandler != nil {
-		if serializableField, ok := d.valueHandler.(utils.Serializable); ok {
+	if any(d.valueHandler) != nil {
+		if serializableField, ok := any(d.valueHandler).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("valueHandler"); err != nil {
 				return err
 			}

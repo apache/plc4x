@@ -47,8 +47,8 @@ func (d *worker) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		return err
 	}
 
-	if d.lastReceived.Load() != nil {
-		if serializableField, ok := d.lastReceived.Load().(utils.Serializable); ok {
+	if any(d.lastReceived.Load()) != nil {
+		if serializableField, ok := any(d.lastReceived.Load()).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("lastReceived"); err != nil {
 				return err
 			}

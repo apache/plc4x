@@ -43,8 +43,8 @@ func (d *defaultPlcConnectionCloseResult) SerializeWithWriteBuffer(ctx context.C
 		return err
 	}
 
-	if d.connection != nil {
-		if serializableField, ok := d.connection.(utils.Serializable); ok {
+	if any(d.connection) != nil {
+		if serializableField, ok := any(d.connection).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("connection"); err != nil {
 				return err
 			}
@@ -74,8 +74,8 @@ func (d *defaultPlcConnectionCloseResult) SerializeWithWriteBuffer(ctx context.C
 	for _, elem := range d.traces {
 		var elem any = elem
 
-		if elem != nil {
-			if serializableField, ok := elem.(utils.Serializable); ok {
+		if any(elem) != nil {
+			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
 				}

@@ -43,8 +43,8 @@ func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		return err
 	}
 
-	if d.browser != nil {
-		if serializableField, ok := d.browser.(utils.Serializable); ok {
+	if any(d.browser) != nil {
+		if serializableField, ok := any(d.browser).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("browser"); err != nil {
 				return err
 			}

@@ -43,8 +43,8 @@ func (d *DefaultPlcWriteResponse) SerializeWithWriteBuffer(ctx context.Context, 
 		return err
 	}
 
-	if d.request != nil {
-		if serializableField, ok := d.request.(utils.Serializable); ok {
+	if any(d.request) != nil {
+		if serializableField, ok := any(d.request).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("request"); err != nil {
 				return err
 			}

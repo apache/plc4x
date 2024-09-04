@@ -56,8 +56,8 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	for _, elem := range d.worker {
 		var elem any = elem
 
-		if elem != nil {
-			if serializableField, ok := elem.(utils.Serializable); ok {
+		if any(elem) != nil {
+			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
 				}

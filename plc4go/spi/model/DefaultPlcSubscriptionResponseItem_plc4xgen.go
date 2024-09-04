@@ -47,8 +47,8 @@ func (d *DefaultPlcSubscriptionResponseItem) SerializeWithWriteBuffer(ctx contex
 		return err
 	}
 
-	if d.subscriptionHandle != nil {
-		if serializableField, ok := d.subscriptionHandle.(utils.Serializable); ok {
+	if any(d.subscriptionHandle) != nil {
+		if serializableField, ok := any(d.subscriptionHandle).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("subscriptionHandle"); err != nil {
 				return err
 			}
