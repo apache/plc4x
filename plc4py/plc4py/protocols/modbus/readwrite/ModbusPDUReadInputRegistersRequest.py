@@ -28,7 +28,8 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import ClassVar
 import math
-    
+
+
 @dataclass
 class ModbusPDUReadInputRegistersRequest(ModbusPDU):
     starting_address: int
@@ -38,19 +39,20 @@ class ModbusPDUReadInputRegistersRequest(ModbusPDU):
     function_flag: ClassVar[int] = 0x04
     response: ClassVar[bool] = False
 
-
-
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadInputRegistersRequest")
 
         # Simple Field (startingAddress)
-        write_buffer.write_unsigned_short(self.starting_address,bit_length=16,logical_name="startingAddress")
+        write_buffer.write_unsigned_short(
+            self.starting_address, bit_length=16, logical_name="startingAddress"
+        )
 
         # Simple Field (quantity)
-        write_buffer.write_unsigned_short(self.quantity,bit_length=16,logical_name="quantity")
+        write_buffer.write_unsigned_short(
+            self.quantity, bit_length=16, logical_name="quantity"
+        )
 
         write_buffer.pop_context("ModbusPDUReadInputRegistersRequest")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -67,7 +69,6 @@ class ModbusPDUReadInputRegistersRequest(ModbusPDU):
 
         return length_in_bits
 
-
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadInputRegistersRequest")
@@ -75,19 +76,17 @@ class ModbusPDUReadInputRegistersRequest(ModbusPDU):
         if isinstance(response, str):
             response = bool(strtobool(response))
 
+        starting_address: int = read_buffer.read_unsigned_short(
+            logical_name="starting_address", bit_length=16, response=response
+        )
 
-        starting_address: int = read_buffer.read_unsigned_short(logical_name="starting_address", bit_length=16, response=response)  
-
-
-
-        quantity: int = read_buffer.read_unsigned_short(logical_name="quantity", bit_length=16, response=response)  
-
-
+        quantity: int = read_buffer.read_unsigned_short(
+            logical_name="quantity", bit_length=16, response=response
+        )
 
         read_buffer.pop_context("ModbusPDUReadInputRegistersRequest")
         # Create the instance
-        return ModbusPDUReadInputRegistersRequestBuilder(starting_address, quantity )
-
+        return ModbusPDUReadInputRegistersRequestBuilder(starting_address, quantity)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -97,20 +96,25 @@ class ModbusPDUReadInputRegistersRequest(ModbusPDU):
             return False
 
         that: ModbusPDUReadInputRegistersRequest = ModbusPDUReadInputRegistersRequest(o)
-        return (self.starting_address == that.starting_address) and (self.quantity == that.quantity) and super().equals(that) and True
+        return (
+            (self.starting_address == that.starting_address)
+            and (self.quantity == that.quantity)
+            and super().equals(that)
+            and True
+        )
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -118,9 +122,10 @@ class ModbusPDUReadInputRegistersRequestBuilder:
     starting_address: int
     quantity: int
 
-    def build(self,) -> ModbusPDUReadInputRegistersRequest:
-        modbus_pduread_input_registers_request: ModbusPDUReadInputRegistersRequest = ModbusPDUReadInputRegistersRequest(self.starting_address, self.quantity )
+    def build(
+        self,
+    ) -> ModbusPDUReadInputRegistersRequest:
+        modbus_pduread_input_registers_request: ModbusPDUReadInputRegistersRequest = (
+            ModbusPDUReadInputRegistersRequest(self.starting_address, self.quantity)
+        )
         return modbus_pduread_input_registers_request
-
-
-

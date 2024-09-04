@@ -76,7 +76,7 @@ class ${type.name}:
                         <#if discriminatorType.isEnumTypeReference()>
                         ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                         <#else>
-                        ${helper.camelCaseToSnakeCase(helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments))}
+                        ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                         </#if>
                         <#sep> and </#sep>
                     </#list>
@@ -131,7 +131,7 @@ class ${type.name}:
                 )
                 </@compress>
 
-            <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
+            <#-- A terminated array keeps on reading data as long as the termination expression evaluates to False -->
                             <#elseif arrayField.isTerminatedArrayField()>
             # Terminated array
             ${arrayField.name}: ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)} = new LinkedList<>()
@@ -377,8 +377,8 @@ class ${type.name}:
             for val in values.get_list():
                 <#if elementTypeReference.isByteBased()>
                 <@emitImport import="from typing import List" />
-                value: list[byte] = val.get_raw()
-                    write_buffer.write_byte_array("", value)
+                value: ${helper.getLanguageTypeNameForField(arrayField)} = val.get_raw()
+                write_buffer.write_byte_array("", value)
                 <#else>
                 value: ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} = val.get_${helper.camelCaseToSnakeCase(helper.getLanguageTypeNameForTypeReference(elementTypeReference)?cap_first)}()
                 ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "(" + arrayField.name + ")", arrayField)}
@@ -387,7 +387,7 @@ class ${type.name}:
 
                     <#if case.name == "BOOL">
             while write_buffer.getPos() < len(write_buffer.get_data()):
-                        write_buffer.write_bit(false)
+                        write_buffer.write_bit(False)
                     </#if>
                     <#break>
                     <#case "const">

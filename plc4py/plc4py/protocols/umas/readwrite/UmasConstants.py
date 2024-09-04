@@ -25,21 +25,21 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-    
+
+
 @dataclass
-class UmasConstants():
+class UmasConstants:
     UMAS_TCP_DEFAULT_PORT: int = int(502)
-
-
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasConstants")
 
         # Const Field (UmasTcpDefaultPort)
-        write_buffer.write_unsigned_short(self.UMAS_TCP_DEFAULT_PORT, logical_name="UmasTcpDefaultPort")
+        write_buffer.write_unsigned_short(
+            self.UMAS_TCP_DEFAULT_PORT, logical_name="UmasTcpDefaultPort"
+        )
 
         write_buffer.pop_context("UmasConstants")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -53,25 +53,22 @@ class UmasConstants():
 
         return length_in_bits
 
-
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
         return UmasConstants.static_parse_context(read_buffer)
-
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("UmasConstants")
 
-
-
-        UMAS_TCP_DEFAULT_PORT: int = read_buffer.read_unsigned_short(logical_name="umas_tcp_default_port")
+        UMAS_TCP_DEFAULT_PORT: int = read_buffer.read_unsigned_short(
+            logical_name="umas_tcp_default_port"
+        )
 
         read_buffer.pop_context("UmasConstants")
         # Create the instance
         _umas_constants: UmasConstants = UmasConstants()
         return _umas_constants
-
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -88,14 +85,10 @@ class UmasConstants():
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
-
-
-
-
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"

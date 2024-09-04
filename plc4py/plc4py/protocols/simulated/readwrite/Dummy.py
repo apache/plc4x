@@ -26,21 +26,21 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
 import math
-    
+
+
 @dataclass
-class Dummy():
+class Dummy:
     dummy: int
-
-
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("Dummy")
 
         # Simple Field (dummy)
-        write_buffer.write_unsigned_short(self.dummy,bit_length=16,logical_name="dummy")
+        write_buffer.write_unsigned_short(
+            self.dummy, bit_length=16, logical_name="dummy"
+        )
 
         write_buffer.pop_context("Dummy")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -54,27 +54,22 @@ class Dummy():
 
         return length_in_bits
 
-
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
         return Dummy.static_parse_context(read_buffer)
-
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("Dummy")
 
-
-
-        dummy: int = read_buffer.read_unsigned_short(logical_name="dummy", bit_length=16, byte_order=ByteOrder.BIG_ENDIAN)  
-
-
+        dummy: int = read_buffer.read_unsigned_short(
+            logical_name="dummy", bit_length=16, byte_order=ByteOrder.BIG_ENDIAN
+        )
 
         read_buffer.pop_context("Dummy")
         # Create the instance
-        _dummy: Dummy = Dummy(dummy )
+        _dummy: Dummy = Dummy(dummy)
         return _dummy
-
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -91,14 +86,10 @@ class Dummy():
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
-
-
-
-
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
