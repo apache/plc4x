@@ -57,7 +57,7 @@ func (d *DefaultPlcSubscriptionTag) SerializeWithWriteBuffer(ctx context.Context
 		return err
 	}
 
-	if err := writeBuffer.WriteString("duration", uint32(len(fmt.Sprintf("%p", d.duration))*8), fmt.Sprintf("%p", d.duration)); err != nil {
+	if err := writeBuffer.WriteString("duration", uint32(len(fmt.Sprintf("%s", d.duration))*8), fmt.Sprintf("%s", d.duration)); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("PlcSubscriptionTag"); err != nil {

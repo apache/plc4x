@@ -109,7 +109,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(fmt.Sprintf("%p", d.receiveTimeout))*8), fmt.Sprintf("%p", d.receiveTimeout)); err != nil {
+	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(fmt.Sprintf("%s", d.receiveTimeout))*8), fmt.Sprintf("%s", d.receiveTimeout)); err != nil {
 		return err
 	}
 

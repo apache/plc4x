@@ -111,7 +111,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 
-	if err := writeBuffer.WriteString("connectTimeout", uint32(len(fmt.Sprintf("%p", d.connectTimeout))*8), fmt.Sprintf("%p", d.connectTimeout)); err != nil {
+	if err := writeBuffer.WriteString("connectTimeout", uint32(len(fmt.Sprintf("%s", d.connectTimeout))*8), fmt.Sprintf("%s", d.connectTimeout)); err != nil {
 		return err
 	}
 
@@ -120,7 +120,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 
-	if err := writeBuffer.WriteString("disconnectTimeout", uint32(len(fmt.Sprintf("%p", d.disconnectTimeout))*8), fmt.Sprintf("%p", d.disconnectTimeout)); err != nil {
+	if err := writeBuffer.WriteString("disconnectTimeout", uint32(len(fmt.Sprintf("%s", d.disconnectTimeout))*8), fmt.Sprintf("%s", d.disconnectTimeout)); err != nil {
 		return err
 	}
 

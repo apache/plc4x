@@ -76,7 +76,7 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 		return err
 	}
 
-	if err := writeBuffer.WriteString("interval", uint32(len(fmt.Sprintf("%p", d.interval))*8), fmt.Sprintf("%p", d.interval)); err != nil {
+	if err := writeBuffer.WriteString("interval", uint32(len(fmt.Sprintf("%s", d.interval))*8), fmt.Sprintf("%s", d.interval)); err != nil {
 		return err
 	}
 

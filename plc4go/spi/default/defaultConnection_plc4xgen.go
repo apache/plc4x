@@ -49,7 +49,7 @@ func (d *defaultConnection) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return err
 	}
 
-	if err := writeBuffer.WriteString("defaultTtl", uint32(len(fmt.Sprintf("%p", d.defaultTtl))*8), fmt.Sprintf("%p", d.defaultTtl)); err != nil {
+	if err := writeBuffer.WriteString("defaultTtl", uint32(len(fmt.Sprintf("%s", d.defaultTtl))*8), fmt.Sprintf("%s", d.defaultTtl)); err != nil {
 		return err
 	}
 

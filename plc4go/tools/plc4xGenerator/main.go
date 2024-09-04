@@ -379,7 +379,7 @@ func (g *Generator) generate(typeName string) {
 					}
 					if xIdent.Name == "time" {
 						if sel.Name == "Time" || sel.Name == "Duration" {
-							g.Printf(stringFieldSerialize, "fmt.Sprintf(\"%p\", d."+field.name+")", fieldNameUntitled)
+							g.Printf(stringFieldSerialize, "fmt.Sprintf(\"%s\", d."+field.name+")", fieldNameUntitled)
 							continue
 						}
 					}
