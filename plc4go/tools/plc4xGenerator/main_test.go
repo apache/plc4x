@@ -35,7 +35,6 @@ func TestBanana(t *testing.T) {
 	tests = utils.MakePtr(true)
 	pkgIndex = utils.MakePtr(1)
 	output = utils.MakePtr(path.Join(t.TempDir(), "aTestOutput.go"))
-	output = utils.MakePtr("aTestOutput.go")
 	main()
 	time.Sleep(1 * time.Second)
 	file, err := os.ReadFile(outputFile)

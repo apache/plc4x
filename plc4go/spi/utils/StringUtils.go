@@ -43,3 +43,8 @@ func RandomString(length int) string {
 	}
 	return string(randomString)
 }
+
+// AlternateStringer can be implemented by stuff using the generator to give an alternate fmt.Stringer representation
+type AlternateStringer interface {
+	AlternateString() (v string, use bool)
+}

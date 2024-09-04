@@ -666,6 +666,11 @@ func indent(times int, input string) string {
 
 var stringerTemplate = `
 func (d *%s) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
