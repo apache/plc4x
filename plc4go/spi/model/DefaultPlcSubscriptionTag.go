@@ -28,7 +28,7 @@ import (
 
 var _ apiModel.PlcSubscriptionTag = &DefaultPlcSubscriptionTag{}
 
-//go:generate go run ../../tools/plc4xGenerator/main.go -type=DefaultPlcSubscriptionTag
+//go:generate plc4xGenerator -type=DefaultPlcSubscriptionTag
 type DefaultPlcSubscriptionTag struct {
 	plcTag              apiModel.PlcTag              `stringer:"true"`
 	plcSubscriptionType apiModel.PlcSubscriptionType `stringer:"true"`

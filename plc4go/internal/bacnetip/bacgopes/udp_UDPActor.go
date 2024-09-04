@@ -25,7 +25,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../../tools/plc4xGenerator/main.go -type=UDPActor -prefix=udp_
+//go:generate plc4xGenerator -type=UDPActor -prefix=udp_
 type UDPActor struct {
 	director *UDPDirector
 	timeout  uint32

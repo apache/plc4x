@@ -19,7 +19,7 @@
 
 package opcua
 
-//go:generate go run ../../tools/plc4xGenerator/main.go -type=DriverContext
+//go:generate plc4xGenerator -type=DriverContext
 type DriverContext struct {
 	fireDiscoverEvent            bool
 	awaitSetupComplete           bool

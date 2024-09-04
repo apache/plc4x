@@ -54,7 +54,7 @@ type RequestTransaction interface {
 // Internal section
 //
 
-//go:generate go run ../../tools/plc4xGenerator/main.go -type=requestTransaction
+//go:generate plc4xGenerator -type=requestTransaction
 type requestTransaction struct {
 	parent        *requestTransactionManager `ignore:"true"`
 	transactionId int32

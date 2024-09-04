@@ -111,7 +111,7 @@ type withCustomExecutor struct {
 	executor pool.Executor
 }
 
-//go:generate go run ../../tools/plc4xGenerator/main.go -type=requestTransactionManager
+//go:generate plc4xGenerator -type=requestTransactionManager
 type requestTransactionManager struct {
 	runningRequests     []*requestTransaction
 	runningRequestMutex sync.RWMutex

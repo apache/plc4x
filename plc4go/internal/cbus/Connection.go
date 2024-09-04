@@ -40,7 +40,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate go run ../../tools/plc4xGenerator/main.go -type=AlphaGenerator
+//go:generate plc4xGenerator -type=AlphaGenerator
 type AlphaGenerator struct {
 	currentAlpha byte `hasLocker:"lock"`
 	lock         sync.Mutex
@@ -58,7 +58,7 @@ func (t *AlphaGenerator) getAndIncrement() byte {
 	return result
 }
 
-//go:generate go run ../../tools/plc4xGenerator/main.go -type=Connection
+//go:generate plc4xGenerator -type=Connection
 type Connection struct {
 	_default.DefaultConnection
 	alphaGenerator AlphaGenerator `stringer:"true"`

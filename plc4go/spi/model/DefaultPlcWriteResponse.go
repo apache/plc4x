@@ -25,7 +25,7 @@ import (
 
 var _ apiModel.PlcWriteResponse = &DefaultPlcWriteResponse{}
 
-//go:generate go run ../../tools/plc4xGenerator/main.go -type=DefaultPlcWriteResponse
+//go:generate plc4xGenerator -type=DefaultPlcWriteResponse
 type DefaultPlcWriteResponse struct {
 	request       apiModel.PlcWriteRequest
 	responseCodes map[string]apiModel.PlcResponseCode

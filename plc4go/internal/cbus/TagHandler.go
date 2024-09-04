@@ -36,7 +36,7 @@ import (
 type TagType uint8
 
 //go:generate stringer -type TagType
-//go:generate go run ../../tools/plc4xLicenser/main.go -type=TagType
+//go:generate plc4xLicenser -type=TagType
 const (
 	STATUS    TagType = iota
 	CAL_RESET         /* TODO: implement me*/

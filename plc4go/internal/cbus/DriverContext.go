@@ -19,7 +19,7 @@
 
 package cbus
 
-//go:generate go run ../../tools/plc4xGenerator/main.go -type=DriverContext
+//go:generate plc4xGenerator -type=DriverContext
 type DriverContext struct {
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool

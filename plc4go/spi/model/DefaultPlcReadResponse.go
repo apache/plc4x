@@ -27,7 +27,7 @@ import (
 
 var _ apiModel.PlcReadResponse = &DefaultPlcReadResponse{}
 
-//go:generate go run ../../tools/plc4xGenerator/main.go -type=DefaultPlcReadResponse
+//go:generate plc4xGenerator -type=DefaultPlcReadResponse
 type DefaultPlcReadResponse struct {
 	request apiModel.PlcReadRequest
 	values  map[string]*ResponseItem

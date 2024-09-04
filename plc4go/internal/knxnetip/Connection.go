@@ -46,7 +46,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
-//go:generate go run ../../tools/plc4xGenerator/main.go -type=ConnectionMetadata
+//go:generate plc4xGenerator -type=ConnectionMetadata
 type ConnectionMetadata struct {
 	KnxMedium         driverModel.KnxMedium `stringer:"true"`
 	GatewayName       string
