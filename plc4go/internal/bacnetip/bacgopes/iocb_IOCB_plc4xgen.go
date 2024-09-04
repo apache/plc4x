@@ -52,47 +52,27 @@ func (d *IOCB) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 	if err := writeBuffer.WriteInt64("ioID", 64, int64(d.ioID)); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.request)
 
-		if err := writeBuffer.WriteString("request", uint32(len(_value)*8), _value); err != nil {
-			return err
-		}
+	if err := writeBuffer.WriteString("request", uint32(len(d.request.String())*8), d.request.String()); err != nil {
+		return err
 	}
 	if d.destination != nil {
-		{
-			_value := fmt.Sprintf("%v", d.destination)
-
-			if err := writeBuffer.WriteString("destination", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
-		}
-	}
-	{
-		_value := fmt.Sprintf("%v", d.ioState)
-
-		if err := writeBuffer.WriteString("ioState", uint32(len(_value)*8), _value); err != nil {
+		if err := writeBuffer.WriteString("destination", uint32(len(d.destination.String())*8), d.destination.String()); err != nil {
 			return err
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.ioResponse)
 
-		if err := writeBuffer.WriteString("ioResponse", uint32(len(_value)*8), _value); err != nil {
-			return err
-		}
+	if err := writeBuffer.WriteString("ioState", uint32(len(d.ioState.String())*8), d.ioState.String()); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteString("ioResponse", uint32(len(d.ioResponse.String())*8), d.ioResponse.String()); err != nil {
+		return err
 	}
 
 	if d.ioError != nil {
 		_errString := d.ioError.Error()
 		if err := writeBuffer.WriteString("ioError", uint32(len(_errString)*8), _errString); err != nil {
-			return err
-		}
-	}
-	{
-		_value := fmt.Sprintf("%v", d.ioController)
-
-		if err := writeBuffer.WriteString("ioController", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
@@ -112,6 +92,25 @@ func (d *IOCB) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 	}
 	if err := writeBuffer.PopContext("ioQueue", utils.WithRenderAsList(true)); err != nil {
 		return err
+	}
+
+	if d.ioTimeout != nil {
+		if serializableField, ok := any(d.ioTimeout).(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("ioTimeout"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("ioTimeout"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.ioTimeout)
+			if err := writeBuffer.WriteString("ioTimeout", uint32(len(stringValue)*8), stringValue); err != nil {
+				return err
+			}
+		}
 	}
 
 	_ioTimoutCancel_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.ioTimoutCancel))

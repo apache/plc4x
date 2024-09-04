@@ -47,6 +47,7 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 	return i, nil
 }
 
+//go:generate plc4xGenerator -type=NPDUCodec -prefix=
 type NPDUCodec struct {
 	bacgopes.Client
 	bacgopes.Server
@@ -122,10 +123,6 @@ func (n *NPDUCodec) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) err
 	}
 
 	return n.Response(bacgopes.NewArgs(ypdu), bacgopes.NoKWArgs)
-}
-
-func (n *NPDUCodec) String() string {
-	return "NPDUCodec"
 }
 
 type SnifferStateMachine struct {
@@ -289,9 +286,10 @@ type TestDeviceObject struct {
 	*bacgopes.LocalDeviceObject
 }
 
+//go:generate plc4xGenerator -type=ApplicationLayerStateMachine
 type ApplicationLayerStateMachine struct {
 	bacgopes.ApplicationServiceElementContract
-	*tests.ClientStateMachine
+	*tests.ClientStateMachine `ignore:"true"` // TODO: add support
 
 	name    string
 	address *bacgopes.Address
@@ -399,13 +397,14 @@ func (a *ApplicationLayerStateMachine) Confirmation(args bacgopes.Args, kwargs b
 	return a.Receive(args, bacgopes.NoKWArgs)
 }
 
+//go:generate plc4xGenerator -type=ApplicationNode
 type ApplicationNode struct {
 	*bacgopes.Application
 	*bacgopes.WhoIsIAmServices
 	*bacgopes.ReadWritePropertyServices
 
 	name    string
-	address *bacgopes.Address
+	address *bacgopes.Address `directSerialize:"true"`
 	asap    *bacgopes.ApplicationServiceAccessPoint
 	smap    *bacgopes.StateMachineAccessPoint
 	nsap    *bacgopes.NetworkServiceAccessPoint

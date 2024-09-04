@@ -49,6 +49,7 @@ func (k DeviceInfoCacheKey) String() string {
 	return fmt.Sprintf("key: %d/%v", k.Instance, k.PduSource)
 }
 
+//go:generate plc4xGenerator -type=DeviceInfoCache -prefix=app_
 type DeviceInfoCache struct {
 	cache map[uint32]DeviceInfo
 
@@ -60,10 +61,6 @@ func NewDeviceInfoCache(localLog zerolog.Logger) *DeviceInfoCache {
 		cache: make(map[uint32]DeviceInfo),
 		log:   localLog,
 	}
-}
-
-func (d *DeviceInfoCache) String() string {
-	return fmt.Sprintf("DeviceInfoCache(%d)", len(d.cache))
 }
 
 // HasDeviceInfo Return true if cache has information about the device.

@@ -41,6 +41,8 @@ type ClientStateMachineContract interface {
 //
 //	state machine sends are sent down the stack and tPDU's coming up the
 //	stack are fed as received tPDU's.
+//
+//go:generate plc4xGenerator -type=ClientStateMachine -prefix=state_machine_
 type ClientStateMachine struct {
 	bacgopes.Client
 	StateMachineContract
@@ -100,10 +102,9 @@ func (s *ClientStateMachine) Confirmation(args bacgopes.Args, kwargs bacgopes.KW
 	return s.contract.Receive(args, kwargs)
 }
 
-func (s *ClientStateMachine) String() string {
+func (s *ClientStateMachine) AlternateString() (string, bool) {
 	if globals.ExtendedGeneralOutput {
-		return fmt.Sprintf("ClientStateMachine{%v, %v, name=%s}", s.Client, s.StateMachineContract, s.name)
-	} else {
-		return s.StateMachineContract.String()
+		return "", false
 	}
+	return s.StateMachineContract.String(), true
 }

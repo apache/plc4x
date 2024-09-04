@@ -20,23 +20,25 @@
 package tests
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // TrappedServerContract provides a set of functions which can be overwritten by a sub struct
 type TrappedServerContract interface {
+	utils.Serializable
 	Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error
 	Response(bacgopes.Args, bacgopes.KWArgs) error
 }
 
 // TrappedServer An instance of this class sits at the bottom of a stack.
+//
+//go:generate plc4xGenerator -type=TrappedServer -prefix=trapped_classes_
 type TrappedServer struct {
-	TrappedServerContract
+	TrappedServerContract `ignore:"true"`
 	bacgopes.Server
 
 	indicationReceived bacgopes.PDU
@@ -90,8 +92,4 @@ func (t *TrappedServer) Response(args bacgopes.Args, kwargs bacgopes.KWArgs) err
 
 	// continue with regular processing
 	return t.Server.Response(args, kwargs)
-}
-
-func (t *TrappedServer) String() string {
-	return fmt.Sprintf("TrappedServer{%s, indicationReceived: %v, responseSent: %v}", t.Server, t.indicationReceived, t.responseSent)
 }

@@ -34,6 +34,7 @@ type NodeNetworkReference interface {
 	ProcessPDU(pdu PDU) error
 }
 
+//go:generate plc4xGenerator -type=Node -prefix=vlan_
 type Node struct {
 	Server
 
@@ -45,10 +46,10 @@ type Node struct {
 	spoofing    bool
 
 	// args
-	argLan NodeNetworkReference
+	argLan NodeNetworkReference `ignore:"true"`
 
 	// pass through args
-	argSid *int
+	argSid *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -168,10 +169,10 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 	return nil
 }
 
-func (n *Node) String() string {
+func (n *Node) AlternateString() (string, bool) {
 	if globals.ExtendedGeneralOutput {
-		return fmt.Sprintf("Node: %s(%v)", n.name, n.getServerId())
+		return fmt.Sprintf("Node: %s(%v)", n.name, n.getServerId()), true
 	} else {
-		return fmt.Sprintf("<%T(%s) at %p>", n, n.name, n)
+		return "", false
 	}
 }

@@ -24,8 +24,11 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 )
 
+//go:generate plc4xGenerator -type=IPRouterNode -prefix=vlan_
 type IPRouterNode struct {
 	Client
 
@@ -36,7 +39,7 @@ type IPRouterNode struct {
 	addrSubnet *uint32
 
 	// pass through args
-	argCid *int
+	argCid *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -92,6 +95,9 @@ func (n *IPRouterNode) ProcessPDU(pdu PDU) error {
 	return n.Request(NewArgs(pdu), NoKWArgs)
 }
 
-func (n *IPRouterNode) String() string {
-	return fmt.Sprintf("IPRouterNode for %s", n.lan.name)
+func (n *IPRouterNode) AlternateString() (string, bool) {
+	if globals.ExtendedGeneralOutput {
+		return "", false
+	}
+	return fmt.Sprintf("IPRouterNode for %s", n.lan.name), true
 }

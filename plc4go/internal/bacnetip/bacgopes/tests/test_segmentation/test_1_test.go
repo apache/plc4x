@@ -145,6 +145,7 @@ func (a *ApplicationNetwork) _debug(format string, args bacgopes.Args) {
 	a.log.Debug().Msgf(format, args)
 }
 
+//go:generate plc4xGenerator -type=SnifferNode -suffix=_test
 type SnifferNode struct {
 	bacgopes.Client
 
@@ -222,6 +223,7 @@ func (s *SnifferNode) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) e
 	return nil
 }
 
+//go:generate plc4xGenerator -type=ApplicationStateMachine -suffix=_test
 type ApplicationStateMachine struct {
 	*bacgopes.Application
 	tests.StateMachineContract
@@ -314,10 +316,6 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacgopes.L
 		return nil, errors.Wrap(err, "error binding nsap")
 	}
 	return a, nil
-}
-
-func (a *ApplicationStateMachine) String() string {
-	return "ApplicationStateMachine" //TODO:
 }
 
 func (a *ApplicationStateMachine) Send(args bacgopes.Args, kwargs bacgopes.KWArgs) error {

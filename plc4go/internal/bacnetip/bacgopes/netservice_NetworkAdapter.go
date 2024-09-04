@@ -26,9 +26,10 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=NetworkAdapter -prefix=netservice_
 type NetworkAdapter struct {
 	Client
-	adapterSAP           *NetworkServiceAccessPoint
+	adapterSAP           *NetworkServiceAccessPoint `asPtr:"true"`
 	adapterNet           *uint16
 	adapterAddr          *Address
 	adapterNetConfigured *int

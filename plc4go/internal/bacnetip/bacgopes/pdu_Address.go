@@ -106,6 +106,7 @@ var net_ip_address_route_re = regexp.MustCompile(`^([0-9])+:` + _ip_address_port
 
 var combined_pattern = regexp.MustCompile(`^(?:(?:([0-9]+)|([*])):)?(?:([*])|` + _field_address.String() + `|` + _ip_address_mask_port.String() + `)` + _at_route.String() + `$`)
 
+//go:generate plc4xGenerator -type=Address -prefix=pdu_
 type Address struct {
 	AddrType    AddressType
 	AddrNet     *uint16
@@ -708,9 +709,9 @@ func (a *Address) Equals(other any) bool {
 	}
 }
 
-func (a *Address) String() string {
+func (a *Address) AlternateString() (string, bool) {
 	if a == nil {
-		return "<nil>"
+		return "<nil>", true
 	}
 	result := ""
 	if a.AddrType == NULL_ADDRESS {
@@ -765,7 +766,7 @@ func (a *Address) String() string {
 	if a.AddrRoute != nil {
 		result += fmt.Sprintf("@%s", a.AddrRoute)
 	}
-	return result
+	return result, true
 }
 
 func (a *Address) GoString() string { //TODO: not valid yet, needs adjustments to have proper output syntax

@@ -29,6 +29,7 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=BIPBBMD -prefix=bvllservice_
 type BIPBBMD struct {
 	*BIPSAP
 	Client
@@ -41,9 +42,9 @@ type BIPBBMD struct {
 	bbmdFDT     []*FDTEntry
 
 	// Pass Through args
-	argSapID *int
-	argCID   *int
-	argSID   *int
+	argSapID *int `ignore:"true"`
+	argCID   *int `ignore:"true"`
+	argSID   *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -537,8 +538,4 @@ func (b *BIPBBMD) DeletePeer(address Arg) error {
 		return addr.Equals(bdte)
 	})
 	return nil
-}
-
-func (b *BIPBBMD) String() string {
-	return "BIPBBMD" // TODO: improve output
 }

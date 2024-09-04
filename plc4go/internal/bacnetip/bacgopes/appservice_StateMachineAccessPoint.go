@@ -20,14 +20,13 @@
 package bacgopes
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=StateMachineAccessPoint -prefix=appservice_
 type StateMachineAccessPoint struct {
 	Client
 	ServiceAccessPointContract
@@ -39,17 +38,17 @@ type StateMachineAccessPoint struct {
 	serverTransactions    []*ServerSSM
 	numberOfApduRetries   int
 	apduTimeout           uint
-	maxApduLengthAccepted readWriteModel.MaxApduLengthAccepted
-	segmentationSupported readWriteModel.BACnetSegmentation
+	maxApduLengthAccepted readWriteModel.MaxApduLengthAccepted `stringer:"true"`
+	segmentationSupported readWriteModel.BACnetSegmentation    `stringer:"true"`
 	segmentTimeout        uint
-	maxSegmentsAccepted   readWriteModel.MaxSegmentsAccepted
+	maxSegmentsAccepted   readWriteModel.MaxSegmentsAccepted `stringer:"true"`
 	proposedWindowSize    uint8
-	dccEnableDisable      readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
+	dccEnableDisable      readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable `stringer:"true"`
 	applicationTimeout    uint
 
 	// pass through args
-	argSapID *int
-	argCid   *int
+	argSapID *int `ignore:"true"`
+	argCid   *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -128,10 +127,6 @@ func WithStateMachineAccessPointCid(cid int) func(*StateMachineAccessPoint) {
 	return func(s *StateMachineAccessPoint) {
 		s.argCid = &cid
 	}
-}
-
-func (s *StateMachineAccessPoint) String() string {
-	return fmt.Sprintf("StateMachineAccessPoint(TBD...)") // TODO: fill some info here
 }
 
 // getNextInvokeId Called by clients to get an unused invoke ID

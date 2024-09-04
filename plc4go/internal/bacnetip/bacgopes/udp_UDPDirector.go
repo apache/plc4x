@@ -33,6 +33,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
+//go:generate plc4xGenerator -type=UDPDirector -prefix=udp_
 type UDPDirector struct {
 	Server
 	ServiceAccessPointContract
@@ -40,7 +41,7 @@ type UDPDirector struct {
 	timeout uint32
 	reuse   bool
 	address AddressTuple[string, uint16]
-	udpConn *net.UDPConn
+	udpConn *net.UDPConn `asPtr:"true"`
 
 	actorClass func(zerolog.Logger, *UDPDirector, string) *UDPActor
 	request    chan PDU
@@ -143,10 +144,6 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 	d.peers = map[string]*UDPActor{}
 
 	return d, nil
-}
-
-func (d *UDPDirector) String() string {
-	return fmt.Sprintf("UDPDirector(TBD...)") // TODO: fill some info here
 }
 
 // AddActor adds an actor when a new one is connected

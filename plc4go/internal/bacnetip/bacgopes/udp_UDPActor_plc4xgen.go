@@ -49,12 +49,8 @@ func (d *UDPActor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return err
 	}
 	if d.director != nil {
-		{
-			_value := fmt.Sprintf("%v", d.director)
-
-			if err := writeBuffer.WriteString("director", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("director", uint32(len(d.director.String())*8), d.director.String()); err != nil {
+			return err
 		}
 	}
 
@@ -62,12 +58,8 @@ func (d *UDPActor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return err
 	}
 	if d.timer != nil {
-		{
-			_value := fmt.Sprintf("%v", d.timer)
-
-			if err := writeBuffer.WriteString("timer", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("timer", uint32(len(d.timer.String())*8), d.timer.String()); err != nil {
+			return err
 		}
 	}
 

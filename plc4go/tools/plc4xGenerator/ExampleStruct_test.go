@@ -22,8 +22,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Example struct {

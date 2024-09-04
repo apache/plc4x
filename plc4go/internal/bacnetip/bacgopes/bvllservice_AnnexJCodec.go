@@ -20,19 +20,18 @@
 package bacgopes
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
 
+//go:generate plc4xGenerator -type=AnnexJCodec -prefix=bvllservice_
 type AnnexJCodec struct {
 	Client
 	Server
 
 	// pass through args
-	argCid *int
-	argSid *int
+	argCid *int `ignore:"true"`
+	argSid *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -117,8 +116,4 @@ func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
 
 	// send it upstream
 	return b.Response(NewArgs(rpdu), NoKWArgs)
-}
-
-func (b *AnnexJCodec) String() string {
-	return fmt.Sprintf("AnnexJCodec(client: %s, server: %s)", b.Client, b.Server)
 }

@@ -56,12 +56,8 @@ func (d *SieveQueue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 	if d.address != nil {
-		{
-			_value := fmt.Sprintf("%v", d.address)
-
-			if err := writeBuffer.WriteString("address", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("address", uint32(len(d.address.String())*8), d.address.String()); err != nil {
+			return err
 		}
 	}
 	if err := writeBuffer.PopContext("SieveQueue"); err != nil {

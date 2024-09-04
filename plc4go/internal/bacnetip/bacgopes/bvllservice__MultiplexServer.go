@@ -24,9 +24,10 @@ import (
 	"github.com/rs/zerolog"
 )
 
+//go:generate plc4xGenerator -type=_MultiplexServer -prefix=bvllservice_
 type _MultiplexServer struct {
 	Server
-	multiplexer *UDPMultiplexer
+	multiplexer *UDPMultiplexer `stringer:"true"`
 }
 
 func _New_MultiplexServer(localLog zerolog.Logger, multiplexer *UDPMultiplexer) (*_MultiplexServer, error) {

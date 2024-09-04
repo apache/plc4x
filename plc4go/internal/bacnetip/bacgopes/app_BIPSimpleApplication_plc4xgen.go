@@ -57,74 +57,43 @@ func (d *BIPSimpleApplication) SerializeWithWriteBuffer(ctx context.Context, wri
 	if err := d.ReadWritePropertyServices.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.localAddress)
 
-		if err := writeBuffer.WriteString("localAddress", uint32(len(_value)*8), _value); err != nil {
+	if err := writeBuffer.WriteString("localAddress", uint32(len(d.localAddress.String())*8), d.localAddress.String()); err != nil {
+		return err
+	}
+	if d.asap != nil {
+		if err := writeBuffer.WriteString("asap", uint32(len(d.asap.String())*8), d.asap.String()); err != nil {
 			return err
 		}
 	}
-	if d.asap != nil {
-		{
-			_value := fmt.Sprintf("%v", d.asap)
-
-			if err := writeBuffer.WriteString("asap", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
-		}
-	}
 	if d.smap != nil {
-		{
-			_value := fmt.Sprintf("%v", d.smap)
-
-			if err := writeBuffer.WriteString("smap", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("smap", uint32(len(d.smap.String())*8), d.smap.String()); err != nil {
+			return err
 		}
 	}
 	if d.nsap != nil {
-		{
-			_value := fmt.Sprintf("%v", d.nsap)
-
-			if err := writeBuffer.WriteString("nsap", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("nsap", uint32(len(d.nsap.String())*8), d.nsap.String()); err != nil {
+			return err
 		}
 	}
 	if d.nse != nil {
-		{
-			_value := fmt.Sprintf("%v", d.nse)
-
-			if err := writeBuffer.WriteString("nse", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("nse", uint32(len(d.nse.String())*8), d.nse.String()); err != nil {
+			return err
 		}
 	}
 	if d.bip != nil {
-		{
-			_value := fmt.Sprintf("%v", d.bip)
-
-			if err := writeBuffer.WriteString("bip", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("bip", uint32(len(d.bip.String())*8), d.bip.String()); err != nil {
+			return err
 		}
 	}
 	if d.annexj != nil {
-		{
-			_value := fmt.Sprintf("%v", d.annexj)
-
-			if err := writeBuffer.WriteString("annexj", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("annexj", uint32(len(d.annexj.String())*8), d.annexj.String()); err != nil {
+			return err
 		}
 	}
 	if d.mux != nil {
-		{
-			_value := fmt.Sprintf("%v", d.mux)
-
-			if err := writeBuffer.WriteString("mux", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("mux", uint32(len(d.mux.String())*8), d.mux.String()); err != nil {
+			return err
 		}
 	}
 	if err := writeBuffer.PopContext("BIPSimpleApplication"); err != nil {

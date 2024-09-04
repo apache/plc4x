@@ -33,9 +33,9 @@ type BIPNetworkApplication struct {
 	mux          *UDPMultiplexer
 
 	// passThroughArgs
-	argBBMDAddress *Address
-	argBBMDTTL     *int
-	argEID         *int
+	argBBMDAddress *Address `ignore:"true"`
+	argBBMDTTL     *int     `ignore:"true"`
+	argEID         *int     `ignore:"true"`
 
 	log zerolog.Logger
 }

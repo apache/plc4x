@@ -20,14 +20,13 @@
 package tests
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
 )
 
+//go:generate plc4xGenerator -type=ServerStateMachine -prefix=state_machine_
 type ServerStateMachine struct {
 	bacgopes.Server
 	StateMachineContract
@@ -69,8 +68,4 @@ func (s *ServerStateMachine) Send(args bacgopes.Args, kwargs bacgopes.KWArgs) er
 func (s *ServerStateMachine) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
 	return s.Receive(args, kwargs)
-}
-
-func (s *ServerStateMachine) String() string {
-	return fmt.Sprintf("ServerStateMachine{%v, %v, name=%s}", s.Server, s.StateMachineContract, s.name)
 }

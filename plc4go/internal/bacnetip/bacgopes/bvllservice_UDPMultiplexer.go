@@ -24,6 +24,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+//go:generate plc4xGenerator -type=UDPMultiplexer -prefix=udp_
 type UDPMultiplexer struct {
 	address            *Address
 	addrTuple          *AddressTuple[string, uint16]

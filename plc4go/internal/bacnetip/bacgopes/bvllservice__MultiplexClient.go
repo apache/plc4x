@@ -24,6 +24,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+//go:generate plc4xGenerator -type=_MultiplexClient -prefix=appservice_
 type _MultiplexClient struct {
 	Client
 	multiplexer *UDPMultiplexer

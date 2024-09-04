@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
 )
 
+//go:generate plc4xGenerator -type=NPDUCodec -prefix=
 type NPDUCodec struct {
 	bacgopes.Client
 	bacgopes.Server
@@ -101,8 +102,4 @@ func (n *NPDUCodec) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) err
 	}
 
 	return n.Response(bacgopes.NewArgs(ypdu), bacgopes.NoKWArgs)
-}
-
-func (n *NPDUCodec) String() string {
-	return "NPDUCodec"
 }

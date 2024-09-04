@@ -20,23 +20,22 @@
 package bacgopes
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=BIPSimple -prefix=bvllservice_
 type BIPSimple struct {
 	*BIPSAP
 	Client
 	Server
 
 	// pass through args
-	argSapID *int
-	argCid   *int
-	argSid   *int
+	argSapID *int `ignore:"true"`
+	argCid   *int `ignore:"true"`
+	argSid   *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -75,10 +74,6 @@ func NewBIPSimple(localLog zerolog.Logger, opts ...func(simple *BIPSimple)) (*BI
 	}
 	b.Server = server
 	return b, nil
-}
-
-func (b *BIPSimple) String() string {
-	return fmt.Sprintf("BIPSimple(BIPSAP: %s, Client: %s, Server: %s)", b.BIPSAP, b.Client, b.Server)
 }
 
 func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {

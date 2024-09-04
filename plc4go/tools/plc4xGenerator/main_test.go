@@ -20,11 +20,12 @@
 package main
 
 import (
-	"github.com/stretchr/testify/require"
 	"os"
 	"path"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
 
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )

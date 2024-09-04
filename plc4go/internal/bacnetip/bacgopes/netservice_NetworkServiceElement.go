@@ -20,7 +20,6 @@
 package bacgopes
 
 import (
-	"fmt"
 	"slices"
 	"time"
 
@@ -30,16 +29,17 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=NetworkServiceElement -prefix=netservice_
 type NetworkServiceElement struct {
 	ApplicationServiceElementContract
 
 	networkNumberIsTask time.Time
 
 	// regular args
-	argStartupDisabled bool
+	argStartupDisabled bool `ignore:"true"`
 
 	// pass through args
-	argEID *int
+	argEID *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -79,10 +79,6 @@ func WithNetworkServiceElementStartupDisabled(startupDisabled bool) func(*Networ
 	return func(n *NetworkServiceElement) {
 		n.argStartupDisabled = startupDisabled
 	}
-}
-
-func (n *NetworkServiceElement) String() string {
-	return fmt.Sprintf("NetworkServiceElement(TBD...)") // TODO: fill some info here
 }
 
 func (n *NetworkServiceElement) Startup(_ Args, _ KWArgs) error {

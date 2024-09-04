@@ -36,6 +36,8 @@ func (c *Capability) getFN(fn string) func(args Args, kwargs KWArgs) error {
 }
 
 // TODO: implement
+//
+//go:generate plc4xGenerator -type=Collector -prefix=capability_
 type Collector struct {
 	capabilities []*Capability
 

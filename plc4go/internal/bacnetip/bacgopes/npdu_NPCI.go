@@ -55,6 +55,7 @@ type NPCI interface {
 	getNPCI() NPCI
 }
 
+//go:generate plc4xGenerator -type=_NPCI -prefix=npdu
 type _NPCI struct {
 	*_PCI
 	*DebugContents
@@ -65,7 +66,7 @@ type _NPCI struct {
 	npduSADR       *Address
 	npduHopCount   *uint8
 	npduNetMessage *uint8
-	npduVendorID   *readWriteModel.BACnetVendorId
+	npduVendorID   *readWriteModel.BACnetVendorId `directSerialize:"true"`
 }
 
 var _ NPCI = (*_NPCI)(nil)

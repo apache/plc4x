@@ -58,20 +58,13 @@ func (d *IOQController) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return err
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.activeIOCB)
 
-		if err := writeBuffer.WriteString("activeIOCB", uint32(len(_value)*8), _value); err != nil {
-			return err
-		}
+	if err := writeBuffer.WriteString("activeIOCB", uint32(len(d.activeIOCB.String())*8), d.activeIOCB.String()); err != nil {
+		return err
 	}
 	if d.ioQueue != nil {
-		{
-			_value := fmt.Sprintf("%v", d.ioQueue)
-
-			if err := writeBuffer.WriteString("ioQueue", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("ioQueue", uint32(len(d.ioQueue.String())*8), d.ioQueue.String()); err != nil {
+			return err
 		}
 	}
 

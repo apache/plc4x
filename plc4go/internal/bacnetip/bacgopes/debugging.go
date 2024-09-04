@@ -50,6 +50,7 @@ func Xtob(hexString string) ([]byte, error) {
 	return decodeString, nil
 }
 
+//go:generate plc4xGenerator -type=DebugContents -prefix=debugging_
 type DebugContents struct {
 	// TODO: implement me
 }

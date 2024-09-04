@@ -21,7 +21,6 @@ package bacgopes
 
 import (
 	"bytes"
-	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -29,17 +28,18 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=NetworkServiceAccessPoint -prefix=netservice_
 type NetworkServiceAccessPoint struct {
 	ServiceAccessPointContract
 	Server
 	adapters        map[netKey]*NetworkAdapter
-	routerInfoCache *RouterInfoCache
+	routerInfoCache *RouterInfoCache `stringer:"true"`
 	pendingNets     map[netKey][]NPDU
-	localAdapter    *NetworkAdapter
+	localAdapter    *NetworkAdapter `stringer:"true"`
 
 	// pass through args
-	argSapID *int
-	argSid   *int
+	argSapID *int `ignore:"true"`
+	argSid   *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -190,7 +190,7 @@ func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address 
 	}
 
 	//pass this along to the cache
-	return n.routerInfoCache.DeleteRouterInfo(snet, address, dnets)
+	return n.routerInfoCache.DeleteRouterInfo(nk(snet), address, dnets)
 }
 
 func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
@@ -328,7 +328,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 		n.log.Debug().Stringer("routerInfo", routerInfo).Msg("routerInfo found")
 
 		// check the path status
-		dnetStatus := routerInfo.dnets[dnet]
+		dnetStatus := routerInfo.dnets[nk(dnet)]
 		n.log.Debug().Stringer("dnetStatus", dnetStatus).Msg("dnetStatus")
 
 		// fix the destination
@@ -411,7 +411,9 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 		}
 
 		// pass this new path along to the cache
-		n.routerInfoCache.UpdateRouterStatus(adapter.adapterNet, npdu.GetPDUSource(), []*uint16{snet})
+		if err := n.routerInfoCache.UpdateRouterInfo(nk(adapter.adapterNet), npdu.GetPDUSource(), []uint16{*snet}, nil); err != nil {
+			return errors.Wrap(err, "error updating router status")
+		}
 	// check for destination routing
 	case !npdu.GetControl().GetDestinationSpecified() || destinationAddress.AddrType == NULL_ADDRESS:
 		n.log.Debug().Msg("no DADR")
@@ -761,8 +763,4 @@ func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) er
 	// npdu._xpdu = xpdu
 
 	return adapter.ProcessNPDU(xpdu)
-}
-
-func (n *NetworkServiceAccessPoint) String() string {
-	return fmt.Sprintf("NetworkServiceAccessPoint(TBD...)") // TODO: fill some info here
 }

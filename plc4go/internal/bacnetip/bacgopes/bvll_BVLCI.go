@@ -47,6 +47,7 @@ type BVLCI interface {
 	getBVLCI() BVLCI
 }
 
+//go:generate plc4xGenerator -type=_BVLCI -prefix=bvll
 type _BVLCI struct {
 	*_PCI
 	*DebugContents
