@@ -28,8 +28,7 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import ClassVar
 import math
-
-
+    
 @dataclass
 class UmasPDU(ModbusPDU):
     item: UmasPDUItem
@@ -38,15 +37,18 @@ class UmasPDU(ModbusPDU):
     byte_length: int
     # Accessors for discriminator values.
     error_flag: ClassVar[bool] = False
-    function_flag: ClassVar[int] = 0x5A
+    function_flag: ClassVar[int] = 0x5a
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDU")
 
         # Simple Field (item)
-        write_buffer.write_serializable(self.item, logical_name="item")
+        write_buffer.write_serializable(self.item,logical_name="item")
 
         write_buffer.pop_context("UmasPDU")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -60,10 +62,9 @@ class UmasPDU(ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
-    def static_parse_builder(
-        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
-    ):
+    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int):
         read_buffer.push_context("UmasPDU")
 
         if isinstance(umas_request_function_key, str):
@@ -71,16 +72,15 @@ class UmasPDU(ModbusPDU):
         if isinstance(byte_length, str):
             byte_length = int(byte_length)
 
-        item: UmasPDUItem = read_buffer.read_complex(
-            read_function=UmasPDUItem.static_parse,
-            logical_name="item",
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
+
+        item: UmasPDUItem = read_buffer.read_complex(read_function=UmasPDUItem.static_parse, logical_name="item", umas_request_function_key=umas_request_function_key, byte_length=byte_length)
+
+
 
         read_buffer.pop_context("UmasPDU")
         # Create the instance
-        return UmasPDUBuilder(item)
+        return UmasPDUBuilder(item )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -97,23 +97,22 @@ class UmasPDU(ModbusPDU):
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class UmasPDUBuilder:
     item: UmasPDUItem
 
-    def build(
-        self,
-        umas_request_function_key: int,
-        byte_length: int,
-    ) -> UmasPDU:
-        umas_pdu: UmasPDU = UmasPDU(umas_request_function_key, byte_length, self.item)
+    def build(self,umas_request_function_key: int, byte_length: int , ) -> UmasPDU:
+        umas_pdu: UmasPDU = UmasPDU(umas_request_function_key, byte_length , self.item )
         return umas_pdu
+
+
+

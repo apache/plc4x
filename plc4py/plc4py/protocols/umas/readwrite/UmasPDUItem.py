@@ -29,8 +29,7 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
 import math
-
-
+    
 @dataclass
 class UmasPDUItem(ABC, PlcMessage):
     pairing_key: int
@@ -41,10 +40,10 @@ class UmasPDUItem(ABC, PlcMessage):
     @property
     def umas_function_key(self) -> int:
         pass
-
     @property
     def umas_request_function_key(self) -> int:
         pass
+
 
     @abstractmethod
     def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer) -> None:
@@ -54,22 +53,16 @@ class UmasPDUItem(ABC, PlcMessage):
         write_buffer.push_context("UmasPDUItem")
 
         # Simple Field (pairingKey)
-        write_buffer.write_unsigned_byte(
-            self.pairing_key, bit_length=8, logical_name="pairingKey"
-        )
+        write_buffer.write_unsigned_byte(self.pairing_key,bit_length=8,logical_name="pairingKey")
 
         # Discriminator Field (umasFunctionKey) (Used as input to a switch field)
-        write_buffer.write_unsigned_byte(
-            self.umas_function_key,
-            logical_name="umas_function_key",
-            bit_length=8,
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-        )
+        write_buffer.write_unsigned_byte(self.umas_function_key, logical_name="umas_function_key", bit_length=8 , byte_order=ByteOrder.LITTLE_ENDIAN)
 
         # Switch field (Serialize the sub-type)
         self.serialize_umas_pduitem_child(write_buffer)
 
         write_buffer.pop_context("UmasPDUItem")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -88,26 +81,20 @@ class UmasPDUItem(ABC, PlcMessage):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
 
         if kwargs is None:
-            raise PlcRuntimeException(
-                "Wrong number of arguments, expected 2, but got None"
-            )
+            raise PlcRuntimeException("Wrong number of arguments, expected 2, but got None")
 
         umas_request_function_key: int = 0
         if isinstance(kwargs.get("umas_request_function_key"), int):
             umas_request_function_key = int(kwargs.get("umas_request_function_key"))
         elif isinstance(kwargs.get("umas_request_function_key"), str):
-            umas_request_function_key = int(
-                str(kwargs.get("umas_request_function_key"))
-            )
+            umas_request_function_key = int(str(kwargs.get("umas_request_function_key")))
         else:
-            raise PlcRuntimeException(
-                "Argument 0 expected to be of type int or a string which is parseable but was "
-                + kwargs.get("umas_request_function_key").getClass().getName()
-            )
+            raise PlcRuntimeException("Argument 0 expected to be of type int or a string which is parseable but was " + kwargs.get("umas_request_function_key").getClass().getName())
 
         byte_length: int = 0
         if isinstance(kwargs.get("byte_length"), int):
@@ -115,19 +102,13 @@ class UmasPDUItem(ABC, PlcMessage):
         elif isinstance(kwargs.get("byte_length"), str):
             byte_length = int(str(kwargs.get("byte_length")))
         else:
-            raise PlcRuntimeException(
-                "Argument 1 expected to be of type int or a string which is parseable but was "
-                + kwargs.get("byte_length").getClass().getName()
-            )
+            raise PlcRuntimeException("Argument 1 expected to be of type int or a string which is parseable but was " + kwargs.get("byte_length").getClass().getName())
 
-        return UmasPDUItem.static_parse_context(
-            read_buffer, umas_request_function_key, byte_length
-        )
+        return UmasPDUItem.static_parse_context(read_buffer, umas_request_function_key, byte_length)
+
 
     @staticmethod
-    def static_parse_context(
-        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
-    ):
+    def static_parse_context(read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int):
         read_buffer.push_context("UmasPDUItem")
 
         if isinstance(umas_request_function_key, str):
@@ -135,175 +116,85 @@ class UmasPDUItem(ABC, PlcMessage):
         if isinstance(byte_length, str):
             byte_length = int(byte_length)
 
-        pairing_key: int = read_buffer.read_unsigned_byte(
-            logical_name="pairing_key",
-            bit_length=8,
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
 
-        umas_function_key: int = read_buffer.read_unsigned_byte(
-            logical_name="umas_function_key",
-            bit_length=8,
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
+        pairing_key: int = read_buffer.read_unsigned_byte(logical_name="pairing_key", bit_length=8, byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)  
+
+
+        umas_function_key: int = read_buffer.read_unsigned_byte(logical_name="umas_function_key", bit_length=8, byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)
+
+
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: UmasPDUItemBuilder = None
-        from plc4py.protocols.umas.readwrite.UmasInitCommsRequest import (
-            UmasInitCommsRequest,
-        )
+        from plc4py.protocols.umas.readwrite.UmasInitCommsRequest import UmasInitCommsRequest
+        if umas_function_key == int(0x01) :
 
-        if umas_function_key == int(0x01):
+            builder = UmasInitCommsRequest.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentRequest import UmasPDUPlcIdentRequest
+        if umas_function_key == int(0x02) :
 
-            builder = UmasInitCommsRequest.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentRequest import (
-            UmasPDUPlcIdentRequest,
-        )
+            builder = UmasPDUPlcIdentRequest.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUProjectInfoRequest import UmasPDUProjectInfoRequest
+        if umas_function_key == int(0x03) :
 
-        if umas_function_key == int(0x02):
+            builder = UmasPDUProjectInfoRequest.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusRequest import UmasPDUPlcStatusRequest
+        if umas_function_key == int(0x04) :
 
-            builder = UmasPDUPlcIdentRequest.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUProjectInfoRequest import (
-            UmasPDUProjectInfoRequest,
-        )
+            builder = UmasPDUPlcStatusRequest.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUReadMemoryBlockRequest import UmasPDUReadMemoryBlockRequest
+        if umas_function_key == int(0x20) :
 
-        if umas_function_key == int(0x03):
+            builder = UmasPDUReadMemoryBlockRequest.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUReadVariableRequest import UmasPDUReadVariableRequest
+        if umas_function_key == int(0x22) :
 
-            builder = UmasPDUProjectInfoRequest.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusRequest import (
-            UmasPDUPlcStatusRequest,
-        )
+            builder = UmasPDUReadVariableRequest.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUWriteVariableRequest import UmasPDUWriteVariableRequest
+        if umas_function_key == int(0x23) :
 
-        if umas_function_key == int(0x04):
+            builder = UmasPDUWriteVariableRequest.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUReadUnlocatedVariableNamesRequest import UmasPDUReadUnlocatedVariableNamesRequest
+        if umas_function_key == int(0x26) :
 
-            builder = UmasPDUPlcStatusRequest.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUReadMemoryBlockRequest import (
-            UmasPDUReadMemoryBlockRequest,
-        )
+            builder = UmasPDUReadUnlocatedVariableNamesRequest.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasInitCommsResponse import UmasInitCommsResponse
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x01) :
 
-        if umas_function_key == int(0x20):
+            builder = UmasInitCommsResponse.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentResponse import UmasPDUPlcIdentResponse
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x02) :
 
-            builder = UmasPDUReadMemoryBlockRequest.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUReadVariableRequest import (
-            UmasPDUReadVariableRequest,
-        )
+            builder = UmasPDUPlcIdentResponse.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusResponse import UmasPDUPlcStatusResponse
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x04) :
 
-        if umas_function_key == int(0x22):
+            builder = UmasPDUPlcStatusResponse.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUReadMemoryBlockResponse import UmasPDUReadMemoryBlockResponse
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x20) :
 
-            builder = UmasPDUReadVariableRequest.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUWriteVariableRequest import (
-            UmasPDUWriteVariableRequest,
-        )
+            builder = UmasPDUReadMemoryBlockResponse.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUReadVariableResponse import UmasPDUReadVariableResponse
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x22) :
 
-        if umas_function_key == int(0x23):
+            builder = UmasPDUReadVariableResponse.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUWriteVariableResponse import UmasPDUWriteVariableResponse
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x23) :
 
-            builder = UmasPDUWriteVariableRequest.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUReadUnlocatedVariableNamesRequest import (
-            UmasPDUReadUnlocatedVariableNamesRequest,
-        )
+            builder = UmasPDUWriteVariableResponse.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
+        from plc4py.protocols.umas.readwrite.UmasPDUReadUnlocatedVariableResponse import UmasPDUReadUnlocatedVariableResponse
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x26) :
 
-        if umas_function_key == int(0x26):
-
-            builder = UmasPDUReadUnlocatedVariableNamesRequest.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasInitCommsResponse import (
-            UmasInitCommsResponse,
-        )
-
-        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x01):
-
-            builder = UmasInitCommsResponse.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentResponse import (
-            UmasPDUPlcIdentResponse,
-        )
-
-        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x02):
-
-            builder = UmasPDUPlcIdentResponse.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusResponse import (
-            UmasPDUPlcStatusResponse,
-        )
-
-        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x04):
-
-            builder = UmasPDUPlcStatusResponse.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUReadMemoryBlockResponse import (
-            UmasPDUReadMemoryBlockResponse,
-        )
-
-        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x20):
-
-            builder = UmasPDUReadMemoryBlockResponse.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUReadVariableResponse import (
-            UmasPDUReadVariableResponse,
-        )
-
-        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x22):
-
-            builder = UmasPDUReadVariableResponse.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUWriteVariableResponse import (
-            UmasPDUWriteVariableResponse,
-        )
-
-        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x23):
-
-            builder = UmasPDUWriteVariableResponse.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
-        from plc4py.protocols.umas.readwrite.UmasPDUReadUnlocatedVariableResponse import (
-            UmasPDUReadUnlocatedVariableResponse,
-        )
-
-        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x26):
-
-            builder = UmasPDUReadUnlocatedVariableResponse.static_parse_builder(
-                read_buffer, umas_request_function_key, byte_length
-            )
+            builder = UmasPDUReadUnlocatedVariableResponse.static_parse_builder(read_buffer, umas_request_function_key, byte_length)
         if builder is None:
-            raise ParseException(
-                "Unsupported case for discriminated type"
-                + " parameters ["
-                + "umasFunctionKey="
-                + str(umas_function_key)
-                + " "
-                + "umasRequestFunctionKey="
-                + str(umas_request_function_key)
-                + "]"
-            )
+            raise ParseException("Unsupported case for discriminated type"+" parameters ["+"umasFunctionKey="+str(umas_function_key)+" "+"umasRequestFunctionKey="+str(umas_request_function_key)+"]")
+
 
         read_buffer.pop_context("UmasPDUItem")
         # Create the instance
-        _umas_pduitem: UmasPDUItem = builder.build(pairing_key, byte_length)
+        _umas_pduitem: UmasPDUItem = builder.build(pairing_key , byte_length )
         return _umas_pduitem
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -320,18 +211,20 @@ class UmasPDUItem(ABC, PlcMessage):
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
-
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 @dataclass
 class UmasPDUItemBuilder:
     pairing_key: int
-
-    def build(self, byte_length: int) -> UmasPDUItem:
+    def build(self, byte_length: int ) -> UmasPDUItem:
         pass
+
+
+
+

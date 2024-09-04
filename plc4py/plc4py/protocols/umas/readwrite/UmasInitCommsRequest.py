@@ -28,8 +28,7 @@ from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
 from typing import ClassVar
 import math
-
-
+    
 @dataclass
 class UmasInitCommsRequest(UmasPDUItem):
     unknown_object: int
@@ -39,15 +38,16 @@ class UmasInitCommsRequest(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0x01
     umas_request_function_key: ClassVar[int] = 0
 
+
+
     def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasInitCommsRequest")
 
         # Simple Field (unknownObject)
-        write_buffer.write_unsigned_byte(
-            self.unknown_object, bit_length=8, logical_name="unknownObject"
-        )
+        write_buffer.write_unsigned_byte(self.unknown_object,bit_length=8,logical_name="unknownObject")
 
         write_buffer.pop_context("UmasInitCommsRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -61,10 +61,9 @@ class UmasInitCommsRequest(UmasPDUItem):
 
         return length_in_bits
 
+
     @staticmethod
-    def static_parse_builder(
-        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
-    ):
+    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int):
         read_buffer.push_context("UmasInitCommsRequest")
 
         if isinstance(umas_request_function_key, str):
@@ -72,17 +71,15 @@ class UmasInitCommsRequest(UmasPDUItem):
         if isinstance(byte_length, str):
             byte_length = int(byte_length)
 
-        unknown_object: int = read_buffer.read_unsigned_byte(
-            logical_name="unknown_object",
-            bit_length=8,
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
+
+        unknown_object: int = read_buffer.read_unsigned_byte(logical_name="unknown_object", bit_length=8, byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)  
+
+
 
         read_buffer.pop_context("UmasInitCommsRequest")
         # Create the instance
-        return UmasInitCommsRequestBuilder(unknown_object)
+        return UmasInitCommsRequestBuilder(unknown_object )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -92,32 +89,29 @@ class UmasInitCommsRequest(UmasPDUItem):
             return False
 
         that: UmasInitCommsRequest = UmasInitCommsRequest(o)
-        return (
-            (self.unknown_object == that.unknown_object)
-            and super().equals(that)
-            and True
-        )
+        return (self.unknown_object == that.unknown_object) and super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class UmasInitCommsRequestBuilder:
     unknown_object: int
 
-    def build(self, byte_length: int, pairing_key) -> UmasInitCommsRequest:
-        umas_init_comms_request: UmasInitCommsRequest = UmasInitCommsRequest(
-            byte_length, pairing_key, self.unknown_object
-        )
+    def build(self,byte_length: int , pairing_key ) -> UmasInitCommsRequest:
+        umas_init_comms_request: UmasInitCommsRequest = UmasInitCommsRequest(byte_length , pairing_key , self.unknown_object )
         return umas_init_comms_request
+
+
+

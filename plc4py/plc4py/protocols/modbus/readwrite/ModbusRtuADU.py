@@ -32,8 +32,7 @@ from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
 from typing import ClassVar
 import math
-
-
+    
 @dataclass
 class ModbusRtuADU(ModbusADU):
     address: int
@@ -43,23 +42,22 @@ class ModbusRtuADU(ModbusADU):
     # Accessors for discriminator values.
     driver_type: ClassVar[DriverType] = DriverType.MODBUS_RTU
 
+
+
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusRtuADU")
 
         # Simple Field (address)
-        write_buffer.write_unsigned_byte(
-            self.address, bit_length=8, logical_name="address"
-        )
+        write_buffer.write_unsigned_byte(self.address,bit_length=8,logical_name="address")
 
         # Simple Field (pdu)
-        write_buffer.write_serializable(self.pdu, logical_name="pdu")
+        write_buffer.write_serializable(self.pdu,logical_name="pdu")
 
         # Checksum Field (checksum) (Calculated)
-        write_buffer.write_unsigned_short(
-            int(StaticHelper.rtu_crc_check(address, pdu)), logical_name="crc"
-        )
+        write_buffer.write_unsigned_short(int(StaticHelper.rtu_crc_check(address, pdu)), logical_name="crc")
 
         write_buffer.pop_context("ModbusRtuADU")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -79,10 +77,9 @@ class ModbusRtuADU(ModbusADU):
 
         return length_in_bits
 
+
     @staticmethod
-    def static_parse_builder(
-        read_buffer: ReadBuffer, driver_type: DriverType, response: bool
-    ):
+    def static_parse_builder(read_buffer: ReadBuffer, driver_type: DriverType, response: bool):
         read_buffer.push_context("ModbusRtuADU")
 
         if isinstance(driver_type, str):
@@ -90,32 +87,21 @@ class ModbusRtuADU(ModbusADU):
         if isinstance(response, str):
             response = bool(strtobool(response))
 
-        address: int = read_buffer.read_unsigned_byte(
-            logical_name="address",
-            bit_length=8,
-            byte_order=ByteOrder.BIG_ENDIAN,
-            driver_type=driver_type,
-            response=response,
-        )
 
-        pdu: ModbusPDU = read_buffer.read_complex(
-            read_function=ModbusPDU.static_parse,
-            logical_name="pdu",
-            byte_order=ByteOrder.BIG_ENDIAN,
-            driver_type=driver_type,
-            response=response,
-        )
+        address: int = read_buffer.read_unsigned_byte(logical_name="address", bit_length=8, byte_order=ByteOrder.BIG_ENDIAN, driver_type=driver_type, response=response)  
 
-        crc: int = read_buffer.read_unsigned_short(
-            logical_name="crc",
-            byte_order=ByteOrder.BIG_ENDIAN,
-            driver_type=driver_type,
-            response=response,
-        )
+
+
+        pdu: ModbusPDU = read_buffer.read_complex(read_function=ModbusPDU.static_parse, logical_name="pdu", byte_order=ByteOrder.BIG_ENDIAN, driver_type=driver_type, response=response)
+
+
+
+        crc: int = read_buffer.read_unsigned_short(logical_name="crc", byte_order=ByteOrder.BIG_ENDIAN, driver_type=driver_type, response=response)
 
         read_buffer.pop_context("ModbusRtuADU")
         # Create the instance
-        return ModbusRtuADUBuilder(address, pdu)
+        return ModbusRtuADUBuilder(address, pdu )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -125,25 +111,20 @@ class ModbusRtuADU(ModbusADU):
             return False
 
         that: ModbusRtuADU = ModbusRtuADU(o)
-        return (
-            (self.address == that.address)
-            and (self.pdu == that.pdu)
-            and super().equals(that)
-            and True
-        )
+        return (self.address == that.address) and (self.pdu == that.pdu) and super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -151,9 +132,9 @@ class ModbusRtuADUBuilder:
     address: int
     pdu: ModbusPDU
 
-    def build(
-        self,
-        response: bool,
-    ) -> ModbusRtuADU:
-        modbus_rtu_adu: ModbusRtuADU = ModbusRtuADU(response, self.address, self.pdu)
+    def build(self,response: bool , ) -> ModbusRtuADU:
+        modbus_rtu_adu: ModbusRtuADU = ModbusRtuADU(response , self.address, self.pdu )
         return modbus_rtu_adu
+
+
+

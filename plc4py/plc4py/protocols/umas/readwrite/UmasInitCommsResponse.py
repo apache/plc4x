@@ -28,8 +28,7 @@ from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
 from typing import ClassVar
 import math
-
-
+    
 @dataclass
 class UmasInitCommsResponse(UmasPDUItem):
     max_frame_size: int
@@ -44,38 +43,31 @@ class UmasInitCommsResponse(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0xFE
     umas_request_function_key: ClassVar[int] = 0x01
 
+
+
     def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasInitCommsResponse")
 
         # Simple Field (maxFrameSize)
-        write_buffer.write_unsigned_short(
-            self.max_frame_size, bit_length=16, logical_name="maxFrameSize"
-        )
+        write_buffer.write_unsigned_short(self.max_frame_size,bit_length=16,logical_name="maxFrameSize")
 
         # Simple Field (firmwareVersion)
-        write_buffer.write_unsigned_short(
-            self.firmware_version, bit_length=16, logical_name="firmwareVersion"
-        )
+        write_buffer.write_unsigned_short(self.firmware_version,bit_length=16,logical_name="firmwareVersion")
 
         # Simple Field (notSure)
-        write_buffer.write_unsigned_int(
-            self.not_sure, bit_length=32, logical_name="notSure"
-        )
+        write_buffer.write_unsigned_int(self.not_sure,bit_length=32,logical_name="notSure")
 
         # Simple Field (internalCode)
-        write_buffer.write_unsigned_int(
-            self.internal_code, bit_length=32, logical_name="internalCode"
-        )
+        write_buffer.write_unsigned_int(self.internal_code,bit_length=32,logical_name="internalCode")
 
         # Simple Field (hostnameLength)
-        write_buffer.write_unsigned_byte(
-            self.hostname_length, bit_length=8, logical_name="hostnameLength"
-        )
+        write_buffer.write_unsigned_byte(self.hostname_length,bit_length=8,logical_name="hostnameLength")
 
         # Simple Field (hostname)
-        write_buffer.write_str(self.hostname, bit_length=-1, logical_name="hostname")
+        write_buffer.write_str(self.hostname,bit_length=-1,logical_name="hostname")
 
         write_buffer.pop_context("UmasInitCommsResponse")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -100,14 +92,13 @@ class UmasInitCommsResponse(UmasPDUItem):
         length_in_bits += 8
 
         # Simple field (hostname)
-        length_in_bits += self.hostname_length * int(8)
+        length_in_bits += self.hostname_length* int(8)
 
         return length_in_bits
 
+
     @staticmethod
-    def static_parse_builder(
-        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
-    ):
+    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int):
         read_buffer.push_context("UmasInitCommsResponse")
 
         if isinstance(umas_request_function_key, str):
@@ -115,64 +106,35 @@ class UmasInitCommsResponse(UmasPDUItem):
         if isinstance(byte_length, str):
             byte_length = int(byte_length)
 
-        max_frame_size: int = read_buffer.read_unsigned_short(
-            logical_name="max_frame_size",
-            bit_length=16,
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
 
-        firmware_version: int = read_buffer.read_unsigned_short(
-            logical_name="firmware_version",
-            bit_length=16,
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
+        max_frame_size: int = read_buffer.read_unsigned_short(logical_name="max_frame_size", bit_length=16, byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)  
 
-        not_sure: int = read_buffer.read_unsigned_int(
-            logical_name="not_sure",
-            bit_length=32,
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
 
-        internal_code: int = read_buffer.read_unsigned_int(
-            logical_name="internal_code",
-            bit_length=32,
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
 
-        hostname_length: int = read_buffer.read_unsigned_byte(
-            logical_name="hostname_length",
-            bit_length=8,
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
+        firmware_version: int = read_buffer.read_unsigned_short(logical_name="firmware_version", bit_length=16, byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)  
 
-        hostname: str = read_buffer.read_str(
-            logical_name="hostname",
-            bit_length=hostname_length * int(8),
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
+
+
+        not_sure: int = read_buffer.read_unsigned_int(logical_name="not_sure", bit_length=32, byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)  
+
+
+
+        internal_code: int = read_buffer.read_unsigned_int(logical_name="internal_code", bit_length=32, byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)  
+
+
+
+        hostname_length: int = read_buffer.read_unsigned_byte(logical_name="hostname_length", bit_length=8, byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)  
+
+
+
+        hostname: str = read_buffer.read_str(logical_name="hostname", bit_length=hostname_length* int(8), byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)  
+
+
 
         read_buffer.pop_context("UmasInitCommsResponse")
         # Create the instance
-        return UmasInitCommsResponseBuilder(
-            max_frame_size,
-            firmware_version,
-            not_sure,
-            internal_code,
-            hostname_length,
-            hostname,
-        )
+        return UmasInitCommsResponseBuilder(max_frame_size, firmware_version, not_sure, internal_code, hostname_length, hostname )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -182,29 +144,20 @@ class UmasInitCommsResponse(UmasPDUItem):
             return False
 
         that: UmasInitCommsResponse = UmasInitCommsResponse(o)
-        return (
-            (self.max_frame_size == that.max_frame_size)
-            and (self.firmware_version == that.firmware_version)
-            and (self.not_sure == that.not_sure)
-            and (self.internal_code == that.internal_code)
-            and (self.hostname_length == that.hostname_length)
-            and (self.hostname == that.hostname)
-            and super().equals(that)
-            and True
-        )
+        return (self.max_frame_size == that.max_frame_size) and (self.firmware_version == that.firmware_version) and (self.not_sure == that.not_sure) and (self.internal_code == that.internal_code) and (self.hostname_length == that.hostname_length) and (self.hostname == that.hostname) and super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -216,15 +169,9 @@ class UmasInitCommsResponseBuilder:
     hostname_length: int
     hostname: str
 
-    def build(self, byte_length: int, pairing_key) -> UmasInitCommsResponse:
-        umas_init_comms_response: UmasInitCommsResponse = UmasInitCommsResponse(
-            byte_length,
-            pairing_key,
-            self.max_frame_size,
-            self.firmware_version,
-            self.not_sure,
-            self.internal_code,
-            self.hostname_length,
-            self.hostname,
-        )
+    def build(self,byte_length: int , pairing_key ) -> UmasInitCommsResponse:
+        umas_init_comms_response: UmasInitCommsResponse = UmasInitCommsResponse(byte_length , pairing_key , self.max_frame_size, self.firmware_version, self.not_sure, self.internal_code, self.hostname_length, self.hostname )
         return umas_init_comms_response
+
+
+

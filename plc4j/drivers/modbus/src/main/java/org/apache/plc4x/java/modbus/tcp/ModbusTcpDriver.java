@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.modbus.tcp;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.modbus.base.optimizer.ModbusOptimizer;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
@@ -31,12 +32,12 @@ import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
 import org.apache.plc4x.java.modbus.tcp.protocol.ModbusTcpProtocolLogic;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
+import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 
 import java.util.Collections;
 import java.util.List;
@@ -119,7 +120,7 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new SingleTagOptimizer();
+        return new SingleTagOptimizer();//ModbusOptimizer();
     }
 
     @Override

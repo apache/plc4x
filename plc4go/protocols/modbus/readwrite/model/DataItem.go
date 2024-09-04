@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"math"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -457,6 +458,24 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
+	case dataType == ModbusDataType_RAW_COIL: // RawByteArray
+		// Array Field (value)
+		value, _valueErr := readBuffer.ReadByteArray("value", int(math.Ceil(float64(numberOfValues)/float64(float64(8)))))
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+		readBuffer.CloseContext("DataItem")
+		return values.NewPlcRawByteArray(value), nil
+	case dataType == ModbusDataType_RAW_REGISTER: // RawByteArray
+		// Array Field (value)
+		value, _valueErr := readBuffer.ReadByteArray("value", int((numberOfValues)*(2)))
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+		readBuffer.CloseContext("DataItem")
+		return values.NewPlcRawByteArray(value), nil
 	}
 	// TODO: add more info which type it is actually
 	return nil, errors.New("unsupported type")
@@ -757,6 +776,22 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.GetNumberOfValues()); i++ {
 			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteString("", uint32(16), value.GetIndex(i).GetString(), utils.WithEncoding("UTF-16)"))
+			if _itemErr != nil {
+				return errors.Wrap(_itemErr, "Error serializing 'value' field")
+			}
+		}
+	case dataType == ModbusDataType_RAW_COIL: // RawByteArray
+		// Array Field (value)
+		for i := uint32(0); i < uint32(math.Ceil(float64(m.GetNumberOfValues())/float64(float64(8)))); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			if _itemErr != nil {
+				return errors.Wrap(_itemErr, "Error serializing 'value' field")
+			}
+		}
+	case dataType == ModbusDataType_RAW_REGISTER: // RawByteArray
+		// Array Field (value)
+		for i := uint32(0); i < uint32((m.GetNumberOfValues())*(2)); i++ {
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}

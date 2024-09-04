@@ -24,9 +24,7 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDUWriteFileRecordResponseItem import (
-    ModbusPDUWriteFileRecordResponseItem,
-)
+from plc4py.protocols.modbus.readwrite.ModbusPDUWriteFileRecordResponseItem import ModbusPDUWriteFileRecordResponseItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.spi.values.Common import get_size_of_array
@@ -34,8 +32,7 @@ from typing import Any
 from typing import ClassVar
 from typing import List
 import math
-
-
+    
 @dataclass
 class ModbusPDUWriteFileRecordResponse(ModbusPDU):
     items: List[ModbusPDUWriteFileRecordResponseItem]
@@ -44,17 +41,20 @@ class ModbusPDUWriteFileRecordResponse(ModbusPDU):
     function_flag: ClassVar[int] = 0x15
     response: ClassVar[bool] = True
 
+
+
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUWriteFileRecordResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: int = int(get_size_of_array(self.items))
+        byte_count: int = (int(get_size_of_array(self.items)))
         write_buffer.write_unsigned_byte(byte_count, logical_name="byte_count")
 
         # Array Field (items)
         write_buffer.write_complex_array(self.items, logical_name="items")
 
         write_buffer.pop_context("ModbusPDUWriteFileRecordResponse")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -71,7 +71,10 @@ class ModbusPDUWriteFileRecordResponse(ModbusPDU):
             for element in self.items:
                 length_in_bits += element.length_in_bits()
 
+
+
         return length_in_bits
+
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
@@ -80,20 +83,15 @@ class ModbusPDUWriteFileRecordResponse(ModbusPDU):
         if isinstance(response, str):
             response = bool(strtobool(response))
 
-        byte_count: int = read_buffer.read_unsigned_byte(
-            logical_name="byte_count", response=response
-        )
 
-        items: List[Any] = read_buffer.read_array_field(
-            logical_name="items",
-            read_function=ModbusPDUWriteFileRecordResponseItem.static_parse,
-            length=byte_count,
-            response=response,
-        )
+        byte_count: int = read_buffer.read_unsigned_byte(logical_name="byte_count", response=response)
+
+        items: List[Any] = read_buffer.read_array_field(logical_name="items", read_function=ModbusPDUWriteFileRecordResponseItem.static_parse, length=byte_count, response=response)
 
         read_buffer.pop_context("ModbusPDUWriteFileRecordResponse")
         # Create the instance
-        return ModbusPDUWriteFileRecordResponseBuilder(items)
+        return ModbusPDUWriteFileRecordResponseBuilder(items )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -110,23 +108,22 @@ class ModbusPDUWriteFileRecordResponse(ModbusPDU):
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUWriteFileRecordResponseBuilder:
     items: List[ModbusPDUWriteFileRecordResponseItem]
 
-    def build(
-        self,
-    ) -> ModbusPDUWriteFileRecordResponse:
-        modbus_pduwrite_file_record_response: ModbusPDUWriteFileRecordResponse = (
-            ModbusPDUWriteFileRecordResponse(self.items)
-        )
+    def build(self,) -> ModbusPDUWriteFileRecordResponse:
+        modbus_pduwrite_file_record_response: ModbusPDUWriteFileRecordResponse = ModbusPDUWriteFileRecordResponse(self.items )
         return modbus_pduwrite_file_record_response
+
+
+

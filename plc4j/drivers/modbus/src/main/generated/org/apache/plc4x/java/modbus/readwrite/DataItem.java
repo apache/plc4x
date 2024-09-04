@@ -280,6 +280,13 @@ public class DataItem {
         value.add(new PlcSTRING(_item));
       }
       return new PlcList(value);
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.RAW_COIL)) { // RawByteArray
+      byte[] value =
+          readBuffer.readByteArray("value", Math.toIntExact(CEIL((numberOfValues) / (8))));
+      return new PlcRawByteArray(value);
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.RAW_REGISTER)) { // RawByteArray
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact((numberOfValues) * (2)));
+      return new PlcRawByteArray(value);
     }
     return null;
   }
@@ -478,6 +485,16 @@ public class DataItem {
       // Array field
       if (_value != null) {
         lengthInBits += 16 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.RAW_COIL)) { // RawByteArray
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.RAW_REGISTER)) { // RawByteArray
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
       }
     }
 
@@ -714,6 +731,12 @@ public class DataItem {
           _value.getList().stream().map(PlcValue::getString).collect(Collectors.toList()),
           writeString(writeBuffer, 16),
           WithOption.WithEncoding("UTF-16"));
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.RAW_COIL)) { // RawByteArray
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.RAW_REGISTER)) { // RawByteArray
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
     }
   }
 }

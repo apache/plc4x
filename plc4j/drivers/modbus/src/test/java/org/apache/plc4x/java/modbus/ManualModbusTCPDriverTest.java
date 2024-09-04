@@ -65,7 +65,7 @@ public class ManualModbusTCPDriverTest extends ManualTest {
      */
 
     public ManualModbusTCPDriverTest(String connectionString) {
-        super(connectionString);
+        super(connectionString, true, false, false, 100);
     }
 
     public static void main(String[] args) throws Exception {
@@ -98,7 +98,10 @@ public class ManualModbusTCPDriverTest extends ManualTest {
         //test.addTestCase("holding-register::WCHAR", "w");
         //test.addTestCase("holding-register::STRING(10)", "hurz");
         //test.addTestCase("holding-register::WSTRING(10)", "wolf");
+        long startMillis = System.currentTimeMillis();
         test.run();
+        long endMillis = System.currentTimeMillis();
+        System.out.println("Test executed in " + (endMillis - startMillis) + "ms");
     }
 
 }

@@ -28,8 +28,7 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import ClassVar
 import math
-
-
+    
 @dataclass
 class ModbusPDUReportServerIdRequest(ModbusPDU):
     # Accessors for discriminator values.
@@ -37,10 +36,13 @@ class ModbusPDUReportServerIdRequest(ModbusPDU):
     function_flag: ClassVar[int] = 0x11
     response: ClassVar[bool] = False
 
+
+
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReportServerIdRequest")
 
         write_buffer.pop_context("ModbusPDUReportServerIdRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -51,6 +53,7 @@ class ModbusPDUReportServerIdRequest(ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReportServerIdRequest")
@@ -58,9 +61,11 @@ class ModbusPDUReportServerIdRequest(ModbusPDU):
         if isinstance(response, str):
             response = bool(strtobool(response))
 
+
         read_buffer.pop_context("ModbusPDUReportServerIdRequest")
         # Create the instance
         return ModbusPDUReportServerIdRequestBuilder()
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -77,22 +82,21 @@ class ModbusPDUReportServerIdRequest(ModbusPDU):
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUReportServerIdRequestBuilder:
 
-    def build(
-        self,
-    ) -> ModbusPDUReportServerIdRequest:
-        modbus_pdureport_server_id_request: ModbusPDUReportServerIdRequest = (
-            ModbusPDUReportServerIdRequest()
-        )
+    def build(self,) -> ModbusPDUReportServerIdRequest:
+        modbus_pdureport_server_id_request: ModbusPDUReportServerIdRequest = ModbusPDUReportServerIdRequest()
         return modbus_pdureport_server_id_request
+
+
+
