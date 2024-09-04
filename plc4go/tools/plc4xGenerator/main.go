@@ -632,6 +632,15 @@ func (f *File) genDecl(node ast.Node) bool {
 							hasLocker:  hasLocker,
 						})
 						continue
+					case *ast.SelectorExpr:
+						f.fields = append(f.fields, Field{
+							fieldType:  set.Sel,
+							isDelegate: true,
+							isStringer: isStringer,
+							asPtr:      asPtr,
+							hasLocker:  hasLocker,
+						})
+						continue
 					default:
 						panic(fmt.Sprintf("Only pointer to struct delegates supported now. Type %T", field.Type))
 					}
