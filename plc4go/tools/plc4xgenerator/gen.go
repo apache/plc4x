@@ -204,7 +204,7 @@ func (g *Generator) generate(typeName string) {
 		}
 	}
 	if len(fields) == 0 {
-		log.Fatalf("no fields defined for type %s", typeName)
+		log.Printf("no fields defined for type %s", typeName)
 	}
 	// TODO: for now we remove Default from the start (maybe move that to an option)
 	logicalTypeName := "\"" + strings.TrimPrefix(typeName, "Default") + "\""
