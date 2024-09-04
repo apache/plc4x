@@ -24,7 +24,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=SieveQueue
+//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=SieveQueue -prefix=iocb_
 type SieveQueue struct {
 	*IOQController
 	requestFn func(apdu PDU)

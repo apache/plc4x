@@ -52,7 +52,7 @@ type IOControllerRequirements interface {
 	AbortIO(iocb _IOCB, err error) error
 }
 
-//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=IOController
+//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=IOController -prefix=iocb_
 type IOController struct {
 	name         string
 	requirements IOControllerRequirements

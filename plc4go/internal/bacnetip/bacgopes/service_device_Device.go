@@ -33,7 +33,7 @@ type WhoIsIAmServicesRequirements interface {
 	Request(args Args, kwargs KWArgs) error
 }
 
-//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=WhoIsIAmServices
+//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=WhoIsIAmServices -prefix=device_
 type WhoIsIAmServices struct {
 	_requirements WhoIsIAmServicesRequirements
 	*Capability

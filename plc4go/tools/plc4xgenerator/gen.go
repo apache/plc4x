@@ -38,6 +38,7 @@ import (
 var (
 	typeNames = flag.String("type", "", "comma-separated list of type names; must be set")
 	output    = flag.String("output", "", "output file name; default srcdir/<type>_plc4xgen.go")
+	prefix    = flag.String("prefix", "", "prefix for all generated files")
 	buildTags = flag.String("tags", "", "comma-separated list of build tags to apply")
 )
 
@@ -113,6 +114,10 @@ func main() {
 	if outputName == "" {
 		baseName := fmt.Sprintf("%s_plc4xgen.go", typeList[0])
 		outputName = filepath.Join(dir, baseName)
+	}
+	if *prefix != "" {
+		directory, file := filepath.Split(outputName)
+		outputName = filepath.Join(directory, *prefix+file)
 	}
 	err := os.WriteFile(outputName, src, 0644)
 	if err != nil {

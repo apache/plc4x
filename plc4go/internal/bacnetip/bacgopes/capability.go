@@ -23,7 +23,7 @@ import "github.com/rs/zerolog"
 
 // TODO: implement
 //
-//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=Capability
+//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=Capability -prefix=capability_
 type Capability struct {
 }
 

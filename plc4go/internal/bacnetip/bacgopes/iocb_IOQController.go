@@ -31,7 +31,7 @@ type IOQControllerRequirements interface {
 	ProcessIO(iocb _IOCB) error
 }
 
-//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=IOQController
+//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=IOQController -prefix=iocb_
 type IOQController struct {
 	*IOController
 	state      IOQControllerStates
