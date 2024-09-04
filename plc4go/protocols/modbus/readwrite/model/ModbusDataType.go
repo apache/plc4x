@@ -69,6 +69,8 @@ const (
 	ModbusDataType_WCHAR          ModbusDataType = 25
 	ModbusDataType_STRING         ModbusDataType = 26
 	ModbusDataType_WSTRING        ModbusDataType = 27
+	ModbusDataType_RAW_COIL       ModbusDataType = 98
+	ModbusDataType_RAW_REGISTER   ModbusDataType = 99
 )
 
 var ModbusDataTypeValues []ModbusDataType
@@ -103,6 +105,8 @@ func init() {
 		ModbusDataType_WCHAR,
 		ModbusDataType_STRING,
 		ModbusDataType_WSTRING,
+		ModbusDataType_RAW_COIL,
+		ModbusDataType_RAW_REGISTER,
 	}
 }
 
@@ -216,6 +220,14 @@ func (e ModbusDataType) DataTypeSize() uint8 {
 		{ /* '9' */
 			return 8
 		}
+	case 98:
+		{ /* '98' */
+			return 1
+		}
+	case 99:
+		{ /* '99' */
+			return 2
+		}
 	default:
 		{
 			return 0
@@ -287,6 +299,10 @@ func ModbusDataTypeByValue(value uint8) (enum ModbusDataType, ok bool) {
 		return ModbusDataType_DINT, true
 	case 9:
 		return ModbusDataType_LINT, true
+	case 98:
+		return ModbusDataType_RAW_COIL, true
+	case 99:
+		return ModbusDataType_RAW_REGISTER, true
 	}
 	return 0, false
 }
@@ -347,6 +363,10 @@ func ModbusDataTypeByName(value string) (enum ModbusDataType, ok bool) {
 		return ModbusDataType_DINT, true
 	case "LINT":
 		return ModbusDataType_LINT, true
+	case "RAW_COIL":
+		return ModbusDataType_RAW_COIL, true
+	case "RAW_REGISTER":
+		return ModbusDataType_RAW_REGISTER, true
 	}
 	return 0, false
 }
@@ -476,6 +496,10 @@ func (e ModbusDataType) PLC4XEnumName() string {
 		return "DINT"
 	case ModbusDataType_LINT:
 		return "LINT"
+	case ModbusDataType_RAW_COIL:
+		return "RAW_COIL"
+	case ModbusDataType_RAW_REGISTER:
+		return "RAW_REGISTER"
 	}
 	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }

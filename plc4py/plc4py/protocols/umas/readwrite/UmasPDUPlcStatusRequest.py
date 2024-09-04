@@ -27,8 +27,7 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import ClassVar
 import math
-
-
+    
 @dataclass
 class UmasPDUPlcStatusRequest(UmasPDUItem):
     # Arguments.
@@ -37,10 +36,13 @@ class UmasPDUPlcStatusRequest(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0x04
     umas_request_function_key: ClassVar[int] = 0
 
+
+
     def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUPlcStatusRequest")
 
         write_buffer.pop_context("UmasPDUPlcStatusRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -51,10 +53,9 @@ class UmasPDUPlcStatusRequest(UmasPDUItem):
 
         return length_in_bits
 
+
     @staticmethod
-    def static_parse_builder(
-        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
-    ):
+    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int):
         read_buffer.push_context("UmasPDUPlcStatusRequest")
 
         if isinstance(umas_request_function_key, str):
@@ -62,9 +63,11 @@ class UmasPDUPlcStatusRequest(UmasPDUItem):
         if isinstance(byte_length, str):
             byte_length = int(byte_length)
 
+
         read_buffer.pop_context("UmasPDUPlcStatusRequest")
         # Create the instance
         return UmasPDUPlcStatusRequestBuilder()
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -81,21 +84,21 @@ class UmasPDUPlcStatusRequest(UmasPDUItem):
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class UmasPDUPlcStatusRequestBuilder:
 
-    def build(self, byte_length: int, pairing_key) -> UmasPDUPlcStatusRequest:
-        umas_pduplc_status_request: UmasPDUPlcStatusRequest = UmasPDUPlcStatusRequest(
-            byte_length,
-            pairing_key,
-        )
+    def build(self,byte_length: int , pairing_key ) -> UmasPDUPlcStatusRequest:
+        umas_pduplc_status_request: UmasPDUPlcStatusRequest = UmasPDUPlcStatusRequest(byte_length , pairing_key , )
         return umas_pduplc_status_request
+
+
+

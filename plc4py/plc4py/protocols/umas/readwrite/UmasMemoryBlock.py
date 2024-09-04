@@ -28,8 +28,7 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
 class UmasMemoryBlock(ABC, PlcMessage):
 
@@ -37,10 +36,10 @@ class UmasMemoryBlock(ABC, PlcMessage):
     @property
     def block_number(self) -> int:
         pass
-
     @property
     def offset(self) -> int:
         pass
+
 
     @abstractmethod
     def serialize_umas_memory_block_child(self, write_buffer: WriteBuffer) -> None:
@@ -54,6 +53,7 @@ class UmasMemoryBlock(ABC, PlcMessage):
 
         write_buffer.pop_context("UmasMemoryBlock")
 
+
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
@@ -65,13 +65,12 @@ class UmasMemoryBlock(ABC, PlcMessage):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
 
         if kwargs is None:
-            raise PlcRuntimeException(
-                "Wrong number of arguments, expected 2, but got None"
-            )
+            raise PlcRuntimeException("Wrong number of arguments, expected 2, but got None")
 
         block_number: int = 0
         if isinstance(kwargs.get("block_number"), int):
@@ -79,10 +78,7 @@ class UmasMemoryBlock(ABC, PlcMessage):
         elif isinstance(kwargs.get("block_number"), str):
             block_number = int(str(kwargs.get("block_number")))
         else:
-            raise PlcRuntimeException(
-                "Argument 0 expected to be of type int or a string which is parseable but was "
-                + kwargs.get("block_number").getClass().getName()
-            )
+            raise PlcRuntimeException("Argument 0 expected to be of type int or a string which is parseable but was " + kwargs.get("block_number").getClass().getName())
 
         offset: int = 0
         if isinstance(kwargs.get("offset"), int):
@@ -90,12 +86,10 @@ class UmasMemoryBlock(ABC, PlcMessage):
         elif isinstance(kwargs.get("offset"), str):
             offset = int(str(kwargs.get("offset")))
         else:
-            raise PlcRuntimeException(
-                "Argument 1 expected to be of type int or a string which is parseable but was "
-                + kwargs.get("offset").getClass().getName()
-            )
+            raise PlcRuntimeException("Argument 1 expected to be of type int or a string which is parseable but was " + kwargs.get("offset").getClass().getName())
 
         return UmasMemoryBlock.static_parse_context(read_buffer, block_number, offset)
+
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer, block_number: int, offset: int):
@@ -106,33 +100,22 @@ class UmasMemoryBlock(ABC, PlcMessage):
         if isinstance(offset, str):
             offset = int(offset)
 
+
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: UmasMemoryBlockBuilder = None
-        from plc4py.protocols.umas.readwrite.UmasMemoryBlockBasicInfo import (
-            UmasMemoryBlockBasicInfo,
-        )
+        from plc4py.protocols.umas.readwrite.UmasMemoryBlockBasicInfo import UmasMemoryBlockBasicInfo
+        if block_number == int(0x30) and offset == int(0x00) :
 
-        if block_number == int(0x30) and offset == int(0x00):
-
-            builder = UmasMemoryBlockBasicInfo.static_parse_builder(
-                read_buffer, block_number, offset
-            )
+            builder = UmasMemoryBlockBasicInfo.static_parse_builder(read_buffer, block_number, offset)
         if builder is None:
-            raise ParseException(
-                "Unsupported case for discriminated type"
-                + " parameters ["
-                + "blockNumber="
-                + str(block_number)
-                + " "
-                + "offset="
-                + str(offset)
-                + "]"
-            )
+            raise ParseException("Unsupported case for discriminated type"+" parameters ["+"blockNumber="+str(block_number)+" "+"offset="+str(offset)+"]")
+
 
         read_buffer.pop_context("UmasMemoryBlock")
         # Create the instance
         _umas_memory_block: UmasMemoryBlock = builder.build()
         return _umas_memory_block
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -149,18 +132,19 @@ class UmasMemoryBlock(ABC, PlcMessage):
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
-
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 @dataclass
 class UmasMemoryBlockBuilder:
-    def build(
-        self,
-    ) -> UmasMemoryBlock:
+    def build(self, ) -> UmasMemoryBlock:
         pass
+
+
+
+

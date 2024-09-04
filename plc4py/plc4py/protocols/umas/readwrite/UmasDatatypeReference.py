@@ -26,10 +26,9 @@ from plc4py.protocols.umas import StaticHelper
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
-class UmasDatatypeReference:
+class UmasDatatypeReference():
     data_size: int
     unknown1: int
     class_identifier: int
@@ -37,42 +36,30 @@ class UmasDatatypeReference:
     string_length: int
     value: str
 
+
+
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasDatatypeReference")
 
         # Simple Field (dataSize)
-        write_buffer.write_unsigned_short(
-            self.data_size, bit_length=16, logical_name="dataSize"
-        )
+        write_buffer.write_unsigned_short(self.data_size,bit_length=16,logical_name="dataSize")
 
         # Simple Field (unknown1)
-        write_buffer.write_unsigned_short(
-            self.unknown1, bit_length=16, logical_name="unknown1"
-        )
+        write_buffer.write_unsigned_short(self.unknown1,bit_length=16,logical_name="unknown1")
 
         # Simple Field (classIdentifier)
-        write_buffer.write_unsigned_byte(
-            self.class_identifier, bit_length=8, logical_name="classIdentifier"
-        )
+        write_buffer.write_unsigned_byte(self.class_identifier,bit_length=8,logical_name="classIdentifier")
 
         # Simple Field (dataType)
-        write_buffer.write_unsigned_byte(
-            self.data_type, bit_length=8, logical_name="dataType"
-        )
+        write_buffer.write_unsigned_byte(self.data_type,bit_length=8,logical_name="dataType")
 
         # Simple Field (stringLength)
-        write_buffer.write_unsigned_byte(
-            self.string_length, bit_length=8, logical_name="stringLength"
-        )
+        write_buffer.write_unsigned_byte(self.string_length,bit_length=8,logical_name="stringLength")
         # Manual Field (value)
-        write_buffer.write_manual(
-            write_function=lambda: StaticHelper.serialize_terminated_string(
-                write_buffer, self.value, self.string_length
-            ),
-            logical_name="value",
-        )
+        write_buffer.write_manual(write_function=lambda : StaticHelper.serialize_terminated_string(write_buffer, self.value, self.string_length), logical_name="value")
 
         write_buffer.pop_context("UmasDatatypeReference")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -97,51 +84,49 @@ class UmasDatatypeReference:
         length_in_bits += 8
 
         # Manual Field (value)
-        length_in_bits += self.string_length * int(8)
+        length_in_bits += (self.string_length* int(8))
 
         return length_in_bits
+
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
         return UmasDatatypeReference.static_parse_context(read_buffer)
 
+
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("UmasDatatypeReference")
 
-        data_size: int = read_buffer.read_unsigned_short(
-            logical_name="data_size", bit_length=16
-        )
 
-        unknown1: int = read_buffer.read_unsigned_short(
-            logical_name="unknown1", bit_length=16
-        )
 
-        class_identifier: int = read_buffer.read_unsigned_byte(
-            logical_name="class_identifier", bit_length=8
-        )
+        data_size: int = read_buffer.read_unsigned_short(logical_name="data_size", bit_length=16)  
 
-        data_type: int = read_buffer.read_unsigned_byte(
-            logical_name="data_type", bit_length=8
-        )
 
-        string_length: int = read_buffer.read_unsigned_byte(
-            logical_name="string_length", bit_length=8
-        )
 
-        value = read_buffer.read_manual(
-            read_function=lambda: StaticHelper.parse_terminated_string(
-                read_buffer, string_length
-            ),
-            logical_name="value",
-        )
+        unknown1: int = read_buffer.read_unsigned_short(logical_name="unknown1", bit_length=16)  
+
+
+
+        class_identifier: int = read_buffer.read_unsigned_byte(logical_name="class_identifier", bit_length=8)  
+
+
+
+        data_type: int = read_buffer.read_unsigned_byte(logical_name="data_type", bit_length=8)  
+
+
+
+        string_length: int = read_buffer.read_unsigned_byte(logical_name="string_length", bit_length=8)  
+
+
+
+        value = read_buffer.read_manual(read_function=lambda : StaticHelper.parse_terminated_string(read_buffer, string_length), logical_name="value")
 
         read_buffer.pop_context("UmasDatatypeReference")
         # Create the instance
-        _umas_datatype_reference: UmasDatatypeReference = UmasDatatypeReference(
-            data_size, unknown1, class_identifier, data_type, string_length, value
-        )
+        _umas_datatype_reference: UmasDatatypeReference = UmasDatatypeReference(data_size, unknown1, class_identifier, data_type, string_length, value )
         return _umas_datatype_reference
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -151,25 +136,21 @@ class UmasDatatypeReference:
             return False
 
         that: UmasDatatypeReference = UmasDatatypeReference(o)
-        return (
-            (self.data_size == that.data_size)
-            and (self.unknown1 == that.unknown1)
-            and (self.class_identifier == that.class_identifier)
-            and (self.data_type == that.data_type)
-            and (self.string_length == that.string_length)
-            and (self.value == that.value)
-            and True
-        )
+        return (self.data_size == that.data_size) and (self.unknown1 == that.unknown1) and (self.class_identifier == that.class_identifier) and (self.data_type == that.data_type) and (self.string_length == that.string_length) and (self.value == that.value) and True
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+
+
+
+

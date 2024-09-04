@@ -28,8 +28,7 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import ClassVar
 import math
-
-
+    
 @dataclass
 class ModbusPDUReadExceptionStatusRequest(ModbusPDU):
     # Accessors for discriminator values.
@@ -37,10 +36,13 @@ class ModbusPDUReadExceptionStatusRequest(ModbusPDU):
     function_flag: ClassVar[int] = 0x07
     response: ClassVar[bool] = False
 
+
+
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadExceptionStatusRequest")
 
         write_buffer.pop_context("ModbusPDUReadExceptionStatusRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -51,6 +53,7 @@ class ModbusPDUReadExceptionStatusRequest(ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadExceptionStatusRequest")
@@ -58,9 +61,11 @@ class ModbusPDUReadExceptionStatusRequest(ModbusPDU):
         if isinstance(response, str):
             response = bool(strtobool(response))
 
+
         read_buffer.pop_context("ModbusPDUReadExceptionStatusRequest")
         # Create the instance
         return ModbusPDUReadExceptionStatusRequestBuilder()
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -69,9 +74,7 @@ class ModbusPDUReadExceptionStatusRequest(ModbusPDU):
         if not isinstance(o, ModbusPDUReadExceptionStatusRequest):
             return False
 
-        that: ModbusPDUReadExceptionStatusRequest = ModbusPDUReadExceptionStatusRequest(
-            o
-        )
+        that: ModbusPDUReadExceptionStatusRequest = ModbusPDUReadExceptionStatusRequest(o)
         return super().equals(that) and True
 
     def hash_code(self) -> int:
@@ -79,22 +82,21 @@ class ModbusPDUReadExceptionStatusRequest(ModbusPDU):
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUReadExceptionStatusRequestBuilder:
 
-    def build(
-        self,
-    ) -> ModbusPDUReadExceptionStatusRequest:
-        modbus_pduread_exception_status_request: ModbusPDUReadExceptionStatusRequest = (
-            ModbusPDUReadExceptionStatusRequest()
-        )
+    def build(self,) -> ModbusPDUReadExceptionStatusRequest:
+        modbus_pduread_exception_status_request: ModbusPDUReadExceptionStatusRequest = ModbusPDUReadExceptionStatusRequest()
         return modbus_pduread_exception_status_request
+
+
+

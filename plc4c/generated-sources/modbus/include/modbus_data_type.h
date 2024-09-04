@@ -56,7 +56,9 @@ enum plc4c_modbus_read_write_modbus_data_type {
   plc4c_modbus_read_write_modbus_data_type_CHAR = 24,
   plc4c_modbus_read_write_modbus_data_type_WCHAR = 25,
   plc4c_modbus_read_write_modbus_data_type_STRING = 26,
-  plc4c_modbus_read_write_modbus_data_type_WSTRING = 27
+  plc4c_modbus_read_write_modbus_data_type_WSTRING = 27,
+  plc4c_modbus_read_write_modbus_data_type_RAW_COIL = 98,
+  plc4c_modbus_read_write_modbus_data_type_RAW_REGISTER = 99
 };
 typedef enum plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_type;
 

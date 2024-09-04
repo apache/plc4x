@@ -30,8 +30,7 @@ from typing import Any
 from typing import ClassVar
 from typing import List
 import math
-
-
+    
 @dataclass
 class UmasPDUReadVariableResponse(UmasPDUItem):
     block: List[int]
@@ -41,15 +40,16 @@ class UmasPDUReadVariableResponse(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0xFE
     umas_request_function_key: ClassVar[int] = 0x22
 
+
+
     def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUReadVariableResponse")
 
         # Array Field (block)
-        write_buffer.write_simple_array(
-            self.block, write_buffer.write_unsigned_byte, logical_name="block"
-        )
+        write_buffer.write_simple_array(self.block, write_buffer.write_unsigned_byte, logical_name="block")
 
         write_buffer.pop_context("UmasPDUReadVariableResponse")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -62,12 +62,12 @@ class UmasPDUReadVariableResponse(UmasPDUItem):
         if self.block is not None:
             length_in_bits += 8 * len(self.block)
 
+
         return length_in_bits
 
+
     @staticmethod
-    def static_parse_builder(
-        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
-    ):
+    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int):
         read_buffer.push_context("UmasPDUReadVariableResponse")
 
         if isinstance(umas_request_function_key, str):
@@ -75,18 +75,13 @@ class UmasPDUReadVariableResponse(UmasPDUItem):
         if isinstance(byte_length, str):
             byte_length = int(byte_length)
 
-        block: List[Any] = read_buffer.read_array_field(
-            logical_name="block",
-            read_function=read_buffer.read_unsigned_byte,
-            count=byte_length - int(2),
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-            byte_length=byte_length,
-        )
+
+        block: List[Any] = read_buffer.read_array_field(logical_name="block", read_function=read_buffer.read_unsigned_byte, count=byte_length- int(2), byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)
 
         read_buffer.pop_context("UmasPDUReadVariableResponse")
         # Create the instance
-        return UmasPDUReadVariableResponseBuilder(block)
+        return UmasPDUReadVariableResponseBuilder(block )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -103,21 +98,22 @@ class UmasPDUReadVariableResponse(UmasPDUItem):
 
     def __str__(self) -> str:
         pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
         #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
+        #except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class UmasPDUReadVariableResponseBuilder:
     block: List[int]
 
-    def build(self, byte_length: int, pairing_key) -> UmasPDUReadVariableResponse:
-        umas_pduread_variable_response: UmasPDUReadVariableResponse = (
-            UmasPDUReadVariableResponse(byte_length, pairing_key, self.block)
-        )
+    def build(self,byte_length: int , pairing_key ) -> UmasPDUReadVariableResponse:
+        umas_pduread_variable_response: UmasPDUReadVariableResponse = UmasPDUReadVariableResponse(byte_length , pairing_key , self.block )
         return umas_pduread_variable_response
+
+
+
