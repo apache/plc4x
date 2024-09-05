@@ -57,7 +57,7 @@ class ModbusOptimizerTest {
                     ModbusTagCoil coil = (ModbusTagCoil) firstTag;
                     assertEquals(0, coil.getAddress());
                     assertEquals(1, coil.getNumberOfElements());
-                    assertEquals(ModbusDataType.RAW_COIL, coil.getDataType());
+                    assertEquals(ModbusDataType.BYTE, coil.getDataType());
                 }),
 
             // In this test, the two adjacent coils will be joined together to one array.
@@ -74,7 +74,7 @@ class ModbusOptimizerTest {
                     ModbusTagCoil coil = (ModbusTagCoil) firstTag;
                     assertEquals(0, coil.getAddress());
                     assertEquals(2, coil.getNumberOfElements());
-                    assertEquals(ModbusDataType.RAW_COIL, coil.getDataType());
+                    assertEquals(ModbusDataType.BYTE, coil.getDataType());
                 }),
 
             // In this test, the two coils with a larger gap will be joined together to one array.
@@ -91,7 +91,7 @@ class ModbusOptimizerTest {
                     ModbusTagCoil coil = (ModbusTagCoil) firstTag;
                     assertEquals(0, coil.getAddress());
                     assertEquals(101, coil.getNumberOfElements());
-                    assertEquals(ModbusDataType.RAW_COIL, coil.getDataType());
+                    assertEquals(ModbusDataType.BYTE, coil.getDataType());
                 }),
 
             // In this test, the two coils have a too large gap to be read in one block, therefore the result
@@ -109,7 +109,7 @@ class ModbusOptimizerTest {
                     ModbusTagCoil coil = (ModbusTagCoil) firstTag;
                     assertEquals(0, coil.getAddress());
                     assertEquals(1, coil.getNumberOfElements());
-                    assertEquals(ModbusDataType.RAW_COIL, coil.getDataType());
+                    assertEquals(ModbusDataType.BYTE, coil.getDataType());
                     PlcReadRequest secondReadRequest = readRequests.get(1);
                     assertEquals(1, secondReadRequest.getNumberOfTags());
                     firstTag = secondReadRequest.getTags().get(0);
@@ -117,7 +117,7 @@ class ModbusOptimizerTest {
                     coil = (ModbusTagCoil) firstTag;
                     assertEquals(2100, coil.getAddress());
                     assertEquals(1, coil.getNumberOfElements());
-                    assertEquals(ModbusDataType.RAW_COIL, coil.getDataType());
+                    assertEquals(ModbusDataType.BYTE, coil.getDataType());
                 })
         );
     }
@@ -143,7 +143,7 @@ class ModbusOptimizerTest {
                     ModbusTagHoldingRegister holdingRegister = (ModbusTagHoldingRegister) firstTag;
                     assertEquals(0, holdingRegister.getAddress());
                     assertEquals(1, holdingRegister.getNumberOfElements());
-                    assertEquals(ModbusDataType.RAW_REGISTER, holdingRegister.getDataType());
+                    assertEquals(ModbusDataType.WORD, holdingRegister.getDataType());
                 }),
 
             // In this test, the two adjacent coils will be joined together to one array.
@@ -160,7 +160,7 @@ class ModbusOptimizerTest {
                     ModbusTagHoldingRegister holdingRegister = (ModbusTagHoldingRegister) firstTag;
                     assertEquals(0, holdingRegister.getAddress());
                     assertEquals(2, holdingRegister.getNumberOfElements());
-                    assertEquals(ModbusDataType.RAW_REGISTER, holdingRegister.getDataType());
+                    assertEquals(ModbusDataType.WORD, holdingRegister.getDataType());
                 }),
 
             // In this test, the two coils with a larger gap will be joined together to one array.
@@ -177,7 +177,7 @@ class ModbusOptimizerTest {
                     ModbusTagHoldingRegister holdingRegister = (ModbusTagHoldingRegister) firstTag;
                     assertEquals(0, holdingRegister.getAddress());
                     assertEquals(101, holdingRegister.getNumberOfElements());
-                    assertEquals(ModbusDataType.RAW_REGISTER, holdingRegister.getDataType());
+                    assertEquals(ModbusDataType.WORD, holdingRegister.getDataType());
                 }),
 
             // In this test, the two coils have a too large gap to be read in one block, therefore the result
@@ -195,7 +195,7 @@ class ModbusOptimizerTest {
                     ModbusTagHoldingRegister holdingRegister = (ModbusTagHoldingRegister) firstTag;
                     assertEquals(0, holdingRegister.getAddress());
                     assertEquals(1, holdingRegister.getNumberOfElements());
-                    assertEquals(ModbusDataType.RAW_REGISTER, holdingRegister.getDataType());
+                    assertEquals(ModbusDataType.WORD, holdingRegister.getDataType());
                     PlcReadRequest secondReadRequest = readRequests.get(1);
                     assertEquals(1, secondReadRequest.getNumberOfTags());
                     firstTag = secondReadRequest.getTags().get(0);
@@ -203,7 +203,7 @@ class ModbusOptimizerTest {
                     holdingRegister = (ModbusTagHoldingRegister) firstTag;
                     assertEquals(2100, holdingRegister.getAddress());
                     assertEquals(1, holdingRegister.getNumberOfElements());
-                    assertEquals(ModbusDataType.RAW_REGISTER, holdingRegister.getDataType());
+                    assertEquals(ModbusDataType.WORD, holdingRegister.getDataType());
                 })
         );
     }

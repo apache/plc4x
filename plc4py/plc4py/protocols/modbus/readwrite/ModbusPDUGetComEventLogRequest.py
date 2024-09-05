@@ -28,7 +28,8 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import ClassVar
 import math
-    
+
+
 @dataclass
 class ModbusPDUGetComEventLogRequest(ModbusPDU):
     # Accessors for discriminator values.
@@ -36,13 +37,10 @@ class ModbusPDUGetComEventLogRequest(ModbusPDU):
     function_flag: ClassVar[int] = 0x0C
     response: ClassVar[bool] = False
 
-
-
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUGetComEventLogRequest")
 
         write_buffer.pop_context("ModbusPDUGetComEventLogRequest")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -53,7 +51,6 @@ class ModbusPDUGetComEventLogRequest(ModbusPDU):
 
         return length_in_bits
 
-
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUGetComEventLogRequest")
@@ -61,11 +58,9 @@ class ModbusPDUGetComEventLogRequest(ModbusPDU):
         if isinstance(response, str):
             response = bool(strtobool(response))
 
-
         read_buffer.pop_context("ModbusPDUGetComEventLogRequest")
         # Create the instance
         return ModbusPDUGetComEventLogRequestBuilder()
-
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -82,21 +77,22 @@ class ModbusPDUGetComEventLogRequest(ModbusPDU):
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUGetComEventLogRequestBuilder:
 
-    def build(self,) -> ModbusPDUGetComEventLogRequest:
-        modbus_pduget_com_event_log_request: ModbusPDUGetComEventLogRequest = ModbusPDUGetComEventLogRequest()
+    def build(
+        self,
+    ) -> ModbusPDUGetComEventLogRequest:
+        modbus_pduget_com_event_log_request: ModbusPDUGetComEventLogRequest = (
+            ModbusPDUGetComEventLogRequest()
+        )
         return modbus_pduget_com_event_log_request
-
-
-

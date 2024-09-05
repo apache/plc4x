@@ -216,7 +216,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
             if (tag.getAddress() + (sizeInCoils * tag.getNumberOfElements()) > maxCoilCurRequest) {
                 // Finish the current sub-request
                 LinkedHashMap<String, PlcTag> subTags = new LinkedHashMap<>();
-                subTags.put("coils" + subRequests.size(), new ModbusTagCoil(firstCoil, lastCoil - firstCoil, ModbusDataType.RAW_COIL, Collections.emptyMap()));
+                subTags.put("coils" + subRequests.size(), new ModbusTagCoil(firstCoil, lastCoil - firstCoil, ModbusDataType.BYTE, Collections.emptyMap()));
                 subRequests.add(new DefaultPlcReadRequest(reader, subTags));
 
                 // Re-initialize the structures for the next request.
@@ -232,7 +232,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
 
         // Finish the last sub-request
         LinkedHashMap<String, PlcTag> subTags = new LinkedHashMap<>();
-        subTags.put("coils" + subRequests.size(), new ModbusTagCoil(firstCoil, lastCoil - firstCoil, ModbusDataType.RAW_COIL, Collections.emptyMap()));
+        subTags.put("coils" + subRequests.size(), new ModbusTagCoil(firstCoil, lastCoil - firstCoil, ModbusDataType.BYTE, Collections.emptyMap()));
         subRequests.add(new DefaultPlcReadRequest(reader, subTags));
         return subRequests;
     }
@@ -257,7 +257,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
             if ((tag.getAddress() - firstRegister) + (sizeInRegisters * tag.getNumberOfElements()) > maxRegisterCurRequest) {
                 // Finish the current sub-request
                 LinkedHashMap<String, PlcTag> subTags = new LinkedHashMap<>();
-                subTags.put("registers" + subRequests.size(), tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.RAW_REGISTER));
+                subTags.put("registers" + subRequests.size(), tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD));
                 subRequests.add(new DefaultPlcReadRequest(reader, subTags));
 
                 // Re-initialize the structures for the next request.
@@ -273,7 +273,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
 
         // Finish the last sub-request
         LinkedHashMap<String, PlcTag> subTags = new LinkedHashMap<>();
-        subTags.put("registers" + subRequests.size(), tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.RAW_REGISTER));
+        subTags.put("registers" + subRequests.size(), tagFactory.createTag(firstRegister, lastRegister - firstRegister, ModbusDataType.WORD));
         subRequests.add(new DefaultPlcReadRequest(reader, subTags));
         return subRequests;
     }

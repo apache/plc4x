@@ -28,7 +28,8 @@ from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
 from typing import ClassVar
 import math
-    
+
+
 @dataclass
 class UmasPDUProjectInfoRequest(UmasPDUItem):
     subcode: int
@@ -38,16 +39,15 @@ class UmasPDUProjectInfoRequest(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0x03
     umas_request_function_key: ClassVar[int] = 0
 
-
-
     def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUProjectInfoRequest")
 
         # Simple Field (subcode)
-        write_buffer.write_unsigned_byte(self.subcode,bit_length=8,logical_name="subcode")
+        write_buffer.write_unsigned_byte(
+            self.subcode, bit_length=8, logical_name="subcode"
+        )
 
         write_buffer.pop_context("UmasPDUProjectInfoRequest")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -61,9 +61,10 @@ class UmasPDUProjectInfoRequest(UmasPDUItem):
 
         return length_in_bits
 
-
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+    ):
         read_buffer.push_context("UmasPDUProjectInfoRequest")
 
         if isinstance(umas_request_function_key, str):
@@ -71,15 +72,17 @@ class UmasPDUProjectInfoRequest(UmasPDUItem):
         if isinstance(byte_length, str):
             byte_length = int(byte_length)
 
-
-        subcode: int = read_buffer.read_unsigned_byte(logical_name="subcode", bit_length=8, byte_order=ByteOrder.LITTLE_ENDIAN, umas_request_function_key=umas_request_function_key, byte_length=byte_length)  
-
-
+        subcode: int = read_buffer.read_unsigned_byte(
+            logical_name="subcode",
+            bit_length=8,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
+            umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
+        )
 
         read_buffer.pop_context("UmasPDUProjectInfoRequest")
         # Create the instance
-        return UmasPDUProjectInfoRequestBuilder(subcode )
-
+        return UmasPDUProjectInfoRequestBuilder(subcode)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -96,22 +99,21 @@ class UmasPDUProjectInfoRequest(UmasPDUItem):
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class UmasPDUProjectInfoRequestBuilder:
     subcode: int
 
-    def build(self,byte_length: int , pairing_key ) -> UmasPDUProjectInfoRequest:
-        umas_pduproject_info_request: UmasPDUProjectInfoRequest = UmasPDUProjectInfoRequest(byte_length , pairing_key , self.subcode )
+    def build(self, byte_length: int, pairing_key) -> UmasPDUProjectInfoRequest:
+        umas_pduproject_info_request: UmasPDUProjectInfoRequest = (
+            UmasPDUProjectInfoRequest(byte_length, pairing_key, self.subcode)
+        )
         return umas_pduproject_info_request
-
-
-

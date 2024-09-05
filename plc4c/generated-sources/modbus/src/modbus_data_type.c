@@ -142,17 +142,11 @@ plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_typ
     if(strcmp(value_string, "WSTRING") == 0) {
         return plc4c_modbus_read_write_modbus_data_type_WSTRING;
     }
-    if(strcmp(value_string, "RAW_COIL") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_RAW_COIL;
-    }
-    if(strcmp(value_string, "RAW_REGISTER") == 0) {
-        return plc4c_modbus_read_write_modbus_data_type_RAW_REGISTER;
-    }
     return -1;
 }
 
 int plc4c_modbus_read_write_modbus_data_type_num_values() {
-  return 29;
+  return 27;
 }
 
 plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_type_value_for_index(int index) {
@@ -237,12 +231,6 @@ plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_typ
       }
       case 26: {
         return plc4c_modbus_read_write_modbus_data_type_WSTRING;
-      }
-      case 27: {
-        return plc4c_modbus_read_write_modbus_data_type_RAW_COIL;
-      }
-      case 28: {
-        return plc4c_modbus_read_write_modbus_data_type_RAW_REGISTER;
       }
       default: {
         return -1;
@@ -332,12 +320,6 @@ uint8_t plc4c_modbus_read_write_modbus_data_type_get_data_type_size(plc4c_modbus
     }
     case plc4c_modbus_read_write_modbus_data_type_LINT: { /* '9' */
       return 8;
-    }
-    case plc4c_modbus_read_write_modbus_data_type_RAW_COIL: { /* '98' */
-      return 1;
-    }
-    case plc4c_modbus_read_write_modbus_data_type_RAW_REGISTER: { /* '99' */
-      return 2;
     }
     default: {
       return 0;

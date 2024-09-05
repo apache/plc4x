@@ -427,14 +427,6 @@
         ['WCHAR' List
             [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
         ]
-
-        // Needed for optimized reading.
-        ['RAW_COIL' RawByteArray
-            [array byte value count 'CEIL(numberOfValues / 8)']
-        ]
-        ['RAW_REGISTER' RawByteArray
-            [array byte value count 'numberOfValues * 2']
-        ]
     ]
 ]
 
@@ -466,10 +458,6 @@
     ['25' WCHAR ['2']]
     ['26' STRING ['1']]
     ['27' WSTRING ['2']]
-
-    // Needed for optimized reading.
-    ['98' RAW_COIL     ['1']]
-    ['99' RAW_REGISTER ['2']]
 ]
 
 [enum uint 8 ModbusErrorCode
