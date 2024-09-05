@@ -26,8 +26,6 @@ import org.apache.plc4x.java.modbus.base.tag.ModbusTagCoil;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHoldingRegister;
 import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
-import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.junit.jupiter.params.ParameterizedTest;

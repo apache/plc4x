@@ -27,8 +27,8 @@
 
 int8_t plc4c_test_read_write_crc_int8();
 uint8_t plc4c_test_read_write_crc_uint8();
-uint8_t plc4c_test_read_write_read_manual_field(plc4c_spi_read_buffer* readBuffer, uint8_t value);
-plc4c_return_code plc4c_test_read_write_write_manual_field(plc4c_spi_write_buffer* writeBuffer, uint8_t value);
+uint8_t plc4c_test_read_write_read_a_manual_field(plc4c_spi_read_buffer* readBuffer, uint8_t value);
+plc4c_return_code plc4c_test_read_write_write_a_manual_field(plc4c_spi_write_buffer* writeBuffer, uint8_t value);
 
 #ifdef __cplusplus
 }
