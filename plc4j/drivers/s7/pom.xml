@@ -107,6 +107,18 @@
     </dependency>
 
     <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-core</artifactId>
+      <!-- Override the "provided" scope -->
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-packetfactory-static</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
@@ -183,6 +195,19 @@
                 </goals>
                 <configuration>
                   <protocolName>s7</protocolName>
+                  <languageName>java</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>src/main/generated</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-discovery</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>s7-discovery</protocolName>
                   <languageName>java</languageName>
                   <outputFlavor>read-write</outputFlavor>
                   <outputDir>src/main/generated</outputDir>

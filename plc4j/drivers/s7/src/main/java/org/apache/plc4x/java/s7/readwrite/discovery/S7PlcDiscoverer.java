@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.profinet.discovery;
+
+package org.apache.plc4x.java.s7.readwrite.discovery;
 
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
@@ -24,17 +25,28 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.profinet.ProfinetDriver;
-import org.apache.plc4x.java.profinet.channel.ProfinetChannel;
-import org.apache.plc4x.java.profinet.packets.PnDcpPacketFactory;
-import org.apache.plc4x.java.profinet.readwrite.*;
+import org.apache.plc4x.java.s7discovery.readwrite.Ethernet_Frame;
+import org.apache.plc4x.java.s7discovery.readwrite.Ethernet_FramePayload;
+import org.apache.plc4x.java.s7discovery.readwrite.Ethernet_FramePayload_PnDcp;
+import org.apache.plc4x.java.s7discovery.readwrite.Ethernet_FramePayload_VirtualLan;
+import org.apache.plc4x.java.s7discovery.readwrite.MacAddress;
+import org.apache.plc4x.java.s7discovery.readwrite.PnDcp_Block;
+import org.apache.plc4x.java.s7discovery.readwrite.PnDcp_Block_ALLSelector;
+import org.apache.plc4x.java.s7discovery.readwrite.PnDcp_Block_DevicePropertiesDeviceId;
+import org.apache.plc4x.java.s7discovery.readwrite.PnDcp_Block_DevicePropertiesDeviceRole;
+import org.apache.plc4x.java.s7discovery.readwrite.PnDcp_Block_DevicePropertiesDeviceVendor;
+import org.apache.plc4x.java.s7discovery.readwrite.PnDcp_Block_DevicePropertiesNameOfStation;
+import org.apache.plc4x.java.s7discovery.readwrite.PnDcp_Block_IpParameter;
+import org.apache.plc4x.java.s7discovery.readwrite.PnDcp_Pdu;
+import org.apache.plc4x.java.s7discovery.readwrite.PnDcp_Pdu_IdentifyReq;
+import org.apache.plc4x.java.s7discovery.readwrite.PnDcp_Pdu_IdentifyRes;
+import org.apache.plc4x.java.s7discovery.readwrite.VirtualLanPriority;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
 import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
 import org.apache.plc4x.java.spi.values.PlcValues;
-import org.apache.plc4x.java.transport.rawsocket.RawSocketTransport;
 import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNativeException;
@@ -46,10 +58,23 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 
-public class ProfinetDiscoverer implements PlcDiscoverer {
+/**
+ * This Discoverer makes use of part of the Profinet driver.
+ * As every S7 device we know supports Profinet, we'll use the Profinet auto-discovery mechanism
+ * and filter out the devices for which we know support the S7 comm protocol.
+ */
+public class S7PlcDiscoverer implements PlcDiscoverer {
+
+    private final Logger logger = LoggerFactory.getLogger(S7PlcDiscoverer.class);
 
     // The constants for the different block names and their actual meaning.
     public static final String DEVICE_TYPE_NAME = "DEVICE_PROPERTIES_OPTION-1";
@@ -61,12 +86,12 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
     public static final String IP_OPTION_IP = "IP_OPTION-2";
     // Pre-Defined PROFINET discovery MAC address
     private static final MacAddress PROFINET_BROADCAST_MAC_ADDRESS = new MacAddress(new byte[]{0x01, 0x0E, (byte) 0xCF, 0x00, 0x00, 0x00});
+
     final private ProfinetChannel channel;
     final List<PlcDiscoveryItem> values = new ArrayList<>();
-    private final Logger logger = LoggerFactory.getLogger(ProfinetDiscoverer.class);
     private PlcDiscoveryItemHandler handler;
 
-    public ProfinetDiscoverer(ProfinetChannel channel) {
+    public S7PlcDiscoverer(ProfinetChannel channel) {
         this.channel = channel;
         channel.addPacketListener(this::handleIncomingPacket);
     }
@@ -88,7 +113,18 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
             PcapHandle handle = entry.getValue();
 
             // Construct and send the search request.
-            Ethernet_Frame identificationRequest = PnDcpPacketFactory.createIdentificationRequest(localMacAddress, PROFINET_BROADCAST_MAC_ADDRESS);
+            Ethernet_Frame identificationRequest = new Ethernet_Frame(
+                PROFINET_BROADCAST_MAC_ADDRESS,
+                localMacAddress,
+                new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, (short) 0,
+                    new Ethernet_FramePayload_PnDcp(
+                        new PnDcp_Pdu_IdentifyReq(0xFEFE,
+                            1,
+                            256,
+                            Collections.singletonList(
+                                new PnDcp_Block_ALLSelector()
+                            )))));
+
             WriteBufferByteBased buffer = new WriteBufferByteBased(identificationRequest.getLengthInBytes());
             try {
                 identificationRequest.serialize(buffer);
@@ -103,7 +139,7 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
                 if(!e.getMessage().contains("Network is down")) {
                     throw new RuntimeException(e);
                 }
-             } catch (NotOpenException | IllegalRawDataException e) {
+            } catch (NotOpenException | IllegalRawDataException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -139,7 +175,7 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
     protected void handleIncomingPacket(Ethernet_FramePayload frame, EthernetPacket ethernetPacket) {
         if (frame instanceof Ethernet_FramePayload_PnDcp) {
             PnDcp_Pdu pdu = ((Ethernet_FramePayload_PnDcp) frame).getPdu();
-            if (pdu.getFrameId() == PnDcp_FrameId.DCP_Identify_ResPDU) {
+            if (pdu.getFrameIdValue() == 0xFEFF) {
                 handlePnDcpPacket(pdu, ethernetPacket);
             }
         }
@@ -229,32 +265,53 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
                 deviceId = String.format("%04X", block.getDeviceId());
             }
 
-            Map<String, PlcValue> attributes = new HashMap<>();
-            attributes.put("ipAddress", PlcValues.of(remoteAddress));
-            attributes.put("subnetMask", PlcValues.of(remoteSubnetMask));
-            attributes.put("macAddress", PlcValues.of(srcAddr.toString()));
-            attributes.put("localMacAddress", PlcValues.of(dstAddr.toString()));
-            attributes.put("deviceTypeName", PlcValues.of(deviceTypeName));
-            attributes.put("deviceName", PlcValues.of(deviceName));
-            attributes.put("vendorId", PlcValues.of(vendorId));
-            attributes.put("deviceId", PlcValues.of(deviceId));
-            attributes.put("role", PlcValues.of(role));
-            attributes.put("packetType", PlcValues.of("dcp"));
-
-            String name = deviceTypeName + " - " + deviceName;
-
-            PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
-                ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
-                remoteAddress, options, name, attributes);
-            values.add(value);
-
-            // If we have a discovery handler, pass it to the handler callback
-            if (handler != null) {
-                handler.handle(value);
+            // If this is a Siemens device
+            // If there are non-siemens devices that support S7Comm, we can extend the code.
+            boolean supportsS7Comm = false;
+            switch (vendorId) {
+                case "002A":
+                    switch (deviceId) {
+                        // This is an S7 1200
+                        case "010D":
+                            supportsS7Comm = true;
+                            break;
+                        // This is an S7 1200
+                        case "010E":
+                            supportsS7Comm = true;
+                            break;
+                    }
+                    break;
             }
 
-            logger.debug("Found new device: '{}' with connection-url '{}'",
-                value.getName(), value.getConnectionUrl());
+            // Only add devices we know support the S7Comm protocol.
+            if(supportsS7Comm) {
+                Map<String, PlcValue> attributes = new HashMap<>();
+                attributes.put("ipAddress", PlcValues.of(remoteAddress));
+                attributes.put("subnetMask", PlcValues.of(remoteSubnetMask));
+                attributes.put("macAddress", PlcValues.of(srcAddr.toString()));
+                attributes.put("localMacAddress", PlcValues.of(dstAddr.toString()));
+                attributes.put("deviceTypeName", PlcValues.of(deviceTypeName));
+                attributes.put("deviceName", PlcValues.of(deviceName));
+                attributes.put("vendorId", PlcValues.of(vendorId));
+                attributes.put("deviceId", PlcValues.of(deviceId));
+                attributes.put("role", PlcValues.of(role));
+                attributes.put("packetType", PlcValues.of("dcp"));
+
+                String name = deviceTypeName + " - " + deviceName;
+
+                PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
+                    "s7", "tcp",
+                    remoteAddress, options, name, attributes);
+                values.add(value);
+
+                // If we have a discovery handler, pass it to the handler callback
+                if (handler != null) {
+                    handler.handle(value);
+                }
+
+                logger.debug("Found new device: '{}' with connection-url '{}'",
+                    value.getName(), value.getConnectionUrl());
+            }
         }
     }
 

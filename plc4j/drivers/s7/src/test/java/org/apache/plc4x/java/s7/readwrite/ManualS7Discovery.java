@@ -17,12 +17,12 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.knxnetip;
+package org.apache.plc4x.java.s7.readwrite;
 
-public class ManualKnxNetIpDiscovery {
+public class ManualS7Discovery {
 
     public static void main(String[] args) throws Exception {
-        new KnxNetIpDriver().discoveryRequestBuilder().addQuery("all", "*")
+        new S7Driver().discoveryRequestBuilder().addQuery("all", "*")
             .build()
             .executeWithHandler(discoveryItem -> System.out.println("Found new device: " + discoveryItem.getConnectionUrl() + " (" + discoveryItem.getName() + ")"))
             .get();

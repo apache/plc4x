@@ -17,20 +17,44 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.profinet.channel;
+package org.apache.plc4x.java.s7.readwrite.discovery;
 
-import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.spi.generation.*;
-import org.pcap4j.core.*;
-import org.pcap4j.packet.*;
+import org.apache.plc4x.java.s7discovery.readwrite.Ethernet_Frame;
+import org.apache.plc4x.java.s7discovery.readwrite.Ethernet_FramePayload;
+import org.apache.plc4x.java.s7discovery.readwrite.Ethernet_FramePayload_VirtualLan;
+import org.apache.plc4x.java.s7discovery.readwrite.MacAddress;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.pcap4j.core.BpfProgram;
+import org.pcap4j.core.NotOpenException;
+import org.pcap4j.core.PacketListener;
+import org.pcap4j.core.PcapHandle;
+import org.pcap4j.core.PcapNativeException;
+import org.pcap4j.core.PcapNetworkInterface;
+import org.pcap4j.core.Pcaps;
+import org.pcap4j.packet.Dot1qVlanTagPacket;
+import org.pcap4j.packet.EthernetPacket;
+import org.pcap4j.packet.IllegalRawDataException;
+import org.pcap4j.packet.Packet;
+import org.pcap4j.packet.UdpPacket;
 import org.pcap4j.packet.namednumber.EtherType;
 import org.pcap4j.util.LinkLayerAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
+/**
+ * This code is borrowed and stripped down from the Profinet driver
+ */
 public class ProfinetChannel {
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetChannel.class);
@@ -215,9 +239,9 @@ public class ProfinetChannel {
                         PcapHandle handle = dev.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
                         openHandles.put(toPlc4xMacAddress(macAddress), handle);
 
-                        // Only react on PROFINET (0x8891), UDP (0x0800 ... actually IPv4) or LLDP (0x88CC) packets targeted at our current MAC address.
+                        // Only react on PROFINET (0x8892) packets targeted at our current MAC address.
                         handle.setFilter(
-                            "(ether proto 0x0800) or (((ether proto 0x8100) or (ether proto 0x8892)) and (ether dst " + Pcaps.toBpfString(macAddress) + ")) or (ether proto 0x88cc)",
+                            "((ether proto 0x8100) or (ether proto 0x8892)) and (ether dst " + Pcaps.toBpfString(macAddress) + ")",
                             BpfProgram.BpfCompileMode.OPTIMIZE);
                     }
                 }

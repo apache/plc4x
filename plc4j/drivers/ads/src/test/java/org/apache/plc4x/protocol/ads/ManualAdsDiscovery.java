@@ -17,15 +17,16 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.knxnetip;
+package org.apache.plc4x.protocol.ads;
 
-public class ManualKnxNetIpDiscovery {
+import org.apache.plc4x.java.ads.AdsPlcDriver;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
+
+public class ManualAdsDiscovery {
 
     public static void main(String[] args) throws Exception {
-        new KnxNetIpDriver().discoveryRequestBuilder().addQuery("all", "*")
-            .build()
-            .executeWithHandler(discoveryItem -> System.out.println("Found new device: " + discoveryItem.getConnectionUrl() + " (" + discoveryItem.getName() + ")"))
-            .get();
+        PlcDiscoveryResponse discoveryResponse = new AdsPlcDriver().discoveryRequestBuilder().addQuery("all", "*").build().executeWithHandler(discoveryItem -> System.out.println(discoveryItem.getConnectionUrl())).get();
+        System.out.println(discoveryResponse);
     }
 
 }

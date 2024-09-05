@@ -26,8 +26,9 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 public class DatatypesTest {
 
     public static void main(String[] args) throws Exception {
+        //try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://192.168.24.83")) {
         try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://192.168.23.30")) {
-            final PlcReadRequest.Builder builder = connection.readRequestBuilder();
+                final PlcReadRequest.Builder builder = connection.readRequestBuilder();
             builder.addTagAddress("bool-value-1", "%DB2:0.0:BOOL"); // true
             builder.addTagAddress("bool-value-2", "%DB2:2.1:BOOL"); // false
             // It seems S7 PLCs ignores the array notation for BOOL
@@ -68,13 +69,22 @@ public class DatatypesTest {
             builder.addTagAddress("char-value", "%DB2:928:CHAR"); // "H"
             builder.addTagAddress("char-array", "%DB2:930:CHAR[4]"); // "H", "u", "r", "z"
 
-            builder.addTagAddress("huge-array", "%DB2:0:BYTE[900]");
+            //builder.addTagAddress("huge-array", "%DB2:0:BYTE[900]");
+            builder.addTagAddress("huge-array", "%DB2:0:UINT[4000]");
+            //builder.addTagAddress("huge-array", "%DB2:0:UINT[4000]");
             final PlcReadRequest readRequest = builder.build();
 
             final PlcReadResponse readResponse = readRequest.execute().get();
 
             System.out.println(readResponse);
-
+            byte[] responseBytes = readResponse.getPlcValue("huge-array").getRaw();
+            for(int i = 0; i < 2000; i++) {
+                byte firstByte = (byte) (i & 0x00FF);
+                byte secondByte = (byte) ((i & 0xFF00) >> 8);
+                if((responseBytes[i*2] != secondByte) || (responseBytes[i*2+1] != firstByte)) {
+                    System.out.println("Difference");
+                }
+            }
         }
     }
 

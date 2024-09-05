@@ -19,13 +19,13 @@
 
 package org.apache.plc4x.java.eip.base;
 
-import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
-
 public class ManualEipDiscovery {
 
     public static void main(String[] args) throws Exception {
-        PlcDiscoveryResponse discoveryResponse = new EIPDriver().discoveryRequestBuilder().addQuery("all", "*").build().execute().get();
-        System.out.println(discoveryResponse);
+        new EIPDriver().discoveryRequestBuilder().addQuery("all", "*")
+            .build()
+            .executeWithHandler(discoveryItem -> System.out.println("Found new device: " + discoveryItem.getConnectionUrl() + " (" + discoveryItem.getName() + ")"))
+            .get();
     }
 
 }
