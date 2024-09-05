@@ -160,7 +160,8 @@ type asciiBoxWriter struct {
 }
 
 func (a *asciiBoxWriter) boxString(name string, data string, charWidth int) AsciiBox {
-	data = strings.ReplaceAll(data, "\t", "  ") // Tabs just don't work well as they distort the boxes so we convert them to a double space
+	data = strings.ReplaceAll(data, "\r\n", "\n") // carriage return just messes with boxes
+	data = strings.ReplaceAll(data, "\t", "  ")   // Tabs just don't work well as they distort the boxes so we convert them to a double space
 	rawBox := AsciiBox{data, a, a.compressBoxSet()}
 	longestLine := rawBox.Width()
 	if charWidth < longestLine {
