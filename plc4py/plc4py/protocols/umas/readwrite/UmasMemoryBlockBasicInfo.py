@@ -27,7 +27,8 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import ClassVar
 import math
-    
+
+
 @dataclass
 class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
     range: int
@@ -38,25 +39,28 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
     block_number: ClassVar[int] = 0x30
     offset: ClassVar[int] = 0x00
 
-
-
     def serialize_umas_memory_block_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasMemoryBlockBasicInfo")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_short(self.range,bit_length=16,logical_name="range")
+        write_buffer.write_unsigned_short(
+            self.range, bit_length=16, logical_name="range"
+        )
 
         # Simple Field (notSure)
-        write_buffer.write_unsigned_short(self.not_sure,bit_length=16,logical_name="notSure")
+        write_buffer.write_unsigned_short(
+            self.not_sure, bit_length=16, logical_name="notSure"
+        )
 
         # Simple Field (index)
-        write_buffer.write_unsigned_byte(self.index,bit_length=8,logical_name="index")
+        write_buffer.write_unsigned_byte(self.index, bit_length=8, logical_name="index")
 
         # Simple Field (hardwareId)
-        write_buffer.write_unsigned_int(self.hardware_id,bit_length=32,logical_name="hardwareId")
+        write_buffer.write_unsigned_int(
+            self.hardware_id, bit_length=32, logical_name="hardwareId"
+        )
 
         write_buffer.pop_context("UmasMemoryBlockBasicInfo")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -79,7 +83,6 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
 
         return length_in_bits
 
-
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, block_number: int, offset: int):
         read_buffer.push_context("UmasMemoryBlockBasicInfo")
@@ -89,27 +92,34 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
         if isinstance(offset, str):
             offset = int(offset)
 
+        range: int = read_buffer.read_unsigned_short(
+            logical_name="range",
+            bit_length=16,
+            block_number=block_number,
+            offset=offset,
+        )
 
-        range: int = read_buffer.read_unsigned_short(logical_name="range", bit_length=16, block_number=block_number, offset=offset)  
+        not_sure: int = read_buffer.read_unsigned_short(
+            logical_name="not_sure",
+            bit_length=16,
+            block_number=block_number,
+            offset=offset,
+        )
 
+        index: int = read_buffer.read_unsigned_byte(
+            logical_name="index", bit_length=8, block_number=block_number, offset=offset
+        )
 
-
-        not_sure: int = read_buffer.read_unsigned_short(logical_name="not_sure", bit_length=16, block_number=block_number, offset=offset)  
-
-
-
-        index: int = read_buffer.read_unsigned_byte(logical_name="index", bit_length=8, block_number=block_number, offset=offset)  
-
-
-
-        hardware_id: int = read_buffer.read_unsigned_int(logical_name="hardware_id", bit_length=32, block_number=block_number, offset=offset)  
-
-
+        hardware_id: int = read_buffer.read_unsigned_int(
+            logical_name="hardware_id",
+            bit_length=32,
+            block_number=block_number,
+            offset=offset,
+        )
 
         read_buffer.pop_context("UmasMemoryBlockBasicInfo")
         # Create the instance
-        return UmasMemoryBlockBasicInfoBuilder(range, not_sure, index, hardware_id )
-
+        return UmasMemoryBlockBasicInfoBuilder(range, not_sure, index, hardware_id)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -119,20 +129,27 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
             return False
 
         that: UmasMemoryBlockBasicInfo = UmasMemoryBlockBasicInfo(o)
-        return (self.range == that.range) and (self.not_sure == that.not_sure) and (self.index == that.index) and (self.hardware_id == that.hardware_id) and super().equals(that) and True
+        return (
+            (self.range == that.range)
+            and (self.not_sure == that.not_sure)
+            and (self.index == that.index)
+            and (self.hardware_id == that.hardware_id)
+            and super().equals(that)
+            and True
+        )
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -142,9 +159,12 @@ class UmasMemoryBlockBasicInfoBuilder:
     index: int
     hardware_id: int
 
-    def build(self,) -> UmasMemoryBlockBasicInfo:
-        umas_memory_block_basic_info: UmasMemoryBlockBasicInfo = UmasMemoryBlockBasicInfo(self.range, self.not_sure, self.index, self.hardware_id )
+    def build(
+        self,
+    ) -> UmasMemoryBlockBasicInfo:
+        umas_memory_block_basic_info: UmasMemoryBlockBasicInfo = (
+            UmasMemoryBlockBasicInfo(
+                self.range, self.not_sure, self.index, self.hardware_id
+            )
+        )
         return umas_memory_block_basic_info
-
-
-

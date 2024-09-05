@@ -52,9 +52,7 @@ public enum ModbusDataType {
   CHAR((short) 24, (short) 1),
   WCHAR((short) 25, (short) 2),
   STRING((short) 26, (short) 1),
-  WSTRING((short) 27, (short) 2),
-  RAW_COIL((short) 98, (short) 1),
-  RAW_REGISTER((short) 99, (short) 2);
+  WSTRING((short) 27, (short) 2);
   private static final Map<Short, ModbusDataType> map;
 
   static {
