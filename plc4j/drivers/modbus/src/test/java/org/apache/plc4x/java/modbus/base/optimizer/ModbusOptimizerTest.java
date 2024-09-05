@@ -225,6 +225,8 @@ class ModbusOptimizerTest {
         PlcReader reader = Mockito.mock(PlcReader.class);
         ModbusContext driverContext = Mockito.mock(ModbusContext.class);
         Mockito.when(driverContext.getByteOrder()).thenReturn(ModbusByteOrder.BIG_ENDIAN);
+        Mockito.when(driverContext.getMaxCoilsPerRequest()).thenReturn(2000);
+        Mockito.when(driverContext.getMaxRegistersPerRequest()).thenReturn(125);
         LinkedHashMap<String, PlcTag> tagMap = new LinkedHashMap<>();
         int i = 0;
         for (PlcTag tag : tags) {

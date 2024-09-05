@@ -74,6 +74,8 @@ public class ModbusOptimizer extends SingleTagOptimizer {
      */
     @Override
     protected List<PlcReadRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
+        ModbusContext modbusContext = (ModbusContext) driverContext;
+
         // Sort the different types of tags as all need to be requested separately anyway.
         TreeSet<ModbusTag> coils = null;
         TreeSet<ModbusTag> holdingRegisters = null;
@@ -113,19 +115,19 @@ public class ModbusOptimizer extends SingleTagOptimizer {
         PlcReader reader = ((DefaultPlcReadRequest) readRequest).getReader();
         List<PlcReadRequest> subRequests = new ArrayList<>();
         if (coils != null) {
-            subRequests.addAll(processCoilRequests(coils, reader));
+            subRequests.addAll(processCoilRequests(coils, reader, modbusContext));
         }
         if (holdingRegisters != null) {
-            subRequests.addAll(processRegisterRequests(holdingRegisters, reader, (address, count, dataType) -> new ModbusTagHoldingRegister(address, count, dataType, Collections.emptyMap())));
+            subRequests.addAll(processRegisterRequests(holdingRegisters, reader, (address, count, dataType) -> new ModbusTagHoldingRegister(address, count, dataType, Collections.emptyMap()), modbusContext));
         }
         if (inputRegisters != null) {
-            subRequests.addAll(processRegisterRequests(inputRegisters, reader, (address, count, dataType) -> new ModbusTagInputRegister(address, count, dataType, Collections.emptyMap())));
+            subRequests.addAll(processRegisterRequests(inputRegisters, reader, (address, count, dataType) -> new ModbusTagInputRegister(address, count, dataType, Collections.emptyMap()), modbusContext));
         }
         if (extendedRegisters != null) {
-            subRequests.addAll(processRegisterRequests(extendedRegisters, reader, (address, count, dataType) -> new ModbusTagExtendedRegister(address, count, dataType, Collections.emptyMap())));
+            subRequests.addAll(processRegisterRequests(extendedRegisters, reader, (address, count, dataType) -> new ModbusTagExtendedRegister(address, count, dataType, Collections.emptyMap()), modbusContext));
         }
         if (discreteInputs != null) {
-            subRequests.addAll(processRegisterRequests(discreteInputs, reader, (address, count, dataType) -> new ModbusTagDiscreteInput(address, count, dataType, Collections.emptyMap())));
+            subRequests.addAll(processRegisterRequests(discreteInputs, reader, (address, count, dataType) -> new ModbusTagDiscreteInput(address, count, dataType, Collections.emptyMap()), modbusContext));
         }
         return subRequests;
     }
@@ -201,7 +203,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
     // Internal
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected List<PlcReadRequest> processCoilRequests(TreeSet<ModbusTag> tags, PlcReader reader) {
+    protected List<PlcReadRequest> processCoilRequests(TreeSet<ModbusTag> tags, PlcReader reader, ModbusContext modbusContext) {
         List<PlcReadRequest> subRequests = new ArrayList<>();
         int firstCoil = -1;
         int lastCoil = -1;
@@ -216,7 +218,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                 firstCoil = tag.getAddress();
                 lastCoil = tag.getAddress() + (sizeInCoils * tag.getNumberOfElements());
                 // 2000 coils/request is the modbus limit.
-                maxCoilCurRequest = tag.getAddress() + 2000;
+                maxCoilCurRequest = tag.getAddress() + modbusContext.getMaxCoilsPerRequest();
             }
 
             // If adding the current coil would exceed the maximum number of coils that can be read by one request,
@@ -230,7 +232,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                 // Re-initialize the structures for the next request.
                 firstCoil = tag.getAddress();
                 lastCoil = tag.getAddress() + (sizeInCoils * tag.getNumberOfElements());
-                maxCoilCurRequest = tag.getAddress() + 2000;
+                maxCoilCurRequest = tag.getAddress() + modbusContext.getMaxCoilsPerRequest();
             }
             // Otherwise update the end-marker for the current block.
             else {
@@ -245,7 +247,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
         return subRequests;
     }
 
-    protected List<PlcReadRequest> processRegisterRequests(TreeSet<ModbusTag> tags, PlcReader reader, TagFactory tagFactory) {
+    protected List<PlcReadRequest> processRegisterRequests(TreeSet<ModbusTag> tags, PlcReader reader, TagFactory tagFactory, ModbusContext modbusContext) {
         List<PlcReadRequest> subRequests = new ArrayList<>();
         int firstRegister = -1;
         int lastRegister = -1;
@@ -257,7 +259,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                 firstRegister = tag.getAddress();
                 lastRegister = tag.getAddress() + (sizeInRegisters * tag.getNumberOfElements());
                 // 2000 coils/request is the modbus limit.
-                maxRegisterCurRequest = tag.getAddress() + 125;
+                maxRegisterCurRequest = tag.getAddress() + modbusContext.getMaxRegistersPerRequest();
             }
 
             // If adding the current coil would exceed the maximum number of coils that can be read by one request,
@@ -271,7 +273,7 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                 // Re-initialize the structures for the next request.
                 firstRegister = tag.getAddress();
                 lastRegister = tag.getAddress() + (sizeInRegisters * tag.getNumberOfElements());
-                maxRegisterCurRequest = tag.getAddress() + 125;
+                maxRegisterCurRequest = tag.getAddress() + modbusContext.getMaxRegistersPerRequest();
             }
             // Otherwise update the end-marker for the current block.
             else {

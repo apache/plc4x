@@ -54,6 +54,18 @@ public class ModbusTcpConfiguration implements PlcConnectionConfiguration {
     @Since("0.13.0")
     private ModbusByteOrder defaultPayloadByteOrder;
 
+    @ConfigurationParameter("max-coils-per-request")
+    @IntDefaultValue(2000)
+    @Description("Maximum number of coils addressable in one request (Defaults to 2000)")
+    @Since("0.13.0")
+    private int maxCoilsPerRequest;
+
+    @ConfigurationParameter("max-registers-per-request")
+    @IntDefaultValue(125)
+    @Description("Maximum number of registers addressable in one request (Defaults to 125)")
+    @Since("0.13.0")
+    private int maxRegistersPerRequest;
+
     public int getRequestTimeout() {
         return requestTimeout;
     }
@@ -86,6 +98,22 @@ public class ModbusTcpConfiguration implements PlcConnectionConfiguration {
         this.defaultPayloadByteOrder = defaultPayloadByteOrder;
     }
 
+    public int getMaxCoilsPerRequest() {
+        return maxCoilsPerRequest;
+    }
+
+    public void setMaxCoilsPerRequest(int maxCoilsPerRequest) {
+        this.maxCoilsPerRequest = maxCoilsPerRequest;
+    }
+
+    public int getMaxRegistersPerRequest() {
+        return maxRegistersPerRequest;
+    }
+
+    public void setMaxRegistersPerRequest(int maxRegistersPerRequest) {
+        this.maxRegistersPerRequest = maxRegistersPerRequest;
+    }
+
     @Override
     public String toString() {
         return "ModbusTcpConfiguration{" +
@@ -93,6 +121,8 @@ public class ModbusTcpConfiguration implements PlcConnectionConfiguration {
             ", unitIdentifier=" + defaultUnitIdentifier +
             ", pingAddress=" + pingAddress +
             ", defaultPayloadByteOrder=" + defaultPayloadByteOrder +
+            ", maxCoilsPerRequest=" + maxCoilsPerRequest +
+            ", maxRegistersPerRequest=" + maxRegistersPerRequest +
             '}';
     }
 

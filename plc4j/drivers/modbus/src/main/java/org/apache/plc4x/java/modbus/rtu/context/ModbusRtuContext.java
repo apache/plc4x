@@ -28,6 +28,8 @@ public class ModbusRtuContext extends ModbusContext implements HasConfiguration<
     @Override
     public void setConfiguration(ModbusRtuConfiguration configuration) {
         setByteOrder(configuration.getDefaultPayloadByteOrder());
+        setMaxCoilsPerRequest(configuration.getMaxCoilsPerRequest());
+        setMaxRegistersPerRequest(configuration.getMaxRegistersPerRequest());
     }
 
 }

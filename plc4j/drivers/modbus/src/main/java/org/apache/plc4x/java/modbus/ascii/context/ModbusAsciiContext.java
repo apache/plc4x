@@ -28,6 +28,8 @@ public class ModbusAsciiContext extends ModbusContext implements HasConfiguratio
     @Override
     public void setConfiguration(ModbusAsciiConfiguration configuration) {
         setByteOrder(configuration.getDefaultPayloadByteOrder());
+        setMaxCoilsPerRequest(configuration.getMaxCoilsPerRequest());
+        setMaxRegistersPerRequest(configuration.getMaxRegistersPerRequest());
     }
 
 }

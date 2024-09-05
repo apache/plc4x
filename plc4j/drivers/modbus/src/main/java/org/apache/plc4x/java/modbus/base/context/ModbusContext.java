@@ -25,6 +25,8 @@ import org.apache.plc4x.java.spi.context.DriverContext;
 public abstract class ModbusContext implements DriverContext {
 
     private ModbusByteOrder byteOrder;
+    private int maxCoilsPerRequest;
+    private int maxRegistersPerRequest;
 
     public ModbusByteOrder getByteOrder() {
         return byteOrder;
@@ -32,6 +34,22 @@ public abstract class ModbusContext implements DriverContext {
 
     public void setByteOrder(ModbusByteOrder byteOrder) {
         this.byteOrder = byteOrder;
+    }
+
+    public int getMaxCoilsPerRequest() {
+        return maxCoilsPerRequest;
+    }
+
+    public void setMaxCoilsPerRequest(int maxCoilsPerRequest) {
+        this.maxCoilsPerRequest = maxCoilsPerRequest;
+    }
+
+    public int getMaxRegistersPerRequest() {
+        return maxRegistersPerRequest;
+    }
+
+    public void setMaxRegistersPerRequest(int maxRegistersPerRequest) {
+        this.maxRegistersPerRequest = maxRegistersPerRequest;
     }
 
 }

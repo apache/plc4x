@@ -28,6 +28,8 @@ public class ModbusTcpContext extends ModbusContext implements HasConfiguration<
     @Override
     public void setConfiguration(ModbusTcpConfiguration configuration) {
         setByteOrder(configuration.getDefaultPayloadByteOrder());
+        setMaxCoilsPerRequest(configuration.getMaxCoilsPerRequest());
+        setMaxRegistersPerRequest(configuration.getMaxRegistersPerRequest());
     }
 
 }
