@@ -48,6 +48,10 @@ Allowed values are:  +
  - LITTLE_ENDIAN_BYTE_SWAP +
  +
 *Since: 0.13.0*
+|`max-coils-per-request` |INT |2000| |Maximum number of coils addressable in one request (Defaults to 2000) +
+*Since: 0.13.0*
+|`max-registers-per-request` |INT |125| |Maximum number of registers addressable in one request (Defaults to 125) +
+*Since: 0.13.0*
 5+|Transport config options:
 5+|
 +++
