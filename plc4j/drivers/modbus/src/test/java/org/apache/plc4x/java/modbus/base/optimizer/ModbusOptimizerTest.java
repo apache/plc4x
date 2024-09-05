@@ -21,10 +21,13 @@ package org.apache.plc4x.java.modbus.base.optimizer;
 
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.modbus.base.context.ModbusContext;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagCoil;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHoldingRegister;
 import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
+import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
 import org.apache.plc4x.java.spi.context.DriverContext;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -220,7 +223,8 @@ class ModbusOptimizerTest {
 
     void processReadRequest(PlcTag[] tags, CheckResult check) {
         PlcReader reader = Mockito.mock(PlcReader.class);
-        DriverContext driverContext = Mockito.mock(DriverContext.class);
+        ModbusContext driverContext = Mockito.mock(ModbusContext.class);
+        Mockito.when(driverContext.getByteOrder()).thenReturn(ModbusByteOrder.BIG_ENDIAN);
         LinkedHashMap<String, PlcTag> tagMap = new LinkedHashMap<>();
         int i = 0;
         for (PlcTag tag : tags) {

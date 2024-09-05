@@ -20,6 +20,7 @@ package org.apache.plc4x.java.modbus.tcp;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.modbus.base.optimizer.ModbusOptimizer;
+import org.apache.plc4x.java.modbus.tcp.context.ModbusTcpContext;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
@@ -137,6 +138,7 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
     protected ProtocolStackConfigurer<ModbusTcpADU> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(ModbusTcpADU.class, (io) -> (ModbusTcpADU) ModbusTcpADU.staticParse(io, DriverType.MODBUS_TCP, true))
             .withProtocol(ModbusTcpProtocolLogic.class)
+            .withDriverContext(ModbusTcpContext.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .build();
     }

@@ -40,7 +40,7 @@ public abstract class BaseOptimizer {
         return Collections.singletonList(readRequest);
     }
 
-    protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, SubResponse<PlcReadResponse>> readResponses) {
+    protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, SubResponse<PlcReadResponse>> readResponses, DriverContext driverContext) {
         Map<String, ResponseItem<PlcValue>> tags = new HashMap<>();
         for (Map.Entry<PlcReadRequest, SubResponse<PlcReadResponse>> requestsEntries : readResponses.entrySet()) {
             PlcReadRequest curRequest = requestsEntries.getKey();
@@ -64,7 +64,8 @@ public abstract class BaseOptimizer {
     }
 
     protected PlcWriteResponse processWriteResponses(PlcWriteRequest writeRequest,
-                                                     Map<PlcWriteRequest, SubResponse<PlcWriteResponse>> writeResponses) {
+                                                     Map<PlcWriteRequest, SubResponse<PlcWriteResponse>> writeResponses,
+                                                     DriverContext driverContext) {
         Map<String, PlcResponseCode> tags = new HashMap<>();
         for (Map.Entry<PlcWriteRequest, SubResponse<PlcWriteResponse>> requestsEntries : writeResponses.entrySet()) {
             PlcWriteRequest subWriteRequest = requestsEntries.getKey();
@@ -87,7 +88,8 @@ public abstract class BaseOptimizer {
     }
 
     protected PlcSubscriptionResponse processSubscriptionResponses(PlcSubscriptionRequest subscriptionRequest,
-                                                                   Map<PlcSubscriptionRequest, SubResponse<PlcSubscriptionResponse>> subscriptionResponses) {
+                                                                   Map<PlcSubscriptionRequest, SubResponse<PlcSubscriptionResponse>> subscriptionResponses,
+                                                                   DriverContext driverContext) {
         // TODO: Implement
         return null;
     }
@@ -98,31 +100,32 @@ public abstract class BaseOptimizer {
     }
 
     protected PlcUnsubscriptionResponse processUnsubscriptionResponses(PlcUnsubscriptionRequest unsubscriptionRequest,
-                                                                       Map<PlcUnsubscriptionRequest, SubResponse<PlcUnsubscriptionResponse>> unsubscriptionResponses) {
+                                                                       Map<PlcUnsubscriptionRequest, SubResponse<PlcUnsubscriptionResponse>> unsubscriptionResponses,
+                                                                       DriverContext driverContext) {
         // TODO: Implement
         return null;
     }
 
     public CompletableFuture<PlcReadResponse> optimizedRead(PlcReadRequest readRequest, Plc4xProtocolBase<?> reader) {
         List<PlcReadRequest> subRequests = processReadRequest(readRequest, reader.getDriverContext());
-        return send(readRequest, subRequests, reader::read, response -> processReadResponses(readRequest, response));
+        return send(readRequest, subRequests, reader::read, response -> processReadResponses(readRequest, response, reader.getDriverContext()));
     }
 
     public CompletableFuture<PlcWriteResponse> optimizedWrite(PlcWriteRequest writeRequest, Plc4xProtocolBase<?> writer) {
         List<PlcWriteRequest> subRequests = processWriteRequest(writeRequest, writer.getDriverContext());
-        return send(writeRequest, subRequests, writer::write, response -> processWriteResponses(writeRequest, response));
+        return send(writeRequest, subRequests, writer::write, response -> processWriteResponses(writeRequest, response, writer.getDriverContext()));
     }
 
     public CompletableFuture<PlcSubscriptionResponse> optimizedSubscribe(
         PlcSubscriptionRequest subscriptionRequest, Plc4xProtocolBase<?> subscriber) {
         List<PlcSubscriptionRequest> subRequests = processSubscriptionRequest(subscriptionRequest, subscriber.getDriverContext());
-        return send(subscriptionRequest, subRequests, subscriber::subscribe, response -> processSubscriptionResponses(subscriptionRequest, response));
+        return send(subscriptionRequest, subRequests, subscriber::subscribe, response -> processSubscriptionResponses(subscriptionRequest, response, subscriber.getDriverContext()));
     }
 
     public CompletableFuture<PlcUnsubscriptionResponse> optimizedUnsubscribe(
         PlcUnsubscriptionRequest unsubscriptionRequest, Plc4xProtocolBase<?> subscriber) {
         List<PlcUnsubscriptionRequest> subRequests = processUnsubscriptionRequest(unsubscriptionRequest, subscriber.getDriverContext());
-        return send(unsubscriptionRequest, subRequests, subscriber::unsubscribe, response -> processUnsubscriptionResponses(unsubscriptionRequest, response));
+        return send(unsubscriptionRequest, subRequests, subscriber::unsubscribe, response -> processUnsubscriptionResponses(unsubscriptionRequest, response, subscriber.getDriverContext()));
     }
 
     private <REQ extends PlcRequest, RES extends PlcResponse> CompletableFuture<RES> send(

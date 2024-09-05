@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,14 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.modbus.tcp;
 
-import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
+package org.apache.plc4x.java.modbus.ascii.context;
 
-public class ModbusTcpDriverIT extends DriverTestsuiteRunner {
+import org.apache.plc4x.java.modbus.ascii.config.ModbusAsciiConfiguration;
+import org.apache.plc4x.java.modbus.base.context.ModbusContext;
+import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 
-    public ModbusTcpDriverIT() {
-        super("/protocols/modbus/tcp/DriverTestsuiteOptimized.xml");
+public class ModbusAsciiContext extends ModbusContext implements HasConfiguration<ModbusAsciiConfiguration> {
+
+    @Override
+    public void setConfiguration(ModbusAsciiConfiguration configuration) {
+        setByteOrder(configuration.getDefaultPayloadByteOrder());
     }
 
 }

@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.modbus.base.context.ModbusContext;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagCoil;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagDiscreteInput;
@@ -32,7 +33,9 @@ import org.apache.plc4x.java.modbus.base.tag.ModbusTagHoldingRegister;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagInputRegister;
 import org.apache.plc4x.java.modbus.readwrite.DataItem;
 import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
+import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
 import org.apache.plc4x.java.spi.context.DriverContext;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
@@ -135,7 +138,9 @@ public class ModbusOptimizer extends SingleTagOptimizer {
      * @return post processed response reflecting the unmodified user request items
      */
     @Override
-    protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, SubResponse<PlcReadResponse>> readResponses) {
+    protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, SubResponse<PlcReadResponse>> readResponses, DriverContext driverContext) {
+        ModbusContext modbusContext = (ModbusContext) driverContext;
+
         // Build an index of all the data returned by all requests.
         // This data should contain all the bits needed to create the response of the original request.
         Map<String, List<Response>> responses = new HashMap<>();
@@ -170,9 +175,12 @@ public class ModbusOptimizer extends SingleTagOptimizer {
             for (Response response : responses.get(tagType)) {
                 if(response.matches(modbusTag)) {
                     byte[] responseData = response.getResponseData(modbusTag);
-                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(responseData);
+                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(responseData,
+                        modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
                     try {
-                        PlcValue plcValue = DataItem.staticParse(readBufferByteBased, modbusTag.getDataType(), modbusTag.getNumberOfElements(), true);
+                        PlcValue plcValue = DataItem.staticParse(readBufferByteBased, modbusTag.getDataType(),
+                            modbusTag.getNumberOfElements(),
+                            modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN);
                         values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, plcValue));
                     } catch (ParseException e) {
                         values.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
