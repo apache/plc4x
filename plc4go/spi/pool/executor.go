@@ -40,7 +40,7 @@ type executor struct {
 	stateChange     sync.RWMutex
 	workerWaitGroup sync.WaitGroup
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolog.Logger) *executor {

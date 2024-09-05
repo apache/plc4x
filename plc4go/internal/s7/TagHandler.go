@@ -39,7 +39,7 @@ import (
 type TagType uint8
 
 //go:generate stringer -type TagType
-//go:generate plc4xLicenser -type=TagType
+//go:generate plc4xLicencer -type=TagType
 const (
 	S7Tag       TagType = 0x00
 	S7StringTag TagType = 0x01

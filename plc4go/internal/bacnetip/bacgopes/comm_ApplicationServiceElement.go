@@ -22,6 +22,8 @@ package bacgopes
 import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type ApplicationServiceElement interface {
@@ -37,6 +39,7 @@ type ApplicationServiceElementRequirements interface {
 
 // ApplicationServiceElementContract provides a set of functions which can be overwritten by a sub struct
 type ApplicationServiceElementContract interface {
+	utils.Serializable
 	Request(args Args, kwargs KWArgs) error
 	Response(args Args, kwargs KWArgs) error
 	_setElementService(elementService ElementService)
@@ -49,12 +52,13 @@ type ElementService interface {
 	SapConfirmation(args Args, kwargs KWArgs) error
 }
 
+//go:generate plc4xGenerator -type=applicationServiceElement -prefix=iocb_
 type applicationServiceElement struct {
 	elementID      *int
-	elementService ElementService
+	elementService ElementService `asPtr:"true"`
 
 	// arguments
-	argASEExtension ApplicationServiceElement
+	argASEExtension ApplicationServiceElement `ignore:"true"`
 
 	log zerolog.Logger
 }

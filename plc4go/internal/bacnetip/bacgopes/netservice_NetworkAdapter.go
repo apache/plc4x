@@ -26,9 +26,10 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=NetworkAdapter -prefix=netservice_
 type NetworkAdapter struct {
 	Client
-	adapterSAP           *NetworkServiceAccessPoint
+	adapterSAP           *NetworkServiceAccessPoint `asPtr:"true"`
 	adapterNet           *uint16
 	adapterAddr          *Address
 	adapterNetConfigured *int
@@ -86,8 +87,6 @@ func (n *NetworkAdapter) Confirmation(args Args, kwargs KWArgs) error {
 	case model.NPDU:
 		nlm = pdu.GetNlm()
 		apdu = pdu.GetApdu()
-	default:
-		return errors.Errorf("Unmapped type %T", pdu)
 	}
 	npdu, err := NewNPDU(nlm, apdu)
 	if err != nil {

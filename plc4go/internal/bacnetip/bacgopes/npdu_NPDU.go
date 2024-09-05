@@ -21,7 +21,6 @@ package bacgopes
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/pkg/errors"
 
@@ -37,6 +36,7 @@ type NPDU interface {
 	DeepCopy() any
 }
 
+//go:generate plc4xGenerator -type=_NPDU -prefix=npdu
 type _NPDU struct {
 	*_NPCI
 	*_PDUData
@@ -214,8 +214,4 @@ func (n *_NPDU) deepCopy() *_NPDU {
 
 func (n *_NPDU) DeepCopy() any {
 	return n.deepCopy()
-}
-
-func (n *_NPDU) String() string {
-	return fmt.Sprintf("_NPDU{%s}", n._PCI)
 }

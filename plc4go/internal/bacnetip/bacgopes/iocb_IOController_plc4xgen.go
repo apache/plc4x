@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *IOController) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,19 +42,15 @@ func (d *IOController) Serialize() ([]byte, error) {
 }
 
 func (d *IOController) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("IOController"); err != nil {
 		return err
 	}
 
 	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), d.name); err != nil {
 		return err
-	}
-	{
-		_value := fmt.Sprintf("%v", d.requirements)
-
-		if err := writeBuffer.WriteString("requirements", uint32(len(_value)*8), _value); err != nil {
-			return err
-		}
 	}
 	if err := writeBuffer.PopContext("IOController"); err != nil {
 		return err
@@ -60,6 +59,11 @@ func (d *IOController) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (d *IOController) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

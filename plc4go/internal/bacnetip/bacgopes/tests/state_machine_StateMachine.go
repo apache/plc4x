@@ -22,8 +22,6 @@ package tests
 import (
 	"fmt"
 	"slices"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -31,6 +29,7 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // StateMachine A state machine consisting of states.  Every state machine has a start
@@ -46,6 +45,7 @@ type StateMachine interface {
 // StateMachineContract provides a set of functions which can be overwritten by a sub struct
 type StateMachineContract interface {
 	fmt.Stringer
+	utils.Serializable
 	NewState(string) State
 	UnexpectedReceive(pdu bacgopes.PDU)
 	BeforeSend(pdu bacgopes.PDU)
@@ -78,8 +78,9 @@ type StateMachineRequirements interface {
 	Send(args bacgopes.Args, kwargs bacgopes.KWArgs) error
 }
 
+//go:generate plc4xGenerator -type=stateMachine -prefix=state_machine
 type stateMachine struct {
-	requirements StateMachineRequirements
+	requirements StateMachineRequirements `ignore:"true"`
 
 	interceptor    StateInterceptor
 	stateDecorator func(state State) State
@@ -669,36 +670,24 @@ func (s *stateMachine) IsFailState() bool {
 	return *s.isFailState
 }
 
-func (s *stateMachine) String() string {
+func (s *stateMachine) AlternateString() (string, bool) {
 	if globals.ExtendedGeneralOutput {
-		var fields []string
-		if s.name != "" {
-			fields = append(fields, "name="+s.name)
-		}
-		fields = append(fields, "running="+strconv.FormatBool(s.running))
-		if s.isSuccessState != nil {
-			fields = append(fields, "successState="+strconv.FormatBool(*s.isSuccessState))
-		}
-		if s.isFailState != nil {
-			fields = append(fields, "failState="+strconv.FormatBool(*s.isFailState))
-		}
-		return fmt.Sprintf("StateMachine(%s)", strings.Join(fields, ", "))
-	} else {
-		var stateText = ""
-		if s.currentState == nil {
-			stateText = "not started"
-		} else if s.isSuccessState != nil && *s.isSuccessState {
-			stateText = "success"
-		} else if s.isFailState != nil && *s.isFailState {
-			stateText = "fail"
-		} else if !s.running {
-			stateText = "idle"
-		} else {
-			stateText = "in"
-		}
-		if s.currentState != nil {
-			stateText += " " + s.currentState.String()
-		}
-		return fmt.Sprintf("<%T(%s) %s at %p>", s.requirements, s.name, stateText, s)
+		return "", false
 	}
+	var stateText = ""
+	if s.currentState == nil {
+		stateText = "not started"
+	} else if s.isSuccessState != nil && *s.isSuccessState {
+		stateText = "success"
+	} else if s.isFailState != nil && *s.isFailState {
+		stateText = "fail"
+	} else if !s.running {
+		stateText = "idle"
+	} else {
+		stateText = "in"
+	}
+	if s.currentState != nil {
+		stateText += " " + s.currentState.String()
+	}
+	return fmt.Sprintf("<%T(%s) %s at %p>", s.requirements, s.name, stateText, s), true
 }

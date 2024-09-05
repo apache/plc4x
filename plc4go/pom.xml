@@ -297,14 +297,14 @@
             </configuration>
           </execution>
           <execution>
-            <id>get-plc4xLicenser</id>
+            <id>get-plc4xLicencer</id>
             <phase>initialize</phase>
             <goals>
               <goal>install</goal>
             </goals>
             <configuration>
               <packages>
-                <package>./tools/plc4xLicenser</package>
+                <package>./tools/plc4xLicencer</package>
               </packages>
             </configuration>
           </execution>

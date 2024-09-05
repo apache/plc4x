@@ -77,23 +77,23 @@ var _identLock sync.Mutex
 //go:generate plc4xGenerator -type=IOCB -prefix=iocb_
 type IOCB struct {
 	ioID           int
-	request        PDU
-	destination    *Address
-	ioState        IOCBState
-	ioResponse     PDU
+	request        PDU       `stringer:"true"`
+	destination    *Address  `stringer:"true"`
+	ioState        IOCBState `stringer:"true"`
+	ioResponse     PDU       `stringer:"true"`
 	ioError        error
-	ioController   IOControllerRequirements
+	ioController   IOControllerRequirements `ignore:"true"`
 	ioComplete     sync.Cond
 	ioCompleteDone bool
 	ioCallback     []func() `ignore:"true"`
 	ioQueue        []_IOCB
-	ioTimeout      *time.Timer `ignore:"true"`
+	ioTimeout      *time.Timer
 	ioTimoutCancel chan any
 	priority       int
 
 	wg sync.WaitGroup
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewIOCB(localLog zerolog.Logger, request PDU, destination *Address) (*IOCB, error) {

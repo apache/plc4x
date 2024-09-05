@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *defaultCodec) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,11 +42,14 @@ func (d *defaultCodec) Serialize() ([]byte, error) {
 }
 
 func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("defaultCodec"); err != nil {
 		return err
 	}
 
-	if any(d.transportInstance) != nil {
+	if d.transportInstance != nil {
 		if serializableField, ok := any(d.transportInstance).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("transportInstance"); err != nil {
 				return err
@@ -67,7 +73,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	for _, elem := range d.expectations {
 		var elem any = elem
 
-		if any(elem) != nil {
+		if elem != nil {
 			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
@@ -103,7 +109,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(d.receiveTimeout.String())*8), d.receiveTimeout.String()); err != nil {
+	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(fmt.Sprintf("%s", d.receiveTimeout))*8), fmt.Sprintf("%s", d.receiveTimeout)); err != nil {
 		return err
 	}
 
@@ -117,6 +123,11 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (d *defaultCodec) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

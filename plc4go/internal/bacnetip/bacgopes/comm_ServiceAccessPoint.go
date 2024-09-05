@@ -21,10 +21,11 @@ package bacgopes
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type ServiceAccessPoint interface {
@@ -35,6 +36,7 @@ type ServiceAccessPoint interface {
 // ServiceAccessPointContract provides a set of functions which can be overwritten by a sub struct
 type ServiceAccessPointContract interface {
 	fmt.Stringer
+	utils.Serializable
 	SapRequest(Args, KWArgs) error
 	SapResponse(Args, KWArgs) error
 	_setServiceElement(serviceElement ServiceElement)
@@ -52,12 +54,13 @@ type ServiceElement interface {
 	Confirmation(args Args, kwargs KWArgs) error
 }
 
+//go:generate plc4xGenerator -type=serviceAccessPoint -prefix=comm_
 type serviceAccessPoint struct {
 	serviceID      *int
-	serviceElement ServiceElement
+	serviceElement ServiceElement `asPtr:"true"`
 
 	// arguments
-	argSAPExtension ServiceAccessPoint
+	argSAPExtension ServiceAccessPoint `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -101,14 +104,6 @@ func WithServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) func(*servic
 		s.serviceID = &sapID
 		s.argSAPExtension = sap
 	}
-}
-
-func (s *serviceAccessPoint) String() string {
-	serviceID := "-"
-	if s.serviceID != nil {
-		serviceID = strconv.Itoa(*s.serviceID)
-	}
-	return fmt.Sprintf("ServiceAccessPoint(serviceID:%v, serviceElement: %s)", serviceID, s.serviceElement)
 }
 
 func (s *serviceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {

@@ -87,10 +87,10 @@ type defaultCodec struct {
 	stateChange             sync.Mutex
 	activeWorker            sync.WaitGroup
 
-	receiveTimeout                 time.Duration `stringer:"true"`
+	receiveTimeout                 time.Duration
 	traceDefaultMessageCodecWorker bool
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, _options ...options.WithOption) DefaultCodec {

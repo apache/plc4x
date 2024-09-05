@@ -38,6 +38,8 @@ type PDUData interface {
 }
 
 // _PDUData is basically a bridge to spi.Message
+//
+//go:generate plc4xGenerator -type=_PDUData -prefix=bvll
 type _PDUData struct {
 	data []byte
 }
@@ -137,6 +139,6 @@ func (d *_PDUData) deepCopy() *_PDUData {
 	return &copyPDUData
 }
 
-func (d *_PDUData) String() string {
-	return Btox(d.data, ".")
+func (d *_PDUData) AlternateString() (string, bool) {
+	return Btox(d.data, "."), true
 }

@@ -20,25 +20,20 @@
 package bacgopes
 
 import (
-	"fmt"
-
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=LocalDeviceObject -prefix=local_device_
 type LocalDeviceObject struct {
 	NumberOfAPDURetries       *uint
 	APDUTimeout               *uint
-	SegmentationSupported     *readWriteModel.BACnetSegmentation
+	SegmentationSupported     *readWriteModel.BACnetSegmentation `directSerialize:"true"`
 	APDUSegmentTimeout        *uint
-	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted
-	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted
-	App                       *Application
+	MaxSegmentsAccepted       *readWriteModel.MaxSegmentsAccepted   `directSerialize:"true"`
+	MaximumApduLengthAccepted *readWriteModel.MaxApduLengthAccepted `directSerialize:"true"`
+	App                       *Application                          `ignore:"true"`
 	ObjectName                string
 	ObjectIdentifier          string
 	VendorIdentifier          uint16
 	ObjectList                []string
-}
-
-func (l *LocalDeviceObject) String() string {
-	return fmt.Sprintf("LocalDeviceObject{NumberOfAPDURetries: %v, APDUTimeout: %v, SegmentationSupported: %v, APDUSegmentTimeout: %v, MaxSegmentsAccepted: %v, MaximumApduLengthAccepted: %v, ObjectName: %v, ObjectIdentifier: %v}", l.NumberOfAPDURetries, l.APDUTimeout, l.SegmentationSupported, l.APDUSegmentTimeout, l.MaxSegmentsAccepted, l.MaximumApduLengthAccepted, l.ObjectName, l.ObjectIdentifier)
 }

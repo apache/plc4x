@@ -130,7 +130,7 @@ type requestTransactionManager struct {
 
 	traceTransactionManagerTransactions bool // flag set to true if it should trace transactions
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 //

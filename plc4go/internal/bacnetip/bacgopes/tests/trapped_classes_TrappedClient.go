@@ -20,23 +20,25 @@
 package tests
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 // TrappedClientContract provides a set of functions which can be overwritten by a sub struct
 type TrappedClientContract interface {
+	utils.Serializable
 	Request(bacgopes.Args, bacgopes.KWArgs) error
 	Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error
 }
 
 // TrappedClient  An instance of this class sits at the top of a stack.
+//
+//go:generate plc4xGenerator -type=TrappedClient -prefix=trapped_classes_
 type TrappedClient struct {
-	TrappedClientContract
+	TrappedClientContract `ignore:"true"`
 	bacgopes.Client
 
 	requestSent          bacgopes.PDU
@@ -89,8 +91,4 @@ func (t *TrappedClient) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs)
 	// a reference for checking
 	t.confirmationReceived = args.Get0PDU()
 	return nil
-}
-
-func (t *TrappedClient) String() string {
-	return fmt.Sprintf("TrappedClient{%s, requestSent: %v, confirmationReceived: %v}", t.Client, t.requestSent, t.confirmationReceived)
 }

@@ -33,10 +33,11 @@ type TaskRequirements interface {
 	SetIsScheduled(isScheduled bool)
 }
 
+//go:generate plc4xGenerator -type=Task -prefix=task_
 type Task struct {
-	TaskRequirements
-	taskTime    *time.Time
-	isScheduled bool
+	TaskRequirements `ignore:"true"`
+	taskTime         *time.Time
+	isScheduled      bool
 }
 
 func NewTask(taskRequirements TaskRequirements, opts ...func(*Task)) *Task {
@@ -88,8 +89,4 @@ func (t *Task) GetIsScheduled() bool {
 
 func (t *Task) SetIsScheduled(isScheduled bool) {
 	t.isScheduled = isScheduled
-}
-
-func (t *Task) String() string {
-	return fmt.Sprintf("Task(taskTime: %v, isScheduled: %v)", t.taskTime, t.isScheduled)
 }

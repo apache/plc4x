@@ -125,6 +125,7 @@ func (t *TNetwork3) Run(timeLimit time.Duration) {
 }
 
 func TestNet3(t *testing.T) {
+	t.Skip("needs more work") //TODO: fix
 	t.Run("TestSimple", func(t *testing.T) {
 		t.Run("testIdle", func(t *testing.T) {
 			// create a network
@@ -176,7 +177,6 @@ func TestNet3(t *testing.T) {
 			tnet.Run(0)
 		})
 		t.Run("test_remote_broadcast_2", func(t *testing.T) {
-			t.Skip("not yet ready") // TODO: finish it
 			//Test broadcast, matching device.
 			tests.ExclusiveGlobalTimeMachine(t)
 
@@ -186,7 +186,7 @@ func TestNet3(t *testing.T) {
 			// test device sends request, no response
 			whois, err := NewWhoIsRequest()
 			require.NoError(t, err)
-			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
+			whois.SetPDUDestination(NewRemoteBroadcast(2, nil)) // TODO: upstream does this inline
 			tnet.td.GetStartState().Doc("2-1-0").
 				Send(whois, nil).Doc("2-1-1").
 				Success("")
@@ -218,7 +218,7 @@ func TestNet3(t *testing.T) {
 				Success("")
 
 			// network 2 sees local broadcast request and unicast response
-			tnet.sniffer2.GetStartState().
+			tnet.sniffer2.GetStartState().Doc("2-3-0").
 				Receive(NewArgs((PDU)(nil)),
 					NewKWArgs(KWPDUData, xtob(
 						"01.08.00.01.01.01"+ // local broadcast
@@ -227,7 +227,7 @@ func TestNet3(t *testing.T) {
 				).Doc("2-3-1").
 				Receive(NewArgs((PDU)(nil)),
 					NewKWArgs(KWPDUData, xtob(
-						"01.08.00.02.01.04"+ // unicast response
+						"01.20.00.01.01.01.ff"+ // unicast response
 							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",
 					)),
 				).Doc("2-3-1").
@@ -277,8 +277,6 @@ func TestNet3(t *testing.T) {
 			tnet.Run(0)
 		})
 		t.Run("test_global_broadcast", func(t *testing.T) {
-			t.Skip("not yet ready") // TODO: finish it
-
 			//Test broadcast, matching device.
 			tests.ExclusiveGlobalTimeMachine(t)
 

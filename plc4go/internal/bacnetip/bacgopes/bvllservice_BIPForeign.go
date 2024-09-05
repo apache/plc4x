@@ -20,7 +20,6 @@
 package bacgopes
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/pkg/errors"
@@ -29,6 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=BIPForeign -prefix=bvllservice_
 type BIPForeign struct {
 	*BIPSAP
 	Client
@@ -41,13 +41,13 @@ type BIPForeign struct {
 	registrationTimeoutTask *OneShotFunctionTask
 
 	// regular args
-	argAddr *Address
-	argTTL  *int
+	argAddr *Address `ignore:"true"`
+	argTTL  *int     `ignore:"true"`
 
 	// pass through args
-	argSapID *int
-	argCid   *int
-	argSid   *int
+	argSapID *int `ignore:"true"`
+	argCid   *int `ignore:"true"`
+	argSid   *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -390,16 +390,4 @@ func (b *BIPForeign) registrationExpired(_ Args, _ KWArgs) error {
 	b.registrationStatus = -1 // Unregistered
 	b.stopTrackRegistration()
 	return nil
-}
-
-func (b *BIPForeign) String() string {
-	taskTime := "unscheduled"
-	if b.taskTime != nil {
-		taskTime = b.taskTime.String()
-	}
-	bbmdTimeToLive := "unknown"
-	if b.bbmdTimeToLive != nil {
-		bbmdTimeToLive = fmt.Sprintf("%ds", *b.bbmdTimeToLive)
-	}
-	return fmt.Sprintf("BIPForeign(taskTime: %s, isScheduled: %t, registrationStatus: %d, bbmdAddress: %s, bbmdTimeToLive: %s)", taskTime, b.isScheduled, b.registrationStatus, b.bbmdAddress, bbmdTimeToLive)
 }

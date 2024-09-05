@@ -27,12 +27,12 @@ import (
 
 //go:generate plc4xGenerator -type=UDPActor -prefix=udp_
 type UDPActor struct {
-	director *UDPDirector
+	director *UDPDirector `stringer:"true"`
 	timeout  uint32
-	timer    *OneShotFunctionTask
+	timer    *OneShotFunctionTask `stringer:"true"`
 	peer     string
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *UDPActor {

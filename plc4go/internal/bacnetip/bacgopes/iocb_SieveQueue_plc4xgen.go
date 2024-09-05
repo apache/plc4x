@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *SieveQueue) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *SieveQueue) Serialize() ([]byte, error) {
 }
 
 func (d *SieveQueue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("SieveQueue"); err != nil {
 		return err
 	}
@@ -49,10 +55,8 @@ func (d *SieveQueue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	if err := writeBuffer.WriteBit("requestFn", d.requestFn != nil); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.address)
-
-		if err := writeBuffer.WriteString("address", uint32(len(_value)*8), _value); err != nil {
+	if d.address != nil {
+		if err := writeBuffer.WriteString("address", uint32(len(d.address.String())*8), d.address.String()); err != nil {
 			return err
 		}
 	}
@@ -63,6 +67,11 @@ func (d *SieveQueue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (d *SieveQueue) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

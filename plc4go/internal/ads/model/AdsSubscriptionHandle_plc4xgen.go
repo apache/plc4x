@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *AdsSubscriptionHandle) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,11 +42,14 @@ func (d *AdsSubscriptionHandle) Serialize() ([]byte, error) {
 }
 
 func (d *AdsSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("AdsSubscriptionHandle"); err != nil {
 		return err
 	}
 
-	if any(d.subscriber) != nil {
+	if d.subscriber != nil {
 		if serializableField, ok := any(d.subscriber).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("subscriber"); err != nil {
 				return err
@@ -78,7 +84,7 @@ func (d *AdsSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, wr
 	for _, elem := range d.consumers {
 		var elem any = elem
 
-		if any(elem) != nil {
+		if elem != nil {
 			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
@@ -106,7 +112,7 @@ func (d *AdsSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, wr
 	for _, elem := range d._options {
 		var elem any = elem
 
-		if any(elem) != nil {
+		if elem != nil {
 			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
@@ -135,6 +141,11 @@ func (d *AdsSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (d *AdsSubscriptionHandle) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

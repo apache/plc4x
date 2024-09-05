@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *DefaultPlcSubscriptionRequest) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *DefaultPlcSubscriptionRequest) Serialize() ([]byte, error) {
 }
 
 func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("PlcSubscriptionRequest"); err != nil {
 		return err
 	}
@@ -100,7 +106,7 @@ func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Con
 		return err
 	}
 
-	if any(d.subscriber) != nil {
+	if d.subscriber != nil {
 		if serializableField, ok := any(d.subscriber).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("subscriber"); err != nil {
 				return err
@@ -125,6 +131,11 @@ func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (d *DefaultPlcSubscriptionRequest) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

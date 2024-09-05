@@ -21,7 +21,6 @@ package bacgopes
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/pkg/errors"
 
@@ -35,6 +34,7 @@ type BVLPDU interface {
 	PDUData
 }
 
+//go:generate plc4xGenerator -type=_BVLPDU -prefix=bvll
 type _BVLPDU struct {
 	*_BVLCI
 	*_PDUData
@@ -111,8 +111,4 @@ func (b *_BVLPDU) deepCopy() *_BVLPDU {
 
 func (b *_BVLPDU) DeepCopy() any {
 	return b.deepCopy()
-}
-
-func (b *_BVLPDU) String() string {
-	return fmt.Sprintf("_BVLPDU{%s, PDUData: %s}", b._BVLCI, b._PDUData)
 }

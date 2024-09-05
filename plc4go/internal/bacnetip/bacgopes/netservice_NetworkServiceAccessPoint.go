@@ -21,7 +21,6 @@ package bacgopes
 
 import (
 	"bytes"
-	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -29,17 +28,18 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=NetworkServiceAccessPoint -prefix=netservice_
 type NetworkServiceAccessPoint struct {
 	ServiceAccessPointContract
 	Server
 	adapters        map[netKey]*NetworkAdapter
-	routerInfoCache *RouterInfoCache
+	routerInfoCache *RouterInfoCache `stringer:"true"`
 	pendingNets     map[netKey][]NPDU
-	localAdapter    *NetworkAdapter
+	localAdapter    *NetworkAdapter `stringer:"true"`
 
 	// pass through args
-	argSapID *int
-	argSid   *int
+	argSapID *int `ignore:"true"`
+	argSid   *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -95,10 +95,6 @@ func WithNetworkServiceAccessPointRouterSID(sid int) func(*NetworkServiceAccessP
 	return func(n *NetworkServiceAccessPoint) {
 		n.argSid = &sid
 	}
-}
-
-func (n *NetworkServiceAccessPoint) String() string {
-	return fmt.Sprintf("NetworkServiceAccessPoint(TBD...)") // TODO: fill some info here
 }
 
 /*
@@ -194,7 +190,7 @@ func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address 
 	}
 
 	//pass this along to the cache
-	return n.routerInfoCache.DeleteRouterInfo(snet, address, dnets)
+	return n.routerInfoCache.DeleteRouterInfo(nk(snet), address, dnets)
 }
 
 func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
@@ -332,7 +328,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 		n.log.Debug().Stringer("routerInfo", routerInfo).Msg("routerInfo found")
 
 		// check the path status
-		dnetStatus := routerInfo.dnets[dnet]
+		dnetStatus := routerInfo.dnets[nk(dnet)]
 		n.log.Debug().Stringer("dnetStatus", dnetStatus).Msg("dnetStatus")
 
 		// fix the destination
@@ -415,7 +411,9 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 		}
 
 		// pass this new path along to the cache
-		n.routerInfoCache.UpdateRouterStatus(adapter.adapterNet, npdu.GetPDUSource(), []*uint16{snet})
+		if err := n.routerInfoCache.UpdateRouterInfo(nk(adapter.adapterNet), npdu.GetPDUSource(), []uint16{*snet}, nil); err != nil {
+			return errors.Wrap(err, "error updating router status")
+		}
 	// check for destination routing
 	case !npdu.GetControl().GetDestinationSpecified() || destinationAddress.AddrType == NULL_ADDRESS:
 		n.log.Debug().Msg("no DADR")
@@ -460,7 +458,13 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 		n.log.Debug().Msg("application layer message")
 
 		// decode as a generic APDU
-		apdu := NewPDU(npdu.GetApdu()).(*_PDU)
+		apdu, err := NewAPDU(npdu.GetApdu())
+		if err != nil {
+			return errors.Wrap(err, "error creating APDU")
+		}
+		if err := apdu.Decode(DeepCopy[NPDU](npdu)); err != nil {
+			return errors.Wrap(err, "error decoding APDU")
+		}
 		n.log.Debug().Stringer("apdu", apdu).Msg("apdu")
 
 		// see if it needs to look routed
@@ -471,47 +475,48 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 				if err != nil {
 					return errors.Wrap(err, "error creating remote address")
 				}
-				apdu.pduSource = remoteStationAddress
+				apdu.SetPDUSource(remoteStationAddress)
 			} else {
-				apdu.pduSource = sourceAddress
+				apdu.SetPDUSource(sourceAddress)
 			}
 			if Settings.RouteAware {
-				apdu.pduSource.AddrRoute = npdu.GetPDUSource()
+				apdu.GetPDUSource().AddrRoute = npdu.GetPDUSource()
 			}
 
 			// map the destination
 			if !npdu.GetControl().GetDestinationSpecified() {
-				apdu.pduDestination = n.localAdapter.adapterAddr
+				apdu.SetPDUDestination(n.localAdapter.adapterAddr)
 			} else if destinationAddress.AddrType == GLOBAL_BROADCAST_ADDRESS {
-				apdu.pduDestination = NewGlobalBroadcast(nil)
+				apdu.SetPDUDestination(NewGlobalBroadcast(nil))
 			} else if destinationAddress.AddrType == GLOBAL_BROADCAST_ADDRESS {
-				apdu.pduDestination = NewLocalBroadcast(nil)
+				apdu.SetPDUDestination(NewLocalBroadcast(nil))
 			} else {
-				apdu.pduDestination = n.localAdapter.adapterAddr
+				apdu.SetPDUDestination(n.localAdapter.adapterAddr)
 			}
 		} else {
 			// combine the source address
 			if npdu.GetControl().GetSourceSpecified() {
-				apdu.pduSource = sourceAddress
+				apdu.SetPDUSource(sourceAddress)
 				if Settings.RouteAware {
 					n.log.Debug().Msg("adding route")
-					apdu.pduSource = npdu.GetPDUSource()
+					apdu.SetPDUSource(npdu.GetPDUSource())
 				}
 			} else {
-				apdu.pduSource = npdu.GetPDUSource()
+				apdu.SetPDUSource(npdu.GetPDUSource())
 			}
 
 			// pass along global broadcast
 			if npdu.GetControl().GetDestinationSpecified() && destinationAddress.AddrType == GLOBAL_BROADCAST_ADDRESS {
-				apdu.pduDestination = NewGlobalBroadcast(nil)
+				apdu.SetPDUDestination(NewGlobalBroadcast(nil))
 			} else {
-				apdu.pduDestination = npdu.GetPDUDestination()
+				apdu.SetPDUDestination(npdu.GetPDUDestination())
 			}
 		}
 
-		n.log.Debug().Stringer("pduSource", apdu.pduSource).Msg("apdu.pduSource")
-		n.log.Debug().Stringer("pduDestination", apdu.pduDestination).Msg("apdu.pduDestination")
+		n.log.Debug().Stringer("pduSource", apdu.GetPDUSource()).Msg("apdu.pduSource")
+		n.log.Debug().Stringer("pduDestination", apdu.GetPDUDestination()).Msg("apdu.pduDestination")
 
+		// pass upstream to the application layer
 		if err := n.Response(NewArgs(apdu), NoKWArgs); err != nil {
 			return errors.Wrap(err, "error passing response")
 		}
@@ -725,8 +730,8 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 
 func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
-	adapter := args.Get0NetworkAdapter()
-	npdu := args.Get1NPDU()
+	adapter := args.GetNetworkAdapter(0)
+	npdu := args.GetNPDU(1)
 
 	// encode it as a generic NPDU
 	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...
@@ -744,8 +749,8 @@ func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) erro
 
 func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
-	adapter := args.Get0NetworkAdapter()
-	npdu := args.Get1NPDU()
+	adapter := args.GetNetworkAdapter(0)
+	npdu := args.GetNPDU(1)
 
 	// encode it as a generic NPDU
 	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...

@@ -33,14 +33,14 @@ type IOQControllerRequirements interface {
 
 //go:generate plc4xGenerator -type=IOQController -prefix=iocb_
 type IOQController struct {
-	*IOController
-	state      IOQControllerStates
-	activeIOCB _IOCB
-	ioQueue    *IOQueue
-	waitTime   time.Duration `stringer:"true"`
+	*IOController `stringer:"true"`
+	state         IOQControllerStates
+	activeIOCB    _IOCB    `stringer:"true"`
+	ioQueue       *IOQueue `stringer:"true"`
+	waitTime      time.Duration
 
-	log      zerolog.Logger `ignore:"true"`
-	stateLog zerolog.Logger `ignore:"true"` //TODO: add option so it can be logged to a different file
+	log      zerolog.Logger
+	stateLog zerolog.Logger //TODO: add option so it can be logged to a different file
 }
 
 func NewIOQController(localLog zerolog.Logger, name string, requirements IOQControllerRequirements) (*IOQController, error) {

@@ -41,8 +41,8 @@ type MessageCodec struct {
 
 	stateChange sync.Mutex
 
-	passLogToModel bool           `ignore:"true"`
-	log            zerolog.Logger `ignore:"true"`
+	passLogToModel bool `ignore:"true"`
+	log            zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {

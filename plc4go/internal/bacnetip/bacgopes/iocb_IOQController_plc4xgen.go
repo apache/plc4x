@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *IOQController) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,6 +42,9 @@ func (d *IOQController) Serialize() ([]byte, error) {
 }
 
 func (d *IOQController) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("IOQController"); err != nil {
 		return err
 	}
@@ -52,22 +58,17 @@ func (d *IOQController) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return err
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.activeIOCB)
 
-		if err := writeBuffer.WriteString("activeIOCB", uint32(len(_value)*8), _value); err != nil {
-			return err
-		}
+	if err := writeBuffer.WriteString("activeIOCB", uint32(len(d.activeIOCB.String())*8), d.activeIOCB.String()); err != nil {
+		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.ioQueue)
-
-		if err := writeBuffer.WriteString("ioQueue", uint32(len(_value)*8), _value); err != nil {
+	if d.ioQueue != nil {
+		if err := writeBuffer.WriteString("ioQueue", uint32(len(d.ioQueue.String())*8), d.ioQueue.String()); err != nil {
 			return err
 		}
 	}
 
-	if err := writeBuffer.WriteString("waitTime", uint32(len(d.waitTime.String())*8), d.waitTime.String()); err != nil {
+	if err := writeBuffer.WriteString("waitTime", uint32(len(fmt.Sprintf("%s", d.waitTime))*8), fmt.Sprintf("%s", d.waitTime)); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("IOQController"); err != nil {
@@ -77,6 +78,11 @@ func (d *IOQController) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (d *IOQController) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

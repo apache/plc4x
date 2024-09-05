@@ -139,6 +139,12 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 			elementServiceCast._setElementService(serviceAccessPointCast)
 			serviceAccessPointCast._setServiceElement(elementServiceCast)
 		} else {
+			localLog.Debug().
+				Bool("okClient", okClient).
+				Bool("okServer", okServer).
+				Bool("okElementService", okElementService).
+				Bool("okServiceAccessPoint", okServiceAccessPoint).
+				Msg("cast states")
 			return errors.New("Bind() requires a client and a server")
 		}
 	}

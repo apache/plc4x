@@ -21,6 +21,7 @@ package testutils
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -95,10 +96,28 @@ func TestProduceTestingLogger_ASerializableLog(t *testing.T) {
 		Msg("something")
 }
 
+type TestProduceTestingLoggerImprovedOutputMultilineStringer struct {
+}
+
+func (TestProduceTestingLoggerImprovedOutputMultilineStringer) String() string {
+	return "\nthis\nthis\nthis\nthis\nthis\nthis\n"
+}
+
 func TestProduceTestingLogger_Improved_Output(t *testing.T) {
 	t.Run("multilinestring", func(t *testing.T) {
 		logger := ProduceTestingLogger(t)
 		logger.Info().Str("amultiline", "a\nb\nc").Msg("look at that")
+	})
+	t.Run("multilinestringer", func(t *testing.T) {
+		logger := ProduceTestingLogger(t)
+		logger.Info().Stringer("amultiline", TestProduceTestingLoggerImprovedOutputMultilineStringer{}).Msg("look at that")
+	})
+	t.Run("multilinestringers", func(t *testing.T) {
+		logger := ProduceTestingLogger(t)
+		logger.Info().Stringers("amultiline", []fmt.Stringer{
+			TestProduceTestingLoggerImprovedOutputMultilineStringer{},
+			TestProduceTestingLoggerImprovedOutputMultilineStringer{},
+		}).Msg("look at that")
 	})
 }
 

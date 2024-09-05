@@ -66,7 +66,7 @@ type requestTransaction struct {
 	stateChangeMutex sync.Mutex
 	completed        bool
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func newRequestTransaction(localLog zerolog.Logger, parent *requestTransactionManager, transactionId int32) *requestTransaction {

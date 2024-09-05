@@ -31,6 +31,9 @@ import (
 var _ = fmt.Printf
 
 func (d *Connection) Serialize() ([]byte, error) {
+	if d == nil {
+		return nil, fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -39,17 +42,22 @@ func (d *Connection) Serialize() ([]byte, error) {
 }
 
 func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if d == nil {
+		return fmt.Errorf("(*DeviceInfoCache)(nil)")
+	}
 	if err := writeBuffer.PushContext("Connection"); err != nil {
 		return err
 	}
 	if err := d.DefaultConnection.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.messageCodec)
+	if d.messageCodec != nil {
+		{
+			_value := fmt.Sprintf("%v", d.messageCodec)
 
-		if err := writeBuffer.WriteString("messageCodec", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("messageCodec", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
 	if err := writeBuffer.PushContext("subscribers", utils.WithRenderAsList(true)); err != nil {
@@ -58,7 +66,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	for _, elem := range d.subscribers {
 		var elem any = elem
 
-		if any(elem) != nil {
+		if elem != nil {
 			if serializableField, ok := any(elem).(utils.Serializable); ok {
 				if err := writeBuffer.PushContext("value"); err != nil {
 					return err
@@ -88,11 +96,13 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	if err := writeBuffer.WriteString("driverContext", uint32(len(d.driverContext.String())*8), d.driverContext.String()); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.channel)
+	if d.channel != nil {
+		{
+			_value := fmt.Sprintf("%v", d.channel)
 
-		if err := writeBuffer.WriteString("channel", uint32(len(_value)*8), _value); err != nil {
-			return err
+			if err := writeBuffer.WriteString("channel", uint32(len(_value)*8), _value); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -101,7 +111,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 
-	if err := writeBuffer.WriteString("connectTimeout", uint32(len(d.connectTimeout.String())*8), d.connectTimeout.String()); err != nil {
+	if err := writeBuffer.WriteString("connectTimeout", uint32(len(fmt.Sprintf("%s", d.connectTimeout))*8), fmt.Sprintf("%s", d.connectTimeout)); err != nil {
 		return err
 	}
 
@@ -110,7 +120,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 
-	if err := writeBuffer.WriteString("disconnectTimeout", uint32(len(d.disconnectTimeout.String())*8), d.disconnectTimeout.String()); err != nil {
+	if err := writeBuffer.WriteString("disconnectTimeout", uint32(len(fmt.Sprintf("%s", d.disconnectTimeout))*8), fmt.Sprintf("%s", d.disconnectTimeout)); err != nil {
 		return err
 	}
 
@@ -118,7 +128,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 
-	if any(d.tracer) != nil {
+	if d.tracer != nil {
 		if serializableField, ok := any(d.tracer).(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("tracer"); err != nil {
 				return err
@@ -143,6 +153,11 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (d *Connection) String() string {
+	if alternateStringer, ok := any(d).(utils.AlternateStringer); ok {
+		if alternateString, use := alternateStringer.AlternateString(); use {
+			return alternateString
+		}
+	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()

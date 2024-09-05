@@ -26,13 +26,14 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=ApplicationServiceAccessPoint -prefix=appservice_
 type ApplicationServiceAccessPoint struct {
 	ApplicationServiceElementContract
 	ServiceAccessPointContract
 
 	// pass through args
-	argAseID *int
-	argSapID *int
+	argAseID *int `ignore:"true"`
+	argSapID *int `ignore:"true"`
 
 	log zerolog.Logger
 }

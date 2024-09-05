@@ -26,6 +26,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+//go:generate plc4xGenerator -type=ApplicationIOController -prefix=app_
 type ApplicationIOController struct {
 	*IOController
 	*Application
@@ -33,8 +34,8 @@ type ApplicationIOController struct {
 	queueByAddress map[string]*SieveQueue
 
 	// pass through args
-	argDeviceInfoCache *DeviceInfoCache
-	argAseID           *int
+	argDeviceInfoCache *DeviceInfoCache `ignore:"true"`
+	argAseID           *int             `ignore:"true"`
 
 	log zerolog.Logger
 }

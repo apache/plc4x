@@ -24,15 +24,19 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Server interface {
 	ServerContract
+	ServerRequirements
 }
 
 // ServerContract provides a set of functions which can be overwritten by a sub struct
 type ServerContract interface {
 	fmt.Stringer
+	utils.Serializable
 	Indication(args Args, kwargs KWArgs) error
 	Response(args Args, kwargs KWArgs) error
 	_setServerPeer(serverPeer Client)
@@ -45,9 +49,11 @@ type ServerRequirements interface {
 }
 
 // Server is an "abstract" struct which is used in another struct as delegate
+//
+//go:generate plc4xGenerator -type=server -prefix=comm_
 type server struct {
 	serverID   *int
-	serverPeer Client
+	serverPeer Client `asPtr:"true"`
 
 	log zerolog.Logger
 }
@@ -110,12 +116,4 @@ func (s *server) hasServerPeer() bool {
 
 func (s *server) getServerId() *int {
 	return s.serverID
-}
-
-func (s *server) String() string {
-	serverPeer := ""
-	if s.serverPeer != nil {
-		serverPeer = fmt.Sprintf(", serverPeerId: %d", s.serverPeer.getClientId())
-	}
-	return fmt.Sprintf("Server(cid:%d%s)", s.serverID, serverPeer)
 }

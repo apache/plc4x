@@ -28,9 +28,9 @@ import (
 type SieveQueue struct {
 	*IOQController
 	requestFn func(apdu PDU)
-	address   *Address
+	address   *Address `stringer:"true"`
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewSieveQueue(localLog zerolog.Logger, fn func(apdu PDU), address *Address) (*SieveQueue, error) {

@@ -55,9 +55,9 @@ type IOControllerRequirements interface {
 //go:generate plc4xGenerator -type=IOController -prefix=iocb_
 type IOController struct {
 	name         string
-	requirements IOControllerRequirements
+	requirements IOControllerRequirements `ignore:"true"`
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewIOController(localLog zerolog.Logger, name string, requirements IOControllerRequirements) (*IOController, error) {

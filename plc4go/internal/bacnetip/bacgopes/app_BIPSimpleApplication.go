@@ -30,16 +30,16 @@ type BIPSimpleApplication struct {
 	*WhoIsIAmServices
 	*ReadWritePropertyServices
 
-	localAddress Address
-	asap         *ApplicationServiceAccessPoint
-	smap         *StateMachineAccessPoint
-	nsap         *NetworkServiceAccessPoint
-	nse          *NetworkServiceElement
-	bip          *BIPSimple
-	annexj       *AnnexJCodec
-	mux          *UDPMultiplexer
+	localAddress Address                        `stringer:"true"`
+	asap         *ApplicationServiceAccessPoint `stringer:"true"`
+	smap         *StateMachineAccessPoint       `stringer:"true"`
+	nsap         *NetworkServiceAccessPoint     `stringer:"true"`
+	nse          *NetworkServiceElement         `stringer:"true"`
+	bip          *BIPSimple                     `stringer:"true"`
+	annexj       *AnnexJCodec                   `stringer:"true"`
+	mux          *UDPMultiplexer                `stringer:"true"`
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPSimpleApplication, error) {

@@ -32,6 +32,7 @@ type ApplicationRequirements interface {
 	ApplicationServiceElementRequirements
 }
 
+//go:generate plc4xGenerator -type=Application -prefix=app_
 type Application struct {
 	ApplicationServiceElementContract
 	Collector
@@ -41,12 +42,12 @@ type Application struct {
 	localDevice      *LocalDeviceObject
 	deviceInfoCache  *DeviceInfoCache
 	controllers      map[string]any
-	helpers          map[string]func(pdu PDU) error
+	helpers          map[string]func(pdu PDU) error `ignore:"true"`
 
 	_startupDisabled bool
 
 	// pass through args
-	argAseID *int
+	argAseID *int `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -59,8 +60,8 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opt
 		opt(a)
 	}
 	localLog.Debug().
-		Interface("localDevice", localDevice).
-		Interface("deviceInfoCache", a.deviceInfoCache).
+		Stringer("localDevice", localDevice).
+		Stringer("deviceInfoCache", a.deviceInfoCache).
 		Interface("aseID", a.argAseID).
 		Msg("NewApplication")
 	var err error
@@ -122,10 +123,6 @@ func WithApplicationDeviceInfoCache(deviceInfoCache *DeviceInfoCache) func(*Appl
 
 func (a *Application) GetDeviceInfoCache() *DeviceInfoCache {
 	return a.deviceInfoCache
-}
-
-func (a *Application) String() string {
-	return fmt.Sprintf("Application(TBD...)") // TODO: fill some info here
 }
 
 // AddObject adds an object to the local collection

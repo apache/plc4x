@@ -31,7 +31,7 @@ type DefaultPlcSubscriptionEventItem struct {
 	code             apiModel.PlcResponseCode `stringer:"true"`
 	tag              apiModel.PlcTag
 	subscriptionType apiModel.PlcSubscriptionType `stringer:"true"`
-	interval         time.Duration                `stringer:"true"`
+	interval         time.Duration
 	value            apiValues.PlcValue
 }
 

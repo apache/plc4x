@@ -47,6 +47,7 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 	return i, nil
 }
 
+//go:generate plc4xGenerator -type=FauxMultiplexer -prefix=
 type FauxMultiplexer struct {
 	bacgopes.Client
 	bacgopes.Server
@@ -89,10 +90,6 @@ func NewFauxMultiplexer(localLog zerolog.Logger, addr *bacgopes.Address, network
 		return nil, errors.Wrap(err, "error binding")
 	}
 	return f, nil
-}
-
-func (s *FauxMultiplexer) String() string {
-	return fmt.Sprintf("FauxMultiplexer(TBD...)") // TODO: fill some info here
 }
 
 func (s *FauxMultiplexer) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
@@ -494,6 +491,7 @@ type TestDeviceObject struct {
 	*bacgopes.LocalDeviceObject
 }
 
+//go:generate plc4xGenerator -type=BIPSimpleApplicationLayerStateMachine
 type BIPSimpleApplicationLayerStateMachine struct {
 	bacgopes.ApplicationServiceElementContract
 	*tests.ClientStateMachine

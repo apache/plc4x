@@ -24,26 +24,25 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 
-	"github.com/pkg/errors"
+	"github.com/apache/plc4x/plc4go/tools/common"
 )
 
 var (
 	typeNames   = flag.String("type", "", "comma-separated list of type names; must be set")
 	output      = flag.String("output", "", "output file name; default srcdir/<type>_string.go")
 	buildTags   = flag.String("tags", "", "comma-separated list of build tags to apply")
-	licenseFile = flag.String("licenseFile", ".mockery.asl.header", "file containing the license (will be searched upwards)")
+	licenseFile = flag.String("licenseFile", ".plc4xLicencer.header", "file containing the license (will be searched upwards)")
 	verbose     = flag.Bool("verbose", false, "verbosity")
 )
 
 // Usage is a replacement usage function for the flags package.
 func Usage() {
-	_, _ = fmt.Fprintf(os.Stderr, "Usage of plc4xLicenser:\n")
-	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xLicenser [flags] -type T [directory]\n")
-	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xLicenser [flags] -type T files... # Must be a single package\n")
+	_, _ = fmt.Fprintf(os.Stderr, "Usage of plc4xLicencer:\n")
+	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xLicencer [flags] -type T [directory]\n")
+	_, _ = fmt.Fprintf(os.Stderr, "\tplc4xLicencer [flags] -type T files... # Must be a single package\n")
 	_, _ = fmt.Fprintf(os.Stderr, "Flags:\n")
 	flag.PrintDefaults()
 }
@@ -87,34 +86,13 @@ func main() {
 		baseName := fmt.Sprintf("%s_string.go", types[0])
 		outputName = filepath.Join(dir, strings.ToLower(baseName))
 	}
-	inputFile, err2 := os.ReadFile(outputName)
-
-	licenseFileName := *licenseFile
-	isAbs := path.IsAbs(licenseFileName)
-	var licenceContent []byte
-	rootReached := false
-	currentDir, _ := os.Getwd()
-	var licenseFileNameWithPath string
-	for !isAbs && !rootReached {
-		if *verbose {
-			fmt.Printf("Looking for %s in %s\n", licenseFileName, currentDir)
-		}
-		licenseFileNameWithPath = filepath.Join(currentDir, licenseFileName)
-		if _, err := os.Stat(licenseFileNameWithPath); errors.Is(err, os.ErrNotExist) {
-			// path/to/whatever does not exist
-			currentDir = filepath.Join(currentDir, "..")
-			continue
-		}
-		if *verbose {
-			fmt.Printf("Found %s in %s\n", licenseFileName, currentDir)
-		}
-		rootReached = true
-		var err error
-		licenceContent, err = os.ReadFile(licenseFileNameWithPath)
-		if err != nil {
-			panic(err2)
-		}
+	inputFile, err := os.ReadFile(outputName)
+	if err != nil {
+		log.Fatalf("error reading output file: %v", err)
 	}
+
+	licenceContent := common.GetLicenseFileContent(*licenseFile, *verbose)
+	licenceContent = append(licenceContent, '\n')
 
 	if err := os.WriteFile(outputName, append(licenceContent, inputFile...), 0644); err != nil {
 		log.Fatalf("writing output: %s", err)
