@@ -865,7 +865,7 @@
         ['PDT_DOUBLE' LREAL
             [simple   float 64   value]
         ]
-        ['PDT_CHAR_BLOCK' List
+        ['PDT_CHAR_BLOCK' RawByteArray
             [array byte             value count '10']
         ]
         ['PDT_POLL_GROUP_SETTINGS' Struct
@@ -874,7 +874,7 @@
             [reserved uint 3        '0x0']
             [simple   uint 4        pollingSoftNr]
         ]
-        ['PDT_SHORT_CHAR_BLOCK' List
+        ['PDT_SHORT_CHAR_BLOCK' RawByteArray
             [array byte             value count '5']
         ]
         ['PDT_DATE_TIME' Struct
@@ -900,64 +900,64 @@
             [simple bit qualityOfClock]
             [reserved uint 7 '0x00']
         ]
-        ['PDT_GENERIC_01' List
+        ['PDT_GENERIC_01' RawByteArray
             [array byte             value count '1']
         ]
-        ['PDT_GENERIC_02' List
+        ['PDT_GENERIC_02' RawByteArray
             [array byte             value count '2']
         ]
-        ['PDT_GENERIC_03' List
+        ['PDT_GENERIC_03' RawByteArray
             [array byte             value count '3']
         ]
-        ['PDT_GENERIC_04' List
+        ['PDT_GENERIC_04' RawByteArray
             [array byte             value count '4']
         ]
-        ['PDT_GENERIC_05' List
+        ['PDT_GENERIC_05' RawByteArray
             [array byte             value count '5']
         ]
-        ['PDT_GENERIC_06' List
+        ['PDT_GENERIC_06' RawByteArray
             [array byte             value count '6']
         ]
-        ['PDT_GENERIC_07' List
+        ['PDT_GENERIC_07' RawByteArray
             [array byte             value count '7']
         ]
-        ['PDT_GENERIC_08' List
+        ['PDT_GENERIC_08' RawByteArray
             [array byte             value count '8']
         ]
-        ['PDT_GENERIC_09' List
+        ['PDT_GENERIC_09' RawByteArray
             [array byte             value count '9']
         ]
-        ['PDT_GENERIC_10' List
+        ['PDT_GENERIC_10' RawByteArray
             [array byte             value count '10']
         ]
-        ['PDT_GENERIC_11' List
+        ['PDT_GENERIC_11' RawByteArray
             [array byte             value count '11']
         ]
-        ['PDT_GENERIC_12' List
+        ['PDT_GENERIC_12' RawByteArray
             [array byte             value count '12']
         ]
-        ['PDT_GENERIC_13' List
+        ['PDT_GENERIC_13' RawByteArray
             [array byte             value count '13']
         ]
-        ['PDT_GENERIC_14' List
+        ['PDT_GENERIC_14' RawByteArray
             [array byte             value count '14']
         ]
-        ['PDT_GENERIC_15' List
+        ['PDT_GENERIC_15' RawByteArray
             [array byte             value count '15']
         ]
-        ['PDT_GENERIC_16' List
+        ['PDT_GENERIC_16' RawByteArray
             [array byte             value count '16']
         ]
-        ['PDT_GENERIC_17' List
+        ['PDT_GENERIC_17' RawByteArray
             [array byte             value count '17']
         ]
-        ['PDT_GENERIC_18' List
+        ['PDT_GENERIC_18' RawByteArray
             [array byte             value count '18']
         ]
-        ['PDT_GENERIC_19' List
+        ['PDT_GENERIC_19' RawByteArray
             [array byte             value count '19']
         ]
-        ['PDT_GENERIC_20' List
+        ['PDT_GENERIC_20' RawByteArray
             [array byte             value count '20']
         ]
         // Defaults to PDT_VARIABLE_LENGTH
@@ -1012,7 +1012,7 @@
         //['PDT_ESCAPE'
         //]
         // 'KnxPropertyDataType.PDT_VARIABLE_LENGTH' == Catch all
-        [ List (uint 8 dataLengthInBytes)
+        [ RawByteArray (uint 8 dataLengthInBytes)
             [array byte   value count 'dataLengthInBytes']
         ]
     ]

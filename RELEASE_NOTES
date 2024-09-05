@@ -19,6 +19,8 @@ New Features
   them back together. It is now possible to read arrays of
   almost unlimited size.
 - Added auto-discovery to the EIP and KNXNet/IP Drivers.
+- Added an Optimizer to the Modbus driver, that improves read
+  performance of multi-item read requests by more than 10 times.
 
 Incompatible changes
 --------------------

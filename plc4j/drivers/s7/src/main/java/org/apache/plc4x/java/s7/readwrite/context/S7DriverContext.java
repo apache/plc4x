@@ -20,7 +20,6 @@ package org.apache.plc4x.java.s7.readwrite.context;
 
 import org.apache.plc4x.java.s7.readwrite.COTPTpduSize;
 import org.apache.plc4x.java.s7.readwrite.ControllerType;
-import org.apache.plc4x.java.s7.readwrite.DeviceGroup;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
