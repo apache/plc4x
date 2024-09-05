@@ -84,6 +84,12 @@ func (m *_BACnetGroupChannelValueList) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetGroupChannelValueList factory function for _BACnetGroupChannelValueList
 func NewBACnetGroupChannelValueList(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetGroupChannelValueList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetGroupChannelValueList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetGroupChannelValueList must not be nil")
+	}
 	return &_BACnetGroupChannelValueList{OpeningTag: openingTag, ListOfEventSummaries: listOfEventSummaries, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

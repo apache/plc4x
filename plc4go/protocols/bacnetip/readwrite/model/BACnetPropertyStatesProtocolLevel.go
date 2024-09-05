@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesProtocolLevel) GetProtocolLevel() BACnetProtocolLe
 
 // NewBACnetPropertyStatesProtocolLevel factory function for _BACnetPropertyStatesProtocolLevel
 func NewBACnetPropertyStatesProtocolLevel(protocolLevel BACnetProtocolLevelTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesProtocolLevel {
+	if protocolLevel == nil {
+		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetPropertyStatesProtocolLevel must not be nil")
+	}
 	_result := &_BACnetPropertyStatesProtocolLevel{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		ProtocolLevel:                protocolLevel,

@@ -84,6 +84,9 @@ func (m *_BACnetChannelValueBitString) GetBitStringValue() BACnetApplicationTagB
 
 // NewBACnetChannelValueBitString factory function for _BACnetChannelValueBitString
 func NewBACnetChannelValueBitString(bitStringValue BACnetApplicationTagBitString, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueBitString {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetChannelValueBitString must not be nil")
+	}
 	_result := &_BACnetChannelValueBitString{
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		BitStringValue:             bitStringValue,

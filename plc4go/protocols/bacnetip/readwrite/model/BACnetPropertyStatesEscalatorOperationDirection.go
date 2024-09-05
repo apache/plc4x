@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetEscalatorOperation
 
 // NewBACnetPropertyStatesEscalatorOperationDirection factory function for _BACnetPropertyStatesEscalatorOperationDirection
 func NewBACnetPropertyStatesEscalatorOperationDirection(escalatorOperationDirection BACnetEscalatorOperationDirectionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEscalatorOperationDirection {
+	if escalatorOperationDirection == nil {
+		panic("escalatorOperationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetPropertyStatesEscalatorOperationDirection must not be nil")
+	}
 	_result := &_BACnetPropertyStatesEscalatorOperationDirection{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		EscalatorOperationDirection:  escalatorOperationDirection,

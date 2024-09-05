@@ -93,6 +93,9 @@ func (m *_BVLCOriginalBroadcastNPDU) GetNpdu() NPDU {
 
 // NewBVLCOriginalBroadcastNPDU factory function for _BVLCOriginalBroadcastNPDU
 func NewBVLCOriginalBroadcastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalBroadcastNPDU {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCOriginalBroadcastNPDU must not be nil")
+	}
 	_result := &_BVLCOriginalBroadcastNPDU{
 		BVLCContract: NewBVLC(),
 		Npdu:         npdu,

@@ -116,6 +116,9 @@ func (m *_DeleteSubscriptionsResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewDeleteSubscriptionsResponse factory function for _DeleteSubscriptionsResponse
 func NewDeleteSubscriptionsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteSubscriptionsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for DeleteSubscriptionsResponse must not be nil")
+	}
 	_result := &_DeleteSubscriptionsResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

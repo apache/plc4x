@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) GetBitStrin
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryBitString factory function for _BACnetFaultParameterFaultExtendedParametersEntryBitString
 func NewBACnetFaultParameterFaultExtendedParametersEntryBitString(bitStringValue BACnetApplicationTagBitString, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryBitString {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetFaultParameterFaultExtendedParametersEntryBitString must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBitString{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		BitStringValue: bitStringValue,

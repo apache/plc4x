@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesLightningInProgress) GetLightningInProgress() BACn
 
 // NewBACnetPropertyStatesLightningInProgress factory function for _BACnetPropertyStatesLightningInProgress
 func NewBACnetPropertyStatesLightningInProgress(lightningInProgress BACnetLightingInProgressTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLightningInProgress {
+	if lightningInProgress == nil {
+		panic("lightningInProgress of type BACnetLightingInProgressTagged for BACnetPropertyStatesLightningInProgress must not be nil")
+	}
 	_result := &_BACnetPropertyStatesLightningInProgress{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LightningInProgress:          lightningInProgress,

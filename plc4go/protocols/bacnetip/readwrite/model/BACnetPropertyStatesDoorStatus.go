@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesDoorStatus) GetDoorStatus() BACnetDoorStatusTagged
 
 // NewBACnetPropertyStatesDoorStatus factory function for _BACnetPropertyStatesDoorStatus
 func NewBACnetPropertyStatesDoorStatus(doorStatus BACnetDoorStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesDoorStatus {
+	if doorStatus == nil {
+		panic("doorStatus of type BACnetDoorStatusTagged for BACnetPropertyStatesDoorStatus must not be nil")
+	}
 	_result := &_BACnetPropertyStatesDoorStatus{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		DoorStatus:                   doorStatus,

@@ -84,6 +84,12 @@ func (m *_BACnetSecurityKeySetKeyIds) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetSecurityKeySetKeyIds factory function for _BACnetSecurityKeySetKeyIds
 func NewBACnetSecurityKeySetKeyIds(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSecurityKeySetKeyIds {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetSecurityKeySetKeyIds must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetSecurityKeySetKeyIds must not be nil")
+	}
 	return &_BACnetSecurityKeySetKeyIds{OpeningTag: openingTag, KeyIds: keyIds, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

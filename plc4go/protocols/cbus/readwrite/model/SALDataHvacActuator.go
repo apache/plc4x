@@ -88,6 +88,9 @@ func (m *_SALDataHvacActuator) GetHvacActuatorData() LightingData {
 
 // NewSALDataHvacActuator factory function for _SALDataHvacActuator
 func NewSALDataHvacActuator(hvacActuatorData LightingData, salData SALData) *_SALDataHvacActuator {
+	if hvacActuatorData == nil {
+		panic("hvacActuatorData of type LightingData for SALDataHvacActuator must not be nil")
+	}
 	_result := &_SALDataHvacActuator{
 		SALDataContract:  NewSALData(salData),
 		HvacActuatorData: hvacActuatorData,

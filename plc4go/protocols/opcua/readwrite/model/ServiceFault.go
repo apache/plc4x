@@ -88,6 +88,9 @@ func (m *_ServiceFault) GetResponseHeader() ExtensionObjectDefinition {
 
 // NewServiceFault factory function for _ServiceFault
 func NewServiceFault(responseHeader ExtensionObjectDefinition) *_ServiceFault {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ServiceFault must not be nil")
+	}
 	_result := &_ServiceFault{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

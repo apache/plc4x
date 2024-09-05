@@ -97,6 +97,9 @@ func (m *_CloseSessionRequest) GetDeleteSubscriptions() bool {
 
 // NewCloseSessionRequest factory function for _CloseSessionRequest
 func NewCloseSessionRequest(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) *_CloseSessionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CloseSessionRequest must not be nil")
+	}
 	_result := &_CloseSessionRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

@@ -105,6 +105,18 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValue) GetInnerClosingTag(
 
 // NewBACnetNotificationParametersChangeOfDiscreteValue factory function for _BACnetNotificationParametersChangeOfDiscreteValue
 func NewBACnetNotificationParametersChangeOfDiscreteValue(innerOpeningTag BACnetOpeningTag, newValue BACnetNotificationParametersChangeOfDiscreteValueNewValue, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfDiscreteValue {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
+	}
+	if newValue == nil {
+		panic("newValue of type BACnetNotificationParametersChangeOfDiscreteValueNewValue for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
+	}
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValue{
 		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 		InnerOpeningTag:                      innerOpeningTag,

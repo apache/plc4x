@@ -78,6 +78,9 @@ func (m *_BACnetAccessPassbackModeTagged) GetValue() BACnetAccessPassbackMode {
 
 // NewBACnetAccessPassbackModeTagged factory function for _BACnetAccessPassbackModeTagged
 func NewBACnetAccessPassbackModeTagged(header BACnetTagHeader, value BACnetAccessPassbackMode, tagNumber uint8, tagClass TagClass) *_BACnetAccessPassbackModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessPassbackModeTagged must not be nil")
+	}
 	return &_BACnetAccessPassbackModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

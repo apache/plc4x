@@ -111,6 +111,9 @@ func (m *_SetPublishingModeRequest) GetSubscriptionIds() []uint32 {
 
 // NewSetPublishingModeRequest factory function for _SetPublishingModeRequest
 func NewSetPublishingModeRequest(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) *_SetPublishingModeRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetPublishingModeRequest must not be nil")
+	}
 	_result := &_SetPublishingModeRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

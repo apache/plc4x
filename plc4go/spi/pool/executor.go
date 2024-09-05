@@ -28,7 +28,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=executor
+//go:generate plc4xGenerator -type=executor
 type executor struct {
 	running  bool
 	shutdown bool
@@ -40,7 +40,7 @@ type executor struct {
 	stateChange     sync.RWMutex
 	workerWaitGroup sync.WaitGroup
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 func newExecutor(queueDepth int, numberOfInitialWorkers int, customLogger zerolog.Logger) *executor {

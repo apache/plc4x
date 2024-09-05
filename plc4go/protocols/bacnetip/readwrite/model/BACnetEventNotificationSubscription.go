@@ -88,6 +88,15 @@ func (m *_BACnetEventNotificationSubscription) GetTimeRemaining() BACnetContextT
 
 // NewBACnetEventNotificationSubscription factory function for _BACnetEventNotificationSubscription
 func NewBACnetEventNotificationSubscription(recipient BACnetRecipientEnclosed, processIdentifier BACnetContextTagUnsignedInteger, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger) *_BACnetEventNotificationSubscription {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientEnclosed for BACnetEventNotificationSubscription must not be nil")
+	}
+	if processIdentifier == nil {
+		panic("processIdentifier of type BACnetContextTagUnsignedInteger for BACnetEventNotificationSubscription must not be nil")
+	}
+	if timeRemaining == nil {
+		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetEventNotificationSubscription must not be nil")
+	}
 	return &_BACnetEventNotificationSubscription{Recipient: recipient, ProcessIdentifier: processIdentifier, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining}
 }
 

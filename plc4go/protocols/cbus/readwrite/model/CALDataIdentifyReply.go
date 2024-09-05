@@ -91,6 +91,9 @@ func (m *_CALDataIdentifyReply) GetIdentifyReplyCommand() IdentifyReplyCommand {
 
 // NewCALDataIdentifyReply factory function for _CALDataIdentifyReply
 func NewCALDataIdentifyReply(attribute Attribute, identifyReplyCommand IdentifyReplyCommand, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataIdentifyReply {
+	if identifyReplyCommand == nil {
+		panic("identifyReplyCommand of type IdentifyReplyCommand for CALDataIdentifyReply must not be nil")
+	}
 	_result := &_CALDataIdentifyReply{
 		CALDataContract:      NewCALData(commandTypeContainer, additionalData, requestContext),
 		Attribute:            attribute,

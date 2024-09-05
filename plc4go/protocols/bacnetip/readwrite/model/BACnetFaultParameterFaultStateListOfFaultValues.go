@@ -84,6 +84,12 @@ func (m *_BACnetFaultParameterFaultStateListOfFaultValues) GetClosingTag() BACne
 
 // NewBACnetFaultParameterFaultStateListOfFaultValues factory function for _BACnetFaultParameterFaultStateListOfFaultValues
 func NewBACnetFaultParameterFaultStateListOfFaultValues(openingTag BACnetOpeningTag, listIfFaultValues []BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultStateListOfFaultValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultStateListOfFaultValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultStateListOfFaultValues must not be nil")
+	}
 	return &_BACnetFaultParameterFaultStateListOfFaultValues{OpeningTag: openingTag, ListIfFaultValues: listIfFaultValues, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

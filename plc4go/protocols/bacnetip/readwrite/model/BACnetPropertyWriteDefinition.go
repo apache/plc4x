@@ -91,6 +91,9 @@ func (m *_BACnetPropertyWriteDefinition) GetPriority() BACnetContextTagUnsignedI
 
 // NewBACnetPropertyWriteDefinition factory function for _BACnetPropertyWriteDefinition
 func NewBACnetPropertyWriteDefinition(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPropertyWriteDefinition {
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyWriteDefinition must not be nil")
+	}
 	return &_BACnetPropertyWriteDefinition{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectTypeArgument: objectTypeArgument}
 }
 

@@ -112,6 +112,21 @@ func (m *_BACnetNotificationParametersBufferReady) GetInnerClosingTag() BACnetCl
 
 // NewBACnetNotificationParametersBufferReady factory function for _BACnetNotificationParametersBufferReady
 func NewBACnetNotificationParametersBufferReady(innerOpeningTag BACnetOpeningTag, bufferProperty BACnetDeviceObjectPropertyReferenceEnclosed, previousNotification BACnetContextTagUnsignedInteger, currentNotification BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersBufferReady {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersBufferReady must not be nil")
+	}
+	if bufferProperty == nil {
+		panic("bufferProperty of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetNotificationParametersBufferReady must not be nil")
+	}
+	if previousNotification == nil {
+		panic("previousNotification of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersBufferReady must not be nil")
+	}
+	if currentNotification == nil {
+		panic("currentNotification of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersBufferReady must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersBufferReady must not be nil")
+	}
 	_result := &_BACnetNotificationParametersBufferReady{
 		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 		InnerOpeningTag:                      innerOpeningTag,

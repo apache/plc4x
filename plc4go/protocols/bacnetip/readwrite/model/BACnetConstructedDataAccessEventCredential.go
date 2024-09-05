@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAccessEventCredential) GetActualValue() BACnetDev
 
 // NewBACnetConstructedDataAccessEventCredential factory function for _BACnetConstructedDataAccessEventCredential
 func NewBACnetConstructedDataAccessEventCredential(accessEventCredential BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventCredential {
+	if accessEventCredential == nil {
+		panic("accessEventCredential of type BACnetDeviceObjectReference for BACnetConstructedDataAccessEventCredential must not be nil")
+	}
 	_result := &_BACnetConstructedDataAccessEventCredential{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AccessEventCredential:         accessEventCredential,

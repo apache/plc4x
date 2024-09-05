@@ -98,6 +98,12 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) GetFileRecordData() []BACnetAppl
 
 // NewBACnetServiceAckAtomicReadFileRecord factory function for _BACnetServiceAckAtomicReadFileRecord
 func NewBACnetServiceAckAtomicReadFileRecord(fileStartRecord BACnetApplicationTagSignedInteger, returnedRecordCount BACnetApplicationTagUnsignedInteger, fileRecordData []BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetServiceAckAtomicReadFileRecord {
+	if fileStartRecord == nil {
+		panic("fileStartRecord of type BACnetApplicationTagSignedInteger for BACnetServiceAckAtomicReadFileRecord must not be nil")
+	}
+	if returnedRecordCount == nil {
+		panic("returnedRecordCount of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckAtomicReadFileRecord must not be nil")
+	}
 	_result := &_BACnetServiceAckAtomicReadFileRecord{
 		BACnetServiceAckAtomicReadFileStreamOrRecordContract: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
 		FileStartRecord:     fileStartRecord,

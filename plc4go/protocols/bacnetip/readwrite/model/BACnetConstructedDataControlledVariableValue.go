@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataControlledVariableValue) GetActualValue() BACnetA
 
 // NewBACnetConstructedDataControlledVariableValue factory function for _BACnetConstructedDataControlledVariableValue
 func NewBACnetConstructedDataControlledVariableValue(controlledVariableValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableValue {
+	if controlledVariableValue == nil {
+		panic("controlledVariableValue of type BACnetApplicationTagReal for BACnetConstructedDataControlledVariableValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataControlledVariableValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ControlledVariableValue:       controlledVariableValue,

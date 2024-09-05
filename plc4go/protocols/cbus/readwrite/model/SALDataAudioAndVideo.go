@@ -88,6 +88,9 @@ func (m *_SALDataAudioAndVideo) GetAudioVideoData() LightingData {
 
 // NewSALDataAudioAndVideo factory function for _SALDataAudioAndVideo
 func NewSALDataAudioAndVideo(audioVideoData LightingData, salData SALData) *_SALDataAudioAndVideo {
+	if audioVideoData == nil {
+		panic("audioVideoData of type LightingData for SALDataAudioAndVideo must not be nil")
+	}
 	_result := &_SALDataAudioAndVideo{
 		SALDataContract: NewSALData(salData),
 		AudioVideoData:  audioVideoData,

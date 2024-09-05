@@ -84,6 +84,9 @@ func (m *_BACnetChannelValueTime) GetTimeValue() BACnetApplicationTagTime {
 
 // NewBACnetChannelValueTime factory function for _BACnetChannelValueTime
 func NewBACnetChannelValueTime(timeValue BACnetApplicationTagTime, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetChannelValueTime must not be nil")
+	}
 	_result := &_BACnetChannelValueTime{
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		TimeValue:                  timeValue,

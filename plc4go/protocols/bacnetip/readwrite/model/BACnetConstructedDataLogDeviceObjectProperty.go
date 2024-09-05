@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetActualValue() BACnetD
 
 // NewBACnetConstructedDataLogDeviceObjectProperty factory function for _BACnetConstructedDataLogDeviceObjectProperty
 func NewBACnetConstructedDataLogDeviceObjectProperty(logDeviceObjectProperty BACnetDeviceObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogDeviceObjectProperty {
+	if logDeviceObjectProperty == nil {
+		panic("logDeviceObjectProperty of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataLogDeviceObjectProperty must not be nil")
+	}
 	_result := &_BACnetConstructedDataLogDeviceObjectProperty{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LogDeviceObjectProperty:       logDeviceObjectProperty,

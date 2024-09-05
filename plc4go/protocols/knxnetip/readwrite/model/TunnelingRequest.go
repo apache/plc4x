@@ -100,6 +100,12 @@ func (m *_TunnelingRequest) GetCemi() CEMI {
 
 // NewTunnelingRequest factory function for _TunnelingRequest
 func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI, totalLength uint16) *_TunnelingRequest {
+	if tunnelingRequestDataBlock == nil {
+		panic("tunnelingRequestDataBlock of type TunnelingRequestDataBlock for TunnelingRequest must not be nil")
+	}
+	if cemi == nil {
+		panic("cemi of type CEMI for TunnelingRequest must not be nil")
+	}
 	_result := &_TunnelingRequest{
 		KnxNetIpMessageContract:   NewKnxNetIpMessage(),
 		TunnelingRequestDataBlock: tunnelingRequestDataBlock,

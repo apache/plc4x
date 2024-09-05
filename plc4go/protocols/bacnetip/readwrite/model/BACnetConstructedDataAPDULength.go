@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAPDULength) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataAPDULength factory function for _BACnetConstructedDataAPDULength
 func NewBACnetConstructedDataAPDULength(apduLength BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDULength {
+	if apduLength == nil {
+		panic("apduLength of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDULength must not be nil")
+	}
 	_result := &_BACnetConstructedDataAPDULength{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ApduLength:                    apduLength,

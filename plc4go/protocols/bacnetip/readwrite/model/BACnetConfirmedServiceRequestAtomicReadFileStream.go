@@ -91,6 +91,12 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) GetRequestOctetCoun
 
 // NewBACnetConfirmedServiceRequestAtomicReadFileStream factory function for _BACnetConfirmedServiceRequestAtomicReadFileStream
 func NewBACnetConfirmedServiceRequestAtomicReadFileStream(fileStartPosition BACnetApplicationTagSignedInteger, requestOctetCount BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestAtomicReadFileStream {
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestAtomicReadFileStream must not be nil")
+	}
+	if requestOctetCount == nil {
+		panic("requestOctetCount of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestAtomicReadFileStream must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestAtomicReadFileStream{
 		BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract: NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
 		FileStartPosition: fileStartPosition,

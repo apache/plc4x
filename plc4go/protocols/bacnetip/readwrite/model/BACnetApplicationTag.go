@@ -111,6 +111,9 @@ func (pm *_BACnetApplicationTag) GetActualLength() uint32 {
 
 // NewBACnetApplicationTag factory function for _BACnetApplicationTag
 func NewBACnetApplicationTag(header BACnetTagHeader) *_BACnetApplicationTag {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetApplicationTag must not be nil")
+	}
 	return &_BACnetApplicationTag{Header: header}
 }
 

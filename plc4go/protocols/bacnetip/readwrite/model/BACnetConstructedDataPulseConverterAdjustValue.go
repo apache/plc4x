@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) GetActualValue() BACne
 
 // NewBACnetConstructedDataPulseConverterAdjustValue factory function for _BACnetConstructedDataPulseConverterAdjustValue
 func NewBACnetConstructedDataPulseConverterAdjustValue(adjustValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterAdjustValue {
+	if adjustValue == nil {
+		panic("adjustValue of type BACnetApplicationTagReal for BACnetConstructedDataPulseConverterAdjustValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataPulseConverterAdjustValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AdjustValue:                   adjustValue,

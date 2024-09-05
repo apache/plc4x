@@ -90,6 +90,9 @@ func (m *_TunnelingResponse) GetTunnelingResponseDataBlock() TunnelingResponseDa
 
 // NewTunnelingResponse factory function for _TunnelingResponse
 func NewTunnelingResponse(tunnelingResponseDataBlock TunnelingResponseDataBlock) *_TunnelingResponse {
+	if tunnelingResponseDataBlock == nil {
+		panic("tunnelingResponseDataBlock of type TunnelingResponseDataBlock for TunnelingResponse must not be nil")
+	}
 	_result := &_TunnelingResponse{
 		KnxNetIpMessageContract:    NewKnxNetIpMessage(),
 		TunnelingResponseDataBlock: tunnelingResponseDataBlock,

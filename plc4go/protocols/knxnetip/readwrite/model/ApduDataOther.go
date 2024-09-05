@@ -88,6 +88,9 @@ func (m *_ApduDataOther) GetExtendedApdu() ApduDataExt {
 
 // NewApduDataOther factory function for _ApduDataOther
 func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
+	if extendedApdu == nil {
+		panic("extendedApdu of type ApduDataExt for ApduDataOther must not be nil")
+	}
 	_result := &_ApduDataOther{
 		ApduDataContract: NewApduData(dataLength),
 		ExtendedApdu:     extendedApdu,

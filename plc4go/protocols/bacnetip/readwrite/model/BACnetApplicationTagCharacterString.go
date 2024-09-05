@@ -101,6 +101,9 @@ func (m *_BACnetApplicationTagCharacterString) GetValue() string {
 
 // NewBACnetApplicationTagCharacterString factory function for _BACnetApplicationTagCharacterString
 func NewBACnetApplicationTagCharacterString(payload BACnetTagPayloadCharacterString, header BACnetTagHeader) *_BACnetApplicationTagCharacterString {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadCharacterString for BACnetApplicationTagCharacterString must not be nil")
+	}
 	_result := &_BACnetApplicationTagCharacterString{
 		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
 		Payload:                      payload,

@@ -104,6 +104,15 @@ func (m *_SearchResponse) GetDibSuppSvcFamilies() DIBSuppSvcFamilies {
 
 // NewSearchResponse factory function for _SearchResponse
 func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_SearchResponse {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for SearchResponse must not be nil")
+	}
+	if dibDeviceInfo == nil {
+		panic("dibDeviceInfo of type DIBDeviceInfo for SearchResponse must not be nil")
+	}
+	if dibSuppSvcFamilies == nil {
+		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for SearchResponse must not be nil")
+	}
 	_result := &_SearchResponse{
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 		HpaiControlEndpoint:     hpaiControlEndpoint,

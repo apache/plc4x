@@ -102,6 +102,9 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) GetIsProprietary() bool {
 
 // NewBACnetAccessZoneOccupancyStateTagged factory function for _BACnetAccessZoneOccupancyStateTagged
 func NewBACnetAccessZoneOccupancyStateTagged(header BACnetTagHeader, value BACnetAccessZoneOccupancyState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessZoneOccupancyStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessZoneOccupancyStateTagged must not be nil")
+	}
 	return &_BACnetAccessZoneOccupancyStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

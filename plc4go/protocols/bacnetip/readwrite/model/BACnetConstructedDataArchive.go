@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataArchive) GetActualValue() BACnetApplicationTagBoo
 
 // NewBACnetConstructedDataArchive factory function for _BACnetConstructedDataArchive
 func NewBACnetConstructedDataArchive(archive BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataArchive {
+	if archive == nil {
+		panic("archive of type BACnetApplicationTagBoolean for BACnetConstructedDataArchive must not be nil")
+	}
 	_result := &_BACnetConstructedDataArchive{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Archive:                       archive,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetActualValue() BACnetAp
 
 // NewBACnetConstructedDataAllowGroupDelayInhibit factory function for _BACnetConstructedDataAllowGroupDelayInhibit
 func NewBACnetConstructedDataAllowGroupDelayInhibit(allowGroupDelayInhibit BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAllowGroupDelayInhibit {
+	if allowGroupDelayInhibit == nil {
+		panic("allowGroupDelayInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataAllowGroupDelayInhibit must not be nil")
+	}
 	_result := &_BACnetConstructedDataAllowGroupDelayInhibit{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AllowGroupDelayInhibit:        allowGroupDelayInhibit,

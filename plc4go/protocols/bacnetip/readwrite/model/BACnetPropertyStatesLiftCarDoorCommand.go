@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetLiftCarDoorCommand() BACnet
 
 // NewBACnetPropertyStatesLiftCarDoorCommand factory function for _BACnetPropertyStatesLiftCarDoorCommand
 func NewBACnetPropertyStatesLiftCarDoorCommand(liftCarDoorCommand BACnetLiftCarDoorCommandTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftCarDoorCommand {
+	if liftCarDoorCommand == nil {
+		panic("liftCarDoorCommand of type BACnetLiftCarDoorCommandTagged for BACnetPropertyStatesLiftCarDoorCommand must not be nil")
+	}
 	_result := &_BACnetPropertyStatesLiftCarDoorCommand{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LiftCarDoorCommand:           liftCarDoorCommand,

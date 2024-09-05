@@ -84,6 +84,9 @@ func (m *_BACnetTimerStateChangeValueBoolean) GetBooleanValue() BACnetApplicatio
 
 // NewBACnetTimerStateChangeValueBoolean factory function for _BACnetTimerStateChangeValueBoolean
 func NewBACnetTimerStateChangeValueBoolean(booleanValue BACnetApplicationTagBoolean, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueBoolean {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetTimerStateChangeValueBoolean must not be nil")
+	}
 	_result := &_BACnetTimerStateChangeValueBoolean{
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		BooleanValue:                        booleanValue,

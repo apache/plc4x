@@ -81,6 +81,12 @@ func (m *_BACnetActionList) GetInnerClosingTag() BACnetClosingTag {
 
 // NewBACnetActionList factory function for _BACnetActionList
 func NewBACnetActionList(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) *_BACnetActionList {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetActionList must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetActionList must not be nil")
+	}
 	return &_BACnetActionList{InnerOpeningTag: innerOpeningTag, Action: action, InnerClosingTag: innerClosingTag}
 }
 

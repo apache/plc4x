@@ -98,6 +98,15 @@ func (m *_BACnetFaultParameterFaultStatusFlags) GetClosingTag() BACnetClosingTag
 
 // NewBACnetFaultParameterFaultStatusFlags factory function for _BACnetFaultParameterFaultStatusFlags
 func NewBACnetFaultParameterFaultStatusFlags(openingTag BACnetOpeningTag, statusFlagsReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultStatusFlags {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultStatusFlags must not be nil")
+	}
+	if statusFlagsReference == nil {
+		panic("statusFlagsReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultStatusFlags must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultStatusFlags must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultStatusFlags{
 		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
 		OpeningTag:                   openingTag,

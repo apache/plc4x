@@ -102,6 +102,9 @@ func (m *_NetworkGroupDataType) GetNetworkPaths() []ExtensionObjectDefinition {
 
 // NewNetworkGroupDataType factory function for _NetworkGroupDataType
 func NewNetworkGroupDataType(serverUri PascalString, noOfNetworkPaths int32, networkPaths []ExtensionObjectDefinition) *_NetworkGroupDataType {
+	if serverUri == nil {
+		panic("serverUri of type PascalString for NetworkGroupDataType must not be nil")
+	}
 	_result := &_NetworkGroupDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ServerUri:                         serverUri,

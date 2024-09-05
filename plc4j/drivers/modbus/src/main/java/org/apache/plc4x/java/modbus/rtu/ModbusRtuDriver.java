@@ -20,6 +20,7 @@ package org.apache.plc4x.java.modbus.rtu;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.modbus.readwrite.ModbusADU;
+import org.apache.plc4x.java.modbus.rtu.context.ModbusRtuContext;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
@@ -132,7 +133,8 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     protected ProtocolStackConfigurer<ModbusRtuADU> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(ModbusRtuADU.class, io -> (ModbusRtuADU) ModbusRtuADU.staticParse(io, DriverType.MODBUS_RTU, true))
             .withProtocol(ModbusRtuProtocolLogic.class)
-            .withPacketSizeEstimator(ModbusRtuDriver.ByteLengthEstimator.class)
+            .withDriverContext(ModbusRtuContext.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
             .build();
     }
 

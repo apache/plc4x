@@ -97,6 +97,9 @@ func (m *_DeleteNodesItem) GetDeleteTargetReferences() bool {
 
 // NewDeleteNodesItem factory function for _DeleteNodesItem
 func NewDeleteNodesItem(nodeId NodeId, deleteTargetReferences bool) *_DeleteNodesItem {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for DeleteNodesItem must not be nil")
+	}
 	_result := &_DeleteNodesItem{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NodeId:                            nodeId,

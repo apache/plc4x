@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataEventDetectionEnable) GetActualValue() BACnetAppl
 
 // NewBACnetConstructedDataEventDetectionEnable factory function for _BACnetConstructedDataEventDetectionEnable
 func NewBACnetConstructedDataEventDetectionEnable(eventDetectionEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventDetectionEnable {
+	if eventDetectionEnable == nil {
+		panic("eventDetectionEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataEventDetectionEnable must not be nil")
+	}
 	_result := &_BACnetConstructedDataEventDetectionEnable{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EventDetectionEnable:          eventDetectionEnable,

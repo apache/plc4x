@@ -144,6 +144,21 @@ func (m *_EndpointDescription) GetSecurityLevel() uint8 {
 
 // NewEndpointDescription factory function for _EndpointDescription
 func NewEndpointDescription(endpointUrl PascalString, server ExtensionObjectDefinition, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, noOfUserIdentityTokens int32, userIdentityTokens []ExtensionObjectDefinition, transportProfileUri PascalString, securityLevel uint8) *_EndpointDescription {
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for EndpointDescription must not be nil")
+	}
+	if server == nil {
+		panic("server of type ExtensionObjectDefinition for EndpointDescription must not be nil")
+	}
+	if serverCertificate == nil {
+		panic("serverCertificate of type PascalByteString for EndpointDescription must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for EndpointDescription must not be nil")
+	}
+	if transportProfileUri == nil {
+		panic("transportProfileUri of type PascalString for EndpointDescription must not be nil")
+	}
 	_result := &_EndpointDescription{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		EndpointUrl:                       endpointUrl,

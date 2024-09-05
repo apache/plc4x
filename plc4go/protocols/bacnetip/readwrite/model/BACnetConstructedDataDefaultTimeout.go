@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDefaultTimeout) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataDefaultTimeout factory function for _BACnetConstructedDataDefaultTimeout
 func NewBACnetConstructedDataDefaultTimeout(defaultTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultTimeout {
+	if defaultTimeout == nil {
+		panic("defaultTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDefaultTimeout must not be nil")
+	}
 	_result := &_BACnetConstructedDataDefaultTimeout{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DefaultTimeout:                defaultTimeout,

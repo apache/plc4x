@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAverageValue) GetActualValue() BACnetApplicationT
 
 // NewBACnetConstructedDataAverageValue factory function for _BACnetConstructedDataAverageValue
 func NewBACnetConstructedDataAverageValue(averageValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAverageValue {
+	if averageValue == nil {
+		panic("averageValue of type BACnetApplicationTagReal for BACnetConstructedDataAverageValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataAverageValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AverageValue:                  averageValue,

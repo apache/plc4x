@@ -53,7 +53,7 @@ type SubscriptionHandle struct {
 	subscriberWg sync.WaitGroup
 	complete     bool
 
-	log zerolog.Logger `ignore:"true""`
+	log zerolog.Logger
 }
 
 func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, connection *Connection, subscriptionRequest apiModel.PlcSubscriptionRequest, subscriptionId uint32, cycleTime time.Duration) *SubscriptionHandle {

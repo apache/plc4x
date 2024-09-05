@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataTimeDelay) GetActualValue() BACnetApplicationTagU
 
 // NewBACnetConstructedDataTimeDelay factory function for _BACnetConstructedDataTimeDelay
 func NewBACnetConstructedDataTimeDelay(timeDelay BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeDelay {
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeDelay must not be nil")
+	}
 	_result := &_BACnetConstructedDataTimeDelay{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		TimeDelay:                     timeDelay,

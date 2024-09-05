@@ -95,6 +95,9 @@ func (m *_ParameterValueApplicationAddress1) GetData() []byte {
 
 // NewParameterValueApplicationAddress1 factory function for _ParameterValueApplicationAddress1
 func NewParameterValueApplicationAddress1(value ApplicationAddress1, data []byte, numBytes uint8) *_ParameterValueApplicationAddress1 {
+	if value == nil {
+		panic("value of type ApplicationAddress1 for ParameterValueApplicationAddress1 must not be nil")
+	}
 	_result := &_ParameterValueApplicationAddress1{
 		ParameterValueContract: NewParameterValue(numBytes),
 		Value:                  value,

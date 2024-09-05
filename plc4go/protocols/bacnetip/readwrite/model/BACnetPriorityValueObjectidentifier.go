@@ -84,6 +84,9 @@ func (m *_BACnetPriorityValueObjectidentifier) GetObjectidentifierValue() BACnet
 
 // NewBACnetPriorityValueObjectidentifier factory function for _BACnetPriorityValueObjectidentifier
 func NewBACnetPriorityValueObjectidentifier(objectidentifierValue BACnetApplicationTagObjectIdentifier, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueObjectidentifier {
+	if objectidentifierValue == nil {
+		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetPriorityValueObjectidentifier must not be nil")
+	}
 	_result := &_BACnetPriorityValueObjectidentifier{
 		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 		ObjectidentifierValue:       objectidentifierValue,

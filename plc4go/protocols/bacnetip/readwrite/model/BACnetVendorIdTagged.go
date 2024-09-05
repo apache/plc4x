@@ -102,6 +102,9 @@ func (m *_BACnetVendorIdTagged) GetIsUnknownId() bool {
 
 // NewBACnetVendorIdTagged factory function for _BACnetVendorIdTagged
 func NewBACnetVendorIdTagged(header BACnetTagHeader, value BACnetVendorId, unknownId uint32, tagNumber uint8, tagClass TagClass) *_BACnetVendorIdTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetVendorIdTagged must not be nil")
+	}
 	return &_BACnetVendorIdTagged{Header: header, Value: value, UnknownId: unknownId, TagNumber: tagNumber, TagClass: tagClass}
 }
 

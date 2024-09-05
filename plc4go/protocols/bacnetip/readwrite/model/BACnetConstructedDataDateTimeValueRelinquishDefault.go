@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) GetActualValue() 
 
 // NewBACnetConstructedDataDateTimeValueRelinquishDefault factory function for _BACnetConstructedDataDateTimeValueRelinquishDefault
 func NewBACnetConstructedDataDateTimeValueRelinquishDefault(relinquishDefault BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimeValueRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetDateTime for BACnetConstructedDataDateTimeValueRelinquishDefault must not be nil")
+	}
 	_result := &_BACnetConstructedDataDateTimeValueRelinquishDefault{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RelinquishDefault:             relinquishDefault,

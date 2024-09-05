@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataNetworkNumberQuality) GetActualValue() BACnetNetw
 
 // NewBACnetConstructedDataNetworkNumberQuality factory function for _BACnetConstructedDataNetworkNumberQuality
 func NewBACnetConstructedDataNetworkNumberQuality(networkNumberQuality BACnetNetworkNumberQualityTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkNumberQuality {
+	if networkNumberQuality == nil {
+		panic("networkNumberQuality of type BACnetNetworkNumberQualityTagged for BACnetConstructedDataNetworkNumberQuality must not be nil")
+	}
 	_result := &_BACnetConstructedDataNetworkNumberQuality{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NetworkNumberQuality:          networkNumberQuality,

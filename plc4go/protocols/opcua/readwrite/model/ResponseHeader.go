@@ -130,6 +130,15 @@ func (m *_ResponseHeader) GetAdditionalHeader() ExtensionObject {
 
 // NewResponseHeader factory function for _ResponseHeader
 func NewResponseHeader(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, noOfStringTable int32, stringTable []PascalString, additionalHeader ExtensionObject) *_ResponseHeader {
+	if serviceResult == nil {
+		panic("serviceResult of type StatusCode for ResponseHeader must not be nil")
+	}
+	if serviceDiagnostics == nil {
+		panic("serviceDiagnostics of type DiagnosticInfo for ResponseHeader must not be nil")
+	}
+	if additionalHeader == nil {
+		panic("additionalHeader of type ExtensionObject for ResponseHeader must not be nil")
+	}
 	_result := &_ResponseHeader{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Timestamp:                         timestamp,

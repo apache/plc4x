@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLargeAnalogValueFaultLowLimit) GetActualValue() B
 
 // NewBACnetConstructedDataLargeAnalogValueFaultLowLimit factory function for _BACnetConstructedDataLargeAnalogValueFaultLowLimit
 func NewBACnetConstructedDataLargeAnalogValueFaultLowLimit(faultLowLimit BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueFaultLowLimit {
+	if faultLowLimit == nil {
+		panic("faultLowLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueFaultLowLimit must not be nil")
+	}
 	_result := &_BACnetConstructedDataLargeAnalogValueFaultLowLimit{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FaultLowLimit:                 faultLowLimit,

@@ -84,6 +84,9 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetProperty
 
 // NewBACnetPropertyAccessResultAccessResultPropertyAccessError factory function for _BACnetPropertyAccessResultAccessResultPropertyAccessError
 func NewBACnetPropertyAccessResultAccessResultPropertyAccessError(propertyAccessError ErrorEnclosed, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyAccessError {
+	if propertyAccessError == nil {
+		panic("propertyAccessError of type ErrorEnclosed for BACnetPropertyAccessResultAccessResultPropertyAccessError must not be nil")
+	}
 	_result := &_BACnetPropertyAccessResultAccessResultPropertyAccessError{
 		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
 		PropertyAccessError:                            propertyAccessError,

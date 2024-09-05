@@ -105,6 +105,9 @@ func (m *_TriggerControlDataLabel) GetData() []byte {
 
 // NewTriggerControlDataLabel factory function for _TriggerControlDataLabel
 func NewTriggerControlDataLabel(triggerControlOptions TriggerControlLabelOptions, actionSelector byte, language *Language, data []byte, commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataLabel {
+	if triggerControlOptions == nil {
+		panic("triggerControlOptions of type TriggerControlLabelOptions for TriggerControlDataLabel must not be nil")
+	}
 	_result := &_TriggerControlDataLabel{
 		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
 		TriggerControlOptions:      triggerControlOptions,

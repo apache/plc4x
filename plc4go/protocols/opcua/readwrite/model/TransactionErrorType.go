@@ -102,6 +102,15 @@ func (m *_TransactionErrorType) GetMessage() LocalizedText {
 
 // NewTransactionErrorType factory function for _TransactionErrorType
 func NewTransactionErrorType(targetId NodeId, error StatusCode, message LocalizedText) *_TransactionErrorType {
+	if targetId == nil {
+		panic("targetId of type NodeId for TransactionErrorType must not be nil")
+	}
+	if error == nil {
+		panic("error of type StatusCode for TransactionErrorType must not be nil")
+	}
+	if message == nil {
+		panic("message of type LocalizedText for TransactionErrorType must not be nil")
+	}
 	_result := &_TransactionErrorType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		TargetId:                          targetId,

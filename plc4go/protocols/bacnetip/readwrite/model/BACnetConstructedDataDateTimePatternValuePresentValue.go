@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) GetActualValue(
 
 // NewBACnetConstructedDataDateTimePatternValuePresentValue factory function for _BACnetConstructedDataDateTimePatternValuePresentValue
 func NewBACnetConstructedDataDateTimePatternValuePresentValue(presentValue BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimePatternValuePresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetDateTime for BACnetConstructedDataDateTimePatternValuePresentValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataDateTimePatternValuePresentValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PresentValue:                  presentValue,

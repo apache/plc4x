@@ -112,6 +112,21 @@ func (m *_BACnetEventParameterChangeOfTimer) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetEventParameterChangeOfTimer factory function for _BACnetEventParameterChangeOfTimer
 func NewBACnetEventParameterChangeOfTimer(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, alarmValues BACnetEventParameterChangeOfTimerAlarmValue, updateTimeReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfTimer {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if alarmValues == nil {
+		panic("alarmValues of type BACnetEventParameterChangeOfTimerAlarmValue for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if updateTimeReference == nil {
+		panic("updateTimeReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfTimer must not be nil")
+	}
 	_result := &_BACnetEventParameterChangeOfTimer{
 		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
 		OpeningTag:                   openingTag,

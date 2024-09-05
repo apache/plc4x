@@ -95,6 +95,12 @@ func (m *_CreateObjectError) GetFirstFailedElementNumber() BACnetContextTagUnsig
 
 // NewCreateObjectError factory function for _CreateObjectError
 func NewCreateObjectError(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) *_CreateObjectError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for CreateObjectError must not be nil")
+	}
+	if firstFailedElementNumber == nil {
+		panic("firstFailedElementNumber of type BACnetContextTagUnsignedInteger for CreateObjectError must not be nil")
+	}
 	_result := &_CreateObjectError{
 		BACnetErrorContract:      NewBACnetError(),
 		ErrorType:                errorType,

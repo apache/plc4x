@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataIPv6DHCPLeaseTime factory function for _BACnetConstructedDataIPv6DHCPLeaseTime
 func NewBACnetConstructedDataIPv6DHCPLeaseTime(ipv6DhcpLeaseTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DHCPLeaseTime {
+	if ipv6DhcpLeaseTime == nil {
+		panic("ipv6DhcpLeaseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPv6DHCPLeaseTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataIPv6DHCPLeaseTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Ipv6DhcpLeaseTime:             ipv6DhcpLeaseTime,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataThreatLevel) GetActualValue() BACnetAccessThreatL
 
 // NewBACnetConstructedDataThreatLevel factory function for _BACnetConstructedDataThreatLevel
 func NewBACnetConstructedDataThreatLevel(threatLevel BACnetAccessThreatLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatLevel {
+	if threatLevel == nil {
+		panic("threatLevel of type BACnetAccessThreatLevel for BACnetConstructedDataThreatLevel must not be nil")
+	}
 	_result := &_BACnetConstructedDataThreatLevel{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ThreatLevel:                   threatLevel,

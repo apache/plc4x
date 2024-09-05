@@ -130,6 +130,15 @@ func (m *_QueryFirstRequest) GetMaxReferencesToReturn() uint32 {
 
 // NewQueryFirstRequest factory function for _QueryFirstRequest
 func NewQueryFirstRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) *_QueryFirstRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	if view == nil {
+		panic("view of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	if filter == nil {
+		panic("filter of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
 	_result := &_QueryFirstRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

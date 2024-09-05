@@ -95,6 +95,12 @@ func (m *_IssuedIdentityToken) GetEncryptionAlgorithm() PascalString {
 
 // NewIssuedIdentityToken factory function for _IssuedIdentityToken
 func NewIssuedIdentityToken(tokenData PascalByteString, encryptionAlgorithm PascalString) *_IssuedIdentityToken {
+	if tokenData == nil {
+		panic("tokenData of type PascalByteString for IssuedIdentityToken must not be nil")
+	}
+	if encryptionAlgorithm == nil {
+		panic("encryptionAlgorithm of type PascalString for IssuedIdentityToken must not be nil")
+	}
 	_result := &_IssuedIdentityToken{
 		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
 		TokenData:                           tokenData,

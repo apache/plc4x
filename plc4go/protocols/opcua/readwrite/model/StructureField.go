@@ -139,6 +139,15 @@ func (m *_StructureField) GetIsOptional() bool {
 
 // NewStructureField factory function for _StructureField
 func NewStructureField(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) *_StructureField {
+	if name == nil {
+		panic("name of type PascalString for StructureField must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for StructureField must not be nil")
+	}
+	if dataType == nil {
+		panic("dataType of type NodeId for StructureField must not be nil")
+	}
 	_result := &_StructureField{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Name:                              name,

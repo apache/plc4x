@@ -71,6 +71,9 @@ func (m *_AmsTCPPacket) GetUserdata() AmsPacket {
 
 // NewAmsTCPPacket factory function for _AmsTCPPacket
 func NewAmsTCPPacket(userdata AmsPacket) *_AmsTCPPacket {
+	if userdata == nil {
+		panic("userdata of type AmsPacket for AmsTCPPacket must not be nil")
+	}
 	return &_AmsTCPPacket{Userdata: userdata}
 }
 

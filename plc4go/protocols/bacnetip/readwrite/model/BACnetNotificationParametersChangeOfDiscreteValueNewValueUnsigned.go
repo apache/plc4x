@@ -84,6 +84,9 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) Get
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
 func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned must not be nil")
+	}
 	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned{
 		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		UnsignedValue: unsignedValue,

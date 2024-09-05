@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesAction) GetAction() BACnetActionTagged {
 
 // NewBACnetPropertyStatesAction factory function for _BACnetPropertyStatesAction
 func NewBACnetPropertyStatesAction(action BACnetActionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesAction {
+	if action == nil {
+		panic("action of type BACnetActionTagged for BACnetPropertyStatesAction must not be nil")
+	}
 	_result := &_BACnetPropertyStatesAction{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		Action:                       action,

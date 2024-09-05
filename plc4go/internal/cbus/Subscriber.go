@@ -38,7 +38,7 @@ import (
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
+//go:generate plc4xGenerator -type=Subscriber
 type Subscriber struct {
 	consumers     map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer `hasLocker:"consumersMutex"`
 	addSubscriber func(subscriber *Subscriber)

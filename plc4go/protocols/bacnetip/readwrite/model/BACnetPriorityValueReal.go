@@ -84,6 +84,9 @@ func (m *_BACnetPriorityValueReal) GetRealValue() BACnetApplicationTagReal {
 
 // NewBACnetPriorityValueReal factory function for _BACnetPriorityValueReal
 func NewBACnetPriorityValueReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetPriorityValueReal must not be nil")
+	}
 	_result := &_BACnetPriorityValueReal{
 		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 		RealValue:                   realValue,

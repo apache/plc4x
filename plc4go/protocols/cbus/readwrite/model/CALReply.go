@@ -99,6 +99,9 @@ func (m *_CALReply) GetCalData() CALData {
 
 // NewCALReply factory function for _CALReply
 func NewCALReply(calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReply {
+	if calData == nil {
+		panic("calData of type CALData for CALReply must not be nil")
+	}
 	return &_CALReply{CalType: calType, CalData: calData, CBusOptions: cBusOptions, RequestContext: requestContext}
 }
 

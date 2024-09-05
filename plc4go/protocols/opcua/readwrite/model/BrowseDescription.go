@@ -125,6 +125,12 @@ func (m *_BrowseDescription) GetResultMask() uint32 {
 
 // NewBrowseDescription factory function for _BrowseDescription
 func NewBrowseDescription(nodeId NodeId, browseDirection BrowseDirection, referenceTypeId NodeId, includeSubtypes bool, nodeClassMask uint32, resultMask uint32) *_BrowseDescription {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for BrowseDescription must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for BrowseDescription must not be nil")
+	}
 	_result := &_BrowseDescription{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NodeId:                            nodeId,

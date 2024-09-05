@@ -88,6 +88,9 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) GetKnxAddress() KnxAddres
 
 // NewConnectionResponseDataBlockTunnelConnection factory function for _ConnectionResponseDataBlockTunnelConnection
 func NewConnectionResponseDataBlockTunnelConnection(knxAddress KnxAddress) *_ConnectionResponseDataBlockTunnelConnection {
+	if knxAddress == nil {
+		panic("knxAddress of type KnxAddress for ConnectionResponseDataBlockTunnelConnection must not be nil")
+	}
 	_result := &_ConnectionResponseDataBlockTunnelConnection{
 		ConnectionResponseDataBlockContract: NewConnectionResponseDataBlock(),
 		KnxAddress:                          knxAddress,

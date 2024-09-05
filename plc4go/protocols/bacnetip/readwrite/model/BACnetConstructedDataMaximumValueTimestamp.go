@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) GetActualValue() BACnetDat
 
 // NewBACnetConstructedDataMaximumValueTimestamp factory function for _BACnetConstructedDataMaximumValueTimestamp
 func NewBACnetConstructedDataMaximumValueTimestamp(maximumValueTimestamp BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValueTimestamp {
+	if maximumValueTimestamp == nil {
+		panic("maximumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMaximumValueTimestamp must not be nil")
+	}
 	_result := &_BACnetConstructedDataMaximumValueTimestamp{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaximumValueTimestamp:         maximumValueTimestamp,

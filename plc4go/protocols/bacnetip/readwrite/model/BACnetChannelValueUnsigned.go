@@ -84,6 +84,9 @@ func (m *_BACnetChannelValueUnsigned) GetUnsignedValue() BACnetApplicationTagUns
 
 // NewBACnetChannelValueUnsigned factory function for _BACnetChannelValueUnsigned
 func NewBACnetChannelValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetChannelValueUnsigned must not be nil")
+	}
 	_result := &_BACnetChannelValueUnsigned{
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		UnsignedValue:              unsignedValue,

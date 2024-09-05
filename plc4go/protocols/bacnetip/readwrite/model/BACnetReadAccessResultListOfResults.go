@@ -85,6 +85,12 @@ func (m *_BACnetReadAccessResultListOfResults) GetClosingTag() BACnetClosingTag 
 
 // NewBACnetReadAccessResultListOfResults factory function for _BACnetReadAccessResultListOfResults
 func NewBACnetReadAccessResultListOfResults(openingTag BACnetOpeningTag, listOfReadAccessProperty []BACnetReadAccessProperty, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetReadAccessResultListOfResults {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetReadAccessResultListOfResults must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetReadAccessResultListOfResults must not be nil")
+	}
 	return &_BACnetReadAccessResultListOfResults{OpeningTag: openingTag, ListOfReadAccessProperty: listOfReadAccessProperty, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
 }
 

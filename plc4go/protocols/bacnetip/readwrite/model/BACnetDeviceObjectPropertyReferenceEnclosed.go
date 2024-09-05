@@ -84,6 +84,15 @@ func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) GetClosingTag() BACnetClo
 
 // NewBACnetDeviceObjectPropertyReferenceEnclosed factory function for _BACnetDeviceObjectPropertyReferenceEnclosed
 func NewBACnetDeviceObjectPropertyReferenceEnclosed(openingTag BACnetOpeningTag, value BACnetDeviceObjectPropertyReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDeviceObjectPropertyReferenceEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDeviceObjectPropertyReferenceEnclosed must not be nil")
+	}
+	if value == nil {
+		panic("value of type BACnetDeviceObjectPropertyReference for BACnetDeviceObjectPropertyReferenceEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDeviceObjectPropertyReferenceEnclosed must not be nil")
+	}
 	return &_BACnetDeviceObjectPropertyReferenceEnclosed{OpeningTag: openingTag, Value: value, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

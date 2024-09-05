@@ -88,6 +88,9 @@ func (m *_SALDataEnableControl) GetEnableControlData() EnableControlData {
 
 // NewSALDataEnableControl factory function for _SALDataEnableControl
 func NewSALDataEnableControl(enableControlData EnableControlData, salData SALData) *_SALDataEnableControl {
+	if enableControlData == nil {
+		panic("enableControlData of type EnableControlData for SALDataEnableControl must not be nil")
+	}
 	_result := &_SALDataEnableControl{
 		SALDataContract:   NewSALData(salData),
 		EnableControlData: enableControlData,

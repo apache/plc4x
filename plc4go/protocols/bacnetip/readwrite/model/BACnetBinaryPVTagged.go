@@ -78,6 +78,9 @@ func (m *_BACnetBinaryPVTagged) GetValue() BACnetBinaryPV {
 
 // NewBACnetBinaryPVTagged factory function for _BACnetBinaryPVTagged
 func NewBACnetBinaryPVTagged(header BACnetTagHeader, value BACnetBinaryPV, tagNumber uint8, tagClass TagClass) *_BACnetBinaryPVTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetBinaryPVTagged must not be nil")
+	}
 	return &_BACnetBinaryPVTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

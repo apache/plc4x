@@ -95,6 +95,12 @@ func (m *_SubscribeCOVPropertyMultipleError) GetFirstFailedSubscription() Subscr
 
 // NewSubscribeCOVPropertyMultipleError factory function for _SubscribeCOVPropertyMultipleError
 func NewSubscribeCOVPropertyMultipleError(errorType ErrorEnclosed, firstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) *_SubscribeCOVPropertyMultipleError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for SubscribeCOVPropertyMultipleError must not be nil")
+	}
+	if firstFailedSubscription == nil {
+		panic("firstFailedSubscription of type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription for SubscribeCOVPropertyMultipleError must not be nil")
+	}
 	_result := &_SubscribeCOVPropertyMultipleError{
 		BACnetErrorContract:     NewBACnetError(),
 		ErrorType:               errorType,

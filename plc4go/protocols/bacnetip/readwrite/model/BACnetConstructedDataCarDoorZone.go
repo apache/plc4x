@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCarDoorZone) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataCarDoorZone factory function for _BACnetConstructedDataCarDoorZone
 func NewBACnetConstructedDataCarDoorZone(carDoorZone BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorZone {
+	if carDoorZone == nil {
+		panic("carDoorZone of type BACnetApplicationTagBoolean for BACnetConstructedDataCarDoorZone must not be nil")
+	}
 	_result := &_BACnetConstructedDataCarDoorZone{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CarDoorZone:                   carDoorZone,

@@ -84,6 +84,9 @@ func (m *_BACnetClientCOVObject) GetRealIncrement() BACnetApplicationTagReal {
 
 // NewBACnetClientCOVObject factory function for _BACnetClientCOVObject
 func NewBACnetClientCOVObject(realIncrement BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetClientCOVObject {
+	if realIncrement == nil {
+		panic("realIncrement of type BACnetApplicationTagReal for BACnetClientCOVObject must not be nil")
+	}
 	_result := &_BACnetClientCOVObject{
 		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
 		RealIncrement:           realIncrement,

@@ -101,6 +101,9 @@ func (m *_BACnetApplicationTagUnsignedInteger) GetActualValue() uint64 {
 
 // NewBACnetApplicationTagUnsignedInteger factory function for _BACnetApplicationTagUnsignedInteger
 func NewBACnetApplicationTagUnsignedInteger(payload BACnetTagPayloadUnsignedInteger, header BACnetTagHeader) *_BACnetApplicationTagUnsignedInteger {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetApplicationTagUnsignedInteger must not be nil")
+	}
 	_result := &_BACnetApplicationTagUnsignedInteger{
 		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
 		Payload:                      payload,

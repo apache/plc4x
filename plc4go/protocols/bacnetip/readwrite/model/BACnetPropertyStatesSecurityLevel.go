@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesSecurityLevel) GetSecurityLevel() BACnetSecurityLe
 
 // NewBACnetPropertyStatesSecurityLevel factory function for _BACnetPropertyStatesSecurityLevel
 func NewBACnetPropertyStatesSecurityLevel(securityLevel BACnetSecurityLevelTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesSecurityLevel {
+	if securityLevel == nil {
+		panic("securityLevel of type BACnetSecurityLevelTagged for BACnetPropertyStatesSecurityLevel must not be nil")
+	}
 	_result := &_BACnetPropertyStatesSecurityLevel{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		SecurityLevel:                securityLevel,

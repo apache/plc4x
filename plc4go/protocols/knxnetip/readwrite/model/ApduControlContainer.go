@@ -88,6 +88,9 @@ func (m *_ApduControlContainer) GetControlApdu() ApduControl {
 
 // NewApduControlContainer factory function for _ApduControlContainer
 func NewApduControlContainer(controlApdu ApduControl, numbered bool, counter uint8, dataLength uint8) *_ApduControlContainer {
+	if controlApdu == nil {
+		panic("controlApdu of type ApduControl for ApduControlContainer must not be nil")
+	}
 	_result := &_ApduControlContainer{
 		ApduContract: NewApdu(numbered, counter, dataLength),
 		ControlApdu:  controlApdu,

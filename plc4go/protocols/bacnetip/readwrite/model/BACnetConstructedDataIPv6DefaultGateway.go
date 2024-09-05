@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) GetActualValue() BACnetApplic
 
 // NewBACnetConstructedDataIPv6DefaultGateway factory function for _BACnetConstructedDataIPv6DefaultGateway
 func NewBACnetConstructedDataIPv6DefaultGateway(ipv6DefaultGateway BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DefaultGateway {
+	if ipv6DefaultGateway == nil {
+		panic("ipv6DefaultGateway of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6DefaultGateway must not be nil")
+	}
 	_result := &_BACnetConstructedDataIPv6DefaultGateway{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Ipv6DefaultGateway:            ipv6DefaultGateway,

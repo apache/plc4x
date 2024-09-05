@@ -109,6 +109,12 @@ func (m *_CurrencyUnitType) GetCurrency() LocalizedText {
 
 // NewCurrencyUnitType factory function for _CurrencyUnitType
 func NewCurrencyUnitType(numericCode int16, exponent int8, alphabeticCode PascalString, currency LocalizedText) *_CurrencyUnitType {
+	if alphabeticCode == nil {
+		panic("alphabeticCode of type PascalString for CurrencyUnitType must not be nil")
+	}
+	if currency == nil {
+		panic("currency of type LocalizedText for CurrencyUnitType must not be nil")
+	}
 	_result := &_CurrencyUnitType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NumericCode:                       numericCode,

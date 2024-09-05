@@ -84,6 +84,9 @@ func (m *_BACnetChannelValueCharacterString) GetCharacterStringValue() BACnetApp
 
 // NewBACnetChannelValueCharacterString factory function for _BACnetChannelValueCharacterString
 func NewBACnetChannelValueCharacterString(characterStringValue BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueCharacterString {
+	if characterStringValue == nil {
+		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetChannelValueCharacterString must not be nil")
+	}
 	_result := &_BACnetChannelValueCharacterString{
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		CharacterStringValue:       characterStringValue,

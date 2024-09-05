@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLastPriority) GetActualValue() BACnetApplicationT
 
 // NewBACnetConstructedDataLastPriority factory function for _BACnetConstructedDataLastPriority
 func NewBACnetConstructedDataLastPriority(lastPriority BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastPriority {
+	if lastPriority == nil {
+		panic("lastPriority of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLastPriority must not be nil")
+	}
 	_result := &_BACnetConstructedDataLastPriority{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastPriority:                  lastPriority,

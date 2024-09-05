@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCount) GetActualValue() BACnetApplicationTagUnsig
 
 // NewBACnetConstructedDataCount factory function for _BACnetConstructedDataCount
 func NewBACnetConstructedDataCount(count BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCount {
+	if count == nil {
+		panic("count of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCount must not be nil")
+	}
 	_result := &_BACnetConstructedDataCount{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Count:                         count,

@@ -84,6 +84,15 @@ func (m *_BACnetDateTimeEnclosed) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetDateTimeEnclosed factory function for _BACnetDateTimeEnclosed
 func NewBACnetDateTimeEnclosed(openingTag BACnetOpeningTag, dateTimeValue BACnetDateTime, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDateTimeEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDateTimeEnclosed must not be nil")
+	}
+	if dateTimeValue == nil {
+		panic("dateTimeValue of type BACnetDateTime for BACnetDateTimeEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDateTimeEnclosed must not be nil")
+	}
 	return &_BACnetDateTimeEnclosed{OpeningTag: openingTag, DateTimeValue: dateTimeValue, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

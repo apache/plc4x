@@ -104,6 +104,9 @@ func (m *_AdsDiscoveryBlockAmsNetId) GetAmsNetIdLength() uint16 {
 
 // NewAdsDiscoveryBlockAmsNetId factory function for _AdsDiscoveryBlockAmsNetId
 func NewAdsDiscoveryBlockAmsNetId(amsNetId AmsNetId) *_AdsDiscoveryBlockAmsNetId {
+	if amsNetId == nil {
+		panic("amsNetId of type AmsNetId for AdsDiscoveryBlockAmsNetId must not be nil")
+	}
 	_result := &_AdsDiscoveryBlockAmsNetId{
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		AmsNetId:                  amsNetId,

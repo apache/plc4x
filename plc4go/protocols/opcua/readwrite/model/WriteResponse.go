@@ -116,6 +116,9 @@ func (m *_WriteResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewWriteResponse factory function for _WriteResponse
 func NewWriteResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_WriteResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for WriteResponse must not be nil")
+	}
 	_result := &_WriteResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

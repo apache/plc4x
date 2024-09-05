@@ -110,6 +110,9 @@ func (m *_S7PayloadUserDataItemClkResponse) GetTimeStamp() DateAndTime {
 
 // NewS7PayloadUserDataItemClkResponse factory function for _S7PayloadUserDataItemClkResponse
 func NewS7PayloadUserDataItemClkResponse(res uint8, year1 uint8, timeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkResponse {
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for S7PayloadUserDataItemClkResponse must not be nil")
+	}
 	_result := &_S7PayloadUserDataItemClkResponse{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		Res:                           res,

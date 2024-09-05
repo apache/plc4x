@@ -84,6 +84,12 @@ func (m *_BACnetLandingDoorStatusLandingDoorsList) GetClosingTag() BACnetClosing
 
 // NewBACnetLandingDoorStatusLandingDoorsList factory function for _BACnetLandingDoorStatusLandingDoorsList
 func NewBACnetLandingDoorStatusLandingDoorsList(openingTag BACnetOpeningTag, landingDoors []BACnetLandingDoorStatusLandingDoorsListEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLandingDoorStatusLandingDoorsList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetLandingDoorStatusLandingDoorsList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetLandingDoorStatusLandingDoorsList must not be nil")
+	}
 	return &_BACnetLandingDoorStatusLandingDoorsList{OpeningTag: openingTag, LandingDoors: landingDoors, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataVarianceValue) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataVarianceValue factory function for _BACnetConstructedDataVarianceValue
 func NewBACnetConstructedDataVarianceValue(varianceValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVarianceValue {
+	if varianceValue == nil {
+		panic("varianceValue of type BACnetApplicationTagReal for BACnetConstructedDataVarianceValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataVarianceValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		VarianceValue:                 varianceValue,

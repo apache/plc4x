@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesUnits) GetUnits() BACnetEngineeringUnitsTagged {
 
 // NewBACnetPropertyStatesUnits factory function for _BACnetPropertyStatesUnits
 func NewBACnetPropertyStatesUnits(units BACnetEngineeringUnitsTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesUnits {
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetPropertyStatesUnits must not be nil")
+	}
 	_result := &_BACnetPropertyStatesUnits{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		Units:                        units,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCountBeforeChange) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataCountBeforeChange factory function for _BACnetConstructedDataCountBeforeChange
 func NewBACnetConstructedDataCountBeforeChange(countBeforeChange BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountBeforeChange {
+	if countBeforeChange == nil {
+		panic("countBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCountBeforeChange must not be nil")
+	}
 	_result := &_BACnetConstructedDataCountBeforeChange{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CountBeforeChange:             countBeforeChange,

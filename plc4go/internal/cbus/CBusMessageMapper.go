@@ -228,6 +228,9 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 }
 
 func producePointToPointCommand(unitAddress readWriteModel.UnitAddress, bridgeAddresses []readWriteModel.BridgeAddress, calData readWriteModel.CALData, cbusOptions readWriteModel.CBusOptions) (readWriteModel.CBusCommand, error) {
+	if calData == nil {
+		return nil, errors.New("cal data required")
+	}
 	var command readWriteModel.CBusPointToPointCommand
 	numberOfBridgeAddresses := len(bridgeAddresses)
 	if numberOfBridgeAddresses > 0 {

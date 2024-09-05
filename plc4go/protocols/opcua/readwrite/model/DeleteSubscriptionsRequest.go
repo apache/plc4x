@@ -102,6 +102,9 @@ func (m *_DeleteSubscriptionsRequest) GetSubscriptionIds() []uint32 {
 
 // NewDeleteSubscriptionsRequest factory function for _DeleteSubscriptionsRequest
 func NewDeleteSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32) *_DeleteSubscriptionsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteSubscriptionsRequest must not be nil")
+	}
 	_result := &_DeleteSubscriptionsRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

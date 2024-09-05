@@ -166,6 +166,9 @@ func (m *_ErrorReportingDataGeneric) GetIsMostRecentAndMostSevere() bool {
 
 // NewErrorReportingDataGeneric factory function for _ErrorReportingDataGeneric
 func NewErrorReportingDataGeneric(systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8, commandTypeContainer ErrorReportingCommandTypeContainer) *_ErrorReportingDataGeneric {
+	if systemCategory == nil {
+		panic("systemCategory of type ErrorReportingSystemCategory for ErrorReportingDataGeneric must not be nil")
+	}
 	_result := &_ErrorReportingDataGeneric{
 		ErrorReportingDataContract: NewErrorReportingData(commandTypeContainer),
 		SystemCategory:             systemCategory,

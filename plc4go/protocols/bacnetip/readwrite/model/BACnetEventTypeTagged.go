@@ -102,6 +102,9 @@ func (m *_BACnetEventTypeTagged) GetIsProprietary() bool {
 
 // NewBACnetEventTypeTagged factory function for _BACnetEventTypeTagged
 func NewBACnetEventTypeTagged(header BACnetTagHeader, value BACnetEventType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEventTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetEventTypeTagged must not be nil")
+	}
 	return &_BACnetEventTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

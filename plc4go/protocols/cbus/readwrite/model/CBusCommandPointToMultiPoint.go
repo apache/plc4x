@@ -84,6 +84,9 @@ func (m *_CBusCommandPointToMultiPoint) GetCommand() CBusPointToMultiPointComman
 
 // NewCBusCommandPointToMultiPoint factory function for _CBusCommandPointToMultiPoint
 func NewCBusCommandPointToMultiPoint(command CBusPointToMultiPointCommand, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandPointToMultiPoint {
+	if command == nil {
+		panic("command of type CBusPointToMultiPointCommand for CBusCommandPointToMultiPoint must not be nil")
+	}
 	_result := &_CBusCommandPointToMultiPoint{
 		CBusCommandContract: NewCBusCommand(header, cBusOptions),
 		Command:             command,

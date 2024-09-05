@@ -95,6 +95,12 @@ func (m *_SignedSoftwareCertificate) GetSignature() PascalByteString {
 
 // NewSignedSoftwareCertificate factory function for _SignedSoftwareCertificate
 func NewSignedSoftwareCertificate(certificateData PascalByteString, signature PascalByteString) *_SignedSoftwareCertificate {
+	if certificateData == nil {
+		panic("certificateData of type PascalByteString for SignedSoftwareCertificate must not be nil")
+	}
+	if signature == nil {
+		panic("signature of type PascalByteString for SignedSoftwareCertificate must not be nil")
+	}
 	_result := &_SignedSoftwareCertificate{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		CertificateData:                   certificateData,

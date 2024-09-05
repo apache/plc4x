@@ -84,6 +84,12 @@ func (m *_BACnetNameValueCollection) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetNameValueCollection factory function for _BACnetNameValueCollection
 func NewBACnetNameValueCollection(openingTag BACnetOpeningTag, members []BACnetNameValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNameValueCollection {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetNameValueCollection must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetNameValueCollection must not be nil")
+	}
 	return &_BACnetNameValueCollection{OpeningTag: openingTag, Members: members, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

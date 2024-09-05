@@ -102,6 +102,9 @@ func (pm *_BACnetCalendarEntry) GetPeekedTagNumber() uint8 {
 
 // NewBACnetCalendarEntry factory function for _BACnetCalendarEntry
 func NewBACnetCalendarEntry(peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntry {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetCalendarEntry must not be nil")
+	}
 	return &_BACnetCalendarEntry{PeekedTagHeader: peekedTagHeader}
 }
 

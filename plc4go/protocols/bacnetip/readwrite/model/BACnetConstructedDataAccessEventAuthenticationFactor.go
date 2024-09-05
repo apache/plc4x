@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) GetActualValue()
 
 // NewBACnetConstructedDataAccessEventAuthenticationFactor factory function for _BACnetConstructedDataAccessEventAuthenticationFactor
 func NewBACnetConstructedDataAccessEventAuthenticationFactor(accessEventAuthenticationFactor BACnetAuthenticationFactor, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventAuthenticationFactor {
+	if accessEventAuthenticationFactor == nil {
+		panic("accessEventAuthenticationFactor of type BACnetAuthenticationFactor for BACnetConstructedDataAccessEventAuthenticationFactor must not be nil")
+	}
 	_result := &_BACnetConstructedDataAccessEventAuthenticationFactor{
 		BACnetConstructedDataContract:   NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AccessEventAuthenticationFactor: accessEventAuthenticationFactor,

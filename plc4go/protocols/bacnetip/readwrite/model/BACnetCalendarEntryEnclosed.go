@@ -84,6 +84,15 @@ func (m *_BACnetCalendarEntryEnclosed) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetCalendarEntryEnclosed factory function for _BACnetCalendarEntryEnclosed
 func NewBACnetCalendarEntryEnclosed(openingTag BACnetOpeningTag, calendarEntry BACnetCalendarEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetCalendarEntryEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetCalendarEntryEnclosed must not be nil")
+	}
+	if calendarEntry == nil {
+		panic("calendarEntry of type BACnetCalendarEntry for BACnetCalendarEntryEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetCalendarEntryEnclosed must not be nil")
+	}
 	return &_BACnetCalendarEntryEnclosed{OpeningTag: openingTag, CalendarEntry: calendarEntry, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

@@ -95,6 +95,12 @@ func (m *_ChangeListAddError) GetFirstFailedElementNumber() BACnetContextTagUnsi
 
 // NewChangeListAddError factory function for _ChangeListAddError
 func NewChangeListAddError(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) *_ChangeListAddError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for ChangeListAddError must not be nil")
+	}
+	if firstFailedElementNumber == nil {
+		panic("firstFailedElementNumber of type BACnetContextTagUnsignedInteger for ChangeListAddError must not be nil")
+	}
 	_result := &_ChangeListAddError{
 		BACnetErrorContract:      NewBACnetError(),
 		ErrorType:                errorType,

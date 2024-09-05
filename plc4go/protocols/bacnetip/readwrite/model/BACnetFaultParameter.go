@@ -102,6 +102,9 @@ func (pm *_BACnetFaultParameter) GetPeekedTagNumber() uint8 {
 
 // NewBACnetFaultParameter factory function for _BACnetFaultParameter
 func NewBACnetFaultParameter(peekedTagHeader BACnetTagHeader) *_BACnetFaultParameter {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetFaultParameter must not be nil")
+	}
 	return &_BACnetFaultParameter{PeekedTagHeader: peekedTagHeader}
 }
 

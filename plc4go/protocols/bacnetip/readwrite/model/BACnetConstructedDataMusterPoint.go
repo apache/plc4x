@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataMusterPoint) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataMusterPoint factory function for _BACnetConstructedDataMusterPoint
 func NewBACnetConstructedDataMusterPoint(musterPoint BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMusterPoint {
+	if musterPoint == nil {
+		panic("musterPoint of type BACnetApplicationTagBoolean for BACnetConstructedDataMusterPoint must not be nil")
+	}
 	_result := &_BACnetConstructedDataMusterPoint{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MusterPoint:                   musterPoint,

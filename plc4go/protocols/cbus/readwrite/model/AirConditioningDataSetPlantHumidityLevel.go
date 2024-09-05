@@ -126,6 +126,12 @@ func (m *_AirConditioningDataSetPlantHumidityLevel) GetAuxLevel() HVACAuxiliaryL
 
 // NewAirConditioningDataSetPlantHumidityLevel factory function for _AirConditioningDataSetPlantHumidityLevel
 func NewAirConditioningDataSetPlantHumidityLevel(zoneGroup byte, zoneList HVACZoneList, humidityModeAndFlags HVACHumidityModeAndFlags, humidityType HVACHumidityType, level HVACHumidity, rawLevel HVACRawLevels, auxLevel HVACAuxiliaryLevel, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetPlantHumidityLevel {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetPlantHumidityLevel must not be nil")
+	}
+	if humidityModeAndFlags == nil {
+		panic("humidityModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataSetPlantHumidityLevel must not be nil")
+	}
 	_result := &_AirConditioningDataSetPlantHumidityLevel{
 		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
 		ZoneGroup:                   zoneGroup,

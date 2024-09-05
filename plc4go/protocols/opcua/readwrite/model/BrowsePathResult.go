@@ -102,6 +102,9 @@ func (m *_BrowsePathResult) GetTargets() []ExtensionObjectDefinition {
 
 // NewBrowsePathResult factory function for _BrowsePathResult
 func NewBrowsePathResult(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) *_BrowsePathResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for BrowsePathResult must not be nil")
+	}
 	_result := &_BrowsePathResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,

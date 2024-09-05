@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) GetIntegerVa
 
 // NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger factory function for _BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
 func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(integerValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger{
 		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
 		IntegerValue: integerValue,

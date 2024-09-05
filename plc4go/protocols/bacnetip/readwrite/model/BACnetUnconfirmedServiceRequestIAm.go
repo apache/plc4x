@@ -109,6 +109,18 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) GetVendorId() BACnetVendorIdTagged
 
 // NewBACnetUnconfirmedServiceRequestIAm factory function for _BACnetUnconfirmedServiceRequestIAm
 func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength BACnetApplicationTagUnsignedInteger, segmentationSupported BACnetSegmentationTagged, vendorId BACnetVendorIdTagged, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestIAm {
+	if deviceIdentifier == nil {
+		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetUnconfirmedServiceRequestIAm must not be nil")
+	}
+	if maximumApduLengthAcceptedLength == nil {
+		panic("maximumApduLengthAcceptedLength of type BACnetApplicationTagUnsignedInteger for BACnetUnconfirmedServiceRequestIAm must not be nil")
+	}
+	if segmentationSupported == nil {
+		panic("segmentationSupported of type BACnetSegmentationTagged for BACnetUnconfirmedServiceRequestIAm must not be nil")
+	}
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for BACnetUnconfirmedServiceRequestIAm must not be nil")
+	}
 	_result := &_BACnetUnconfirmedServiceRequestIAm{
 		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 		DeviceIdentifier:                        deviceIdentifier,

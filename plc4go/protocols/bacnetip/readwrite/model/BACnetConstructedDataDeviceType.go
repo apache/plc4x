@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDeviceType) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataDeviceType factory function for _BACnetConstructedDataDeviceType
 func NewBACnetConstructedDataDeviceType(deviceType BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceType {
+	if deviceType == nil {
+		panic("deviceType of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeviceType must not be nil")
+	}
 	_result := &_BACnetConstructedDataDeviceType{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DeviceType:                    deviceType,

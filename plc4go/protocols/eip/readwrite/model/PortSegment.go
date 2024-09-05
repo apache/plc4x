@@ -88,6 +88,9 @@ func (m *_PortSegment) GetSegmentType() PortSegmentType {
 
 // NewPortSegment factory function for _PortSegment
 func NewPortSegment(segmentType PortSegmentType) *_PortSegment {
+	if segmentType == nil {
+		panic("segmentType of type PortSegmentType for PortSegment must not be nil")
+	}
 	_result := &_PortSegment{
 		PathSegmentContract: NewPathSegment(),
 		SegmentType:         segmentType,

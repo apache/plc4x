@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLimitEnable) GetActualValue() BACnetLimitEnableTa
 
 // NewBACnetConstructedDataLimitEnable factory function for _BACnetConstructedDataLimitEnable
 func NewBACnetConstructedDataLimitEnable(limitEnable BACnetLimitEnableTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitEnable {
+	if limitEnable == nil {
+		panic("limitEnable of type BACnetLimitEnableTagged for BACnetConstructedDataLimitEnable must not be nil")
+	}
 	_result := &_BACnetConstructedDataLimitEnable{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LimitEnable:                   limitEnable,

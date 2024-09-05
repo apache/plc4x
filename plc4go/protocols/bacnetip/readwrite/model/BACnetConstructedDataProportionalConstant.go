@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataProportionalConstant) GetActualValue() BACnetAppl
 
 // NewBACnetConstructedDataProportionalConstant factory function for _BACnetConstructedDataProportionalConstant
 func NewBACnetConstructedDataProportionalConstant(proportionalConstant BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstant {
+	if proportionalConstant == nil {
+		panic("proportionalConstant of type BACnetApplicationTagReal for BACnetConstructedDataProportionalConstant must not be nil")
+	}
 	_result := &_BACnetConstructedDataProportionalConstant{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ProportionalConstant:          proportionalConstant,

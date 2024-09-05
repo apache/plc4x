@@ -109,6 +109,12 @@ func (m *_CallMethodRequest) GetInputArguments() []Variant {
 
 // NewCallMethodRequest factory function for _CallMethodRequest
 func NewCallMethodRequest(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) *_CallMethodRequest {
+	if objectId == nil {
+		panic("objectId of type NodeId for CallMethodRequest must not be nil")
+	}
+	if methodId == nil {
+		panic("methodId of type NodeId for CallMethodRequest must not be nil")
+	}
 	_result := &_CallMethodRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ObjectId:                          objectId,

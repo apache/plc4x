@@ -88,6 +88,9 @@ func (m *_X509IdentityToken) GetCertificateData() PascalByteString {
 
 // NewX509IdentityToken factory function for _X509IdentityToken
 func NewX509IdentityToken(certificateData PascalByteString) *_X509IdentityToken {
+	if certificateData == nil {
+		panic("certificateData of type PascalByteString for X509IdentityToken must not be nil")
+	}
 	_result := &_X509IdentityToken{
 		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
 		CertificateData:                     certificateData,

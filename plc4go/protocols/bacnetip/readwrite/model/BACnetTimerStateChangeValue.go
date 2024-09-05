@@ -118,6 +118,9 @@ func (pm *_BACnetTimerStateChangeValue) GetPeekedIsContextTag() bool {
 
 // NewBACnetTimerStateChangeValue factory function for _BACnetTimerStateChangeValue
 func NewBACnetTimerStateChangeValue(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValue {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetTimerStateChangeValue must not be nil")
+	}
 	return &_BACnetTimerStateChangeValue{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument}
 }
 

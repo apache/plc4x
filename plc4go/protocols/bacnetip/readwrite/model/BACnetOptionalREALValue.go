@@ -84,6 +84,9 @@ func (m *_BACnetOptionalREALValue) GetRealValue() BACnetApplicationTagReal {
 
 // NewBACnetOptionalREALValue factory function for _BACnetOptionalREALValue
 func NewBACnetOptionalREALValue(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetOptionalREALValue {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetOptionalREALValue must not be nil")
+	}
 	_result := &_BACnetOptionalREALValue{
 		BACnetOptionalREALContract: NewBACnetOptionalREAL(peekedTagHeader),
 		RealValue:                  realValue,

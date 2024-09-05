@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetActualValue() BACnetA
 
 // NewBACnetConstructedDataDeployedProfileLocation factory function for _BACnetConstructedDataDeployedProfileLocation
 func NewBACnetConstructedDataDeployedProfileLocation(deployedProfileLocation BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeployedProfileLocation {
+	if deployedProfileLocation == nil {
+		panic("deployedProfileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeployedProfileLocation must not be nil")
+	}
 	_result := &_BACnetConstructedDataDeployedProfileLocation{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DeployedProfileLocation:       deployedProfileLocation,

@@ -102,6 +102,9 @@ func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) GetPeekedTagNumber() uin
 
 // NewBACnetUnconfirmedServiceRequestWhoHasObject factory function for _BACnetUnconfirmedServiceRequestWhoHasObject
 func NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObject {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetUnconfirmedServiceRequestWhoHasObject must not be nil")
+	}
 	return &_BACnetUnconfirmedServiceRequestWhoHasObject{PeekedTagHeader: peekedTagHeader}
 }
 

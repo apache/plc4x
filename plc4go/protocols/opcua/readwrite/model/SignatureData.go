@@ -95,6 +95,12 @@ func (m *_SignatureData) GetSignature() PascalByteString {
 
 // NewSignatureData factory function for _SignatureData
 func NewSignatureData(algorithm PascalString, signature PascalByteString) *_SignatureData {
+	if algorithm == nil {
+		panic("algorithm of type PascalString for SignatureData must not be nil")
+	}
+	if signature == nil {
+		panic("signature of type PascalByteString for SignatureData must not be nil")
+	}
 	_result := &_SignatureData{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		Algorithm:                         algorithm,

@@ -116,6 +116,12 @@ func (m *_ServerOnNetwork) GetServerCapabilities() []PascalString {
 
 // NewServerOnNetwork factory function for _ServerOnNetwork
 func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) *_ServerOnNetwork {
+	if serverName == nil {
+		panic("serverName of type PascalString for ServerOnNetwork must not be nil")
+	}
+	if discoveryUrl == nil {
+		panic("discoveryUrl of type PascalString for ServerOnNetwork must not be nil")
+	}
 	_result := &_ServerOnNetwork{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RecordId:                          recordId,

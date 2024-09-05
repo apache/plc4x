@@ -107,6 +107,9 @@ func (m *_BVLCForwardedNPDU) GetNpdu() NPDU {
 
 // NewBVLCForwardedNPDU factory function for _BVLCForwardedNPDU
 func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength uint16) *_BVLCForwardedNPDU {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCForwardedNPDU must not be nil")
+	}
 	_result := &_BVLCForwardedNPDU{
 		BVLCContract: NewBVLC(),
 		Ip:           ip,

@@ -74,6 +74,9 @@ func (m *_BACnetRecipientProcess) GetProcessIdentifier() BACnetContextTagUnsigne
 
 // NewBACnetRecipientProcess factory function for _BACnetRecipientProcess
 func NewBACnetRecipientProcess(recipient BACnetRecipientEnclosed, processIdentifier BACnetContextTagUnsignedInteger) *_BACnetRecipientProcess {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientEnclosed for BACnetRecipientProcess must not be nil")
+	}
 	return &_BACnetRecipientProcess{Recipient: recipient, ProcessIdentifier: processIdentifier}
 }
 

@@ -112,6 +112,21 @@ func (m *_BACnetEventParameterExtended) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetEventParameterExtended factory function for _BACnetEventParameterExtended
 func NewBACnetEventParameterExtended(openingTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetEventParameterExtendedParameters, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterExtended {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterExtended must not be nil")
+	}
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for BACnetEventParameterExtended must not be nil")
+	}
+	if extendedEventType == nil {
+		panic("extendedEventType of type BACnetContextTagUnsignedInteger for BACnetEventParameterExtended must not be nil")
+	}
+	if parameters == nil {
+		panic("parameters of type BACnetEventParameterExtendedParameters for BACnetEventParameterExtended must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterExtended must not be nil")
+	}
 	_result := &_BACnetEventParameterExtended{
 		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
 		OpeningTag:                   openingTag,

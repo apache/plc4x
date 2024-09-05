@@ -88,6 +88,9 @@ func (m *_LogicalSegment) GetSegmentType() LogicalSegmentType {
 
 // NewLogicalSegment factory function for _LogicalSegment
 func NewLogicalSegment(segmentType LogicalSegmentType) *_LogicalSegment {
+	if segmentType == nil {
+		panic("segmentType of type LogicalSegmentType for LogicalSegment must not be nil")
+	}
 	_result := &_LogicalSegment{
 		PathSegmentContract: NewPathSegment(),
 		SegmentType:         segmentType,

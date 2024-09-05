@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataSetpointReference) GetActualValue() BACnetSetpoin
 
 // NewBACnetConstructedDataSetpointReference factory function for _BACnetConstructedDataSetpointReference
 func NewBACnetConstructedDataSetpointReference(setpointReference BACnetSetpointReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpointReference {
+	if setpointReference == nil {
+		panic("setpointReference of type BACnetSetpointReference for BACnetConstructedDataSetpointReference must not be nil")
+	}
 	_result := &_BACnetConstructedDataSetpointReference{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		SetpointReference:             setpointReference,

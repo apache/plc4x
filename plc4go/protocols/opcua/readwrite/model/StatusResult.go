@@ -95,6 +95,12 @@ func (m *_StatusResult) GetDiagnosticInfo() DiagnosticInfo {
 
 // NewStatusResult factory function for _StatusResult
 func NewStatusResult(statusCode StatusCode, diagnosticInfo DiagnosticInfo) *_StatusResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for StatusResult must not be nil")
+	}
+	if diagnosticInfo == nil {
+		panic("diagnosticInfo of type DiagnosticInfo for StatusResult must not be nil")
+	}
 	_result := &_StatusResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,

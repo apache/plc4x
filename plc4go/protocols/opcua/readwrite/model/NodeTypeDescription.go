@@ -111,6 +111,9 @@ func (m *_NodeTypeDescription) GetDataToReturn() []ExtensionObjectDefinition {
 
 // NewNodeTypeDescription factory function for _NodeTypeDescription
 func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) *_NodeTypeDescription {
+	if typeDefinitionNode == nil {
+		panic("typeDefinitionNode of type ExpandedNodeId for NodeTypeDescription must not be nil")
+	}
 	_result := &_NodeTypeDescription{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		TypeDefinitionNode:                typeDefinitionNode,

@@ -84,6 +84,9 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetPropertyValue(
 
 // NewBACnetPropertyAccessResultAccessResultPropertyValue factory function for _BACnetPropertyAccessResultAccessResultPropertyValue
 func NewBACnetPropertyAccessResultAccessResultPropertyValue(propertyValue BACnetConstructedData, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyValue {
+	if propertyValue == nil {
+		panic("propertyValue of type BACnetConstructedData for BACnetPropertyAccessResultAccessResultPropertyValue must not be nil")
+	}
 	_result := &_BACnetPropertyAccessResultAccessResultPropertyValue{
 		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
 		PropertyValue: propertyValue,

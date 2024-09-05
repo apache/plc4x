@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataWindowInterval) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataWindowInterval factory function for _BACnetConstructedDataWindowInterval
 func NewBACnetConstructedDataWindowInterval(windowInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWindowInterval {
+	if windowInterval == nil {
+		panic("windowInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataWindowInterval must not be nil")
+	}
 	_result := &_BACnetConstructedDataWindowInterval{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		WindowInterval:                windowInterval,

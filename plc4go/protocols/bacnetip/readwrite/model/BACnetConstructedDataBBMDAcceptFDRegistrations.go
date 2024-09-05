@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetActualValue() BACne
 
 // NewBACnetConstructedDataBBMDAcceptFDRegistrations factory function for _BACnetConstructedDataBBMDAcceptFDRegistrations
 func NewBACnetConstructedDataBBMDAcceptFDRegistrations(bbmdAcceptFDRegistrations BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDAcceptFDRegistrations {
+	if bbmdAcceptFDRegistrations == nil {
+		panic("bbmdAcceptFDRegistrations of type BACnetApplicationTagBoolean for BACnetConstructedDataBBMDAcceptFDRegistrations must not be nil")
+	}
 	_result := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BbmdAcceptFDRegistrations:     bbmdAcceptFDRegistrations,

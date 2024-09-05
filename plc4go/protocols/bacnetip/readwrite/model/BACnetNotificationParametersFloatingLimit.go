@@ -119,6 +119,24 @@ func (m *_BACnetNotificationParametersFloatingLimit) GetInnerClosingTag() BACnet
 
 // NewBACnetNotificationParametersFloatingLimit factory function for _BACnetNotificationParametersFloatingLimit
 func NewBACnetNotificationParametersFloatingLimit(innerOpeningTag BACnetOpeningTag, referenceValue BACnetContextTagReal, statusFlags BACnetStatusFlagsTagged, setPointValue BACnetContextTagReal, errorLimit BACnetContextTagReal, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersFloatingLimit {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersFloatingLimit must not be nil")
+	}
+	if referenceValue == nil {
+		panic("referenceValue of type BACnetContextTagReal for BACnetNotificationParametersFloatingLimit must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersFloatingLimit must not be nil")
+	}
+	if setPointValue == nil {
+		panic("setPointValue of type BACnetContextTagReal for BACnetNotificationParametersFloatingLimit must not be nil")
+	}
+	if errorLimit == nil {
+		panic("errorLimit of type BACnetContextTagReal for BACnetNotificationParametersFloatingLimit must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersFloatingLimit must not be nil")
+	}
 	_result := &_BACnetNotificationParametersFloatingLimit{
 		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 		InnerOpeningTag:                      innerOpeningTag,

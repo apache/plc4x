@@ -102,6 +102,9 @@ func (m *_BACnetLiftCarModeTagged) GetIsProprietary() bool {
 
 // NewBACnetLiftCarModeTagged factory function for _BACnetLiftCarModeTagged
 func NewBACnetLiftCarModeTagged(header BACnetTagHeader, value BACnetLiftCarMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftCarModeTagged must not be nil")
+	}
 	return &_BACnetLiftCarModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

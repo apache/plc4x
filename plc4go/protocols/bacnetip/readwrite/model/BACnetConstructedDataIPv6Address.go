@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataIPv6Address) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataIPv6Address factory function for _BACnetConstructedDataIPv6Address
 func NewBACnetConstructedDataIPv6Address(ipv6Address BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6Address {
+	if ipv6Address == nil {
+		panic("ipv6Address of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6Address must not be nil")
+	}
 	_result := &_BACnetConstructedDataIPv6Address{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Ipv6Address:                   ipv6Address,

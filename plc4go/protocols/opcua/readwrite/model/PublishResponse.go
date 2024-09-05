@@ -153,6 +153,12 @@ func (m *_PublishResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewPublishResponse factory function for _PublishResponse
 func NewPublishResponse(responseHeader ExtensionObjectDefinition, subscriptionId uint32, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32, moreNotifications bool, notificationMessage ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_PublishResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for PublishResponse must not be nil")
+	}
+	if notificationMessage == nil {
+		panic("notificationMessage of type ExtensionObjectDefinition for PublishResponse must not be nil")
+	}
 	_result := &_PublishResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

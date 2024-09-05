@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataEgressTime) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataEgressTime factory function for _BACnetConstructedDataEgressTime
 func NewBACnetConstructedDataEgressTime(egressTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressTime {
+	if egressTime == nil {
+		panic("egressTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataEgressTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataEgressTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EgressTime:                    egressTime,

@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataChangesPending) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataChangesPending factory function for _BACnetConstructedDataChangesPending
 func NewBACnetConstructedDataChangesPending(changesPending BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangesPending {
+	if changesPending == nil {
+		panic("changesPending of type BACnetApplicationTagBoolean for BACnetConstructedDataChangesPending must not be nil")
+	}
 	_result := &_BACnetConstructedDataChangesPending{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ChangesPending:                changesPending,

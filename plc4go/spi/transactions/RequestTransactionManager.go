@@ -111,7 +111,7 @@ type withCustomExecutor struct {
 	executor pool.Executor
 }
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=requestTransactionManager
+//go:generate plc4xGenerator -type=requestTransactionManager
 type requestTransactionManager struct {
 	runningRequests     []*requestTransaction
 	runningRequestMutex sync.RWMutex
@@ -130,7 +130,7 @@ type requestTransactionManager struct {
 
 	traceTransactionManagerTransactions bool // flag set to true if it should trace transactions
 
-	log zerolog.Logger `ignore:"true"`
+	log zerolog.Logger
 }
 
 //

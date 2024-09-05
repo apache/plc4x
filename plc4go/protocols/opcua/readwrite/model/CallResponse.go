@@ -116,6 +116,9 @@ func (m *_CallResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewCallResponse factory function for _CallResponse
 func NewCallResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_CallResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CallResponse must not be nil")
+	}
 	_result := &_CallResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

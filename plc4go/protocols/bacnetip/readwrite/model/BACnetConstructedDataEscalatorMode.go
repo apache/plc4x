@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataEscalatorMode) GetActualValue() BACnetEscalatorMo
 
 // NewBACnetConstructedDataEscalatorMode factory function for _BACnetConstructedDataEscalatorMode
 func NewBACnetConstructedDataEscalatorMode(escalatorMode BACnetEscalatorModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorMode {
+	if escalatorMode == nil {
+		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetConstructedDataEscalatorMode must not be nil")
+	}
 	_result := &_BACnetConstructedDataEscalatorMode{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EscalatorMode:                 escalatorMode,

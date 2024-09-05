@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetActualValue() 
 
 // NewBACnetConstructedDataNumberOfAuthenticationPolicies factory function for _BACnetConstructedDataNumberOfAuthenticationPolicies
 func NewBACnetConstructedDataNumberOfAuthenticationPolicies(numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAuthenticationPolicies {
+	if numberOfAuthenticationPolicies == nil {
+		panic("numberOfAuthenticationPolicies of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfAuthenticationPolicies must not be nil")
+	}
 	_result := &_BACnetConstructedDataNumberOfAuthenticationPolicies{
 		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NumberOfAuthenticationPolicies: numberOfAuthenticationPolicies,

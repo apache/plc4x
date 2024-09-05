@@ -95,6 +95,12 @@ func (m *_RepublishResponse) GetNotificationMessage() ExtensionObjectDefinition 
 
 // NewRepublishResponse factory function for _RepublishResponse
 func NewRepublishResponse(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) *_RepublishResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RepublishResponse must not be nil")
+	}
+	if notificationMessage == nil {
+		panic("notificationMessage of type ExtensionObjectDefinition for RepublishResponse must not be nil")
+	}
 	_result := &_RepublishResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

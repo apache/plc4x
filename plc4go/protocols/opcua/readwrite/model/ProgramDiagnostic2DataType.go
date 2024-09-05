@@ -193,6 +193,21 @@ func (m *_ProgramDiagnostic2DataType) GetLastMethodReturnStatus() StatusCode {
 
 // NewProgramDiagnostic2DataType factory function for _ProgramDiagnostic2DataType
 func NewProgramDiagnostic2DataType(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, noOfLastMethodInputValues int32, lastMethodInputValues []Variant, noOfLastMethodOutputValues int32, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) *_ProgramDiagnostic2DataType {
+	if createSessionId == nil {
+		panic("createSessionId of type NodeId for ProgramDiagnostic2DataType must not be nil")
+	}
+	if createClientName == nil {
+		panic("createClientName of type PascalString for ProgramDiagnostic2DataType must not be nil")
+	}
+	if lastMethodCall == nil {
+		panic("lastMethodCall of type PascalString for ProgramDiagnostic2DataType must not be nil")
+	}
+	if lastMethodSessionId == nil {
+		panic("lastMethodSessionId of type NodeId for ProgramDiagnostic2DataType must not be nil")
+	}
+	if lastMethodReturnStatus == nil {
+		panic("lastMethodReturnStatus of type StatusCode for ProgramDiagnostic2DataType must not be nil")
+	}
 	_result := &_ProgramDiagnostic2DataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		CreateSessionId:                   createSessionId,

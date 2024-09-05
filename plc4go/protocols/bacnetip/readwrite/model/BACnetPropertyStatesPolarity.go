@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesPolarity) GetPolarity() BACnetPolarityTagged {
 
 // NewBACnetPropertyStatesPolarity factory function for _BACnetPropertyStatesPolarity
 func NewBACnetPropertyStatesPolarity(polarity BACnetPolarityTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesPolarity {
+	if polarity == nil {
+		panic("polarity of type BACnetPolarityTagged for BACnetPropertyStatesPolarity must not be nil")
+	}
 	_result := &_BACnetPropertyStatesPolarity{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		Polarity:                     polarity,

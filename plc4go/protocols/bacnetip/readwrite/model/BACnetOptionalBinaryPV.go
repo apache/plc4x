@@ -102,6 +102,9 @@ func (pm *_BACnetOptionalBinaryPV) GetPeekedTagNumber() uint8 {
 
 // NewBACnetOptionalBinaryPV factory function for _BACnetOptionalBinaryPV
 func NewBACnetOptionalBinaryPV(peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPV {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalBinaryPV must not be nil")
+	}
 	return &_BACnetOptionalBinaryPV{PeekedTagHeader: peekedTagHeader}
 }
 

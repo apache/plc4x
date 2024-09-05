@@ -36,7 +36,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Connection
+//go:generate plc4xGenerator -type=Connection
 type Connection struct {
 	_default.DefaultConnection
 	messageCodec *MessageCodec
@@ -48,9 +48,9 @@ type Connection struct {
 	channel *SecureChannel
 
 	connectEvent      chan struct{}
-	connectTimeout    time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
+	connectTimeout    time.Duration // TODO: do we need to have that in general, where to get that from
 	disconnectEvent   chan struct{}
-	disconnectTimeout time.Duration `stringer:"true"` // TODO: do we need to have that in general, where to get that from
+	disconnectTimeout time.Duration // TODO: do we need to have that in general, where to get that from
 
 	connectionId string
 	tracer       tracer.Tracer

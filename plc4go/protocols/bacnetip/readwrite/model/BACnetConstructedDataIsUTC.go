@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataIsUTC) GetActualValue() BACnetApplicationTagBoole
 
 // NewBACnetConstructedDataIsUTC factory function for _BACnetConstructedDataIsUTC
 func NewBACnetConstructedDataIsUTC(isUtc BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIsUTC {
+	if isUtc == nil {
+		panic("isUtc of type BACnetApplicationTagBoolean for BACnetConstructedDataIsUTC must not be nil")
+	}
 	_result := &_BACnetConstructedDataIsUTC{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		IsUtc:                         isUtc,

@@ -84,6 +84,9 @@ func (m *_BACnetChannelValueOctetString) GetOctetStringValue() BACnetApplication
 
 // NewBACnetChannelValueOctetString factory function for _BACnetChannelValueOctetString
 func NewBACnetChannelValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetChannelValueOctetString must not be nil")
+	}
 	_result := &_BACnetChannelValueOctetString{
 		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
 		OctetStringValue:           octetStringValue,

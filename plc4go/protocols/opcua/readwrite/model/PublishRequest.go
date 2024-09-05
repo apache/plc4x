@@ -102,6 +102,9 @@ func (m *_PublishRequest) GetSubscriptionAcknowledgements() []ExtensionObjectDef
 
 // NewPublishRequest factory function for _PublishRequest
 func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) *_PublishRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for PublishRequest must not be nil")
+	}
 	_result := &_PublishRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

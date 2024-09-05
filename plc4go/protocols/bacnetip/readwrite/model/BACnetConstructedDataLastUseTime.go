@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLastUseTime) GetActualValue() BACnetDateTime {
 
 // NewBACnetConstructedDataLastUseTime factory function for _BACnetConstructedDataLastUseTime
 func NewBACnetConstructedDataLastUseTime(lastUseTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastUseTime {
+	if lastUseTime == nil {
+		panic("lastUseTime of type BACnetDateTime for BACnetConstructedDataLastUseTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataLastUseTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastUseTime:                   lastUseTime,

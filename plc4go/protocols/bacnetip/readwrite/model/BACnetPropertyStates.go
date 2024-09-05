@@ -102,6 +102,9 @@ func (pm *_BACnetPropertyStates) GetPeekedTagNumber() uint8 {
 
 // NewBACnetPropertyStates factory function for _BACnetPropertyStates
 func NewBACnetPropertyStates(peekedTagHeader BACnetTagHeader) *_BACnetPropertyStates {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetPropertyStates must not be nil")
+	}
 	return &_BACnetPropertyStates{PeekedTagHeader: peekedTagHeader}
 }
 

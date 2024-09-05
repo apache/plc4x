@@ -81,6 +81,9 @@ func (m *_BACnetAuthenticationFactorFormat) GetVendorFormat() BACnetContextTagUn
 
 // NewBACnetAuthenticationFactorFormat factory function for _BACnetAuthenticationFactorFormat
 func NewBACnetAuthenticationFactorFormat(formatType BACnetAuthenticationFactorTypeTagged, vendorId BACnetVendorIdTagged, vendorFormat BACnetContextTagUnsignedInteger) *_BACnetAuthenticationFactorFormat {
+	if formatType == nil {
+		panic("formatType of type BACnetAuthenticationFactorTypeTagged for BACnetAuthenticationFactorFormat must not be nil")
+	}
 	return &_BACnetAuthenticationFactorFormat{FormatType: formatType, VendorId: vendorId, VendorFormat: vendorFormat}
 }
 

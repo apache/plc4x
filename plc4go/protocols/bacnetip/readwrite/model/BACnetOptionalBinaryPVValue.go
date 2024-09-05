@@ -84,6 +84,9 @@ func (m *_BACnetOptionalBinaryPVValue) GetBinaryPv() BACnetBinaryPVTagged {
 
 // NewBACnetOptionalBinaryPVValue factory function for _BACnetOptionalBinaryPVValue
 func NewBACnetOptionalBinaryPVValue(binaryPv BACnetBinaryPVTagged, peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPVValue {
+	if binaryPv == nil {
+		panic("binaryPv of type BACnetBinaryPVTagged for BACnetOptionalBinaryPVValue must not be nil")
+	}
 	_result := &_BACnetOptionalBinaryPVValue{
 		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
 		BinaryPv:                       binaryPv,

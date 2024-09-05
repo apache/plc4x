@@ -102,6 +102,9 @@ func (m *_ModificationInfo) GetUserName() PascalString {
 
 // NewModificationInfo factory function for _ModificationInfo
 func NewModificationInfo(modificationTime int64, updateType HistoryUpdateType, userName PascalString) *_ModificationInfo {
+	if userName == nil {
+		panic("userName of type PascalString for ModificationInfo must not be nil")
+	}
 	_result := &_ModificationInfo{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ModificationTime:                  modificationTime,

@@ -102,6 +102,9 @@ func (m *_BACnetReliabilityTagged) GetIsProprietary() bool {
 
 // NewBACnetReliabilityTagged factory function for _BACnetReliabilityTagged
 func NewBACnetReliabilityTagged(header BACnetTagHeader, value BACnetReliability, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetReliabilityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetReliabilityTagged must not be nil")
+	}
 	return &_BACnetReliabilityTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

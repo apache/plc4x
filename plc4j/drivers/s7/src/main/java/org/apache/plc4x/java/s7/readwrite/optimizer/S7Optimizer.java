@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.s7.readwrite.optimizer;
 
-import io.vavr.control.Either;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -170,14 +169,14 @@ public class S7Optimizer extends BaseOptimizer {
         return processedRequests;
     }
 
-    protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, Either<PlcReadResponse, Exception>> readResponses) {
+    protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, SubResponse<PlcReadResponse>> readResponses) {
         Map<String, ResponseItem<PlcValue>> tagValues = new HashMap<>();
-        for (Map.Entry<PlcReadRequest, Either<PlcReadResponse, Exception>> requestsEntries : readResponses.entrySet()) {
+        for (Map.Entry<PlcReadRequest, SubResponse<PlcReadResponse>> requestsEntries : readResponses.entrySet()) {
             PlcReadRequest curRequest = requestsEntries.getKey();
-            Either<PlcReadResponse, Exception> readResponse = requestsEntries.getValue();
+            SubResponse<PlcReadResponse> readResponse = requestsEntries.getValue();
             for (String tagName : curRequest.getTagNames()) {
-                if (readResponse.isLeft()) {
-                    PlcReadResponse subReadResponse = readResponse.getLeft();
+                if (readResponse.isSuccess()) {
+                    PlcReadResponse subReadResponse = readResponse.getResponse();
                     PlcResponseCode responseCode = subReadResponse.getResponseCode(tagName);
                     PlcValue value = subReadResponse.getAsPlcValue().getValue(tagName);
 

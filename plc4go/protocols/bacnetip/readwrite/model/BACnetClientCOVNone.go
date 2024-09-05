@@ -84,6 +84,9 @@ func (m *_BACnetClientCOVNone) GetDefaultIncrement() BACnetApplicationTagNull {
 
 // NewBACnetClientCOVNone factory function for _BACnetClientCOVNone
 func NewBACnetClientCOVNone(defaultIncrement BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetClientCOVNone {
+	if defaultIncrement == nil {
+		panic("defaultIncrement of type BACnetApplicationTagNull for BACnetClientCOVNone must not be nil")
+	}
 	_result := &_BACnetClientCOVNone{
 		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
 		DefaultIncrement:        defaultIncrement,

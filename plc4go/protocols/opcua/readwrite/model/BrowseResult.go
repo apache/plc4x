@@ -109,6 +109,12 @@ func (m *_BrowseResult) GetReferences() []ExtensionObjectDefinition {
 
 // NewBrowseResult factory function for _BrowseResult
 func NewBrowseResult(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) *_BrowseResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for BrowseResult must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for BrowseResult must not be nil")
+	}
 	_result := &_BrowseResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,

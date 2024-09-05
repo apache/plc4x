@@ -116,6 +116,9 @@ func (m *_ContentFilterElementResult) GetOperandDiagnosticInfos() []DiagnosticIn
 
 // NewContentFilterElementResult factory function for _ContentFilterElementResult
 func NewContentFilterElementResult(statusCode StatusCode, noOfOperandStatusCodes int32, operandStatusCodes []StatusCode, noOfOperandDiagnosticInfos int32, operandDiagnosticInfos []DiagnosticInfo) *_ContentFilterElementResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for ContentFilterElementResult must not be nil")
+	}
 	_result := &_ContentFilterElementResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,

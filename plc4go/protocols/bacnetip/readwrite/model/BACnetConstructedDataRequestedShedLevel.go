@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataRequestedShedLevel) GetActualValue() BACnetShedLe
 
 // NewBACnetConstructedDataRequestedShedLevel factory function for _BACnetConstructedDataRequestedShedLevel
 func NewBACnetConstructedDataRequestedShedLevel(requestedShedLevel BACnetShedLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRequestedShedLevel {
+	if requestedShedLevel == nil {
+		panic("requestedShedLevel of type BACnetShedLevel for BACnetConstructedDataRequestedShedLevel must not be nil")
+	}
 	_result := &_BACnetConstructedDataRequestedShedLevel{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RequestedShedLevel:            requestedShedLevel,

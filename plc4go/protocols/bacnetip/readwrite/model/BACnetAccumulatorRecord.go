@@ -88,6 +88,18 @@ func (m *_BACnetAccumulatorRecord) GetAccumulatorStatus() BACnetAccumulatorRecor
 
 // NewBACnetAccumulatorRecord factory function for _BACnetAccumulatorRecord
 func NewBACnetAccumulatorRecord(timestamp BACnetDateTimeEnclosed, presentValue BACnetContextTagSignedInteger, accumulatedValue BACnetContextTagSignedInteger, accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) *_BACnetAccumulatorRecord {
+	if timestamp == nil {
+		panic("timestamp of type BACnetDateTimeEnclosed for BACnetAccumulatorRecord must not be nil")
+	}
+	if presentValue == nil {
+		panic("presentValue of type BACnetContextTagSignedInteger for BACnetAccumulatorRecord must not be nil")
+	}
+	if accumulatedValue == nil {
+		panic("accumulatedValue of type BACnetContextTagSignedInteger for BACnetAccumulatorRecord must not be nil")
+	}
+	if accumulatorStatus == nil {
+		panic("accumulatorStatus of type BACnetAccumulatorRecordAccumulatorStatusTagged for BACnetAccumulatorRecord must not be nil")
+	}
 	return &_BACnetAccumulatorRecord{Timestamp: timestamp, PresentValue: presentValue, AccumulatedValue: accumulatedValue, AccumulatorStatus: accumulatorStatus}
 }
 

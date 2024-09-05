@@ -88,6 +88,9 @@ func (m *_NLMSetMasterKey) GetKey() NLMUpdateKeyUpdateKeyEntry {
 
 // NewNLMSetMasterKey factory function for _NLMSetMasterKey
 func NewNLMSetMasterKey(key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMSetMasterKey {
+	if key == nil {
+		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMSetMasterKey must not be nil")
+	}
 	_result := &_NLMSetMasterKey{
 		NLMContract: NewNLM(apduLength),
 		Key:         key,

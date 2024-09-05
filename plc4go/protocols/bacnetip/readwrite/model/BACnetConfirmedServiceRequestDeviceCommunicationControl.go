@@ -102,6 +102,9 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPassword()
 
 // NewBACnetConfirmedServiceRequestDeviceCommunicationControl factory function for _BACnetConfirmedServiceRequestDeviceCommunicationControl
 func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BACnetContextTagUnsignedInteger, enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeviceCommunicationControl {
+	if enableDisable == nil {
+		panic("enableDisable of type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged for BACnetConfirmedServiceRequestDeviceCommunicationControl must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		TimeDuration:                          timeDuration,

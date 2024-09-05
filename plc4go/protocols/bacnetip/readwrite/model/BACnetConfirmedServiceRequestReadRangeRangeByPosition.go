@@ -91,6 +91,12 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetCount() BACn
 
 // NewBACnetConfirmedServiceRequestReadRangeRangeByPosition factory function for _BACnetConfirmedServiceRequestReadRangeRangeByPosition
 func NewBACnetConfirmedServiceRequestReadRangeRangeByPosition(referenceIndex BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRangeByPosition {
+	if referenceIndex == nil {
+		panic("referenceIndex of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByPosition must not be nil")
+	}
+	if count == nil {
+		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByPosition must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestReadRangeRangeByPosition{
 		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
 		ReferenceIndex: referenceIndex,

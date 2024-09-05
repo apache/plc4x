@@ -151,6 +151,27 @@ func (m *_SessionSecurityDiagnosticsDataType) GetClientCertificate() PascalByteS
 
 // NewSessionSecurityDiagnosticsDataType factory function for _SessionSecurityDiagnosticsDataType
 func NewSessionSecurityDiagnosticsDataType(sessionId NodeId, clientUserIdOfSession PascalString, noOfClientUserIdHistory int32, clientUserIdHistory []PascalString, authenticationMechanism PascalString, encoding PascalString, transportProtocol PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, clientCertificate PascalByteString) *_SessionSecurityDiagnosticsDataType {
+	if sessionId == nil {
+		panic("sessionId of type NodeId for SessionSecurityDiagnosticsDataType must not be nil")
+	}
+	if clientUserIdOfSession == nil {
+		panic("clientUserIdOfSession of type PascalString for SessionSecurityDiagnosticsDataType must not be nil")
+	}
+	if authenticationMechanism == nil {
+		panic("authenticationMechanism of type PascalString for SessionSecurityDiagnosticsDataType must not be nil")
+	}
+	if encoding == nil {
+		panic("encoding of type PascalString for SessionSecurityDiagnosticsDataType must not be nil")
+	}
+	if transportProtocol == nil {
+		panic("transportProtocol of type PascalString for SessionSecurityDiagnosticsDataType must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for SessionSecurityDiagnosticsDataType must not be nil")
+	}
+	if clientCertificate == nil {
+		panic("clientCertificate of type PascalByteString for SessionSecurityDiagnosticsDataType must not be nil")
+	}
 	_result := &_SessionSecurityDiagnosticsDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		SessionId:                         sessionId,

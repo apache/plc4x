@@ -133,6 +133,27 @@ func (m *_BACnetNotificationParametersAccessEvent) GetInnerClosingTag() BACnetCl
 
 // NewBACnetNotificationParametersAccessEvent factory function for _BACnetNotificationParametersAccessEvent
 func NewBACnetNotificationParametersAccessEvent(innerOpeningTag BACnetOpeningTag, accessEvent BACnetAccessEventTagged, statusFlags BACnetStatusFlagsTagged, accessEventTag BACnetContextTagUnsignedInteger, accessEventTime BACnetTimeStampEnclosed, accessCredential BACnetDeviceObjectReferenceEnclosed, authenticationFactor BACnetAuthenticationFactorTypeTagged, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersAccessEvent {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessEvent == nil {
+		panic("accessEvent of type BACnetAccessEventTagged for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessEventTag == nil {
+		panic("accessEventTag of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessEventTime == nil {
+		panic("accessEventTime of type BACnetTimeStampEnclosed for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessCredential == nil {
+		panic("accessCredential of type BACnetDeviceObjectReferenceEnclosed for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersAccessEvent must not be nil")
+	}
 	_result := &_BACnetNotificationParametersAccessEvent{
 		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
 		InnerOpeningTag:                      innerOpeningTag,

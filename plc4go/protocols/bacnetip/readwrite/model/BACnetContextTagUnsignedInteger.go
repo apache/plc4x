@@ -105,6 +105,9 @@ func (m *_BACnetContextTagUnsignedInteger) GetActualValue() uint64 {
 
 // NewBACnetContextTagUnsignedInteger factory function for _BACnetContextTagUnsignedInteger
 func NewBACnetContextTagUnsignedInteger(payload BACnetTagPayloadUnsignedInteger, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagUnsignedInteger {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetContextTagUnsignedInteger must not be nil")
+	}
 	_result := &_BACnetContextTagUnsignedInteger{
 		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
 		Payload:                  payload,

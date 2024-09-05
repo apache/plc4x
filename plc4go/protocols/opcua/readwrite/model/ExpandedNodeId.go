@@ -116,6 +116,9 @@ func (m *_ExpandedNodeId) GetIdentifier() string {
 
 // NewExpandedNodeId factory function for _ExpandedNodeId
 func NewExpandedNodeId(namespaceURISpecified bool, serverIndexSpecified bool, nodeId NodeIdTypeDefinition, namespaceURI PascalString, serverIndex *uint32) *_ExpandedNodeId {
+	if nodeId == nil {
+		panic("nodeId of type NodeIdTypeDefinition for ExpandedNodeId must not be nil")
+	}
 	return &_ExpandedNodeId{NamespaceURISpecified: namespaceURISpecified, ServerIndexSpecified: serverIndexSpecified, NodeId: nodeId, NamespaceURI: namespaceURI, ServerIndex: serverIndex}
 }
 

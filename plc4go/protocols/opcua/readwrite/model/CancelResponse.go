@@ -95,6 +95,9 @@ func (m *_CancelResponse) GetCancelCount() uint32 {
 
 // NewCancelResponse factory function for _CancelResponse
 func NewCancelResponse(responseHeader ExtensionObjectDefinition, cancelCount uint32) *_CancelResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CancelResponse must not be nil")
+	}
 	_result := &_CancelResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

@@ -102,6 +102,9 @@ func (m *_BACnetEscalatorOperationDirectionTagged) GetIsProprietary() bool {
 
 // NewBACnetEscalatorOperationDirectionTagged factory function for _BACnetEscalatorOperationDirectionTagged
 func NewBACnetEscalatorOperationDirectionTagged(header BACnetTagHeader, value BACnetEscalatorOperationDirection, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEscalatorOperationDirectionTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetEscalatorOperationDirectionTagged must not be nil")
+	}
 	return &_BACnetEscalatorOperationDirectionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

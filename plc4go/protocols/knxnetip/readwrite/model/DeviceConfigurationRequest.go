@@ -100,6 +100,12 @@ func (m *_DeviceConfigurationRequest) GetCemi() CEMI {
 
 // NewDeviceConfigurationRequest factory function for _DeviceConfigurationRequest
 func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI, totalLength uint16) *_DeviceConfigurationRequest {
+	if deviceConfigurationRequestDataBlock == nil {
+		panic("deviceConfigurationRequestDataBlock of type DeviceConfigurationRequestDataBlock for DeviceConfigurationRequest must not be nil")
+	}
+	if cemi == nil {
+		panic("cemi of type CEMI for DeviceConfigurationRequest must not be nil")
+	}
 	_result := &_DeviceConfigurationRequest{
 		KnxNetIpMessageContract:             NewKnxNetIpMessage(),
 		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,

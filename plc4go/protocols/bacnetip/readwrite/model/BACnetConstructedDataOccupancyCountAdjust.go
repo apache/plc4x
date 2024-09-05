@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataOccupancyCountAdjust) GetActualValue() BACnetAppl
 
 // NewBACnetConstructedDataOccupancyCountAdjust factory function for _BACnetConstructedDataOccupancyCountAdjust
 func NewBACnetConstructedDataOccupancyCountAdjust(occupancyCountAdjust BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCountAdjust {
+	if occupancyCountAdjust == nil {
+		panic("occupancyCountAdjust of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyCountAdjust must not be nil")
+	}
 	_result := &_BACnetConstructedDataOccupancyCountAdjust{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		OccupancyCountAdjust:          occupancyCountAdjust,

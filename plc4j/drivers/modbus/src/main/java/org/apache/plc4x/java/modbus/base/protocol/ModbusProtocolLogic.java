@@ -32,6 +32,7 @@ import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcRawByteArray;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -229,67 +230,37 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
                 throw new PlcRuntimeException("Unexpected response type. " +
                     "Expected ModbusPDUReadDiscreteInputsResponse, but got " + response.getClass().getName());
             }
-            ModbusPDUReadDiscreteInputsRequest req = (ModbusPDUReadDiscreteInputsRequest) request;
             ModbusPDUReadDiscreteInputsResponse resp = (ModbusPDUReadDiscreteInputsResponse) response;
-            return readCoilBooleanList(req.getQuantity(), resp.getValue());
+            return new PlcRawByteArray(resp.getValue());
         } else if (request instanceof ModbusPDUReadCoilsRequest) {
             if (!(response instanceof ModbusPDUReadCoilsResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
                     "Expected ModbusPDUReadCoilsResponse, but got " + response.getClass().getName());
             }
-            ModbusPDUReadCoilsRequest req = (ModbusPDUReadCoilsRequest) request;
             ModbusPDUReadCoilsResponse resp = (ModbusPDUReadCoilsResponse) response;
-            return readCoilBooleanList(req.getQuantity(), resp.getValue());
+            return new PlcRawByteArray(resp.getValue());
         } else if (request instanceof ModbusPDUReadInputRegistersRequest) {
             if (!(response instanceof ModbusPDUReadInputRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
                     "Expected ModbusPDUReadInputRegistersResponse, but got " + response.getClass().getName());
             }
-            ModbusPDUReadInputRegistersRequest req = (ModbusPDUReadInputRegistersRequest) request;
             ModbusPDUReadInputRegistersResponse resp = (ModbusPDUReadInputRegistersResponse) response;
-            ReadBuffer io = getReadBuffer(resp.getValue(), byteOrder);
-            if (tagDataTypeSize < 2) {
-                io.readByte();
-            }
-            return DataItem.staticParse(io, dataType, Math.max(Math.round(req.getQuantity() / (tagDataTypeSize / 2.0f)), 1), byteOrder == ModbusByteOrder.BIG_ENDIAN);
+            return new PlcRawByteArray(resp.getValue());
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
             if (!(response instanceof ModbusPDUReadHoldingRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
                     "Expected ModbusPDUReadHoldingRegistersResponse, but got " + response.getClass().getName());
             }
-            ModbusPDUReadHoldingRegistersRequest req = (ModbusPDUReadHoldingRegistersRequest) request;
             ModbusPDUReadHoldingRegistersResponse resp = (ModbusPDUReadHoldingRegistersResponse) response;
-            ReadBuffer io = getReadBuffer(resp.getValue(), byteOrder);
-            if ((dataType != ModbusDataType.STRING) && tagDataTypeSize < 2) {
-                io.readByte();
-            }
-            return DataItem.staticParse(io, dataType, Math.max(Math.round(req.getQuantity() / (tagDataTypeSize / 2.0f)), 1), byteOrder == ModbusByteOrder.BIG_ENDIAN);
+            return new PlcRawByteArray(resp.getValue());
         } else if (request instanceof ModbusPDUReadFileRecordRequest) {
             if (!(response instanceof ModbusPDUReadFileRecordResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
                     "Expected ModbusPDUReadFileRecordResponse, but got " + response.getClass().getName());
             }
-            ModbusPDUReadFileRecordRequest req = (ModbusPDUReadFileRecordRequest) request;
             ModbusPDUReadFileRecordResponse resp = (ModbusPDUReadFileRecordResponse) response;
-            ReadBuffer io;
-            short dataLength;
-
-            if (resp.getItems().size() == 2 && resp.getItems().size() == req.getItems().size()) {
-                //If request was split over file records, two groups in response should be received.
-                io = getReadBuffer(ArrayUtils.addAll(resp.getItems().get(0).getData(), resp.getItems().get(1).getData()), byteOrder);
-                dataLength = (short) (resp.getItems().get(0).getLengthInBytes() + resp.getItems().get(1).getLengthInBytes() - (2 * FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH));
-            } else if (resp.getItems().size() == 1 && resp.getItems().size() == req.getItems().size()) {
-                //If request was within a single file record, one group should be received.
-                io = getReadBuffer(resp.getItems().get(0).getData(), byteOrder);
-                dataLength = (short) (resp.getItems().get(0).getLengthInBytes() - FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH);
-            } else {
-                throw new PlcRuntimeException("Unexpected number of groups in response. " +
-                    "Expected " + req.getItems().size() + ", but got " + resp.getItems().size());
-            }
-            if (tagDataTypeSize < 2) {
-                io.readByte();
-            }
-            return DataItem.staticParse(io, dataType, Math.round(Math.max(dataLength / 2.0f, 1) / Math.max(tagDataTypeSize / 2.0f, 1)), byteOrder == ModbusByteOrder.BIG_ENDIAN);
+            // TODO: This is an over-simplification ...
+            return new PlcRawByteArray(resp.getItems().get(0).getData());
         }
         return null;
     }

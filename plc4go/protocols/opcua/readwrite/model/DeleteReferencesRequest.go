@@ -102,6 +102,9 @@ func (m *_DeleteReferencesRequest) GetReferencesToDelete() []ExtensionObjectDefi
 
 // NewDeleteReferencesRequest factory function for _DeleteReferencesRequest
 func NewDeleteReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) *_DeleteReferencesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteReferencesRequest must not be nil")
+	}
 	_result := &_DeleteReferencesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

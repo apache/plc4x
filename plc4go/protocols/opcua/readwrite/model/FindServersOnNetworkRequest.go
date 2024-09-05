@@ -116,6 +116,9 @@ func (m *_FindServersOnNetworkRequest) GetServerCapabilityFilter() []PascalStrin
 
 // NewFindServersOnNetworkRequest factory function for _FindServersOnNetworkRequest
 func NewFindServersOnNetworkRequest(requestHeader ExtensionObjectDefinition, startingRecordId uint32, maxRecordsToReturn uint32, noOfServerCapabilityFilter int32, serverCapabilityFilter []PascalString) *_FindServersOnNetworkRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for FindServersOnNetworkRequest must not be nil")
+	}
 	_result := &_FindServersOnNetworkRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

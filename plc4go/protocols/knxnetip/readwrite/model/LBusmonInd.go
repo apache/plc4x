@@ -109,6 +109,9 @@ func (m *_LBusmonInd) GetCrc() *uint8 {
 
 // NewLBusmonInd factory function for _LBusmonInd
 func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, crc *uint8, size uint16) *_LBusmonInd {
+	if dataFrame == nil {
+		panic("dataFrame of type LDataFrame for LBusmonInd must not be nil")
+	}
 	_result := &_LBusmonInd{
 		CEMIContract:                NewCEMI(size),
 		AdditionalInformationLength: additionalInformationLength,

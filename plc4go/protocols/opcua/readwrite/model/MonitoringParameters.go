@@ -118,6 +118,9 @@ func (m *_MonitoringParameters) GetDiscardOldest() bool {
 
 // NewMonitoringParameters factory function for _MonitoringParameters
 func NewMonitoringParameters(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) *_MonitoringParameters {
+	if filter == nil {
+		panic("filter of type ExtensionObject for MonitoringParameters must not be nil")
+	}
 	_result := &_MonitoringParameters{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ClientHandle:                      clientHandle,

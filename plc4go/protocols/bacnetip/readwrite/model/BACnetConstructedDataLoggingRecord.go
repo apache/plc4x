@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLoggingRecord) GetActualValue() BACnetAccumulator
 
 // NewBACnetConstructedDataLoggingRecord factory function for _BACnetConstructedDataLoggingRecord
 func NewBACnetConstructedDataLoggingRecord(loggingRecord BACnetAccumulatorRecord, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingRecord {
+	if loggingRecord == nil {
+		panic("loggingRecord of type BACnetAccumulatorRecord for BACnetConstructedDataLoggingRecord must not be nil")
+	}
 	_result := &_BACnetConstructedDataLoggingRecord{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LoggingRecord:                 loggingRecord,

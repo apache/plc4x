@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataVendorIdentifier) GetActualValue() BACnetVendorId
 
 // NewBACnetConstructedDataVendorIdentifier factory function for _BACnetConstructedDataVendorIdentifier
 func NewBACnetConstructedDataVendorIdentifier(vendorIdentifier BACnetVendorIdTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorIdentifier {
+	if vendorIdentifier == nil {
+		panic("vendorIdentifier of type BACnetVendorIdTagged for BACnetConstructedDataVendorIdentifier must not be nil")
+	}
 	_result := &_BACnetConstructedDataVendorIdentifier{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		VendorIdentifier:              vendorIdentifier,

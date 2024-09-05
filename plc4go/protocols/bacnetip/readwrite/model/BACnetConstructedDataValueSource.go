@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataValueSource) GetActualValue() BACnetValueSource {
 
 // NewBACnetConstructedDataValueSource factory function for _BACnetConstructedDataValueSource
 func NewBACnetConstructedDataValueSource(valueSource BACnetValueSource, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSource {
+	if valueSource == nil {
+		panic("valueSource of type BACnetValueSource for BACnetConstructedDataValueSource must not be nil")
+	}
 	_result := &_BACnetConstructedDataValueSource{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ValueSource:                   valueSource,

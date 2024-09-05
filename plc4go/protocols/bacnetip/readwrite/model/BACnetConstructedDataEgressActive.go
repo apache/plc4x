@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataEgressActive) GetActualValue() BACnetApplicationT
 
 // NewBACnetConstructedDataEgressActive factory function for _BACnetConstructedDataEgressActive
 func NewBACnetConstructedDataEgressActive(egressActive BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressActive {
+	if egressActive == nil {
+		panic("egressActive of type BACnetApplicationTagBoolean for BACnetConstructedDataEgressActive must not be nil")
+	}
 	_result := &_BACnetConstructedDataEgressActive{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EgressActive:                  egressActive,

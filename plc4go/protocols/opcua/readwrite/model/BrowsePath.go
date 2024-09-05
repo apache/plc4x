@@ -95,6 +95,12 @@ func (m *_BrowsePath) GetRelativePath() ExtensionObjectDefinition {
 
 // NewBrowsePath factory function for _BrowsePath
 func NewBrowsePath(startingNode NodeId, relativePath ExtensionObjectDefinition) *_BrowsePath {
+	if startingNode == nil {
+		panic("startingNode of type NodeId for BrowsePath must not be nil")
+	}
+	if relativePath == nil {
+		panic("relativePath of type ExtensionObjectDefinition for BrowsePath must not be nil")
+	}
 	_result := &_BrowsePath{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StartingNode:                      startingNode,

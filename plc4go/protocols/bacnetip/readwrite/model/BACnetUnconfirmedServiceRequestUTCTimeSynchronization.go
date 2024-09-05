@@ -95,6 +95,12 @@ func (m *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization) GetSynchronized
 
 // NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization factory function for _BACnetUnconfirmedServiceRequestUTCTimeSynchronization
 func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
+	if synchronizedDate == nil {
+		panic("synchronizedDate of type BACnetApplicationTagDate for BACnetUnconfirmedServiceRequestUTCTimeSynchronization must not be nil")
+	}
+	if synchronizedTime == nil {
+		panic("synchronizedTime of type BACnetApplicationTagTime for BACnetUnconfirmedServiceRequestUTCTimeSynchronization must not be nil")
+	}
 	_result := &_BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
 		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 		SynchronizedDate:                        synchronizedDate,

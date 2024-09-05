@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAccessDoorPresentValue) GetActualValue() BACnetDo
 
 // NewBACnetConstructedDataAccessDoorPresentValue factory function for _BACnetConstructedDataAccessDoorPresentValue
 func NewBACnetConstructedDataAccessDoorPresentValue(presentValue BACnetDoorValueTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetDoorValueTagged for BACnetConstructedDataAccessDoorPresentValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataAccessDoorPresentValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PresentValue:                  presentValue,

@@ -78,6 +78,9 @@ func (m *_BACnetAuthenticationStatusTagged) GetValue() BACnetAuthenticationStatu
 
 // NewBACnetAuthenticationStatusTagged factory function for _BACnetAuthenticationStatusTagged
 func NewBACnetAuthenticationStatusTagged(header BACnetTagHeader, value BACnetAuthenticationStatus, tagNumber uint8, tagClass TagClass) *_BACnetAuthenticationStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAuthenticationStatusTagged must not be nil")
+	}
 	return &_BACnetAuthenticationStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

@@ -90,6 +90,9 @@ func (m *_FirmataCommandSysex) GetCommand() SysexCommand {
 
 // NewFirmataCommandSysex factory function for _FirmataCommandSysex
 func NewFirmataCommandSysex(command SysexCommand, response bool) *_FirmataCommandSysex {
+	if command == nil {
+		panic("command of type SysexCommand for FirmataCommandSysex must not be nil")
+	}
 	_result := &_FirmataCommandSysex{
 		FirmataCommandContract: NewFirmataCommand(response),
 		Command:                command,

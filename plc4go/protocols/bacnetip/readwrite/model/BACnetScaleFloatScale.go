@@ -84,6 +84,9 @@ func (m *_BACnetScaleFloatScale) GetFloatScale() BACnetContextTagReal {
 
 // NewBACnetScaleFloatScale factory function for _BACnetScaleFloatScale
 func NewBACnetScaleFloatScale(floatScale BACnetContextTagReal, peekedTagHeader BACnetTagHeader) *_BACnetScaleFloatScale {
+	if floatScale == nil {
+		panic("floatScale of type BACnetContextTagReal for BACnetScaleFloatScale must not be nil")
+	}
 	_result := &_BACnetScaleFloatScale{
 		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
 		FloatScale:          floatScale,

@@ -95,6 +95,9 @@ func (m *_NLMUpdateKeyDistributionKey) GetKey() NLMUpdateKeyUpdateKeyEntry {
 
 // NewNLMUpdateKeyDistributionKey factory function for _NLMUpdateKeyDistributionKey
 func NewNLMUpdateKeyDistributionKey(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyDistributionKey {
+	if key == nil {
+		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMUpdateKeyDistributionKey must not be nil")
+	}
 	_result := &_NLMUpdateKeyDistributionKey{
 		NLMContract: NewNLM(apduLength),
 		KeyRevision: keyRevision,

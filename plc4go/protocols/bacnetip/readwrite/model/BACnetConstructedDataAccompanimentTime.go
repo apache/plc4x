@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAccompanimentTime) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataAccompanimentTime factory function for _BACnetConstructedDataAccompanimentTime
 func NewBACnetConstructedDataAccompanimentTime(accompanimentTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompanimentTime {
+	if accompanimentTime == nil {
+		panic("accompanimentTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccompanimentTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataAccompanimentTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AccompanimentTime:             accompanimentTime,

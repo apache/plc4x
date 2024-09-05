@@ -88,6 +88,9 @@ func (m *_SALDataTemperatureBroadcast) GetTemperatureBroadcastData() Temperature
 
 // NewSALDataTemperatureBroadcast factory function for _SALDataTemperatureBroadcast
 func NewSALDataTemperatureBroadcast(temperatureBroadcastData TemperatureBroadcastData, salData SALData) *_SALDataTemperatureBroadcast {
+	if temperatureBroadcastData == nil {
+		panic("temperatureBroadcastData of type TemperatureBroadcastData for SALDataTemperatureBroadcast must not be nil")
+	}
 	_result := &_SALDataTemperatureBroadcast{
 		SALDataContract:          NewSALData(salData),
 		TemperatureBroadcastData: temperatureBroadcastData,

@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetDateValue() B
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryDate factory function for _BACnetFaultParameterFaultExtendedParametersEntryDate
 func NewBACnetFaultParameterFaultExtendedParametersEntryDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetFaultParameterFaultExtendedParametersEntryDate must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryDate{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		DateValue: dateValue,

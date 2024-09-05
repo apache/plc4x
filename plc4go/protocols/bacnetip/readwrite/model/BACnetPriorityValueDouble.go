@@ -84,6 +84,9 @@ func (m *_BACnetPriorityValueDouble) GetDoubleValue() BACnetApplicationTagDouble
 
 // NewBACnetPriorityValueDouble factory function for _BACnetPriorityValueDouble
 func NewBACnetPriorityValueDouble(doubleValue BACnetApplicationTagDouble, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDouble {
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetPriorityValueDouble must not be nil")
+	}
 	_result := &_BACnetPriorityValueDouble{
 		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 		DoubleValue:                 doubleValue,

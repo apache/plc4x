@@ -119,6 +119,12 @@ func (m *_BACnetStatusFlagsTagged) GetOutOfService() bool {
 
 // NewBACnetStatusFlagsTagged factory function for _BACnetStatusFlagsTagged
 func NewBACnetStatusFlagsTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetStatusFlagsTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetStatusFlagsTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetStatusFlagsTagged must not be nil")
+	}
 	return &_BACnetStatusFlagsTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
 }
 

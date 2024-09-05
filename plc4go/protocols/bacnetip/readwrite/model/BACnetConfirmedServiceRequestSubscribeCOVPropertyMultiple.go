@@ -116,6 +116,12 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) GetListOfCo
 
 // NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple factory function for _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, issueConfirmedNotifications BACnetContextTagBoolean, lifetime BACnetContextTagUnsignedInteger, maxNotificationDelay BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
+	if subscriberProcessIdentifier == nil {
+		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple must not be nil")
+	}
+	if listOfCovSubscriptionSpecifications == nil {
+		panic("listOfCovSubscriptionSpecifications of type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		SubscriberProcessIdentifier:           subscriberProcessIdentifier,

@@ -116,6 +116,9 @@ func (m *_ParsingResult) GetDataDiagnosticInfos() []DiagnosticInfo {
 
 // NewParsingResult factory function for _ParsingResult
 func NewParsingResult(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) *_ParsingResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for ParsingResult must not be nil")
+	}
 	_result := &_ParsingResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,

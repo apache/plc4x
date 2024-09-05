@@ -130,6 +130,9 @@ func (m *_SetTriggeringRequest) GetLinksToRemove() []uint32 {
 
 // NewSetTriggeringRequest factory function for _SetTriggeringRequest
 func NewSetTriggeringRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, triggeringItemId uint32, noOfLinksToAdd int32, linksToAdd []uint32, noOfLinksToRemove int32, linksToRemove []uint32) *_SetTriggeringRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetTriggeringRequest must not be nil")
+	}
 	_result := &_SetTriggeringRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

@@ -74,6 +74,9 @@ func (m *_NetworkRoute) GetAdditionalBridgeAddresses() []BridgeAddress {
 
 // NewNetworkRoute factory function for _NetworkRoute
 func NewNetworkRoute(networkPCI NetworkProtocolControlInformation, additionalBridgeAddresses []BridgeAddress) *_NetworkRoute {
+	if networkPCI == nil {
+		panic("networkPCI of type NetworkProtocolControlInformation for NetworkRoute must not be nil")
+	}
 	return &_NetworkRoute{NetworkPCI: networkPCI, AdditionalBridgeAddresses: additionalBridgeAddresses}
 }
 

@@ -112,6 +112,21 @@ func (m *_BACnetEventParameterUnsignedRange) GetClosingTag() BACnetClosingTag {
 
 // NewBACnetEventParameterUnsignedRange factory function for _BACnetEventParameterUnsignedRange
 func NewBACnetEventParameterUnsignedRange(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagUnsignedInteger, highLimit BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterUnsignedRange {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterUnsignedRange must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedRange must not be nil")
+	}
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedRange must not be nil")
+	}
+	if highLimit == nil {
+		panic("highLimit of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedRange must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterUnsignedRange must not be nil")
+	}
 	_result := &_BACnetEventParameterUnsignedRange{
 		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
 		OpeningTag:                   openingTag,

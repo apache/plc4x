@@ -84,6 +84,12 @@ func (m *_ListOfCovNotificationsList) GetClosingTag() BACnetClosingTag {
 
 // NewListOfCovNotificationsList factory function for _ListOfCovNotificationsList
 func NewListOfCovNotificationsList(openingTag BACnetOpeningTag, specifications []ListOfCovNotifications, closingTag BACnetClosingTag, tagNumber uint8) *_ListOfCovNotificationsList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for ListOfCovNotificationsList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for ListOfCovNotificationsList must not be nil")
+	}
 	return &_ListOfCovNotificationsList{OpeningTag: openingTag, Specifications: specifications, ClosingTag: closingTag, TagNumber: tagNumber}
 }
 

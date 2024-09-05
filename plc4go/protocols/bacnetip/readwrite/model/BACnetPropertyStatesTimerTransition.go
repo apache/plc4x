@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesTimerTransition) GetTimerTransition() BACnetTimerT
 
 // NewBACnetPropertyStatesTimerTransition factory function for _BACnetPropertyStatesTimerTransition
 func NewBACnetPropertyStatesTimerTransition(timerTransition BACnetTimerTransitionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesTimerTransition {
+	if timerTransition == nil {
+		panic("timerTransition of type BACnetTimerTransitionTagged for BACnetPropertyStatesTimerTransition must not be nil")
+	}
 	_result := &_BACnetPropertyStatesTimerTransition{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		TimerTransition:              timerTransition,

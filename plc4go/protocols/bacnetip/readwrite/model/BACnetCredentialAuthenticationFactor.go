@@ -74,6 +74,12 @@ func (m *_BACnetCredentialAuthenticationFactor) GetAuthenticationFactor() BACnet
 
 // NewBACnetCredentialAuthenticationFactor factory function for _BACnetCredentialAuthenticationFactor
 func NewBACnetCredentialAuthenticationFactor(disable BACnetAccessAuthenticationFactorDisableTagged, authenticationFactor BACnetAuthenticationFactorEnclosed) *_BACnetCredentialAuthenticationFactor {
+	if disable == nil {
+		panic("disable of type BACnetAccessAuthenticationFactorDisableTagged for BACnetCredentialAuthenticationFactor must not be nil")
+	}
+	if authenticationFactor == nil {
+		panic("authenticationFactor of type BACnetAuthenticationFactorEnclosed for BACnetCredentialAuthenticationFactor must not be nil")
+	}
 	return &_BACnetCredentialAuthenticationFactor{Disable: disable, AuthenticationFactor: authenticationFactor}
 }
 

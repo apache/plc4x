@@ -378,6 +378,23 @@ func New${type.name}(
 	) *_${type.name} {
 </@compress>
 
+<#list type.propertyFields as field>
+	<#if !field.isOptionalField()
+		&& !field.isManualField()
+		&& !field.isManualArrayField()
+		&& !field.isArrayField()
+		&& !field.isCountArrayField()
+		&& !field.isLengthArrayField()
+		&& !field.isTerminatedArrayField()
+		&& field.isNamedField()
+		&& field.isTypedField()
+		&& field.asTypedField().orElseThrow().type.isComplexTypeReference()>
+		<#assign fieldName = field.asNamedField().orElseThrow().name>
+if ${fieldName} == nil {
+	panic("${fieldName} of type ${helper.getLanguageTypeNameForField(field)} for ${type.name} must not be nil")
+}
+	</#if>
+</#list>
 <#if type.parentType.isPresent()>
 	_result := &_${type.name}{
 	${type.parentType.orElseThrow().name}Contract: New${type.parentType.orElseThrow().name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if filteredParentParserArguments?has_content><#if type.parentPropertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>),

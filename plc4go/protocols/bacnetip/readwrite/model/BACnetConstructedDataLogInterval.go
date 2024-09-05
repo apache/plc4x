@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLogInterval) GetActualValue() BACnetApplicationTa
 
 // NewBACnetConstructedDataLogInterval factory function for _BACnetConstructedDataLogInterval
 func NewBACnetConstructedDataLogInterval(logInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogInterval {
+	if logInterval == nil {
+		panic("logInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLogInterval must not be nil")
+	}
 	_result := &_BACnetConstructedDataLogInterval{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LogInterval:                   logInterval,

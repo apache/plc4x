@@ -116,6 +116,12 @@ func (m *_MonitoredItemCreateResult) GetFilterResult() ExtensionObject {
 
 // NewMonitoredItemCreateResult factory function for _MonitoredItemCreateResult
 func NewMonitoredItemCreateResult(statusCode StatusCode, monitoredItemId uint32, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) *_MonitoredItemCreateResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for MonitoredItemCreateResult must not be nil")
+	}
+	if filterResult == nil {
+		panic("filterResult of type ExtensionObject for MonitoredItemCreateResult must not be nil")
+	}
 	_result := &_MonitoredItemCreateResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,

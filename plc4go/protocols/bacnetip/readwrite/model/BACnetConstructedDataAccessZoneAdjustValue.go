@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetActualValue() BACnetApp
 
 // NewBACnetConstructedDataAccessZoneAdjustValue factory function for _BACnetConstructedDataAccessZoneAdjustValue
 func NewBACnetConstructedDataAccessZoneAdjustValue(adjustValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessZoneAdjustValue {
+	if adjustValue == nil {
+		panic("adjustValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataAccessZoneAdjustValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataAccessZoneAdjustValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AdjustValue:                   adjustValue,

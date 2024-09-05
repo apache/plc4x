@@ -84,6 +84,9 @@ func (m *_BACnetTimerStateChangeValueDouble) GetDoubleValue() BACnetApplicationT
 
 // NewBACnetTimerStateChangeValueDouble factory function for _BACnetTimerStateChangeValueDouble
 func NewBACnetTimerStateChangeValueDouble(doubleValue BACnetApplicationTagDouble, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueDouble {
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetTimerStateChangeValueDouble must not be nil")
+	}
 	_result := &_BACnetTimerStateChangeValueDouble{
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		DoubleValue:                         doubleValue,

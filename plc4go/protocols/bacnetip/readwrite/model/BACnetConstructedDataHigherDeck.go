@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataHigherDeck) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataHigherDeck factory function for _BACnetConstructedDataHigherDeck
 func NewBACnetConstructedDataHigherDeck(higherDeck BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHigherDeck {
+	if higherDeck == nil {
+		panic("higherDeck of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataHigherDeck must not be nil")
+	}
 	_result := &_BACnetConstructedDataHigherDeck{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		HigherDeck:                    higherDeck,

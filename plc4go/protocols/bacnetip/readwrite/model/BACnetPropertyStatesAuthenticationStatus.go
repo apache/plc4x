@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) GetAuthenticationStatus() BA
 
 // NewBACnetPropertyStatesAuthenticationStatus factory function for _BACnetPropertyStatesAuthenticationStatus
 func NewBACnetPropertyStatesAuthenticationStatus(authenticationStatus BACnetAuthenticationStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesAuthenticationStatus {
+	if authenticationStatus == nil {
+		panic("authenticationStatus of type BACnetAuthenticationStatusTagged for BACnetPropertyStatesAuthenticationStatus must not be nil")
+	}
 	_result := &_BACnetPropertyStatesAuthenticationStatus{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		AuthenticationStatus:         authenticationStatus,

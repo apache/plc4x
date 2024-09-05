@@ -108,6 +108,9 @@ func (m *_LPollData) GetNumberExpectedPollData() uint8 {
 
 // NewLPollData factory function for _LPollData
 func NewLPollData(sourceAddress KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LPollData {
+	if sourceAddress == nil {
+		panic("sourceAddress of type KnxAddress for LPollData must not be nil")
+	}
 	_result := &_LPollData{
 		LDataFrameContract:     NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
 		SourceAddress:          sourceAddress,

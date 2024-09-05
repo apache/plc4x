@@ -48,13 +48,13 @@ import math
 class DataItem:
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, data_type: str, number_of_values: int):
-        if data_type == "_bool" and number_of_values == int(1):  # BOOL
+        if data_type == "BOOL" and number_of_values == int(1):  # BOOL
 
             # Simple Field (value)
             value: bool = read_buffer.read_bit("")
 
             return PlcBOOL(value)
-        if data_type == "_bool":  # List
+        if data_type == "BOOL":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -63,13 +63,13 @@ class DataItem:
                 value.append(PlcBOOL(bool(read_buffer.read_bit(""))))
 
             return PlcList(value)
-        if data_type == "_byte" and number_of_values == int(1):  # BYTE
+        if data_type == "BYTE" and number_of_values == int(1):  # BYTE
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_short(8, logical_name="")
 
             return PlcBYTE(value)
-        if data_type == "_byte":  # List
+        if data_type == "BYTE":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -80,13 +80,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_word" and number_of_values == int(1):  # WORD
+        if data_type == "WORD" and number_of_values == int(1):  # WORD
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_int(16, logical_name="")
 
             return PlcWORD(value)
-        if data_type == "_word":  # List
+        if data_type == "WORD":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -97,13 +97,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_dword" and number_of_values == int(1):  # DWORD
+        if data_type == "DWORD" and number_of_values == int(1):  # DWORD
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(32, logical_name="")
 
             return PlcDWORD(value)
-        if data_type == "_dword":  # List
+        if data_type == "DWORD":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -114,13 +114,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_lword" and number_of_values == int(1):  # LWORD
+        if data_type == "LWORD" and number_of_values == int(1):  # LWORD
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(64, logical_name="")
 
             return PlcLWORD(value)
-        if data_type == "_lword":  # List
+        if data_type == "LWORD":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -131,13 +131,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_sint" and number_of_values == int(1):  # SINT
+        if data_type == "SINT" and number_of_values == int(1):  # SINT
 
             # Simple Field (value)
             value: int = read_buffer.read_signed_byte(8, logical_name="")
 
             return PlcSINT(value)
-        if data_type == "_sint":  # List
+        if data_type == "SINT":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -148,13 +148,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_int" and number_of_values == int(1):  # INT
+        if data_type == "INT" and number_of_values == int(1):  # INT
 
             # Simple Field (value)
             value: int = read_buffer.read_short(16, logical_name="")
 
             return PlcINT(value)
-        if data_type == "_int":  # List
+        if data_type == "INT":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -163,13 +163,13 @@ class DataItem:
                 value.append(PlcINT(int(read_buffer.read_short(16, logical_name=""))))
 
             return PlcList(value)
-        if data_type == "_dint" and number_of_values == int(1):  # DINT
+        if data_type == "DINT" and number_of_values == int(1):  # DINT
 
             # Simple Field (value)
             value: int = read_buffer.read_int(32, logical_name="")
 
             return PlcDINT(value)
-        if data_type == "_dint":  # List
+        if data_type == "DINT":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -178,13 +178,13 @@ class DataItem:
                 value.append(PlcDINT(int(read_buffer.read_int(32, logical_name=""))))
 
             return PlcList(value)
-        if data_type == "_lint" and number_of_values == int(1):  # LINT
+        if data_type == "LINT" and number_of_values == int(1):  # LINT
 
             # Simple Field (value)
             value: int = read_buffer.read_long(64, logical_name="")
 
             return PlcLINT(value)
-        if data_type == "_lint":  # List
+        if data_type == "LINT":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -193,13 +193,13 @@ class DataItem:
                 value.append(PlcLINT(int(read_buffer.read_long(64, logical_name=""))))
 
             return PlcList(value)
-        if data_type == "_usint" and number_of_values == int(1):  # USINT
+        if data_type == "USINT" and number_of_values == int(1):  # USINT
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_short(8, logical_name="")
 
             return PlcUSINT(value)
-        if data_type == "_usint":  # List
+        if data_type == "USINT":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -210,13 +210,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_uint" and number_of_values == int(1):  # UINT
+        if data_type == "UINT" and number_of_values == int(1):  # UINT
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_int(16, logical_name="")
 
             return PlcUINT(value)
-        if data_type == "_uint":  # List
+        if data_type == "UINT":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -227,13 +227,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_udint" and number_of_values == int(1):  # UDINT
+        if data_type == "UDINT" and number_of_values == int(1):  # UDINT
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(32, logical_name="")
 
             return PlcUDINT(value)
-        if data_type == "_udint":  # List
+        if data_type == "UDINT":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -244,13 +244,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_ulint" and number_of_values == int(1):  # ULINT
+        if data_type == "ULINT" and number_of_values == int(1):  # ULINT
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(64, logical_name="")
 
             return PlcULINT(value)
-        if data_type == "_ulint":  # List
+        if data_type == "ULINT":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -261,13 +261,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_real" and number_of_values == int(1):  # REAL
+        if data_type == "REAL" and number_of_values == int(1):  # REAL
 
             # Simple Field (value)
             value: float = read_buffer.read_float(32, logical_name="")
 
             return PlcREAL(value)
-        if data_type == "_real":  # List
+        if data_type == "REAL":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -278,13 +278,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_lreal" and number_of_values == int(1):  # LREAL
+        if data_type == "LREAL" and number_of_values == int(1):  # LREAL
 
             # Simple Field (value)
             value: float = read_buffer.read_double(64, logical_name="")
 
             return PlcLREAL(value)
-        if data_type == "_lreal":  # List
+        if data_type == "LREAL":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -295,13 +295,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_char" and number_of_values == int(1):  # CHAR
+        if data_type == "CHAR" and number_of_values == int(1):  # CHAR
 
             # Simple Field (value)
             value: str = read_buffer.read_str(8, logical_name="", encoding="")
 
             return PlcCHAR(value)
-        if data_type == "_char":  # List
+        if data_type == "CHAR":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -314,13 +314,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_wchar" and number_of_values == int(1):  # WCHAR
+        if data_type == "WCHAR" and number_of_values == int(1):  # WCHAR
 
             # Simple Field (value)
             value: str = read_buffer.read_str(16, logical_name="", encoding="")
 
             return PlcWCHAR(value)
-        if data_type == "_wchar":  # List
+        if data_type == "WCHAR":  # List
             # Array field (value)
             # Count array
             item_count: int = int(number_of_values)
@@ -333,13 +333,13 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_string":  # STRING
+        if data_type == "STRING":  # STRING
 
             # Simple Field (value)
             value: str = read_buffer.read_str(255, logical_name="", encoding="")
 
             return PlcSTRING(value)
-        if data_type == "_wstring":  # STRING
+        if data_type == "WSTRING":  # STRING
 
             # Simple Field (value)
             value: str = read_buffer.read_str(255, logical_name="", encoding="")

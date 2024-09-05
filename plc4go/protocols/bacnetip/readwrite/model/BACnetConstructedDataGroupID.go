@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataGroupID) GetActualValue() BACnetApplicationTagUns
 
 // NewBACnetConstructedDataGroupID factory function for _BACnetConstructedDataGroupID
 func NewBACnetConstructedDataGroupID(groupId BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupID {
+	if groupId == nil {
+		panic("groupId of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataGroupID must not be nil")
+	}
 	_result := &_BACnetConstructedDataGroupID{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		GroupId:                       groupId,

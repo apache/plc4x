@@ -116,6 +116,9 @@ func (m *_DeleteMonitoredItemsResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewDeleteMonitoredItemsResponse factory function for _DeleteMonitoredItemsResponse
 func NewDeleteMonitoredItemsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteMonitoredItemsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for DeleteMonitoredItemsResponse must not be nil")
+	}
 	_result := &_DeleteMonitoredItemsResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

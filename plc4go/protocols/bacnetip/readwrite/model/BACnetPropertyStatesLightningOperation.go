@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesLightningOperation) GetLightningOperation() BACnet
 
 // NewBACnetPropertyStatesLightningOperation factory function for _BACnetPropertyStatesLightningOperation
 func NewBACnetPropertyStatesLightningOperation(lightningOperation BACnetLightingOperationTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLightningOperation {
+	if lightningOperation == nil {
+		panic("lightningOperation of type BACnetLightingOperationTagged for BACnetPropertyStatesLightningOperation must not be nil")
+	}
 	_result := &_BACnetPropertyStatesLightningOperation{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LightningOperation:           lightningOperation,

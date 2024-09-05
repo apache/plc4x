@@ -31,7 +31,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
-//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=AdsSubscriptionHandle
+//go:generate plc4xGenerator -type=AdsSubscriptionHandle
 type AdsSubscriptionHandle struct {
 	subscriber spi.PlcSubscriber
 	tagName    string

@@ -67,6 +67,9 @@ func (m *_BACnetLandingDoorStatus) GetLandingDoors() BACnetLandingDoorStatusLand
 
 // NewBACnetLandingDoorStatus factory function for _BACnetLandingDoorStatus
 func NewBACnetLandingDoorStatus(landingDoors BACnetLandingDoorStatusLandingDoorsList) *_BACnetLandingDoorStatus {
+	if landingDoors == nil {
+		panic("landingDoors of type BACnetLandingDoorStatusLandingDoorsList for BACnetLandingDoorStatus must not be nil")
+	}
 	return &_BACnetLandingDoorStatus{LandingDoors: landingDoors}
 }
 

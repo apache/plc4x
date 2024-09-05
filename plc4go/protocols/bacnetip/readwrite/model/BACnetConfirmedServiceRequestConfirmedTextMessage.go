@@ -109,6 +109,15 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetMessage() BACnet
 
 // NewBACnetConfirmedServiceRequestConfirmedTextMessage factory function for _BACnetConfirmedServiceRequestConfirmedTextMessage
 func NewBACnetConfirmedServiceRequestConfirmedTextMessage(textMessageSourceDevice BACnetContextTagObjectIdentifier, messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedTextMessage {
+	if textMessageSourceDevice == nil {
+		panic("textMessageSourceDevice of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedTextMessage must not be nil")
+	}
+	if messagePriority == nil {
+		panic("messagePriority of type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged for BACnetConfirmedServiceRequestConfirmedTextMessage must not be nil")
+	}
+	if message == nil {
+		panic("message of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestConfirmedTextMessage must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessage{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		TextMessageSourceDevice:               textMessageSourceDevice,

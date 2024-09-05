@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) GetActualValue() BACnetBac
 
 // NewBACnetConstructedDataBackupAndRestoreState factory function for _BACnetConstructedDataBackupAndRestoreState
 func NewBACnetConstructedDataBackupAndRestoreState(backupAndRestoreState BACnetBackupStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupAndRestoreState {
+	if backupAndRestoreState == nil {
+		panic("backupAndRestoreState of type BACnetBackupStateTagged for BACnetConstructedDataBackupAndRestoreState must not be nil")
+	}
 	_result := &_BACnetConstructedDataBackupAndRestoreState{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BackupAndRestoreState:         backupAndRestoreState,

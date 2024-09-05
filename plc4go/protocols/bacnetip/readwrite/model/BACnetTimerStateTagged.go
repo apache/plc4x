@@ -78,6 +78,9 @@ func (m *_BACnetTimerStateTagged) GetValue() BACnetTimerState {
 
 // NewBACnetTimerStateTagged factory function for _BACnetTimerStateTagged
 func NewBACnetTimerStateTagged(header BACnetTagHeader, value BACnetTimerState, tagNumber uint8, tagClass TagClass) *_BACnetTimerStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetTimerStateTagged must not be nil")
+	}
 	return &_BACnetTimerStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

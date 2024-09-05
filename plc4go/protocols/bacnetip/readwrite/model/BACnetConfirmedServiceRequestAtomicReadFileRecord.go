@@ -91,6 +91,12 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileRecord) GetRequestRecordCou
 
 // NewBACnetConfirmedServiceRequestAtomicReadFileRecord factory function for _BACnetConfirmedServiceRequestAtomicReadFileRecord
 func NewBACnetConfirmedServiceRequestAtomicReadFileRecord(fileStartRecord BACnetApplicationTagSignedInteger, requestRecordCount BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestAtomicReadFileRecord {
+	if fileStartRecord == nil {
+		panic("fileStartRecord of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestAtomicReadFileRecord must not be nil")
+	}
+	if requestRecordCount == nil {
+		panic("requestRecordCount of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestAtomicReadFileRecord must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestAtomicReadFileRecord{
 		BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract: NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
 		FileStartRecord:    fileStartRecord,

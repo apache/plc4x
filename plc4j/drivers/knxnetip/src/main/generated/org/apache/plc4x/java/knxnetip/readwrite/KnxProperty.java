@@ -128,7 +128,8 @@ public class KnxProperty {
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DOUBLE)) { // LREAL
       double value = readSimpleField("value", readDouble(readBuffer, 64));
       return new PlcLREAL(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR_BLOCK)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_CHAR_BLOCK)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(10));
       return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(
@@ -148,7 +149,7 @@ public class KnxProperty {
       _map.put("pollingSoftNr", new PlcUSINT(pollingSoftNr));
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK)) { // List
+        propertyType, KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(5));
       return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DATE_TIME)) { // Struct
@@ -217,64 +218,84 @@ public class KnxProperty {
       _map.put("standardSummerTime", new PlcBOOL(standardSummerTime));
       _map.put("qualityOfClock", new PlcBOOL(qualityOfClock));
       return new PlcStruct(_map);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(1));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(2));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(3));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(4));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(5));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(6));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(7));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(8));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(9));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(10));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(11));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(12));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(13));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(14));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(15));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(16));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(17));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(18));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(19));
       return new PlcRawByteArray(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(20));
       return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_VERSION)) { // Struct
@@ -351,7 +372,7 @@ public class KnxProperty {
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_SCALING)) { // USINT
       short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
-    } else { // List
+    } else { // RawByteArray
       byte[] value = readBuffer.readByteArray("value", Math.toIntExact(dataLengthInBytes));
       return new PlcRawByteArray(value);
     }
@@ -441,7 +462,8 @@ public class KnxProperty {
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DOUBLE)) { // LREAL
       // Simple field (value)
       lengthInBits += 64;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR_BLOCK)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_CHAR_BLOCK)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
@@ -462,7 +484,7 @@ public class KnxProperty {
       // Simple field (pollingSoftNr)
       lengthInBits += 4;
     } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK)) { // List
+        propertyType, KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
@@ -530,102 +552,122 @@ public class KnxProperty {
 
       // Reserved Field (reserved)
       lengthInBits += 7;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
       }
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
@@ -698,7 +740,7 @@ public class KnxProperty {
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_SCALING)) { // USINT
       // Simple field (value)
       lengthInBits += 8;
-    } else { // List
+    } else { // RawByteArray
       // Array field
       if (_value != null) {
         lengthInBits += 8 * _value.getRaw().length;
@@ -774,7 +816,8 @@ public class KnxProperty {
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DOUBLE)) { // LREAL
       // Simple Field (value)
       writeSimpleField("value", (double) _value.getDouble(), writeDouble(writeBuffer, 64));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR_BLOCK)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_CHAR_BLOCK)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
     } else if (EvaluationHelper.equals(
@@ -782,70 +825,90 @@ public class KnxProperty {
         KnxPropertyDataType
             .PDT_POLL_GROUP_SETTINGS)) { // Struct                // Output something here ...
     } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK)) { // List
+        propertyType, KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
     } else if (EvaluationHelper.equals(
         propertyType,
         KnxPropertyDataType.PDT_DATE_TIME)) { // Struct                // Output something here ...
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // List
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
     } else if (EvaluationHelper.equals(
@@ -873,7 +936,7 @@ public class KnxProperty {
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_SCALING)) { // USINT
       // Simple Field (value)
       writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
-    } else { // List
+    } else { // RawByteArray
       // Array Field (value)
       writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
     }

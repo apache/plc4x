@@ -79,7 +79,9 @@ public abstract class ManualTest {
                         final PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress(tagName, testCase.address).build();
 
                         // Execute the read request
+                        long startTime = System.currentTimeMillis();
                         final PlcReadResponse readResponse = readRequest.execute().get();
+                        long endTime = System.currentTimeMillis();
 
                         // Check the result
                         Assertions.assertEquals(1, readResponse.getTagNames().size(), tagName);
@@ -132,7 +134,9 @@ public abstract class ManualTest {
                         PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().addTagAddress(tagName, testCase.address, plcValue).build();
 
                         // Execute the write request
+                        long startTime = System.currentTimeMillis();
                         PlcWriteResponse writeResponse = writeRequest.execute().get();
+                        long endTime = System.currentTimeMillis();
 
                         // Check the result
                         Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName), String.format("Got status %s for %s", writeResponse.getResponseCode(tagName).name(), testCase.address));
@@ -165,7 +169,9 @@ public abstract class ManualTest {
                         final PlcReadRequest readRequest = builder.build();
 
                         // Execute the read request
+                        long startTime = System.currentTimeMillis();
                         final PlcReadResponse readResponse = readRequest.execute().get();
+                        long endTime = System.currentTimeMillis();
 
                         // Check the result
                         Assertions.assertEquals(shuffledTestcases.size(), readResponse.getTagNames().size());
@@ -187,7 +193,7 @@ public abstract class ManualTest {
                                     "Tag: " + tagName);
                             }
                         }
-                        System.out.println("        - Read OK");
+                        System.out.println("        - Read OK (" + (endTime - startTime) + " ms)");
                     }
 
                     if (testWrite) {

@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) GetNetworkNumberQuality() BA
 
 // NewBACnetPropertyStatesNetworkNumberQuality factory function for _BACnetPropertyStatesNetworkNumberQuality
 func NewBACnetPropertyStatesNetworkNumberQuality(networkNumberQuality BACnetNetworkNumberQualityTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNetworkNumberQuality {
+	if networkNumberQuality == nil {
+		panic("networkNumberQuality of type BACnetNetworkNumberQualityTagged for BACnetPropertyStatesNetworkNumberQuality must not be nil")
+	}
 	_result := &_BACnetPropertyStatesNetworkNumberQuality{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		NetworkNumberQuality:         networkNumberQuality,

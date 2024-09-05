@@ -91,6 +91,9 @@ func (m *_CALDataReply) GetParameterValue() ParameterValue {
 
 // NewCALDataReply factory function for _CALDataReply
 func NewCALDataReply(paramNo Parameter, parameterValue ParameterValue, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReply {
+	if parameterValue == nil {
+		panic("parameterValue of type ParameterValue for CALDataReply must not be nil")
+	}
 	_result := &_CALDataReply{
 		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
 		ParamNo:         paramNo,

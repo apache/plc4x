@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetActualValue(
 
 // NewBACnetConstructedDataPositiveIntegerValueCOVIncrement factory function for _BACnetConstructedDataPositiveIntegerValueCOVIncrement
 func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(covIncrement BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueCOVIncrement {
+	if covIncrement == nil {
+		panic("covIncrement of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueCOVIncrement must not be nil")
+	}
 	_result := &_BACnetConstructedDataPositiveIntegerValueCOVIncrement{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CovIncrement:                  covIncrement,

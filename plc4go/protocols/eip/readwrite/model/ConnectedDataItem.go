@@ -95,6 +95,9 @@ func (m *_ConnectedDataItem) GetService() CipService {
 
 // NewConnectedDataItem factory function for _ConnectedDataItem
 func NewConnectedDataItem(sequenceCount uint16, service CipService) *_ConnectedDataItem {
+	if service == nil {
+		panic("service of type CipService for ConnectedDataItem must not be nil")
+	}
 	_result := &_ConnectedDataItem{
 		TypeIdContract: NewTypeId(),
 		SequenceCount:  sequenceCount,

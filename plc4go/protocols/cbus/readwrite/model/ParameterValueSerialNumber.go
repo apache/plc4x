@@ -95,6 +95,9 @@ func (m *_ParameterValueSerialNumber) GetData() []byte {
 
 // NewParameterValueSerialNumber factory function for _ParameterValueSerialNumber
 func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uint8) *_ParameterValueSerialNumber {
+	if value == nil {
+		panic("value of type SerialNumber for ParameterValueSerialNumber must not be nil")
+	}
 	_result := &_ParameterValueSerialNumber{
 		ParameterValueContract: NewParameterValue(numBytes),
 		Value:                  value,

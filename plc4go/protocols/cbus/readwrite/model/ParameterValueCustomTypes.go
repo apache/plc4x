@@ -88,6 +88,9 @@ func (m *_ParameterValueCustomTypes) GetValue() CustomTypes {
 
 // NewParameterValueCustomTypes factory function for _ParameterValueCustomTypes
 func NewParameterValueCustomTypes(value CustomTypes, numBytes uint8) *_ParameterValueCustomTypes {
+	if value == nil {
+		panic("value of type CustomTypes for ParameterValueCustomTypes must not be nil")
+	}
 	_result := &_ParameterValueCustomTypes{
 		ParameterValueContract: NewParameterValue(numBytes),
 		Value:                  value,

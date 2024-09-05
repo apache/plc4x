@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetActualValue() BACnet
 
 // NewBACnetConstructedDataEventAlgorithmInhibitRef factory function for _BACnetConstructedDataEventAlgorithmInhibitRef
 func NewBACnetConstructedDataEventAlgorithmInhibitRef(eventAlgorithmInhibitRef BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibitRef {
+	if eventAlgorithmInhibitRef == nil {
+		panic("eventAlgorithmInhibitRef of type BACnetObjectPropertyReference for BACnetConstructedDataEventAlgorithmInhibitRef must not be nil")
+	}
 	_result := &_BACnetConstructedDataEventAlgorithmInhibitRef{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		EventAlgorithmInhibitRef:      eventAlgorithmInhibitRef,

@@ -95,6 +95,12 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetLocalVtSessionIdentifier() BAC
 
 // NewBACnetConfirmedServiceRequestVTOpen factory function for _BACnetConfirmedServiceRequestVTOpen
 func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTOpen {
+	if vtClass == nil {
+		panic("vtClass of type BACnetVTClassTagged for BACnetConfirmedServiceRequestVTOpen must not be nil")
+	}
+	if localVtSessionIdentifier == nil {
+		panic("localVtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTOpen must not be nil")
+	}
 	_result := &_BACnetConfirmedServiceRequestVTOpen{
 		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
 		VtClass:                               vtClass,

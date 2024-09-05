@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataGlobalIdentifier) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataGlobalIdentifier factory function for _BACnetConstructedDataGlobalIdentifier
 func NewBACnetConstructedDataGlobalIdentifier(globalIdentifier BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalIdentifier {
+	if globalIdentifier == nil {
+		panic("globalIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataGlobalIdentifier must not be nil")
+	}
 	_result := &_BACnetConstructedDataGlobalIdentifier{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		GlobalIdentifier:              globalIdentifier,

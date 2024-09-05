@@ -102,6 +102,9 @@ func (m *_BACnetVTClassTagged) GetIsProprietary() bool {
 
 // NewBACnetVTClassTagged factory function for _BACnetVTClassTagged
 func NewBACnetVTClassTagged(header BACnetTagHeader, value BACnetVTClass, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetVTClassTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetVTClassTagged must not be nil")
+	}
 	return &_BACnetVTClassTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
 

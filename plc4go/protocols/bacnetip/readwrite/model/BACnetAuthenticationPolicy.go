@@ -81,6 +81,15 @@ func (m *_BACnetAuthenticationPolicy) GetTimeout() BACnetContextTagUnsignedInteg
 
 // NewBACnetAuthenticationPolicy factory function for _BACnetAuthenticationPolicy
 func NewBACnetAuthenticationPolicy(policy BACnetAuthenticationPolicyList, orderEnforced BACnetContextTagBoolean, timeout BACnetContextTagUnsignedInteger) *_BACnetAuthenticationPolicy {
+	if policy == nil {
+		panic("policy of type BACnetAuthenticationPolicyList for BACnetAuthenticationPolicy must not be nil")
+	}
+	if orderEnforced == nil {
+		panic("orderEnforced of type BACnetContextTagBoolean for BACnetAuthenticationPolicy must not be nil")
+	}
+	if timeout == nil {
+		panic("timeout of type BACnetContextTagUnsignedInteger for BACnetAuthenticationPolicy must not be nil")
+	}
 	return &_BACnetAuthenticationPolicy{Policy: policy, OrderEnforced: orderEnforced, Timeout: timeout}
 }
 

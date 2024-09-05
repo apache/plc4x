@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataBufferSize) GetActualValue() BACnetApplicationTag
 
 // NewBACnetConstructedDataBufferSize factory function for _BACnetConstructedDataBufferSize
 func NewBACnetConstructedDataBufferSize(bufferSize BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBufferSize {
+	if bufferSize == nil {
+		panic("bufferSize of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBufferSize must not be nil")
+	}
 	_result := &_BACnetConstructedDataBufferSize{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		BufferSize:                    bufferSize,

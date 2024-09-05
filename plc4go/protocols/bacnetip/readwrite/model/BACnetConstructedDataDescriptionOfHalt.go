@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataDescriptionOfHalt factory function for _BACnetConstructedDataDescriptionOfHalt
 func NewBACnetConstructedDataDescriptionOfHalt(descriptionForHalt BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescriptionOfHalt {
+	if descriptionForHalt == nil {
+		panic("descriptionForHalt of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescriptionOfHalt must not be nil")
+	}
 	_result := &_BACnetConstructedDataDescriptionOfHalt{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DescriptionForHalt:            descriptionForHalt,

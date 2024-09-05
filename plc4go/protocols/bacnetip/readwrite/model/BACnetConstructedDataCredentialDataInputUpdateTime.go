@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetActualValue() B
 
 // NewBACnetConstructedDataCredentialDataInputUpdateTime factory function for _BACnetConstructedDataCredentialDataInputUpdateTime
 func NewBACnetConstructedDataCredentialDataInputUpdateTime(updateTime BACnetTimeStamp, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputUpdateTime {
+	if updateTime == nil {
+		panic("updateTime of type BACnetTimeStamp for BACnetConstructedDataCredentialDataInputUpdateTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataCredentialDataInputUpdateTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		UpdateTime:                    updateTime,

@@ -112,6 +112,9 @@ func (m *_NodeIdByteString) GetIdentifier() string {
 
 // NewNodeIdByteString factory function for _NodeIdByteString
 func NewNodeIdByteString(namespaceIndex uint16, id PascalByteString) *_NodeIdByteString {
+	if id == nil {
+		panic("id of type PascalByteString for NodeIdByteString must not be nil")
+	}
 	_result := &_NodeIdByteString{
 		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
 		NamespaceIndex:               namespaceIndex,

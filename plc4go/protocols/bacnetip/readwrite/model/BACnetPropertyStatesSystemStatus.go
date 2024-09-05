@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesSystemStatus) GetSystemStatus() BACnetDeviceStatus
 
 // NewBACnetPropertyStatesSystemStatus factory function for _BACnetPropertyStatesSystemStatus
 func NewBACnetPropertyStatesSystemStatus(systemStatus BACnetDeviceStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesSystemStatus {
+	if systemStatus == nil {
+		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetPropertyStatesSystemStatus must not be nil")
+	}
 	_result := &_BACnetPropertyStatesSystemStatus{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		SystemStatus:                 systemStatus,

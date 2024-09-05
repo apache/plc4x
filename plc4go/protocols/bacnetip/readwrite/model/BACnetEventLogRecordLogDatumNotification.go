@@ -98,6 +98,15 @@ func (m *_BACnetEventLogRecordLogDatumNotification) GetInnerClosingTag() BACnetC
 
 // NewBACnetEventLogRecordLogDatumNotification factory function for _BACnetEventLogRecordLogDatumNotification
 func NewBACnetEventLogRecordLogDatumNotification(innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatumNotification {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetEventLogRecordLogDatumNotification must not be nil")
+	}
+	if notification == nil {
+		panic("notification of type ConfirmedEventNotificationRequest for BACnetEventLogRecordLogDatumNotification must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetEventLogRecordLogDatumNotification must not be nil")
+	}
 	_result := &_BACnetEventLogRecordLogDatumNotification{
 		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		InnerOpeningTag:                      innerOpeningTag,

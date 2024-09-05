@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataInstantaneousPower) GetActualValue() BACnetApplic
 
 // NewBACnetConstructedDataInstantaneousPower factory function for _BACnetConstructedDataInstantaneousPower
 func NewBACnetConstructedDataInstantaneousPower(instantaneousPower BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstantaneousPower {
+	if instantaneousPower == nil {
+		panic("instantaneousPower of type BACnetApplicationTagReal for BACnetConstructedDataInstantaneousPower must not be nil")
+	}
 	_result := &_BACnetConstructedDataInstantaneousPower{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		InstantaneousPower:            instantaneousPower,

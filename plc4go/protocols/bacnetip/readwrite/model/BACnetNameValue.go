@@ -74,6 +74,9 @@ func (m *_BACnetNameValue) GetValue() BACnetConstructedData {
 
 // NewBACnetNameValue factory function for _BACnetNameValue
 func NewBACnetNameValue(name BACnetContextTagCharacterString, value BACnetConstructedData) *_BACnetNameValue {
+	if name == nil {
+		panic("name of type BACnetContextTagCharacterString for BACnetNameValue must not be nil")
+	}
 	return &_BACnetNameValue{Name: name, Value: value}
 }
 

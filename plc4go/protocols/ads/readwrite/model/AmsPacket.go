@@ -176,6 +176,12 @@ func (m *_AmsPacket) GetBroadcast() bool {
 
 // NewAmsPacket factory function for _AmsPacket
 func NewAmsPacket(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AmsPacket {
+	if targetAmsNetId == nil {
+		panic("targetAmsNetId of type AmsNetId for AmsPacket must not be nil")
+	}
+	if sourceAmsNetId == nil {
+		panic("sourceAmsNetId of type AmsNetId for AmsPacket must not be nil")
+	}
 	return &_AmsPacket{TargetAmsNetId: targetAmsNetId, TargetAmsPort: targetAmsPort, SourceAmsNetId: sourceAmsNetId, SourceAmsPort: sourceAmsPort, ErrorCode: errorCode, InvokeId: invokeId}
 }
 

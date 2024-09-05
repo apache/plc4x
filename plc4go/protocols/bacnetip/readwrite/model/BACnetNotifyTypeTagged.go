@@ -78,6 +78,9 @@ func (m *_BACnetNotifyTypeTagged) GetValue() BACnetNotifyType {
 
 // NewBACnetNotifyTypeTagged factory function for _BACnetNotifyTypeTagged
 func NewBACnetNotifyTypeTagged(header BACnetTagHeader, value BACnetNotifyType, tagNumber uint8, tagClass TagClass) *_BACnetNotifyTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNotifyTypeTagged must not be nil")
+	}
 	return &_BACnetNotifyTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

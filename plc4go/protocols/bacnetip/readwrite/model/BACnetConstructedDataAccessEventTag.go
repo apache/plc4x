@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAccessEventTag) GetActualValue() BACnetApplicatio
 
 // NewBACnetConstructedDataAccessEventTag factory function for _BACnetConstructedDataAccessEventTag
 func NewBACnetConstructedDataAccessEventTag(accessEventTag BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventTag {
+	if accessEventTag == nil {
+		panic("accessEventTag of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccessEventTag must not be nil")
+	}
 	_result := &_BACnetConstructedDataAccessEventTag{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AccessEventTag:                accessEventTag,

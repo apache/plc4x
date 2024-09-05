@@ -84,6 +84,9 @@ func (m *_BACnetPriorityValueUnsigned) GetUnsignedValue() BACnetApplicationTagUn
 
 // NewBACnetPriorityValueUnsigned factory function for _BACnetPriorityValueUnsigned
 func NewBACnetPriorityValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetPriorityValueUnsigned must not be nil")
+	}
 	_result := &_BACnetPriorityValueUnsigned{
 		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 		UnsignedValue:               unsignedValue,

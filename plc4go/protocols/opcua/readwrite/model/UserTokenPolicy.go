@@ -116,6 +116,18 @@ func (m *_UserTokenPolicy) GetSecurityPolicyUri() PascalString {
 
 // NewUserTokenPolicy factory function for _UserTokenPolicy
 func NewUserTokenPolicy(policyId PascalString, tokenType UserTokenType, issuedTokenType PascalString, issuerEndpointUrl PascalString, securityPolicyUri PascalString) *_UserTokenPolicy {
+	if policyId == nil {
+		panic("policyId of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if issuedTokenType == nil {
+		panic("issuedTokenType of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if issuerEndpointUrl == nil {
+		panic("issuerEndpointUrl of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for UserTokenPolicy must not be nil")
+	}
 	_result := &_UserTokenPolicy{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		PolicyId:                          policyId,

@@ -88,6 +88,9 @@ func (m *_AdsDiscoveryBlockHostName) GetHostName() AmsString {
 
 // NewAdsDiscoveryBlockHostName factory function for _AdsDiscoveryBlockHostName
 func NewAdsDiscoveryBlockHostName(hostName AmsString) *_AdsDiscoveryBlockHostName {
+	if hostName == nil {
+		panic("hostName of type AmsString for AdsDiscoveryBlockHostName must not be nil")
+	}
 	_result := &_AdsDiscoveryBlockHostName{
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		HostName:                  hostName,

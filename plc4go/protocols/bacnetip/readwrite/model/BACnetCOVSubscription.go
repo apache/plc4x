@@ -95,6 +95,18 @@ func (m *_BACnetCOVSubscription) GetCovIncrement() BACnetContextTagReal {
 
 // NewBACnetCOVSubscription factory function for _BACnetCOVSubscription
 func NewBACnetCOVSubscription(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, covIncrement BACnetContextTagReal) *_BACnetCOVSubscription {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientProcessEnclosed for BACnetCOVSubscription must not be nil")
+	}
+	if monitoredPropertyReference == nil {
+		panic("monitoredPropertyReference of type BACnetObjectPropertyReferenceEnclosed for BACnetCOVSubscription must not be nil")
+	}
+	if issueConfirmedNotifications == nil {
+		panic("issueConfirmedNotifications of type BACnetContextTagBoolean for BACnetCOVSubscription must not be nil")
+	}
+	if timeRemaining == nil {
+		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetCOVSubscription must not be nil")
+	}
 	return &_BACnetCOVSubscription{Recipient: recipient, MonitoredPropertyReference: monitoredPropertyReference, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, CovIncrement: covIncrement}
 }
 

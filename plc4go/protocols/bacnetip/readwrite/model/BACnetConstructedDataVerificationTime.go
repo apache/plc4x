@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataVerificationTime) GetActualValue() BACnetApplicat
 
 // NewBACnetConstructedDataVerificationTime factory function for _BACnetConstructedDataVerificationTime
 func NewBACnetConstructedDataVerificationTime(verificationTime BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVerificationTime {
+	if verificationTime == nil {
+		panic("verificationTime of type BACnetApplicationTagSignedInteger for BACnetConstructedDataVerificationTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataVerificationTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		VerificationTime:              verificationTime,

@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) GetLifeSafetyOperations() BA
 
 // NewBACnetPropertyStatesLifeSafetyOperations factory function for _BACnetPropertyStatesLifeSafetyOperations
 func NewBACnetPropertyStatesLifeSafetyOperations(lifeSafetyOperations BACnetLifeSafetyOperationTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLifeSafetyOperations {
+	if lifeSafetyOperations == nil {
+		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetPropertyStatesLifeSafetyOperations must not be nil")
+	}
 	_result := &_BACnetPropertyStatesLifeSafetyOperations{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LifeSafetyOperations:         lifeSafetyOperations,

@@ -84,6 +84,9 @@ func (m *_BACnetPriorityValueOctetString) GetOctetStringValue() BACnetApplicatio
 
 // NewBACnetPriorityValueOctetString factory function for _BACnetPriorityValueOctetString
 func NewBACnetPriorityValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetPriorityValueOctetString must not be nil")
+	}
 	_result := &_BACnetPriorityValueOctetString{
 		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
 		OctetStringValue:            octetStringValue,

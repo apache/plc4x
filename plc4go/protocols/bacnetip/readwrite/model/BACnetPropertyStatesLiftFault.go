@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesLiftFault) GetLiftFault() BACnetLiftFaultTagged {
 
 // NewBACnetPropertyStatesLiftFault factory function for _BACnetPropertyStatesLiftFault
 func NewBACnetPropertyStatesLiftFault(liftFault BACnetLiftFaultTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftFault {
+	if liftFault == nil {
+		panic("liftFault of type BACnetLiftFaultTagged for BACnetPropertyStatesLiftFault must not be nil")
+	}
 	_result := &_BACnetPropertyStatesLiftFault{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		LiftFault:                    liftFault,

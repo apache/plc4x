@@ -84,6 +84,9 @@ func (m *_CBusCommandPointToPoint) GetCommand() CBusPointToPointCommand {
 
 // NewCBusCommandPointToPoint factory function for _CBusCommandPointToPoint
 func NewCBusCommandPointToPoint(command CBusPointToPointCommand, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandPointToPoint {
+	if command == nil {
+		panic("command of type CBusPointToPointCommand for CBusCommandPointToPoint must not be nil")
+	}
 	_result := &_CBusCommandPointToPoint{
 		CBusCommandContract: NewCBusCommand(header, cBusOptions),
 		Command:             command,

@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesExtendedValue) GetExtendedValue() BACnetContextTag
 
 // NewBACnetPropertyStatesExtendedValue factory function for _BACnetPropertyStatesExtendedValue
 func NewBACnetPropertyStatesExtendedValue(extendedValue BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesExtendedValue {
+	if extendedValue == nil {
+		panic("extendedValue of type BACnetContextTagUnsignedInteger for BACnetPropertyStatesExtendedValue must not be nil")
+	}
 	_result := &_BACnetPropertyStatesExtendedValue{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		ExtendedValue:                extendedValue,

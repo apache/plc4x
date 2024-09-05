@@ -74,6 +74,9 @@ func (m *_BACnetPropertyReference) GetArrayIndex() BACnetContextTagUnsignedInteg
 
 // NewBACnetPropertyReference factory function for _BACnetPropertyReference
 func NewBACnetPropertyReference(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger) *_BACnetPropertyReference {
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyReference must not be nil")
+	}
 	return &_BACnetPropertyReference{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex}
 }
 

@@ -87,6 +87,9 @@ func (m *_TPKTPacket) GetProtocolId() uint8 {
 
 // NewTPKTPacket factory function for _TPKTPacket
 func NewTPKTPacket(payload COTPPacket) *_TPKTPacket {
+	if payload == nil {
+		panic("payload of type COTPPacket for TPKTPacket must not be nil")
+	}
 	return &_TPKTPacket{Payload: payload}
 }
 

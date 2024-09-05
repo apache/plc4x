@@ -88,6 +88,9 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetPoolsSpaPondsFountainsData()
 
 // NewSALDataPoolsSpasPondsFountainsControl factory function for _SALDataPoolsSpasPondsFountainsControl
 func NewSALDataPoolsSpasPondsFountainsControl(poolsSpaPondsFountainsData LightingData, salData SALData) *_SALDataPoolsSpasPondsFountainsControl {
+	if poolsSpaPondsFountainsData == nil {
+		panic("poolsSpaPondsFountainsData of type LightingData for SALDataPoolsSpasPondsFountainsControl must not be nil")
+	}
 	_result := &_SALDataPoolsSpasPondsFountainsControl{
 		SALDataContract:            NewSALData(salData),
 		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,

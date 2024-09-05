@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLastStateChange) GetActualValue() BACnetTimerTran
 
 // NewBACnetConstructedDataLastStateChange factory function for _BACnetConstructedDataLastStateChange
 func NewBACnetConstructedDataLastStateChange(lastStateChange BACnetTimerTransitionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastStateChange {
+	if lastStateChange == nil {
+		panic("lastStateChange of type BACnetTimerTransitionTagged for BACnetConstructedDataLastStateChange must not be nil")
+	}
 	_result := &_BACnetConstructedDataLastStateChange{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LastStateChange:               lastStateChange,

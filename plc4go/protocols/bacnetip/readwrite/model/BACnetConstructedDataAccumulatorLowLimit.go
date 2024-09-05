@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAccumulatorLowLimit) GetActualValue() BACnetAppli
 
 // NewBACnetConstructedDataAccumulatorLowLimit factory function for _BACnetConstructedDataAccumulatorLowLimit
 func NewBACnetConstructedDataAccumulatorLowLimit(lowLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorLowLimit {
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccumulatorLowLimit must not be nil")
+	}
 	_result := &_BACnetConstructedDataAccumulatorLowLimit{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LowLimit:                      lowLimit,

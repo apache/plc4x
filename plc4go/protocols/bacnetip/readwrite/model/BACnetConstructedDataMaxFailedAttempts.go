@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) GetActualValue() BACnetApplica
 
 // NewBACnetConstructedDataMaxFailedAttempts factory function for _BACnetConstructedDataMaxFailedAttempts
 func NewBACnetConstructedDataMaxFailedAttempts(maxFailedAttempts BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxFailedAttempts {
+	if maxFailedAttempts == nil {
+		panic("maxFailedAttempts of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxFailedAttempts must not be nil")
+	}
 	_result := &_BACnetConstructedDataMaxFailedAttempts{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		MaxFailedAttempts:             maxFailedAttempts,

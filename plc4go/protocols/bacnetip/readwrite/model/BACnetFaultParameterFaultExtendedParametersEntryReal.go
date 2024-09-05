@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) GetRealValue() B
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryReal factory function for _BACnetFaultParameterFaultExtendedParametersEntryReal
 func NewBACnetFaultParameterFaultExtendedParametersEntryReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetFaultParameterFaultExtendedParametersEntryReal must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReal{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		RealValue: realValue,

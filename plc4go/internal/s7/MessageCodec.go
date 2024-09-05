@@ -32,12 +32,12 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
+//go:generate plc4xGenerator -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
 
 	passLogToModel bool
-	log            zerolog.Logger `ignore:"true"`
+	log            zerolog.Logger
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {

@@ -88,6 +88,9 @@ func (m *_ComObjectTableRealisationType6) GetComObjectDescriptors() GroupObjectD
 
 // NewComObjectTableRealisationType6 factory function for _ComObjectTableRealisationType6
 func NewComObjectTableRealisationType6(comObjectDescriptors GroupObjectDescriptorRealisationType6) *_ComObjectTableRealisationType6 {
+	if comObjectDescriptors == nil {
+		panic("comObjectDescriptors of type GroupObjectDescriptorRealisationType6 for ComObjectTableRealisationType6 must not be nil")
+	}
 	_result := &_ComObjectTableRealisationType6{
 		ComObjectTableContract: NewComObjectTable(),
 		ComObjectDescriptors:   comObjectDescriptors,

@@ -84,6 +84,9 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetObjectIdenti
 
 // NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier factory function for _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
 func NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier must not be nil")
+	}
 	_result := &_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{
 		BACnetUnconfirmedServiceRequestWhoHasObjectContract: NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader),
 		ObjectIdentifier: objectIdentifier,

@@ -88,6 +88,9 @@ func (m *_SALDataAccessControl) GetAccessControlData() AccessControlData {
 
 // NewSALDataAccessControl factory function for _SALDataAccessControl
 func NewSALDataAccessControl(accessControlData AccessControlData, salData SALData) *_SALDataAccessControl {
+	if accessControlData == nil {
+		panic("accessControlData of type AccessControlData for SALDataAccessControl must not be nil")
+	}
 	_result := &_SALDataAccessControl{
 		SALDataContract:   NewSALData(salData),
 		AccessControlData: accessControlData,

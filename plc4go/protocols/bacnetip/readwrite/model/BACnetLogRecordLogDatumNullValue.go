@@ -84,6 +84,9 @@ func (m *_BACnetLogRecordLogDatumNullValue) GetNullValue() BACnetContextTagNull 
 
 // NewBACnetLogRecordLogDatumNullValue factory function for _BACnetLogRecordLogDatumNullValue
 func NewBACnetLogRecordLogDatumNullValue(nullValue BACnetContextTagNull, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumNullValue {
+	if nullValue == nil {
+		panic("nullValue of type BACnetContextTagNull for BACnetLogRecordLogDatumNullValue must not be nil")
+	}
 	_result := &_BACnetLogRecordLogDatumNullValue{
 		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
 		NullValue:                       nullValue,

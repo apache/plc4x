@@ -88,6 +88,9 @@ func (m *_CloseSessionResponse) GetResponseHeader() ExtensionObjectDefinition {
 
 // NewCloseSessionResponse factory function for _CloseSessionResponse
 func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSessionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CloseSessionResponse must not be nil")
+	}
 	_result := &_CloseSessionResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

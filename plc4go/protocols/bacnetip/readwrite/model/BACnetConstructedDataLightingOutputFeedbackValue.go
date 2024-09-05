@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLightingOutputFeedbackValue) GetActualValue() BAC
 
 // NewBACnetConstructedDataLightingOutputFeedbackValue factory function for _BACnetConstructedDataLightingOutputFeedbackValue
 func NewBACnetConstructedDataLightingOutputFeedbackValue(feedbackValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputFeedbackValue {
+	if feedbackValue == nil {
+		panic("feedbackValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputFeedbackValue must not be nil")
+	}
 	_result := &_BACnetConstructedDataLightingOutputFeedbackValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FeedbackValue:                 feedbackValue,

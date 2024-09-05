@@ -102,6 +102,9 @@ func (pm *_BACnetTimeStamp) GetPeekedTagNumber() uint8 {
 
 // NewBACnetTimeStamp factory function for _BACnetTimeStamp
 func NewBACnetTimeStamp(peekedTagHeader BACnetTagHeader) *_BACnetTimeStamp {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetTimeStamp must not be nil")
+	}
 	return &_BACnetTimeStamp{PeekedTagHeader: peekedTagHeader}
 }
 

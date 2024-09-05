@@ -113,6 +113,9 @@ func (pm *_BACnetChannelValue) GetPeekedIsContextTag() bool {
 
 // NewBACnetChannelValue factory function for _BACnetChannelValue
 func NewBACnetChannelValue(peekedTagHeader BACnetTagHeader) *_BACnetChannelValue {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetChannelValue must not be nil")
+	}
 	return &_BACnetChannelValue{PeekedTagHeader: peekedTagHeader}
 }
 

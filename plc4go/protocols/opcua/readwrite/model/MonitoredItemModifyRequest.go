@@ -95,6 +95,9 @@ func (m *_MonitoredItemModifyRequest) GetRequestedParameters() ExtensionObjectDe
 
 // NewMonitoredItemModifyRequest factory function for _MonitoredItemModifyRequest
 func NewMonitoredItemModifyRequest(monitoredItemId uint32, requestedParameters ExtensionObjectDefinition) *_MonitoredItemModifyRequest {
+	if requestedParameters == nil {
+		panic("requestedParameters of type ExtensionObjectDefinition for MonitoredItemModifyRequest must not be nil")
+	}
 	_result := &_MonitoredItemModifyRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		MonitoredItemId:                   monitoredItemId,

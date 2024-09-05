@@ -78,6 +78,9 @@ func (m *_BACnetTimerTransitionTagged) GetValue() BACnetTimerTransition {
 
 // NewBACnetTimerTransitionTagged factory function for _BACnetTimerTransitionTagged
 func NewBACnetTimerTransitionTagged(header BACnetTagHeader, value BACnetTimerTransition, tagNumber uint8, tagClass TagClass) *_BACnetTimerTransitionTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetTimerTransitionTagged must not be nil")
+	}
 	return &_BACnetTimerTransitionTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

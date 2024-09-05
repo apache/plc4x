@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataWindowSamples) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataWindowSamples factory function for _BACnetConstructedDataWindowSamples
 func NewBACnetConstructedDataWindowSamples(windowSamples BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWindowSamples {
+	if windowSamples == nil {
+		panic("windowSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataWindowSamples must not be nil")
+	}
 	_result := &_BACnetConstructedDataWindowSamples{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		WindowSamples:                 windowSamples,

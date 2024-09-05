@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) GetActualValue() BACnetApp
 
 // NewBACnetConstructedDataLockoutRelinquishTime factory function for _BACnetConstructedDataLockoutRelinquishTime
 func NewBACnetConstructedDataLockoutRelinquishTime(lockoutRelinquishTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockoutRelinquishTime {
+	if lockoutRelinquishTime == nil {
+		panic("lockoutRelinquishTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLockoutRelinquishTime must not be nil")
+	}
 	_result := &_BACnetConstructedDataLockoutRelinquishTime{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LockoutRelinquishTime:         lockoutRelinquishTime,

@@ -88,6 +88,9 @@ func (m *_AdsDiscoveryBlockRouteName) GetRouteName() AmsString {
 
 // NewAdsDiscoveryBlockRouteName factory function for _AdsDiscoveryBlockRouteName
 func NewAdsDiscoveryBlockRouteName(routeName AmsString) *_AdsDiscoveryBlockRouteName {
+	if routeName == nil {
+		panic("routeName of type AmsString for AdsDiscoveryBlockRouteName must not be nil")
+	}
 	_result := &_AdsDiscoveryBlockRouteName{
 		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
 		RouteName:                 routeName,

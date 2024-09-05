@@ -109,6 +109,15 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetMessage() BA
 
 // NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage factory function for _BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
 func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(textMessageSourceDevice BACnetContextTagObjectIdentifier, messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+	if textMessageSourceDevice == nil {
+		panic("textMessageSourceDevice of type BACnetContextTagObjectIdentifier for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage must not be nil")
+	}
+	if messagePriority == nil {
+		panic("messagePriority of type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage must not be nil")
+	}
+	if message == nil {
+		panic("message of type BACnetContextTagCharacterString for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage must not be nil")
+	}
 	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{
 		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
 		TextMessageSourceDevice:                 textMessageSourceDevice,

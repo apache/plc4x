@@ -88,6 +88,12 @@ func (m *_BACnetDeviceObjectPropertyReference) GetDeviceIdentifier() BACnetConte
 
 // NewBACnetDeviceObjectPropertyReference factory function for _BACnetDeviceObjectPropertyReference
 func NewBACnetDeviceObjectPropertyReference(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, deviceIdentifier BACnetContextTagObjectIdentifier) *_BACnetDeviceObjectPropertyReference {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetDeviceObjectPropertyReference must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetDeviceObjectPropertyReference must not be nil")
+	}
 	return &_BACnetDeviceObjectPropertyReference{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, DeviceIdentifier: deviceIdentifier}
 }
 

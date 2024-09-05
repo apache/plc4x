@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetActualValue() BACnetAuthori
 
 // NewBACnetConstructedDataAuthorizationMode factory function for _BACnetConstructedDataAuthorizationMode
 func NewBACnetConstructedDataAuthorizationMode(authorizationMode BACnetAuthorizationModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationMode {
+	if authorizationMode == nil {
+		panic("authorizationMode of type BACnetAuthorizationModeTagged for BACnetConstructedDataAuthorizationMode must not be nil")
+	}
 	_result := &_BACnetConstructedDataAuthorizationMode{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AuthorizationMode:             authorizationMode,

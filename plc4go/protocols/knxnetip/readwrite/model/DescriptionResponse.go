@@ -97,6 +97,12 @@ func (m *_DescriptionResponse) GetDibSuppSvcFamilies() DIBSuppSvcFamilies {
 
 // NewDescriptionResponse factory function for _DescriptionResponse
 func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_DescriptionResponse {
+	if dibDeviceInfo == nil {
+		panic("dibDeviceInfo of type DIBDeviceInfo for DescriptionResponse must not be nil")
+	}
+	if dibSuppSvcFamilies == nil {
+		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for DescriptionResponse must not be nil")
+	}
 	_result := &_DescriptionResponse{
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 		DibDeviceInfo:           dibDeviceInfo,

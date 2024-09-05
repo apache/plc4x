@@ -95,6 +95,12 @@ func (m *_PortableQualifiedName) GetName() PascalString {
 
 // NewPortableQualifiedName factory function for _PortableQualifiedName
 func NewPortableQualifiedName(namespaceUri PascalString, name PascalString) *_PortableQualifiedName {
+	if namespaceUri == nil {
+		panic("namespaceUri of type PascalString for PortableQualifiedName must not be nil")
+	}
+	if name == nil {
+		panic("name of type PascalString for PortableQualifiedName must not be nil")
+	}
 	_result := &_PortableQualifiedName{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NamespaceUri:                      namespaceUri,

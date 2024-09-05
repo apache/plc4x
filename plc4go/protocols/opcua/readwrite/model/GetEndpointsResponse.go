@@ -102,6 +102,9 @@ func (m *_GetEndpointsResponse) GetEndpoints() []ExtensionObjectDefinition {
 
 // NewGetEndpointsResponse factory function for _GetEndpointsResponse
 func NewGetEndpointsResponse(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) *_GetEndpointsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for GetEndpointsResponse must not be nil")
+	}
 	_result := &_GetEndpointsResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

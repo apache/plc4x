@@ -84,6 +84,9 @@ func (m *_BACnetReadAccessProperty) GetReadResult() BACnetReadAccessPropertyRead
 
 // NewBACnetReadAccessProperty factory function for _BACnetReadAccessProperty
 func NewBACnetReadAccessProperty(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, readResult BACnetReadAccessPropertyReadResult, objectTypeArgument BACnetObjectType) *_BACnetReadAccessProperty {
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetReadAccessProperty must not be nil")
+	}
 	return &_BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult, ObjectTypeArgument: objectTypeArgument}
 }
 

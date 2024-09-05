@@ -84,6 +84,9 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 
 // NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement factory function for _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
 func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(referencedPropertyIncrement BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
+	if referencedPropertyIncrement == nil {
+		panic("referencedPropertyIncrement of type BACnetContextTagReal for BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement must not be nil")
+	}
 	_result := &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{
 		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
 		ReferencedPropertyIncrement:                          referencedPropertyIncrement,

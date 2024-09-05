@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataNetworkNumber) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataNetworkNumber factory function for _BACnetConstructedDataNetworkNumber
 func NewBACnetConstructedDataNetworkNumber(networkNumber BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkNumber {
+	if networkNumber == nil {
+		panic("networkNumber of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkNumber must not be nil")
+	}
 	_result := &_BACnetConstructedDataNetworkNumber{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NetworkNumber:                 networkNumber,

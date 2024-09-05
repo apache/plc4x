@@ -88,6 +88,9 @@ func (m *_UnConnectedDataItem) GetService() CipService {
 
 // NewUnConnectedDataItem factory function for _UnConnectedDataItem
 func NewUnConnectedDataItem(service CipService) *_UnConnectedDataItem {
+	if service == nil {
+		panic("service of type CipService for UnConnectedDataItem must not be nil")
+	}
 	_result := &_UnConnectedDataItem{
 		TypeIdContract: NewTypeId(),
 		Service:        service,

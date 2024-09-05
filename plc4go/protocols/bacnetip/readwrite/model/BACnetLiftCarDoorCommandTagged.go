@@ -78,6 +78,9 @@ func (m *_BACnetLiftCarDoorCommandTagged) GetValue() BACnetLiftCarDoorCommand {
 
 // NewBACnetLiftCarDoorCommandTagged factory function for _BACnetLiftCarDoorCommandTagged
 func NewBACnetLiftCarDoorCommandTagged(header BACnetTagHeader, value BACnetLiftCarDoorCommand, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDoorCommandTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftCarDoorCommandTagged must not be nil")
+	}
 	return &_BACnetLiftCarDoorCommandTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
 

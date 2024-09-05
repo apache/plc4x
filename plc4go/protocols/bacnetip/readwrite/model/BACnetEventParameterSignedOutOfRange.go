@@ -119,6 +119,24 @@ func (m *_BACnetEventParameterSignedOutOfRange) GetClosingTag() BACnetClosingTag
 
 // NewBACnetEventParameterSignedOutOfRange factory function for _BACnetEventParameterSignedOutOfRange
 func NewBACnetEventParameterSignedOutOfRange(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagSignedInteger, highLimit BACnetContextTagSignedInteger, deadband BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterSignedOutOfRange {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetContextTagSignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	if highLimit == nil {
+		panic("highLimit of type BACnetContextTagSignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagUnsignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
 	_result := &_BACnetEventParameterSignedOutOfRange{
 		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
 		OpeningTag:                   openingTag,

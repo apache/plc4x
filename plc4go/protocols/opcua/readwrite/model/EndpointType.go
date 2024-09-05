@@ -109,6 +109,15 @@ func (m *_EndpointType) GetTransportProfileUri() PascalString {
 
 // NewEndpointType factory function for _EndpointType
 func NewEndpointType(endpointUrl PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, transportProfileUri PascalString) *_EndpointType {
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for EndpointType must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for EndpointType must not be nil")
+	}
+	if transportProfileUri == nil {
+		panic("transportProfileUri of type PascalString for EndpointType must not be nil")
+	}
 	_result := &_EndpointType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		EndpointUrl:                       endpointUrl,

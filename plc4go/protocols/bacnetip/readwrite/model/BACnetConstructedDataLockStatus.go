@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataLockStatus) GetActualValue() BACnetLockStatusTagg
 
 // NewBACnetConstructedDataLockStatus factory function for _BACnetConstructedDataLockStatus
 func NewBACnetConstructedDataLockStatus(lockStatus BACnetLockStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockStatus {
+	if lockStatus == nil {
+		panic("lockStatus of type BACnetLockStatusTagged for BACnetConstructedDataLockStatus must not be nil")
+	}
 	_result := &_BACnetConstructedDataLockStatus{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		LockStatus:                    lockStatus,

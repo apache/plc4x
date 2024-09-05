@@ -74,6 +74,9 @@ func (m *_BACnetDeviceObjectReference) GetObjectIdentifier() BACnetContextTagObj
 
 // NewBACnetDeviceObjectReference factory function for _BACnetDeviceObjectReference
 func NewBACnetDeviceObjectReference(deviceIdentifier BACnetContextTagObjectIdentifier, objectIdentifier BACnetContextTagObjectIdentifier) *_BACnetDeviceObjectReference {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetDeviceObjectReference must not be nil")
+	}
 	return &_BACnetDeviceObjectReference{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier}
 }
 

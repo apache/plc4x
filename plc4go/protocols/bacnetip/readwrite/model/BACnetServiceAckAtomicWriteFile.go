@@ -88,6 +88,9 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetFileStartPosition() BACnetContextT
 
 // NewBACnetServiceAckAtomicWriteFile factory function for _BACnetServiceAckAtomicWriteFile
 func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint32) *_BACnetServiceAckAtomicWriteFile {
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetContextTagSignedInteger for BACnetServiceAckAtomicWriteFile must not be nil")
+	}
 	_result := &_BACnetServiceAckAtomicWriteFile{
 		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
 		FileStartPosition:        fileStartPosition,

@@ -284,6 +284,30 @@
               </packages>
             </configuration>
           </execution>
+          <execution>
+            <id>get-plc4xGenerator</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>./tools/plc4xGenerator</package>
+              </packages>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-plc4xLicencer</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>./tools/plc4xLicencer</package>
+              </packages>
+            </configuration>
+          </execution>
 
           <!-- Run the go code-generation -->
           <execution>

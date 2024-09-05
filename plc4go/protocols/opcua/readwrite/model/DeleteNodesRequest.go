@@ -102,6 +102,9 @@ func (m *_DeleteNodesRequest) GetNodesToDelete() []ExtensionObjectDefinition {
 
 // NewDeleteNodesRequest factory function for _DeleteNodesRequest
 func NewDeleteNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) *_DeleteNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteNodesRequest must not be nil")
+	}
 	_result := &_DeleteNodesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

@@ -103,6 +103,12 @@ func (m *_ExtensionObject) GetIdentifier() string {
 
 // NewExtensionObject factory function for _ExtensionObject
 func NewExtensionObject(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, body ExtensionObjectDefinition, includeEncodingMask bool) *_ExtensionObject {
+	if typeId == nil {
+		panic("typeId of type ExpandedNodeId for ExtensionObject must not be nil")
+	}
+	if body == nil {
+		panic("body of type ExtensionObjectDefinition for ExtensionObject must not be nil")
+	}
 	return &_ExtensionObject{TypeId: typeId, EncodingMask: encodingMask, Body: body, IncludeEncodingMask: includeEncodingMask}
 }
 

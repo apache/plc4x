@@ -81,6 +81,15 @@ func (m *_BACnetSpecialEvent) GetEventPriority() BACnetContextTagUnsignedInteger
 
 // NewBACnetSpecialEvent factory function for _BACnetSpecialEvent
 func NewBACnetSpecialEvent(period BACnetSpecialEventPeriod, listOfTimeValues BACnetSpecialEventListOfTimeValues, eventPriority BACnetContextTagUnsignedInteger) *_BACnetSpecialEvent {
+	if period == nil {
+		panic("period of type BACnetSpecialEventPeriod for BACnetSpecialEvent must not be nil")
+	}
+	if listOfTimeValues == nil {
+		panic("listOfTimeValues of type BACnetSpecialEventListOfTimeValues for BACnetSpecialEvent must not be nil")
+	}
+	if eventPriority == nil {
+		panic("eventPriority of type BACnetContextTagUnsignedInteger for BACnetSpecialEvent must not be nil")
+	}
 	return &_BACnetSpecialEvent{Period: period, ListOfTimeValues: listOfTimeValues, EventPriority: eventPriority}
 }
 

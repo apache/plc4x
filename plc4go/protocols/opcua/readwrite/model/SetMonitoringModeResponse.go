@@ -116,6 +116,9 @@ func (m *_SetMonitoringModeResponse) GetDiagnosticInfos() []DiagnosticInfo {
 
 // NewSetMonitoringModeResponse factory function for _SetMonitoringModeResponse
 func NewSetMonitoringModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetMonitoringModeResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for SetMonitoringModeResponse must not be nil")
+	}
 	_result := &_SetMonitoringModeResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

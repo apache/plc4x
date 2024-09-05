@@ -84,6 +84,9 @@ func (m *_BACnetPropertyStatesBinaryValue) GetBinaryValue() BACnetBinaryPVTagged
 
 // NewBACnetPropertyStatesBinaryValue factory function for _BACnetPropertyStatesBinaryValue
 func NewBACnetPropertyStatesBinaryValue(binaryValue BACnetBinaryPVTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBinaryValue {
+	if binaryValue == nil {
+		panic("binaryValue of type BACnetBinaryPVTagged for BACnetPropertyStatesBinaryValue must not be nil")
+	}
 	_result := &_BACnetPropertyStatesBinaryValue{
 		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
 		BinaryValue:                  binaryValue,

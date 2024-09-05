@@ -113,6 +113,9 @@ func (pm *_BACnetPropertyAccessResultAccessResult) GetPeekedTagNumber() uint8 {
 
 // NewBACnetPropertyAccessResultAccessResult factory function for _BACnetPropertyAccessResultAccessResult
 func NewBACnetPropertyAccessResultAccessResult(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResult {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetPropertyAccessResultAccessResult must not be nil")
+	}
 	return &_BACnetPropertyAccessResultAccessResult{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, PropertyArrayIndexArgument: propertyArrayIndexArgument}
 }
 

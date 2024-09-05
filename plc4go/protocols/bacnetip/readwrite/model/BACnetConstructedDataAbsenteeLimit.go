@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataAbsenteeLimit) GetActualValue() BACnetApplication
 
 // NewBACnetConstructedDataAbsenteeLimit factory function for _BACnetConstructedDataAbsenteeLimit
 func NewBACnetConstructedDataAbsenteeLimit(absenteeLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAbsenteeLimit {
+	if absenteeLimit == nil {
+		panic("absenteeLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAbsenteeLimit must not be nil")
+	}
 	_result := &_BACnetConstructedDataAbsenteeLimit{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AbsenteeLimit:                 absenteeLimit,

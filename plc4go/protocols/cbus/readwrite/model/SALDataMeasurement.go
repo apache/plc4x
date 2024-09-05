@@ -88,6 +88,9 @@ func (m *_SALDataMeasurement) GetMeasurementData() MeasurementData {
 
 // NewSALDataMeasurement factory function for _SALDataMeasurement
 func NewSALDataMeasurement(measurementData MeasurementData, salData SALData) *_SALDataMeasurement {
+	if measurementData == nil {
+		panic("measurementData of type MeasurementData for SALDataMeasurement must not be nil")
+	}
 	_result := &_SALDataMeasurement{
 		SALDataContract: NewSALData(salData),
 		MeasurementData: measurementData,

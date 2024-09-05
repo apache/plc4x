@@ -109,6 +109,12 @@ func (m *_QueryNextResponse) GetRevisedContinuationPoint() PascalByteString {
 
 // NewQueryNextResponse factory function for _QueryNextResponse
 func NewQueryNextResponse(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, revisedContinuationPoint PascalByteString) *_QueryNextResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for QueryNextResponse must not be nil")
+	}
+	if revisedContinuationPoint == nil {
+		panic("revisedContinuationPoint of type PascalByteString for QueryNextResponse must not be nil")
+	}
 	_result := &_QueryNextResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,

@@ -90,6 +90,9 @@ func (m *_SearchRequest) GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint {
 
 // NewSearchRequest factory function for _SearchRequest
 func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) *_SearchRequest {
+	if hpaiIDiscoveryEndpoint == nil {
+		panic("hpaiIDiscoveryEndpoint of type HPAIDiscoveryEndpoint for SearchRequest must not be nil")
+	}
 	_result := &_SearchRequest{
 		KnxNetIpMessageContract: NewKnxNetIpMessage(),
 		HpaiIDiscoveryEndpoint:  hpaiIDiscoveryEndpoint,

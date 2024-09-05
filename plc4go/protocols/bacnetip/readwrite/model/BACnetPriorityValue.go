@@ -118,6 +118,9 @@ func (pm *_BACnetPriorityValue) GetPeekedIsContextTag() bool {
 
 // NewBACnetPriorityValue factory function for _BACnetPriorityValue
 func NewBACnetPriorityValue(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValue {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetPriorityValue must not be nil")
+	}
 	return &_BACnetPriorityValue{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument}
 }
 

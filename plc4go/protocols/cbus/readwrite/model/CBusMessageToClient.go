@@ -88,6 +88,9 @@ func (m *_CBusMessageToClient) GetReply() ReplyOrConfirmation {
 
 // NewCBusMessageToClient factory function for _CBusMessageToClient
 func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToClient {
+	if reply == nil {
+		panic("reply of type ReplyOrConfirmation for CBusMessageToClient must not be nil")
+	}
 	_result := &_CBusMessageToClient{
 		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
 		Reply:               reply,

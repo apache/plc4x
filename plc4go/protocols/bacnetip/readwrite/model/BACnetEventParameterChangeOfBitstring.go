@@ -112,6 +112,21 @@ func (m *_BACnetEventParameterChangeOfBitstring) GetClosingTag() BACnetClosingTa
 
 // NewBACnetEventParameterChangeOfBitstring factory function for _BACnetEventParameterChangeOfBitstring
 func NewBACnetEventParameterChangeOfBitstring(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, bitmask BACnetContextTagBitString, listOfBitstringValues BACnetEventParameterChangeOfBitstringListOfBitstringValues, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfBitstring {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfBitstring must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfBitstring must not be nil")
+	}
+	if bitmask == nil {
+		panic("bitmask of type BACnetContextTagBitString for BACnetEventParameterChangeOfBitstring must not be nil")
+	}
+	if listOfBitstringValues == nil {
+		panic("listOfBitstringValues of type BACnetEventParameterChangeOfBitstringListOfBitstringValues for BACnetEventParameterChangeOfBitstring must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfBitstring must not be nil")
+	}
 	_result := &_BACnetEventParameterChangeOfBitstring{
 		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
 		OpeningTag:                   openingTag,

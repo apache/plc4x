@@ -109,6 +109,12 @@ func (m *_PriorityMappingEntryType) GetPriorityValue_DSCP() uint32 {
 
 // NewPriorityMappingEntryType factory function for _PriorityMappingEntryType
 func NewPriorityMappingEntryType(mappingUri PascalString, priorityLabel PascalString, priorityValue_PCP uint8, priorityValue_DSCP uint32) *_PriorityMappingEntryType {
+	if mappingUri == nil {
+		panic("mappingUri of type PascalString for PriorityMappingEntryType must not be nil")
+	}
+	if priorityLabel == nil {
+		panic("priorityLabel of type PascalString for PriorityMappingEntryType must not be nil")
+	}
 	_result := &_PriorityMappingEntryType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		MappingUri:                        mappingUri,

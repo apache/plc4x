@@ -109,6 +109,9 @@ func (m *_BACnetConstructedDataCarLoad) GetActualValue() BACnetApplicationTagRea
 
 // NewBACnetConstructedDataCarLoad factory function for _BACnetConstructedDataCarLoad
 func NewBACnetConstructedDataCarLoad(carLoad BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarLoad {
+	if carLoad == nil {
+		panic("carLoad of type BACnetApplicationTagReal for BACnetConstructedDataCarLoad must not be nil")
+	}
 	_result := &_BACnetConstructedDataCarLoad{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CarLoad:                       carLoad,

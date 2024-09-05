@@ -116,6 +116,9 @@ func (m *_ReadRequest) GetNodesToRead() []ExtensionObjectDefinition {
 
 // NewReadRequest factory function for _ReadRequest
 func NewReadRequest(requestHeader ExtensionObjectDefinition, maxAge float64, timestampsToReturn TimestampsToReturn, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_ReadRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for ReadRequest must not be nil")
+	}
 	_result := &_ReadRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

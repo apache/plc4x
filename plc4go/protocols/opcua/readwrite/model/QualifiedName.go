@@ -74,6 +74,9 @@ func (m *_QualifiedName) GetName() PascalString {
 
 // NewQualifiedName factory function for _QualifiedName
 func NewQualifiedName(namespaceIndex uint16, name PascalString) *_QualifiedName {
+	if name == nil {
+		panic("name of type PascalString for QualifiedName must not be nil")
+	}
 	return &_QualifiedName{NamespaceIndex: namespaceIndex, Name: name}
 }
 

@@ -97,6 +97,9 @@ func (m *_ModbusAsciiADU) GetPdu() ModbusPDU {
 
 // NewModbusAsciiADU factory function for _ModbusAsciiADU
 func NewModbusAsciiADU(address uint8, pdu ModbusPDU, response bool) *_ModbusAsciiADU {
+	if pdu == nil {
+		panic("pdu of type ModbusPDU for ModbusAsciiADU must not be nil")
+	}
 	_result := &_ModbusAsciiADU{
 		ModbusADUContract: NewModbusADU(response),
 		Address:           address,

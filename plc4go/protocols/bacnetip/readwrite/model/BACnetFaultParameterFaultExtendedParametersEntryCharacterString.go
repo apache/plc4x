@@ -84,6 +84,9 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetCh
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryCharacterString factory function for _BACnetFaultParameterFaultExtendedParametersEntryCharacterString
 func NewBACnetFaultParameterFaultExtendedParametersEntryCharacterString(characterStringValue BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString {
+	if characterStringValue == nil {
+		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetFaultParameterFaultExtendedParametersEntryCharacterString must not be nil")
+	}
 	_result := &_BACnetFaultParameterFaultExtendedParametersEntryCharacterString{
 		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
 		CharacterStringValue: characterStringValue,

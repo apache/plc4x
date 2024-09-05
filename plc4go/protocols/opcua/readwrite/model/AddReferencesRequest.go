@@ -102,6 +102,9 @@ func (m *_AddReferencesRequest) GetReferencesToAdd() []ExtensionObjectDefinition
 
 // NewAddReferencesRequest factory function for _AddReferencesRequest
 func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) *_AddReferencesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for AddReferencesRequest must not be nil")
+	}
 	_result := &_AddReferencesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,

@@ -84,6 +84,9 @@ func (m *_BACnetTimerStateChangeValueOctetString) GetOctetStringValue() BACnetAp
 
 // NewBACnetTimerStateChangeValueOctetString factory function for _BACnetTimerStateChangeValueOctetString
 func NewBACnetTimerStateChangeValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetTimerStateChangeValueOctetString must not be nil")
+	}
 	_result := &_BACnetTimerStateChangeValueOctetString{
 		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
 		OctetStringValue:                    octetStringValue,

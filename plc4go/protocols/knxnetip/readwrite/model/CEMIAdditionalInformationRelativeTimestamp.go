@@ -104,6 +104,9 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLen() uint8 {
 
 // NewCEMIAdditionalInformationRelativeTimestamp factory function for _CEMIAdditionalInformationRelativeTimestamp
 func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTimestamp) *_CEMIAdditionalInformationRelativeTimestamp {
+	if relativeTimestamp == nil {
+		panic("relativeTimestamp of type RelativeTimestamp for CEMIAdditionalInformationRelativeTimestamp must not be nil")
+	}
 	_result := &_CEMIAdditionalInformationRelativeTimestamp{
 		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
 		RelativeTimestamp:                 relativeTimestamp,

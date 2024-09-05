@@ -120,6 +120,15 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
                     <#assign arrayElementType = arrayField.type.elementTypeReference>
 
 			// Array Field (${arrayField.name})
+                        <#if arrayElementType.isByteBased()>
+							<#if !field.isCountArrayField() && !field.isLengthArrayField()>
+			return nil, errors.Wrap(_${arrayField.name}Err, "Array fields of type byte only support 'count' and 'length' loop-types.")<@emitImport import="github.com/pkg/errors" />
+							</#if>
+			${arrayField.name}, _${arrayField.name}Err := readBuffer.ReadByteArray("${arrayField.name}", int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}))<#if arrayField.loopExpression.contains("CEIL")><@emitImport import="math" /></#if>
+			if _${arrayField.name}Err != nil {
+				return nil, errors.Wrap(_${arrayField.name}Err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+			}
+                        <#else>
 			var ${arrayField.name} []api.PlcValue
 			for i := 0; i < int(${helper.toParseExpression(null, null, arrayField.loopExpression, parserArguments)}); i++ {
 				_item, _itemErr := <#if arrayElementType.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(arrayField.name, arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>Complex type array in data-io parsing currently not implemented</#if>
@@ -128,6 +137,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				}
 				${arrayField.name} = append(${arrayField.name}, ${helper.getPlcValueTypeForTypeReference(arrayElementType)}(_item))
 			}
+						</#if>
 					<#if arrayField.name == "value">
 						<#assign valueDefined=true>
 					</#if>
