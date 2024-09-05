@@ -24,6 +24,8 @@ import (
 	"math/rand"
 
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 )
 
 type NetworkNode interface {
@@ -50,13 +52,23 @@ type Network struct {
 }
 
 func NewNetwork(localLog zerolog.Logger, opts ...func(*Network)) *Network {
-	network := &Network{
+	n := &Network{
 		log: localLog,
 	}
 	for _, opt := range opts {
-		opt(network)
+		opt(n)
 	}
-	return network
+	if globals.LogVlan {
+		n.log.Trace().
+			Str("name", n.name).
+			Stringer("broadcastAddress", n.broadcastAddress).
+			Float32("dropPercent", n.dropPercent).
+			Msg("NewNetwork")
+	}
+	if !globals.LogVlan {
+		n.log = zerolog.Nop()
+	}
+	return n
 }
 
 func WithNetworkName(name string) func(*Network) {

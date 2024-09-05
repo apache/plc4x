@@ -106,10 +106,19 @@ func (t CallTransition) String() string {
 
 func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgopes.KnownKey]any) (matches bool) {
 	// check the type
-	if pduType != nil && fmt.Sprintf("%T", pdu) != fmt.Sprintf("%T", pduType) {
-		localLog.Debug().Type("got", pdu).Type("want", pduType).Msg("failed match, wrong type")
-		return false
+	switch pduType := pduType.(type) {
+	case func(any) bool:
+		if !pduType(pdu) {
+			localLog.Debug().Type("got", pdu).Interface("gotValue", pdu).Msg("failed match, func says no")
+			return false
+		}
+	default:
+		if pduType != nil && fmt.Sprintf("%T", pdu) != fmt.Sprintf("%T", pduType) {
+			localLog.Debug().Type("got", pdu).Interface("gotValue", pdu).Type("want", pduType).Msg("failed match, wrong type")
+			return false
+		}
 	}
+
 	for attrName, attrValue := range pduAttrs {
 		attrLog := localLog.With().Str("attrName", string(attrName)).Interface("attrValue", attrValue).Logger()
 		switch attrName {
@@ -484,10 +493,11 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 	return true
 }
 
+//go:generate plc4xGenerator -type=TimeoutTask -prefix=task_
 type TimeoutTask struct {
 	*bacgopes.OneShotTask
 
-	fn     func(args bacgopes.Args, kwargs bacgopes.KWArgs) error
+	fn     func(args bacgopes.Args, kwargs bacgopes.KWArgs) error `ignore:"true"`
 	args   bacgopes.Args
 	kwargs bacgopes.KWArgs
 }
@@ -504,8 +514,4 @@ func NewTimeoutTask(fn func(args bacgopes.Args, kwargs bacgopes.KWArgs) error, a
 
 func (t *TimeoutTask) ProcessTask() error {
 	return t.fn(t.args, t.kwargs)
-}
-
-func (t *TimeoutTask) String() string {
-	return fmt.Sprintf("TimeoutTask(%v, fn: %t, args: %s, kwargs: %s)", t.Task, t.fn != nil, t.args, t.kwargs)
 }

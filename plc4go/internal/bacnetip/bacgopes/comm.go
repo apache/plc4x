@@ -24,6 +24,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 )
 
 // maps of named clients and servers
@@ -45,6 +47,9 @@ func init() {
 
 // Bind a list of clients and servers together, top down
 func Bind(localLog zerolog.Logger, args ...any) error {
+	if !globals.LogComm {
+		localLog = zerolog.Nop()
+	}
 	// generic bind is pairs of names
 	if len(args) == 0 {
 		// find unbound clients and bind them

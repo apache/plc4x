@@ -19,11 +19,10 @@
 
 package bacgopes
 
-import "fmt"
-
+//go:generate plc4xGenerator -type=OneShotFunctionTask -prefix=task_
 type OneShotFunctionTask struct {
 	*OneShotDeleteTask
-	fn     func(args Args, kwargs KWArgs) error
+	fn     func(args Args, kwargs KWArgs) error `ignore:"true"`
 	args   Args
 	kwargs KWArgs
 }
@@ -43,8 +42,4 @@ func FunctionTask(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWA
 
 func (m *OneShotFunctionTask) ProcessTask() error {
 	return m.fn(m.args, m.kwargs)
-}
-
-func (m *OneShotFunctionTask) String() string {
-	return fmt.Sprintf("OneShotFunctionTask(%v, fn: %t, args: %s, kwargs: %s)", m.OneShotDeleteTask, m.fn != nil, m.args, m.kwargs)
 }

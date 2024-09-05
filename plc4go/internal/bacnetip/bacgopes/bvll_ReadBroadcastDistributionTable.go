@@ -71,5 +71,8 @@ func (r *ReadBroadcastDistributionTable) Decode(bvlpdu Arg) error {
 }
 
 func (r *ReadBroadcastDistributionTable) String() string {
+	if r == nil {
+		return "(*ReadBroadcastDistributionTable)(nil)"
+	}
 	return fmt.Sprintf("ReadBroadcastDistributionTable{%v}", r._BVLPDU)
 }

@@ -77,6 +77,9 @@ func NewClientStateMachine(localLog zerolog.Logger, opts ...func(*ClientStateMac
 	var init func()
 	c.StateMachineContract, init = NewStateMachine(localLog, c.contract, WithStateMachineName(c.name))
 	init()
+	if !LogStateMachine {
+		c.log = zerolog.Nop()
+	}
 	return c, nil
 }
 

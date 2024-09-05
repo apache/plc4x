@@ -42,7 +42,7 @@ type Application struct {
 	localDevice      *LocalDeviceObject
 	deviceInfoCache  *DeviceInfoCache
 	controllers      map[string]any
-	helpers          map[string]func(pdu PDU) error `ignore:"true"`
+	helpers          map[string]func(apdu APDU) error `ignore:"true"`
 
 	_startupDisabled bool
 
@@ -54,7 +54,8 @@ type Application struct {
 
 func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(*Application)) (*Application, error) {
 	a := &Application{
-		log: localLog,
+		log:     localLog,
+		helpers: map[string]func(apdu APDU) error{},
 	}
 	for _, opt := range opts {
 		opt(a)
@@ -240,14 +241,14 @@ func (a *Application) Request(args Args, kwargs KWArgs) error {
 
 func (a *Application) Indication(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	apdu := args.Get0PDU()
+	apdu := args.GetAPDU(0)
 
 	// get a helper function
 	helperName := fmt.Sprintf("Do_%T", apdu)
 	helperFn := a.helpers[helperName]
 	a.log.Debug().
 		Str("helperName", helperName).
-		Interface("helperFn", helperFn).
+		Bool("helperFn", helperFn != nil).
 		Msg("working with helper")
 
 	// send back a reject for unrecognized services
@@ -260,11 +261,20 @@ func (a *Application) Indication(args Args, kwargs KWArgs) error {
 
 	if err := helperFn(apdu); err != nil {
 		a.log.Debug().Err(err).Msg("err result")
+		panic("do it")
 		// TODO: do proper mapping
 		if err := a.Response(NewArgs(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))), kwargs); err != nil {
 			return err
 		}
 	}
 
+	return nil
+}
+
+func (a *Application) RegisterHelperFn(name string, fn func(apdu APDU) error) error {
+	if _, ok := a.helpers[name]; ok {
+		return errors.Errorf("helper %s already registered", name)
+	}
+	a.helpers[name] = fn
 	return nil
 }

@@ -20,55 +20,55 @@
 package bacgopes
 
 // BVLPDUTypes is a dictionary of message type values and structs
-var BVLPDUTypes map[uint8]func() interface{ Decode(Arg) error }
+var BVLPDUTypes map[uint8]func() Decoder
 
 func init() {
-	BVLPDUTypes = map[uint8]func() interface{ Decode(Arg) error }{
-		0x00: func() interface{ Decode(Arg) error } {
+	BVLPDUTypes = map[uint8]func() Decoder{
+		0x00: func() Decoder {
 			v, _ := NewResult()
 			return v
 		},
-		0x01: func() interface{ Decode(Arg) error } {
+		0x01: func() Decoder {
 			v, _ := NewWriteBroadcastDistributionTable()
 			return v
 		},
-		0x02: func() interface{ Decode(Arg) error } {
+		0x02: func() Decoder {
 			v, _ := NewReadBroadcastDistributionTable()
 			return v
 		},
-		0x03: func() interface{ Decode(Arg) error } {
+		0x03: func() Decoder {
 			v, _ := NewReadBroadcastDistributionTableAck()
 			return v
 		},
-		0x04: func() interface{ Decode(Arg) error } {
+		0x04: func() Decoder {
 			v, _ := NewForwardedNPDU(nil)
 			return v
 		},
-		0x05: func() interface{ Decode(Arg) error } {
+		0x05: func() Decoder {
 			v, _ := NewRegisterForeignDevice()
 			return v
 		},
-		0x06: func() interface{ Decode(Arg) error } {
+		0x06: func() Decoder {
 			v, _ := NewReadForeignDeviceTable()
 			return v
 		},
-		0x07: func() interface{ Decode(Arg) error } {
+		0x07: func() Decoder {
 			v, _ := NewReadForeignDeviceTableAck()
 			return v
 		},
-		0x08: func() interface{ Decode(Arg) error } {
+		0x08: func() Decoder {
 			v, _ := NewDeleteForeignDeviceTableEntry()
 			return v
 		},
-		0x09: func() interface{ Decode(Arg) error } {
+		0x09: func() Decoder {
 			v, _ := NewDistributeBroadcastToNetwork(nil)
 			return v
 		},
-		0x0A: func() interface{ Decode(Arg) error } {
+		0x0A: func() Decoder {
 			v, _ := NewOriginalUnicastNPDU(nil)
 			return v
 		},
-		0x0B: func() interface{ Decode(Arg) error } {
+		0x0B: func() Decoder {
 			v, _ := NewOriginalBroadcastNPDU(nil)
 			return v
 		},

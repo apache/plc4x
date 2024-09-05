@@ -21,11 +21,14 @@ package bacgopes
 
 import (
 	"context"
+	"fmt"
 	"math"
+	"strconv"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
@@ -55,7 +58,6 @@ type NPCI interface {
 	getNPCI() NPCI
 }
 
-//go:generate plc4xGenerator -type=_NPCI -prefix=npdu
 type _NPCI struct {
 	*_PCI
 	*DebugContents
@@ -67,6 +69,9 @@ type _NPCI struct {
 	npduHopCount   *uint8
 	npduNetMessage *uint8
 	npduVendorID   *readWriteModel.BACnetVendorId `directSerialize:"true"`
+
+	// Deprecated: hacky workaround
+	bytesToDiscard int `ignore:"true"`
 }
 
 var _ NPCI = (*_NPCI)(nil)
@@ -192,9 +197,12 @@ func (n *_NPCI) Decode(pdu Arg) error {
 		}
 		n.rootMessage = parse
 	}
+	readBytes := 0
 	switch rm := n.rootMessage.(type) {
 	case readWriteModel.NPDU:
+		readBytes += 1
 		n.npduVersion = rm.GetProtocolVersionNumber()
+		readBytes += 1
 		control := rm.GetControl()
 		cs, _ := control.Serialize()
 		n.npduControl = cs[0]
@@ -206,8 +214,11 @@ func (n *_NPCI) Decode(pdu Arg) error {
 
 		// extract the destination address
 		if dnetPresent {
+			readBytes += 2
 			dnet := *rm.GetDestinationNetworkAddress()
+			readBytes += 1
 			dlen := *rm.GetDestinationLength()
+			readBytes += int(dlen)
 			dadr := rm.GetDestinationAddress()
 
 			if dnet == 0xFFFF {
@@ -221,47 +232,53 @@ func (n *_NPCI) Decode(pdu Arg) error {
 					return errors.Wrap(err, "error creating remote station")
 				}
 			}
+		}
 
-			// extract the source address
-			if snetPresent {
-				snet := *rm.GetSourceNetworkAddress()
-				slen := *rm.GetSourceLength()
-				sadr := rm.GetSourceAddress()
+		// extract the source address
+		if snetPresent {
+			readBytes += 2
+			snet := *rm.GetSourceNetworkAddress()
+			readBytes += 1
+			slen := *rm.GetSourceLength()
+			readBytes += int(slen)
+			sadr := rm.GetSourceAddress()
 
-				if snet == 0xFFFF {
-					return errors.New("SADR can't be a global broadcast")
-				} else if slen == 0 {
-					return errors.New("SADR can't be a remote broadcast")
-				}
-
-				var err error
-				n.npduSADR, err = NewRemoteStation(zerolog.Nop(), &snet, sadr, nil)
-				if err != nil {
-					return errors.Wrap(err, "error creating remote station")
-				}
+			if snet == 0xFFFF {
+				return errors.New("SADR can't be a global broadcast")
+			} else if slen == 0 {
+				return errors.New("SADR can't be a remote broadcast")
 			}
 
-			// extract the hop count
-			if dnetPresent {
-				n.npduHopCount = rm.GetHopCount()
+			var err error
+			n.npduSADR, err = NewRemoteStation(zerolog.Nop(), &snet, sadr, nil)
+			if err != nil {
+				return errors.Wrap(err, "error creating remote station")
 			}
+		}
 
-			// extract the network layer message type (if present)
-			if netLayerMessage {
-				messageType := rm.GetNlm().GetMessageType()
-				n.npduNetMessage = &messageType
-				if rm.GetNlm().GetIsVendorProprietaryMessage() {
-					// extract the vendor ID
-					vendorId := rm.GetNlm().(readWriteModel.NLMVendorProprietaryMessage).GetVendorId()
-					n.npduVendorID = &vendorId
-				}
+		// extract the hop count
+		if dnetPresent {
+			readBytes += 1
+			n.npduHopCount = rm.GetHopCount()
+		}
+
+		// extract the network layer message type (if present)
+		if netLayerMessage {
+			readBytes += 1
+			messageType := rm.GetNlm().GetMessageType()
+			n.npduNetMessage = &messageType
+			if rm.GetNlm().GetIsVendorProprietaryMessage() {
+				// extract the vendor ID
+				vendorId := rm.GetNlm().(readWriteModel.NLMVendorProprietaryMessage).GetVendorId()
+				n.npduVendorID = &vendorId
 			}
-
 		} else {
 			// application layer message
 			n.npduNetMessage = nil
 		}
 	}
+	// TODO: this is ugly but we need to read away data otherwise downstream code just fails... maybe better rip out all plc4x parsing till we get all tests running
+	n.bytesToDiscard = readBytes
 	return nil
 }
 
@@ -338,6 +355,61 @@ func (n *_NPCI) getNPCI() NPCI {
 	return n
 }
 
+func (n *_NPCI) GetProtocolVersionNumber() uint8 {
+	return n.npduVersion
+}
+
+func (n *_NPCI) GetControl() readWriteModel.NPDUControl {
+	ctl, _ := readWriteModel.NPDUControlParse(context.Background(), []byte{n.npduControl})
+	return ctl
+}
+
+func (n *_NPCI) GetDestinationNetworkAddress() *uint16 {
+	if n.npduDADR == nil {
+		return nil
+	}
+	return n.npduDADR.AddrNet
+}
+
+func (n *_NPCI) GetDestinationLength() *uint8 {
+	if n.npduDADR == nil {
+		return nil
+	}
+	return n.npduDADR.AddrLen
+}
+
+func (n *_NPCI) GetDestinationAddress() []uint8 {
+	if n.npduDADR == nil {
+		return nil
+	}
+	return n.npduDADR.AddrAddress
+}
+
+func (n *_NPCI) GetSourceNetworkAddress() *uint16 {
+	if n.npduSADR == nil {
+		return nil
+	}
+	return n.npduSADR.AddrNet
+}
+
+func (n *_NPCI) GetSourceLength() *uint8 {
+	if n.npduSADR == nil {
+		return nil
+	}
+	return n.npduSADR.AddrLen
+}
+
+func (n *_NPCI) GetSourceAddress() []uint8 {
+	if n.npduSADR == nil {
+		return nil
+	}
+	return n.npduSADR.AddrAddress
+}
+
+func (n *_NPCI) GetHopCount() *uint8 {
+	return n.npduHopCount
+}
+
 // TODO: this needs work as it doesn't do anything any more right now... // we could hook it to update
 func (n *_NPCI) buildNPDU(hopCount uint8, source *Address, destination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority, nlm readWriteModel.NLM, apdu readWriteModel.APDU) (readWriteModel.NPDU, error) {
 	switch {
@@ -400,5 +472,44 @@ func (n *_NPCI) deepCopy() *_NPCI {
 		npduHopCount:   CopyPtr(n.npduHopCount),
 		npduNetMessage: CopyPtr(n.npduNetMessage),
 		npduVendorID:   CopyPtr(n.npduVendorID),
+	}
+}
+
+func (n *_NPCI) String() string {
+	if globals.ExtendedPDUOutput {
+		return fmt.Sprintf("NPCI{%s}", n._PCI)
+	} else {
+		npduDADRStr := ""
+		if n.npduDADR != nil {
+			npduDADRStr = "\nnpduDADR = " + n.npduDADR.String()
+		}
+		npduSADRStr := ""
+		if n.npduSADR != nil {
+			npduSADRStr = "\nnpduSADR = " + n.npduSADR.String()
+		}
+		npduHopCountStr := ""
+		if n.npduHopCount != nil {
+			npduHopCountStr = "\nnpduHopCount = " + strconv.Itoa(int(*n.npduHopCount))
+		}
+		npduNetMessageStr := ""
+		if n.npduNetMessage != nil {
+			npduNetMessageStr = "\nnpduNetMessage = " + strconv.Itoa(int(*n.npduNetMessage))
+		}
+		npduVendorIDStr := ""
+		if n.npduVendorID != nil {
+			npduVendorIDStr = "\nnpduVendorID = " + n.npduVendorID.String()
+		}
+		return fmt.Sprintf("\n%s\n"+
+			"npduVersion = %d\n"+
+			"npduControl = %d%s%s%s%s%s",
+			n._PCI,
+			n.npduVersion,
+			n.npduControl,
+			npduDADRStr,
+			npduSADRStr,
+			npduHopCountStr,
+			npduNetMessageStr,
+			npduVendorIDStr,
+		)
 	}
 }

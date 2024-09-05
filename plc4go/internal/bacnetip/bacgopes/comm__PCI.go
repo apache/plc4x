@@ -33,12 +33,12 @@ import (
 
 type IPCI interface {
 	spi.Message
-	// GetRootMessage returns this. (TODO: check if type switch works without that, as this is spi.Message which delegates)
+	SetRootMessage(spi.Message)
 	GetRootMessage() spi.Message
 	SetPDUUserData(spi.Message)
 	GetPDUUserData() spi.Message
 	GetPDUSource() *Address
-	SetPDUSource(source *Address)
+	SetPDUSource(*Address)
 	GetPDUDestination() *Address
 	SetPDUDestination(*Address)
 	Update(pci Arg) error
@@ -55,6 +55,10 @@ var _ IPCI = (*__PCI)(nil)
 
 func new__PCI(rootMessage spi.Message, pduUserData spi.Message, pduSource *Address, pduDestination *Address) *__PCI {
 	return &__PCI{rootMessage, pduUserData, pduSource, pduDestination}
+}
+
+func (p *__PCI) SetRootMessage(rootMessage spi.Message) {
+	p.rootMessage = rootMessage
 }
 
 func (p *__PCI) GetRootMessage() spi.Message {
@@ -143,31 +147,46 @@ func (p *__PCI) GetLengthInBits(ctx context.Context) uint16 {
 }
 
 func (p *__PCI) String() string {
-	rootMessageString := "nil"
-	if p.rootMessage != nil && globals.ExtendedPDUOutput {
-		rootMessageString = p.rootMessage.String()
-		if strings.Contains(rootMessageString, "\n") {
-			rootMessageString = "\n" + rootMessageString + "\n"
+	if globals.ExtendedPDUOutput {
+		rootMessageString := "nil"
+		if p.rootMessage != nil && globals.ExtendedPDUOutput {
+			rootMessageString = p.rootMessage.String()
+			if strings.Contains(rootMessageString, "\n") {
+				rootMessageString = "\n" + rootMessageString + "\n"
+			}
+		} else if p.rootMessage != nil {
+			if bytes, err := p.rootMessage.Serialize(); err != nil {
+				rootMessageString = err.Error()
+			} else {
+				rootMessageString = Btox(bytes, ".")
+			}
 		}
-	} else if p.rootMessage != nil {
-		if bytes, err := p.rootMessage.Serialize(); err != nil {
-			rootMessageString = err.Error()
-		} else {
-			rootMessageString = Btox(bytes, ".")
+		pduUserDataString := "nil"
+		if p.pduUserData != nil && globals.ExtendedPDUOutput {
+			pduUserDataString = p.pduUserData.String()
+			if strings.Contains(pduUserDataString, "\n") {
+				pduUserDataString = "\n" + pduUserDataString + "\n"
+			}
+		} else if p.pduUserData != nil {
+			if bytes, err := p.pduUserData.Serialize(); err != nil {
+				pduUserDataString = err.Error()
+			} else {
+				pduUserDataString = Btox(bytes, ".")
+			}
 		}
+		return fmt.Sprintf("__PCI{rootMessage: %s, pduUserData: %s, pduSource: %s, pduDestination: %s}", rootMessageString, pduUserDataString, p.pduSource, p.pduDestination)
+	} else {
+		pduSourceStr := ""
+		if p.pduSource != nil {
+			pduSourceStr = "pduSource = " + p.pduSource.String()
+		}
+		pduDestinationStr := ""
+		if p.pduDestination != nil {
+			pduDestinationStr = "\npduDestination = " + p.pduDestination.String()
+			if pduSourceStr == "" {
+				pduDestinationStr = pduDestinationStr[1:]
+			}
+		}
+		return fmt.Sprintf("%s%s", pduSourceStr, pduDestinationStr)
 	}
-	pduUserDataString := "nil"
-	if p.pduUserData != nil && globals.ExtendedPDUOutput {
-		pduUserDataString = p.pduUserData.String()
-		if strings.Contains(pduUserDataString, "\n") {
-			pduUserDataString = "\n" + pduUserDataString + "\n"
-		}
-	} else if p.pduUserData != nil {
-		if bytes, err := p.pduUserData.Serialize(); err != nil {
-			pduUserDataString = err.Error()
-		} else {
-			pduUserDataString = Btox(bytes, ".")
-		}
-	}
-	return fmt.Sprintf("__PCI{rootMessage: %s, pduUserData: %s, pduSource: %s, pduDestination: %s}", rootMessageString, pduUserDataString, p.pduSource, p.pduDestination)
 }

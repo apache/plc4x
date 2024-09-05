@@ -25,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -88,10 +89,13 @@ func NewServiceAccessPoint(localLog zerolog.Logger, opts ...func(point *serviceA
 			}
 
 			// Note: we need to pass the requirements (which should contain s as delegate) here
-			if err := Bind(localLog, element, s.argSAPExtension); err != nil {
+			if err := Bind(s.log, element, s.argSAPExtension); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
+	}
+	if !globals.LogComm {
+		s.log = zerolog.Nop()
 	}
 	return s, nil
 }

@@ -93,5 +93,8 @@ func (r *Result) Decode(bvlpdu Arg) error {
 }
 
 func (r *Result) String() string {
+	if r == nil {
+		return "(*Result)(nil)"
+	}
 	return fmt.Sprintf("Result{%v, bvlciResultCode: %v}", r._BVLPDU, r.bvlciResultCode)
 }

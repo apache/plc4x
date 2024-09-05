@@ -57,6 +57,9 @@ type _BVLCI struct {
 	bvlciType     uint8
 	bvlciFunction uint8
 	bvlciLength   uint16
+
+	// Deprecated: hacky workaround
+	bytesToDiscard int `ignore:"true"`
 }
 
 var _ BVLCI = (*_BVLCI)(nil)
@@ -114,6 +117,7 @@ func (b *_BVLCI) Decode(pdu Arg) error {
 	if err := b._PCI.Update(pdu); err != nil {
 		return errors.Wrap(err, "error updating pdu")
 	}
+	readBytes := 0 // TODO: as long as we use the read like this we should be good (not using plc4x to parse that away)
 	switch pdu := pdu.(type) {
 	case PDUData:
 		var err error
@@ -138,6 +142,7 @@ func (b *_BVLCI) Decode(pdu Arg) error {
 			return errors.Errorf("invalid BVLCI length %d != %d", b.bvlciLength, len(pdu.GetPduData())+4)
 		}
 	}
+	b.bytesToDiscard = readBytes
 	return nil
 }
 

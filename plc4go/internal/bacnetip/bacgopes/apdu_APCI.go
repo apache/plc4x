@@ -83,6 +83,9 @@ type _APCI struct {
 	apduService           *uint8
 	apduInvokeID          *uint8
 	apduAbortRejectReason *uint8
+
+	// Deprecated: hacky workaround
+	bytesToDiscard int `ignore:"true"`
 }
 
 var _ APCI = (*_APCI)(nil)
@@ -316,11 +319,96 @@ func (a *_APCI) Decode(pdu Arg) error {
 		}
 		a.rootMessage = parse
 	}
+	readBytes := 0
+
+	// simulate the APCI type decode
+	readBytes++
 	switch rm := a.rootMessage.(type) {
 	case readWriteModel.APDU:
-		_ = rm
-		panic("implement me")
+		apduType := rm.GetApduType()
+		a.apduType = &apduType
 	}
+	switch rm := a.rootMessage.(type) {
+	case readWriteModel.APDUConfirmedRequest:
+		a.apduSeg = rm.GetSegmentedMessage()
+		a.apduMor = rm.GetMoreFollows()
+		a.apduSA = rm.GetSegmentedResponseAccepted()
+		readBytes++
+		maxSegmentsAccepted := uint8(rm.GetMaxSegmentsAccepted())
+		a.apduMaxSegs = &maxSegmentsAccepted
+		maxApduLengthAccepted := uint8(rm.GetMaxApduLengthAccepted())
+		a.apduMaxResp = &maxApduLengthAccepted
+		readBytes++
+		invokeId := rm.GetInvokeId()
+		a.apduInvokeID = &invokeId
+		if a.apduSeg {
+			readBytes++
+			a.apduSeq = rm.GetSequenceNumber()
+			readBytes++
+			a.apduWin = rm.GetProposedWindowSize()
+		}
+		readBytes++
+		if sr := rm.GetServiceRequest(); sr != nil {
+			serviceChoice := uint8(sr.GetServiceChoice())
+			a.apduService = &serviceChoice
+		}
+	case readWriteModel.APDUUnconfirmedRequest:
+		readBytes++
+		var choice *uint8
+		if sr := rm.GetServiceRequest(); sr != nil {
+			serviceChoice := uint8(sr.GetServiceChoice())
+			choice = &serviceChoice
+		}
+		a.apduService = choice
+	case readWriteModel.APDUSimpleAck:
+		readBytes++
+		invokeId := rm.GetOriginalInvokeId()
+		a.apduInvokeID = &invokeId
+	case readWriteModel.APDUComplexAck:
+		a.apduSeg = rm.GetSegmentedMessage()
+		a.apduMor = rm.GetMoreFollows()
+		readBytes++
+		invokeId := rm.GetOriginalInvokeId()
+		a.apduInvokeID = &invokeId
+		if a.apduSeg {
+			readBytes++
+			a.apduSeq = rm.GetSequenceNumber()
+			readBytes++
+			a.apduWin = rm.GetProposedWindowSize()
+		}
+		if sr := rm.GetServiceAck(); sr != nil {
+			serviceChoice := uint8(sr.GetServiceChoice())
+			a.apduService = &serviceChoice
+		}
+	case readWriteModel.APDUSegmentAck:
+		a.apduNak = rm.GetNegativeAck()
+		a.apduSrv = rm.GetServer()
+		readBytes++
+		invokeId := rm.GetOriginalInvokeId()
+		a.apduInvokeID = &invokeId
+		readBytes++
+		actualWindowSize := rm.GetActualWindowSize()
+		a.apduWin = &actualWindowSize
+	case readWriteModel.APDUError:
+		readBytes++
+		invokeId := rm.GetOriginalInvokeId()
+		a.apduInvokeID = &invokeId
+		serviceChoice := uint8(rm.GetErrorChoice())
+		a.apduService = &serviceChoice
+	case readWriteModel.APDUReject:
+		readBytes++
+		invokeId := rm.GetOriginalInvokeId()
+		a.apduInvokeID = &invokeId
+		apduAbortRejectReason := uint8(rm.GetRejectReason().GetValue())
+		a.apduAbortRejectReason = &apduAbortRejectReason
+	case readWriteModel.APDUAbort:
+		readBytes++
+		invokeId := rm.GetOriginalInvokeId()
+		a.apduInvokeID = &invokeId
+		apduAbortRejectReason := uint8(rm.GetAbortReason().GetValue())
+		a.apduAbortRejectReason = &apduAbortRejectReason
+	}
+	a.bytesToDiscard = readBytes
 	return nil
 }
 

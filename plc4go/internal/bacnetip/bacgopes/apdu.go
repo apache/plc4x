@@ -21,102 +21,205 @@ package bacgopes
 
 import readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 
-var APDUTypes map[readWriteModel.ApduType]func() interface{ Decode(Arg) error }
+var APDUTypes map[readWriteModel.ApduType]func() Decoder
 
 func init() {
-	APDUTypes = map[readWriteModel.ApduType]func() interface{ Decode(Arg) error }{
-		readWriteModel.ApduType_CONFIRMED_REQUEST_PDU: func() interface{ Decode(Arg) error } {
+	APDUTypes = map[readWriteModel.ApduType]func() Decoder{
+		readWriteModel.ApduType_CONFIRMED_REQUEST_PDU: func() Decoder {
 			pdu, _ := NewConfirmedRequestPDU(nil)
 			return pdu
 		},
-		readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU: func() Decoder {
 			pdu, _ := NewUnconfirmedRequestPDU(nil)
 			return pdu
 		},
-		readWriteModel.ApduType_SIMPLE_ACK_PDU: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_SIMPLE_ACK_PDU: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_COMPLEX_ACK_PDU: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_COMPLEX_ACK_PDU: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_SEGMENT_ACK_PDU: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_SEGMENT_ACK_PDU: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_ERROR_PDU: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_ERROR_PDU: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_REJECT_PDU: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_REJECT_PDU: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_ABORT_PDU: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_ABORT_PDU: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_APDU_UNKNOWN_8: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_APDU_UNKNOWN_8: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_APDU_UNKNOWN_9: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_APDU_UNKNOWN_9: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_APDU_UNKNOWN_A: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_APDU_UNKNOWN_A: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_APDU_UNKNOWN_B: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_APDU_UNKNOWN_B: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_APDU_UNKNOWN_C: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_APDU_UNKNOWN_C: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_APDU_UNKNOWN_D: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_APDU_UNKNOWN_D: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_APDU_UNKNOWN_E: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_APDU_UNKNOWN_E: func() Decoder {
 			panic("Implement Me")
 		},
-		readWriteModel.ApduType_APDU_UNKNOWN_F: func() interface{ Decode(Arg) error } {
+		readWriteModel.ApduType_APDU_UNKNOWN_F: func() Decoder {
 			panic("Implement Me")
 		},
 	}
 }
 
-var UnconfirmedRequestTypes map[readWriteModel.BACnetUnconfirmedServiceChoice]func() interface{ Decode(Arg) error }
+var UnconfirmedRequestTypes map[readWriteModel.BACnetUnconfirmedServiceChoice]func() Decoder
 
 func init() {
-	UnconfirmedRequestTypes = map[readWriteModel.BACnetUnconfirmedServiceChoice]func() interface{ Decode(Arg) error }{
-		readWriteModel.BACnetUnconfirmedServiceChoice_I_AM: func() interface{ Decode(Arg) error } {
+	UnconfirmedRequestTypes = map[readWriteModel.BACnetUnconfirmedServiceChoice]func() Decoder{
+		readWriteModel.BACnetUnconfirmedServiceChoice_I_AM: func() Decoder {
 			panic("implement me")
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_I_HAVE: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_I_HAVE: func() Decoder {
 			panic("implement me")
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION: func() Decoder {
 			panic("implement me")
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION: func() Decoder {
 			panic("implement me")
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER: func() Decoder {
 			panic("implement me")
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE: func() Decoder {
 			panic("implement me")
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION: func() Decoder {
 			panic("implement me")
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_WHO_HAS: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_WHO_HAS: func() Decoder {
 			panic("implement me")
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS: func() Decoder {
 			request, _ := NewWhoIsRequest()
 			return request
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION: func() Decoder {
 			panic("implement me")
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_WRITE_GROUP: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_WRITE_GROUP: func() Decoder {
 			panic("implement me")
 		},
-		readWriteModel.BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE: func() interface{ Decode(Arg) error } {
+		readWriteModel.BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE: func() Decoder {
+			panic("implement me")
+		},
+	}
+}
+
+var ConfirmedRequestTypes map[readWriteModel.BACnetConfirmedServiceChoice]func() Decoder
+
+func init() {
+	ConfirmedRequestTypes = map[readWriteModel.BACnetConfirmedServiceChoice]func() Decoder{
+		readWriteModel.BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_SUBSCRIBE_COV: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_ATOMIC_READ_FILE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_DELETE_OBJECT: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_READ_PROPERTY: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_READ_RANGE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_WRITE_PROPERTY: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_VT_OPEN: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_VT_CLOSE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_VT_DATA: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_AUTHENTICATE: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_REQUEST_KEY: func() Decoder {
+			panic("implement me")
+		},
+		readWriteModel.BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL: func() Decoder {
 			panic("implement me")
 		},
 	}

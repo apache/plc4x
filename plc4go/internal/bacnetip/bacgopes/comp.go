@@ -40,6 +40,10 @@ func NewArgs(args ...any) Args {
 	return args
 }
 
+func (a Args) GetPDU(index int) PDU {
+	return argsGetOrPanic[PDU](a, index)
+}
+
 // Deprecated: use index function
 func (a Args) Get0PDU() PDU {
 	return a[0].(PDU)
@@ -62,6 +66,10 @@ func (a Args) Get0NPDU() NPDU {
 // Deprecated: use index function
 func (a Args) Get1NPDU() NPDU {
 	return a[1].(NPDU)
+}
+
+func (a Args) GetAPDU(index int) APDU {
+	return argsGetOrPanic[APDU](a, index)
 }
 
 // Deprecated: use index function
@@ -123,16 +131,25 @@ func argsGetOrDefault[T any](args Args, index int, defaultValue T) T {
 func (a Args) String() string {
 	r := ""
 	for i, ea := range a {
+		eat := fmt.Sprintf("%T", ea)
 		switch tea := ea.(type) {
 		case []byte:
 			ea = Btox(tea, ".")
+		case fmt.Stringer:
+			if tea != nil {
+				teaString := tea.String()
+				ea = teaString
+				if strings.Contains(teaString, "\n") {
+					ea = "\n" + teaString + "\n"
+				}
+			}
 		}
-		r += fmt.Sprintf("%d: %v (%T), ", i, ea, ea)
+		r += fmt.Sprintf("%d: %v (%s), ", i, ea, eat)
 	}
 	if r != "" {
 		r = r[:len(r)-2]
 	}
-	return r
+	return "[" + r + "]"
 }
 
 type KWArgs map[KnownKey]any
@@ -259,7 +276,11 @@ type PriorityItem[P cmp.Ordered, V any] struct {
 }
 
 func (p *PriorityItem[P, V]) String() string {
-	return fmt.Sprintf("[%v: %v-%v], ", p.index, p.priority, p.value)
+	v := fmt.Sprintf("%v", p.value)
+	if strings.Contains(v, "\n") {
+		v = "\n" + v + "\n"
+	}
+	return fmt.Sprintf("[%v: prio %v - value %s], ", p.index, p.priority, v)
 }
 
 // A PriorityQueue implements heap.Interface and holds Items.
@@ -326,6 +347,9 @@ func (pq PriorityQueue[P, V]) String() string {
 	if s == "" {
 		return ""
 	}
+	if strings.Contains(s, "\n") {
+		s = "\n" + s + "\n"
+	}
 	var p P
 	var v V
 	return fmt.Sprintf("PriorityQueue[%T,%T]{%s}", p, v, s[:len(s)-2])
@@ -361,11 +385,14 @@ type Copyable interface {
 
 // DeepCopy copies things implementing Copyable
 func DeepCopy[T Copyable](copyable Copyable) T {
-	return copyable.(T)
+	return copyable.DeepCopy().(T)
 }
 
 // CopyPtr copies things that are a pointer to something
 func CopyPtr[T any](t *T) *T {
+	if t == nil {
+		return nil
+	}
 	tc := *t
 	return &tc
 }

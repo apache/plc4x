@@ -20,47 +20,47 @@
 package bacgopes
 
 // NPDUTypes is a dictionary of message type values and structs
-var NPDUTypes map[uint8]func() interface{ Decode(Arg) error }
+var NPDUTypes map[uint8]func() Decoder
 
 func init() {
-	NPDUTypes = map[uint8]func() interface{ Decode(Arg) error }{
-		0x00: func() interface{ Decode(Arg) error } {
+	NPDUTypes = map[uint8]func() Decoder{
+		0x00: func() Decoder {
 			v, _ := NewWhoIsRouterToNetwork()
 			return v
 		},
-		0x01: func() interface{ Decode(Arg) error } {
+		0x01: func() Decoder {
 			v, _ := NewIAmRouterToNetwork()
 			return v
 		},
-		0x02: func() interface{ Decode(Arg) error } {
+		0x02: func() Decoder {
 			v, _ := NewICouldBeRouterToNetwork()
 			return v
 		},
-		0x03: func() interface{ Decode(Arg) error } {
+		0x03: func() Decoder {
 			v, _ := NewRejectMessageToNetwork()
 			return v
 		},
-		0x04: func() interface{ Decode(Arg) error } {
+		0x04: func() Decoder {
 			v, _ := NewRouterBusyToNetwork()
 			return v
 		},
-		0x05: func() interface{ Decode(Arg) error } {
+		0x05: func() Decoder {
 			v, _ := NewRouterAvailableToNetwork()
 			return v
 		},
-		0x06: func() interface{ Decode(Arg) error } {
+		0x06: func() Decoder {
 			v, _ := NewInitializeRoutingTable()
 			return v
 		},
-		0x07: func() interface{ Decode(Arg) error } {
+		0x07: func() Decoder {
 			v, _ := NewInitializeRoutingTableAck()
 			return v
 		},
-		0x08: func() interface{ Decode(Arg) error } {
+		0x08: func() Decoder {
 			v, _ := NewEstablishConnectionToNetwork()
 			return v
 		},
-		0x09: func() interface{ Decode(Arg) error } {
+		0x09: func() Decoder {
 			v, _ := NewDisconnectConnectionToNetwork()
 			return v
 		},
@@ -72,11 +72,11 @@ func init() {
 		// 0x0F: NewUpdateKeyDistributionKey, // TODO: not present upstream
 		// 0x10: NewRequestMasterKey, // TODO: not present upstream
 		// 0x11: NewSetMasterKey, // TODO: not present upstream
-		0x12: func() interface{ Decode(Arg) error } {
+		0x12: func() Decoder {
 			v, _ := NewWhatIsNetworkNumber()
 			return v
 		},
-		0x13: func() interface{ Decode(Arg) error } {
+		0x13: func() Decoder {
 			v, _ := NewNetworkNumberIs()
 			return v
 		},

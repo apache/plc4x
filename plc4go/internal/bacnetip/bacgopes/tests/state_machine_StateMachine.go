@@ -128,6 +128,9 @@ func NewStateMachine(localLog zerolog.Logger, requirements StateMachineRequireme
 			return state
 		}
 	}
+	if !LogStateMachine {
+		s.log = zerolog.Nop()
+	}
 	return s, func() {
 		s.Reset()
 
@@ -502,14 +505,14 @@ func (s *stateMachine) gotoState(state State) error {
 }
 
 func (s *stateMachine) BeforeSend(pdu bacgopes.PDU) {
-	s.transactionLog = append(s.transactionLog, fmt.Sprintf("<<<%v", pdu))
+	s.transactionLog = append(s.transactionLog, fmt.Sprintf(">>> %v", pdu))
 }
 
 func (s *stateMachine) AfterSend(pdu bacgopes.PDU) {
 }
 
 func (s *stateMachine) BeforeReceive(pdu bacgopes.PDU) {
-	s.transactionLog = append(s.transactionLog, fmt.Sprintf(">>>%v", pdu))
+	s.transactionLog = append(s.transactionLog, fmt.Sprintf("<<< %v", pdu))
 }
 
 func (s *stateMachine) Receive(args bacgopes.Args, kwargs bacgopes.KWArgs) error {

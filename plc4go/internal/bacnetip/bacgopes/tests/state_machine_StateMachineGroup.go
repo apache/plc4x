@@ -46,10 +46,14 @@ type StateMachineGroup struct {
 }
 
 func NewStateMachineGroup(localLog zerolog.Logger) *StateMachineGroup {
-	return &StateMachineGroup{
+	s := &StateMachineGroup{
 		events: map[string]struct{}{},
 		log:    localLog,
 	}
+	if !LogStateMachine {
+		s.log = zerolog.Nop()
+	}
+	return s
 }
 
 // Append Add a state machine to the end of the list of state machines

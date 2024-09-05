@@ -108,5 +108,8 @@ func (d *DeleteForeignDeviceTableEntry) Decode(bvlpdu Arg) error {
 }
 
 func (d *DeleteForeignDeviceTableEntry) String() string {
+	if d == nil {
+		return "(*DeleteForeignDeviceTableEntry)(nil)"
+	}
 	return fmt.Sprintf("DeleteForeignDeviceTableEntry{%v}", d._BVLPDU)
 }

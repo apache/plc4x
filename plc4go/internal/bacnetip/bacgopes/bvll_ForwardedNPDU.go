@@ -144,5 +144,8 @@ func (f *ForwardedNPDU) Decode(bvlpdu Arg) error {
 }
 
 func (f *ForwardedNPDU) String() string {
+	if f == nil {
+		return "(*ForwardedNPDU)(nil)"
+	}
 	return fmt.Sprintf("ForwardedNPDU{%v, bvlciAddress: %v}", f._BVLPDU, f.bvlciAddress)
 }

@@ -20,10 +20,11 @@
 package utils
 
 import (
-	"github.com/rs/zerolog"
 	"math"
 	"regexp"
 	"strings"
+
+	"github.com/rs/zerolog"
 )
 
 var AsciiBoxLogger zerolog.Logger

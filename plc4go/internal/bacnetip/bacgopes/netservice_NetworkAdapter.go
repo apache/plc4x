@@ -22,8 +22,6 @@ package bacgopes
 import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 //go:generate plc4xGenerator -type=NetworkAdapter -prefix=netservice_
@@ -51,8 +49,9 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 	for _, opt := range opts {
 		opt(n)
 	}
+	n.log.Trace().Stringer("sap", sap).Interface("net", net).Stringer("addr", addr).Interface("cid", n.argCid).Msg("NewNetworkAdapter")
 	var err error
-	n.Client, err = NewClient(localLog, n, func(client *client) {
+	n.Client, err = NewClient(n.log, n, func(client *client) {
 		client.clientID = n.argCid
 	})
 	if err != nil {
@@ -79,16 +78,9 @@ func (n *NetworkAdapter) Confirmation(args Args, kwargs KWArgs) error {
 		Interface("adapterNet", n.adapterNet).
 		Msg("confirmation")
 
-	pdu := args.Get0PDU()
+	pdu := args.GetPDU(0)
 
-	var nlm model.NLM
-	var apdu model.APDU
-	switch pdu := pdu.GetRootMessage().(type) {
-	case model.NPDU:
-		nlm = pdu.GetNlm()
-		apdu = pdu.GetApdu()
-	}
-	npdu, err := NewNPDU(nlm, apdu)
+	npdu, err := NewNPDU(nil, nil)
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}

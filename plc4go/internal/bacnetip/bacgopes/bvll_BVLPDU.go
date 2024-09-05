@@ -70,12 +70,18 @@ func (b *_BVLPDU) Decode(pdu Arg) error {
 	case PDUData:
 		rootMessage, _ = readWriteModel.BVLCParse[readWriteModel.BVLC](context.Background(), pdu.GetPduData())
 	}
+	switch pdu := pdu.(type) {
+	case IPCI:
+		if rootMessage != nil { // in this case we are good and want to parse from that
+			pdu.SetRootMessage(rootMessage)
+		}
+	}
 	if err := b._BVLCI.Decode(pdu); err != nil {
 		return errors.Wrap(err, "error decoding _BVLCI")
 	}
 	switch pdu := pdu.(type) {
 	case PDUData:
-		b.PutData(pdu.GetPduData()...)
+		b.PutData(pdu.GetPduData()[b.bytesToDiscard:]...)
 	}
 	if rootMessage != nil {
 		// Overwrite the root message again so we can use it for matching
@@ -89,7 +95,7 @@ func (b *_BVLPDU) GetBvlcFunction() uint8 {
 	case readWriteModel.BVLC:
 		return rm.GetBvlcFunction()
 	default:
-		return 0
+		return b.bvlciFunction
 	}
 }
 
@@ -98,7 +104,7 @@ func (b *_BVLPDU) GetBvlcPayloadLength() uint16 {
 	case readWriteModel.BVLC:
 		return rm.GetBvlcPayloadLength()
 	default:
-		return 0
+		return b.bvlciLength
 	}
 }
 

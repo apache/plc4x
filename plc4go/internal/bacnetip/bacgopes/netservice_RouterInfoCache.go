@@ -75,7 +75,7 @@ type RouterInfoCache struct {
 }
 
 func NewRouterInfoCache(localLog zerolog.Logger) *RouterInfoCache {
-	localLog.Debug().Msg("NewRouterInfoCache")
+	localLog.Trace().Msg("NewRouterInfoCache")
 	return &RouterInfoCache{
 		routers:  map[netKey]*Router{},
 		pathInfo: map[snetDnetTuple]*RouterInfo{},

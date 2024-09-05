@@ -20,8 +20,6 @@
 package bacgopes
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
@@ -29,10 +27,12 @@ import (
 // An IPNode is a Node where the address is an Address that has an address
 //
 //	tuple and a broadcast tuple that would be used for socket communications.
+//
+//go:generate plc4xGenerator -type=IPNode -prefix=vlan_
 type IPNode struct {
 	*Node
-	addrTuple          *AddressTuple[string, uint16]
-	addrBroadcastTuple *AddressTuple[string, uint16]
+	addrTuple          *AddressTuple[string, uint16] `stringer:"true"`
+	addrBroadcastTuple *AddressTuple[string, uint16] `stringer:"true"`
 }
 
 func NewIPNode(localLog zerolog.Logger, addr *Address, lan *IPNetwork, opts ...func(*Node)) (*IPNode, error) {
@@ -53,8 +53,4 @@ func NewIPNode(localLog zerolog.Logger, addr *Address, lan *IPNetwork, opts ...f
 func (n *IPNode) bind(lan NodeNetworkReference) { // This is used to preserve the type
 	n.log.Debug().Interface("lan", lan).Msg("binding lan")
 	lan.AddNode(n)
-}
-
-func (n *IPNode) String() string {
-	return fmt.Sprintf("IPNode(%v): %s, %v", n.Node, n.addrTuple, n.addrBroadcastTuple)
 }

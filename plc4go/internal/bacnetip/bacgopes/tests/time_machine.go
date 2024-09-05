@@ -42,6 +42,9 @@ func IsGlobalTimeMachineSet() bool {
 // Usually it is sufficient to use ExclusiveGlobalTimeMachine
 func NewGlobalTimeMachine(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
+	if !LogTimeMachine {
+		testingLogger = zerolog.Nop()
+	}
 	if globalTimeMachine != nil {
 		testingLogger.Warn().Msg("global time machine set, overwriting")
 	}
@@ -230,6 +233,9 @@ func ResetTimeMachine(startTime time.Time) {
 func RunTimeMachine(localLog zerolog.Logger, duration time.Duration, stopTime time.Time) {
 	if globalTimeMachine == nil {
 		panic("no time machine")
+	}
+	if !LogTimeMachine {
+		localLog = zerolog.Nop()
 	}
 	localLog.Debug().Dur("duration", duration).Time("stopTime", stopTime).Msg("RunTimeMachine")
 

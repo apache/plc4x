@@ -73,5 +73,8 @@ func (r *ReadForeignDeviceTable) Decode(bvlpdu Arg) error {
 }
 
 func (r *ReadForeignDeviceTable) String() string {
+	if r == nil {
+		return "(*ReadForeignDeviceTable)(nil)"
+	}
 	return fmt.Sprintf("ReadForeignDeviceTable{%v}", r._BVLPDU)
 }

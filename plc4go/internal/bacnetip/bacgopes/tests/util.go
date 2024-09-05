@@ -43,3 +43,8 @@ type AssertionError struct {
 func (a AssertionError) Error() string {
 	return fmt.Sprintf("AssertionError: %s", a.Message)
 }
+
+var PDUMatcher = func(value any) bool {
+	_, ok := value.(bacgopes.PDU)
+	return ok
+}

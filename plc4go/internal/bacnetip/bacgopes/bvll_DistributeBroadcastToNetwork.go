@@ -122,5 +122,8 @@ func (d *DistributeBroadcastToNetwork) Decode(bvlpdu Arg) error {
 }
 
 func (d *DistributeBroadcastToNetwork) String() string {
+	if d == nil {
+		return "(*DistributeBroadcastToNetwork)(nil)"
+	}
 	return fmt.Sprintf("DistributeBroadcastToNetwork{%s}", d._BVLPDU)
 }

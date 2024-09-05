@@ -31,6 +31,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 )
 
 type AddressType int
@@ -73,6 +75,9 @@ func NewAddressTuple[L any, R any](l L, r R) *AddressTuple[L, R] {
 }
 
 func (a *AddressTuple[L, R]) deepCopy() *AddressTuple[L, R] {
+	if a == nil {
+		return nil
+	}
 	// TODO: check if that works like intended (might just fail for pointer types)
 	return &AddressTuple[L, R]{*CopyPtr[L](&a.Left), *CopyPtr[R](&a.Right)}
 }
@@ -128,6 +133,9 @@ type Address struct {
 func NewAddress(localLog zerolog.Logger, args ...any) (*Address, error) {
 	a := &Address{
 		log: localLog,
+	}
+	if !globals.LogPDU {
+		a.log = zerolog.Nop()
 	}
 	a.AddrNet = nil
 	a.AddrAddress = nil

@@ -23,6 +23,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
@@ -88,25 +89,30 @@ func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDevic
 	for _, opt := range opts {
 		opt(s)
 	}
-	localLog.Debug().
-		Stringer("localDevice", localDevice).
-		Stringer("deviceInfoCache", s.deviceInfoCache).
-		Interface("sapID", s.argSapID).
-		Interface("cid", s.argCid).
-		Msg("NewStateMachineAccessPoint")
+	if globals.LogAppService {
+		s.log.Debug().
+			Stringer("localDevice", localDevice).
+			Stringer("deviceInfoCache", s.deviceInfoCache).
+			Interface("sapID", s.argSapID).
+			Interface("cid", s.argCid).
+			Msg("NewStateMachineAccessPoint")
+	}
 	// basic initialization
 	var err error
-	s.Client, err = NewClient(localLog, s, func(client *client) {
+	s.Client, err = NewClient(s.log, s, func(client *client) {
 		client.clientID = s.argCid
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error building client for %d", s.argCid)
 	}
-	s.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, func(point *serviceAccessPoint) {
+	s.ServiceAccessPointContract, err = NewServiceAccessPoint(s.log, func(point *serviceAccessPoint) {
 		point.serviceID = s.argSapID
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error building serviceAccessPoint for %d", s.argSapID)
+	}
+	if !globals.LogAppService {
+		s.log = zerolog.Nop()
 	}
 	return s, nil
 }

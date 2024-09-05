@@ -21,13 +21,31 @@ package globals
 
 import "os"
 
-// ExtendedPDUOutput switches the PDU output to an extended format for debugging
-var ExtendedPDUOutput bool
+var (
+	// ExtendedGeneralOutput switches extended output on for general items
+	ExtendedGeneralOutput bool
 
-// ExtendedGeneralOutput switches extended output on for other items
-var ExtendedGeneralOutput bool
+	// ExtendedPDUOutput switches the PDU output to an extended format for debugging
+	ExtendedPDUOutput bool
+
+	// LogComm enables logging for communications
+	LogComm bool
+
+	// LogAppService enables logging for application services
+	LogAppService bool
+
+	// LogPDU enables logging for pdu
+	LogPDU bool
+
+	// LogVlan enables logging for vlan
+	LogVlan bool
+)
 
 func init() {
-	ExtendedPDUOutput = os.Getenv("ExtendedPDUOutput") == "true"
 	ExtendedGeneralOutput = os.Getenv("ExtendedGeneralOutput") == "true"
+	ExtendedPDUOutput = os.Getenv("ExtendedPDUOutput") == "true"
+	LogComm = os.Getenv("LogComm") == "true"
+	LogAppService = os.Getenv("LogAppService") == "true"
+	LogPDU = os.Getenv("LogPDU") == "true"
+	LogVlan = os.Getenv("LogVlan") == "true"
 }

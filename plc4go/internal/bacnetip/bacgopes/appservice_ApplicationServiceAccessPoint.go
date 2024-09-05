@@ -73,10 +73,9 @@ func WithApplicationServiceAccessPointSapID(sapID int) func(*ApplicationServiceA
 	}
 }
 
-// TODO: big WIP
 func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	apdu := args.Get0PDU()
+	apdu := args.GetAPDU(0)
 
 	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequest:
@@ -86,41 +85,67 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 			errorFound = errors.New("unrecognized service")
 		}
 
-		if errorFound == nil {
-			errorFound = a.SapRequest(NewArgs(apdu), NoKWArgs)
+		var apduService readWriteModel.BACnetConfirmedServiceChoice
+		if sr := _apdu.GetServiceRequest(); sr != nil {
+			apduService = sr.GetServiceChoice()
 		}
-		// TODO: the handling here gets a bit different now... need to wrap the head around how to do this (error handling etc)
+		// Look up the struct associated with the service
+		cr, ok := ConfirmedRequestTypes[apduService]
+		if !ok {
+			a.log.Debug().Stringer("apduService", apduService).Msg("unknown service type")
+			errorFound = errors.New("unrecognized service")
+		}
 
+		var xpdu Decoder
+		// no error so far, keep going
 		if errorFound == nil {
-			if err := a.SapRequest(NewArgs(apdu), NoKWArgs); err != nil {
-				return err
+			xpdu = cr()
+			if err := xpdu.Decode(apdu); err != nil {
+				// TODO: add advanced error check for  reject and abort
+				panic("do it")
+				errorFound = err
 			}
-		} else {
+		}
+
+		// no error so far, keep going
+		if errorFound == nil {
+			a.log.Trace().Msg("no decoding error")
+			if err := a.SapRequest(NewArgs(xpdu), NoKWArgs); err != nil {
+				panic("if no abort or reject bubble up")
+				errorFound = err
+			}
+		}
+
+		switch {
+		case false: // TODO: check for Reject or Abort error
+			panic("implement it")
 			a.log.Debug().Err(errorFound).Msg("got error")
 
 			// TODO: map it to a error... code temporary placeholder
 			return a.Response(NewArgs(NewPDU(readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0))), NoKWArgs)
 		}
 	case readWriteModel.APDUUnconfirmedRequest:
-		//assume no errors found
-		var errorFound error
-		if !readWriteModel.BACnetUnconfirmedServiceChoiceKnows(uint8(_apdu.GetServiceRequest().GetServiceChoice())) {
-			errorFound = errors.New("unrecognized service")
+		var apduService readWriteModel.BACnetUnconfirmedServiceChoice
+		if sr := _apdu.GetServiceRequest(); sr != nil {
+			apduService = sr.GetServiceChoice()
+		}
+		// Look up the struct associated with the service
+		ur, ok := UnconfirmedRequestTypes[apduService]
+		if !ok {
+			a.log.Debug().Stringer("apduService", apduService).Msg("unknown service type")
+			return nil
 		}
 
-		if errorFound == nil {
-			errorFound = a.SapRequest(NewArgs(apdu), NoKWArgs)
-		}
-		// TODO: the handling here gets a bit different now... need to wrap the head around how to do this (error handling etc)
-
-		if errorFound == nil {
-			if err := a.SapRequest(NewArgs(apdu), NoKWArgs); err != nil {
-				return err
-			}
-		} else {
-			a.log.Debug().Err(errorFound).Msg("got error")
+		xpdu := ur()
+		if err := xpdu.Decode(apdu); err != nil {
+			// TODO: add advanced error check for  reject and abort
+			panic("do it")
 		}
 
+		// forward the decoded packet
+		if err := a.SapRequest(NewArgs(xpdu), NoKWArgs); err != nil {
+			panic("if no abort or reject bubble up")
+		}
 	default:
 		return errors.Errorf("unknown _PDU type %T", apdu)
 	}

@@ -121,5 +121,8 @@ func (o *OriginalUnicastNPDU) Decode(bvlpdu Arg) error {
 }
 
 func (o *OriginalUnicastNPDU) String() string {
+	if o == nil {
+		return "(*OriginalUnicastNPDU)(nil)"
+	}
 	return fmt.Sprintf("OriginalUnicastNPDU{%s}", o._BVLPDU)
 }

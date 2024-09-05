@@ -21,9 +21,12 @@ package bacgopes
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/pkg/errors"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 )
@@ -36,7 +39,6 @@ type NPDU interface {
 	DeepCopy() any
 }
 
-//go:generate plc4xGenerator -type=_NPDU -prefix=npdu
 type _NPDU struct {
 	*_NPCI
 	*_PDUData
@@ -73,12 +75,18 @@ func (n *_NPDU) Decode(pdu Arg) error {
 		data := pdu.GetPduData()
 		rootMessage, _ = readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
 	}
+	switch pdu := pdu.(type) {
+	case IPCI:
+		if rootMessage != nil { // in this case we are good and want to parse from that
+			pdu.SetRootMessage(rootMessage)
+		}
+	}
 	if err := n._NPCI.Decode(pdu); err != nil {
 		return errors.Wrap(err, "error decoding _NPCI")
 	}
 	switch pdu := pdu.(type) {
 	case PDUData:
-		n.PutData(pdu.GetPduData()...)
+		n.PutData(pdu.GetPduData()[n.bytesToDiscard:]...)
 	}
 	if rootMessage != nil {
 		// Overwrite the root message again so we can use it for matching
@@ -96,7 +104,7 @@ func (n *_NPDU) getNPDUModel() (readWriteModel.NPDU, bool) {
 func (n *_NPDU) GetProtocolVersionNumber() uint8 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return 0
+		return n._NPCI.GetProtocolVersionNumber()
 	}
 	return npdu.GetProtocolVersionNumber()
 }
@@ -104,7 +112,7 @@ func (n *_NPDU) GetProtocolVersionNumber() uint8 {
 func (n *_NPDU) GetControl() readWriteModel.NPDUControl {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return nil
+		return n._NPCI.GetControl()
 	}
 	return npdu.GetControl()
 }
@@ -112,7 +120,7 @@ func (n *_NPDU) GetControl() readWriteModel.NPDUControl {
 func (n *_NPDU) GetDestinationNetworkAddress() *uint16 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return nil
+		return n._NPCI.GetDestinationNetworkAddress()
 	}
 	return npdu.GetDestinationNetworkAddress()
 }
@@ -120,7 +128,7 @@ func (n *_NPDU) GetDestinationNetworkAddress() *uint16 {
 func (n *_NPDU) GetDestinationLength() *uint8 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return nil
+		return n._NPCI.GetDestinationLength()
 	}
 	return npdu.GetDestinationLength()
 }
@@ -128,7 +136,7 @@ func (n *_NPDU) GetDestinationLength() *uint8 {
 func (n *_NPDU) GetDestinationAddress() []uint8 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return nil
+		return n._NPCI.GetDestinationAddress()
 	}
 	return npdu.GetDestinationAddress()
 }
@@ -136,7 +144,7 @@ func (n *_NPDU) GetDestinationAddress() []uint8 {
 func (n *_NPDU) GetSourceNetworkAddress() *uint16 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return nil
+		return n._NPCI.GetSourceNetworkAddress()
 	}
 	return npdu.GetSourceNetworkAddress()
 }
@@ -144,7 +152,7 @@ func (n *_NPDU) GetSourceNetworkAddress() *uint16 {
 func (n *_NPDU) GetSourceLength() *uint8 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return nil
+		return n._NPCI.GetSourceLength()
 	}
 	return npdu.GetSourceLength()
 }
@@ -152,7 +160,7 @@ func (n *_NPDU) GetSourceLength() *uint8 {
 func (n *_NPDU) GetSourceAddress() []uint8 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return nil
+		return n._NPCI.GetSourceAddress()
 	}
 	return npdu.GetSourceAddress()
 }
@@ -160,7 +168,7 @@ func (n *_NPDU) GetSourceAddress() []uint8 {
 func (n *_NPDU) GetHopCount() *uint8 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return nil
+		return n._NPCI.GetHopCount()
 	}
 	return npdu.GetHopCount()
 }
@@ -184,7 +192,7 @@ func (n *_NPDU) GetApdu() readWriteModel.APDU {
 func (n *_NPDU) GetDestinationLengthAddon() uint16 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return 0
+		return 0 // TODO: implement me
 	}
 	return npdu.GetDestinationLengthAddon()
 }
@@ -192,7 +200,7 @@ func (n *_NPDU) GetDestinationLengthAddon() uint16 {
 func (n *_NPDU) GetSourceLengthAddon() uint16 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return 0
+		return 0 // TODO: implement me
 	}
 	return npdu.GetSourceLengthAddon()
 }
@@ -200,7 +208,7 @@ func (n *_NPDU) GetSourceLengthAddon() uint16 {
 func (n *_NPDU) GetPayloadSubtraction() uint16 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {
-		return 0
+		return 0 // TODO: implement me
 	}
 	return npdu.GetPayloadSubtraction()
 }
@@ -214,4 +222,25 @@ func (n *_NPDU) deepCopy() *_NPDU {
 
 func (n *_NPDU) DeepCopy() any {
 	return n.deepCopy()
+}
+
+func (n *_NPDU) Serialize() ([]byte, error) {
+	nPCI, err := n._NPCI.Serialize()
+	if err != nil {
+		return nil, errors.Wrap(err, "error serializing NPDU")
+	}
+	pduData, err := n._PDUData.Serialize()
+	if err != nil {
+		return nil, errors.Wrap(err, "error serializing PDU data")
+	}
+	return append(nPCI, pduData...), nil
+}
+
+func (n *_NPDU) String() string {
+	if globals.ExtendedPDUOutput {
+		return fmt.Sprintf("NPDU{%s}", n._NPCI)
+	} else {
+		npci := "\t" + strings.Join(strings.Split(n._NPCI.String(), "\n"), "\n\t")
+		return fmt.Sprintf("<NPDU instance at %p>%s\n\tpduData = %s", n, npci, Btox(n.data, "."))
+	}
 }

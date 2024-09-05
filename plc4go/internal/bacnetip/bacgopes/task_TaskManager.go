@@ -75,20 +75,17 @@ func ClearTaskManager(localLog zerolog.Logger) {
 	_taskManager.ClearTasks()
 }
 
+//go:generate plc4xGenerator -type=taskItem -prefix=task_
 type taskItem struct {
 	taskTime *time.Time
 	id       int
 	task     TaskRequirements
 }
 
-func (t taskItem) String() string {
-	return fmt.Sprintf("taskItem(taskTime:%v, id:%d, %v)", t.taskTime, t.id, t.task)
-}
-
 type taskManager struct {
 	sync.Mutex
 
-	tasks PriorityQueue[int64, taskItem]
+	tasks PriorityQueue[int64, *taskItem]
 	count int
 
 	log zerolog.Logger
@@ -155,8 +152,8 @@ func (m *taskManager) InstallTask(task TaskRequirements) {
 
 	// save this in the task list
 	m.count++
-	heap.Push(&m.tasks, &PriorityItem[int64, taskItem]{
-		value:    taskItem{taskTime: task.GetTaskTime(), id: m.count, task: task},
+	heap.Push(&m.tasks, &PriorityItem[int64, *taskItem]{
+		value:    &taskItem{taskTime: task.GetTaskTime(), id: m.count, task: task},
 		priority: task.GetTaskTime().UnixNano() - time.Time{}.UnixNano(),
 	})
 	m.log.Debug().Stringer("tasks", m.tasks).Msg("tasks")
@@ -271,7 +268,7 @@ func (m *taskManager) PopTask() TaskRequirements {
 	m.log.Trace().Msg("pop task")
 	m.Lock()
 	defer m.Unlock()
-	pqi := heap.Pop(&m.tasks).(*PriorityItem[int64, taskItem])
+	pqi := heap.Pop(&m.tasks).(*PriorityItem[int64, *taskItem])
 	return pqi.value.task
 }
 

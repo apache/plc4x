@@ -125,5 +125,8 @@ func (r *ReadForeignDeviceTableAck) Decode(bvlpdu Arg) error {
 }
 
 func (r *ReadForeignDeviceTableAck) String() string {
+	if r == nil {
+		return "(*ReadForeignDeviceTableAck)(nil)"
+	}
 	return fmt.Sprintf("ReadForeignDeviceTableAck{%v, bvlciFDT: %v}", r._BVLPDU, r.bvlciFDT)
 }

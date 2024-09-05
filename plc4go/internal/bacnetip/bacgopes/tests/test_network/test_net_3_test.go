@@ -20,6 +20,7 @@
 package test_network
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -115,7 +116,8 @@ func (t *TNetwork3) Run(timeLimit time.Duration) {
 	tests.RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
-		t.log.Debug().Stringer("machine", machine).Strs("transactionLog", machine.GetTransactionLog()).Msg("Machine:")
+		transactionLog := "transactions:\n" + strings.Join(machine.GetTransactionLog(), "\n")
+		t.log.Debug().Stringer("machine", machine).Str("transactionLog", transactionLog).Msg("Machine:")
 	}
 
 	// check for success
@@ -160,7 +162,7 @@ func TestNet3(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("1-2-0").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.00"+ //version, network layer
 							"10 08", // unconfirmed Who-Is
@@ -193,22 +195,23 @@ func TestNet3(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("2-2-0").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80.00.00.02", // who is router to network
 					)),
 				).Doc("2-2-1").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80.01.00.02", // I am router to network
 					)),
 				).Doc("2-2-1").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
-						"01.20.00.02.00.ff", // remote broadcast goes out
+						"01.20.00.02.00.ff"+ // remote broadcast goes out
+							"10.08",
 					)),
 				).Doc("2-2-1").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.08.00.02.01.04"+ // unicast response
 							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",
@@ -219,13 +222,13 @@ func TestNet3(t *testing.T) {
 
 			// network 2 sees local broadcast request and unicast response
 			tnet.sniffer2.GetStartState().Doc("2-3-0").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.08.00.01.01.01"+ // local broadcast
 							"10.08",
 					)),
 				).Doc("2-3-1").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.20.00.01.01.01.ff"+ // unicast response
 							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",
@@ -255,7 +258,7 @@ func TestNet3(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("3-2-0").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80.00.00.03", // who is router to network
 					)),
@@ -265,7 +268,7 @@ func TestNet3(t *testing.T) {
 
 			// network 2 sees local broadcast looking for network 3
 			tnet.sniffer2.GetStartState().
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.88.00.01.01.01.00.00.03",
 					)),
@@ -294,13 +297,13 @@ func TestNet3(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("3-2-0").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.20.ff.ff.00.ff"+
 							"10.08",
 					)),
 				).Doc("4-2-1").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.08.00.02.01.04"+
 							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",
@@ -311,13 +314,13 @@ func TestNet3(t *testing.T) {
 
 			// network 2 sees local broadcast v
 			tnet.sniffer2.GetStartState().Doc("4-3-0").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.28.ff.ff.00.00.01.01.01.fe"+
 							"10.08",
 					)),
 				).Doc("4-3-1").
-				Receive(NewArgs((PDU)(nil)),
+				Receive(NewArgs(tests.PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.20.00.01.01.01.ff"+
 							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",

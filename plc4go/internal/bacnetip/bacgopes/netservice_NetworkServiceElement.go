@@ -51,6 +51,7 @@ func NewNetworkServiceElement(localLog zerolog.Logger, opts ...func(*NetworkServ
 	for _, opt := range opts {
 		opt(n)
 	}
+	n.log.Trace().Interface("eid", n.argEID).Msg("NewNetworkServiceElement")
 	var err error
 	n.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, func(element *applicationServiceElement) {
 		element.elementID = n.argEID
@@ -509,7 +510,7 @@ func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu
 	// look for pending NPDUs for the networks
 	for _, dnet := range nlm.GetDestinationNetworkAddresses() {
 		pendingNpdus, ok := sap.pendingNets[nk(&dnet)]
-		if !ok {
+		if ok {
 			n.log.Debug().Int("pendingNpdus", len(pendingNpdus)).Uint16("dnet", dnet).Msg("pending NPDUs to dnet")
 
 			// delete the references

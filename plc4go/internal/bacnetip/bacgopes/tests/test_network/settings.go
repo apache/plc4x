@@ -17,25 +17,12 @@
  * under the License.
  */
 
-package bacgopes
+package test_network
 
-import (
-	"time"
-)
+import "os"
 
-//go:generate plc4xGenerator -type=OneShotDeleteTask -prefix=task_
-type OneShotDeleteTask struct {
-	*Task
-}
+var LogTestNetwork bool
 
-func NewOneShotDeleteTask(taskRequirements TaskRequirements, when *time.Time) *OneShotDeleteTask {
-	o := &OneShotDeleteTask{}
-	o.Task = NewTask(taskRequirements, func(task *Task) {
-		task.taskTime = when
-	})
-	return o
-}
-
-func (r *OneShotDeleteTask) IsOneShotDeleteTask() bool {
-	return true
+func init() {
+	LogTestNetwork = os.Getenv("LogTestNetwork") == "true"
 }

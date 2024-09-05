@@ -128,5 +128,8 @@ func (r *ReadBroadcastDistributionTableAck) Decode(bvlpdu Arg) error {
 }
 
 func (r *ReadBroadcastDistributionTableAck) String() string {
+	if r == nil {
+		return "(*ReadBroadcastDistributionTableAck)(nil)"
+	}
 	return fmt.Sprintf("ReadBroadcastDistributionTableAck{%v, bvlciBDT: %v}", r._BVLPDU, r.bvlciBDT)
 }

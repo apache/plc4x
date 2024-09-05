@@ -23,6 +23,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -70,7 +71,9 @@ func NewApplicationServiceElement(localLog zerolog.Logger, opts ...func(*applica
 	for _, opt := range opts {
 		opt(a)
 	}
-
+	if globals.LogComm {
+		a.log.Trace().Msg("NewApplicationServiceElement")
+	}
 	if a.elementID != nil {
 		aseID := *a.elementID
 		if _, ok := elementMap[aseID]; ok {
@@ -85,10 +88,13 @@ func NewApplicationServiceElement(localLog zerolog.Logger, opts ...func(*applica
 			}
 
 			// Note: we need to pass the requirements (which should contain us as a delegate) here
-			if err := Bind(localLog, a.argASEExtension, service); err != nil {
+			if err := Bind(a.log, a.argASEExtension, service); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
+	}
+	if !globals.LogComm {
+		a.log = zerolog.Nop()
 	}
 	return a, nil
 }

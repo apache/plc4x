@@ -322,7 +322,7 @@ func (suite *RouterSuite) SetupTest() {
 			suite.NoError(err)
 			node, err := bacgopes.NewIPNode(suite.log, nodeAddress, lan)
 			suite.NoError(err)
-			t.Logf("Node: %v", node)
+			t.Logf("Node:\n%v", node)
 
 			// bind a client state machine to the node
 			csm, err := tests.NewClientStateMachine(suite.log)

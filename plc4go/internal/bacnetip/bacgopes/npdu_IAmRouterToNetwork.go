@@ -103,5 +103,8 @@ func (i *IAmRouterToNetwork) Decode(npdu Arg) error {
 }
 
 func (i *IAmRouterToNetwork) String() string {
+	if i == nil {
+		return "(*IAmRouterToNetwork)(nil)"
+	}
 	return fmt.Sprintf("IAmRouterToNetwork{%s, iartnNetworkList: %v}", i._NPDU, i.iartnNetworkList)
 }

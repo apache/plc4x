@@ -22,9 +22,11 @@ package bacgopes
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/pkg/errors"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 )
@@ -90,12 +92,18 @@ func (a *__APDU) Decode(pdu Arg) error {
 		data := pdu.GetPduData()
 		rootMessage, _ = readWriteModel.APDUParse[readWriteModel.APDU](context.Background(), data, uint16(len(data)))
 	}
+	switch pdu := pdu.(type) {
+	case IPCI:
+		if rootMessage != nil { // in this case we are good and want to parse from that
+			pdu.SetRootMessage(rootMessage)
+		}
+	}
 	if err := a._APCI.Decode(pdu); err != nil {
 		return errors.Wrap(err, "error decoding APCI")
 	}
 	switch pdu := pdu.(type) {
 	case PDUData:
-		a.PutData(pdu.GetPduData()...)
+		a.PutData(pdu.GetPduData()[a.bytesToDiscard:]...)
 	}
 	if rootMessage != nil {
 		// Overwrite the root message again so we can use it for matching
@@ -109,7 +117,7 @@ func (a *__APDU) GetApduType() readWriteModel.ApduType {
 	case readWriteModel.APDU:
 		return rm.GetApduType()
 	default:
-		return 0
+		return *a.apduType
 	}
 }
 
@@ -118,7 +126,7 @@ func (a *__APDU) GetApduLength() uint16 {
 	case readWriteModel.APDU:
 		return rm.GetApduLength()
 	default:
-		return 0
+		return 0 // TODO: what is a good fallback
 	}
 }
 
@@ -134,5 +142,10 @@ func (a *__APDU) DeepCopy() any {
 }
 
 func (a *__APDU) String() string {
-	return fmt.Sprintf("APDU{%s}", a._PCI)
+	if globals.ExtendedPDUOutput {
+		return fmt.Sprintf("APDU{%s}", a._PCI)
+	} else {
+		pci := "\t" + strings.Join(strings.Split(a._PCI.String(), "\n"), "\n\t")
+		return fmt.Sprintf("<APDU instance at %p>\n%s\n\tpduData = x'%s'", a, pci, Btox(a.data, "."))
+	}
 }

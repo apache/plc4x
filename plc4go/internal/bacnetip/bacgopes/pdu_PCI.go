@@ -24,6 +24,7 @@ import (
 
 	"github.com/pkg/errors"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 )
@@ -97,5 +98,9 @@ func (p *_PCI) deepCopy() *_PCI {
 }
 
 func (p *_PCI) String() string {
-	return fmt.Sprintf("_PCI{%s, expectingReply: %t, networkPriority: %s}", p.__PCI, p.expectingReply, p.networkPriority)
+	if globals.ExtendedPDUOutput {
+		return fmt.Sprintf("_PCI{%s, expectingReply: %t, networkPriority: %s}", p.__PCI, p.expectingReply, p.networkPriority)
+	} else {
+		return fmt.Sprintf("%s\npduExpectingReply = %t\npduNetworkPriority = %s", p.__PCI, p.expectingReply, p.networkPriority)
+	}
 }

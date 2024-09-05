@@ -128,5 +128,8 @@ func (w *WriteBroadcastDistributionTable) Decode(bvlpdu Arg) error {
 }
 
 func (w *WriteBroadcastDistributionTable) String() string {
+	if w == nil {
+		return "(*WriteBroadcastDistributionTable)(nil)"
+	}
 	return fmt.Sprintf("WriteBroadcastDistributionTable{%v, bvlciBDT: %v}", w._BVLPDU, w.bvlciBDT)
 }

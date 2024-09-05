@@ -30,6 +30,7 @@ import (
 
 // NodeNetworkReference allows Network and IPNetwork to be used from Node.
 type NodeNetworkReference interface {
+	fmt.Stringer
 	AddNode(node NetworkNode)
 	ProcessPDU(pdu PDU) error
 }
@@ -44,9 +45,6 @@ type Node struct {
 
 	promiscuous bool
 	spoofing    bool
-
-	// args
-	argLan NodeNetworkReference `ignore:"true"`
 
 	// pass through args
 	argSid *int `ignore:"true"`
@@ -65,6 +63,15 @@ func NewNode(localLog zerolog.Logger, addr *Address, opts ...func(*Node)) (*Node
 	if n.name != "" {
 		n.log = n.log.With().Str("name", n.name).Logger()
 	}
+	if globals.LogVlan {
+		n.log.Trace().
+			Stringer("address", n.address).
+			Stringer("lan", n.lan).
+			Bool("promiscuous", n.promiscuous).
+			Bool("spoofing", n.spoofing).
+			Interface("sid", n.argSid).
+			Msg("NewNode")
+	}
 	var err error
 	n.Server, err = NewServer(localLog, n, func(server *server) {
 		server.serverID = n.argSid
@@ -74,10 +81,12 @@ func NewNode(localLog zerolog.Logger, addr *Address, opts ...func(*Node)) (*Node
 	}
 
 	// bind to a lan if it was provided
-	if n.argLan != nil {
-		n.bind(n.argLan)
+	if n.lan != nil {
+		n.bind(n.lan)
 	}
-
+	if !globals.LogVlan {
+		n.log = zerolog.Nop()
+	}
 	return n, nil
 }
 
@@ -89,7 +98,7 @@ func WithNodeName(name string) func(*Node) {
 
 func WithNodeLan(lan NodeNetworkReference) func(*Node) {
 	return func(n *Node) {
-		n.argLan = lan
+		n.lan = lan
 	}
 }
 
@@ -140,7 +149,7 @@ func (n *Node) SetSpoofing(spoofing bool) {
 }
 
 func (n *Node) bind(lan NodeNetworkReference) {
-	n.log.Debug().Interface("lan", lan).Msg("binding lan")
+	n.log.Debug().Stringer("lan", lan).Msg("binding lan")
 	lan.AddNode(n)
 }
 
@@ -154,7 +163,7 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 
 	// if the pduSource is unset, fill in our address, otherwise
 	// leave it alone to allow for simulated spoofing
-	pdu := args.Get0PDU()
+	pdu := args.GetPDU(0)
 	if pduSource := pdu.GetPDUSource(); pduSource == nil {
 		pdu.SetPDUSource(n.address)
 	} else if !n.spoofing && !pduSource.Equals(n.address) {
@@ -163,7 +172,6 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 
 	// actual network delivery is a zero-delay task
 	OneShotFunction(func(args Args, kwargs KWArgs) error {
-		pdu := args.Get0PDU()
 		return n.lan.ProcessPDU(pdu)
 	}, args, NoKWArgs)
 	return nil

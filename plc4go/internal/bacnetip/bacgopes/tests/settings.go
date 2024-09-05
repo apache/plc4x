@@ -17,25 +17,19 @@
  * under the License.
  */
 
-package bacgopes
+package tests
 
-import (
-	"time"
+import "os"
+
+var (
+	// LogTimeMachine enables logging for the time machine
+	LogTimeMachine bool
+
+	// LogStateMachine enables logging for the state machine
+	LogStateMachine bool
 )
 
-//go:generate plc4xGenerator -type=OneShotDeleteTask -prefix=task_
-type OneShotDeleteTask struct {
-	*Task
-}
-
-func NewOneShotDeleteTask(taskRequirements TaskRequirements, when *time.Time) *OneShotDeleteTask {
-	o := &OneShotDeleteTask{}
-	o.Task = NewTask(taskRequirements, func(task *Task) {
-		task.taskTime = when
-	})
-	return o
-}
-
-func (r *OneShotDeleteTask) IsOneShotDeleteTask() bool {
-	return true
+func init() {
+	LogTimeMachine = os.Getenv("LogTimeMachine") == "true"
+	LogStateMachine = os.Getenv("LogStateMachine") == "true"
 }
