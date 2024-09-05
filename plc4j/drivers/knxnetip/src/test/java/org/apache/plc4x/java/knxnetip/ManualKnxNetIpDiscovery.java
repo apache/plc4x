@@ -19,13 +19,13 @@
 
 package org.apache.plc4x.java.knxnetip;
 
-import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
-
 public class ManualKnxNetIpDiscovery {
 
     public static void main(String[] args) throws Exception {
-        PlcDiscoveryResponse discoveryResponse = new KnxNetIpDriver().discoveryRequestBuilder().addQuery("all", "*").build().execute().get();
-        System.out.println(discoveryResponse);
+        new KnxNetIpDriver().discoveryRequestBuilder().addQuery("all", "*")
+            .build()
+            .executeWithHandler(discoveryItem -> System.out.println("Found new device: " + discoveryItem.getConnectionUrl() + " (" + discoveryItem.getName() + ")"))
+            .get();
     }
 
 }

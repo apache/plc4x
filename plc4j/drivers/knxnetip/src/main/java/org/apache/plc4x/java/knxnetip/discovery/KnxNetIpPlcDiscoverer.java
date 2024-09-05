@@ -53,12 +53,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class KnxNetIpPlcDiscoverer implements PlcDiscoverer {
@@ -182,6 +180,8 @@ public class KnxNetIpPlcDiscoverer implements PlcDiscoverer {
             public void run() {
                 PlcDiscoveryResponse response =
                     new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, new ArrayList<>(values.values()));
+                timer.cancel();
+                timer.purge();
                 future.complete(response);
             }
         }, 5000L);

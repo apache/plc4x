@@ -63,7 +63,6 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
     private static final MacAddress PROFINET_BROADCAST_MAC_ADDRESS = new MacAddress(new byte[]{0x01, 0x0E, (byte) 0xCF, 0x00, 0x00, 0x00});
     final private ProfinetChannel channel;
     final List<PlcDiscoveryItem> values = new ArrayList<>();
-    final Set<Timer> periodicTimers = new HashSet<>();
     private final Logger logger = LoggerFactory.getLogger(ProfinetDiscoverer.class);
     private PlcDiscoveryItemHandler handler;
 
@@ -128,10 +127,8 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
                         logger.error("Error occurred while closing handle");
                     }
                 }
-                for (Timer timer : periodicTimers) {
-                    timer.cancel();
-                    timer.purge();
-                }
+                timer.cancel();
+                timer.purge();
                 future.complete(response);
             }
         }, delay);

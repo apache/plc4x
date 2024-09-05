@@ -61,10 +61,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
@@ -91,7 +89,6 @@ public class S7PlcDiscoverer implements PlcDiscoverer {
 
     final private ProfinetChannel channel;
     final List<PlcDiscoveryItem> values = new ArrayList<>();
-    final Set<Timer> periodicTimers = new HashSet<>();
     private PlcDiscoveryItemHandler handler;
 
     public S7PlcDiscoverer(ProfinetChannel channel) {
@@ -166,10 +163,8 @@ public class S7PlcDiscoverer implements PlcDiscoverer {
                         logger.error("Error occurred while closing handle");
                     }
                 }
-                for (Timer timer : periodicTimers) {
-                    timer.cancel();
-                    timer.purge();
-                }
+                timer.cancel();
+                timer.purge();
                 future.complete(response);
             }
         }, delay);

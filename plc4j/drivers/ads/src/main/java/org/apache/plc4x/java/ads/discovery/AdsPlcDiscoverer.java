@@ -205,6 +205,8 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
             public void run() {
                 PlcDiscoveryResponse response =
                     new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, new ArrayList<>(values));
+                timer.cancel();
+                timer.purge();
                 future.complete(response);
             }
         }, 5000L);

@@ -19,13 +19,13 @@
 
 package org.apache.plc4x.java.s7.readwrite;
 
-import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
-
 public class ManualS7Discovery {
 
     public static void main(String[] args) throws Exception {
-        PlcDiscoveryResponse discoveryResponse = new S7Driver().discoveryRequestBuilder().addQuery("all", "*").build().execute().get();
-        System.out.println(discoveryResponse);
+        new S7Driver().discoveryRequestBuilder().addQuery("all", "*")
+            .build()
+            .executeWithHandler(discoveryItem -> System.out.println("Found new device: " + discoveryItem.getConnectionUrl() + " (" + discoveryItem.getName() + ")"))
+            .get();
     }
 
 }
