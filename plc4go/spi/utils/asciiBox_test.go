@@ -297,6 +297,13 @@ func TestAsciiBox_Width(t *testing.T) {
 			},
 			want: 29,
 		},
+		{
+			name: "width tabs",
+			fields: fields{
+				data: "  \n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t      \t  \n\t",
+			},
+			want: 12,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -564,6 +571,19 @@ func TestBoxString(t *testing.T) {
 ║                123123123123                 ║
 ║          123123123123123123123123           ║
 ╚═════════════════════════════════════════════╝`[1:]),
+		},
+		{
+			name: "something with tabs and other stuff",
+			args: args{
+				data:      "a\n\tb\n\t\t\t\t\tc",
+				charWidth: 1,
+			},
+			want: asciiBoxForTest(`
+╔═══════════╗
+║     a     ║
+║      b    ║
+║          c║
+╚═══════════╝`[1:]),
 		},
 	}
 	for _, tt := range tests {
