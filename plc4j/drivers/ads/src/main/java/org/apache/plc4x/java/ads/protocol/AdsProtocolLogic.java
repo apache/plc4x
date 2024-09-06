@@ -486,7 +486,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     System.out.printf("couldn't find datatype: %s%n", symbol.getDataTypeName());
                     continue;
                 }
-                String itemName = (symbol.getComment() == null || symbol.getComment().isEmpty()) ? symbol.getName() : symbol.getComment();
+
                 // Convert the plc value type from the ADS specific one to the PLC4X global one.
                 org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(dataType).toString());
 
@@ -513,7 +513,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
                             adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
                     }
-                    DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), itemName,
+                    DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), symbol.getName(),
                         true, !symbol.getFlagReadOnly(), true, childMap, options, itemArrayInfo);
 
                     // Check if this item should be added to the result
@@ -522,7 +522,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         resultsForQuery.add(item);
                     }
                 } else {
-                    DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, Collections.emptyList()), itemName, true,
+                    DefaultPlcBrowseItem item = new DefaultPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, Collections.emptyList()), symbol.getName(), true,
                         !symbol.getFlagReadOnly(), true, childMap, options);
 
                     // Check if this item should be added to the result
@@ -554,8 +554,6 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
             String itemAddress = basePath + "." + child.getPropertyName();
 
-            String itemName = (child.getComment() == null || child.getComment().isEmpty()) ? child.getPropertyName() : child.getComment();
-
             // Convert the plc value type from the ADS specific one to the PLC4X global one.
             org.apache.plc4x.java.api.types.PlcValueType plc4xPlcValueType = org.apache.plc4x.java.api.types.PlcValueType.valueOf(getPlcValueTypeForAdsDataType(childDataType).toString());
 
@@ -584,13 +582,13 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 }
                 // Add the type itself.
                 values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(
-                    basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo), itemName,
+                    basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo), child.getPropertyName(),
                     true, parentWritable, true, childMap, options, itemArrayInfo));
             } else {
                 // Add the type itself.
                 values.add(new DefaultPlcBrowseItem(new SymbolicAdsTag(
                     basePath + "." + child.getPropertyName(), plc4xPlcValueType,
-                    Collections.emptyList()), itemName,
+                    Collections.emptyList()), child.getPropertyName(),
                     true, parentWritable, true, childMap, options));
             }
         }

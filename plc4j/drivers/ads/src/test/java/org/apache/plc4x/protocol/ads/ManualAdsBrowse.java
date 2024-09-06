@@ -19,15 +19,16 @@
 
 package org.apache.plc4x.protocol.ads;
 
-import org.apache.plc4x.java.ads.AdsPlcDriver;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
 
-public class ManualAdsDiscovery {
+public class ManualAdsBrowse {
 
     public static void main(String[] args) throws Exception {
-        new AdsPlcDriver().discoveryRequestBuilder().addQuery("all", "*")
-            .build()
-            .executeWithHandler(discoveryItem -> System.out.println("Found new device: " + discoveryItem.getConnectionUrl() + " (" + discoveryItem.getName() + ")"))
-            .get();
+        try (PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection("ads:tcp://192.168.23.20:48898?target-ams-port=851&source-ams-port=65534&source-ams-net-id=192.168.23.220.1.1&target-ams-net-id=192.168.23.20.1.1")){
+            PlcBrowseResponse browseResponse = connection.browseRequestBuilder().addQuery("all", "*").build().execute().get();
+            System.out.println(browseResponse);
+        }
     }
-
 }
