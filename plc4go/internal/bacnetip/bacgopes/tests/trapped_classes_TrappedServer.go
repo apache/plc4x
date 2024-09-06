@@ -23,15 +23,18 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 // TrappedServerContract provides a set of functions which can be overwritten by a sub struct
 type TrappedServerContract interface {
 	utils.Serializable
-	Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error
-	Response(bacgopes.Args, bacgopes.KWArgs) error
+	Indication(args Args, kwargs KWArgs) error
+	Response(Args, KWArgs) error
 }
 
 // TrappedServer An instance of this class sits at the bottom of a stack.
@@ -39,10 +42,10 @@ type TrappedServerContract interface {
 //go:generate plc4xGenerator -type=TrappedServer -prefix=trapped_classes_
 type TrappedServer struct {
 	TrappedServerContract `ignore:"true"`
-	bacgopes.Server
+	Server
 
-	indicationReceived bacgopes.PDU
-	responseSent       bacgopes.PDU
+	indicationReceived PDU
+	responseSent       PDU
 
 	log zerolog.Logger
 }
@@ -56,7 +59,7 @@ func NewTrappedServer(localLog zerolog.Logger, opts ...func(*TrappedServer)) (*T
 		opt(t)
 	}
 	var err error
-	t.Server, err = bacgopes.NewServer(localLog, t)
+	t.Server, err = NewServer(localLog, t)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building server")
 	}
@@ -69,26 +72,26 @@ func WithTrappedServerContract(trappedServerContract TrappedServerContract) func
 	}
 }
 
-func (t *TrappedServer) GetIndicationReceived() bacgopes.PDU {
+func (t *TrappedServer) GetIndicationReceived() PDU {
 	return t.indicationReceived
 }
 
-func (t *TrappedServer) GetResponseSent() bacgopes.PDU {
+func (t *TrappedServer) GetResponseSent() PDU {
 	return t.responseSent
 }
 
-func (t *TrappedServer) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedServer) Indication(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
 	// a reference for checking
-	t.indicationReceived = args.Get0PDU()
+	t.indicationReceived = Get[PDU](args, 0)
 
 	return nil
 }
 
-func (t *TrappedServer) Response(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedServer) Response(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Response")
 	// a reference for checking
-	t.responseSent = args.Get0PDU()
+	t.responseSent = Get[PDU](args, 0)
 
 	// continue with regular processing
 	return t.Server.Response(args, kwargs)

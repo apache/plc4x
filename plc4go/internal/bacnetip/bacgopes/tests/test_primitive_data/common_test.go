@@ -19,18 +19,12 @@
 
 package test_primitive_data
 
-import "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-
-func Tag(args ...any) bacgopes.Tag {
-	tag, err := bacgopes.NewTag(args)
-	if err != nil {
-		panic(err)
-	}
-	return tag
-}
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+)
 
 func xtob(hexString string) []byte {
-	bytes, err := bacgopes.Xtob(hexString)
+	bytes, err := Xtob(hexString)
 	if err != nil {
 		panic(err)
 	}

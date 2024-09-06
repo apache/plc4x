@@ -28,25 +28,34 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 // This struct turns off the deferred startup function call that broadcasts I-Am-Router-To-Network and Network-Number-Is
 //
 //	messages.
 type _NetworkServiceElement struct {
-	*bacgopes.NetworkServiceElement
+	*NetworkServiceElement
 }
 
 func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement, error) {
 	n := &_NetworkServiceElement{}
 	var err error
-	n.NetworkServiceElement, err = bacgopes.NewNetworkServiceElement(localLog, bacgopes.WithNetworkServiceElementStartupDisabled(true))
+	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, WithNetworkServiceElementStartupDisabled(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
@@ -54,10 +63,10 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 }
 
 type ApplicationNetwork struct {
-	*tests.StateMachineGroup
+	*StateMachineGroup
 
-	trafficLog *tests.TrafficLog
-	vlan       *bacgopes.Network
+	trafficLog *TrafficLog
+	vlan       *Network
 	sniffer    *SnifferNode
 	td         *ApplicationStateMachine
 	iut        *ApplicationStateMachine
@@ -65,20 +74,20 @@ type ApplicationNetwork struct {
 	log zerolog.Logger
 }
 
-func NewApplicationNetwork(localLog zerolog.Logger, tdDeviceObject, iutDeviceObject *bacgopes.LocalDeviceObject) (*ApplicationNetwork, error) {
+func NewApplicationNetwork(localLog zerolog.Logger, tdDeviceObject, iutDeviceObject *LocalDeviceObject) (*ApplicationNetwork, error) {
 	a := &ApplicationNetwork{
 		log: localLog,
 	}
-	a.StateMachineGroup = tests.NewStateMachineGroup(localLog)
+	a.StateMachineGroup = NewStateMachineGroup(localLog)
 
 	// Reset the time machine
-	tests.ResetTimeMachine(time.Time{})
+	ResetTimeMachine(time.Time{})
 
 	// Create a traffic log
-	a.trafficLog = new(tests.TrafficLog)
+	a.trafficLog = new(TrafficLog)
 
 	// make a little LAN
-	a.vlan = bacgopes.NewNetwork(a.log, bacgopes.WithNetworkBroadcastAddress(bacgopes.NewLocalBroadcast(nil)), bacgopes.WithNetworkTrafficLogger(a.trafficLog))
+	a.vlan = NewNetwork(a.log, WithNetworkBroadcastAddress(NewLocalBroadcast(nil)), WithNetworkTrafficLogger(a.trafficLog))
 
 	// sniffer
 	var err error
@@ -118,7 +127,7 @@ func (a *ApplicationNetwork) Run(timeLimit time.Duration) error {
 	a.log.Trace().Msg("group running")
 
 	// run it for some time
-	tests.RunTimeMachine(a.log, timeLimit, time.Time{})
+	RunTimeMachine(a.log, timeLimit, time.Time{})
 	if a.log.Debug().Enabled() {
 		a.log.Debug().Msg("time machine finished")
 		for _, machine := range a.GetStateMachines() {
@@ -141,56 +150,56 @@ func (a *ApplicationNetwork) Run(timeLimit time.Duration) error {
 	return nil
 }
 
-func (a *ApplicationNetwork) _debug(format string, args bacgopes.Args) {
+func (a *ApplicationNetwork) _debug(format string, args Args) {
 	a.log.Debug().Msgf(format, args)
 }
 
 //go:generate plc4xGenerator -type=SnifferNode -suffix=_test
 type SnifferNode struct {
-	bacgopes.Client
+	Client
 
 	name    string
-	address *bacgopes.Address
-	node    *bacgopes.Node
+	address *Address
+	node    *Node
 
 	log zerolog.Logger
 }
 
-func NewSnifferNode(localLog zerolog.Logger, vlan *bacgopes.Network) (*SnifferNode, error) {
+func NewSnifferNode(localLog zerolog.Logger, vlan *Network) (*SnifferNode, error) {
 	s := &SnifferNode{
 		name: "sniffer",
 		log:  localLog,
 	}
-	s.address, _ = bacgopes.NewAddress(localLog)
+	s.address, _ = NewAddress(localLog)
 	var err error
-	s.Client, err = bacgopes.NewClient(localLog, s)
+	s.Client, err = NewClient(localLog, s)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
 
 	// create a promiscuous node, added to the network
-	s.node, err = bacgopes.NewNode(localLog, s.address, bacgopes.WithNodeLan(vlan), bacgopes.WithNodePromiscuous(true))
+	s.node, err = NewNode(localLog, s.address, WithNodeLan(vlan), WithNodePromiscuous(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
 	s.log.Debug().Stringer("node", s.node).Msg("node")
 
 	// bind the node
-	err = bacgopes.Bind(s.log, s, s.node)
+	err = Bind(s.log, s, s.node)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding node")
 	}
 	return s, nil
 }
 
-func (s *SnifferNode) Request(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *SnifferNode) Request(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("request")
 	return errors.New("sniffers don't request")
 }
 
-func (s *SnifferNode) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *SnifferNode) Confirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("confirmation")
-	pdu := args.Get0PDU()
+	pdu := Get[PDU](args, 0)
 
 	// it's and NPDU
 	npdu := pdu.GetRootMessage().(model.NPDU)
@@ -225,22 +234,22 @@ func (s *SnifferNode) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) e
 
 //go:generate plc4xGenerator -type=ApplicationStateMachine -suffix=_test
 type ApplicationStateMachine struct {
-	*bacgopes.Application
-	tests.StateMachineContract
+	*Application
+	StateMachineContract
 
-	address *bacgopes.Address
-	asap    *bacgopes.ApplicationServiceAccessPoint
-	smap    *bacgopes.StateMachineAccessPoint
-	nsap    *bacgopes.NetworkServiceAccessPoint
+	address *Address
+	asap    *ApplicationServiceAccessPoint
+	smap    *StateMachineAccessPoint
+	nsap    *NetworkServiceAccessPoint
 	nse     *_NetworkServiceElement
-	node    *bacgopes.Node
+	node    *Node
 
 	confirmedPrivateResult any
 
 	log zerolog.Logger
 }
 
-func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacgopes.LocalDeviceObject, vlan *bacgopes.Network, opts ...func(*ApplicationStateMachine)) (*ApplicationStateMachine, error) {
+func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDeviceObject, vlan *Network, opts ...func(*ApplicationStateMachine)) (*ApplicationStateMachine, error) {
 	a := &ApplicationStateMachine{
 		log: localLog,
 	}
@@ -248,25 +257,25 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacgopes.L
 		opt(a)
 	}
 	// build and address and save it
-	_, instance := bacgopes.ObjectIdentifierStringToTuple(localDevice.ObjectIdentifier)
+	_, instance := ObjectIdentifierStringToTuple(localDevice.ObjectIdentifier)
 	var err error
-	a.address, err = bacgopes.NewAddress(a.log, instance)
+	a.address, err = NewAddress(a.log, instance)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
 	a.log.Debug().Stringer("address", a.address).Msg("address")
 
 	// continue with initialization
-	a.Application, err = bacgopes.NewApplication(a.log, localDevice)
+	a.Application, err = NewApplication(a.log, localDevice)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application io controller")
 	}
 	var init func()
-	a.StateMachineContract, init = tests.NewStateMachine(a.log, a, tests.WithStateMachineName(localDevice.ObjectName))
+	a.StateMachineContract, init = NewStateMachine(a.log, a, WithStateMachineName(localDevice.ObjectName))
 	init()
 
 	// include a application decoder
-	a.asap, err = bacgopes.NewApplicationServiceAccessPoint(a.log)
+	a.asap, err = NewApplicationServiceAccessPoint(a.log)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service access point")
 	}
@@ -277,13 +286,13 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacgopes.L
 	// the segmentation state machines need access to the same device
 	// information cache as the application
 	deviceInfoCache := a.GetDeviceInfoCache()
-	a.smap, err = bacgopes.NewStateMachineAccessPoint(a.log, localDevice, bacgopes.WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))
+	a.smap, err = NewStateMachineAccessPoint(a.log, localDevice, WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating state machine access point")
 	}
 
 	// a network service access point will be needed
-	a.nsap, err = bacgopes.NewNetworkServiceAccessPoint(a.log)
+	a.nsap, err = NewNetworkServiceAccessPoint(a.log)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
@@ -293,19 +302,19 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacgopes.L
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
-	err = bacgopes.Bind(a.log, a.nse, a.nsap)
+	err = Bind(a.log, a.nse, a.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding network service element")
 	}
 
 	// bind the top layers
-	err = bacgopes.Bind(a.log, a, a.asap, a.smap, a.nsap)
+	err = Bind(a.log, a, a.asap, a.smap, a.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding top layers")
 	}
 
 	// create a node, added to the network
-	a.node, err = bacgopes.NewNode(a.log, a.address, bacgopes.WithNodeLan(vlan))
+	a.node, err = NewNode(a.log, a.address, WithNodeLan(vlan))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -318,18 +327,18 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacgopes.L
 	return a, nil
 }
 
-func (a *ApplicationStateMachine) Send(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (a *ApplicationStateMachine) Send(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
 
 	// send the apdu down the stack
 	return a.Request(args, kwargs)
 }
 
-func (a *ApplicationStateMachine) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (a *ApplicationStateMachine) Indication(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
 
 	// let the state machine know the request was received
-	err := a.Receive(args, bacgopes.NoKWArgs)
+	err := a.Receive(args, NoKWArgs)
 	if err != nil {
 		return errors.Wrap(err, "error receiving indication")
 	}
@@ -338,7 +347,7 @@ func (a *ApplicationStateMachine) Indication(args bacgopes.Args, kwargs bacgopes
 	return a.Application.Indication(args, kwargs)
 }
 
-func (a *ApplicationStateMachine) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (a *ApplicationStateMachine) Confirmation(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
 
 	// forward the confirmation to the state machine
@@ -352,14 +361,14 @@ func (a *ApplicationStateMachine) doConfirmedPrivateTransferRequest(_ struct{}) 
 
 func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 	t.Skip("to many things missing here... TODO: finish me") // TODO: finish me
-	tests.ExclusiveGlobalTimeMachine(t)
+	ExclusiveGlobalTimeMachine(t)
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// client device object
 	octets206 := model.MaxApduLengthAccepted_NUM_OCTETS_206
 	segmentation := model.BACnetSegmentation_SEGMENTED_BOTH
 	maxSegmentsAccepted := model.MaxSegmentsAccepted_NUM_SEGMENTS_04
-	tdDeviceObject := &bacgopes.LocalDeviceObject{
+	tdDeviceObject := &LocalDeviceObject{
 		ObjectName:                "td",
 		ObjectIdentifier:          "device:10",
 		MaximumApduLengthAccepted: &octets206,
@@ -370,7 +379,7 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 
 	// server device object
 	maxSegmentsAccepted = model.MaxSegmentsAccepted_NUM_SEGMENTS_64
-	iutDeviceObject := &bacgopes.LocalDeviceObject{
+	iutDeviceObject := &LocalDeviceObject{
 		ObjectName:                "td",
 		ObjectIdentifier:          "device:10",
 		MaximumApduLengthAccepted: &octets206,
@@ -414,18 +423,18 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 	}
 
 	if sLen != 0 {
-		anet.iut.confirmedPrivateResult = Any(CharacterString(utils.RandomString(sLen)))
+		anet.iut.confirmedPrivateResult = quick.Any(quick.CharacterString(utils.RandomString(sLen)))
 	}
 
 	var trq model.BACnetServiceAckConfirmedPrivateTransfer
 	// send the request, get it acked
 	anet.td.GetStartState().Doc(prefix+"-0").
-		Send(bacgopes.NewPDU(ConfirmedPrivateTransferRequest(bacgopes.NewKWArgs(
+		Send(NewPDU(quick.ConfirmedPrivateTransferRequest(NewKWArgs(
 			"vendorId", 999, "serviceNumber", 1,
 			"serviceParameters", requestString,
 			"destination", anet.iut.address,
 		)), nil), nil).Doc(prefix+"-1").
-		Receive(bacgopes.NewArgs(trq), bacgopes.NoKWArgs).Doc(prefix + "-2").
+		Receive(NewArgs(trq), NoKWArgs).Doc(prefix + "-2").
 		Success("")
 
 	// no IUT application layer matching

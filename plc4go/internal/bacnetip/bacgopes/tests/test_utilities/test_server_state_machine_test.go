@@ -25,23 +25,25 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 )
 
 func TestServerStateMachine(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 	// create a client state machine, trapped server, and bind them together
-	client, err := tests.NewTrappedClient(testingLogger)
+	client, err := NewTrappedClient(testingLogger)
 	require.NoError(t, err)
-	server, err := tests.NewServerStateMachine(testingLogger)
+	server, err := NewServerStateMachine(testingLogger)
 	require.NoError(t, err)
-	err = bacgopes.Bind(testingLogger, client, server)
+	err = Bind(testingLogger, client, server)
 	require.NoError(t, err)
 
 	// make pdu object
-	pdu := bacgopes.NewPDU(tests.NewDummyMessage())
+	pdu := NewPDU(NewDummyMessage())
 
 	// make a send transition from start to success, run the machine
 	server.GetStartState().Send(pdu, nil).Success("")

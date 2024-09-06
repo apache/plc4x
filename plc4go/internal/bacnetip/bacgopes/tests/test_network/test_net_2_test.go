@@ -27,15 +27,19 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 type TNetwork2 struct {
-	*tests.StateMachineGroup
+	*StateMachineGroup
 
-	trafficLog *tests.TrafficLog
+	trafficLog *TrafficLog
 	iut1       *RouterNode
 	iut2       *RouterNode
 	vlan1      *Network
@@ -57,14 +61,14 @@ func NewTNetwork2(t *testing.T) *TNetwork2 {
 		t:   t,
 		log: localLog,
 	}
-	tn.StateMachineGroup = tests.NewStateMachineGroup(localLog)
+	tn.StateMachineGroup = NewStateMachineGroup(localLog)
 
 	// reset the time machine
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	localLog.Trace().Msg("time machine reset")
 
 	// create a traffic log
-	tn.trafficLog = new(tests.TrafficLog)
+	tn.trafficLog = new(TrafficLog)
 
 	var err error
 	// implementation under test
@@ -130,7 +134,7 @@ func (t *TNetwork2) Run(timeLimit time.Duration) {
 	require.NoError(t.t, err)
 
 	// run it some time
-	tests.RunTimeMachine(t.log, timeLimit, time.Time{})
+	RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
 		t.log.Debug().Stringer("machine", machine).Strs("transactionLog", machine.GetTransactionLog()).Msg("Machine:")
@@ -146,7 +150,7 @@ func TestNet2(t *testing.T) {
 	t.Run("TestSimple", func(t *testing.T) {
 		t.Run("testIdle", func(t *testing.T) {
 			// create a network
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 			tnet := NewTNetwork2(t)
 
 			// all start states are successful
@@ -162,7 +166,7 @@ func TestNet2(t *testing.T) {
 	t.Run("TestWhoIsRouterToNetwork", func(t *testing.T) {
 		t.Run("test_01", func(t *testing.T) {
 			//Test broadcast for any router.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 
 			// create a network
 			tnet := NewTNetwork2(t)
@@ -178,13 +182,13 @@ func TestNet2(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("1-2-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80"+ //version, network layer
 							"00", //message type, no network
 					)),
 				).Doc("1-2-1").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80"+ //version, network layer
 							"01 0002", //message type and network list
@@ -207,7 +211,7 @@ func TestNet2(t *testing.T) {
 		})
 		t.Run("test_02", func(t *testing.T) {
 			//Test broadcast for existing router.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 			// create a network
 			tnet := NewTNetwork2(t)
 
@@ -237,7 +241,7 @@ func TestNet2(t *testing.T) {
 		})
 		t.Run("test_03", func(t *testing.T) {
 			//Test broadcast for non-existing router.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 			// create a network
 			tnet := NewTNetwork2(t)
 
@@ -252,7 +256,7 @@ func TestNet2(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("3-2-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80"+ //version, network layer
 							"00 0004", //message type, and network
@@ -262,7 +266,7 @@ func TestNet2(t *testing.T) {
 
 			// sniffer on network 2 sees request forwarded by router
 			tnet.sniffer2.GetStartState().Doc("3-3-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.88"+ //version, network layer
 							"0001 01 01"+ // snet/slen/sadr
@@ -272,7 +276,7 @@ func TestNet2(t *testing.T) {
 				Success("")
 
 			tnet.sniffer3.GetStartState().Doc("3-4-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.88"+ //version, network layer
 							"0001 01 01"+ // snet/slen/sadr

@@ -25,12 +25,14 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 type TrappedApplicationServiceElementRequirements interface {
-	Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error
-	Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error
+	Indication(args Args, kwargs KWArgs) error
+	Confirmation(args Args, kwargs KWArgs) error
 }
 
 // TrappedApplicationServiceElement  Note that while this class inherits from ApplicationServiceElement, it
@@ -51,18 +53,18 @@ type TrappedApplicationServiceElementRequirements interface {
 //
 //	The Snort functions will be called after the PDU is trapped.
 type TrappedApplicationServiceElement struct {
-	bacgopes.ApplicationServiceElementContract
+	ApplicationServiceElementContract
 	requirements TrappedApplicationServiceElementRequirements
 
-	requestSent          bacgopes.PDU
-	indicationReceived   bacgopes.PDU
-	responseSent         bacgopes.PDU
-	confirmationReceived bacgopes.PDU
+	requestSent          PDU
+	indicationReceived   PDU
+	responseSent         PDU
+	confirmationReceived PDU
 
 	log zerolog.Logger
 }
 
-var _ bacgopes.ApplicationServiceElement = (*TrappedApplicationServiceElement)(nil)
+var _ ApplicationServiceElement = (*TrappedApplicationServiceElement)(nil)
 
 func NewTrappedApplicationServiceElement(localLog zerolog.Logger, requirements TrappedApplicationServiceElementRequirements) (*TrappedApplicationServiceElement, error) {
 	t := &TrappedApplicationServiceElement{
@@ -70,26 +72,26 @@ func NewTrappedApplicationServiceElement(localLog zerolog.Logger, requirements T
 		log:          localLog,
 	}
 	var err error
-	t.ApplicationServiceElementContract, err = bacgopes.NewApplicationServiceElement(localLog)
+	t.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating SAP")
 	}
 	return t, nil
 }
 
-func (s *TrappedApplicationServiceElement) GetRequestSent() bacgopes.PDU {
+func (s *TrappedApplicationServiceElement) GetRequestSent() PDU {
 	return s.requestSent
 }
 
-func (s *TrappedApplicationServiceElement) GetIndicationReceived() bacgopes.PDU {
+func (s *TrappedApplicationServiceElement) GetIndicationReceived() PDU {
 	return s.indicationReceived
 }
 
-func (s *TrappedApplicationServiceElement) GetResponseSent() bacgopes.PDU {
+func (s *TrappedApplicationServiceElement) GetResponseSent() PDU {
 	return s.responseSent
 }
 
-func (s *TrappedApplicationServiceElement) GetConfirmationReceived() bacgopes.PDU {
+func (s *TrappedApplicationServiceElement) GetConfirmationReceived() PDU {
 	return s.confirmationReceived
 }
 
@@ -97,26 +99,26 @@ func (s *TrappedApplicationServiceElement) String() string {
 	return fmt.Sprintf("TrappedApplicationServiceElement(TBD...)") // TODO: fill some info here
 }
 
-func (s *TrappedApplicationServiceElement) Request(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *TrappedApplicationServiceElement) Request(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Request")
-	s.requestSent = args.Get0PDU()
+	s.requestSent = Get[PDU](args, 0)
 	return s.ApplicationServiceElementContract.Request(args, kwargs)
 }
 
-func (s *TrappedApplicationServiceElement) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *TrappedApplicationServiceElement) Indication(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
-	s.indicationReceived = args.Get0PDU()
+	s.indicationReceived = Get[PDU](args, 0)
 	return s.requirements.Indication(args, kwargs)
 }
 
-func (s *TrappedApplicationServiceElement) Response(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *TrappedApplicationServiceElement) Response(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Response")
-	s.responseSent = args.Get0PDU()
+	s.responseSent = Get[PDU](args, 0)
 	return s.ApplicationServiceElementContract.Response(args, kwargs)
 }
 
-func (s *TrappedApplicationServiceElement) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *TrappedApplicationServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
-	s.confirmationReceived = args.Get0PDU()
+	s.confirmationReceived = Get[PDU](args, 0)
 	return s.requirements.Confirmation(args, kwargs)
 }

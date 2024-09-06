@@ -25,30 +25,32 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
-func IntegerTag(x string) bacgopes.Tag {
-	b, err := bacgopes.Xtob(x)
+func IntegerTag(x string) Tag {
+	b, err := Xtob(x)
 	if err != nil {
 		panic(err)
 	}
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_SIGNED_INTEGER, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_SIGNED_INTEGER, len(b), b)
 	return tag
 }
 
 // Encode a Integer object into a tag.
-func IntegerEncode(obj *bacgopes.Integer) bacgopes.Tag {
-	tag := Tag()
+func IntegerEncode(obj *Integer) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Integer application tag into a Integer.
-func IntegerDecode(tag bacgopes.Tag) *bacgopes.Integer {
-	obj := Integer(tag)
+func IntegerDecode(tag Tag) *Integer {
+	obj := quick.Integer(tag)
 
 	return obj
 }
@@ -59,14 +61,14 @@ func IntegerDecode(tag bacgopes.Tag) *bacgopes.Integer {
 func IntegerEndec(t *testing.T, v int32, x string) {
 	tag := IntegerTag(x)
 
-	obj := Integer(v)
+	obj := quick.Integer(v)
 
 	assert.Equal(t, tag, IntegerEncode(obj))
 	assert.Equal(t, obj, IntegerDecode(tag))
 }
 
 func TestInteger(t *testing.T) {
-	obj := Integer()
+	obj := quick.Integer()
 	assert.Equal(t, int32(0), obj.GetValue())
 
 	assert.True(t, obj.IsValid(1))
@@ -77,54 +79,54 @@ func TestInteger(t *testing.T) {
 	assert.False(t, obj.IsValid(true))
 	assert.False(t, obj.IsValid(1.0))
 	assert.Panics(t, func() {
-		Integer("some string")
+		quick.Integer("some string")
 	})
 	assert.Panics(t, func() {
-		Integer(1.0)
+		quick.Integer(1.0)
 	})
 }
 
 func TestIntegerInt(t *testing.T) {
-	obj := Integer(1)
+	obj := quick.Integer(1)
 	assert.Equal(t, int32(1), obj.GetValue())
 	assert.Equal(t, "Integer(1)", obj.String())
 
-	obj = Integer(-1)
+	obj = quick.Integer(-1)
 	assert.Equal(t, int32(-1), obj.GetValue())
 	assert.Equal(t, "Integer(-1)", obj.String())
 }
 
 func TestIntegerTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_SIGNED_INTEGER, 1, xtob("01"))
-	obj := Integer(tag)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_SIGNED_INTEGER, 1, xtob("01"))
+	obj := quick.Integer(tag)
 	assert.Equal(t, obj.GetValue(), int32(1))
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		Integer(tag)
+		quick.Integer(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		Integer(tag)
+		quick.Integer(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		Integer(tag)
+		quick.Integer(tag)
 	})
 }
 
 func TestIntegerCopy(t *testing.T) {
-	obj1 := Integer(12)
-	obj2 := Integer(obj1)
+	obj1 := quick.Integer(12)
+	obj2 := quick.Integer(obj1)
 	assert.Equal(t, int32(12), obj2.GetValue())
 	assert.Equal(t, obj1, obj2)
 }
 
 func TestIntegerEndec(t *testing.T) {
 	assert.Panics(t, func() {
-		Integer(IntegerTag(""))
+		quick.Integer(IntegerTag(""))
 	})
 	IntegerEndec(t, 0, "00")
 	IntegerEndec(t, 1, "01")

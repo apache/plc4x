@@ -23,7 +23,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 )
 
 type TrappedServerStateMachine struct {
@@ -44,12 +44,12 @@ func NewTrappedServerStateMachine(localLog zerolog.Logger) (*TrappedServerStateM
 	return t, nil
 }
 
-func (t *TrappedServerStateMachine) Send(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedServerStateMachine) Send(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
 	return t.Response(args, kwargs)
 }
 
-func (t *TrappedServerStateMachine) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedServerStateMachine) Indication(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
 	return t.Receive(args, kwargs)
 }

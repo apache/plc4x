@@ -23,17 +23,18 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 var StartTime = time.Time{}
 
 type DummyMessage struct {
-	bacgopes.MessageBridge
+	MessageBridge
 }
 
 func NewDummyMessage(data ...byte) *DummyMessage {
-	return &DummyMessage{bacgopes.NewMessageBridge(data...)}
+	return &DummyMessage{NewMessageBridge(data...)}
 }
 
 type AssertionError struct {
@@ -45,6 +46,6 @@ func (a AssertionError) Error() string {
 }
 
 var PDUMatcher = func(value any) bool {
-	_, ok := value.(bacgopes.PDU)
+	_, ok := value.(PDU)
 	return ok
 }

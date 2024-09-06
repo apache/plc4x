@@ -25,15 +25,16 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 )
 
 func TestBasic(t *testing.T) {
 	t.Skip("finish me") // TODO: finish me
 	testingLogger := testutils.ProduceTestingLogger(t)
-	tests.ExclusiveGlobalTimeMachine(t)
+	ExclusiveGlobalTimeMachine(t)
 
 	// create a network
 	anet, err := NewApplicationNetwork(testingLogger)
@@ -43,7 +44,7 @@ func TestBasic(t *testing.T) {
 	})
 
 	// add the service capability
-	anet.iut.AddCapability(new(service.ChangeOfValuesServices))
+	anet.iut.AddCapability(new(ChangeOfValuesServices))
 
 	// all start states are successful
 	anet.td.GetStartState().Success("")

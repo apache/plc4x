@@ -25,27 +25,28 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
-func RealTag(x string) bacgopes.Tag {
+func RealTag(x string) Tag {
 	b := xtob(x)
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_REAL, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_REAL, len(b), b)
 	return tag
 }
 
 // Encode a Real object into a tag.
-func RealEncode(obj *bacgopes.Real) bacgopes.Tag {
-	tag := Tag()
+func RealEncode(obj *Real) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Real application tag into a Real.
-func RealDecode(tag bacgopes.Tag) *bacgopes.Real {
-	obj := Real(tag)
+func RealDecode(tag Tag) *Real {
+	obj := quick.Real(tag)
 
 	return obj
 }
@@ -56,62 +57,62 @@ func RealDecode(tag bacgopes.Tag) *bacgopes.Real {
 func RealEndec(t *testing.T, v float32, x string) {
 	tag := RealTag(x)
 
-	obj := Real(v)
+	obj := quick.Real(v)
 
 	assert.Equal(t, tag, RealEncode(obj))
 	assert.Equal(t, obj, RealDecode(tag))
 }
 
 func TestReal(t *testing.T) {
-	obj := Real()
+	obj := quick.Real()
 	assert.Equal(t, float32(0.0), obj.GetValue())
 
 	assert.Panics(t, func() {
-		Real("some string")
+		quick.Real("some string")
 	})
 }
 
 func TestRealReal(t *testing.T) {
-	obj := Real(float32(1.0))
+	obj := quick.Real(float32(1.0))
 	assert.Equal(t, float32(1.0), obj.GetValue())
 	assert.Equal(t, "Real(1)", obj.String())
 
-	obj = Real(float32(73.5))
+	obj = quick.Real(float32(73.5))
 	assert.Equal(t, float32(73.5), obj.GetValue())
 	assert.Equal(t, "Real(73.5)", obj.String())
 }
 
 func TestRealTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_REAL, 1, xtob("3f800000"))
-	obj := Real(tag)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_REAL, 1, xtob("3f800000"))
+	obj := quick.Real(tag)
 	assert.Equal(t, obj.GetValue(), float32(1.0))
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		Real(tag)
+		quick.Real(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		Real(tag)
+		quick.Real(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		Real(tag)
+		quick.Real(tag)
 	})
 }
 
 func TestRealCopy(t *testing.T) {
-	obj1 := Real(12)
-	obj2 := Real(obj1)
+	obj1 := quick.Real(12)
+	obj2 := quick.Real(obj1)
 	assert.Equal(t, float32(12.0), obj2.GetValue())
 	assert.Equal(t, obj1, obj2)
 }
 
 func TestRealEndec(t *testing.T) {
 	assert.Panics(t, func() {
-		Real(RealTag(""))
+		quick.Real(RealTag(""))
 	})
 	RealEndec(t, 0, "00000000")
 	RealEndec(t, 1, "3f800000")

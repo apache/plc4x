@@ -22,7 +22,7 @@ package tests
 import (
 	"fmt"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 // TrappedState This class is a simple wrapper around the state class that keeps the latest copy of the pdu parameter in
@@ -54,23 +54,23 @@ func (t *TrappedState) String() string {
 	return fmt.Sprintf("TrappedState(%v)", t.State)
 }
 
-func (t *TrappedState) BeforeSend(pdu bacgopes.PDU) {
+func (t *TrappedState) BeforeSend(pdu PDU) {
 	t.Trapper.BeforeSend(pdu)
 }
 
-func (t *TrappedState) AfterSend(pdu bacgopes.PDU) {
+func (t *TrappedState) AfterSend(pdu PDU) {
 	t.Trapper.AfterSend(pdu)
 }
 
-func (t *TrappedState) BeforeReceive(pdu bacgopes.PDU) {
+func (t *TrappedState) BeforeReceive(pdu PDU) {
 	t.Trapper.BeforeReceive(pdu)
 }
 
-func (t *TrappedState) AfterReceive(pdu bacgopes.PDU) {
+func (t *TrappedState) AfterReceive(pdu PDU) {
 	t.Trapper.AfterReceive(pdu)
 }
 
-func (t *TrappedState) UnexpectedReceive(pdu bacgopes.PDU) {
+func (t *TrappedState) UnexpectedReceive(pdu PDU) {
 	t.Trapper.UnexpectedReceive(pdu)
 }
 

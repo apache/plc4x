@@ -51,42 +51,18 @@ func (d *TrappedClient) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if err := d.Client.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
+	{
+		_value := fmt.Sprintf("%v", d.requestSent)
 
-	if d.requestSent != nil {
-		if serializableField, ok := any(d.requestSent).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("requestSent"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("requestSent"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.requestSent)
-			if err := writeBuffer.WriteString("requestSent", uint32(len(stringValue)*8), stringValue); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("requestSent", uint32(len(_value)*8), _value); err != nil {
+			return err
 		}
 	}
+	{
+		_value := fmt.Sprintf("%v", d.confirmationReceived)
 
-	if d.confirmationReceived != nil {
-		if serializableField, ok := any(d.confirmationReceived).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("confirmationReceived"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("confirmationReceived"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.confirmationReceived)
-			if err := writeBuffer.WriteString("confirmationReceived", uint32(len(stringValue)*8), stringValue); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("confirmationReceived", uint32(len(_value)*8), _value); err != nil {
+			return err
 		}
 	}
 	if err := writeBuffer.PopContext("TrappedClient"); err != nil {

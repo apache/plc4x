@@ -72,59 +72,29 @@ func (d *ApplicationNode) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return err
 		}
 	}
-
 	if d.asap != nil {
-		if serializableField, ok := any(d.asap).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("asap"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("asap"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.asap)
-			if err := writeBuffer.WriteString("asap", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.asap)
+
+			if err := writeBuffer.WriteString("asap", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}
 	}
-
 	if d.smap != nil {
-		if serializableField, ok := any(d.smap).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("smap"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("smap"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.smap)
-			if err := writeBuffer.WriteString("smap", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.smap)
+
+			if err := writeBuffer.WriteString("smap", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}
 	}
-
 	if d.nsap != nil {
-		if serializableField, ok := any(d.nsap).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("nsap"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("nsap"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.nsap)
-			if err := writeBuffer.WriteString("nsap", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.nsap)
+
+			if err := writeBuffer.WriteString("nsap", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}
@@ -138,21 +108,11 @@ func (d *ApplicationNode) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			}
 		}
 	}
-
 	if d.node != nil {
-		if serializableField, ok := any(d.node).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("node"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("node"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.node)
-			if err := writeBuffer.WriteString("node", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.node)
+
+			if err := writeBuffer.WriteString("node", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}

@@ -25,16 +25,17 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 )
 
 type ClientStateMachineContract interface {
 	fmt.Stringer
-	bacgopes.Client
+	Client
 	StateMachineContract
-	Send(args bacgopes.Args, kwargs bacgopes.KWArgs) error
-	Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error
+	Send(args Args, kwargs KWArgs) error
+	Confirmation(args Args, kwargs KWArgs) error
 }
 
 // ClientStateMachine An instance of this class sits at the top of a stack.  tPDU's that the
@@ -44,7 +45,7 @@ type ClientStateMachineContract interface {
 //
 //go:generate plc4xGenerator -type=ClientStateMachine -prefix=state_machine_
 type ClientStateMachine struct {
-	bacgopes.Client
+	Client
 	StateMachineContract
 
 	contract ClientStateMachineContract
@@ -70,7 +71,7 @@ func NewClientStateMachine(localLog zerolog.Logger, opts ...func(*ClientStateMac
 		c.log = c.log.With().Str("name", c.name).Logger()
 	}
 	var err error
-	c.Client, err = bacgopes.NewClient(localLog, c.contract)
+	c.Client, err = NewClient(localLog, c.contract)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -95,18 +96,18 @@ func WithClientStateMachineExtension(contract ClientStateMachineContract) func(*
 	}
 }
 
-func (s *ClientStateMachine) Send(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *ClientStateMachine) Send(args Args, kwargs KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
 	return s.contract.Request(args, kwargs)
 }
 
-func (s *ClientStateMachine) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *ClientStateMachine) Confirmation(args Args, kwargs KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
 	return s.contract.Receive(args, kwargs)
 }
 
 func (s *ClientStateMachine) AlternateString() (string, bool) {
-	if globals.ExtendedGeneralOutput {
+	if ExtendedGeneralOutput {
 		return "", false
 	}
 	return s.StateMachineContract.String(), true

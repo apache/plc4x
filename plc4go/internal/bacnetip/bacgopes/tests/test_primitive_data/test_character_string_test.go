@@ -25,30 +25,31 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
 const foxMessage = "the quick brown fox jumped over the lazy dog"
 
 // Convert a hex string to a character_string application tag.
-func CharacterStringTag(x string) bacgopes.Tag {
+func CharacterStringTag(x string) Tag {
 	b := xtob(x)
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_CHARACTER_STRING, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_CHARACTER_STRING, len(b), b)
 	return tag
 }
 
 // Encode a CharacterString object into a tag.
-func CharacterStringEncode(obj *bacgopes.CharacterString) bacgopes.Tag {
-	tag := Tag()
+func CharacterStringEncode(obj *CharacterString) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a CharacterString application tag into a CharacterString.
-func CharacterStringDecode(tag bacgopes.Tag) *bacgopes.CharacterString {
-	obj := CharacterString(tag)
+func CharacterStringDecode(tag Tag) *CharacterString {
+	obj := quick.CharacterString(tag)
 
 	return obj
 }
@@ -59,32 +60,32 @@ func CharacterStringDecode(tag bacgopes.Tag) *bacgopes.CharacterString {
 func CharacterStringEndec(t *testing.T, v string, x string) {
 	tag := CharacterStringTag(x)
 
-	obj := CharacterString(v)
+	obj := quick.CharacterString(v)
 
 	assert.Equal(t, tag, CharacterStringEncode(obj))
 	assert.Equal(t, obj, CharacterStringDecode(tag))
 }
 
 func TestCharacterString(t *testing.T) {
-	obj := CharacterString()
+	obj := quick.CharacterString()
 	assert.Equal(t, "", obj.GetValue())
 
 	assert.Panics(t, func() {
-		CharacterString(1)
+		quick.CharacterString(1)
 	})
 	assert.Panics(t, func() {
-		CharacterString(1.0)
+		quick.CharacterString(1.0)
 	})
 }
 
 func TestCharacterStringStr(t *testing.T) {
-	obj := CharacterString("hello")
+	obj := quick.CharacterString("hello")
 	assert.Equal(t, "hello", obj.GetValue())
 	assert.Equal(t, "CharacterString(0,X'68656c6c6f')", obj.String())
 }
 
 func TestCharacterStringStrUnicode(t *testing.T) {
-	obj := CharacterString("hello")
+	obj := quick.CharacterString("hello")
 	assert.Equal(t, "hello", obj.GetValue())
 	assert.Equal(t, "CharacterString(0,X'68656c6c6f')", obj.String())
 }
@@ -93,8 +94,8 @@ func TestCharacterStringStrUnicodeWithLatin(t *testing.T) {
 	// some controllers encoding character string mixing latin-1 and utf-8
 	// try to cover those cases without failing
 	b := xtob("0030b043") // zero degress celsius
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_CHARACTER_STRING, len(b), b)
-	obj := CharacterString()
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_CHARACTER_STRING, len(b), b)
+	obj := quick.CharacterString()
 	err := obj.Decode(tag)
 	require.NoError(t, err)
 	assert.Equal(t, "CharacterString(0,X'30b043')", obj.String())
@@ -103,35 +104,35 @@ func TestCharacterStringStrUnicodeWithLatin(t *testing.T) {
 }
 
 func TestCharacterStringTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_CHARACTER_STRING, 1, xtob("00"))
-	obj := CharacterString(tag)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_CHARACTER_STRING, 1, xtob("00"))
+	obj := quick.CharacterString(tag)
 	assert.Equal(t, obj.GetValue(), "")
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		CharacterString(tag)
+		quick.CharacterString(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		CharacterString(tag)
+		quick.CharacterString(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		CharacterString(tag)
+		quick.CharacterString(tag)
 	})
 }
 
 func TestCharacterStringCopy(t *testing.T) {
-	obj1 := CharacterString(foxMessage)
-	obj2 := CharacterString(obj1)
+	obj1 := quick.CharacterString(foxMessage)
+	obj2 := quick.CharacterString(obj1)
 	assert.Equal(t, obj1, obj2)
 }
 
 func TestCharacterStringEndec(t *testing.T) {
 	assert.Panics(t, func() {
-		CharacterString(CharacterStringTag(""))
+		quick.CharacterString(CharacterStringTag(""))
 	})
 	CharacterStringEndec(t, "", "00")
 	CharacterStringEndec(t, "abc", "00616263")

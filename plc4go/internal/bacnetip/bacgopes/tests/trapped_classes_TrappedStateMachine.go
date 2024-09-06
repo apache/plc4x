@@ -22,7 +22,8 @@ package tests
 import (
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 // TrappedStateMachine This class is a simple wrapper around the stateMachine class that keeps the
@@ -35,7 +36,7 @@ type TrappedStateMachine struct {
 	*Trapper
 	StateMachineContract
 
-	sent bacgopes.PDU
+	sent PDU
 
 	log zerolog.Logger
 }
@@ -51,34 +52,34 @@ func NewTrappedStateMachine(localLog zerolog.Logger) *TrappedStateMachine {
 	return t
 }
 
-func (t *TrappedStateMachine) GetSent() bacgopes.PDU {
+func (t *TrappedStateMachine) GetSent() PDU {
 	return t.sent
 }
 
-func (t *TrappedStateMachine) BeforeSend(pdu bacgopes.PDU) {
+func (t *TrappedStateMachine) BeforeSend(pdu PDU) {
 	t.StateMachineContract.BeforeSend(pdu)
 }
 
-func (t *TrappedStateMachine) Send(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedStateMachine) Send(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
 	// keep a copy
-	t.sent = args.Get0PDU()
+	t.sent = Get[PDU](args, 0)
 	return nil
 }
 
-func (t *TrappedStateMachine) AfterSend(pdu bacgopes.PDU) {
+func (t *TrappedStateMachine) AfterSend(pdu PDU) {
 	t.StateMachineContract.AfterSend(pdu)
 }
 
-func (t *TrappedStateMachine) BeforeReceive(pdu bacgopes.PDU) {
+func (t *TrappedStateMachine) BeforeReceive(pdu PDU) {
 	t.StateMachineContract.BeforeReceive(pdu)
 }
 
-func (t *TrappedStateMachine) AfterReceive(pdu bacgopes.PDU) {
+func (t *TrappedStateMachine) AfterReceive(pdu PDU) {
 	t.StateMachineContract.AfterReceive(pdu)
 }
 
-func (t *TrappedStateMachine) UnexpectedReceive(pdu bacgopes.PDU) {
+func (t *TrappedStateMachine) UnexpectedReceive(pdu PDU) {
 	t.StateMachineContract.UnexpectedReceive(pdu)
 }
 

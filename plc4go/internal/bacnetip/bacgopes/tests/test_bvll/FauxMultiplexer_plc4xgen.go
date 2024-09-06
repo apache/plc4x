@@ -54,40 +54,20 @@ func (d *FauxMultiplexer) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	if err := d.Server.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-
 	if d.address != nil {
-		if serializableField, ok := any(d.address).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("address"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("address"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.address)
-			if err := writeBuffer.WriteString("address", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.address)
+
+			if err := writeBuffer.WriteString("address", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}
 	}
-
 	if d.node != nil {
-		if serializableField, ok := any(d.node).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("node"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("node"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.node)
-			if err := writeBuffer.WriteString("node", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.node)
+
+			if err := writeBuffer.WriteString("node", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}

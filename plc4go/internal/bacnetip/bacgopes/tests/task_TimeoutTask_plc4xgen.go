@@ -51,42 +51,18 @@ func (d *TimeoutTask) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	if err := d.OneShotTask.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
+	{
+		_value := fmt.Sprintf("%v", d.args)
 
-	if d.args != nil {
-		if serializableField, ok := any(d.args).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("args"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("args"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.args)
-			if err := writeBuffer.WriteString("args", uint32(len(stringValue)*8), stringValue); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("args", uint32(len(_value)*8), _value); err != nil {
+			return err
 		}
 	}
+	{
+		_value := fmt.Sprintf("%v", d.kwargs)
 
-	if d.kwargs != nil {
-		if serializableField, ok := any(d.kwargs).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("kwargs"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("kwargs"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.kwargs)
-			if err := writeBuffer.WriteString("kwargs", uint32(len(stringValue)*8), stringValue); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("kwargs", uint32(len(_value)*8), _value); err != nil {
+			return err
 		}
 	}
 	if err := writeBuffer.PopContext("TimeoutTask"); err != nil {

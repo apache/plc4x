@@ -27,9 +27,12 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
 
 // StateMachine A state machine consisting of states.  Every state machine has a start
@@ -47,12 +50,12 @@ type StateMachineContract interface {
 	fmt.Stringer
 	utils.Serializable
 	NewState(string) State
-	UnexpectedReceive(pdu bacgopes.PDU)
-	BeforeSend(pdu bacgopes.PDU)
-	AfterSend(pdu bacgopes.PDU)
-	BeforeReceive(pdu bacgopes.PDU)
-	Receive(args bacgopes.Args, kwargs bacgopes.KWArgs) error
-	AfterReceive(pdu bacgopes.PDU)
+	UnexpectedReceive(pdu PDU)
+	BeforeSend(pdu PDU)
+	AfterSend(pdu PDU)
+	BeforeReceive(pdu PDU)
+	Receive(args Args, kwargs KWArgs) error
+	AfterReceive(pdu PDU)
 	EventSet(id string)
 	Run() error
 	Reset()
@@ -75,7 +78,7 @@ type StateMachineContract interface {
 // StateMachineRequirements provides a set of functions which must be overwritten by a sub struct
 type StateMachineRequirements interface {
 	StateMachineContract
-	Send(args bacgopes.Args, kwargs bacgopes.KWArgs) error
+	Send(args Args, kwargs KWArgs) error
 }
 
 //go:generate plc4xGenerator -type=stateMachine -prefix=state_machine
@@ -91,7 +94,7 @@ type stateMachine struct {
 	stateSubStruct         any
 	startState             State
 	unexpectedReceiveState State
-	transitionQueue        chan bacgopes.PDU
+	transitionQueue        chan PDU
 	stateTimeoutTask       *TimeoutTask
 	timeout                time.Duration
 	timeoutState           State
@@ -156,13 +159,13 @@ func NewStateMachine(localLog zerolog.Logger, requirements StateMachineRequireme
 			s.unexpectedReceiveState = s.stateDecorator(s.unexpectedReceiveState)
 		}
 
-		s.transitionQueue = make(chan bacgopes.PDU, 100)
+		s.transitionQueue = make(chan PDU, 100)
 
-		s.stateTimeoutTask = NewTimeoutTask(s.StateTimeout, bacgopes.NoArgs, bacgopes.NoKWArgs, nil)
+		s.stateTimeoutTask = NewTimeoutTask(s.StateTimeout, NoArgs, NoKWArgs, nil)
 
 		if s.timeout != 0 {
 			s.timeoutState = s.NewState("state machine timeout").Fail("")
-			s.timeoutTask = NewTimeoutTask(s.StateMachineTimeout, bacgopes.NoArgs, bacgopes.NoKWArgs, s.stateMachineTimeout)
+			s.timeoutTask = NewTimeoutTask(s.StateMachineTimeout, NoArgs, NoKWArgs, s.stateMachineTimeout)
 		}
 	}
 }
@@ -284,7 +287,7 @@ func (s *stateMachine) Run() error {
 
 	if s.timeoutTask != nil {
 		s.log.Debug().Msg("schedule runtime limit")
-		s.timeoutTask.InstallTask(bacgopes.WithInstallTaskOptionsDelta(s.timeout))
+		s.timeoutTask.InstallTask(WithInstallTaskOptionsDelta(s.timeout))
 	}
 
 	// we are starting up
@@ -461,7 +464,7 @@ func (s *stateMachine) gotoState(state State) error {
 		for _, transition := range currentState.getSendTransitions() {
 			s.log.Debug().Stringer("transition", transition).Msg("sending transition")
 			currentState.getInterceptor().BeforeSend(transition.pdu)
-			if err := s.requirements.Send(bacgopes.NewArgs(transition.pdu), bacgopes.NewKWArgs()); err != nil {
+			if err := s.requirements.Send(NewArgs(transition.pdu), NewKWArgs()); err != nil {
 				return errors.Wrap(err, "failed to send")
 			}
 			currentState.getInterceptor().AfterSend(transition.pdu)
@@ -493,7 +496,7 @@ func (s *stateMachine) gotoState(state State) error {
 		for s.running {
 			select {
 			case pdu := <-s.transitionQueue:
-				if err := s.Receive(bacgopes.NewArgs(pdu), bacgopes.NewKWArgs()); err != nil {
+				if err := s.Receive(NewArgs(pdu), NewKWArgs()); err != nil {
 					return errors.Wrap(err, "failed to receive")
 				}
 			default:
@@ -504,20 +507,20 @@ func (s *stateMachine) gotoState(state State) error {
 	return nil
 }
 
-func (s *stateMachine) BeforeSend(pdu bacgopes.PDU) {
+func (s *stateMachine) BeforeSend(pdu PDU) {
 	s.transactionLog = append(s.transactionLog, fmt.Sprintf(">>> %v", pdu))
 }
 
-func (s *stateMachine) AfterSend(pdu bacgopes.PDU) {
+func (s *stateMachine) AfterSend(pdu PDU) {
 }
 
-func (s *stateMachine) BeforeReceive(pdu bacgopes.PDU) {
+func (s *stateMachine) BeforeReceive(pdu PDU) {
 	s.transactionLog = append(s.transactionLog, fmt.Sprintf("<<< %v", pdu))
 }
 
-func (s *stateMachine) Receive(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *stateMachine) Receive(args Args, kwargs KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Receive")
-	pdu := args.Get0PDU()
+	pdu := Get[PDU](args, 0)
 	if s.currentState == nil || s.stateTransitioning != 0 {
 		s.log.Trace().Msg("queue for later")
 		s.transitionQueue <- pdu
@@ -564,11 +567,11 @@ func (s *stateMachine) Receive(args bacgopes.Args, kwargs bacgopes.KWArgs) error
 	return nil
 }
 
-func (s *stateMachine) AfterReceive(pdu bacgopes.PDU) {
+func (s *stateMachine) AfterReceive(pdu PDU) {
 	s.log.Trace().Stringer("pdu", pdu).Msg("AfterReceive")
 }
 
-func (s *stateMachine) UnexpectedReceive(pdu bacgopes.PDU) {
+func (s *stateMachine) UnexpectedReceive(pdu PDU) {
 	s.log.Trace().Stringer("pdu", pdu).Msg("UnexpectedReceive")
 	s.log.Trace().Stringer("currentState", s.currentState).Msg("currentState")
 	if err := s.gotoState(s.unexpectedReceiveState); err != nil {
@@ -625,7 +628,7 @@ func (s *stateMachine) EventSet(eventId string) {
 	}
 }
 
-func (s *stateMachine) StateTimeout(_ bacgopes.Args, _ bacgopes.KWArgs) error {
+func (s *stateMachine) StateTimeout(_ Args, _ KWArgs) error {
 	s.log.Trace().Msg("StateTimeout")
 	if !s.running {
 		return errors.New("state machine is not running")
@@ -639,7 +642,7 @@ func (s *stateMachine) StateTimeout(_ bacgopes.Args, _ bacgopes.KWArgs) error {
 	return nil
 }
 
-func (s *stateMachine) StateMachineTimeout(_ bacgopes.Args, _ bacgopes.KWArgs) error {
+func (s *stateMachine) StateMachineTimeout(_ Args, _ KWArgs) error {
 	s.log.Trace().Msg("StateMachineTimeout")
 	if !s.running {
 		return errors.New("state machine is not running")
@@ -650,7 +653,7 @@ func (s *stateMachine) StateMachineTimeout(_ bacgopes.Args, _ bacgopes.KWArgs) e
 	return nil
 }
 
-func (s *stateMachine) MatchPDU(pdu bacgopes.PDU, criteria criteria) bool {
+func (s *stateMachine) MatchPDU(pdu PDU, criteria criteria) bool {
 	s.log.Debug().Stringer("pdu", pdu).Stringer("criteria", criteria).Msg("MatchPDU")
 	return MatchPdu(s.log, pdu, criteria.pduType, criteria.pduAttrs)
 }
@@ -674,7 +677,7 @@ func (s *stateMachine) IsFailState() bool {
 }
 
 func (s *stateMachine) AlternateString() (string, bool) {
-	if globals.ExtendedGeneralOutput {
+	if ExtendedGeneralOutput {
 		return "", false
 	}
 	var stateText = ""

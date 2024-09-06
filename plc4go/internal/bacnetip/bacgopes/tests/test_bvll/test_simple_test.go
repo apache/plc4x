@@ -27,14 +27,20 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 type TNetwork struct {
-	*tests.StateMachineGroup
-	vlan    *bacgopes.IPNetwork
+	*StateMachineGroup
+	vlan    *IPNetwork
 	td      *BIPSimpleStateMachine
 	iut     *BIPSimpleStateMachine
 	sniffer *SnifferStateMachine
@@ -50,14 +56,14 @@ func NewTNetwork(t *testing.T) *TNetwork {
 		t:   t,
 		log: localLog,
 	}
-	tn.StateMachineGroup = tests.NewStateMachineGroup(localLog)
+	tn.StateMachineGroup = NewStateMachineGroup(localLog)
 
 	// reset the time machine
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	localLog.Trace().Msg("time machine reset")
 
 	// make a little LAN
-	tn.vlan = bacgopes.NewIPNetwork(localLog)
+	tn.vlan = NewIPNetwork(localLog)
 
 	// Test devices
 	var err error
@@ -88,7 +94,7 @@ func (t *TNetwork) Run(timeLimit time.Duration) {
 	require.NoError(t.t, err)
 
 	// run it some time
-	tests.RunTimeMachine(t.log, timeLimit, time.Time{})
+	RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
 		t.log.Debug().Stringer("machine", machine).Msg("Machine:")
@@ -105,7 +111,7 @@ func (t *TNetwork) Run(timeLimit time.Duration) {
 
 func TestSimple(t *testing.T) {
 	t.Run("test_idle", func(t *testing.T) { //Test an idle network, nothing happens is success.
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 		tnet := NewTNetwork(t)
 
 		// all start state are successful
@@ -117,60 +123,60 @@ func TestSimple(t *testing.T) {
 		tnet.Run(0)
 	})
 	t.Run("test_unicast", func(t *testing.T) { //Test a unicast message from TD to IUT.
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 		tnet := NewTNetwork(t)
 
 		//make a PDU from node 1 to node 2
-		pduData, err := bacgopes.Xtob(
+		pduData, err := Xtob(
 			//"dead.beef", // TODO: upstream is using invalid data to send around, so we just use a IAm
 			"01.80" + // version, network layer message
 				"02 0001 02", // message type, network, performance
 		)
 		require.NoError(t, err)
-		pdu := bacgopes.NewPDU(bacgopes.NewMessageBridge(pduData...), bacgopes.WithPDUSource(tnet.td.address), bacgopes.WithPDUDestination(tnet.iut.address))
+		pdu := NewPDU(NewMessageBridge(pduData...), WithPDUSource(tnet.td.address), WithPDUDestination(tnet.iut.address))
 		t.Logf("pdu: %v", pdu)
 
 		// test device sends it, iut gets it
 		tnet.td.GetStartState().Send(pdu, nil).Success("")
-		tnet.iut.GetStartState().Receive(bacgopes.NewArgs((bacgopes.PDU)(nil)), bacgopes.NewKWArgs(
-			bacgopes.KWPPDUSource, tnet.td.address,
+		tnet.iut.GetStartState().Receive(NewArgs((PDU)(nil)), NewKWArgs(
+			KWPPDUSource, tnet.td.address,
 		)).Success("")
 
 		// sniffer sees message on the wire
-		tnet.sniffer.GetStartState().Receive(bacgopes.NewArgs((bacgopes.PDU)(nil)), bacgopes.NewKWArgs(
-			bacgopes.KWPPDUSource, tnet.td.address.AddrTuple,
-			bacgopes.KWPDUDestination, tnet.iut.address.AddrTuple,
-			bacgopes.KWPDUData, pduData,
+		tnet.sniffer.GetStartState().Receive(NewArgs((PDU)(nil)), NewKWArgs(
+			KWPPDUSource, tnet.td.address.AddrTuple,
+			KWPDUDestination, tnet.iut.address.AddrTuple,
+			KWPDUData, pduData,
 		)).Timeout(1.0*time.Millisecond, nil).Success("")
 
 		// run the group
 		tnet.Run(0)
 	})
 	t.Run("test_broadcast", func(t *testing.T) { //Test a broadcast message from TD to IUT.
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 		tnet := NewTNetwork(t)
 
 		//make a PDU from node 1 to node 2
-		pduData, err := bacgopes.Xtob(
+		pduData, err := Xtob(
 			//"dead.beef", // TODO: upstream is using invalid data to send around, so we just use a IAm
 			"01.80" + // version, network layer message
 				"02 0001 02", // message type, network, performance
 		)
 		require.NoError(t, err)
-		pdu := bacgopes.NewPDU(bacgopes.NewMessageBridge(pduData...), bacgopes.WithPDUSource(tnet.td.address), bacgopes.WithPDUDestination(tnet.iut.address))
+		pdu := NewPDU(NewMessageBridge(pduData...), WithPDUSource(tnet.td.address), WithPDUDestination(tnet.iut.address))
 		t.Logf("pdu: %v", pdu)
 
 		// test device sends it, iut gets it
-		tnet.td.GetStartState().Send(bacgopes.NewPDU(pdu, bacgopes.WithPDUSource(tnet.td.address), bacgopes.WithPDUDestination(bacgopes.NewLocalBroadcast(nil))), nil).Success("")
-		tnet.iut.GetStartState().Receive(bacgopes.NewArgs((bacgopes.PDU)(nil)), bacgopes.NewKWArgs(
-			bacgopes.KWPPDUSource, tnet.td.address,
+		tnet.td.GetStartState().Send(NewPDU(pdu, WithPDUSource(tnet.td.address), WithPDUDestination(NewLocalBroadcast(nil))), nil).Success("")
+		tnet.iut.GetStartState().Receive(NewArgs((PDU)(nil)), NewKWArgs(
+			KWPPDUSource, tnet.td.address,
 		)).Success("")
 
 		// sniffer sees message on the wire
-		tnet.sniffer.GetStartState().Receive(bacgopes.NewArgs((*bacgopes.OriginalBroadcastNPDU)(nil)), bacgopes.NewKWArgs(
-			bacgopes.KWPPDUSource, tnet.td.address.AddrTuple,
+		tnet.sniffer.GetStartState().Receive(NewArgs((*OriginalBroadcastNPDU)(nil)), NewKWArgs(
+			KWPPDUSource, tnet.td.address.AddrTuple,
 			//bacgopes.KWPDUDestination, tnet.iut.address.AddrTuple,
-			bacgopes.KWPDUData, pduData,
+			KWPDUData, pduData,
 		)).Timeout(1.0*time.Second, nil).Success("")
 
 		// run the group

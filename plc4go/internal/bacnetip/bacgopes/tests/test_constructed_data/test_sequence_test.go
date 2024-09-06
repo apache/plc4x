@@ -24,7 +24,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 )
 
 func TestEmptySequence(t *testing.T) {

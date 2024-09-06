@@ -28,13 +28,17 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 type TNetwork3 struct {
-	*tests.StateMachineGroup
+	*StateMachineGroup
 
 	iut      *RouterNode
 	vlan1    *Network
@@ -55,10 +59,10 @@ func NewTNetwork3(t *testing.T) *TNetwork3 {
 		t:   t,
 		log: localLog,
 	}
-	tn.StateMachineGroup = tests.NewStateMachineGroup(localLog)
+	tn.StateMachineGroup = NewStateMachineGroup(localLog)
 
 	// reset the time machine
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	localLog.Trace().Msg("time machine reset")
 
 	var err error
@@ -113,7 +117,7 @@ func (t *TNetwork3) Run(timeLimit time.Duration) {
 	require.NoError(t.t, err)
 
 	// run it some time
-	tests.RunTimeMachine(t.log, timeLimit, time.Time{})
+	RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
 		transactionLog := "transactions:\n" + strings.Join(machine.GetTransactionLog(), "\n")
@@ -131,7 +135,7 @@ func TestNet3(t *testing.T) {
 	t.Run("TestSimple", func(t *testing.T) {
 		t.Run("testIdle", func(t *testing.T) {
 			// create a network
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 			tnet := NewTNetwork3(t)
 
 			// all start states are successful
@@ -146,7 +150,7 @@ func TestNet3(t *testing.T) {
 	t.Run("TestUnconfirmedRequests", func(t *testing.T) {
 		t.Run("test_local_broadcast", func(t *testing.T) {
 			//Test broadcast for any router.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 
 			// create a network
 			tnet := NewTNetwork3(t)
@@ -162,7 +166,7 @@ func TestNet3(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("1-2-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.00"+ //version, network layer
 							"10 08", // unconfirmed Who-Is
@@ -180,7 +184,7 @@ func TestNet3(t *testing.T) {
 		})
 		t.Run("test_remote_broadcast_2", func(t *testing.T) {
 			//Test broadcast, matching device.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 
 			// create a network
 			tnet := NewTNetwork3(t)
@@ -195,23 +199,23 @@ func TestNet3(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("2-2-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80.00.00.02", // who is router to network
 					)),
 				).Doc("2-2-1").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80.01.00.02", // I am router to network
 					)),
 				).Doc("2-2-1").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.20.00.02.00.ff"+ // remote broadcast goes out
 							"10.08",
 					)),
 				).Doc("2-2-1").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.08.00.02.01.04"+ // unicast response
 							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",
@@ -222,13 +226,13 @@ func TestNet3(t *testing.T) {
 
 			// network 2 sees local broadcast request and unicast response
 			tnet.sniffer2.GetStartState().Doc("2-3-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.08.00.01.01.01"+ // local broadcast
 							"10.08",
 					)),
 				).Doc("2-3-1").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.20.00.01.01.01.ff"+ // unicast response
 							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",
@@ -243,7 +247,7 @@ func TestNet3(t *testing.T) {
 		t.Run("test_remote_broadcast_3", func(t *testing.T) {
 
 			//Test broadcast, matching device.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 
 			// create a network
 			tnet := NewTNetwork3(t)
@@ -258,7 +262,7 @@ func TestNet3(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("3-2-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80.00.00.03", // who is router to network
 					)),
@@ -268,7 +272,7 @@ func TestNet3(t *testing.T) {
 
 			// network 2 sees local broadcast looking for network 3
 			tnet.sniffer2.GetStartState().
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.88.00.01.01.01.00.00.03",
 					)),
@@ -281,7 +285,7 @@ func TestNet3(t *testing.T) {
 		})
 		t.Run("test_global_broadcast", func(t *testing.T) {
 			//Test broadcast, matching device.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 
 			// create a network
 			tnet := NewTNetwork3(t)
@@ -297,13 +301,13 @@ func TestNet3(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("3-2-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.20.ff.ff.00.ff"+
 							"10.08",
 					)),
 				).Doc("4-2-1").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.08.00.02.01.04"+
 							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",
@@ -314,13 +318,13 @@ func TestNet3(t *testing.T) {
 
 			// network 2 sees local broadcast v
 			tnet.sniffer2.GetStartState().Doc("4-3-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.28.ff.ff.00.00.01.01.01.fe"+
 							"10.08",
 					)),
 				).Doc("4-3-1").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.20.00.01.01.01.ff"+
 							"10.00.c4.02.00.00.04.22.04.00.91.00.22.03.e7",

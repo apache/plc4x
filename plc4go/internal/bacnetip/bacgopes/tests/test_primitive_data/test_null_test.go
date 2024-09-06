@@ -24,27 +24,28 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
-func NullTag(x string) bacgopes.Tag {
+func NullTag(x string) Tag {
 	b := xtob(x)
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_NULL, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_NULL, len(b), b)
 	return tag
 }
 
 // Encode a Null object into a tag.
-func NullEncode(obj *bacgopes.Null) bacgopes.Tag {
-	tag := Tag()
+func NullEncode(obj *Null) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Null application tag into a Null.
-func NullDecode(tag bacgopes.Tag) *bacgopes.Null {
-	obj := Null(tag)
+func NullDecode(tag Tag) *Null {
+	obj := quick.Null(tag)
 
 	return obj
 }
@@ -55,52 +56,52 @@ func NullDecode(tag bacgopes.Tag) *bacgopes.Null {
 func NullEndec(t *testing.T, v any, x string) {
 	tag := NullTag(x)
 
-	obj := Null(v)
+	obj := quick.Null(v)
 
 	assert.Equal(t, tag, NullEncode(obj))
 	assert.Equal(t, obj, NullDecode(tag))
 }
 
 func TestNull(t *testing.T) {
-	obj := Null()
+	obj := quick.Null()
 	assert.Equal(t, 0, obj.GetValue())
 	assert.Panics(t, func() {
-		Null("some string")
+		quick.Null("some string")
 	})
 	assert.Panics(t, func() {
-		Null(1.0)
+		quick.Null(1.0)
 	})
 }
 
 func TestNullNull(t *testing.T) {
-	obj := Null()
+	obj := quick.Null()
 	assert.Equal(t, 0, obj.GetValue())
 }
 
 func TestNullTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_NULL, 0, xtob(""))
-	obj := Null(tag)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_NULL, 0, xtob(""))
+	obj := quick.Null(tag)
 	assert.Equal(t, obj.GetValue(), 0)
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		Null(tag)
+		quick.Null(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		Null(tag)
+		quick.Null(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		Null(tag)
+		quick.Null(tag)
 	})
 }
 
 func TestNullCopy(t *testing.T) {
-	obj1 := Null()
-	obj2 := Null(obj1)
+	obj1 := quick.Null()
+	obj2 := quick.Null(obj1)
 	assert.Equal(t, 0, obj2.GetValue())
 	assert.Equal(t, obj1, obj2)
 }

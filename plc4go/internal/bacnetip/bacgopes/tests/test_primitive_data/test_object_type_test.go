@@ -26,13 +26,14 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
 type myObjectType struct {
-	*bacgopes.ObjectType
+	*ObjectType
 
 	enumerations map[string]uint64
 }
@@ -41,7 +42,7 @@ func (m *myObjectType) GetEnumerations() map[string]uint64 {
 	return m.enumerations
 }
 
-func (m *myObjectType) SetObjectType(objectType *bacgopes.ObjectType) {
+func (m *myObjectType) SetObjectType(objectType *ObjectType) {
 	m.ObjectType = objectType
 }
 
@@ -62,29 +63,29 @@ func MyObjectType(args ...any) *myObjectType {
 		},
 	}
 	var err error
-	o.ObjectType, err = bacgopes.NewObjectType(append([]any{o}, args...))
+	o.ObjectType, err = NewObjectType(append([]any{o}, args...))
 	if err != nil {
 		panic(err)
 	}
 	return o
 }
 
-func ObjectTypeTag(x string) bacgopes.Tag {
+func ObjectTypeTag(x string) Tag {
 	b := xtob(x)
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, len(b), b)
 	return tag
 }
 
 // Encode a ObjectType object into a tag.
-func ObjectTypeEncode(obj *bacgopes.ObjectType) bacgopes.Tag {
-	tag := Tag()
+func ObjectTypeEncode(obj *ObjectType) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a ObjectType application tag into a ObjectType.
-func ObjectTypeDecode(tag bacgopes.Tag) *bacgopes.ObjectType {
-	obj := ObjectType(tag)
+func ObjectTypeDecode(tag Tag) *ObjectType {
+	obj := quick.ObjectType(tag)
 
 	return obj
 }
@@ -95,33 +96,33 @@ func ObjectTypeDecode(tag bacgopes.Tag) *bacgopes.ObjectType {
 func ObjectTypeEndec(t *testing.T, v any, x string) {
 	tag := ObjectTypeTag(x)
 
-	obj := ObjectType(v)
+	obj := quick.ObjectType(v)
 
 	assert.Equal(t, tag, ObjectTypeEncode(obj))
 	assert.Equal(t, obj, ObjectTypeDecode(tag))
 }
 
 func TestObjectType(t *testing.T) {
-	obj := ObjectType()
+	obj := quick.ObjectType()
 	assert.Equal(t, uint64(0x0), obj.GetValue())
 
 	assert.Panics(t, func() {
-		ObjectType(1.0)
+		quick.ObjectType(1.0)
 	})
 }
 
 func TestObjectTypeInt(t *testing.T) {
-	obj := ObjectType(0)
+	obj := quick.ObjectType(0)
 	assert.Equal(t, uint64(0), obj.GetValue())
 	assert.Equal(t, "ObjectType(analogInput)", obj.String())
 
-	obj = ObjectType(127)
+	obj = quick.ObjectType(127)
 	assert.Equal(t, uint64(127), obj.GetValue())
 	assert.Equal(t, "ObjectType(127)", obj.String())
 }
 
 func TestObjectTypeStr(t *testing.T) {
-	obj := ObjectType("analogInput")
+	obj := quick.ObjectType("analogInput")
 	assert.Equal(t, uint64(0), obj.GetValue())
 	assert.Equal(t, "ObjectType(analogInput)", obj.String())
 }
@@ -143,36 +144,36 @@ func TestExtendedObjectTypeStr(t *testing.T) {
 }
 
 func TestObjectTypeTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, 1, xtob("01"))
-	obj := ObjectType(tag)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, 1, xtob("01"))
+	obj := quick.ObjectType(tag)
 	assert.Equal(t, "analogOutput", obj.GetValueString())
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		ObjectType(tag)
+		quick.ObjectType(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		ObjectType(tag)
+		quick.ObjectType(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		ObjectType(tag)
+		quick.ObjectType(tag)
 	})
 }
 
 func TestObjectTypeCopy(t *testing.T) {
-	obj1 := ObjectType(12)
-	obj2 := ObjectType(obj1)
+	obj1 := quick.ObjectType(12)
+	obj2 := quick.ObjectType(obj1)
 	assert.Equal(t, "loop", obj2.GetValueString())
 	assert.True(t, obj1.Equals(obj2))
 }
 
 func TestObjectTypeEndec(t *testing.T) {
 	assert.Panics(t, func() {
-		ObjectType(ObjectTypeTag(""))
+		quick.ObjectType(ObjectTypeTag(""))
 	})
 
 	ObjectTypeEndec(t, "analogInput", "00")

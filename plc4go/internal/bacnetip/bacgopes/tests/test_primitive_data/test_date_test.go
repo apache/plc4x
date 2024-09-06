@@ -24,28 +24,29 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
 // Convert a hex string to a character_string application tag.
-func DateTag(x string) bacgopes.Tag {
+func DateTag(x string) Tag {
 	b := xtob(x)
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DATE, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DATE, len(b), b)
 	return tag
 }
 
 // Encode a Date object into a tag.
-func DateEncode(obj *bacgopes.Date) bacgopes.Tag {
-	tag := Tag()
+func DateEncode(obj *Date) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Date application tag into a Date.
-func DateDecode(tag bacgopes.Tag) *bacgopes.Date {
-	obj := Date(tag)
+func DateDecode(tag Tag) *Date {
+	obj := quick.Date(tag)
 
 	return obj
 }
@@ -56,51 +57,51 @@ func DateDecode(tag bacgopes.Tag) *bacgopes.Date {
 func DateEndec(t *testing.T, v string, x string) {
 	tag := DateTag(x)
 
-	obj := Date(v)
+	obj := quick.Date(v)
 
 	assert.Equal(t, tag, DateEncode(obj))
 	assert.Equal(t, obj, DateDecode(tag))
 }
 
 func TestDate(t *testing.T) {
-	obj := Date()
-	assert.Equal(t, bacgopes.DateTuple{Year: 0xff, Month: 0xff, Day: 0xff, DayOfWeek: 0xff}, obj.GetValue())
+	obj := quick.Date()
+	assert.Equal(t, DateTuple{Year: 0xff, Month: 0xff, Day: 0xff, DayOfWeek: 0xff}, obj.GetValue())
 
 	assert.Panics(t, func() {
-		Date("some string")
+		quick.Date("some string")
 	})
 }
 
 func TestDateTuple(t *testing.T) {
-	obj := Date(bacgopes.DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4})
-	assert.Equal(t, bacgopes.DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4}, obj.GetValue())
+	obj := quick.Date(DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4})
+	assert.Equal(t, DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4}, obj.GetValue())
 	assert.Equal(t, "Date(1901-2-3 thu)", obj.String())
 }
 
 func TestDateTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DATE, 4, xtob("01020304"))
-	obj := Date(tag)
-	assert.Equal(t, bacgopes.DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4}, obj.GetValue())
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DATE, 4, xtob("01020304"))
+	obj := quick.Date(tag)
+	assert.Equal(t, DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4}, obj.GetValue())
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		Date(tag)
+		quick.Date(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		Date(tag)
+		quick.Date(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		Date(tag)
+		quick.Date(tag)
 	})
 }
 
 func TestDateCopy(t *testing.T) {
-	obj1 := Date(bacgopes.DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4})
-	obj2 := Date(obj1)
+	obj1 := quick.Date(DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4})
+	obj2 := quick.Date(obj1)
 	assert.Equal(t, obj1, obj2)
 }
 
@@ -110,14 +111,14 @@ func TestDateNow(t *testing.T) {
 
 func TestDateEndec(t *testing.T) {
 	assert.Panics(t, func() {
-		Date(DateTag(""))
+		quick.Date(DateTag(""))
 	})
 }
 
 func TestDateArgs(t *testing.T) {
-	tag := Tag()
-	date := Date(nil, 2023, 2, 10)
-	date1 := Date(nil, 123, 2, 10)
+	tag := quick.Tag()
+	date := quick.Date(nil, 2023, 2, 10)
+	date1 := quick.Date(nil, 123, 2, 10)
 	assert.Equal(t, date, date1)
 	date.Encode(tag)
 }

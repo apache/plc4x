@@ -26,23 +26,25 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
 
 type StateInterceptor interface {
-	BeforeSend(pdu bacgopes.PDU)
-	AfterSend(pdu bacgopes.PDU)
-	BeforeReceive(pdu bacgopes.PDU)
-	AfterReceive(pdu bacgopes.PDU)
-	UnexpectedReceive(pdu bacgopes.PDU)
+	BeforeSend(pdu PDU)
+	AfterSend(pdu PDU)
+	BeforeReceive(pdu PDU)
+	AfterReceive(pdu PDU)
+	UnexpectedReceive(pdu PDU)
 }
 
 type State interface {
 	fmt.Stringer
 
-	Send(pdu bacgopes.PDU, nextState State) State
-	Receive(args bacgopes.Args, kwargs bacgopes.KWArgs) State
+	Send(pdu PDU, nextState State) State
+	Receive(args Args, kwargs KWArgs) State
 	Reset()
 	Fail(docstring string) State
 	Success(docstring string) State
@@ -54,7 +56,7 @@ type State interface {
 	SetEvent(eventId string) State
 	Doc(docstring string) State
 	DocString() string
-	Call(fn func(args bacgopes.Args, kwargs bacgopes.KWArgs) error, args bacgopes.Args, kwargs bacgopes.KWArgs) State
+	Call(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) State
 
 	getStateMachine() StateMachine
 	setStateMachine(StateMachine)
@@ -245,7 +247,7 @@ func (s *state) EnterState() {
 	s.log.Debug().Msg("EnterState")
 	if s.timeoutTransition != nil {
 		s.log.Debug().Time("timeout", s.timeoutTransition.timeout).Msg("waiting")
-		s.stateMachine.getStateTimeoutTask().InstallTask(bacgopes.WithInstallTaskOptionsWhen(s.timeoutTransition.timeout))
+		s.stateMachine.getStateTimeoutTask().InstallTask(WithInstallTaskOptionsWhen(s.timeoutTransition.timeout))
 	} else {
 		s.log.Trace().Msg("no timeout")
 	}
@@ -263,7 +265,7 @@ func (s *state) ExitState() {
 // Send Create a SendTransition from this state to another, possibly new, state.  The next state is returned for method
 //
 //	chaining. pdu tPDU to send nextState state to transition to after sending
-func (s *state) Send(pdu bacgopes.PDU, nextState State) State {
+func (s *state) Send(pdu PDU, nextState State) State {
 	s.log.Debug().Stringer("pdu", pdu).Msg("Send")
 	if nextState == nil {
 		nextState = s.stateMachine.NewState("")
@@ -280,12 +282,12 @@ func (s *state) Send(pdu bacgopes.PDU, nextState State) State {
 }
 
 // BeforeSend Called before each tPDU about to be sent.
-func (s *state) BeforeSend(pdu bacgopes.PDU) {
+func (s *state) BeforeSend(pdu PDU) {
 	s.stateMachine.BeforeSend(pdu)
 }
 
 // AfterSend Called after each tPDU about to be sent.
-func (s *state) AfterSend(pdu bacgopes.PDU) {
+func (s *state) AfterSend(pdu PDU) {
 	s.stateMachine.AfterSend(pdu)
 }
 
@@ -295,7 +297,7 @@ func (s *state) AfterSend(pdu bacgopes.PDU) {
 //
 //	criteria tPDU to match
 //	 next_state destination state after a successful match
-func (s *state) Receive(args bacgopes.Args, kwargs bacgopes.KWArgs) State {
+func (s *state) Receive(args Args, kwargs KWArgs) State {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Receive")
 	pduType := args[0]
 	pduAttrs := kwargs
@@ -327,19 +329,19 @@ func (s *state) Receive(args bacgopes.Args, kwargs bacgopes.KWArgs) State {
 }
 
 // BeforeReceive Called with each tPDU received before matching.
-func (s *state) BeforeReceive(pdu bacgopes.PDU) {
+func (s *state) BeforeReceive(pdu PDU) {
 	s.stateMachine.BeforeReceive(pdu)
 }
 
 // AfterReceive Called with tPDU received after match.
-func (s *state) AfterReceive(pdu bacgopes.PDU) {
+func (s *state) AfterReceive(pdu PDU) {
 	s.stateMachine.AfterReceive(pdu)
 }
 
 // Ignore Create a ReceiveTransition from this state to itself, if match is successful the effect is to Ignore the tPDU.
 //
 //	criteria tPDU to match
-func (s *state) Ignore(pduType any, pduAttrs map[bacgopes.KnownKey]any) State {
+func (s *state) Ignore(pduType any, pduAttrs map[KnownKey]any) State {
 	s.log.Debug().Interface("pduType", pduType).Interface("pduAttrs", pduAttrs).Msg("Ignore")
 	s.receiveTransitions = append(s.receiveTransitions, ReceiveTransition{
 		Transition: Transition{},
@@ -355,7 +357,7 @@ func (s *state) Ignore(pduType any, pduAttrs map[bacgopes.KnownKey]any) State {
 // UnexpectedReceive Called with PDU that did not match.
 //
 // Unless this is trapped by the state, the default behaviour is to fail.
-func (s *state) UnexpectedReceive(pdu bacgopes.PDU) {
+func (s *state) UnexpectedReceive(pdu PDU) {
 	s.log.Debug().Stringer("pdu", pdu).Msg("UnexpectedReceive")
 	s.stateMachine.UnexpectedReceive(pdu)
 }
@@ -430,7 +432,7 @@ func (s *state) Timeout(delay time.Duration, nextState State) State {
 		panic("off the rails")
 	}
 
-	now := bacgopes.GetTaskManagerTime()
+	now := GetTaskManagerTime()
 
 	s.timeoutTransition = &TimeoutTransition{
 		Transition: Transition{nextState: nextState},
@@ -442,7 +444,7 @@ func (s *state) Timeout(delay time.Duration, nextState State) State {
 // Call Create a CallTransition from this state to another, possibly new, state.  The next state is returned for method
 //
 //	chaining. criteria tPDU to match next_state destination state after a successful match
-func (s *state) Call(fn func(args bacgopes.Args, kwargs bacgopes.KWArgs) error, args bacgopes.Args, kwargs bacgopes.KWArgs) State {
+func (s *state) Call(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) State {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Call")
 	if s.callTransition != nil {
 		panic("state already has a 'Call' per state")
@@ -476,7 +478,7 @@ func (s *state) String() string {
 	if s == nil {
 		return "<nil>(*state)"
 	}
-	if globals.ExtendedGeneralOutput {
+	if ExtendedGeneralOutput {
 		return fmt.Sprintf("state(doc: %s, successState: %t, isFailState: %t)", s.docString, s.isSuccessState, s.isFailState)
 	} else {
 		return fmt.Sprintf("<%T(%s) at %p>", s, s.docString, s)

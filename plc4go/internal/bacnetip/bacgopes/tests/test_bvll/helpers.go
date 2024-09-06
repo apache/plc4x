@@ -25,13 +25,23 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvllservice"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 type _NetworkServiceElement struct {
-	*bacgopes.NetworkServiceElement
+	*NetworkServiceElement
 }
 
 func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement, error) {
@@ -40,7 +50,7 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 	// This class turns off the deferred startup function call that broadcasts
 	// I-Am-Router-To-Network and Network-Number-Is messages.
 	var err error
-	i.NetworkServiceElement, err = bacgopes.NewNetworkServiceElement(localLog, bacgopes.WithNetworkServiceElementStartupDisabled(true))
+	i.NetworkServiceElement, err = NewNetworkServiceElement(localLog, WithNetworkServiceElementStartupDisabled(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
@@ -49,29 +59,29 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 
 //go:generate plc4xGenerator -type=FauxMultiplexer -prefix=
 type FauxMultiplexer struct {
-	bacgopes.Client
-	bacgopes.Server
+	Client
+	Server
 
-	address        *bacgopes.Address
-	unicastTuple   *bacgopes.AddressTuple[string, uint16]
-	broadcastTuple *bacgopes.AddressTuple[string, uint16]
+	address        *Address
+	unicastTuple   *AddressTuple[string, uint16]
+	broadcastTuple *AddressTuple[string, uint16]
 
-	node *bacgopes.IPNode
+	node *IPNode
 
 	log zerolog.Logger
 }
 
-func NewFauxMultiplexer(localLog zerolog.Logger, addr *bacgopes.Address, network *bacgopes.IPNetwork) (*FauxMultiplexer, error) {
+func NewFauxMultiplexer(localLog zerolog.Logger, addr *Address, network *IPNetwork) (*FauxMultiplexer, error) {
 	f := &FauxMultiplexer{
 		address: addr,
 		log:     localLog,
 	}
 	var err error
-	f.Client, err = bacgopes.NewClient(localLog, f)
+	f.Client, err = NewClient(localLog, f)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	f.Server, err = bacgopes.NewServer(localLog, f)
+	f.Server, err = NewServer(localLog, f)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
@@ -82,33 +92,33 @@ func NewFauxMultiplexer(localLog zerolog.Logger, addr *bacgopes.Address, network
 
 	// make an internal node and bind to it, this takes the place of
 	// both the direct port and broadcast port of the real UDPMultiplexer
-	f.node, err = bacgopes.NewIPNode(localLog, addr, network)
+	f.node, err = NewIPNode(localLog, addr, network)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating ip node")
 	}
-	if err := bacgopes.Bind(localLog, f, f.node); err != nil {
+	if err := Bind(localLog, f, f.node); err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 	return f, nil
 }
 
-func (s *FauxMultiplexer) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *FauxMultiplexer) Indication(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
-	pdu := args.Get0PDU()
+	pdu := Get[PDU](args, 0)
 
-	var dest *bacgopes.Address
+	var dest *Address
 	// check for a broadcast message
-	if pdu.GetPDUDestination().AddrType == bacgopes.LOCAL_BROADCAST_ADDRESS {
+	if pdu.GetPDUDestination().AddrType == LOCAL_BROADCAST_ADDRESS {
 		var err error
-		dest, err = bacgopes.NewAddress(s.log, s.broadcastTuple)
+		dest, err = NewAddress(s.log, s.broadcastTuple)
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
 		}
 		s.log.Debug().Stringer("dest", dest).Msg("Requesting local broadcast")
-	} else if pdu.GetPDUDestination().AddrType == bacgopes.LOCAL_STATION_ADDRESS {
+	} else if pdu.GetPDUDestination().AddrType == LOCAL_STATION_ADDRESS {
 		var err error
-		dest, err = bacgopes.NewAddress(s.log, pdu.GetPDUDestination().AddrAddress)
+		dest, err = NewAddress(s.log, pdu.GetPDUDestination().AddrAddress)
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
 		}
@@ -117,66 +127,66 @@ func (s *FauxMultiplexer) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs)
 		return errors.New("unknown destination type")
 	}
 
-	unicast, err := bacgopes.NewAddress(s.log, s.unicastTuple)
+	unicast, err := NewAddress(s.log, s.unicastTuple)
 	if err != nil {
 		return errors.Wrap(err, "error creating address")
 	}
-	return s.Request(bacgopes.NewArgs(bacgopes.NewPDU(pdu, bacgopes.WithPDUSource(unicast), bacgopes.WithPDUDestination(dest))), bacgopes.NoKWArgs)
+	return s.Request(NewArgs(NewPDU(pdu, WithPDUSource(unicast), WithPDUDestination(dest))), NoKWArgs)
 }
 
-func (s *FauxMultiplexer) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *FauxMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	pdu := args.Get0PDU()
+	pdu := Get[PDU](args, 0)
 
 	// the PDU source and destination are tuples, convert them to Address instances
 	src := pdu.GetPDUSource()
 
-	broadcast, err := bacgopes.NewAddress(s.log, s.broadcastTuple)
+	broadcast, err := NewAddress(s.log, s.broadcastTuple)
 	if err != nil {
 		return errors.Wrap(err, "error creating address")
 	}
-	var dest *bacgopes.Address
+	var dest *Address
 	// see if the destination was our broadcast address
 	if pdu.GetPDUDestination().Equals(broadcast) {
-		dest = bacgopes.NewLocalBroadcast(nil)
+		dest = NewLocalBroadcast(nil)
 	} else {
-		dest, err = bacgopes.NewAddress(s.log, pdu.GetPDUDestination().AddrAddress)
+		dest, err = NewAddress(s.log, pdu.GetPDUDestination().AddrAddress)
 		if err != nil {
 			return errors.Wrap(err, "error creating address")
 		}
 	}
 
-	return s.Response(bacgopes.NewArgs(bacgopes.NewPDU(pdu, bacgopes.WithPDUSource(src), bacgopes.WithPDUDestination(dest))), bacgopes.NoKWArgs)
+	return s.Response(NewArgs(NewPDU(pdu, WithPDUSource(src), WithPDUDestination(dest))), NoKWArgs)
 }
 
 type SnifferStateMachine struct {
-	*tests.ClientStateMachine
+	*ClientStateMachine
 
-	address *bacgopes.Address
-	annexj  *bacgopes.AnnexJCodec
+	address *Address
+	annexj  *AnnexJCodec
 	mux     *FauxMultiplexer
 
 	log zerolog.Logger
 }
 
-func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacgopes.IPNetwork) (*SnifferStateMachine, error) {
+func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *IPNetwork) (*SnifferStateMachine, error) {
 	s := &SnifferStateMachine{
 		log: localLog,
 	}
-	machine, err := tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(s))
+	machine, err := NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
 	s.ClientStateMachine = machine
 
 	// save the name and address
-	s.address, err = bacgopes.NewAddress(localLog, address)
+	s.address, err = NewAddress(localLog, address)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
 
 	// BACnet/IP interpreter
-	s.annexj, err = bacgopes.NewAnnexJCodec(localLog)
+	s.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating annexj")
 	}
@@ -192,7 +202,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacgo
 	s.mux.node.SetSpoofing(true)
 
 	// bind the stack together
-	if err := bacgopes.Bind(localLog, s, s.annexj, s.mux); err != nil {
+	if err := Bind(localLog, s, s.annexj, s.mux); err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
@@ -205,26 +215,29 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacgo
 //	state machine sits above and Annex-J codec so the send and receive PDUs are
 //	BVLL PDUs.
 type BIPStateMachine struct {
-	*tests.ClientStateMachine
+	*ClientStateMachine
 
-	address *bacgopes.Address
-	annexj  *bacgopes.AnnexJCodec
+	address *Address
+	annexj  *AnnexJCodec
 	mux     *FauxMultiplexer
 }
 
-func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *bacgopes.IPNetwork) (*BIPStateMachine, error) {
+func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *IPNetwork) (*BIPStateMachine, error) {
 	b := &BIPStateMachine{}
 	var err error
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(b))
+	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(b))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
 
 	// save the name and address
-	b.address = Address(address)
+	b.address, err = NewAddress(localLog, address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating address")
+	}
 
 	// BACnet/IP interpreter
-	b.annexj, err = bacgopes.NewAnnexJCodec(localLog)
+	b.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating annexj")
 	}
@@ -233,7 +246,7 @@ func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *bacgopes.
 	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
 
 	// bind the stack together
-	err = bacgopes.Bind(localLog, b, b.annexj, b.mux)
+	err = Bind(localLog, b, b.annexj, b.mux)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
@@ -241,37 +254,40 @@ func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *bacgopes.
 }
 
 type BIPSimpleStateMachine struct {
-	*tests.ClientStateMachine
+	*ClientStateMachine
 	name string
 
-	address *bacgopes.Address
+	address *Address
 
-	bip    *bacgopes.BIPSimple
-	annexj *bacgopes.AnnexJCodec
+	bip    *BIPSimple
+	annexj *AnnexJCodec
 	mux    *FauxMultiplexer
 
 	log zerolog.Logger
 }
 
-func NewBIPSimpleStateMachine(localLog zerolog.Logger, netstring string, vlan *bacgopes.IPNetwork) (*BIPSimpleStateMachine, error) {
+func NewBIPSimpleStateMachine(localLog zerolog.Logger, netstring string, vlan *IPNetwork) (*BIPSimpleStateMachine, error) {
 	b := &BIPSimpleStateMachine{
 		log: localLog,
 	}
 	var err error
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(netstring), tests.WithClientStateMachineExtension(b))
+	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(netstring), WithClientStateMachineExtension(b))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
 
 	// save the name and address
-	b.address = Address(netstring)
+	b.address, err = NewAddress(b.log, netstring)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating address")
+	}
 
 	// BACnet/IP interpreter
-	b.bip, err = bacgopes.NewBIPSimple(localLog)
+	b.bip, err = NewBIPSimple(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building bip simple")
 	}
-	b.annexj, err = bacgopes.NewAnnexJCodec(localLog)
+	b.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building annexj codec")
 	}
@@ -283,7 +299,7 @@ func NewBIPSimpleStateMachine(localLog zerolog.Logger, netstring string, vlan *b
 	}
 
 	// bind the stack together
-	if err := bacgopes.Bind(localLog, b, b.bip, b.annexj, b.mux); err != nil {
+	if err := Bind(localLog, b, b.bip, b.annexj, b.mux); err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
@@ -294,35 +310,38 @@ func NewBIPSimpleStateMachine(localLog zerolog.Logger, netstring string, vlan *b
 //
 //	parameters are NPDUs.
 type BIPForeignStateMachine struct {
-	*tests.ClientStateMachine
+	*ClientStateMachine
 
-	address *bacgopes.Address
-	bip     *bacgopes.BIPForeign
-	annexj  *bacgopes.AnnexJCodec
+	address *Address
+	bip     *BIPForeign
+	annexj  *AnnexJCodec
 	mux     *FauxMultiplexer
 
 	log zerolog.Logger
 }
 
-func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *bacgopes.IPNetwork) (*BIPForeignStateMachine, error) {
+func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *IPNetwork) (*BIPForeignStateMachine, error) {
 	b := &BIPForeignStateMachine{
 		log: localLog,
 	}
 	var err error
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(b))
+	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(b))
 	if err != nil {
 		return nil, errors.New("error building client state machine")
 	}
 
 	// save the name and address
-	b.address = Address(address)
+	b.address, err = NewAddress(b.log, address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating address")
+	}
 
 	// BACnet/IP interpreter
-	b.bip, err = bacgopes.NewBIPForeign(localLog)
+	b.bip, err = NewBIPForeign(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating BIPForeign")
 	}
-	b.annexj, err = bacgopes.NewAnnexJCodec(localLog)
+	b.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating AnnexJCodec")
 	}
@@ -334,7 +353,7 @@ func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *ba
 	}
 
 	// bind the stack together
-	err = bacgopes.Bind(b.log, b, b.bip, b.annexj, b.mux)
+	err = Bind(b.log, b, b.bip, b.annexj, b.mux)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
@@ -342,39 +361,42 @@ func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *ba
 }
 
 type BIPBBMDStateMachine struct {
-	*tests.ClientStateMachine
+	*ClientStateMachine
 
-	address *bacgopes.Address
-	bip     *bacgopes.BIPBBMD
-	annexj  *bacgopes.AnnexJCodec
+	address *Address
+	bip     *BIPBBMD
+	annexj  *AnnexJCodec
 	mux     *FauxMultiplexer
 
 	log zerolog.Logger
 }
 
-func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *bacgopes.IPNetwork) (*BIPBBMDStateMachine, error) {
+func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *IPNetwork) (*BIPBBMDStateMachine, error) {
 	b := &BIPBBMDStateMachine{
 		log: localLog,
 	}
 	var err error
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(b))
+	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(b))
 	if err != nil {
 		return nil, errors.New("error building client state machine")
 	}
 
 	// save the name and address
-	b.address = Address(address)
+	b.address, err = NewAddress(b.log, address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating address")
+	}
 
 	// BACnet/IP interpreter
-	b.bip, err = bacgopes.NewBIPBBMD(localLog, b.address)
-	b.annexj, err = bacgopes.NewAnnexJCodec(localLog)
+	b.bip, err = NewBIPBBMD(localLog, b.address)
+	b.annexj, err = NewAnnexJCodec(localLog)
 
 	// build an address, full mask
 	bdtAddress := fmt.Sprintf("%s/32:%d", b.address.AddrTuple.Left, b.address.AddrTuple.Right)
 	b.log.Debug().Str("bdtAddress", bdtAddress).Msg("bdtAddress")
 
 	// add itself as the first entry in the BDT
-	if err := b.bip.AddPeer(Address(bdtAddress)); err != nil {
+	if err := b.bip.AddPeer(quick.Address(bdtAddress)); err != nil {
 		return nil, errors.Wrap(err, "error adding peer")
 	}
 
@@ -385,7 +407,7 @@ func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *bacgo
 	}
 
 	// bind the stack together
-	err = bacgopes.Bind(b.log, b, b.bip, b.annexj, b.mux)
+	err = Bind(b.log, b, b.bip, b.annexj, b.mux)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
@@ -394,26 +416,29 @@ func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *bacgo
 
 type BIPSimpleNode struct {
 	name    string
-	address *bacgopes.Address
-	bip     *bacgopes.BIPSimple
-	annexj  *bacgopes.AnnexJCodec
+	address *Address
+	bip     *BIPSimple
+	annexj  *AnnexJCodec
 	mux     *FauxMultiplexer
 }
 
-func NewBIPSimpleNode(localLog zerolog.Logger, address string, vlan *bacgopes.IPNetwork) (*BIPSimpleNode, error) {
+func NewBIPSimpleNode(localLog zerolog.Logger, address string, vlan *IPNetwork) (*BIPSimpleNode, error) {
 	b := &BIPSimpleNode{}
 
 	// save the name and address
 	b.name = address
-	b.address = Address(address)
-
 	var err error
+	b.address, err = NewAddress(localLog, address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating address")
+	}
+
 	// BACnet/IP interpreter
-	b.bip, err = bacgopes.NewBIPSimple(localLog)
+	b.bip, err = NewBIPSimple(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building bip simple")
 	}
-	b.annexj, err = bacgopes.NewAnnexJCodec(localLog)
+	b.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building annexj codec")
 	}
@@ -422,7 +447,7 @@ func NewBIPSimpleNode(localLog zerolog.Logger, address string, vlan *bacgopes.IP
 	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
 
 	// bind the stack together
-	err = bacgopes.Bind(localLog, b.bip, b.annexj, b.mux)
+	err = Bind(localLog, b.bip, b.annexj, b.mux)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
@@ -432,32 +457,35 @@ func NewBIPSimpleNode(localLog zerolog.Logger, address string, vlan *bacgopes.IP
 
 type BIPBBMDNode struct {
 	name    string
-	address *bacgopes.Address
+	address *Address
 
-	bip    *bacgopes.BIPBBMD
-	annexj *bacgopes.AnnexJCodec
+	bip    *BIPBBMD
+	annexj *AnnexJCodec
 	mux    *FauxMultiplexer
 
 	log zerolog.Logger
 }
 
-func NewBIPBBMDNode(localLog zerolog.Logger, address string, vlan *bacgopes.IPNetwork) (*BIPBBMDNode, error) {
+func NewBIPBBMDNode(localLog zerolog.Logger, address string, vlan *IPNetwork) (*BIPBBMDNode, error) {
 	b := &BIPBBMDNode{
 		log: localLog,
 	}
 
 	// build a name, save the address
 	b.name = fmt.Sprintf("app @ %s", address)
-	b.address = Address(address)
+	var err error
+	b.address, err = NewAddress(localLog, address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating address")
+	}
 	b.log.Debug().Str("address", address).Msg("address")
 
-	var err error
 	// BACnet/IP interpreter
-	b.bip, err = bacgopes.NewBIPBBMD(b.log, b.address)
+	b.bip, err = NewBIPBBMD(b.log, b.address)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building bip bbmd")
 	}
-	b.annexj, err = bacgopes.NewAnnexJCodec(b.log)
+	b.annexj, err = NewAnnexJCodec(b.log)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building annexj codec")
 	}
@@ -467,7 +495,11 @@ func NewBIPBBMDNode(localLog zerolog.Logger, address string, vlan *bacgopes.IPNe
 	b.log.Debug().Str("bdtAddress", bdtAddress).Msg("bdtAddress")
 
 	// add itself as the first entry in the BDT
-	err = b.bip.AddPeer(Address(bdtAddress))
+	bbmdAddress, err := NewAddress(localLog, bdtAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating bbmd address")
+	}
+	err = b.bip.AddPeer(bbmdAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "error adding peer")
 	}
@@ -479,7 +511,7 @@ func NewBIPBBMDNode(localLog zerolog.Logger, address string, vlan *bacgopes.IPNe
 	}
 
 	// bind the stack together
-	err = bacgopes.Bind(b.log, b.bip, b.annexj, b.mux)
+	err = Bind(b.log, b.bip, b.annexj, b.mux)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
@@ -488,52 +520,55 @@ func NewBIPBBMDNode(localLog zerolog.Logger, address string, vlan *bacgopes.IPNe
 }
 
 type TestDeviceObject struct {
-	*bacgopes.LocalDeviceObject
+	*LocalDeviceObject
 }
 
 //go:generate plc4xGenerator -type=BIPSimpleApplicationLayerStateMachine
 type BIPSimpleApplicationLayerStateMachine struct {
-	bacgopes.ApplicationServiceElementContract
-	*tests.ClientStateMachine
+	ApplicationServiceElementContract
+	*ClientStateMachine
 
 	log zerolog.Logger // TODO: move down
 
 	name    string
-	address *bacgopes.Address
-	asap    *bacgopes.ApplicationServiceAccessPoint
-	smap    *bacgopes.StateMachineAccessPoint
-	nsap    *bacgopes.NetworkServiceAccessPoint
+	address *Address
+	asap    *ApplicationServiceAccessPoint
+	smap    *StateMachineAccessPoint
+	nsap    *NetworkServiceAccessPoint
 	nse     *_NetworkServiceElement
-	bip     *bacgopes.BIPSimple
-	annexj  *bacgopes.AnnexJCodec
+	bip     *BIPSimple
+	annexj  *AnnexJCodec
 	mux     *FauxMultiplexer
 }
 
-func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address string, vlan *bacgopes.IPNetwork) (*BIPSimpleApplicationLayerStateMachine, error) {
+func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address string, vlan *IPNetwork) (*BIPSimpleApplicationLayerStateMachine, error) {
 	b := &BIPSimpleApplicationLayerStateMachine{}
 	// build a name, save the address
 	b.name = fmt.Sprintf("app @ %s", address)
-	b.address = Address(address)
+	var err error
+	b.address, err = NewAddress(localLog, address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating address")
+	}
 
 	// build a local device object
 	localDevice := &TestDeviceObject{
-		LocalDeviceObject: &bacgopes.LocalDeviceObject{
+		LocalDeviceObject: &LocalDeviceObject{
 			ObjectName:       b.name,
 			ObjectIdentifier: "device:998",
 			VendorIdentifier: 999,
 		},
 	}
 
-	var err error
 	// continue with initialization
-	b.ApplicationServiceElementContract, err = bacgopes.NewApplicationServiceElement(localLog)
+	b.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(b.name), tests.WithClientStateMachineExtension(b))
+	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(b.name), WithClientStateMachineExtension(b))
 
 	// include a application decoder
-	b.asap, err = bacgopes.NewApplicationServiceAccessPoint(localLog)
+	b.asap, err = NewApplicationServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application service access point")
 	}
@@ -542,13 +577,13 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 	// can know if it should support segmentation
 	// the segmentation state machines need access to the same device
 	// information cache as the application
-	b.smap, err = bacgopes.NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, bacgopes.WithStateMachineAccessPointDeviceInfoCache(bacgopes.NewDeviceInfoCache(localLog))) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, WithStateMachineAccessPointDeviceInfoCache(NewDeviceInfoCache(localLog))) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building state machine access point")
 	}
 
 	// a network service access point will be needed
-	b.nsap, err = bacgopes.NewNetworkServiceAccessPoint(localLog)
+	b.nsap, err = NewNetworkServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
@@ -558,23 +593,23 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
-	err = bacgopes.Bind(localLog, b.nse, b.nsap)
+	err = Bind(localLog, b.nse, b.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
 	// bind the top layers
-	err = bacgopes.Bind(localLog, b, b.asap, b.smap, b.nsap)
+	err = Bind(localLog, b, b.asap, b.smap, b.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
 	// BACnet/IP interpreter
-	b.bip, err = bacgopes.NewBIPSimple(localLog)
+	b.bip, err = NewBIPSimple(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building bip bbmd")
 	}
-	b.annexj, err = bacgopes.NewAnnexJCodec(localLog)
+	b.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building annexj codec")
 	}
@@ -586,7 +621,7 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 	}
 
 	// bind the stack together
-	err = bacgopes.Bind(localLog, b.bip, b.annexj, b.mux)
+	err = Bind(localLog, b.bip, b.annexj, b.mux)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
@@ -600,62 +635,65 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 	return b, nil
 }
 
-func (b *BIPSimpleApplicationLayerStateMachine) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (b *BIPSimpleApplicationLayerStateMachine) Indication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	return b.Receive(args, bacgopes.NoKWArgs)
+	return b.Receive(args, NoKWArgs)
 }
 
-func (b *BIPSimpleApplicationLayerStateMachine) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (b *BIPSimpleApplicationLayerStateMachine) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
-	return b.Receive(args, bacgopes.NoKWArgs)
+	return b.Receive(args, NoKWArgs)
 }
 
 type BIPBBMDApplication struct {
-	*bacgopes.Application
-	*bacgopes.WhoIsIAmServices
-	*bacgopes.ReadWritePropertyServices
+	*Application
+	*WhoIsIAmServices
+	*ReadWritePropertyServices
 
 	name    string
-	address *bacgopes.Address
+	address *Address
 
-	asap   *bacgopes.ApplicationServiceAccessPoint
-	smap   *bacgopes.StateMachineAccessPoint
-	nsap   *bacgopes.NetworkServiceAccessPoint
+	asap   *ApplicationServiceAccessPoint
+	smap   *StateMachineAccessPoint
+	nsap   *NetworkServiceAccessPoint
 	nse    *_NetworkServiceElement
-	bip    *bacgopes.BIPBBMD
-	annexj *bacgopes.AnnexJCodec
+	bip    *BIPBBMD
+	annexj *AnnexJCodec
 	mux    *FauxMultiplexer
 
 	log zerolog.Logger
 }
 
-func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *bacgopes.IPNetwork) (*BIPBBMDApplication, error) {
+func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *IPNetwork) (*BIPBBMDApplication, error) {
 	b := &BIPBBMDApplication{
 		log: localLog,
 	}
 
 	// build a name, save the address
 	b.name = fmt.Sprintf("app @ %s", address)
-	b.address = Address(address)
+	var err error
+	b.address, err = NewAddress(localLog, address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating address")
+	}
 
 	// build a local device object
 	localDevice := &TestDeviceObject{
-		LocalDeviceObject: &bacgopes.LocalDeviceObject{
+		LocalDeviceObject: &LocalDeviceObject{
 			ObjectName:       b.name,
 			ObjectIdentifier: "device:999",
 			VendorIdentifier: 999,
 		},
 	}
 
-	var err error
 	// continue with initialization
-	b.Application, err = bacgopes.NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	b.Application, err = NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}
 
 	// include a application decoder
-	b.asap, err = bacgopes.NewApplicationServiceAccessPoint(localLog)
+	b.asap, err = NewApplicationServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application service access point")
 	}
@@ -664,13 +702,13 @@ func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *bacgop
 	// can know if it should support segmentation
 	// the segmentation state machines need access to the same device
 	// information cache as the application
-	b.smap, err = bacgopes.NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, bacgopes.WithStateMachineAccessPointDeviceInfoCache(b.GetDeviceInfoCache())) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, WithStateMachineAccessPointDeviceInfoCache(b.GetDeviceInfoCache())) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building state machine access point")
 	}
 
 	// a network service access point will be needed
-	b.nsap, err = bacgopes.NewNetworkServiceAccessPoint(localLog)
+	b.nsap, err = NewNetworkServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
@@ -680,24 +718,24 @@ func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *bacgop
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
-	err = bacgopes.Bind(localLog, b.nse, b.nsap)
+	err = Bind(localLog, b.nse, b.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
 	// bind the top layers
-	err = bacgopes.Bind(localLog, b, b.asap, b.smap, b.nsap)
+	err = Bind(localLog, b, b.asap, b.smap, b.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
 	// BACnet/IP interpreter
-	b.bip, err = bacgopes.NewBIPBBMD(localLog, b.address)
+	b.bip, err = NewBIPBBMD(localLog, b.address)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building bip bbmd")
 	}
 
-	b.annexj, err = bacgopes.NewAnnexJCodec(localLog)
+	b.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building annexj codec")
 	}
@@ -707,7 +745,11 @@ func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *bacgop
 	localLog.Debug().Str("bdtAddress", bdtAddress).Msg("bdtAddress")
 
 	// add itself as the first entry in the BDT
-	err = b.bip.AddPeer(Address(bdtAddress))
+	bbmdAddress, err := NewAddress(localLog, bdtAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating bbmd address")
+	}
+	err = b.bip.AddPeer(bbmdAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "error adding peer")
 	}
@@ -719,7 +761,7 @@ func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *bacgop
 	}
 
 	// bind the stack together
-	err = bacgopes.Bind(localLog, b.bip, b.annexj, b.mux)
+	err = Bind(localLog, b.bip, b.annexj, b.mux)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}

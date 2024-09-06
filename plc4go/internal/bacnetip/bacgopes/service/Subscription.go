@@ -19,10 +19,13 @@
 
 package service
 
-import "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
+)
 
 type Subscription struct {
-	*bacgopes.OneShotTask
-	*bacgopes.DebugContents
+	*OneShotTask
+	*DebugContents `ignore:"true"`
 	//TODO: implement me
 }

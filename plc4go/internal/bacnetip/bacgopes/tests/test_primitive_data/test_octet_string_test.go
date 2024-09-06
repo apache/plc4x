@@ -24,27 +24,28 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
-func OctetStringTag(x string) bacgopes.Tag {
+func OctetStringTag(x string) Tag {
 	b := xtob(x)
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_OCTET_STRING, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_OCTET_STRING, len(b), b)
 	return tag
 }
 
 // Encode a OctetString object into a tag.
-func OctetStringEncode(obj *bacgopes.OctetString) bacgopes.Tag {
-	tag := Tag()
+func OctetStringEncode(obj *OctetString) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a OctetString application tag into a OctetString.
-func OctetStringDecode(tag bacgopes.Tag) *bacgopes.OctetString {
-	obj := OctetString(tag)
+func OctetStringDecode(tag Tag) *OctetString {
+	obj := quick.OctetString(tag)
 
 	return obj
 }
@@ -55,55 +56,55 @@ func OctetStringDecode(tag bacgopes.Tag) *bacgopes.OctetString {
 func OctetStringEndec(t *testing.T, x string) {
 	tag := OctetStringTag(x)
 
-	obj := OctetString(xtob(x))
+	obj := quick.OctetString(xtob(x))
 
 	assert.Equal(t, tag, OctetStringEncode(obj))
 	assert.Equal(t, obj, OctetStringDecode(tag))
 }
 
 func TestOctetString(t *testing.T) {
-	obj := OctetString()
+	obj := quick.OctetString()
 	assert.Equal(t, []byte{}, obj.GetValue())
 
 	assert.Panics(t, func() {
-		OctetString(1)
+		quick.OctetString(1)
 	})
 }
 
 func TestOctetStringOctetString(t *testing.T) {
-	obj := OctetString(xtob("01"))
+	obj := quick.OctetString(xtob("01"))
 	assert.Equal(t, xtob("01"), obj.GetValue())
 	assert.Equal(t, "OctetString(X'01')", obj.String())
 
-	obj = OctetString(xtob("01020304"))
+	obj = quick.OctetString(xtob("01020304"))
 	assert.Equal(t, xtob("01020304"), obj.GetValue())
 	assert.Equal(t, "OctetString(X'01020304')", obj.String())
 }
 
 func TestOctetStringTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_OCTET_STRING, 1, xtob("00"))
-	obj := OctetString(tag)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_OCTET_STRING, 1, xtob("00"))
+	obj := quick.OctetString(tag)
 	assert.Equal(t, xtob("00"), obj.GetValue())
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		OctetString(tag)
+		quick.OctetString(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		OctetString(tag)
+		quick.OctetString(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		OctetString(tag)
+		quick.OctetString(tag)
 	})
 }
 
 func TestOctetStringCopy(t *testing.T) {
-	obj1 := OctetString(xtob("01"))
-	obj2 := OctetString(obj1)
+	obj1 := quick.OctetString(xtob("01"))
+	obj2 := quick.OctetString(obj1)
 	assert.Equal(t, xtob("01"), obj2.GetValue())
 	assert.Equal(t, obj1, obj2)
 }

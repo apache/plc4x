@@ -27,8 +27,13 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
 
 // Transition Instances of this class are transitions betweeen getStates of a state machine.
@@ -42,7 +47,7 @@ func (t Transition) String() string {
 
 type SendTransition struct {
 	Transition
-	pdu bacgopes.PDU
+	pdu PDU
 }
 
 func (t SendTransition) String() string {
@@ -51,7 +56,7 @@ func (t SendTransition) String() string {
 
 type criteria struct {
 	pduType  any
-	pduAttrs map[bacgopes.KnownKey]any
+	pduAttrs map[KnownKey]any
 }
 
 func (c criteria) String() string {
@@ -86,9 +91,9 @@ func (t TimeoutTransition) String() string {
 }
 
 type fnargs struct {
-	fn     func(args bacgopes.Args, kwargs bacgopes.KWArgs) error
-	args   bacgopes.Args
-	kwargs bacgopes.KWArgs
+	fn     func(args Args, kwargs KWArgs) error
+	args   Args
+	kwargs KWArgs
 }
 
 func (f fnargs) String() string {
@@ -104,7 +109,7 @@ func (t CallTransition) String() string {
 	return fmt.Sprintf("CallTransition{Transition: %s, fnargs: %s}", t.Transition, t.fnargs)
 }
 
-func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgopes.KnownKey]any) (matches bool) {
+func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownKey]any) (matches bool) {
 	// check the type
 	switch pduType := pduType.(type) {
 	case func(any) bool:
@@ -122,14 +127,14 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 	for attrName, attrValue := range pduAttrs {
 		attrLog := localLog.With().Str("attrName", string(attrName)).Interface("attrValue", attrValue).Logger()
 		switch attrName {
-		case bacgopes.KWPPDUSource:
-			equals := pdu.(bacgopes.PDU).GetPDUSource().Equals(attrValue)
+		case KWPPDUSource:
+			equals := pdu.(PDU).GetPDUSource().Equals(attrValue)
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWPDUDestination:
-			equals := pdu.(bacgopes.PDU).GetPDUDestination().Equals(attrValue)
+		case KWPDUDestination:
+			equals := pdu.(PDU).GetPDUDestination().Equals(attrValue)
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -162,13 +167,13 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWPDUData:
-			got := pdu.(bacgopes.PDU).GetPduData()
+		case KWPDUData:
+			got := pdu.(PDU).GetPduData()
 			var want []byte
 			switch attrValue := attrValue.(type) {
 			case []byte:
 				want = attrValue
-			case bacgopes.PDUData:
+			case PDUData:
 				want = attrValue.GetPduData()
 			default:
 				attrLog.Debug().Type("type", attrValue).Msg("mismatch, attr unhandled")
@@ -181,8 +186,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Debug().Msg("pduData doesn't match")
 				return false
 			}
-		case bacgopes.KWWirtnNetwork:
-			wirtn, ok := pdu.(*bacgopes.WhoIsRouterToNetwork)
+		case KWWirtnNetwork:
+			wirtn, ok := pdu.(*WhoIsRouterToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -196,8 +201,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWIartnNetworkList:
-			iamrtn, ok := pdu.(*bacgopes.IAmRouterToNetwork)
+		case KWIartnNetworkList:
+			iamrtn, ok := pdu.(*IAmRouterToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -213,8 +218,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWIcbrtnNetwork:
-			iamrtn, ok := pdu.(*bacgopes.ICouldBeRouterToNetwork)
+		case KWIcbrtnNetwork:
+			iamrtn, ok := pdu.(*ICouldBeRouterToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -224,8 +229,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWIcbrtnPerformanceIndex:
-			iamrtn, ok := pdu.(*bacgopes.ICouldBeRouterToNetwork)
+		case KWIcbrtnPerformanceIndex:
+			iamrtn, ok := pdu.(*ICouldBeRouterToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -235,8 +240,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWRmtnRejectionReason:
-			iamrtn, ok := pdu.(*bacgopes.RejectMessageToNetwork)
+		case KWRmtnRejectionReason:
+			iamrtn, ok := pdu.(*RejectMessageToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -246,8 +251,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWRmtnDNET:
-			iamrtn, ok := pdu.(*bacgopes.RejectMessageToNetwork)
+		case KWRmtnDNET:
+			iamrtn, ok := pdu.(*RejectMessageToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -257,8 +262,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWRbtnNetworkList:
-			rbtn, ok := pdu.(*bacgopes.RouterBusyToNetwork)
+		case KWRbtnNetworkList:
+			rbtn, ok := pdu.(*RouterBusyToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -274,8 +279,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWRatnNetworkList:
-			ratn, ok := pdu.(*bacgopes.RouterAvailableToNetwork)
+		case KWRatnNetworkList:
+			ratn, ok := pdu.(*RouterAvailableToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -291,46 +296,46 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWIrtTable:
-			irt, ok := pdu.(*bacgopes.InitializeRoutingTable)
+		case KWIrtTable:
+			irt, ok := pdu.(*InitializeRoutingTable)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			irts := irt.GetIrtTable()
-			oirts, ok := attrValue.([]*bacgopes.RoutingTableEntry)
+			oirts, ok := attrValue.([]*RoutingTableEntry)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			equals := slices.EqualFunc(irts, oirts, func(entry *bacgopes.RoutingTableEntry, entry2 *bacgopes.RoutingTableEntry) bool {
+			equals := slices.EqualFunc(irts, oirts, func(entry *RoutingTableEntry, entry2 *RoutingTableEntry) bool {
 				return entry.Equals(entry2)
 			})
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWIrtaTable:
-			irta, ok := pdu.(*bacgopes.InitializeRoutingTableAck)
+		case KWIrtaTable:
+			irta, ok := pdu.(*InitializeRoutingTableAck)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			irts := irta.GetIrtaTable()
-			oirts, ok := attrValue.([]*bacgopes.RoutingTableEntry)
+			oirts, ok := attrValue.([]*RoutingTableEntry)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			equals := slices.EqualFunc(irts, oirts, func(entry *bacgopes.RoutingTableEntry, entry2 *bacgopes.RoutingTableEntry) bool {
+			equals := slices.EqualFunc(irts, oirts, func(entry *RoutingTableEntry, entry2 *RoutingTableEntry) bool {
 				return entry.Equals(entry2)
 			})
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWEctnDNET:
-			ectn, ok := pdu.(*bacgopes.EstablishConnectionToNetwork)
+		case KWEctnDNET:
+			ectn, ok := pdu.(*EstablishConnectionToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -340,8 +345,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWEctnTerminationTime:
-			ectn, ok := pdu.(*bacgopes.EstablishConnectionToNetwork)
+		case KWEctnTerminationTime:
+			ectn, ok := pdu.(*EstablishConnectionToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -351,8 +356,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWDctnDNET:
-			dctn, ok := pdu.(*bacgopes.DisconnectConnectionToNetwork)
+		case KWDctnDNET:
+			dctn, ok := pdu.(*DisconnectConnectionToNetwork)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -362,8 +367,8 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWNniNet:
-			nni, ok := pdu.(*bacgopes.NetworkNumberIs)
+		case KWNniNet:
+			nni, ok := pdu.(*NetworkNumberIs)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -373,15 +378,15 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWNniFlag:
-			nni, ok := pdu.(*bacgopes.NetworkNumberIs)
+		case KWNniFlag:
+			nni, ok := pdu.(*NetworkNumberIs)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			return nni.GetNniFlag() == attrValue
-		case bacgopes.KWBvlciResultCode:
-			r, ok := pdu.(*bacgopes.Result)
+		case KWBvlciResultCode:
+			r, ok := pdu.(*Result)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -391,35 +396,35 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWBvlciBDT:
-			var iwbdt []*bacgopes.Address
+		case KWBvlciBDT:
+			var iwbdt []*Address
 			switch pdu := pdu.(type) {
-			case *bacgopes.WriteBroadcastDistributionTable:
+			case *WriteBroadcastDistributionTable:
 				iwbdt = pdu.GetBvlciBDT()
-			case *bacgopes.ReadBroadcastDistributionTableAck:
+			case *ReadBroadcastDistributionTableAck:
 				iwbdt = pdu.GetBvlciBDT()
 			default:
 				attrLog.Trace().Type("type", pdu).Msg("doesn't match")
 				return false
 			}
-			owbdt, ok := attrValue.([]*bacgopes.Address)
+			owbdt, ok := attrValue.([]*Address)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			equals := slices.EqualFunc(iwbdt, owbdt, func(a *bacgopes.Address, b *bacgopes.Address) bool {
+			equals := slices.EqualFunc(iwbdt, owbdt, func(a *Address, b *Address) bool {
 				return a.Equals(b)
 			})
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWBvlciAddress:
-			var address *bacgopes.Address
+		case KWBvlciAddress:
+			var address *Address
 			switch pdu := pdu.(type) {
-			case *bacgopes.ForwardedNPDU:
+			case *ForwardedNPDU:
 				address = pdu.GetBvlciAddress()
-			case *bacgopes.DeleteForeignDeviceTableEntry:
+			case *DeleteForeignDeviceTableEntry:
 				address = pdu.GetBvlciAddress()
 			default:
 				attrLog.Trace().Type("type", pdu).Msg("doesn't match")
@@ -430,29 +435,29 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWFdAddress:
+		case KWFdAddress:
 			panic("implement me")
 			equals := true // TODO temporary
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWFdTTL:
+		case KWFdTTL:
 			panic("implement me")
 			equals := true // TODO temporary
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWFdRemain:
+		case KWFdRemain:
 			panic("implement me")
 			equals := true // TODO temporary
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWBvlciTimeToLive:
-			rfd, ok := pdu.(*bacgopes.RegisterForeignDevice)
+		case KWBvlciTimeToLive:
+			rfd, ok := pdu.(*RegisterForeignDevice)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -462,19 +467,19 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case bacgopes.KWBvlciFDT:
-			rfdta, ok := pdu.(*bacgopes.ReadForeignDeviceTableAck)
+		case KWBvlciFDT:
+			rfdta, ok := pdu.(*ReadForeignDeviceTableAck)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			ifdt := rfdta.GetBvlciFDT()
-			oifdt, ok := attrValue.([]*bacgopes.FDTEntry)
+			oifdt, ok := attrValue.([]*FDTEntry)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			equals := slices.EqualFunc(ifdt, oifdt, func(a *bacgopes.FDTEntry, b *bacgopes.FDTEntry) bool {
+			equals := slices.EqualFunc(ifdt, oifdt, func(a *FDTEntry, b *FDTEntry) bool {
 				equals := a.Equals(b)
 				if !equals {
 					attrLog.Trace().Stringer("a", a).Stringer("b", b).Msg("doesn't match")
@@ -495,21 +500,21 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacgop
 
 //go:generate plc4xGenerator -type=TimeoutTask -prefix=task_
 type TimeoutTask struct {
-	*bacgopes.OneShotTask
+	*OneShotTask
 
-	fn     func(args bacgopes.Args, kwargs bacgopes.KWArgs) error `ignore:"true"`
-	args   bacgopes.Args
-	kwargs bacgopes.KWArgs
+	fn     func(args Args, kwargs KWArgs) error `ignore:"true"`
+	args   Args
+	kwargs KWArgs
 }
 
-func NewTimeoutTask(fn func(args bacgopes.Args, kwargs bacgopes.KWArgs) error, args bacgopes.Args, kwargs bacgopes.KWArgs, when *time.Time) *TimeoutTask {
-	task := &TimeoutTask{
+func NewTimeoutTask(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs, when *time.Time) *TimeoutTask {
+	_task := &TimeoutTask{
 		fn:     fn,
 		args:   args,
 		kwargs: kwargs,
 	}
-	task.OneShotTask = bacgopes.NewOneShotTask(task, when)
-	return task
+	_task.OneShotTask = NewOneShotTask(_task, when)
+	return _task
 }
 
 func (t *TimeoutTask) ProcessTask() error {

@@ -23,12 +23,13 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 )
 
 //go:generate plc4xGenerator -type=ServerStateMachine -prefix=state_machine_
 type ServerStateMachine struct {
-	bacgopes.Server
+	Server
 	StateMachineContract
 
 	name string
@@ -44,7 +45,7 @@ func NewServerStateMachine(localLog zerolog.Logger, opts ...func(*ServerStateMac
 		opt(c)
 	}
 	var err error
-	c.Server, err = bacgopes.NewServer(localLog, c)
+	c.Server, err = NewServer(localLog, c)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating Server")
 	}
@@ -60,12 +61,12 @@ func WithServerStateMachineName(name string) func(*ServerStateMachine) {
 	}
 }
 
-func (s *ServerStateMachine) Send(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *ServerStateMachine) Send(args Args, kwargs KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
 	return s.Response(args, kwargs)
 }
 
-func (s *ServerStateMachine) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *ServerStateMachine) Indication(args Args, kwargs KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
 	return s.Receive(args, kwargs)
 }

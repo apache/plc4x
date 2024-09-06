@@ -28,16 +28,20 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 type TNetwork struct {
-	*tests.StateMachineGroup
+	*StateMachineGroup
 
-	vlan *bacgopes.Network
+	vlan *Network
 
 	t *testing.T
 
@@ -50,24 +54,24 @@ func NewTNetwork(t *testing.T, nodeCount int, promiscuous bool, spoofing bool) *
 		t:   t,
 		log: localLog,
 	}
-	tn.StateMachineGroup = tests.NewStateMachineGroup(localLog)
+	tn.StateMachineGroup = NewStateMachineGroup(localLog)
 
-	broadcastAddress, err := bacgopes.NewAddress(localLog, 0)
+	broadcastAddress, err := NewAddress(localLog, 0)
 	require.NoError(t, err)
 	// make a little LAN
-	tn.vlan = bacgopes.NewNetwork(localLog, bacgopes.WithNetworkBroadcastAddress(broadcastAddress))
+	tn.vlan = NewNetwork(localLog, WithNetworkBroadcastAddress(broadcastAddress))
 
 	for i := range nodeCount {
-		nodeAddress, err := bacgopes.NewAddress(localLog, i+1)
+		nodeAddress, err := NewAddress(localLog, i+1)
 		require.NoError(t, err)
-		node, err := bacgopes.NewNode(localLog, nodeAddress, bacgopes.WithNodeLan(tn.vlan), bacgopes.WithNodePromiscuous(promiscuous), bacgopes.WithNodeSpoofing(spoofing))
+		node, err := NewNode(localLog, nodeAddress, WithNodeLan(tn.vlan), WithNodePromiscuous(promiscuous), WithNodeSpoofing(spoofing))
 		require.NoError(t, err)
 
 		// bind a client state machine to the ndoe
-		csm, err := tests.NewClientStateMachine(localLog)
+		csm, err := NewClientStateMachine(localLog)
 		require.NoError(t, err)
 
-		err = bacgopes.Bind(localLog, csm, node)
+		err = Bind(localLog, csm, node)
 		require.NoError(t, err)
 
 		// add it to this group
@@ -84,7 +88,7 @@ func (t *TNetwork) Run(timeLimit time.Duration) error {
 	t.log.Debug().Dur("time_limit", timeLimit).Msg("run")
 
 	// reset the time machine
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	t.log.Trace().Msg("time machine reset")
 
 	// run the group
@@ -93,7 +97,7 @@ func (t *TNetwork) Run(timeLimit time.Duration) error {
 	}
 
 	// run it some time
-	tests.RunTimeMachine(t.log, timeLimit, time.Time{})
+	RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 
 	// check for success
@@ -109,7 +113,7 @@ func (t *TNetwork) Run(timeLimit time.Duration) error {
 
 func TestVLAN(t *testing.T) {
 	t.Run("test_idle", func(t *testing.T) { // Test that a very quiet network can exist. This is not a network test so much as a state machine group test
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTNetwork(t, 2, false, false)
@@ -127,7 +131,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_send_receive", func(t *testing.T) { // Test that a node can send a message to another node.
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTNetwork(t, 2, false, false)
@@ -136,17 +140,17 @@ func TestVLAN(t *testing.T) {
 		tnode1, tnode2 := stateMachines[0], stateMachines[1]
 
 		// make a PDU from node 1 to node 2
-		src, err := bacgopes.NewAddress(testingLogger, 1)
+		src, err := NewAddress(testingLogger, 1)
 		require.NoError(t, err)
-		dest, err := bacgopes.NewAddress(testingLogger, 2)
+		dest, err := NewAddress(testingLogger, 2)
 		require.NoError(t, err)
-		pdu := bacgopes.NewPDU(nil, bacgopes.WithPDUSource(src), bacgopes.WithPDUDestination(dest))
+		pdu := NewPDU(nil, WithPDUSource(src), WithPDUDestination(dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, mode 2 gets it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(bacgopes.NewArgs(bacgopes.NewPDU(nil)), bacgopes.NewKWArgs(
-			bacgopes.KWPPDUSource, src,
+		tnode2.GetStartState().Receive(NewArgs(NewPDU(nil)), NewKWArgs(
+			KWPPDUSource, src,
 		)).Success("")
 
 		// run the group
@@ -155,7 +159,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_broadcast", func(t *testing.T) { // Test that a node can send out a 'local broadcast' message which will be received by every other node.
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTNetwork(t, 3, false, false)
@@ -164,20 +168,20 @@ func TestVLAN(t *testing.T) {
 		tnode1, tnode2, tnode3 := stateMachines[0], stateMachines[1], stateMachines[2]
 
 		// make a PDU from node 1 to node 2
-		src, err := bacgopes.NewAddress(testingLogger, 1)
+		src, err := NewAddress(testingLogger, 1)
 		require.NoError(t, err)
-		dest, err := bacgopes.NewAddress(testingLogger, 0)
+		dest, err := NewAddress(testingLogger, 0)
 		require.NoError(t, err)
-		pdu := bacgopes.NewPDU(nil, bacgopes.WithPDUSource(src), bacgopes.WithPDUDestination(dest))
+		pdu := NewPDU(nil, WithPDUSource(src), WithPDUDestination(dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, node 2 and 3 each get it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(bacgopes.NewArgs(bacgopes.NewPDU(nil)), bacgopes.NewKWArgs(
-			bacgopes.KWPPDUSource, src,
+		tnode2.GetStartState().Receive(NewArgs(NewPDU(nil)), NewKWArgs(
+			KWPPDUSource, src,
 		)).Success("")
-		tnode3.GetStartState().Receive(bacgopes.NewArgs(bacgopes.NewPDU(nil)), bacgopes.NewKWArgs(
-			bacgopes.KWPPDUSource, src,
+		tnode3.GetStartState().Receive(NewArgs(NewPDU(nil)), NewKWArgs(
+			KWPPDUSource, src,
 		)).Success("")
 
 		// run the group
@@ -186,7 +190,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_spoof_fail", func(t *testing.T) { // Test verifying that a node cannot send out packets with a source address other than its own, see also test_spoof_pass().
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		// one element network
 		tnet := NewTNetwork(t, 1, false, false)
@@ -195,11 +199,11 @@ func TestVLAN(t *testing.T) {
 		tnode1 := stateMachines[0]
 
 		// make an unicast PDU with the wrong source
-		src, err := bacgopes.NewAddress(testingLogger, 2)
+		src, err := NewAddress(testingLogger, 2)
 		require.NoError(t, err)
-		dest, err := bacgopes.NewAddress(testingLogger, 3)
+		dest, err := NewAddress(testingLogger, 3)
 		require.NoError(t, err)
-		pdu := bacgopes.NewPDU(nil, bacgopes.WithPDUSource(src), bacgopes.WithPDUDestination(dest))
+		pdu := NewPDU(nil, WithPDUSource(src), WithPDUDestination(dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, node 2 and 3 each get it
@@ -211,7 +215,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_spoof_pass", func(t *testing.T) { // Test allowing a node to send out packets with a source address other than its own, see also test_spoof_fail().
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		// one element network
 		tnet := NewTNetwork(t, 1, false, true)
@@ -220,18 +224,18 @@ func TestVLAN(t *testing.T) {
 		tnode1 := stateMachines[0]
 
 		// make an unicast PDU with the wrong source
-		src, err := bacgopes.NewAddress(testingLogger, 3)
+		src, err := NewAddress(testingLogger, 3)
 		require.NoError(t, err)
-		dest, err := bacgopes.NewAddress(testingLogger, 1)
+		dest, err := NewAddress(testingLogger, 1)
 		require.NoError(t, err)
-		pdu := bacgopes.NewPDU(nil, bacgopes.WithPDUSource(src), bacgopes.WithPDUDestination(dest))
+		pdu := NewPDU(nil, WithPDUSource(src), WithPDUDestination(dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, but gets it back as if it was from node 3
 		tnode1.GetStartState().
 			Send(pdu, nil).
-			Receive(bacgopes.NewArgs(bacgopes.NewPDU(nil)), bacgopes.NewKWArgs(
-				bacgopes.KWPPDUSource, src,
+			Receive(NewArgs(NewPDU(nil)), NewKWArgs(
+				KWPPDUSource, src,
 			)).
 			Success("")
 
@@ -241,7 +245,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_promiscuous_pass", func(t *testing.T) { // Test 'promiscuous mode' of a node which allows it to receive every packet sent on the network.  This is like the network is a hub, or the node is connected to a 'monitor' port on a managed switch.
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTNetwork(t, 3, true, false)
@@ -250,20 +254,20 @@ func TestVLAN(t *testing.T) {
 		tnode1, tnode2, tnode3 := stateMachines[0], stateMachines[1], stateMachines[2]
 
 		// make a PDU from node 1 to node 2
-		src, err := bacgopes.NewAddress(testingLogger, 1)
+		src, err := NewAddress(testingLogger, 1)
 		require.NoError(t, err)
-		dest, err := bacgopes.NewAddress(testingLogger, 2)
+		dest, err := NewAddress(testingLogger, 2)
 		require.NoError(t, err)
-		pdu := bacgopes.NewPDU(nil, bacgopes.WithPDUSource(src), bacgopes.WithPDUDestination(dest))
+		pdu := NewPDU(nil, WithPDUSource(src), WithPDUDestination(dest))
 		t.Log(pdu)
 
 		// node 1 sends the pdu, node 2 and 3 each get it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(bacgopes.NewArgs(bacgopes.NewPDU(nil)), bacgopes.NewKWArgs(
-			bacgopes.KWPPDUSource, src,
+		tnode2.GetStartState().Receive(NewArgs(NewPDU(nil)), NewKWArgs(
+			KWPPDUSource, src,
 		)).Success("")
-		tnode3.GetStartState().Receive(bacgopes.NewArgs(bacgopes.NewPDU(nil)), bacgopes.NewKWArgs(
-			bacgopes.KWPDUDestination, dest,
+		tnode3.GetStartState().Receive(NewArgs(NewPDU(nil)), NewKWArgs(
+			KWPDUDestination, dest,
 		)).Success("")
 
 		// run the group
@@ -271,7 +275,7 @@ func TestVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_promiscuous_fail", func(t *testing.T) {
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTNetwork(t, 3, false, false)
@@ -280,13 +284,13 @@ func TestVLAN(t *testing.T) {
 		tnode1, tnode2, tnode3 := stateMachines[0], stateMachines[1], stateMachines[2]
 
 		// make a PDU from node 1 to node 2
-		pdu := bacgopes.NewPDU(nil, bacgopes.WithPDUSource(Address(1)), bacgopes.WithPDUDestination(Address(1)))
+		pdu := NewPDU(nil, WithPDUSource(quick.Address(1)), WithPDUDestination(quick.Address(1)))
 		t.Log(pdu)
 
 		// node 1 sends the pdu to node 2, node 3 waits and gets nothing
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(bacgopes.NewArgs(bacgopes.NewPDU(nil)), bacgopes.NewKWArgs(
-			bacgopes.KWPPDUSource, Address(1),
+		tnode2.GetStartState().Receive(NewArgs(NewPDU(nil)), NewKWArgs(
+			KWPPDUSource, quick.Address(1),
 		)).Success("")
 
 		// if node 3 receives anything it will trigger unexpected receive and fail
@@ -301,7 +305,7 @@ func TestVLAN(t *testing.T) {
 func TestVLANEvents(t *testing.T) {
 	t.Run("test_send_receive", func(t *testing.T) { // Test that a node can send a message to another node and use events to continue with the messages.
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTNetwork(t, 2, false, false)
@@ -310,16 +314,16 @@ func TestVLANEvents(t *testing.T) {
 		tnode1, tnode2 := stateMachines[0], stateMachines[1]
 
 		// make a PDU from node 1 to node 2
-		src, err := bacgopes.NewAddress(testingLogger, 1)
+		src, err := NewAddress(testingLogger, 1)
 		require.NoError(t, err)
-		dest, err := bacgopes.NewAddress(testingLogger, 2)
+		dest, err := NewAddress(testingLogger, 2)
 		require.NoError(t, err)
 
-		deadPDU := bacgopes.NewPDU(tests.NewDummyMessage(0xde, 0xad), bacgopes.WithPDUSource(src), bacgopes.WithPDUDestination(dest))
+		deadPDU := NewPDU(NewDummyMessage(0xde, 0xad), WithPDUSource(src), WithPDUDestination(dest))
 		t.Log(deadPDU)
 
 		// make a PDU from node 1 to node 2
-		beefPDU := bacgopes.NewPDU(tests.NewDummyMessage(0xbe, 0xef), bacgopes.WithPDUSource(src), bacgopes.WithPDUDestination(dest))
+		beefPDU := NewPDU(NewDummyMessage(0xbe, 0xef), WithPDUSource(src), WithPDUDestination(dest))
 		t.Log(beefPDU)
 
 		//  node 1 sends dead_pdu, waits for event, sends beef_pdu
@@ -329,11 +333,11 @@ func TestVLANEvents(t *testing.T) {
 
 		// node 2 receives dead_pdu, sets event, waits for beef_pdu
 		tnode2.GetStartState().
-			Receive(bacgopes.NewArgs(bacgopes.NewPDU(nil)), bacgopes.NewKWArgs(
-				bacgopes.KWPDUData, tests.NewDummyMessage(0xde, 0xad),
+			Receive(NewArgs(NewPDU(nil)), NewKWArgs(
+				KWPDUData, NewDummyMessage(0xde, 0xad),
 			)).SetEvent("e").
-			Receive(bacgopes.NewArgs(bacgopes.NewPDU(nil)), bacgopes.NewKWArgs(
-				bacgopes.KWPDUData, tests.NewDummyMessage(0xbe, 0xef),
+			Receive(NewArgs(NewPDU(nil)), NewKWArgs(
+				KWPDUData, NewDummyMessage(0xbe, 0xef),
 			)).Success("")
 
 		// run the group

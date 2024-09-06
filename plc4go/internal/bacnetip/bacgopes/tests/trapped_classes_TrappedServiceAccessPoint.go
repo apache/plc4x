@@ -23,12 +23,14 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 type TrappedServiceAccessPointRequirements interface {
-	SapIndication(args bacgopes.Args, kwargs bacgopes.KWArgs) error
-	SapConfirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error
+	SapIndication(args Args, kwargs KWArgs) error
+	SapConfirmation(args Args, kwargs KWArgs) error
 }
 
 // TrappedServiceAccessPoint  Note that while this class inherits from ServiceAccessPoint, it doesn't
@@ -51,13 +53,13 @@ type TrappedServiceAccessPointRequirements interface {
 //
 //		The Snort functions will be called after the PDU is trapped.
 type TrappedServiceAccessPoint struct {
-	bacgopes.ServiceAccessPointContract
+	ServiceAccessPointContract
 	requirements TrappedServiceAccessPointRequirements
 
-	sapRequestSent          bacgopes.PDU
-	sapIndicationReceived   bacgopes.PDU
-	sapResponseSent         bacgopes.PDU
-	sapConfirmationReceived bacgopes.PDU
+	sapRequestSent          PDU
+	sapIndicationReceived   PDU
+	sapResponseSent         PDU
+	sapConfirmationReceived PDU
 
 	log zerolog.Logger
 }
@@ -68,49 +70,49 @@ func NewTrappedServiceAccessPoint(localLog zerolog.Logger, requirements TrappedS
 		log:          localLog,
 	}
 	var err error
-	t.ServiceAccessPointContract, err = bacgopes.NewServiceAccessPoint(localLog)
+	t.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating SAP")
 	}
 	return t, nil
 }
 
-func (s *TrappedServiceAccessPoint) GetSapRequestSent() bacgopes.PDU {
+func (s *TrappedServiceAccessPoint) GetSapRequestSent() PDU {
 	return s.sapRequestSent
 }
 
-func (s *TrappedServiceAccessPoint) GetSapIndicationReceived() bacgopes.PDU {
+func (s *TrappedServiceAccessPoint) GetSapIndicationReceived() PDU {
 	return s.sapIndicationReceived
 }
 
-func (s *TrappedServiceAccessPoint) GetSapResponseSent() bacgopes.PDU {
+func (s *TrappedServiceAccessPoint) GetSapResponseSent() PDU {
 	return s.sapResponseSent
 }
 
-func (s *TrappedServiceAccessPoint) GetSapConfirmationReceived() bacgopes.PDU {
+func (s *TrappedServiceAccessPoint) GetSapConfirmationReceived() PDU {
 	return s.sapConfirmationReceived
 }
 
-func (s *TrappedServiceAccessPoint) SapRequest(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *TrappedServiceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapRequest")
-	s.sapRequestSent = args.Get0PDU()
+	s.sapRequestSent = Get[PDU](args, 0)
 	return s.ServiceAccessPointContract.SapRequest(args, kwargs)
 }
 
-func (s *TrappedServiceAccessPoint) SapIndication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *TrappedServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapIndication")
-	s.sapIndicationReceived = args.Get0PDU()
+	s.sapIndicationReceived = Get[PDU](args, 0)
 	return s.requirements.SapIndication(args, kwargs)
 }
 
-func (s *TrappedServiceAccessPoint) SapResponse(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *TrappedServiceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapResponse")
-	s.sapResponseSent = args.Get0PDU()
+	s.sapResponseSent = Get[PDU](args, 0)
 	return s.ServiceAccessPointContract.SapResponse(args, kwargs)
 }
 
-func (s *TrappedServiceAccessPoint) SapConfirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (s *TrappedServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapConfirmation")
-	s.sapConfirmationReceived = args.Get0PDU()
+	s.sapConfirmationReceived = Get[PDU](args, 0)
 	return s.requirements.SapConfirmation(args, kwargs)
 }

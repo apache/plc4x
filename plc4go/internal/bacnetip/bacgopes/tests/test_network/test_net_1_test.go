@@ -27,13 +27,17 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 type TNetwork1 struct {
-	*tests.StateMachineGroup
+	*StateMachineGroup
 
 	iut      *RouterNode
 	vlan1    *Network
@@ -55,10 +59,10 @@ func NewTNetwork1(t *testing.T) *TNetwork1 {
 		t:   t,
 		log: localLog,
 	}
-	tn.StateMachineGroup = tests.NewStateMachineGroup(localLog)
+	tn.StateMachineGroup = NewStateMachineGroup(localLog)
 
 	// reset the time machine
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	localLog.Trace().Msg("time machine reset")
 
 	var err error
@@ -121,7 +125,7 @@ func (t *TNetwork1) Run(timeLimit time.Duration) {
 	require.NoError(t.t, err)
 
 	// run it some time
-	tests.RunTimeMachine(t.log, timeLimit, time.Time{})
+	RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
 		t.log.Debug().Stringer("machine", machine).Strs("transactionLog", machine.GetTransactionLog()).Msg("Machine:")
@@ -137,7 +141,7 @@ func TestNet1(t *testing.T) {
 	t.Run("TestSimple", func(t *testing.T) {
 		t.Run("testIdle", func(t *testing.T) {
 			// create a network
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 			tnet := NewTNetwork1(t)
 
 			// all start states are successful
@@ -152,9 +156,8 @@ func TestNet1(t *testing.T) {
 	})
 	t.Run("TestWhoIsRouterToNetwork", func(t *testing.T) {
 		t.Run("test_01", func(t *testing.T) {
-			t.Skip("needs more work") //TODO: fix
 			//Test broadcast for any router.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 
 			// create a network
 			tnet := NewTNetwork1(t)
@@ -170,14 +173,14 @@ func TestNet1(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("1-2-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80"+ //version, network layer
 							"00", //message type, no network
 					),
 					),
 				).Doc("1-2-1").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80"+ //version, network layer
 							"01 0002 0003", //message type and network list
@@ -201,7 +204,7 @@ func TestNet1(t *testing.T) {
 		})
 		t.Run("test_02", func(t *testing.T) {
 			//Test broadcast for existing router.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 			// create a network
 			tnet := NewTNetwork1(t)
 
@@ -228,7 +231,7 @@ func TestNet1(t *testing.T) {
 		})
 		t.Run("test_03", func(t *testing.T) {
 			//Test broadcast for non-existing router.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 			// create a network
 			tnet := NewTNetwork1(t)
 
@@ -243,7 +246,7 @@ func TestNet1(t *testing.T) {
 
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("3-2-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.80"+ //version, network layer
 							"00 0004", //message type, and network
@@ -253,7 +256,7 @@ func TestNet1(t *testing.T) {
 
 			// sniffer on network 2 sees request forwarded by router
 			tnet.sniffer2.GetStartState().Doc("3-3-0").
-				Receive(NewArgs(tests.PDUMatcher),
+				Receive(NewArgs(PDUMatcher),
 					NewKWArgs(KWPDUData, xtob(
 						"01.88"+ //version, network layer
 							"0001 01 01"+ // snet/slen/sadr
@@ -269,7 +272,7 @@ func TestNet1(t *testing.T) {
 		})
 		t.Run("test_04", func(t *testing.T) {
 			// Test broadcast for a router to the network it is on.
-			tests.ExclusiveGlobalTimeMachine(t)
+			ExclusiveGlobalTimeMachine(t)
 			// create a network
 			tnet := NewTNetwork1(t)
 

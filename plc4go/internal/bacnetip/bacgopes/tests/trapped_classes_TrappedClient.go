@@ -23,15 +23,18 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 // TrappedClientContract provides a set of functions which can be overwritten by a sub struct
 type TrappedClientContract interface {
 	utils.Serializable
-	Request(bacgopes.Args, bacgopes.KWArgs) error
-	Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error
+	Request(Args, KWArgs) error
+	Confirmation(args Args, kwargs KWArgs) error
 }
 
 // TrappedClient  An instance of this class sits at the top of a stack.
@@ -39,10 +42,10 @@ type TrappedClientContract interface {
 //go:generate plc4xGenerator -type=TrappedClient -prefix=trapped_classes_
 type TrappedClient struct {
 	TrappedClientContract `ignore:"true"`
-	bacgopes.Client
+	Client
 
-	requestSent          bacgopes.PDU
-	confirmationReceived bacgopes.PDU
+	requestSent          PDU
+	confirmationReceived PDU
 
 	log zerolog.Logger
 }
@@ -56,7 +59,7 @@ func NewTrappedClient(localLog zerolog.Logger, opts ...func(*TrappedClient)) (*T
 		opt(t)
 	}
 	var err error
-	t.Client, err = bacgopes.NewClient(localLog, t)
+	t.Client, err = NewClient(localLog, t)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client")
 	}
@@ -69,26 +72,26 @@ func WithTrappedClientContract(trappedClientContract TrappedClientContract) func
 	}
 }
 
-func (t *TrappedClient) GetRequestSent() bacgopes.PDU {
+func (t *TrappedClient) GetRequestSent() PDU {
 	return t.requestSent
 }
 
-func (t *TrappedClient) GetConfirmationReceived() bacgopes.PDU {
+func (t *TrappedClient) GetConfirmationReceived() PDU {
 	return t.confirmationReceived
 }
 
-func (t *TrappedClient) Request(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedClient) Request(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Request")
 	// a reference for checking
-	t.requestSent = args.Get0PDU()
+	t.requestSent = Get[PDU](args, 0)
 
 	// continue with regular processing
 	return t.Client.Request(args, kwargs)
 }
 
-func (t *TrappedClient) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedClient) Confirmation(args Args, kwargs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
 	// a reference for checking
-	t.confirmationReceived = args.Get0PDU()
+	t.confirmationReceived = Get[PDU](args, 0)
 	return nil
 }

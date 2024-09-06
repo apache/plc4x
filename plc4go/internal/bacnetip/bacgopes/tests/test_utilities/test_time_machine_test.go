@@ -28,9 +28,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 )
 
 type TimeMachineSuite struct {
@@ -45,16 +47,16 @@ type TimeMachineSuite struct {
 func (suite *TimeMachineSuite) SetupTest() {
 	t := suite.T()
 	suite.log = testutils.ProduceTestingLogger(t)
-	tests.LockGlobalTimeMachine(t)
-	tests.NewGlobalTimeMachine(t)
+	LockGlobalTimeMachine(t)
+	NewGlobalTimeMachine(t)
 }
 
 func (suite *TimeMachineSuite) TearDownTest() {
-	tests.ClearGlobalTimeMachine(suite.T())
+	ClearGlobalTimeMachine(suite.T())
 }
 
 type SampleOneShotTask struct {
-	*bacgopes.OneShotTask
+	*OneShotTask
 
 	processTaskCalled []time.Time
 
@@ -65,22 +67,22 @@ func NewSampleOneShotTask(localLog zerolog.Logger) *SampleOneShotTask {
 	s := &SampleOneShotTask{
 		log: localLog,
 	}
-	s.OneShotTask = bacgopes.NewOneShotTask(s, nil)
+	s.OneShotTask = NewOneShotTask(s, nil)
 	return s
 }
 
 func (s *SampleOneShotTask) ProcessTask() error {
-	s.log.Debug().Time("current_time", tests.GlobalTimeMachineCurrentTime()).Msg("processing task")
+	s.log.Debug().Time("current_time", GlobalTimeMachineCurrentTime()).Msg("processing task")
 
 	// add the current time
-	s.processTaskCalled = append(s.processTaskCalled, tests.GlobalTimeMachineCurrentTime())
+	s.processTaskCalled = append(s.processTaskCalled, GlobalTimeMachineCurrentTime())
 	return nil
 }
 
-func (suite *TimeMachineSuite) SampleTaskFunction() func(args bacgopes.Args, kwArgs bacgopes.KWArgs) error {
-	return func(args bacgopes.Args, kwArgs bacgopes.KWArgs) error {
-		currentTime := tests.GlobalTimeMachineCurrentTime()
-		suite.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Time("current_time", currentTime).Msg("sample_task_function")
+func (suite *TimeMachineSuite) SampleTaskFunction() func(args Args, kwargs KWArgs) error {
+	return func(args Args, kwargs KWArgs) error {
+		currentTime := GlobalTimeMachineCurrentTime()
+		suite.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Time("current_time", currentTime).Msg("sample_task_function")
 
 		suite.sampleTaskFunctionCalled = append(suite.sampleTaskFunctionCalled, currentTime)
 		return nil
@@ -88,7 +90,7 @@ func (suite *TimeMachineSuite) SampleTaskFunction() func(args bacgopes.Args, kwA
 }
 
 type SampleRecurringTask struct {
-	*bacgopes.RecurringTask
+	*RecurringTask
 
 	processTaskCalled []time.Time
 
@@ -99,15 +101,15 @@ func NewSampleRecurringTask(localLog zerolog.Logger) *SampleRecurringTask {
 	s := &SampleRecurringTask{
 		log: localLog,
 	}
-	s.RecurringTask = bacgopes.NewRecurringTask(localLog, s)
+	s.RecurringTask = NewRecurringTask(localLog, s)
 	return s
 }
 
 func (s *SampleRecurringTask) ProcessTask() error {
-	s.log.Debug().Time("current_time", tests.GlobalTimeMachineCurrentTime()).Msg("processing task")
+	s.log.Debug().Time("current_time", GlobalTimeMachineCurrentTime()).Msg("processing task")
 
 	// add the current time
-	s.processTaskCalled = append(s.processTaskCalled, tests.GlobalTimeMachineCurrentTime())
+	s.processTaskCalled = append(s.processTaskCalled, GlobalTimeMachineCurrentTime())
 	return nil
 }
 
@@ -116,18 +118,18 @@ func (s *SampleRecurringTask) String() string {
 }
 
 func (suite *TimeMachineSuite) TestTimeMachineExists() {
-	assert.True(suite.T(), tests.IsGlobalTimeMachineSet())
+	assert.True(suite.T(), IsGlobalTimeMachineSet())
 }
 
 func (suite *TimeMachineSuite) TestEmptyRun() {
 	// reset the time machine
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 
 	// let it run
-	tests.RunTimeMachine(suite.log, 60*time.Second, time.Time{})
+	RunTimeMachine(suite.log, 60*time.Second, time.Time{})
 
 	// 60 seconds have passed
-	suite.Equal(60*time.Second, tests.GlobalTimeMachineCurrentTime().Sub(tests.StartTime))
+	suite.Equal(60*time.Second, GlobalTimeMachineCurrentTime().Sub(StartTime))
 }
 
 func (suite *TimeMachineSuite) TestOneShotImmediate1() {
@@ -135,14 +137,14 @@ func (suite *TimeMachineSuite) TestOneShotImmediate1() {
 	ft := NewSampleOneShotTask(suite.log)
 
 	// Reset time machine
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	var startTime time.Time
-	ft.InstallTask(bacgopes.WithInstallTaskOptionsWhen(startTime))
-	tests.RunTimeMachine(suite.log, 60*time.Second, time.Time{})
+	ft.InstallTask(WithInstallTaskOptionsWhen(startTime))
+	RunTimeMachine(suite.log, 60*time.Second, time.Time{})
 
 	// function called, 60 seconds passed
 	suite.Contains(ft.processTaskCalled, startTime)
-	suite.Equal(60*time.Second, tests.GlobalTimeMachineCurrentTime().Sub(tests.StartTime))
+	suite.Equal(60*time.Second, GlobalTimeMachineCurrentTime().Sub(StartTime))
 }
 
 func (suite *TimeMachineSuite) TestOneShotImmediate2() {
@@ -157,11 +159,11 @@ func (suite *TimeMachineSuite) TestOneShotImmediate2() {
 	// reset the time machine to midnight, install the task, let it run
 	startTime, err := time.Parse("2006-01-02", "2000-01-01")
 	suite.Require().NoError(err)
-	tests.ResetTimeMachine(startTime)
-	ft.InstallTask(bacgopes.WithInstallTaskOptionsWhen(t1))
+	ResetTimeMachine(startTime)
+	ft.InstallTask(WithInstallTaskOptionsWhen(t1))
 	stopTime, err := time.Parse("2006-01-02", "2001-01-01")
 	suite.Require().NoError(err)
-	tests.RunTimeMachine(suite.log, 0, stopTime)
+	RunTimeMachine(suite.log, 0, stopTime)
 
 	// function called, 60 seconds passed
 	suite.Contains(ft.processTaskCalled, t1)
@@ -169,37 +171,37 @@ func (suite *TimeMachineSuite) TestOneShotImmediate2() {
 
 func (suite *TimeMachineSuite) TestFunctionTaskImmediate() {
 	// create a function task
-	ft := bacgopes.FunctionTask(suite.SampleTaskFunction(), bacgopes.NoArgs, bacgopes.NoKWArgs)
+	ft := FunctionTask(suite.SampleTaskFunction(), NoArgs, NoKWArgs)
 	suite.sampleTaskFunctionCalled = nil
 
 	// reset the time machine to midnight, install the task, let it run
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	var now time.Time
-	ft.InstallTask(bacgopes.WithInstallTaskOptionsWhen(now))
-	tests.RunTimeMachine(suite.log, 60*time.Second, time.Time{})
+	ft.InstallTask(WithInstallTaskOptionsWhen(now))
+	RunTimeMachine(suite.log, 60*time.Second, time.Time{})
 
 	// function called, 60 seconds passed
 	suite.Contains(suite.sampleTaskFunctionCalled, now)
-	suite.Equal(60*time.Second, tests.GlobalTimeMachineCurrentTime().Sub(tests.StartTime))
+	suite.Equal(60*time.Second, GlobalTimeMachineCurrentTime().Sub(StartTime))
 }
 
 func (suite *TimeMachineSuite) TestFunctionTaskDelay() {
 	sampleDelay := 10 * time.Second
 
 	// create a function task
-	ft := bacgopes.FunctionTask(suite.SampleTaskFunction(), bacgopes.NoArgs, bacgopes.NoKWArgs)
+	ft := FunctionTask(suite.SampleTaskFunction(), NoArgs, NoKWArgs)
 	suite.sampleTaskFunctionCalled = nil
 
 	// reset the time machine to midnight, install the task, let it run
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	var now time.Time
 	when := now.Add(sampleDelay)
-	ft.InstallTask(bacgopes.WithInstallTaskOptionsWhen(when))
-	tests.RunTimeMachine(suite.log, 60*time.Second, time.Time{})
+	ft.InstallTask(WithInstallTaskOptionsWhen(when))
+	RunTimeMachine(suite.log, 60*time.Second, time.Time{})
 
 	// function called, 60 seconds passed
 	suite.Contains(suite.sampleTaskFunctionCalled, when)
-	suite.Equal(60*time.Second, tests.GlobalTimeMachineCurrentTime().Sub(tests.StartTime))
+	suite.Equal(60*time.Second, GlobalTimeMachineCurrentTime().Sub(StartTime))
 }
 
 func (suite *TimeMachineSuite) TestRecurringTask1() {
@@ -207,10 +209,10 @@ func (suite *TimeMachineSuite) TestRecurringTask1() {
 	ft := NewSampleRecurringTask(suite.log)
 
 	// reset the time machine to midnight, install the task, let it run
-	now := tests.StartTime
-	tests.ResetTimeMachine(now)
-	ft.InstallTask(bacgopes.WithInstallTaskOptionsInterval(1 * time.Second))
-	tests.RunTimeMachine(suite.log, 5*time.Second, time.Time{})
+	now := StartTime
+	ResetTimeMachine(now)
+	ft.InstallTask(WithInstallTaskOptionsInterval(1 * time.Second))
+	RunTimeMachine(suite.log, 5*time.Second, time.Time{})
 
 	// function called, 60 seconds passed
 	suite.Equal(now.Add(1*time.Second), ft.processTaskCalled[0])
@@ -219,7 +221,7 @@ func (suite *TimeMachineSuite) TestRecurringTask1() {
 	suite.Equal(now.Add(4*time.Second), ft.processTaskCalled[3])
 	suite.Equal(now.Add(5*time.Second), ft.processTaskCalled[4])
 	suite.Equal(now.Add(6*time.Second), ft.processTaskCalled[5])
-	suite.InDelta(5*time.Second, tests.GlobalTimeMachineCurrentTime().Sub(now), float64(100*time.Millisecond))
+	suite.InDelta(5*time.Second, GlobalTimeMachineCurrentTime().Sub(now), float64(100*time.Millisecond))
 }
 
 func (suite *TimeMachineSuite) TestRecurringTask2() {
@@ -228,22 +230,22 @@ func (suite *TimeMachineSuite) TestRecurringTask2() {
 	ft2 := NewSampleRecurringTask(suite.log)
 
 	// reset the time machine to midnight, install the task, let it run
-	tests.ResetTimeMachine(tests.StartTime)
-	ft1.InstallTask(bacgopes.WithInstallTaskOptionsInterval(1000 * time.Millisecond))
-	ft2.InstallTask(bacgopes.WithInstallTaskOptionsInterval(1500 * time.Millisecond))
-	tests.RunTimeMachine(suite.log, 5*time.Second, time.Time{})
+	ResetTimeMachine(StartTime)
+	ft1.InstallTask(WithInstallTaskOptionsInterval(1000 * time.Millisecond))
+	ft2.InstallTask(WithInstallTaskOptionsInterval(1500 * time.Millisecond))
+	RunTimeMachine(suite.log, 5*time.Second, time.Time{})
 
 	// function called, 60 seconds passed
 	suite.Require().Greater(len(ft1.processTaskCalled), 4)
-	suite.Equal(tests.StartTime.Add(1*time.Second), ft1.processTaskCalled[0])
-	suite.Equal(tests.StartTime.Add(2*time.Second), ft1.processTaskCalled[1])
-	suite.Equal(tests.StartTime.Add(3*time.Second), ft1.processTaskCalled[2])
-	suite.Equal(tests.StartTime.Add(4*time.Second), ft1.processTaskCalled[3])
+	suite.Equal(StartTime.Add(1*time.Second), ft1.processTaskCalled[0])
+	suite.Equal(StartTime.Add(2*time.Second), ft1.processTaskCalled[1])
+	suite.Equal(StartTime.Add(3*time.Second), ft1.processTaskCalled[2])
+	suite.Equal(StartTime.Add(4*time.Second), ft1.processTaskCalled[3])
 	suite.Require().Greater(len(ft2.processTaskCalled), 3)
-	suite.Equal(tests.StartTime.Add(1500*time.Millisecond), ft2.processTaskCalled[0])
-	suite.Equal(tests.StartTime.Add(3000*time.Millisecond), ft2.processTaskCalled[1])
-	suite.Equal(tests.StartTime.Add(4500*time.Millisecond), ft2.processTaskCalled[2])
-	suite.InDelta(5*time.Second, tests.GlobalTimeMachineCurrentTime().Sub(tests.StartTime), float64(100*time.Millisecond))
+	suite.Equal(StartTime.Add(1500*time.Millisecond), ft2.processTaskCalled[0])
+	suite.Equal(StartTime.Add(3000*time.Millisecond), ft2.processTaskCalled[1])
+	suite.Equal(StartTime.Add(4500*time.Millisecond), ft2.processTaskCalled[2])
+	suite.InDelta(5*time.Second, GlobalTimeMachineCurrentTime().Sub(StartTime), float64(100*time.Millisecond))
 }
 
 func (suite *TimeMachineSuite) TestRecurringTask3() {
@@ -252,9 +254,9 @@ func (suite *TimeMachineSuite) TestRecurringTask3() {
 
 	// reset the time machine to midnight, install the task, let it run
 	startTime := time.Time{}.Add(1 * time.Hour) // We add an hour to avoid underflow
-	tests.ResetTimeMachine(startTime)
-	ft.InstallTask(bacgopes.WithInstallTaskOptionsInterval(1000 * time.Millisecond).WithOffset(100 * time.Millisecond))
-	tests.RunTimeMachine(suite.log, 5*time.Second, time.Time{})
+	ResetTimeMachine(startTime)
+	ft.InstallTask(WithInstallTaskOptionsInterval(1000 * time.Millisecond).WithOffset(100 * time.Millisecond))
+	RunTimeMachine(suite.log, 5*time.Second, time.Time{})
 
 	// function called, 60 seconds passed
 	suite.Equal(startTime.Add(100*time.Millisecond), ft.processTaskCalled[0])
@@ -262,7 +264,7 @@ func (suite *TimeMachineSuite) TestRecurringTask3() {
 	suite.Equal(startTime.Add(2100*time.Millisecond), ft.processTaskCalled[2])
 	suite.Equal(startTime.Add(3100*time.Millisecond), ft.processTaskCalled[3])
 	suite.Equal(startTime.Add(4100*time.Millisecond), ft.processTaskCalled[4])
-	suite.InDelta(5*time.Second, tests.GlobalTimeMachineCurrentTime().Sub(startTime), float64(100*time.Millisecond))
+	suite.InDelta(5*time.Second, GlobalTimeMachineCurrentTime().Sub(startTime), float64(100*time.Millisecond))
 }
 
 func (suite *TimeMachineSuite) TestRecurringTask4() {
@@ -270,17 +272,17 @@ func (suite *TimeMachineSuite) TestRecurringTask4() {
 	ft := NewSampleRecurringTask(suite.log)
 
 	// reset the time machine to midnight, install the task, let it run
-	tests.ResetTimeMachine(tests.StartTime)
-	ft.InstallTask(bacgopes.WithInstallTaskOptionsInterval(1000 * time.Millisecond).WithOffset(-100 * time.Millisecond))
-	tests.RunTimeMachine(suite.log, 5*time.Second, time.Time{})
+	ResetTimeMachine(StartTime)
+	ft.InstallTask(WithInstallTaskOptionsInterval(1000 * time.Millisecond).WithOffset(-100 * time.Millisecond))
+	RunTimeMachine(suite.log, 5*time.Second, time.Time{})
 
 	// function called, 60 seconds passed
-	suite.Equal(tests.StartTime.Add(900*time.Millisecond), ft.processTaskCalled[0])
-	suite.Equal(tests.StartTime.Add(1900*time.Millisecond), ft.processTaskCalled[1])
-	suite.Equal(tests.StartTime.Add(2900*time.Millisecond), ft.processTaskCalled[2])
-	suite.Equal(tests.StartTime.Add(3900*time.Millisecond), ft.processTaskCalled[3])
-	suite.Equal(tests.StartTime.Add(4900*time.Millisecond), ft.processTaskCalled[4])
-	suite.InDelta(5*time.Second, tests.GlobalTimeMachineCurrentTime().Sub(tests.StartTime), float64(100*time.Millisecond))
+	suite.Equal(StartTime.Add(900*time.Millisecond), ft.processTaskCalled[0])
+	suite.Equal(StartTime.Add(1900*time.Millisecond), ft.processTaskCalled[1])
+	suite.Equal(StartTime.Add(2900*time.Millisecond), ft.processTaskCalled[2])
+	suite.Equal(StartTime.Add(3900*time.Millisecond), ft.processTaskCalled[3])
+	suite.Equal(StartTime.Add(4900*time.Millisecond), ft.processTaskCalled[4])
+	suite.InDelta(5*time.Second, GlobalTimeMachineCurrentTime().Sub(StartTime), float64(100*time.Millisecond))
 }
 
 func (suite *TimeMachineSuite) TestRecurringTask5() {
@@ -290,11 +292,11 @@ func (suite *TimeMachineSuite) TestRecurringTask5() {
 	// reset the time machine, install the task, let it run
 	now, err := time.Parse("2006-01-02", "2000-01-01")
 	suite.Require().NoError(err)
-	tests.ResetTimeMachine(now)
-	ft.InstallTask(bacgopes.WithInstallTaskOptionsInterval(86400 * time.Second))
+	ResetTimeMachine(now)
+	ft.InstallTask(WithInstallTaskOptionsInterval(86400 * time.Second))
 	stopTime, err := time.Parse("2006-01-02", "2000-02-01")
 	suite.Require().NoError(err)
-	tests.RunTimeMachine(suite.log, 0, stopTime)
+	RunTimeMachine(suite.log, 0, stopTime)
 
 	// function called every day
 	suite.Equal(32, len(ft.processTaskCalled))

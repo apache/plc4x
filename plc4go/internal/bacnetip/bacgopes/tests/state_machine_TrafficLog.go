@@ -22,26 +22,27 @@ package tests
 import (
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
 
 type TrafficLog struct {
 	traffic []struct {
 		time.Time
-		bacgopes.Args
+		Args
 	}
 }
 
 // Call Capture the current time and the arguments.
-func (t *TrafficLog) Call(args bacgopes.Args) {
+func (t *TrafficLog) Call(args Args) {
 	t.traffic = append(t.traffic, struct {
 		time.Time
-		bacgopes.Args
-	}{Time: bacgopes.GetTaskManagerTime(), Args: args})
+		Args
+	}{Time: GetTaskManagerTime(), Args: args})
 }
 
 // Dump the traffic, pass the correct handler like SomeClass._debug
-func (t *TrafficLog) Dump(handlerFn func(format string, args bacgopes.Args)) {
+func (t *TrafficLog) Dump(handlerFn func(format string, args Args)) {
 	if t == nil {
 		return
 	}

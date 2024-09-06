@@ -25,27 +25,28 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
-func UnsignedTag(x string) bacgopes.Tag {
+func UnsignedTag(x string) Tag {
 	b := xtob(x)
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, len(b), b)
 	return tag
 }
 
 // Encode a Unsigned object into a tag.
-func UnsignedEncode(obj *bacgopes.Unsigned) bacgopes.Tag {
-	tag := Tag()
+func UnsignedEncode(obj *Unsigned) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Unsigned application tag into a Unsigned.
-func UnsignedDecode(tag bacgopes.Tag) *bacgopes.Unsigned {
-	obj := Unsigned(tag)
+func UnsignedDecode(tag Tag) *Unsigned {
+	obj := quick.Unsigned(tag)
 
 	return obj
 }
@@ -56,14 +57,14 @@ func UnsignedDecode(tag bacgopes.Tag) *bacgopes.Unsigned {
 func UnsignedEndec(t *testing.T, v uint32, x string) {
 	tag := UnsignedTag(x)
 
-	obj := Unsigned(v)
+	obj := quick.Unsigned(v)
 
 	assert.Equal(t, tag, UnsignedEncode(obj))
 	assert.Equal(t, obj, UnsignedDecode(tag))
 }
 
 func TestUnsigned(t *testing.T) {
-	obj := Unsigned()
+	obj := quick.Unsigned()
 	assert.Equal(t, uint32(0), obj.GetValue())
 
 	assert.True(t, obj.IsValid(1))
@@ -75,74 +76,74 @@ func TestUnsigned(t *testing.T) {
 	assert.False(t, obj.IsValid(-1))
 	assert.False(t, obj.IsValid(1.0))
 	assert.Panics(t, func() {
-		Unsigned("some string")
+		quick.Unsigned("some string")
 	})
 	assert.Panics(t, func() {
-		Unsigned(1.0)
+		quick.Unsigned(1.0)
 	})
 }
 
 func TestUnsignedInt(t *testing.T) {
-	obj := Unsigned(1)
+	obj := quick.Unsigned(1)
 	assert.Equal(t, uint32(1), obj.GetValue())
 	assert.Equal(t, "Unsigned(1)", obj.String())
 
 	assert.Panics(t, func() {
-		Unsigned(-1)
+		quick.Unsigned(-1)
 	})
 }
 
 func TestUnsignedInt8(t *testing.T) {
-	obj := Unsigned8(1)
+	obj := quick.Unsigned8(1)
 	assert.Equal(t, uint8(1), obj.GetValue())
 	assert.Equal(t, "Unsigned8(1)", obj.String())
 
 	assert.Panics(t, func() {
-		Unsigned8(256)
+		quick.Unsigned8(256)
 	})
 }
 
 func TestUnsignedInt16(t *testing.T) {
-	obj := Unsigned16(1)
+	obj := quick.Unsigned16(1)
 	assert.Equal(t, uint16(1), obj.GetValue())
 	assert.Equal(t, "Unsigned16(1)", obj.String())
 
 	assert.Panics(t, func() {
-		Unsigned16(65536)
+		quick.Unsigned16(65536)
 	})
 }
 
 func TestUnsignedTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, 1, xtob("01"))
-	obj := Unsigned(tag)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, 1, xtob("01"))
+	obj := quick.Unsigned(tag)
 	assert.Equal(t, obj.GetValue(), uint32(1))
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		Unsigned(tag)
+		quick.Unsigned(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		Unsigned(tag)
+		quick.Unsigned(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		Unsigned(tag)
+		quick.Unsigned(tag)
 	})
 }
 
 func TestUnsignedCopy(t *testing.T) {
-	obj1 := Unsigned(12)
-	obj2 := Unsigned(obj1)
+	obj1 := quick.Unsigned(12)
+	obj2 := quick.Unsigned(obj1)
 	assert.Equal(t, uint32(12), obj2.GetValue())
 	assert.Equal(t, obj1, obj2)
 }
 
 func TestUnsignedEndec(t *testing.T) {
 	assert.Panics(t, func() {
-		Unsigned(UnsignedTag(""))
+		quick.Unsigned(UnsignedTag(""))
 	})
 	UnsignedEndec(t, 0, "00")
 	UnsignedEndec(t, 1, "01")

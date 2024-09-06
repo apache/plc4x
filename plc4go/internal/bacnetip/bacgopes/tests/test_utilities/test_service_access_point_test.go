@@ -26,13 +26,16 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 )
 
 type EchoAccessPointRequirements interface {
-	SapResponse(args bacgopes.Args, kwArgs bacgopes.KWArgs) error
+	SapResponse(args Args, kwargs KWArgs) error
 }
 
 type EchoAccessPoint struct {
@@ -50,47 +53,47 @@ func NewEchoAccessPoint(localLog zerolog.Logger, requirements EchoAccessPointReq
 	return e
 }
 
-func (e *EchoAccessPoint) SapIndication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (e *EchoAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	e.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapIndication")
-	return e.requirements.SapResponse(args, bacgopes.NoKWArgs)
+	return e.requirements.SapResponse(args, NoKWArgs)
 }
 
-func (e *EchoAccessPoint) SapConfirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (e *EchoAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
 	e.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapConfirmation")
 	return nil
 }
 
 type TrappedEchoAccessPoint struct {
-	*tests.TrappedServiceAccessPoint
+	*TrappedServiceAccessPoint
 	*EchoAccessPoint
 }
 
-var _ bacgopes.ServiceAccessPoint = (*TrappedEchoAccessPoint)(nil)
+var _ ServiceAccessPoint = (*TrappedEchoAccessPoint)(nil)
 
 func NewTrappedEchoAccessPoint(localLog zerolog.Logger) (*TrappedEchoAccessPoint, error) {
 	t := &TrappedEchoAccessPoint{}
 	t.EchoAccessPoint = NewEchoAccessPoint(localLog, t)
 	var err error
-	t.TrappedServiceAccessPoint, err = tests.NewTrappedServiceAccessPoint(localLog, t.EchoAccessPoint)
+	t.TrappedServiceAccessPoint, err = NewTrappedServiceAccessPoint(localLog, t.EchoAccessPoint)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating trapped service access point")
 	}
 	return t, nil
 }
 
-func (t *TrappedEchoAccessPoint) SapRequest(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedEchoAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
 	return t.TrappedServiceAccessPoint.SapRequest(args, kwargs)
 }
 
-func (t *TrappedEchoAccessPoint) SapIndication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedEchoAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	return t.TrappedServiceAccessPoint.SapIndication(args, kwargs)
 }
 
-func (t *TrappedEchoAccessPoint) SapResponse(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedEchoAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
 	return t.TrappedServiceAccessPoint.SapResponse(args, kwargs)
 }
 
-func (t *TrappedEchoAccessPoint) SapConfirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedEchoAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
 	return t.TrappedServiceAccessPoint.SapConfirmation(args, kwargs)
 }
 
@@ -99,7 +102,7 @@ func (t *TrappedEchoAccessPoint) String() string {
 }
 
 type EchoServiceElementRequirements interface {
-	Response(args bacgopes.Args, kwArgs bacgopes.KWArgs) error
+	Response(args Args, kwargs KWArgs) error
 }
 
 type EchoServiceElement struct {
@@ -116,12 +119,12 @@ func NewEchoServiceElement(localLog zerolog.Logger, requirements EchoServiceElem
 	return e
 }
 
-func (e *EchoServiceElement) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (e *EchoServiceElement) Indication(args Args, kwargs KWArgs) error {
 	e.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
-	return e.requirements.Response(args, bacgopes.NoKWArgs)
+	return e.requirements.Response(args, NoKWArgs)
 }
 
-func (e *EchoServiceElement) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (e *EchoServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 	e.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
 	return nil
 }
@@ -131,7 +134,7 @@ func (e *EchoServiceElement) String() string {
 }
 
 type TrappedEchoServiceElement struct {
-	*tests.TrappedApplicationServiceElement
+	*TrappedApplicationServiceElement
 	*EchoServiceElement
 }
 
@@ -139,26 +142,26 @@ func NewTrappedEchoServiceElement(localLog zerolog.Logger) (*TrappedEchoServiceE
 	t := &TrappedEchoServiceElement{}
 	t.EchoServiceElement = NewEchoServiceElement(localLog, t)
 	var err error
-	t.TrappedApplicationServiceElement, err = tests.NewTrappedApplicationServiceElement(localLog, t.EchoServiceElement)
+	t.TrappedApplicationServiceElement, err = NewTrappedApplicationServiceElement(localLog, t.EchoServiceElement)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating trapped application service element")
 	}
 	return t, nil
 }
 
-func (t *TrappedEchoServiceElement) Request(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedEchoServiceElement) Request(args Args, kwargs KWArgs) error {
 	return t.TrappedApplicationServiceElement.Request(args, kwargs)
 }
 
-func (t *TrappedEchoServiceElement) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedEchoServiceElement) Indication(args Args, kwargs KWArgs) error {
 	return t.TrappedApplicationServiceElement.Indication(args, kwargs)
 }
 
-func (t *TrappedEchoServiceElement) Response(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedEchoServiceElement) Response(args Args, kwargs KWArgs) error {
 	return t.TrappedApplicationServiceElement.Response(args, kwargs)
 }
 
-func (t *TrappedEchoServiceElement) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (t *TrappedEchoServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 	return t.TrappedApplicationServiceElement.Confirmation(args, kwargs)
 }
 
@@ -185,7 +188,7 @@ func (suite *TestApplicationSuite) SetupSuite() {
 	suite.ase, err = NewTrappedEchoServiceElement(suite.log)
 	suite.Require().NoError(err)
 
-	err = bacgopes.Bind(suite.log, suite.ase, suite.sap)
+	err = Bind(suite.log, suite.ase, suite.sap)
 	suite.Require().NoError(err)
 }
 
@@ -194,10 +197,10 @@ func (suite *TestApplicationSuite) TearDownSuite() {
 
 func (suite *TestApplicationSuite) TestSapRequest() {
 	// make a pdu
-	pdu := bacgopes.NewPDU(tests.NewDummyMessage())
+	pdu := NewPDU(NewDummyMessage())
 
 	// service access point is going to request something
-	err := suite.sap.SapRequest(bacgopes.NewArgs(pdu), bacgopes.NoKWArgs)
+	err := suite.sap.SapRequest(NewArgs(pdu), NoKWArgs)
 	suite.Assert().NoError(err)
 
 	// make sure the request was sent and received
@@ -211,10 +214,10 @@ func (suite *TestApplicationSuite) TestSapRequest() {
 
 func (suite *TestApplicationSuite) TestAseRequest() {
 	// make a pdu
-	pdu := bacgopes.NewPDU(tests.NewDummyMessage())
+	pdu := NewPDU(NewDummyMessage())
 
 	// service access point is going to request something
-	err := suite.ase.Request(bacgopes.NewArgs(pdu), bacgopes.NoKWArgs)
+	err := suite.ase.Request(NewArgs(pdu), NoKWArgs)
 	suite.Assert().NoError(err)
 
 	// make sure the request was sent and received

@@ -58,78 +58,38 @@ func (d *BIPSimpleApplicationLayerStateMachine) SerializeWithWriteBuffer(ctx con
 	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), d.name); err != nil {
 		return err
 	}
-
 	if d.address != nil {
-		if serializableField, ok := any(d.address).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("address"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("address"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.address)
-			if err := writeBuffer.WriteString("address", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.address)
+
+			if err := writeBuffer.WriteString("address", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}
 	}
-
 	if d.asap != nil {
-		if serializableField, ok := any(d.asap).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("asap"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("asap"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.asap)
-			if err := writeBuffer.WriteString("asap", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.asap)
+
+			if err := writeBuffer.WriteString("asap", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}
 	}
-
 	if d.smap != nil {
-		if serializableField, ok := any(d.smap).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("smap"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("smap"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.smap)
-			if err := writeBuffer.WriteString("smap", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.smap)
+
+			if err := writeBuffer.WriteString("smap", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}
 	}
-
 	if d.nsap != nil {
-		if serializableField, ok := any(d.nsap).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("nsap"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("nsap"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.nsap)
-			if err := writeBuffer.WriteString("nsap", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.nsap)
+
+			if err := writeBuffer.WriteString("nsap", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}
@@ -143,40 +103,20 @@ func (d *BIPSimpleApplicationLayerStateMachine) SerializeWithWriteBuffer(ctx con
 			}
 		}
 	}
-
 	if d.bip != nil {
-		if serializableField, ok := any(d.bip).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("bip"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("bip"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.bip)
-			if err := writeBuffer.WriteString("bip", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.bip)
+
+			if err := writeBuffer.WriteString("bip", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}
 	}
-
 	if d.annexj != nil {
-		if serializableField, ok := any(d.annexj).(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("annexj"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("annexj"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.annexj)
-			if err := writeBuffer.WriteString("annexj", uint32(len(stringValue)*8), stringValue); err != nil {
+		{
+			_value := fmt.Sprintf("%v", d.annexj)
+
+			if err := writeBuffer.WriteString("annexj", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}

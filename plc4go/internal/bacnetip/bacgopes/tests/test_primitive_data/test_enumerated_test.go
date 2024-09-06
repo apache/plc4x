@@ -24,13 +24,15 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
 type quickBrownFox struct {
-	*bacgopes.Enumerated
+	*Enumerated
 }
 
 func (q *quickBrownFox) GetEnumerations() map[string]uint64 {
@@ -41,36 +43,36 @@ func (q *quickBrownFox) GetEnumerations() map[string]uint64 {
 	}
 }
 
-func (q *quickBrownFox) SetEnumerated(enumerated *bacgopes.Enumerated) {
+func (q *quickBrownFox) SetEnumerated(enumerated *Enumerated) {
 	q.Enumerated = enumerated
 }
 
 func QuickBrownFox(args ...any) *quickBrownFox {
 	q := &quickBrownFox{}
 	var err error
-	q.Enumerated, err = bacgopes.NewEnumerated(append([]any{q}, args...)...)
+	q.Enumerated, err = NewEnumerated(NewArgs(append([]any{q}, args...)...))
 	if err != nil {
 		panic(err)
 	}
 	return q
 }
 
-func EnumeratedTag(x string) bacgopes.Tag {
+func EnumeratedTag(x string) Tag {
 	b := xtob(x)
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, len(b), b)
 	return tag
 }
 
 // Encode a Enumerated object into a tag.
-func EnumeratedEncode(obj *bacgopes.Enumerated) bacgopes.Tag {
-	tag := Tag()
+func EnumeratedEncode(obj *Enumerated) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Enumerated application tag into a Enumerated.
-func EnumeratedDecode(tag bacgopes.Tag) *bacgopes.Enumerated {
-	obj := Enumerated(tag)
+func EnumeratedDecode(tag Tag) *Enumerated {
+	obj := quick.Enumerated(tag)
 
 	return obj
 }
@@ -81,31 +83,31 @@ func EnumeratedDecode(tag bacgopes.Tag) *bacgopes.Enumerated {
 func EnumeratedEndec(t *testing.T, v uint64, x string) {
 	tag := EnumeratedTag(x)
 
-	obj := Enumerated(v)
+	obj := quick.Enumerated(v)
 
 	assert.Equal(t, tag, EnumeratedEncode(obj))
 	assert.Equal(t, obj, EnumeratedDecode(tag))
 }
 
 func TestEnumerated(t *testing.T) {
-	obj := Enumerated()
+	obj := quick.Enumerated()
 	assert.Equal(t, uint64(0), obj.GetValue())
 
 	assert.Panics(t, func() {
-		Enumerated("label")
+		quick.Enumerated("label")
 	})
 	assert.Panics(t, func() {
-		Enumerated(1.0)
+		quick.Enumerated(1.0)
 	})
 }
 
 func TestEnumeratedInt(t *testing.T) {
-	obj := Enumerated(1)
+	obj := quick.Enumerated(1)
 	assert.Equal(t, uint64(1), obj.GetValue())
 	assert.Equal(t, "Enumerated(1)", obj.String())
 
 	assert.Panics(t, func() {
-		Enumerated(-1)
+		quick.Enumerated(-1)
 	})
 }
 
@@ -114,48 +116,48 @@ func TestEnumeratedStr(t *testing.T) {
 	assert.Equal(t, "Enumerated(quick)", obj.String())
 
 	assert.Panics(t, func() {
-		Enumerated(-1)
+		quick.Enumerated(-1)
 	})
 	assert.Panics(t, func() {
-		Enumerated("lazyDog")
+		quick.Enumerated("lazyDog")
 	})
 
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, 1, xtob("01"))
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, 1, xtob("01"))
 	obj = QuickBrownFox(tag)
 	assert.Equal(t, "Enumerated(brown)", obj.String())
 }
 
 func TestEnumeratedTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, 1, xtob("01"))
-	obj := Enumerated(tag)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, 1, xtob("01"))
+	obj := quick.Enumerated(tag)
 	assert.Equal(t, obj.GetValue(), uint64(1))
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		Enumerated(tag)
+		quick.Enumerated(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		Enumerated(tag)
+		quick.Enumerated(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		Enumerated(tag)
+		quick.Enumerated(tag)
 	})
 }
 
 func TestEnumeratedCopy(t *testing.T) {
-	obj1 := Enumerated(12)
-	obj2 := Enumerated(obj1)
+	obj1 := quick.Enumerated(12)
+	obj2 := quick.Enumerated(obj1)
 	assert.Equal(t, uint64(12), obj2.GetValue())
 	assert.Equal(t, obj1, obj2)
 }
 
 func TestEnumeratedEndec(t *testing.T) {
 	assert.Panics(t, func() {
-		Enumerated(EnumeratedTag(""))
+		quick.Enumerated(EnumeratedTag(""))
 	})
 	EnumeratedEndec(t, 0, "00")
 	EnumeratedEndec(t, 1, "01")

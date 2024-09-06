@@ -25,19 +25,25 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
 type TestNPDUCodecSuite struct {
 	suite.Suite
 
-	client *tests.TrappedClient
+	client *TrappedClient
 	codec  *NPDUCodec
-	server *tests.TrappedServer
+	server *TrappedServer
 
 	log zerolog.Logger
 }
@@ -47,23 +53,23 @@ func (suite *TestNPDUCodecSuite) SetupTest() {
 	var err error
 	suite.codec, err = NewNPDUCodec(suite.log)
 	suite.Require().NoError(err)
-	suite.client, err = tests.NewTrappedClient(suite.log)
+	suite.client, err = NewTrappedClient(suite.log)
 	suite.Require().NoError(err)
-	suite.server, err = tests.NewTrappedServer(suite.log)
+	suite.server, err = NewTrappedServer(suite.log)
 	suite.Require().NoError(err)
-	err = bacgopes.Bind(suite.log, suite.client, suite.codec, suite.server)
+	err = Bind(suite.log, suite.client, suite.codec, suite.server)
 	suite.Require().NoError(err)
 }
 
 // Pass the PDU to the client to send down the stack.
-func (suite *TestNPDUCodecSuite) Request(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (suite *TestNPDUCodecSuite) Request(args Args, kwargs KWArgs) error {
 	suite.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
 
 	return suite.client.Request(args, kwargs)
 }
 
 // Check what the server received.
-func (suite *TestNPDUCodecSuite) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (suite *TestNPDUCodecSuite) Indication(args Args, kwargs KWArgs) error {
 	suite.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
 	var pduType any
@@ -71,30 +77,30 @@ func (suite *TestNPDUCodecSuite) Indication(args bacgopes.Args, kwargs bacgopes.
 		pduType = args[0].(any)
 	}
 	pduAttrs := kwargs
-	suite.Assert().True(tests.MatchPdu(suite.log, suite.server.GetIndicationReceived(), pduType, pduAttrs))
+	suite.Assert().True(MatchPdu(suite.log, suite.server.GetIndicationReceived(), pduType, pduAttrs))
 	return nil
 }
 
 // Check what the server received.
-func (suite *TestNPDUCodecSuite) Response(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (suite *TestNPDUCodecSuite) Response(args Args, kwargs KWArgs) error {
 	suite.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
 
 	return suite.server.Response(args, kwargs)
 }
 
 // Check what the server received.
-func (suite *TestNPDUCodecSuite) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (suite *TestNPDUCodecSuite) Confirmation(args Args, kwargs KWArgs) error {
 	suite.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 
 	pduType := args[0].(any)
 	pduAttrs := kwargs
-	suite.Assert().True(tests.MatchPdu(suite.log, suite.client.GetConfirmationReceived(), pduType, pduAttrs))
+	suite.Assert().True(MatchPdu(suite.log, suite.client.GetConfirmationReceived(), pduType, pduAttrs))
 	return nil
 }
 
 func (suite *TestNPDUCodecSuite) TestWhoIsRouterToNetwork() { // Test the Result encoding and decoding.
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"00 0001", // message type and network
 	)
@@ -107,20 +113,20 @@ func (suite *TestNPDUCodecSuite) TestWhoIsRouterToNetwork() { // Test the Result
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(WhoIsRouterToNetwork(1)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.WhoIsRouterToNetwork(1)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.WhoIsRouterToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWWirtnNetwork, uint16(1)))
+	err = suite.Confirmation(NewArgs(&WhoIsRouterToNetwork{}), NewKWArgs(KWWirtnNetwork, uint16(1)))
 }
 
 func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworkEmpty() { // Test the Result encoding and decoding.
 	// Request successful
 	networkList := []uint16{}
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"01", // message type, no network
 	)
@@ -133,20 +139,20 @@ func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworkEmpty() { // Test the Res
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(IAmRouterToNetwork(networkList...)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.IAmRouterToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.IAmRouterToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWIartnNetworkList, networkList))
+	err = suite.Confirmation(NewArgs(&IAmRouterToNetwork{}), NewKWArgs(KWIartnNetworkList, networkList))
 }
 
 func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworks() { // Test the Result encoding and decoding.
 	// Request successful
 	networkList := []uint16{1, 2, 3}
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"01 0001 0002 0003", // message type and network list
 	)
@@ -159,19 +165,19 @@ func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworks() { // Test the Result 
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(IAmRouterToNetwork(networkList...)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.IAmRouterToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.IAmRouterToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWIartnNetworkList, networkList))
+	err = suite.Confirmation(NewArgs(&IAmRouterToNetwork{}), NewKWArgs(KWIartnNetworkList, networkList))
 }
 
 func (suite *TestNPDUCodecSuite) TestICouldBeRouterToNetworks() { // Test the Result encoding and decoding.
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"02 0001 02", // message type, network, performance
 	)
@@ -184,19 +190,19 @@ func (suite *TestNPDUCodecSuite) TestICouldBeRouterToNetworks() { // Test the Re
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(ICouldBeRouterToNetwork(1, 2)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.ICouldBeRouterToNetwork(1, 2)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.ICouldBeRouterToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWIcbrtnNetwork, uint16(1), bacgopes.KWIcbrtnPerformanceIndex, uint8(2)))
+	err = suite.Confirmation(NewArgs(&ICouldBeRouterToNetwork{}), NewKWArgs(KWIcbrtnNetwork, uint16(1), KWIcbrtnPerformanceIndex, uint8(2)))
 }
 
 func (suite *TestNPDUCodecSuite) TestRejectMessageToNetwork() { // Test the Result encoding and decoding.
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"03 01 0002", // message type, reason, performance
 	)
@@ -209,20 +215,20 @@ func (suite *TestNPDUCodecSuite) TestRejectMessageToNetwork() { // Test the Resu
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(RejectMessageToNetwork(1, 2)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.RejectMessageToNetwork(1, 2)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.RejectMessageToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWRmtnRejectionReason, readWriteModel.NLMRejectMessageToNetworkRejectReason(1), bacgopes.KWRmtnDNET, uint16(2)))
+	err = suite.Confirmation(NewArgs(&RejectMessageToNetwork{}), NewKWArgs(KWRmtnRejectionReason, readWriteModel.NLMRejectMessageToNetworkRejectReason(1), KWRmtnDNET, uint16(2)))
 }
 
 func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkEmpty() { // Test the Result encoding and decoding.
 	// Request successful
 	networkList := []uint16{}
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"04", // message type, no networks
 	)
@@ -235,20 +241,20 @@ func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkEmpty() { // Test the Re
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(RouterBusyToNetwork(networkList...)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.RouterBusyToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.RouterBusyToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWRbtnNetworkList, networkList))
+	err = suite.Confirmation(NewArgs(&RouterBusyToNetwork{}), NewKWArgs(KWRbtnNetworkList, networkList))
 }
 
 func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkNetworks() { // Test the Result encoding and decoding.
 	// Request successful
 	networkList := []uint16{1, 2, 3}
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"04 0001 0002 0003", // message type and network list
 	)
@@ -261,20 +267,20 @@ func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkNetworks() { // Test the
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(RouterBusyToNetwork(networkList...)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.RouterBusyToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.RouterBusyToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWRbtnNetworkList, networkList))
+	err = suite.Confirmation(NewArgs(&RouterBusyToNetwork{}), NewKWArgs(KWRbtnNetworkList, networkList))
 }
 
 func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkEmpty() { // Test the Result encoding and decoding.
 	// Request successful
 	networkList := []uint16{}
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"05", // message type, no networks
 	)
@@ -287,20 +293,20 @@ func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkEmpty() { // Test t
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(RouterAvailableToNetwork(networkList...)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.RouterAvailableToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.RouterAvailableToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWRatnNetworkList, networkList))
+	err = suite.Confirmation(NewArgs(&RouterAvailableToNetwork{}), NewKWArgs(KWRatnNetworkList, networkList))
 }
 
 func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkNetworks() { // Test the Result encoding and decoding.
 	// Request successful
 	networkList := []uint16{1, 2, 3}
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"05 0001 0002 0003", // message type and network list
 	)
@@ -313,19 +319,19 @@ func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkNetworks() { // Tes
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(RouterAvailableToNetwork(networkList...)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.RouterAvailableToNetwork(networkList...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.RouterAvailableToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWRatnNetworkList, networkList))
+	err = suite.Confirmation(NewArgs(&RouterAvailableToNetwork{}), NewKWArgs(KWRatnNetworkList, networkList))
 }
 
 func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableEmpty() { // Test the Result encoding and decoding.
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"06 00", // message type and list length
 	)
@@ -338,25 +344,25 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableEmpty() { // Test the
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(InitializeRoutingTable()), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.InitializeRoutingTable()), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.InitializeRoutingTable{}), bacgopes.NewKWArgs(bacgopes.KWIrtTable, []*bacgopes.RoutingTableEntry{}))
+	err = suite.Confirmation(NewArgs(&InitializeRoutingTable{}), NewKWArgs(KWIrtTable, []*RoutingTableEntry{}))
 }
 
 func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable01() { // Test the Result encoding and decoding.
 	// Request successful
-	xtob, err := bacgopes.Xtob("")
+	xtob, err := Xtob("")
 	suite.Require().NoError(err)
-	rte := RoutingTableEntry(1, 2, xtob)
-	rtEntries := []*bacgopes.RoutingTableEntry{rte}
+	rte := quick.RoutingTableEntry(1, 2, xtob)
+	rtEntries := []*RoutingTableEntry{rte}
 
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"06 01" + // message type and list length
 			"0001 02 00", // network, port number, port info
@@ -370,25 +376,25 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable01() { // Test the Re
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(InitializeRoutingTable(rtEntries...)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.InitializeRoutingTable(rtEntries...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.InitializeRoutingTable{}), bacgopes.NewKWArgs(bacgopes.KWIrtTable, rtEntries))
+	err = suite.Confirmation(NewArgs(&InitializeRoutingTable{}), NewKWArgs(KWIrtTable, rtEntries))
 }
 
 func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable02() { // Test the Result encoding and decoding.
 	// Request successful
-	xtob, err := bacgopes.Xtob("deadbeef")
+	xtob, err := Xtob("deadbeef")
 	suite.Require().NoError(err)
-	rte := RoutingTableEntry(3, 4, xtob)
-	rtEntries := []*bacgopes.RoutingTableEntry{rte}
+	rte := quick.RoutingTableEntry(3, 4, xtob)
+	rtEntries := []*RoutingTableEntry{rte}
 
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"06 01" + // message type and list length
 			"0003 04 04 DEADBEEF", // network, port number, port info
@@ -402,25 +408,25 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable02() { // Test the Re
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(InitializeRoutingTable(rtEntries...)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.InitializeRoutingTable(rtEntries...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.InitializeRoutingTable{}), bacgopes.NewKWArgs(bacgopes.KWIrtTable, rtEntries))
+	err = suite.Confirmation(NewArgs(&InitializeRoutingTable{}), NewKWArgs(KWIrtTable, rtEntries))
 }
 
 func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck01() { // Test the Result encoding and decoding.
 	// Request successful
-	xtob, err := bacgopes.Xtob("")
+	xtob, err := Xtob("")
 	suite.Require().NoError(err)
-	rte := RoutingTableEntry(1, 2, xtob)
-	rtEntries := []*bacgopes.RoutingTableEntry{rte}
+	rte := quick.RoutingTableEntry(1, 2, xtob)
+	rtEntries := []*RoutingTableEntry{rte}
 
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"07 01" + // message type and list length
 			"0001 02 00", // network, port number, port info
@@ -434,25 +440,25 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck01() { // Test the
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(InitializeRoutingTableAck(rtEntries...)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.InitializeRoutingTableAck(rtEntries...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.InitializeRoutingTableAck{}), bacgopes.NewKWArgs(bacgopes.KWIrtaTable, rtEntries))
+	err = suite.Confirmation(NewArgs(&InitializeRoutingTableAck{}), NewKWArgs(KWIrtaTable, rtEntries))
 }
 
 func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck02() { // Test the Result encoding and decoding.
 	// Request successful
-	xtob, err := bacgopes.Xtob("deadbeef")
+	xtob, err := Xtob("deadbeef")
 	suite.Require().NoError(err)
-	rte := RoutingTableEntry(3, 4, xtob)
-	rtEntries := []*bacgopes.RoutingTableEntry{rte}
+	rte := quick.RoutingTableEntry(3, 4, xtob)
+	rtEntries := []*RoutingTableEntry{rte}
 
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"07 01" + // message type and list length
 			"0003 04 04 DEADBEEF", // network, port number, port info
@@ -466,19 +472,19 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck02() { // Test the
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(InitializeRoutingTableAck(rtEntries...)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.InitializeRoutingTableAck(rtEntries...)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.InitializeRoutingTableAck{}), bacgopes.NewKWArgs(bacgopes.KWIrtaTable, rtEntries))
+	err = suite.Confirmation(NewArgs(&InitializeRoutingTableAck{}), NewKWArgs(KWIrtaTable, rtEntries))
 }
 
 func (suite *TestNPDUCodecSuite) TestEstablishConnectionToNetworks() { // Test the Result encoding and decoding.
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"08 0005 06", // message type, network, terminationTime
 	)
@@ -491,19 +497,19 @@ func (suite *TestNPDUCodecSuite) TestEstablishConnectionToNetworks() { // Test t
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(EstablishConnectionToNetwork(5, 6)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.EstablishConnectionToNetwork(5, 6)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.EstablishConnectionToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWEctnDNET, uint16(5), bacgopes.KWEctnTerminationTime, uint8(6)))
+	err = suite.Confirmation(NewArgs(&EstablishConnectionToNetwork{}), NewKWArgs(KWEctnDNET, uint16(5), KWEctnTerminationTime, uint8(6)))
 }
 
 func (suite *TestNPDUCodecSuite) TestDisconnectConnectionToNetwork() { // Test the Result encoding and decoding.
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"09 0007", // message type, network
 	)
@@ -516,19 +522,19 @@ func (suite *TestNPDUCodecSuite) TestDisconnectConnectionToNetwork() { // Test t
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(DisconnectConnectionToNetwork(7)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.DisconnectConnectionToNetwork(7)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.DisconnectConnectionToNetwork{}), bacgopes.NewKWArgs(bacgopes.KWDctnDNET, uint16(7)))
+	err = suite.Confirmation(NewArgs(&DisconnectConnectionToNetwork{}), NewKWArgs(KWDctnDNET, uint16(7)))
 }
 
 func (suite *TestNPDUCodecSuite) TestWhatIsNetworkNumber() { // Test the Result encoding and decoding.
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"12", // message type, network
 	)
@@ -541,19 +547,19 @@ func (suite *TestNPDUCodecSuite) TestWhatIsNetworkNumber() { // Test the Result 
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(WhatIsNetworkNumber(0)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.WhatIsNetworkNumber(0)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.WhatIsNetworkNumber{}), bacgopes.NoKWArgs)
+	err = suite.Confirmation(NewArgs(&WhatIsNetworkNumber{}), NoKWArgs)
 }
 
 func (suite *TestNPDUCodecSuite) TestNetworkNumberIs() { // Test the Result encoding and decoding.
 	// Request successful
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		"01.80" + // version, network layer message
 			"13 0008 01", // message type, network, flag
 	)
@@ -566,14 +572,14 @@ func (suite *TestNPDUCodecSuite) TestNetworkNumberIs() { // Test the Result enco
 		}
 	}
 
-	err = suite.Request(bacgopes.NewArgs(NetworkNumberIs(8, true)), bacgopes.NoKWArgs)
+	err = suite.Request(NewArgs(quick.NetworkNumberIs(8, true)), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Indication(bacgopes.NoArgs, bacgopes.NewKWArgs(bacgopes.KWPDUData, pduBytes))
+	err = suite.Indication(NoArgs, NewKWArgs(KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacgopes.NewArgs(bacgopes.NewPDU(bacgopes.NewMessageBridge(pduBytes...))), bacgopes.NoKWArgs)
+	err = suite.Response(NewArgs(NewPDU(NewMessageBridge(pduBytes...))), NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacgopes.NewArgs(&bacgopes.NetworkNumberIs{}), bacgopes.NewKWArgs(bacgopes.KWNniNet, uint16(8), bacgopes.KWNniFlag, true))
+	err = suite.Confirmation(NewArgs(&NetworkNumberIs{}), NewKWArgs(KWNniNet, uint16(8), KWNniFlag, true))
 }
 
 func TestNPDUCodec(t *testing.T) {

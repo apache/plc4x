@@ -28,12 +28,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 )
 
 type TPDU struct {
@@ -41,7 +43,7 @@ type TPDU struct {
 	a, b int
 }
 
-var _ bacgopes.PDU = TPDU{}
+var _ PDU = TPDU{}
 
 func (t TPDU) X() []byte {
 	return t.x
@@ -84,19 +86,19 @@ func (t TPDU) SetPDUUserData(message spi.Message) {
 	panic("implement me")
 }
 
-func (t TPDU) GetPDUSource() *bacgopes.Address {
+func (t TPDU) GetPDUSource() *Address {
 	panic("implement me")
 }
 
-func (t TPDU) SetPDUSource(source *bacgopes.Address) {
+func (t TPDU) SetPDUSource(source *Address) {
 	panic("implement me")
 }
 
-func (t TPDU) GetPDUDestination() *bacgopes.Address {
+func (t TPDU) GetPDUDestination() *Address {
 	panic("implement me")
 }
 
-func (t TPDU) SetPDUDestination(address *bacgopes.Address) {
+func (t TPDU) SetPDUDestination(address *Address) {
 	panic("implement me")
 }
 
@@ -140,7 +142,7 @@ func (t TPDU) GetPDUUserData() spi.Message {
 	panic("implement me")
 }
 
-func (t TPDU) Update(pci bacgopes.Arg) error {
+func (t TPDU) Update(pci Arg) error {
 	//TODO implement me
 	panic("implement me")
 }
@@ -195,7 +197,7 @@ func (t TPDU) PutLong(i uint32) {
 	panic("implement me")
 }
 
-func (t TPDU) GetPCI() bacgopes.PCI {
+func (t TPDU) GetPCI() PCI {
 	//TODO implement me
 	panic("implement me")
 }
@@ -215,25 +217,25 @@ func TestMatchPdu(t *testing.T) {
 	anon := Anon{TPDU{x: []byte("Anon")}}
 
 	// no criteria passes
-	assert.True(t, tests.MatchPdu(testingLogger, tpdu, nil, nil))
-	assert.True(t, tests.MatchPdu(testingLogger, anon, nil, nil))
+	assert.True(t, MatchPdu(testingLogger, tpdu, nil, nil))
+	assert.True(t, MatchPdu(testingLogger, anon, nil, nil))
 
 	// matching/not matching types
-	assert.True(t, tests.MatchPdu(testingLogger, tpdu, TPDU{}, nil))
-	assert.False(t, tests.MatchPdu(testingLogger, tpdu, Anon{}, nil))
+	assert.True(t, MatchPdu(testingLogger, tpdu, TPDU{}, nil))
+	assert.False(t, MatchPdu(testingLogger, tpdu, Anon{}, nil))
 	// Note the other testcase is irrelevant as we don't have dynamic types
 
 	// matching/not matching attributes
-	assert.True(t, tests.MatchPdu(testingLogger, tpdu, nil, map[bacgopes.KnownKey]any{"x": []byte{1}}))
-	assert.False(t, tests.MatchPdu(testingLogger, tpdu, nil, map[bacgopes.KnownKey]any{"x": []byte{2}}))
-	assert.False(t, tests.MatchPdu(testingLogger, tpdu, nil, map[bacgopes.KnownKey]any{"y": []byte{1}}))
-	assert.False(t, tests.MatchPdu(testingLogger, anon, nil, map[bacgopes.KnownKey]any{"x": []byte{1}}))
+	assert.True(t, MatchPdu(testingLogger, tpdu, nil, map[KnownKey]any{"x": []byte{1}}))
+	assert.False(t, MatchPdu(testingLogger, tpdu, nil, map[KnownKey]any{"x": []byte{2}}))
+	assert.False(t, MatchPdu(testingLogger, tpdu, nil, map[KnownKey]any{"y": []byte{1}}))
+	assert.False(t, MatchPdu(testingLogger, anon, nil, map[KnownKey]any{"x": []byte{1}}))
 
 	// matching/not matching types and attributes
-	assert.True(t, tests.MatchPdu(testingLogger, tpdu, TPDU{}, map[bacgopes.KnownKey]any{"x": []byte{1}}))
-	assert.False(t, tests.MatchPdu(testingLogger, tpdu, TPDU{}, map[bacgopes.KnownKey]any{"x": []byte{2}}))
-	assert.False(t, tests.MatchPdu(testingLogger, tpdu, TPDU{}, map[bacgopes.KnownKey]any{"y": []byte{1}}))
-	assert.False(t, tests.MatchPdu(testingLogger, anon, Anon{}, map[bacgopes.KnownKey]any{"x": []byte{1}}))
+	assert.True(t, MatchPdu(testingLogger, tpdu, TPDU{}, map[KnownKey]any{"x": []byte{1}}))
+	assert.False(t, MatchPdu(testingLogger, tpdu, TPDU{}, map[KnownKey]any{"x": []byte{2}}))
+	assert.False(t, MatchPdu(testingLogger, tpdu, TPDU{}, map[KnownKey]any{"y": []byte{1}}))
+	assert.False(t, MatchPdu(testingLogger, anon, Anon{}, map[KnownKey]any{"x": []byte{1}}))
 }
 
 func TestState(t *testing.T) {
@@ -241,7 +243,7 @@ func TestState(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// change the doc string
-		ts := tests.NewState(testingLogger, nil, "")
+		ts := NewState(testingLogger, nil, "")
 		ns := ts.Doc("test state")
 
 		assert.Equal(t, "test state", ts.DocString())
@@ -250,7 +252,7 @@ func TestState(t *testing.T) {
 	t.Run("test_success", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
-		ts := tests.NewState(testingLogger, nil, "")
+		ts := NewState(testingLogger, nil, "")
 		ns := ts.Success("")
 		assert.True(t, ts.IsSuccessState())
 		assert.Same(t, ts, ns)
@@ -265,7 +267,7 @@ func TestState(t *testing.T) {
 	t.Run("test_state_fail", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
-		ts := tests.NewState(testingLogger, nil, "")
+		ts := NewState(testingLogger, nil, "")
 		ns := ts.Fail("")
 		assert.True(t, ts.IsFailState())
 		assert.Same(t, ts, ns)
@@ -285,7 +287,7 @@ func TestStateMachine(t *testing.T) {
 
 		// create a state machine //TODO: fix nil requirement
 		var init func()
-		tsm, init := tests.NewStateMachine(testingLogger, nil)
+		tsm, init := NewStateMachine(testingLogger, nil)
 		init()
 
 		// run the machine
@@ -299,7 +301,7 @@ func TestStateMachine(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 
 		// make the start state a sucess
 		tsm.GetStartState().Success("")
@@ -315,7 +317,7 @@ func TestStateMachine(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 
 		// make the start state a sucess
 		tsm.GetStartState().Fail("")
@@ -331,10 +333,10 @@ func TestStateMachine(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 
 		// Make a pdu object
-		pdu := bacgopes.NewPDU(nil)
+		pdu := NewPDU(nil)
 
 		// make a send transition from start to success, run the machine
 		tsm.GetStartState().Send(pdu, nil).Success("")
@@ -346,8 +348,8 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.GetCurrentState().IsSuccessState())
 
 		// check the callbacks
-		assert.IsType(t, bacgopes.NewPDU(nil), tsm.GetBeforeSendPdu())
-		assert.IsType(t, bacgopes.NewPDU(nil), tsm.GetAfterSendPdu())
+		assert.IsType(t, NewPDU(nil), tsm.GetBeforeSendPdu())
+		assert.IsType(t, NewPDU(nil), tsm.GetAfterSendPdu())
 
 		// make sure pdu was sent
 		assert.Same(t, pdu, tsm.GetSent())
@@ -360,13 +362,13 @@ func TestStateMachine(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 
 		// Make a pdu object
 		pdu := TPDU{}
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Receive(bacgopes.NewArgs(pdu), bacgopes.NoKWArgs).Success("")
+		tsm.GetStartState().Receive(NewArgs(pdu), NoKWArgs).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -374,7 +376,7 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.IsRunning())
 
 		// tell the machine it is receiving the pdu
-		err = tsm.Receive(bacgopes.NewArgs(pdu), bacgopes.NoKWArgs)
+		err = tsm.Receive(NewArgs(pdu), NoKWArgs)
 		require.NoError(t, err)
 
 		// check for success
@@ -393,7 +395,7 @@ func TestStateMachine(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 
 		// Make a pdu object
 		goodPdu := TPDU{a: 1}
@@ -401,7 +403,7 @@ func TestStateMachine(t *testing.T) {
 		badPdu := TPDU{b: 2}
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Receive(bacgopes.NewArgs(TPDU{}), bacgopes.NewKWArgs(bacgopes.KnownKey("a"), 1)).Success("")
+		tsm.GetStartState().Receive(NewArgs(TPDU{}), NewKWArgs(KnownKey("a"), 1)).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -409,7 +411,7 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.IsRunning())
 
 		// give the machine a bad pdu
-		err = tsm.Receive(bacgopes.NewArgs(badPdu), bacgopes.NoKWArgs)
+		err = tsm.Receive(NewArgs(badPdu), NoKWArgs)
 		require.NoError(t, err)
 
 		// check for fail
@@ -429,16 +431,16 @@ func TestStateMachine(t *testing.T) {
 
 		// simpleHook
 		called := false
-		_called := func(args bacgopes.Args, kwArgs bacgopes.KWArgs) error {
+		_called := func(args Args, kwargs KWArgs) error {
 			called = args[0].(bool)
 			return nil
 		}
 
 		// create a state machine
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Call(_called, bacgopes.NewArgs(true), bacgopes.NoKWArgs).Success("")
+		tsm.GetStartState().Call(_called, NewArgs(true), NoKWArgs).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -454,16 +456,16 @@ func TestStateMachine(t *testing.T) {
 
 		// simpleHook
 		called := false
-		_called := func(args bacgopes.Args, kwArgs bacgopes.KWArgs) error {
+		_called := func(args Args, kwargs KWArgs) error {
 			called = args[0].(bool)
-			return tests.AssertionError{Message: "error"}
+			return AssertionError{Message: "error"}
 		}
 
 		// create a state machine
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Call(_called, bacgopes.NewArgs(true), bacgopes.NoKWArgs)
+		tsm.GetStartState().Call(_called, NewArgs(true), NoKWArgs)
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -478,7 +480,7 @@ func TestStateMachine(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 
 		// Make a pdu object
 		firstPdu := TPDU{a: 1}
@@ -489,7 +491,7 @@ func TestStateMachine(t *testing.T) {
 		// after sending the first pdu, wait for the second
 		s0 := tsm.GetStartState()
 		s1 := s0.Send(firstPdu, nil)
-		s2 := s1.Receive(bacgopes.NewArgs(TPDU{}), bacgopes.NewKWArgs(bacgopes.KnownKey("a"), 2))
+		s2 := s1.Receive(NewArgs(TPDU{}), NewKWArgs(KnownKey("a"), 2))
 		s2.Success("")
 
 		// run the machine
@@ -501,7 +503,7 @@ func TestStateMachine(t *testing.T) {
 		assert.Same(t, s1, tsm.GetCurrentState())
 
 		// give the machine the second pdu
-		err = tsm.Receive(bacgopes.NewArgs(secondPdu), bacgopes.NoKWArgs)
+		err = tsm.Receive(NewArgs(secondPdu), NoKWArgs)
 		require.NoError(t, err)
 
 		// check for success
@@ -524,7 +526,7 @@ func TestStateMachine(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 
 		// Make a pdu object
 		firstPdu := TPDU{a: 1}
@@ -534,7 +536,7 @@ func TestStateMachine(t *testing.T) {
 
 		// when the first pdu is received, send the second
 		s0 := tsm.GetStartState()
-		s1 := s0.Receive(bacgopes.NewArgs(TPDU{}), bacgopes.NewKWArgs(bacgopes.KnownKey("a"), 1))
+		s1 := s0.Receive(NewArgs(TPDU{}), NewKWArgs(KnownKey("a"), 1))
 		s2 := s1.Send(secondPdu, nil)
 		s2.Success("")
 
@@ -546,7 +548,7 @@ func TestStateMachine(t *testing.T) {
 		assert.True(t, tsm.IsRunning())
 
 		// give the machine the first pdu
-		err = tsm.Receive(bacgopes.NewArgs(firstPdu), bacgopes.NoKWArgs)
+		err = tsm.Receive(NewArgs(firstPdu), NoKWArgs)
 		require.NoError(t, err)
 
 		// check for success
@@ -568,23 +570,23 @@ func TestStateMachine(t *testing.T) {
 }
 
 func TestStateMachineTimeout1(t *testing.T) {
-	tests.ExclusiveGlobalTimeMachine(t)
+	ExclusiveGlobalTimeMachine(t)
 	testingLogger := testutils.ProduceTestingLogger(t)
 
 	// create a state machine
-	tsm := tests.NewTrappedStateMachine(testingLogger)
+	tsm := NewTrappedStateMachine(testingLogger)
 
 	// make a timeout transition from start to success
 	tsm.GetStartState().Timeout(1*time.Second, nil).Success("")
 
 	// reset the time machine
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	t.Log("time machine reset")
 
 	err := tsm.Run()
 	require.NoError(t, err)
 
-	tests.RunTimeMachine(testingLogger, 60*time.Second, time.Time{})
+	RunTimeMachine(testingLogger, 60*time.Second, time.Time{})
 	t.Log("time machine finished")
 
 	// check for success
@@ -594,7 +596,7 @@ func TestStateMachineTimeout1(t *testing.T) {
 
 func TestStateMachineTimeout2(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
-	tests.ExclusiveGlobalTimeMachine(t)
+	ExclusiveGlobalTimeMachine(t)
 
 	// make some pdus
 	firstPdu := TPDU{a: 1}
@@ -603,7 +605,7 @@ func TestStateMachineTimeout2(t *testing.T) {
 	t.Log(secondPdu)
 
 	// create a state machine
-	tsm := tests.NewTrappedStateMachine(testingLogger)
+	tsm := NewTrappedStateMachine(testingLogger)
 	s0 := tsm.GetStartState()
 
 	// send something, wait, send something, wait, success
@@ -614,13 +616,13 @@ func TestStateMachineTimeout2(t *testing.T) {
 	_ = s4
 
 	// reset the time machine
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	t.Log("time machine reset")
 
 	err := tsm.Run()
 	require.NoError(t, err)
 
-	tests.RunTimeMachine(testingLogger, 60*time.Millisecond, time.Time{})
+	RunTimeMachine(testingLogger, 60*time.Millisecond, time.Time{})
 	t.Log("time machine finished")
 
 	// check for success
@@ -635,29 +637,29 @@ func TestStateMachineTimeout2(t *testing.T) {
 
 func TestStateMachineGroup(t *testing.T) {
 	t.Run("test_state_machine_group_success", func(t *testing.T) {
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine group
-		smg := tests.NewStateMachineGroup(testingLogger)
+		smg := NewStateMachineGroup(testingLogger)
 
 		// create a trapped state machine, start state is success
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 		tsm.GetStartState().Success("")
 
 		// add it to the group
 		smg.Append(tsm)
 
 		// reset the time machine
-		tests.ResetTimeMachine(tests.StartTime)
+		ResetTimeMachine(StartTime)
 		t.Log("time machine reset")
 
 		// tell the group to run
 		err := smg.Run()
 		require.NoError(t, err)
 
-		tests.RunTimeMachine(testingLogger, 60*time.Second, time.Time{})
+		RunTimeMachine(testingLogger, 60*time.Second, time.Time{})
 		t.Log("time machine finished")
 
 		// check for success
@@ -667,29 +669,29 @@ func TestStateMachineGroup(t *testing.T) {
 		assert.True(t, smg.IsSuccessState())
 	})
 	t.Run("test_state_machine_group_success", func(t *testing.T) {
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine group
-		smg := tests.NewStateMachineGroup(testingLogger)
+		smg := NewStateMachineGroup(testingLogger)
 
 		// create a trapped state machine, start state is success
-		tsm := tests.NewTrappedStateMachine(testingLogger)
+		tsm := NewTrappedStateMachine(testingLogger)
 		tsm.GetStartState().Fail("")
 
 		// add it to the group
 		smg.Append(tsm)
 
 		// reset the time machine
-		tests.ResetTimeMachine(tests.StartTime)
+		ResetTimeMachine(StartTime)
 		t.Log("time machine reset")
 
 		// tell the group to run
 		err := smg.Run()
 		require.NoError(t, err)
 
-		tests.RunTimeMachine(testingLogger, 60*time.Second, time.Time{})
+		RunTimeMachine(testingLogger, 60*time.Second, time.Time{})
 		t.Log("time machine finished")
 
 		// check for success
@@ -702,32 +704,32 @@ func TestStateMachineGroup(t *testing.T) {
 
 func TestStateMachineEvents(t *testing.T) {
 	t.Run("test_state_machine_event_01", func(t *testing.T) {
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine group
-		smg := tests.NewStateMachineGroup(testingLogger)
+		smg := NewStateMachineGroup(testingLogger)
 
 		// create a trapped state machine, start state is success
-		tsm1 := tests.NewTrappedStateMachine(testingLogger)
+		tsm1 := NewTrappedStateMachine(testingLogger)
 		tsm1.GetStartState().SetEvent("e").Success("")
 		smg.Append(tsm1)
 
 		// create another trapped state machine, waiting for the event
-		tsm2 := tests.NewTrappedStateMachine(testingLogger)
+		tsm2 := NewTrappedStateMachine(testingLogger)
 		tsm2.GetStartState().WaitEvent("e", nil).Success("")
 		smg.Append(tsm2)
 
 		// reset the time machine
-		tests.ResetTimeMachine(tests.StartTime)
+		ResetTimeMachine(StartTime)
 		t.Log("time machine reset")
 
 		// tell the group to run
 		err := smg.Run()
 		require.NoError(t, err)
 
-		tests.RunTimeMachine(testingLogger, 60*time.Second, time.Time{})
+		RunTimeMachine(testingLogger, 60*time.Second, time.Time{})
 		t.Log("time machine finished")
 
 		// check for success
@@ -737,32 +739,32 @@ func TestStateMachineEvents(t *testing.T) {
 		assert.True(t, smg.IsSuccessState())
 	})
 	t.Run("test_state_machine_event_02", func(t *testing.T) {
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 
 		testingLogger := testutils.ProduceTestingLogger(t)
 
 		// create a state machine group
-		smg := tests.NewStateMachineGroup(testingLogger)
+		smg := NewStateMachineGroup(testingLogger)
 
 		// create a trapped state machine, waiting for an event
-		tsm1 := tests.NewTrappedStateMachine(testingLogger)
+		tsm1 := NewTrappedStateMachine(testingLogger)
 		tsm1.GetStartState().WaitEvent("e", nil).Success("")
 		smg.Append(tsm1)
 
 		// create another trapped state machine, start state is success
-		tsm2 := tests.NewTrappedStateMachine(testingLogger)
+		tsm2 := NewTrappedStateMachine(testingLogger)
 		tsm2.GetStartState().SetEvent("e").Success("")
 		smg.Append(tsm2)
 
 		// reset the time machine
-		tests.ResetTimeMachine(tests.StartTime)
+		ResetTimeMachine(StartTime)
 		t.Log("time machine reset")
 
 		// tell the group to run
 		err := smg.Run()
 		require.NoError(t, err)
 
-		tests.RunTimeMachine(testingLogger, 60*time.Second, time.Time{})
+		RunTimeMachine(testingLogger, 60*time.Second, time.Time{})
 		t.Log("time machine finished")
 
 		// check for success

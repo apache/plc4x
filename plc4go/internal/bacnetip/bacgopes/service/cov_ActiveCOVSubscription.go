@@ -19,9 +19,9 @@
 
 package service
 
-import "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
 
 type ActiveCOVSubscription struct {
-	*bacgopes.Property
+	*Property
 	//TODO: implement me
 }

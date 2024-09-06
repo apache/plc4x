@@ -24,27 +24,28 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
-func ObjectIdentifierTag(x string) bacgopes.Tag {
+func ObjectIdentifierTag(x string) Tag {
 	b := xtob(x)
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BACNET_OBJECT_IDENTIFIER, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BACNET_OBJECT_IDENTIFIER, len(b), b)
 	return tag
 }
 
 // Encode a ObjectIdentifier object into a tag.
-func ObjectIdentifierEncode(obj *bacgopes.ObjectIdentifier) bacgopes.Tag {
-	tag := Tag()
+func ObjectIdentifierEncode(obj *ObjectIdentifier) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a ObjectIdentifier application tag into a ObjectIdentifier.
-func ObjectIdentifierDecode(tag bacgopes.Tag) *bacgopes.ObjectIdentifier {
-	obj := ObjectIdentifier(tag)
+func ObjectIdentifierDecode(tag Tag) *ObjectIdentifier {
+	obj := quick.ObjectIdentifier(tag)
 
 	return obj
 }
@@ -55,98 +56,98 @@ func ObjectIdentifierDecode(tag bacgopes.Tag) *bacgopes.ObjectIdentifier {
 func ObjectIdentifierEndec(t *testing.T, v any, x string) {
 	tag := ObjectIdentifierTag(x)
 
-	obj := ObjectIdentifier(v)
+	obj := quick.ObjectIdentifier(v)
 
 	assert.Equal(t, tag, ObjectIdentifierEncode(obj))
 	assert.Equal(t, obj, ObjectIdentifierDecode(tag))
 }
 
 func TestObjectIdentifier(t *testing.T) {
-	obj := ObjectIdentifier()
-	assert.Equal(t, bacgopes.ObjectIdentifierTuple{Left: "analogInput"}, obj.GetValue())
+	obj := quick.ObjectIdentifier()
+	assert.Equal(t, ObjectIdentifierTuple{Left: "analogInput"}, obj.GetValue())
 
 	assert.Panics(t, func() {
-		ObjectIdentifier(1.0)
+		quick.ObjectIdentifier(1.0)
 	})
 }
 
 func TestObjectIdentifierInt(t *testing.T) {
-	obj := ObjectIdentifier(1)
-	assert.Equal(t, bacgopes.ObjectIdentifierTuple{Left: "analogInput", Right: 1}, obj.GetValue())
+	obj := quick.ObjectIdentifier(1)
+	assert.Equal(t, ObjectIdentifierTuple{Left: "analogInput", Right: 1}, obj.GetValue())
 	assert.Equal(t, "ObjectIdentifier(analogInput,1)", obj.String())
 
-	obj = ObjectIdentifier(0x0400002)
-	assert.Equal(t, bacgopes.ObjectIdentifierTuple{Left: "analogOutput", Right: 2}, obj.GetValue())
+	obj = quick.ObjectIdentifier(0x0400002)
+	assert.Equal(t, ObjectIdentifierTuple{Left: "analogOutput", Right: 2}, obj.GetValue())
 	assert.Equal(t, "ObjectIdentifier(analogOutput,2)", obj.String())
 }
 
 func TestObjectIdentifierStr(t *testing.T) {
-	obj := ObjectIdentifier("analogInput:1")
-	assert.Equal(t, bacgopes.ObjectIdentifierTuple{Left: "analogInput", Right: 1}, obj.GetValue())
+	obj := quick.ObjectIdentifier("analogInput:1")
+	assert.Equal(t, ObjectIdentifierTuple{Left: "analogInput", Right: 1}, obj.GetValue())
 	assert.Equal(t, "ObjectIdentifier(analogInput,1)", obj.String())
 
-	obj = ObjectIdentifier("8:123")
-	assert.Equal(t, bacgopes.ObjectIdentifierTuple{Left: "device", Right: 123}, obj.GetValue())
+	obj = quick.ObjectIdentifier("8:123")
+	assert.Equal(t, ObjectIdentifierTuple{Left: "device", Right: 123}, obj.GetValue())
 	assert.Equal(t, "ObjectIdentifier(device,123)", obj.String())
 
 	assert.Panics(t, func() {
-		ObjectIdentifier("x")
+		quick.ObjectIdentifier("x")
 	})
 	assert.Panics(t, func() {
-		ObjectIdentifier(":1")
+		quick.ObjectIdentifier(":1")
 	})
 	assert.Panics(t, func() {
-		ObjectIdentifier("1:")
+		quick.ObjectIdentifier("1:")
 	})
 	assert.Panics(t, func() {
-		ObjectIdentifier("1:b")
+		quick.ObjectIdentifier("1:b")
 	})
 }
 
 func TestObjectIdentifierTuple(t *testing.T) {
-	obj := ObjectIdentifier(bacgopes.ObjectIdentifierTuple{Left: "analogInput", Right: 1})
-	assert.Equal(t, bacgopes.ObjectIdentifierTuple{Left: "analogInput", Right: 1}, obj.GetValue())
+	obj := quick.ObjectIdentifier(ObjectIdentifierTuple{Left: "analogInput", Right: 1})
+	assert.Equal(t, ObjectIdentifierTuple{Left: "analogInput", Right: 1}, obj.GetValue())
 	assert.Equal(t, "ObjectIdentifier(analogInput,1)", obj.String())
 
 	assert.Panics(t, func() {
-		ObjectIdentifier(bacgopes.ObjectIdentifierTuple{Left: 0, Right: -1})
+		quick.ObjectIdentifier(ObjectIdentifierTuple{Left: 0, Right: -1})
 	})
 	assert.Panics(t, func() {
-		ObjectIdentifier(bacgopes.ObjectIdentifierTuple{Left: 0, Right: 0x003FFFFF + 1})
+		quick.ObjectIdentifier(ObjectIdentifierTuple{Left: 0, Right: 0x003FFFFF + 1})
 	})
 }
 
 func TestObjectIdentifierTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BACNET_OBJECT_IDENTIFIER, 1, xtob("06000003"))
-	obj := ObjectIdentifier(tag)
-	assert.Equal(t, bacgopes.ObjectIdentifierTuple{Left: "pulseConverter", Right: 3}, obj.GetValue())
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BACNET_OBJECT_IDENTIFIER, 1, xtob("06000003"))
+	obj := quick.ObjectIdentifier(tag)
+	assert.Equal(t, ObjectIdentifierTuple{Left: "pulseConverter", Right: 3}, obj.GetValue())
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		ObjectIdentifier(tag)
+		quick.ObjectIdentifier(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		ObjectIdentifier(tag)
+		quick.ObjectIdentifier(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		ObjectIdentifier(tag)
+		quick.ObjectIdentifier(tag)
 	})
 }
 
 func TestObjectIdentifierCopy(t *testing.T) {
-	obj1 := ObjectIdentifier(bacgopes.ObjectIdentifierTuple{Left: "pulseConverter", Right: 3})
-	obj2 := ObjectIdentifier(obj1)
-	assert.Equal(t, bacgopes.ObjectIdentifierTuple{Left: "pulseConverter", Right: 3}, obj2.GetValue())
+	obj1 := quick.ObjectIdentifier(ObjectIdentifierTuple{Left: "pulseConverter", Right: 3})
+	obj2 := quick.ObjectIdentifier(obj1)
+	assert.Equal(t, ObjectIdentifierTuple{Left: "pulseConverter", Right: 3}, obj2.GetValue())
 	assert.Equal(t, obj1, obj2)
 }
 
 func TestObjectIdentifierEndec(t *testing.T) {
 	assert.Panics(t, func() {
-		ObjectIdentifier(ObjectIdentifierTag(""))
+		quick.ObjectIdentifier(ObjectIdentifierTag(""))
 	})
-	ObjectIdentifierEndec(t, bacgopes.ObjectIdentifierTuple{Left: "analogInput", Right: 0}, "00000000")
+	ObjectIdentifierEndec(t, ObjectIdentifierTuple{Left: "analogInput", Right: 0}, "00000000")
 }

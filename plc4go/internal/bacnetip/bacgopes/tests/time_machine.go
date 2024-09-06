@@ -27,8 +27,10 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/core"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
 
 var globalTimeMachine *TimeMachine
@@ -51,12 +53,12 @@ func NewGlobalTimeMachine(t *testing.T) {
 	testingLogger.Trace().Msg("creating new global time machine")
 	globalTimeMachine = NewTimeMachine(testingLogger)
 	testingLogger.Trace().Msg("overwriting global task manager")
-	oldManager := bacgopes.OverwriteTaskManager(testingLogger, globalTimeMachine)
+	oldManager := OverwriteTaskManager(testingLogger, globalTimeMachine)
 	t.Cleanup(func() {
 		testingLogger.Trace().Msg("clearing task manager")
-		bacgopes.ClearTaskManager(testingLogger)
+		ClearTaskManager(testingLogger)
 		testingLogger.Trace().Msg("Restoring old manager")
-		bacgopes.OverwriteTaskManager(testingLogger, oldManager)
+		OverwriteTaskManager(testingLogger, oldManager)
 	})
 }
 
@@ -69,7 +71,7 @@ func ClearGlobalTimeMachine(t *testing.T) {
 		testingLogger.Warn().Msg("global time machine not set")
 	}
 	globalTimeMachine = nil
-	bacgopes.ClearTaskManager(testingLogger)
+	ClearTaskManager(testingLogger)
 }
 
 // LockGlobalTimeMachine locks the global time machine during the test duration.
@@ -89,7 +91,7 @@ func ExclusiveGlobalTimeMachine(t *testing.T) {
 }
 
 type TimeMachine struct {
-	bacgopes.TaskManager
+	TaskManager
 
 	currentTime time.Time
 	timeLimit   time.Time
@@ -102,7 +104,7 @@ func NewTimeMachine(localLog zerolog.Logger) *TimeMachine {
 	t := &TimeMachine{
 		log: localLog,
 	}
-	t.TaskManager = bacgopes.NewTaskManager(localLog)
+	t.TaskManager = NewTaskManager(localLog)
 	return t
 }
 
@@ -111,24 +113,24 @@ func (t *TimeMachine) GetTime() time.Time {
 	return t.currentTime
 }
 
-func (t *TimeMachine) InstallTask(task bacgopes.TaskRequirements) {
+func (t *TimeMachine) InstallTask(task TaskRequirements) {
 	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("InstallTask")
 	t.TaskManager.InstallTask(task)
 }
 
-func (t *TimeMachine) SuspendTask(task bacgopes.TaskRequirements) {
+func (t *TimeMachine) SuspendTask(task TaskRequirements) {
 	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("SuspendTask")
 	t.TaskManager.SuspendTask(task)
 }
 
-func (t *TimeMachine) ResumeTask(task bacgopes.TaskRequirements) {
+func (t *TimeMachine) ResumeTask(task TaskRequirements) {
 	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("ResumeTask")
 	t.TaskManager.ResumeTask(task)
 }
 
 func (t *TimeMachine) MoreToDo() bool {
 	t.log.Debug().Time("currentTime", t.currentTime).Msg("MoreToDo")
-	if len(bacgopes.DeferredFunctions) > 0 {
+	if len(DeferredFunctions) > 0 {
 		t.log.Trace().Msg("deferredFunctions")
 		return true
 	}
@@ -162,7 +164,7 @@ func (t *TimeMachine) MoreToDo() bool {
 	return true
 }
 
-func (t *TimeMachine) GetNextTask() (bacgopes.TaskRequirements, *time.Duration) {
+func (t *TimeMachine) GetNextTask() (TaskRequirements, *time.Duration) {
 	t.log.Debug().Time("currentTime", t.currentTime).Msg("GetNextTask")
 	t.log.Debug().Time("timeLimit", t.timeLimit).Msg("timeLimit")
 	if t.log.Debug().Enabled() {
@@ -173,7 +175,7 @@ func (t *TimeMachine) GetNextTask() (bacgopes.TaskRequirements, *time.Duration) 
 		t.log.Debug().Stringers("tasks", stringers).Msg("tasks")
 	}
 
-	var task bacgopes.TaskRequirements
+	var task TaskRequirements
 	var delta *time.Duration
 
 	if !t.timeLimit.IsZero() && t.currentTime.After(t.timeLimit) {
@@ -205,7 +207,7 @@ func (t *TimeMachine) GetNextTask() (bacgopes.TaskRequirements, *time.Duration) 
 	return task, delta
 }
 
-func (t *TimeMachine) ProcessTask(task bacgopes.TaskRequirements) {
+func (t *TimeMachine) ProcessTask(task TaskRequirements) {
 	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("ProcessTask")
 	t.TaskManager.ProcessTask(task)
 }
@@ -252,12 +254,12 @@ func RunTimeMachine(localLog zerolog.Logger, duration time.Duration, stopTime ti
 		panic("duration or stopTime is required")
 	}
 
-	if len(bacgopes.DeferredFunctions) > 0 {
+	if len(DeferredFunctions) > 0 {
 		localLog.Debug().Msg("deferredFunctions")
 	}
 
 	for {
-		bacgopes.RunOnce(localLog)
+		RunOnce(localLog)
 		localLog.Trace().Msg("ran once")
 		if !globalTimeMachine.MoreToDo() {
 			localLog.Trace().Msg("no more to do")

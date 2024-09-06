@@ -25,19 +25,21 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
-func TagTuple(tag bacgopes.Tag) (tagClass model.TagClass, tagNumber uint, tagLVT int, tagData []byte) {
+func TagTuple(tag Tag) (tagClass model.TagClass, tagNumber uint, tagLVT int, tagData []byte) {
 	return tag.GetTagClass(), tag.GetTagNumber(), tag.GetTagLvt(), tag.GetTagData()
 }
 
 // Build PDU from the string, decode the tag, convert to an object.
 func objDecode(blob []byte) any {
-	data := PDUData(blob)
-	tag := Tag(data)
+	data := quick.PDUData(blob)
+	tag := quick.Tag(data)
 	obj, err := tag.AppToObject()
 	if err != nil {
 		panic(err) // TODO
@@ -47,12 +49,12 @@ func objDecode(blob []byte) any {
 
 // Encode the object into a tag, encode it in a PDU, return the data.
 func objEncode(obj any) []byte {
-	tag := Tag()
-	err := obj.(interface{ Encode(arg bacgopes.Arg) error }).Encode(tag)
+	tag := quick.Tag()
+	err := obj.(Encoder).Encode(tag)
 	if err != nil {
 		panic(err)
 	}
-	data := PDUData()
+	data := quick.PDUData()
 	tag.Encode(data)
 	return data.GetPduData()
 }
@@ -78,15 +80,15 @@ func objEndec(t *testing.T, obj any, x string) {
 }
 
 // Build PDU from the string, decode the tag, convert to an object.
-func contextDecode(blob []byte) *bacgopes.ContextTag {
-	data := PDUData(blob)
-	tag := ContextTag(data)
+func contextDecode(blob []byte) *ContextTag {
+	data := quick.PDUData(blob)
+	tag := quick.ContextTag(data)
 	return tag
 }
 
 // Encode the object into a tag, encode it in a PDU, return the data.
-func contextEncode(tag *bacgopes.ContextTag) []byte {
-	data := PDUData()
+func contextEncode(tag *ContextTag) []byte {
+	data := quick.PDUData()
 	tag.Encode(data)
 	return data.GetPduData()
 }
@@ -101,7 +103,7 @@ func contextEndec(t *testing.T, tnum int, x string, y string) {
 	blob1 := xtob(y)
 
 	// make a context tag
-	tag1 := ContextTag(tnum, tdata)
+	tag1 := quick.ContextTag(tnum, tdata)
 
 	// decode the blob into a tag
 	tag2 := contextDecode(blob1)
@@ -115,15 +117,15 @@ func contextEndec(t *testing.T, tnum int, x string, y string) {
 }
 
 // Build PDU from the string, decode the tag, convert to an object.
-func openingDecode(blob []byte) *bacgopes.OpeningTag {
-	data := PDUData(blob)
-	tag := OpeningTag(data)
+func openingDecode(blob []byte) *OpeningTag {
+	data := quick.PDUData(blob)
+	tag := quick.OpeningTag(data)
 	return tag
 }
 
 // Encode the object into a tag, encode it in a PDU, return the data.
-func openingEncode(tag *bacgopes.OpeningTag) []byte {
-	data := PDUData()
+func openingEncode(tag *OpeningTag) []byte {
+	data := quick.PDUData()
 	tag.Encode(data)
 	return data.GetPduData()
 }
@@ -137,7 +139,7 @@ func openingEndec(t *testing.T, tnum int, x string) {
 	blob1 := xtob(x)
 
 	// make a context tag
-	tag1 := OpeningTag(tnum)
+	tag1 := quick.OpeningTag(tnum)
 
 	// decode the blob into a tag
 	tag2 := openingDecode(blob1)
@@ -151,15 +153,15 @@ func openingEndec(t *testing.T, tnum int, x string) {
 }
 
 // Build PDU from the string, decode the tag, convert to an object.
-func closingDecode(blob []byte) *bacgopes.ClosingTag {
-	data := PDUData(blob)
-	tag := ClosingTag(data)
+func closingDecode(blob []byte) *ClosingTag {
+	data := quick.PDUData(blob)
+	tag := quick.ClosingTag(data)
 	return tag
 }
 
 // Encode the object into a tag, encode it in a PDU, return the data.
-func closingEncode(tag *bacgopes.ClosingTag) []byte {
-	data := PDUData()
+func closingEncode(tag *ClosingTag) []byte {
+	data := quick.PDUData()
 	tag.Encode(data)
 	return data.GetPduData()
 }
@@ -173,7 +175,7 @@ func closingEndec(t *testing.T, tnum int, x string) {
 	blob1 := xtob(x)
 
 	// make a context tag
-	tag1 := ClosingTag(tnum)
+	tag1 := quick.ClosingTag(tnum)
 
 	// decode the blob into a tag
 	tag2 := closingDecode(blob1)
@@ -187,55 +189,55 @@ func closingEndec(t *testing.T, tnum int, x string) {
 }
 
 func TestTag(t *testing.T) {
-	tag := Tag()
+	tag := quick.Tag()
 	assert.Equal(t, model.TagClass(0), tag.GetTagClass())
 	assert.Equal(t, uint(0), tag.GetTagNumber())
 
 	// must have a valid encoded tag to extract the from the data
-	data := PDUData(xtob(""))
+	data := quick.PDUData(xtob(""))
 	assert.Panics(t, func() {
-		Tag(data)
+		quick.Tag(data)
 	})
 
 	// must have two values, class and number
 	assert.Panics(t, func() {
-		Tag(0)
+		quick.Tag(0)
 	})
 
-	tag = Tag(0, 1)
+	tag = quick.Tag(0, 1)
 	assert.Equal(t, model.TagClass(0), tag.GetTagClass())
 	assert.Equal(t, uint(1), tag.GetTagNumber())
 
-	tag = Tag(0, 1, 2)
+	tag = quick.Tag(0, 1, 2)
 	assert.Equal(t, model.TagClass(0), tag.GetTagClass())
 	assert.Equal(t, uint(1), tag.GetTagNumber())
 	assert.Equal(t, 2, tag.GetTagLvt())
 
 	// tag data must be bytes of bytearray
 	assert.Panics(t, func() {
-		Tag(0, 1, 2, 3)
+		quick.Tag(0, 1, 2, 3)
 	})
 }
 
 func TestApplicationTag(t *testing.T) {
-	tag := ApplicationTag(0, xtob(""))
+	tag := quick.ApplicationTag(0, xtob(""))
 	_ = tag
 
 	assert.Panics(t, func() {
-		ApplicationTag(0)
+		quick.ApplicationTag(0)
 	})
 }
 
 func TestGenericApplicationToContext(t *testing.T) {
 	// create and application
-	tag := ApplicationTag(0, xtob("01"))
+	tag := quick.ApplicationTag(0, xtob("01"))
 
 	// convert it to context tagged, context 0
 	ctag, err := tag.AppToContext(0)
 	require.NoError(t, err)
 
 	// create a context tag with the same shape
-	ttag := ContextTag(0, xtob("01"))
+	ttag := quick.ContextTag(0, xtob("01"))
 
 	// check to see if they are the same
 	assert.Equal(t, ttag, ctag)
@@ -250,14 +252,14 @@ func TestGenericApplicationToContext(t *testing.T) {
 
 func TestBooleanApplicationToContext(t *testing.T) {
 	// create and application
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0)
 
 	// convert it to context tagged, context 0
 	ctag, err := tag.AppToContext(0)
 	require.NoError(t, err)
 
 	// create a context tag with the same shape
-	ttag := ContextTag(0, xtob("00"))
+	ttag := quick.ContextTag(0, xtob("00"))
 
 	// check to see if they are the same
 	assert.Equal(t, ttag, ctag)
@@ -272,84 +274,84 @@ func TestBooleanApplicationToContext(t *testing.T) {
 
 func TestBooleanApplicationToObject(t *testing.T) {
 	// null
-	objEndec(t, Null(), "00")
+	objEndec(t, quick.Null(), "00")
 
 	// boolean
-	objEndec(t, Boolean(true), "11")
-	objEndec(t, Boolean(false), "10")
+	objEndec(t, quick.Boolean(true), "11")
+	objEndec(t, quick.Boolean(false), "10")
 
 	// unsigned
-	objEndec(t, Unsigned(0), "2100")
-	objEndec(t, Unsigned(1), "2101")
-	objEndec(t, Unsigned(127), "217F")
-	objEndec(t, Unsigned(128), "2180")
+	objEndec(t, quick.Unsigned(0), "2100")
+	objEndec(t, quick.Unsigned(1), "2101")
+	objEndec(t, quick.Unsigned(127), "217F")
+	objEndec(t, quick.Unsigned(128), "2180")
 
 	// integer
-	objEndec(t, Integer(0), "3100")
-	objEndec(t, Integer(1), "3101")
-	objEndec(t, Integer(-1), "31FF")
-	objEndec(t, Integer(128), "320080")
-	objEndec(t, Integer(-128), "3180")
+	objEndec(t, quick.Integer(0), "3100")
+	objEndec(t, quick.Integer(1), "3101")
+	objEndec(t, quick.Integer(-1), "31FF")
+	objEndec(t, quick.Integer(128), "320080")
+	objEndec(t, quick.Integer(-128), "3180")
 
 	// real
-	objEndec(t, Real(0), "4400000000")
-	objEndec(t, Real(1), "443F800000")
-	objEndec(t, Real(-1), "44BF800000")
-	objEndec(t, Real(73.5), "4442930000")
+	objEndec(t, quick.Real(0), "4400000000")
+	objEndec(t, quick.Real(1), "443F800000")
+	objEndec(t, quick.Real(-1), "44BF800000")
+	objEndec(t, quick.Real(73.5), "4442930000")
 
 	// double
-	objEndec(t, Double(0), "55080000000000000000")
-	objEndec(t, Double(1), "55083FF0000000000000")
-	objEndec(t, Double(-1), "5508BFF0000000000000")
-	objEndec(t, Double(73.5), "55084052600000000000")
+	objEndec(t, quick.Double(0), "55080000000000000000")
+	objEndec(t, quick.Double(1), "55083FF0000000000000")
+	objEndec(t, quick.Double(-1), "5508BFF0000000000000")
+	objEndec(t, quick.Double(73.5), "55084052600000000000")
 
 	// octet string
-	objEndec(t, OctetString(xtob("")), "60")
-	objEndec(t, OctetString(xtob("01")), "6101")
-	objEndec(t, OctetString(xtob("0102")), "620102")
-	objEndec(t, OctetString(xtob("010203040506")), "6506010203040506")
+	objEndec(t, quick.OctetString(xtob("")), "60")
+	objEndec(t, quick.OctetString(xtob("01")), "6101")
+	objEndec(t, quick.OctetString(xtob("0102")), "620102")
+	objEndec(t, quick.OctetString(xtob("010203040506")), "6506010203040506")
 
 	// character string
-	objEndec(t, CharacterString(""), "7100")
-	objEndec(t, CharacterString("a"), "720061")
-	objEndec(t, CharacterString("abcde"), "7506006162636465")
+	objEndec(t, quick.CharacterString(""), "7100")
+	objEndec(t, quick.CharacterString("a"), "720061")
+	objEndec(t, quick.CharacterString("abcde"), "7506006162636465")
 
 	// bit string
-	objEndec(t, BitString([]bool{}), "8100")
-	objEndec(t, BitString([]bool{false}), "820700")
-	objEndec(t, BitString([]bool{true}), "820780")
-	objEndec(t, BitString([]bool{true, true, true, true, true}), "8203F8")
-	objEndec(t, BitString([]bool{true, true, true, true, true, true, true, true, true, true}), "8306FFC0")
+	objEndec(t, quick.BitString([]bool{}), "8100")
+	objEndec(t, quick.BitString([]bool{false}), "820700")
+	objEndec(t, quick.BitString([]bool{true}), "820780")
+	objEndec(t, quick.BitString([]bool{true, true, true, true, true}), "8203F8")
+	objEndec(t, quick.BitString([]bool{true, true, true, true, true, true, true, true, true, true}), "8306FFC0")
 
 	// enumerated
-	objEndec(t, Enumerated(0), "9100")
-	objEndec(t, Enumerated(1), "9101")
-	objEndec(t, Enumerated(127), "917F")
-	objEndec(t, Enumerated(128), "9180")
+	objEndec(t, quick.Enumerated(0), "9100")
+	objEndec(t, quick.Enumerated(1), "9101")
+	objEndec(t, quick.Enumerated(127), "917F")
+	objEndec(t, quick.Enumerated(128), "9180")
 
 	// date
-	objEndec(t, Date(bacgopes.DateTuple{1, 2, 3, 4}), "A401020304")
-	objEndec(t, Date(bacgopes.DateTuple{255, 2, 3, 4}), "A4FF020304")
-	objEndec(t, Date(bacgopes.DateTuple{1, 255, 3, 4}), "A401FF0304")
-	objEndec(t, Date(bacgopes.DateTuple{1, 2, 255, 4}), "A40102FF04")
-	objEndec(t, Date(bacgopes.DateTuple{1, 2, 3, 255}), "A4010203FF")
+	objEndec(t, quick.Date(DateTuple{1, 2, 3, 4}), "A401020304")
+	objEndec(t, quick.Date(DateTuple{255, 2, 3, 4}), "A4FF020304")
+	objEndec(t, quick.Date(DateTuple{1, 255, 3, 4}), "A401FF0304")
+	objEndec(t, quick.Date(DateTuple{1, 2, 255, 4}), "A40102FF04")
+	objEndec(t, quick.Date(DateTuple{1, 2, 3, 255}), "A4010203FF")
 
 	// time
-	objEndec(t, Time(bacgopes.TimeTuple{1, 2, 3, 4}), "B401020304")
-	objEndec(t, Time(bacgopes.TimeTuple{255, 2, 3, 4}), "B4FF020304")
-	objEndec(t, Time(bacgopes.TimeTuple{1, 255, 3, 4}), "B401FF0304")
-	objEndec(t, Time(bacgopes.TimeTuple{1, 2, 255, 4}), "B40102FF04")
-	objEndec(t, Time(bacgopes.TimeTuple{1, 2, 3, 255}), "B4010203FF")
+	objEndec(t, quick.Time(TimeTuple{1, 2, 3, 4}), "B401020304")
+	objEndec(t, quick.Time(TimeTuple{255, 2, 3, 4}), "B4FF020304")
+	objEndec(t, quick.Time(TimeTuple{1, 255, 3, 4}), "B401FF0304")
+	objEndec(t, quick.Time(TimeTuple{1, 2, 255, 4}), "B40102FF04")
+	objEndec(t, quick.Time(TimeTuple{1, 2, 3, 255}), "B4010203FF")
 
 	// object identifier
-	objEndec(t, ObjectIdentifier(0, 0), "C400000000")
-	objEndec(t, ObjectIdentifier(1, 0), "C400400000")
-	objEndec(t, ObjectIdentifier(0, 2), "C400000002")
-	objEndec(t, ObjectIdentifier(3, 4), "C400C00004")
+	objEndec(t, quick.ObjectIdentifier(0, 0), "C400000000")
+	objEndec(t, quick.ObjectIdentifier(1, 0), "C400400000")
+	objEndec(t, quick.ObjectIdentifier(0, 2), "C400000002")
+	objEndec(t, quick.ObjectIdentifier(3, 4), "C400C00004")
 }
 
 func TestContextTag(t *testing.T) {
-	ContextTag(0, xtob(""))
+	quick.ContextTag(0, xtob(""))
 
 	contextEndec(t, 0, "", "08")
 	contextEndec(t, 1, "01", "1901")
@@ -360,7 +362,7 @@ func TestContextTag(t *testing.T) {
 }
 
 func TestOpeningTag(t *testing.T) {
-	OpeningTag(0)
+	quick.OpeningTag(0)
 
 	openingEndec(t, 0, "0E")
 	openingEndec(t, 1, "1E")
@@ -372,7 +374,7 @@ func TestOpeningTag(t *testing.T) {
 }
 
 func TestClosingTag(t *testing.T) {
-	ClosingTag(0)
+	quick.ClosingTag(0)
 
 	closingEndec(t, 0, "0f")
 	closingEndec(t, 1, "1F")
@@ -384,38 +386,38 @@ func TestClosingTag(t *testing.T) {
 }
 
 func TestTagList(t *testing.T) {
-	_ = TagList()
+	_ = quick.TagList()
 }
 
 func TestPeek(t *testing.T) {
 	tag0 := IntegerTag("00")
-	taglist := TagList(tag0)
+	taglist := quick.TagList(tag0)
 
 	// peek at the first tag
 	assert.Equal(t, tag0, taglist.Peek())
 
 	// pop of the front
 	tag1 := taglist.Pop()
-	var emptyList = make([]bacgopes.Tag, 0)
+	var emptyList = make([]Tag, 0)
 	assert.Equal(t, emptyList, taglist.GetTagList())
 
 	// push if back to the front
 	taglist.Push(tag1)
-	assert.Equal(t, []bacgopes.Tag{tag1}, taglist.GetTagList())
+	assert.Equal(t, []Tag{tag1}, taglist.GetTagList())
 }
 
 func TestGetContext(t *testing.T) {
-	tagListData := []bacgopes.Tag{
-		ContextTag(0, xtob("00")),
-		ContextTag(1, xtob("01")),
-		OpeningTag(2),
+	tagListData := []Tag{
+		quick.ContextTag(0, xtob("00")),
+		quick.ContextTag(1, xtob("01")),
+		quick.OpeningTag(2),
 		IntegerTag("03"),
-		OpeningTag(0),
+		quick.OpeningTag(0),
 		IntegerTag("04"),
-		ClosingTag(0),
-		ClosingTag(2),
+		quick.ClosingTag(0),
+		quick.ClosingTag(2),
 	}
-	taglist := TagList(tagListData...)
+	taglist := quick.TagList(tagListData...)
 
 	// known to be a simple context encoded element
 	context0, err := taglist.GetContext(0)
@@ -425,7 +427,7 @@ func TestGetContext(t *testing.T) {
 	// known to be a simple context encoded list of element(s)
 	context2, err := taglist.GetContext(2)
 	require.NoError(t, err)
-	assert.Equal(t, tagListData[3:7], context2.(*bacgopes.TagList).GetTagList())
+	assert.Equal(t, tagListData[3:7], context2.(*TagList).GetTagList())
 
 	// known missing context
 	context3, err := taglist.GetContext(3)
@@ -434,61 +436,61 @@ func TestGetContext(t *testing.T) {
 }
 
 func TestEndec0(t *testing.T) { // Test bracketed application tagged integer encoding and decoding.
-	tagList := TagList()
+	tagList := quick.TagList()
 
-	data := PDUData()
+	data := quick.PDUData()
 	tagList.Encode(data)
 	assert.Equal(t, []byte{}, data.GetPduData())
 
-	tagList = TagList()
+	tagList = quick.TagList()
 	err := tagList.Decode(data)
 	assert.NoError(t, err)
-	var noItems []bacgopes.Tag
+	var noItems []Tag
 	assert.Equal(t, noItems, tagList.GetTagList())
 }
 
 func TestEndec1(t *testing.T) { // Test bracketed application tagged integer encoding and decoding.
 	tag0 := IntegerTag("00")
 	tag1 := IntegerTag("01")
-	tagList := TagList(tag0, tag1)
+	tagList := quick.TagList(tag0, tag1)
 
-	data := PDUData()
+	data := quick.PDUData()
 	tagList.Encode(data)
 	assert.Equal(t, xtob("31003101"), data.GetPduData())
 
-	tagList = TagList()
+	tagList = quick.TagList()
 	err := tagList.Decode(data)
 	assert.NoError(t, err)
-	assert.Equal(t, []bacgopes.Tag{tag0, tag1}, tagList.GetTagList())
+	assert.Equal(t, []Tag{tag0, tag1}, tagList.GetTagList())
 }
 
 func TestEndec2(t *testing.T) { // Test bracketed application tagged integer encoding and decoding.
-	tag0 := ContextTag(0, xtob("00"))
-	tag1 := ContextTag(1, xtob("01"))
-	tagList := TagList(tag0, tag1)
+	tag0 := quick.ContextTag(0, xtob("00"))
+	tag1 := quick.ContextTag(1, xtob("01"))
+	tagList := quick.TagList(tag0, tag1)
 
-	data := PDUData()
+	data := quick.PDUData()
 	tagList.Encode(data)
 	assert.Equal(t, xtob("09001901"), data.GetPduData())
 
-	tagList = TagList()
+	tagList = quick.TagList()
 	err := tagList.Decode(data)
 	assert.NoError(t, err)
-	assert.Equal(t, []bacgopes.Tag{tag0, tag1}, tagList.GetTagList())
+	assert.Equal(t, []Tag{tag0, tag1}, tagList.GetTagList())
 }
 
 func TestEndec3(t *testing.T) { // Test bracketed application tagged integer encoding and decoding.
-	tag0 := OpeningTag(0)
+	tag0 := quick.OpeningTag(0)
 	tag1 := IntegerTag("0102")
-	tag2 := ClosingTag(0)
-	tagList := TagList(tag0, tag1, tag2)
+	tag2 := quick.ClosingTag(0)
+	tagList := quick.TagList(tag0, tag1, tag2)
 
-	data := PDUData()
+	data := quick.PDUData()
 	tagList.Encode(data)
 	assert.Equal(t, xtob("0E3201020F"), data.GetPduData())
 
-	tagList = TagList()
+	tagList = quick.TagList()
 	err := tagList.Decode(data)
 	assert.NoError(t, err)
-	assert.Equal(t, []bacgopes.Tag{tag0, tag1, tag2}, tagList.GetTagList())
+	assert.Equal(t, []Tag{tag0, tag1, tag2}, tagList.GetTagList())
 }

@@ -19,9 +19,11 @@
 
 package service
 
-import "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/capability"
+)
 
 type ChangeOfValuesServices struct {
-	*bacgopes.Capability
+	*Capability
 	//TODO: implement me
 }

@@ -25,13 +25,16 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
 type sampleBitString struct {
-	*bacgopes.BitString
+	*BitString
 	bitLen   int
 	bitNames map[string]int
 }
@@ -49,7 +52,7 @@ func SampleBitString(args ...any) *sampleBitString { //nolint:all
 		},
 	}
 	var err error
-	s.BitString, err = bacgopes.NewBitStringWithExtension(s, args)
+	s.BitString, err = NewBitStringWithExtension(s, args)
 	if err != nil {
 		panic(err)
 	}
@@ -69,23 +72,23 @@ func (s *sampleBitString) String() string {
 }
 
 // Convert a hex string to a bit_string application tag.
-func bitStringTag(t *testing.T, x string) bacgopes.Tag {
+func bitStringTag(t *testing.T, x string) Tag {
 	t.Helper()
-	b, err := bacgopes.Xtob(x)
+	b, err := Xtob(x)
 	require.NoError(t, err)
-	tag, err := bacgopes.NewTag(bacgopes.NewArgs(model.TagClass_APPLICATION_TAGS, bacgopes.TagBitStringAppTag, len(b), b))
+	tag, err := NewTag(NewArgs(model.TagClass_APPLICATION_TAGS, TagBitStringAppTag, len(b), b))
 	require.NoError(t, err)
 	return tag
 }
 
-func bitStringEncode(obj *bacgopes.BitString) bacgopes.Tag {
-	tag := Tag()
+func bitStringEncode(obj *BitString) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
-func bitStringDecode(tag bacgopes.Tag) *bacgopes.BitString {
-	obj := BitString(tag)
+func bitStringDecode(tag Tag) *BitString {
+	obj := quick.BitString(tag)
 	return obj
 }
 
@@ -96,31 +99,31 @@ func bitStringEndec(t *testing.T, v []int, x string) {
 	t.Helper()
 	tag := bitStringTag(t, x)
 
-	obj := BitString(v)
+	obj := quick.BitString(v)
 
 	assert.Equal(t, tag, bitStringEncode(obj), "encoded obj should match the tag")
 	assert.Equal(t, obj, bitStringDecode(tag), "decoded tag should match the obj")
 }
 
 func TestBitString(t *testing.T) {
-	obj := BitString()
+	obj := quick.BitString()
 	assert.Len(t, obj.GetValue(), 0)
 	assert.Equal(t, `BitString()`, obj.String())
 
-	obj = BitString([]int{0})
+	obj = quick.BitString([]int{0})
 	assert.Equal(t, []bool{false}, obj.GetValue())
 	assert.Equal(t, `BitString(0)`, obj.String())
 
-	obj = BitString([]int{0, 1})
+	obj = quick.BitString([]int{0, 1})
 	assert.Equal(t, []bool{false, true}, obj.GetValue())
 	assert.Equal(t, `BitString(0,1)`, obj.String())
 
 	assert.Panics(t, func() {
-		BitString("some string")
+		quick.BitString("some string")
 	})
 
 	assert.Panics(t, func() {
-		BitString("1.0")
+		quick.BitString("1.0")
 	})
 }
 
@@ -135,39 +138,39 @@ func TestBitStringSample(t *testing.T) {
 	assert.Equal(t, `BitString(!b0,!b1,0,0,b4,0,0,!b7,!b8,0,0,0,!b12)`, obj.String())
 
 	assert.Panics(t, func() {
-		BitString("x1")
+		quick.BitString("x1")
 	})
 }
 
 func TestBitStringTag(t *testing.T) {
-	tag := Tag(bacgopes.TagApplicationTagClass, bacgopes.TagBitStringAppTag, 1, xtob("08"))
-	obj := BitString(tag)
+	tag := quick.Tag(TagApplicationTagClass, TagBitStringAppTag, 1, xtob("08"))
+	obj := quick.BitString(tag)
 	assert.Len(t, obj.GetValue(), 0)
 
-	tag = Tag(bacgopes.TagApplicationTagClass, bacgopes.TagBitStringAppTag, 1, xtob("0102"))
-	obj = BitString(tag)
+	tag = quick.Tag(TagApplicationTagClass, TagBitStringAppTag, 1, xtob("0102"))
+	obj = quick.BitString(tag)
 	assert.Equal(t, []bool{false, false, false, false, false, false, true}, obj.GetValue())
 
-	tag = Tag(bacgopes.TagApplicationTagClass, bacgopes.TagBitStringAppTag, 1, xtob(""))
+	tag = quick.Tag(TagApplicationTagClass, TagBitStringAppTag, 1, xtob(""))
 	assert.Panics(t, func() {
-		BitString(tag)
+		quick.BitString(tag)
 	})
 
-	tag = Tag(bacgopes.TagContextTagClass, 0, 1, xtob("ff"))
+	tag = quick.Tag(TagContextTagClass, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		BitString(tag)
+		quick.BitString(tag)
 	})
 
-	tag = Tag(bacgopes.TagApplicationTagClass, 0)
+	tag = quick.Tag(TagApplicationTagClass, 0)
 	assert.Panics(t, func() {
-		BitString(tag)
+		quick.BitString(tag)
 	})
 }
 
 func TestBitStringCopy(t *testing.T) {
 	sampleValue := []int{0, 1, 0, 1}
-	obj1 := BitString(sampleValue)
-	obj2 := BitString(obj1)
+	obj1 := quick.BitString(sampleValue)
+	obj2 := quick.BitString(obj1)
 	assert.Equal(t, obj1, obj2)
 }
 

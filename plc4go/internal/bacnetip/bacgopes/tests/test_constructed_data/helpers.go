@@ -22,7 +22,9 @@ package test_constructed_data
 import (
 	"github.com/pkg/errors"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 )
 
 type SequenceEqualityRequirements interface {
@@ -57,7 +59,7 @@ type EmptySequence struct {
 func NewEmptySequence(kwargs KWArgs) (*EmptySequence, error) {
 	e := &EmptySequence{}
 	var err error
-	e.Sequence, err = NewSequence(kwargs, WithSequenceExtension(e))
+	e.Sequence, err = NewSequence(NoArgs, kwargs, WithSequenceExtension(e))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}
@@ -83,7 +85,7 @@ func NewSimpleSequence(kwargs KWArgs) (*SimpleSequence, error) {
 		},
 	}
 	var err error
-	s.Sequence, err = NewSequence(kwargs, WithSequenceExtension(s))
+	s.Sequence, err = NewSequence(NoArgs, kwargs, WithSequenceExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}
@@ -114,7 +116,7 @@ func NewCompoundSequence1(kwargs KWArgs) (*CompoundSequence1, error) {
 		},
 	}
 	var err error
-	s.Sequence, err = NewSequence(kwargs, WithSequenceExtension(s))
+	s.Sequence, err = NewSequence(NoArgs, kwargs, WithSequenceExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}
@@ -145,7 +147,7 @@ func NewCompoundSequence2(kwargs KWArgs) (*CompoundSequence2, error) {
 		},
 	}
 	var err error
-	s.Sequence, err = NewSequence(kwargs, WithSequenceExtension(s))
+	s.Sequence, err = NewSequence(NoArgs, kwargs, WithSequenceExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}

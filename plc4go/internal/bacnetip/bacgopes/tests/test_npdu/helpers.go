@@ -23,13 +23,16 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 //go:generate plc4xGenerator -type=NPDUCodec -prefix=
 type NPDUCodec struct {
-	bacgopes.Client
-	bacgopes.Server
+	Client
+	Server
 
 	log zerolog.Logger
 }
@@ -39,24 +42,24 @@ func NewNPDUCodec(localLog zerolog.Logger) (*NPDUCodec, error) {
 		log: localLog,
 	}
 	var err error
-	n.Client, err = bacgopes.NewClient(localLog, n)
+	n.Client, err = NewClient(localLog, n)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	n.Server, err = bacgopes.NewServer(localLog, n)
+	n.Server, err = NewServer(localLog, n)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
 	return n, nil
 }
 
-func (n *NPDUCodec) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
-	npdu := args.Get0NPDU()
+	npdu := Get[NPDU](args, 0)
 
 	// first a generic _NPDU
-	xpdu, err := bacgopes.NewNPDU(nil, nil)
+	xpdu, err := NewNPDU(nil, nil)
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}
@@ -65,23 +68,23 @@ func (n *NPDUCodec) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error
 	}
 
 	// Now as a vanilla PDU
-	ypdu := bacgopes.NewPDU(nil)
+	ypdu := NewPDU(nil)
 	if err := xpdu.Encode(ypdu); err != nil {
 		return errors.Wrap(err, "error decoding xpdu")
 	}
 	n.log.Debug().Stringer("ypdu", ypdu).Msg("encoded")
 
 	// send it downstream
-	return n.Request(bacgopes.NewArgs(ypdu), bacgopes.NoKWArgs)
+	return n.Request(NewArgs(ypdu), NoKWArgs)
 }
 
-func (n *NPDUCodec) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (n *NPDUCodec) Confirmation(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
-	pdu := args.Get0PDU()
+	pdu := Get[PDU](args, 0)
 
 	// decode as generic _NPDU
-	xpdu, err := bacgopes.NewNPDU(nil, nil)
+	xpdu, err := NewNPDU(nil, nil)
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}
@@ -96,10 +99,10 @@ func (n *NPDUCodec) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) err
 	}
 
 	// do a deeper decode of the _NPDU
-	ypdu := bacgopes.NPDUTypes[*xpdu.GetNPDUNetMessage()]()
+	ypdu := NPDUTypes[*xpdu.GetNPDUNetMessage()]()
 	if err := ypdu.Decode(xpdu); err != nil {
 		return errors.Wrap(err, "error decoding ypdu")
 	}
 
-	return n.Response(bacgopes.NewArgs(ypdu), bacgopes.NoKWArgs)
+	return n.Response(NewArgs(ypdu), NoKWArgs)
 }

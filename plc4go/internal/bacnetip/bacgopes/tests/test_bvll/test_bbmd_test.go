@@ -29,19 +29,25 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 type TBNetwork struct {
-	*tests.StateMachineGroup
+	*StateMachineGroup
 
-	trafficLog *tests.TrafficLog
-	router     *bacgopes.IPRouter
-	vlan       []*bacgopes.IPNetwork
+	trafficLog *TrafficLog
+	router     *IPRouter
+	vlan       []*IPNetwork
 
 	t *testing.T
 
@@ -54,25 +60,25 @@ func NewTBNetwork(t *testing.T, count int) *TBNetwork {
 		t:   t,
 		log: localLog,
 	}
-	tbn.StateMachineGroup = tests.NewStateMachineGroup(localLog)
+	tbn.StateMachineGroup = NewStateMachineGroup(localLog)
 
 	// reset the time machine
-	tests.ResetTimeMachine(tests.StartTime)
+	ResetTimeMachine(StartTime)
 	localLog.Trace().Msg("time machine reset")
 
 	// Create a traffic log
-	tbn.trafficLog = new(tests.TrafficLog)
+	tbn.trafficLog = new(TrafficLog)
 
 	// make a router
-	tbn.router = bacgopes.NewIPRouter(localLog)
+	tbn.router = NewIPRouter(localLog)
 
 	// make the networks
 	for net := range count {
 		// make a network and set the traffic log
-		ipNetwork := bacgopes.NewIPNetwork(localLog, bacgopes.WithNetworkName(fmt.Sprintf("192.168.%d.0/24", net+1)), bacgopes.WithNetworkTrafficLogger(tbn.trafficLog))
+		ipNetwork := NewIPNetwork(localLog, WithNetworkName(fmt.Sprintf("192.168.%d.0/24", net+1)), WithNetworkTrafficLogger(tbn.trafficLog))
 
 		// make a router
-		routerAddress := Address(fmt.Sprintf("192.168.%d.1/24", net+1))
+		routerAddress := quick.Address(fmt.Sprintf("192.168.%d.1/24", net+1))
 		tbn.router.AddNetwork(routerAddress, ipNetwork)
 
 		tbn.vlan = append(tbn.vlan, ipNetwork)
@@ -92,7 +98,7 @@ func (t *TBNetwork) Run(timeLimit time.Duration) {
 	require.NoError(t.t, err)
 
 	// run it some time
-	tests.RunTimeMachine(t.log, timeLimit, time.Time{})
+	RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
 		t.log.Debug().Stringer("machine", machine).Msg("Machine:")
@@ -119,7 +125,7 @@ type NonBBMDSuite struct {
 
 func (suite *NonBBMDSuite) SetupTest() {
 	t := suite.T()
-	tests.ExclusiveGlobalTimeMachine(t)
+	ExclusiveGlobalTimeMachine(t)
 	suite.log = testutils.ProduceTestingLogger(t)
 
 	// create a network
@@ -138,11 +144,11 @@ func (suite *NonBBMDSuite) SetupTest() {
 
 func (suite *NonBBMDSuite) TestWriteBDTFail() {
 	// read the broadcast distribution table, get a nack
-	writeBroadcastDistributionTable := WriteBroadcastDistributionTable()
+	writeBroadcastDistributionTable := quick.WriteBroadcastDistributionTable()
 	writeBroadcastDistributionTable.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-1-0").
 		Send(writeBroadcastDistributionTable, nil).Doc("1-1-1").
-		Receive(bacgopes.NewArgs((*bacgopes.Result)(nil)), bacgopes.NewKWArgs(bacgopes.KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0010))).Doc("1-1-2").
+		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0010))).Doc("1-1-2").
 		Success("")
 
 	// run group
@@ -151,11 +157,11 @@ func (suite *NonBBMDSuite) TestWriteBDTFail() {
 
 func (suite *NonBBMDSuite) TestReadBDTFail() {
 	// read the broadcast distribution table, get a nack
-	readBroadcastDistributionTable := ReadBroadcastDistributionTable()
+	readBroadcastDistributionTable := quick.ReadBroadcastDistributionTable()
 	readBroadcastDistributionTable.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-2-0").
 		Send(readBroadcastDistributionTable, nil).Doc("1-2-1").
-		Receive(bacgopes.NewArgs((*bacgopes.Result)(nil)), bacgopes.NewKWArgs(bacgopes.KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0020))).Doc("1-2-2").
+		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0020))).Doc("1-2-2").
 		Success("")
 
 	// run group
@@ -164,11 +170,11 @@ func (suite *NonBBMDSuite) TestReadBDTFail() {
 
 func (suite *NonBBMDSuite) TestRegisterFail() {
 	// read the broadcast distribution table, get a nack
-	registerForeignDevice := RegisterForeignDevice(10)
+	registerForeignDevice := quick.RegisterForeignDevice(10)
 	registerForeignDevice.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-3-0").
 		Send(registerForeignDevice, nil).Doc("1-3-1").
-		Receive(bacgopes.NewArgs((*bacgopes.Result)(nil)), bacgopes.NewKWArgs(bacgopes.KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0030))).Doc("1-3-2").
+		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0030))).Doc("1-3-2").
 		Success("")
 
 	// run group
@@ -177,11 +183,11 @@ func (suite *NonBBMDSuite) TestRegisterFail() {
 
 func (suite *NonBBMDSuite) TestReadFail() {
 	// read the broadcast distribution table, get a nack
-	readForeignDeviceTable := ReadForeignDeviceTable()
+	readForeignDeviceTable := quick.ReadForeignDeviceTable()
 	readForeignDeviceTable.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-4-0").
 		Send(readForeignDeviceTable, nil).Doc("1-4-1").
-		Receive(bacgopes.NewArgs((*bacgopes.Result)(nil)), bacgopes.NewKWArgs(bacgopes.KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0040))).Doc("1-4-2").
+		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0040))).Doc("1-4-2").
 		Success("")
 
 	// run group
@@ -190,11 +196,11 @@ func (suite *NonBBMDSuite) TestReadFail() {
 
 func (suite *NonBBMDSuite) TestDeleteFail() {
 	// read the broadcast distribution table, get a nack
-	deleteForeignDeviceTableEntry := DeleteForeignDeviceTableEntry(Address("1.2.3.4"))
+	deleteForeignDeviceTableEntry := quick.DeleteForeignDeviceTableEntry(quick.Address("1.2.3.4"))
 	deleteForeignDeviceTableEntry.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-5-0").
 		Send(deleteForeignDeviceTableEntry, nil).Doc("1-5-1").
-		Receive(bacgopes.NewArgs((*bacgopes.Result)(nil)), bacgopes.NewKWArgs(bacgopes.KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0050))).Doc("1-5-2").
+		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0050))).Doc("1-5-2").
 		Success("")
 
 	// run group
@@ -203,18 +209,18 @@ func (suite *NonBBMDSuite) TestDeleteFail() {
 
 func (suite *NonBBMDSuite) TestDistributeFail() {
 	// read the broadcast distribution table, get a nack
-	pduBytes, err := bacgopes.Xtob(
+	pduBytes, err := Xtob(
 		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
 		// TODO: this below is from us as upstream message is not parsable
 		"01.80" + // version, network layer message
 			"01 0001 0002 0003", // message type and network list
 	)
 	suite.Require().NoError(err)
-	distributeBroadcastToNetwork := DistributeBroadcastToNetwork(pduBytes)
+	distributeBroadcastToNetwork := quick.DistributeBroadcastToNetwork(pduBytes)
 	distributeBroadcastToNetwork.SetPDUDestination(suite.iut.address) // TODO: upstream does this inline
 	suite.td.GetStartState().Doc("1-6-0").
 		Send(distributeBroadcastToNetwork, nil).Doc("1-6-1").
-		Receive(bacgopes.NewArgs((*bacgopes.Result)(nil)), bacgopes.NewKWArgs(bacgopes.KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0060))).Doc("1-6-2").
+		Receive(NewArgs((*Result)(nil)), NewKWArgs(KWBvlciResultCode, readWriteModel.BVLCResultCode(0x0060))).Doc("1-6-2").
 		Success("")
 
 	// run group
@@ -228,7 +234,7 @@ func TestNonBBMD(t *testing.T) {
 func TestBBMD(t *testing.T) {
 	t.Skip("big WIP")                           // TODO: too much needs to be done in APDU to get something to run here at all
 	t.Run("test_14_2_1_1", func(t *testing.T) { //14.2.1.1 Execute Forwarded-NPDU (One-hop Distribution).
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 		testLogger := testutils.ProduceTestingLogger(t)
 
 		// Create a network
@@ -244,7 +250,7 @@ func TestBBMD(t *testing.T) {
 		require.NoError(t, err)
 
 		// add the IUT as a one-hop peer
-		err = bbmd1.bip.AddPeer(Address("192.168.1.2/24"))
+		err = bbmd1.bip.AddPeer(quick.Address("192.168.1.2/24"))
 		require.NoError(t, err)
 		testLogger.Debug().Stringer("bbmd1bip", bbmd1.bip).Msg("bbmd1.bip")
 
@@ -260,15 +266,15 @@ func TestBBMD(t *testing.T) {
 
 		// broadcast a forwarded NPDU
 		td.GetStartState().Doc("2-1-0").
-			Send(WhoIsRequest(bacgopes.NewKWArgs(bacgopes.KWPDUDestination, bacgopes.NewLocalBroadcast(nil))), nil).Doc("2-1-1").
-			Receive(bacgopes.NewArgs((*bacgopes.IAmRequest)(nil)), bacgopes.NoKWArgs).Doc("2-1-2").
+			Send(quick.WhoIsRequest(NewKWArgs(KWPDUDestination, NewLocalBroadcast(nil))), nil).Doc("2-1-1").
+			Receive(NewArgs((*IAmRequest)(nil)), NoKWArgs).Doc("2-1-2").
 			Success("")
 
 		// listen for the directed broadcast, then the original unicast,
 		// then fail if there's anything else
 		listener.GetStartState().Doc("2-2-0").
-			Receive(bacgopes.NewArgs((*bacgopes.ForwardedNPDU)(nil)), bacgopes.NoKWArgs).Doc("2-2-1").
-			Receive(bacgopes.NewArgs((*bacgopes.OriginalUnicastNPDU)(nil)), bacgopes.NoKWArgs).Doc("2-2-2").
+			Receive(NewArgs((*ForwardedNPDU)(nil)), NoKWArgs).Doc("2-2-1").
+			Receive(NewArgs((*OriginalUnicastNPDU)(nil)), NoKWArgs).Doc("2-2-2").
 			Timeout(3*time.Second, nil).Doc("2-2-3").
 			Success("")
 
@@ -277,7 +283,7 @@ func TestBBMD(t *testing.T) {
 
 	})
 	t.Run("test_14_2_1_1", func(t *testing.T) { // 14.2.1.1 Execute Forwarded-NPDU (Two-hop Distribution).
-		tests.ExclusiveGlobalTimeMachine(t)
+		ExclusiveGlobalTimeMachine(t)
 		testLogger := testutils.ProduceTestingLogger(t)
 
 		// Create a network
@@ -293,7 +299,7 @@ func TestBBMD(t *testing.T) {
 		require.NoError(t, err)
 
 		// add the IUT as a two-hop peer
-		err = bbmd1.bip.AddPeer(Address("192.168.1.2/32"))
+		err = bbmd1.bip.AddPeer(quick.Address("192.168.1.2/32"))
 		require.NoError(t, err)
 		testLogger.Debug().Stringer("bbmd1bip", bbmd1.bip).Msg("bbmd1.bip")
 
@@ -309,29 +315,29 @@ func TestBBMD(t *testing.T) {
 
 		// broadcast a forwarded NPDU
 		td.GetStartState().Doc("2-3-0").
-			Send(WhoIsRequest(bacgopes.NewKWArgs(bacgopes.KWPDUDestination, bacgopes.NewLocalBroadcast(nil))), nil).Doc("2-3-1").
-			Receive(bacgopes.NewArgs((*bacgopes.IAmRequest)(nil)), bacgopes.NoKWArgs).Doc("2-3-2").
+			Send(quick.WhoIsRequest(NewKWArgs(KWPDUDestination, NewLocalBroadcast(nil))), nil).Doc("2-3-1").
+			Receive(NewArgs((*IAmRequest)(nil)), NoKWArgs).Doc("2-3-2").
 			Success("")
 
 		// listen for the forwarded NPDU.  The packet will be sent upstream which
 		// will generate the original unicast going back, then it will be
 		// re-broadcast on the local LAN.  Fail if there's anything after that.
 		s241 := listener.GetStartState().Doc("2-4-0").
-			Receive(bacgopes.NewArgs((*bacgopes.ForwardedNPDU)(nil)), bacgopes.NoKWArgs).Doc("2-4-1")
+			Receive(NewArgs((*ForwardedNPDU)(nil)), NoKWArgs).Doc("2-4-1")
 
 		// look for the original unicast going back, followed by the rebroadcast
 		// of the forwarded NPDU on the local LAN
 		both := s241.
-			Receive(bacgopes.NewArgs((*bacgopes.OriginalUnicastNPDU)(nil)), bacgopes.NoKWArgs).Doc("2-4-1-a").
-			Receive(bacgopes.NewArgs((*bacgopes.ForwardedNPDU)(nil)), bacgopes.NoKWArgs).Doc("2-4-1-b")
+			Receive(NewArgs((*OriginalUnicastNPDU)(nil)), NoKWArgs).Doc("2-4-1-a").
+			Receive(NewArgs((*ForwardedNPDU)(nil)), NoKWArgs).Doc("2-4-1-b")
 
 		// fail if anything is received after both packets
 		both.Timeout(3*time.Second, nil).Doc("2-4-4").
 			Success("")
 
 		// allow the two packets in either order
-		s241.Receive(bacgopes.NewArgs((*bacgopes.ForwardedNPDU)(nil)), bacgopes.NoKWArgs).Doc("2-4-2-a").
-			Receive(bacgopes.NewArgs((*bacgopes.OriginalUnicastNPDU)(nil)), bacgopes.NewKWArgs("nextState", both)).Doc("2-4-2-b")
+		s241.Receive(NewArgs((*ForwardedNPDU)(nil)), NoKWArgs).Doc("2-4-2-a").
+			Receive(NewArgs((*OriginalUnicastNPDU)(nil)), NewKWArgs("nextState", both)).Doc("2-4-2-b")
 
 		// run the group
 		tnet.Run(0)

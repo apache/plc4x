@@ -25,19 +25,20 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/capability"
 )
 
 // TODO: big WIP
 
 type BaseCollector struct {
-	*bacgopes.Collector
+	*Collector
 }
 
 func NewBaseCollector(localLog zerolog.Logger) *BaseCollector {
 	b := &BaseCollector{}
-	b.Collector = bacgopes.NewCollector(localLog)
+	b.Collector = NewCollector(localLog)
 	return b
 }
 
@@ -47,12 +48,12 @@ func (b BaseCollector) transform(value any) any {
 }
 
 type PlusOne struct {
-	*bacgopes.Capability
+	*Capability
 }
 
 func NewPlusOne() *PlusOne {
 	p := &PlusOne{}
-	p.Capability = bacgopes.NewCapability()
+	p.Capability = NewCapability()
 	return p
 }
 
@@ -61,12 +62,12 @@ func (p *PlusOne) transform(value any) any {
 }
 
 type TimesTen struct {
-	*bacgopes.Capability
+	*Capability
 }
 
 func NewTimesTen() *TimesTen {
 	t := &TimesTen{}
-	t.Capability = bacgopes.NewCapability()
+	t.Capability = NewCapability()
 	return t
 }
 
@@ -75,7 +76,7 @@ func (p *TimesTen) transform(value any) any {
 }
 
 type MakeList struct {
-	*bacgopes.Capability
+	*Capability
 }
 
 //####################################

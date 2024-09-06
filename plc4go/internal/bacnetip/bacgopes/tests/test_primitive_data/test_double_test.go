@@ -24,27 +24,28 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 )
 
-func DoubleTag(x string) bacgopes.Tag {
+func DoubleTag(x string) Tag {
 	b := xtob(x)
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DOUBLE, len(b), b)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DOUBLE, len(b), b)
 	return tag
 }
 
 // Encode a Double object into a tag.
-func DoubleEncode(obj *bacgopes.Double) bacgopes.Tag {
-	tag := Tag()
+func DoubleEncode(obj *Double) Tag {
+	tag := quick.Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Double application tag into a Double.
-func DoubleDecode(tag bacgopes.Tag) *bacgopes.Double {
-	obj := Double(tag)
+func DoubleDecode(tag Tag) *Double {
+	obj := quick.Double(tag)
 
 	return obj
 }
@@ -55,62 +56,62 @@ func DoubleDecode(tag bacgopes.Tag) *bacgopes.Double {
 func DoubleEndec(t *testing.T, v float64, x string) {
 	tag := DoubleTag(x)
 
-	obj := Double(v)
+	obj := quick.Double(v)
 
 	assert.Equal(t, tag, DoubleEncode(obj))
 	assert.Equal(t, obj, DoubleDecode(tag))
 }
 
 func TestDouble(t *testing.T) {
-	obj := Double()
+	obj := quick.Double()
 	assert.Equal(t, 0.0, obj.GetValue())
 
 	assert.Panics(t, func() {
-		Double("some string")
+		quick.Double("some string")
 	})
 }
 
 func TestDoubleDouble(t *testing.T) {
-	obj := Double(1.0)
+	obj := quick.Double(1.0)
 	assert.Equal(t, 1.0, obj.GetValue())
 	assert.Equal(t, "Double(1)", obj.String())
 
-	obj = Double(73.5)
+	obj = quick.Double(73.5)
 	assert.Equal(t, 73.5, obj.GetValue())
 	assert.Equal(t, "Double(73.5)", obj.String())
 }
 
 func TestDoubleTag(t *testing.T) {
-	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DOUBLE, 1, xtob("3ff0000000000000"))
-	obj := Double(tag)
+	tag := quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DOUBLE, 1, xtob("3ff0000000000000"))
+	obj := quick.Double(tag)
 	assert.Equal(t, obj.GetValue(), 1.0)
 
-	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	tag = quick.Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
 	assert.Panics(t, func() {
-		Double(tag)
+		quick.Double(tag)
 	})
 
-	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	tag = quick.Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
 	assert.Panics(t, func() {
-		Double(tag)
+		quick.Double(tag)
 	})
 
-	tag = Tag(bacgopes.TagOpeningTagClass, 0)
+	tag = quick.Tag(TagOpeningTagClass, 0)
 	assert.Panics(t, func() {
-		Double(tag)
+		quick.Double(tag)
 	})
 }
 
 func TestDoubleCopy(t *testing.T) {
-	obj1 := Double(12)
-	obj2 := Double(obj1)
+	obj1 := quick.Double(12)
+	obj2 := quick.Double(obj1)
 	assert.Equal(t, 12.0, obj2.GetValue())
 	assert.Equal(t, obj1, obj2)
 }
 
 func TestDoubleEndec(t *testing.T) {
 	assert.Panics(t, func() {
-		Double(DoubleTag(""))
+		quick.Double(DoubleTag(""))
 	})
 	DoubleEndec(t, 0, "0000000000000000")
 	DoubleEndec(t, 1, "3ff0000000000000")

@@ -22,15 +22,15 @@ package tests
 import (
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
 type TrapperRequirements interface {
-	BeforeSend(pdu bacgopes.PDU)
-	AfterSend(pdu bacgopes.PDU)
-	BeforeReceive(pdu bacgopes.PDU)
-	AfterReceive(pdu bacgopes.PDU)
-	UnexpectedReceive(pdu bacgopes.PDU)
+	BeforeSend(pdu PDU)
+	AfterSend(pdu PDU)
+	BeforeReceive(pdu PDU)
+	AfterReceive(pdu PDU)
+	UnexpectedReceive(pdu PDU)
 }
 
 // Trapper This class provides a set of utility functions that keeps the latest copy of the pdu parameter in the
@@ -38,11 +38,11 @@ type TrapperRequirements interface {
 type Trapper struct {
 	TrapperRequirements
 
-	beforeSendPdu        bacgopes.PDU
-	afterSendPdu         bacgopes.PDU
-	beforeReceivePdu     bacgopes.PDU
-	afterReceivePdu      bacgopes.PDU
-	unexpectedReceivePdu bacgopes.PDU
+	beforeSendPdu        PDU
+	afterSendPdu         PDU
+	beforeReceivePdu     PDU
+	afterReceivePdu      PDU
+	unexpectedReceivePdu PDU
 
 	log zerolog.Logger
 }
@@ -68,7 +68,7 @@ func (t *Trapper) reset() {
 }
 
 // BeforeSend is Called before each PDU about to be sent.
-func (t *Trapper) BeforeSend(pdu bacgopes.PDU) {
+func (t *Trapper) BeforeSend(pdu PDU) {
 	t.log.Debug().Stringer("pdu", pdu).Msg("BeforeSend")
 	//keep a copy
 	t.beforeSendPdu = pdu
@@ -77,12 +77,12 @@ func (t *Trapper) BeforeSend(pdu bacgopes.PDU) {
 	t.TrapperRequirements.BeforeSend(pdu)
 }
 
-func (t *Trapper) GetBeforeSendPdu() bacgopes.PDU {
+func (t *Trapper) GetBeforeSendPdu() PDU {
 	return t.beforeSendPdu
 }
 
 // AfterSend is Called after each PDU sent.
-func (t *Trapper) AfterSend(pdu bacgopes.PDU) {
+func (t *Trapper) AfterSend(pdu PDU) {
 	t.log.Debug().Stringer("pdu", pdu).Msg("AfterSend")
 	//keep a copy
 	t.afterSendPdu = pdu
@@ -91,12 +91,12 @@ func (t *Trapper) AfterSend(pdu bacgopes.PDU) {
 	t.TrapperRequirements.AfterSend(pdu)
 }
 
-func (t *Trapper) GetAfterSendPdu() bacgopes.PDU {
+func (t *Trapper) GetAfterSendPdu() PDU {
 	return t.afterSendPdu
 }
 
 // BeforeReceive is Called with each PDU received before matching.
-func (t *Trapper) BeforeReceive(pdu bacgopes.PDU) {
+func (t *Trapper) BeforeReceive(pdu PDU) {
 	t.log.Debug().Stringer("pdu", pdu).Msg("BeforeReceive")
 	//keep a copy
 	t.beforeReceivePdu = pdu
@@ -105,12 +105,12 @@ func (t *Trapper) BeforeReceive(pdu bacgopes.PDU) {
 	t.TrapperRequirements.BeforeReceive(pdu)
 }
 
-func (t *Trapper) GetBeforeReceivePdu() bacgopes.PDU {
+func (t *Trapper) GetBeforeReceivePdu() PDU {
 	return t.beforeReceivePdu
 }
 
 // AfterReceive is Called with PDU received after match.
-func (t *Trapper) AfterReceive(pdu bacgopes.PDU) {
+func (t *Trapper) AfterReceive(pdu PDU) {
 	t.log.Debug().Stringer("pdu", pdu).Msg("AfterReceive")
 	//keep a copy
 	t.afterReceivePdu = pdu
@@ -119,12 +119,12 @@ func (t *Trapper) AfterReceive(pdu bacgopes.PDU) {
 	t.TrapperRequirements.AfterReceive(pdu)
 }
 
-func (t *Trapper) GetAfterReceivePdu() bacgopes.PDU {
+func (t *Trapper) GetAfterReceivePdu() PDU {
 	return t.afterReceivePdu
 }
 
 // UnexpectedReceive is Called with PDU that did not match.  Unless this is trapped by the state, the default behaviour is to fail.
-func (t *Trapper) UnexpectedReceive(pdu bacgopes.PDU) {
+func (t *Trapper) UnexpectedReceive(pdu PDU) {
 	t.log.Debug().Stringer("pdu", pdu).Msg("UnexpectedReceive")
 	//keep a copy
 	t.unexpectedReceivePdu = pdu
@@ -133,6 +133,6 @@ func (t *Trapper) UnexpectedReceive(pdu bacgopes.PDU) {
 	t.TrapperRequirements.UnexpectedReceive(pdu)
 }
 
-func (t *Trapper) GetUnexpectedReceivePDU() bacgopes.PDU {
+func (t *Trapper) GetUnexpectedReceivePDU() PDU {
 	return t.unexpectedReceivePdu
 }

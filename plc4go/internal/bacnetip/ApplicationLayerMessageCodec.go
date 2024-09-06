@@ -22,6 +22,11 @@ package bacnetip
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/iocb"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"net"
 	"net/url"
 	"time"
@@ -29,7 +34,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
@@ -39,9 +43,9 @@ import (
 //
 //go:generate plc4xGenerator -type=ApplicationLayerMessageCodec
 type ApplicationLayerMessageCodec struct {
-	bipSimpleApplication *bacgopes.BIPSimpleApplication
+	bipSimpleApplication *app.BIPSimpleApplication
 	messageCode          *MessageCodec
-	deviceInfoCache      bacgopes.DeviceInfoCache `directSerialize:"true"`
+	deviceInfoCache      appservice.DeviceInfoCache `directSerialize:"true"`
 
 	localAddress  *net.UDPAddr `stringer:"true"`
 	remoteAddress *net.UDPAddr `stringer:"true"`
@@ -62,13 +66,13 @@ func NewApplicationLayerMessageCodec(localLog zerolog.Logger, udpTransport *udp.
 
 		log: localLog,
 	}
-	address, err := bacgopes.NewAddress(localLog, localAddress)
+	address, err := pdu.NewAddress(localLog, localAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
 	// TODO: workaround for strange address parsing
-	address.AddrTuple = bacgopes.NewAddressTuple(fmt.Sprintf("%d.%d.%d.%d", address.AddrAddress[0], address.AddrAddress[1], address.AddrAddress[2], address.AddrAddress[3]), *address.AddrPort)
-	application, err := bacgopes.NewBIPSimpleApplication(localLog, &bacgopes.LocalDeviceObject{
+	address.AddrTuple = pdu.NewAddressTuple(fmt.Sprintf("%d.%d.%d.%d", address.AddrAddress[0], address.AddrAddress[1], address.AddrAddress[2], address.AddrAddress[3]), *address.AddrPort)
+	application, err := app.NewBIPSimpleApplication(localLog, &device.LocalDeviceObject{
 		NumberOfAPDURetries: func() *uint { retries := uint(10); return &retries }(),
 	}, *address, &a.deviceInfoCache, nil)
 	if err != nil {
@@ -108,11 +112,11 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 }
 
 func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
-	address, err := bacgopes.NewAddress(m.log, m.remoteAddress)
+	address, err := pdu.NewAddress(m.log, m.remoteAddress)
 	if err != nil {
 		return err
 	}
-	iocb, err := bacgopes.NewIOCB(m.log, bacgopes.NewPDU(message, bacgopes.WithPDUDestination(address)), address)
+	iocb, err := iocb.NewIOCB(m.log, pdu.NewPDU(message, pdu.WithPDUDestination(address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
@@ -142,11 +146,11 @@ func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessag
 }
 
 func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-	address, err := bacgopes.NewAddress(m.log, m.remoteAddress)
+	address, err := pdu.NewAddress(m.log, m.remoteAddress)
 	if err != nil {
 		return err
 	}
-	iocb, err := bacgopes.NewIOCB(m.log, bacgopes.NewPDU(message, bacgopes.WithPDUDestination(address)), address)
+	iocb, err := iocb.NewIOCB(m.log, pdu.NewPDU(message, pdu.WithPDUDestination(address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}

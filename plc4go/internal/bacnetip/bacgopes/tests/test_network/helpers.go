@@ -25,13 +25,24 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructors"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/deleteme"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/vlan"
 )
 
 type _NetworkServiceElement struct {
-	*bacgopes.NetworkServiceElement
+	*NetworkServiceElement
 }
 
 func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement, error) {
@@ -40,7 +51,7 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 	// This class turns off the deferred startup function call that broadcasts
 	// I-Am-Router-To-Network and Network-Number-Is messages.
 	var err error
-	i.NetworkServiceElement, err = bacgopes.NewNetworkServiceElement(localLog, bacgopes.WithNetworkServiceElementStartupDisabled(true))
+	i.NetworkServiceElement, err = NewNetworkServiceElement(localLog, WithNetworkServiceElementStartupDisabled(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
@@ -49,8 +60,8 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 
 //go:generate plc4xGenerator -type=NPDUCodec -prefix=
 type NPDUCodec struct {
-	bacgopes.Client
-	bacgopes.Server
+	Client
+	Server
 
 	log zerolog.Logger
 }
@@ -60,11 +71,11 @@ func NewNPDUCodec(localLog zerolog.Logger) (*NPDUCodec, error) {
 		log: localLog,
 	}
 	var err error
-	n.Client, err = bacgopes.NewClient(localLog, n)
+	n.Client, err = NewClient(localLog, n)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	n.Server, err = bacgopes.NewServer(localLog, n)
+	n.Server, err = NewServer(localLog, n)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -74,13 +85,13 @@ func NewNPDUCodec(localLog zerolog.Logger) (*NPDUCodec, error) {
 	return n, nil
 }
 
-func (n *NPDUCodec) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (n *NPDUCodec) Indication(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
-	npdu := args.Get0NPDU()
+	npdu := Get[NPDU](args, 0)
 
 	// first a generic _NPDU
-	xpdu, err := bacgopes.NewNPDU(nil, nil)
+	xpdu, err := NewNPDU(nil, nil)
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}
@@ -89,23 +100,23 @@ func (n *NPDUCodec) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error
 	}
 
 	// Now as a vanilla PDU
-	ypdu := bacgopes.NewPDU(bacgopes.NewMessageBridge())
+	ypdu := NewPDU(NewMessageBridge())
 	if err := xpdu.Encode(ypdu); err != nil {
 		return errors.Wrap(err, "error decoding xpdu")
 	}
 	n.log.Debug().Stringer("ypdu", ypdu).Msg("encoded")
 
 	// send it downstream
-	return n.Request(bacgopes.NewArgs(ypdu), bacgopes.NoKWArgs)
+	return n.Request(NewArgs(ypdu), NoKWArgs)
 }
 
-func (n *NPDUCodec) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (n *NPDUCodec) Confirmation(args Args, kwargs KWArgs) error {
 	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 
-	pdu := args.Get0PDU()
+	pdu := Get[PDU](args, 0)
 
 	// decode as generic _NPDU
-	xpdu, err := bacgopes.NewNPDU(nil, nil)
+	xpdu, err := NewNPDU(nil, nil)
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}
@@ -120,41 +131,41 @@ func (n *NPDUCodec) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) err
 	}
 
 	// do a deeper decode of the _NPDU
-	ypdu := bacgopes.NPDUTypes[*xpdu.GetNPDUNetMessage()]()
+	ypdu := NPDUTypes[*xpdu.GetNPDUNetMessage()]()
 	if err := ypdu.Decode(xpdu); err != nil {
 		return errors.Wrap(err, "error decoding ypdu")
 	}
 
-	return n.Response(bacgopes.NewArgs(ypdu), bacgopes.NoKWArgs)
+	return n.Response(NewArgs(ypdu), NoKWArgs)
 }
 
 type SnifferStateMachine struct {
-	*tests.ClientStateMachine
+	*ClientStateMachine
 
-	address *bacgopes.Address
-	node    *bacgopes.Node
+	address *Address
+	node    *Node
 
 	log zerolog.Logger
 }
 
-func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacgopes.Network) (*SnifferStateMachine, error) {
+func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *Network) (*SnifferStateMachine, error) {
 	s := &SnifferStateMachine{
 		log: localLog,
 	}
 	var err error
-	s.ClientStateMachine, err = tests.NewClientStateMachine(s.log, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(s))
+	s.ClientStateMachine, err = NewClientStateMachine(s.log, WithClientStateMachineName(address), WithClientStateMachineExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
 
 	// save the name and address
-	s.address, err = bacgopes.NewAddress(s.log, address)
+	s.address, err = NewAddress(s.log, address)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
 
 	// create a promiscuous node, added to the network
-	s.node, err = bacgopes.NewNode(s.log, s.address, bacgopes.WithNodePromiscuous(true), bacgopes.WithNodeLan(vlan))
+	s.node, err = NewNode(s.log, s.address, WithNodePromiscuous(true), WithNodeLan(vlan))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -163,7 +174,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacgo
 	}
 
 	// bind the stack together
-	if err := bacgopes.Bind(s.log, s, s.node); err != nil {
+	if err := Bind(s.log, s, s.node); err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
@@ -174,27 +185,30 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacgo
 }
 
 type NetworkLayerStateMachine struct {
-	*tests.ClientStateMachine
+	*ClientStateMachine
 
-	address *bacgopes.Address
+	address *Address
 
 	log   zerolog.Logger
 	codec *NPDUCodec
-	node  *bacgopes.Node
+	node  *Node
 }
 
-func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *bacgopes.Network) (*NetworkLayerStateMachine, error) {
+func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *Network) (*NetworkLayerStateMachine, error) {
 	n := &NetworkLayerStateMachine{
 		log: localLog,
 	}
 	var err error
-	n.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(n))
+	n.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(n))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
 
 	// save the name and address
-	n.address = Address(address)
+	n.address, err = NewAddress(localLog, address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creaing address")
+	}
 
 	// create a network layer encoder/decoder
 	n.codec, err = NewNPDUCodec(localLog)
@@ -206,7 +220,7 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 	}
 
 	// create a node, added to the network
-	n.node, err = bacgopes.NewNode(localLog, n.address, bacgopes.WithNodeLan(vlan))
+	n.node, err = NewNode(localLog, n.address, WithNodeLan(vlan))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -215,7 +229,7 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 	}
 
 	// bind this to the node
-	if err := bacgopes.Bind(localLog, n, n.codec, n.node); err != nil {
+	if err := Bind(localLog, n, n.codec, n.node); err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 	if !LogTestNetwork {
@@ -225,7 +239,7 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 }
 
 type RouterNode struct {
-	nsap *bacgopes.NetworkServiceAccessPoint
+	nsap *NetworkServiceAccessPoint
 	nse  *_NetworkServiceElement
 
 	log zerolog.Logger
@@ -235,7 +249,7 @@ func NewRouterNode(localLog zerolog.Logger) (*RouterNode, error) {
 	r := &RouterNode{log: localLog}
 	var err error
 	// a network service access point will be needed
-	r.nsap, err = bacgopes.NewNetworkServiceAccessPoint(r.log)
+	r.nsap, err = NewNetworkServiceAccessPoint(r.log)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
@@ -244,7 +258,7 @@ func NewRouterNode(localLog zerolog.Logger) (*RouterNode, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
-	err = bacgopes.Bind(r.log, r.nse, r.nsap)
+	err = Bind(r.log, r.nse, r.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
@@ -254,14 +268,17 @@ func NewRouterNode(localLog zerolog.Logger) (*RouterNode, error) {
 	return r, nil
 }
 
-func (r *RouterNode) AddNetwork(address string, vlan *bacgopes.Network, net uint16) error {
+func (r *RouterNode) AddNetwork(address string, vlan *Network, net uint16) error {
 	r.log.Debug().Str("address", address).Stringer("vlan", vlan).Uint16("net", net).Msg("AddNetwork")
 
 	// convert the address to an Address
-	addr := Address(address)
+	addr, err := NewAddress(r.log, address)
+	if err != nil {
+		return errors.Wrap(err, "error creaing address")
+	}
 
 	// create a node, add to the network
-	node, err := bacgopes.NewNode(r.log, addr, bacgopes.WithNodeLan(vlan))
+	node, err := NewNode(r.log, addr, WithNodeLan(vlan))
 	if err != nil {
 		return errors.Wrap(err, "error creating node")
 	}
@@ -276,7 +293,7 @@ func (r *RouterNode) String() string {
 
 type RouterStateMachine struct {
 	*RouterNode
-	tests.StateMachineContract
+	StateMachineContract
 }
 
 func NewRouterStateMachine(localLog zerolog.Logger) (*RouterStateMachine, error) {
@@ -287,7 +304,7 @@ func NewRouterStateMachine(localLog zerolog.Logger) (*RouterStateMachine, error)
 		return nil, errors.Wrap(err, "error creating router node")
 	}
 	var initFunc func()
-	r.StateMachineContract, initFunc = tests.NewStateMachine(localLog, r)
+	r.StateMachineContract, initFunc = NewStateMachine(localLog, r)
 	initFunc()
 	if !LogTestNetwork {
 		r.log = zerolog.Nop()
@@ -295,7 +312,7 @@ func NewRouterStateMachine(localLog zerolog.Logger) (*RouterStateMachine, error)
 	return r, nil
 }
 
-func (r *RouterStateMachine) Send(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (r *RouterStateMachine) Send(args Args, kwargs KWArgs) error {
 	panic("not available")
 }
 
@@ -304,38 +321,42 @@ func (r *RouterStateMachine) String() string {
 }
 
 type TestDeviceObject struct {
-	*bacgopes.LocalDeviceObject
+	*LocalDeviceObject
 }
 
 //go:generate plc4xGenerator -type=ApplicationLayerStateMachine
 type ApplicationLayerStateMachine struct {
-	bacgopes.ApplicationServiceElementContract
-	*tests.ClientStateMachine `ignore:"true"` // TODO: add support
+	ApplicationServiceElementContract
+	*ClientStateMachine `ignore:"true"` // TODO: add support
 
 	name    string
-	address *bacgopes.Address
+	address *Address
 
-	asap *bacgopes.ApplicationServiceAccessPoint
-	smap *bacgopes.StateMachineAccessPoint
-	nsap *bacgopes.NetworkServiceAccessPoint
+	asap *ApplicationServiceAccessPoint
+	smap *StateMachineAccessPoint
+	nsap *NetworkServiceAccessPoint
 	nse  *_NetworkServiceElement
-	node *bacgopes.Node
+	node *Node
 
 	log zerolog.Logger
 }
 
-func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vlan *bacgopes.Network) (*ApplicationLayerStateMachine, error) {
+func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vlan *Network) (*ApplicationLayerStateMachine, error) {
 	a := &ApplicationLayerStateMachine{
 		log: localLog,
 	}
 
 	// save the name and address
 	a.name = fmt.Sprintf("app @ %s", address)
-	a.address = Address(address)
+	var err error
+	a.address, err = NewAddress(localLog, address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creaing address")
+	}
 
 	// build a local device object
 	localDevice := TestDeviceObject{
-		&bacgopes.LocalDeviceObject{
+		&LocalDeviceObject{
 			ObjectName:       a.name,
 			ObjectIdentifier: "device:" + address,
 			VendorIdentifier: 999,
@@ -346,19 +367,18 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 		a.log.Debug().Stringer("address", a.address).Msg("address")
 	}
 
-	var err error
 	// continue with initialization
-	a.ApplicationServiceElementContract, err = bacgopes.NewApplicationServiceElement(a.log)
+	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(a.log)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service")
 	}
-	a.ClientStateMachine, err = tests.NewClientStateMachine(a.log, tests.WithClientStateMachineName(localDevice.ObjectName), tests.WithClientStateMachineExtension(a))
+	a.ClientStateMachine, err = NewClientStateMachine(a.log, WithClientStateMachineName(localDevice.ObjectName), WithClientStateMachineExtension(a))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
 
 	// include a application decoder
-	a.asap, err = bacgopes.NewApplicationServiceAccessPoint(a.log)
+	a.asap, err = NewApplicationServiceAccessPoint(a.log)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service access point")
 	}
@@ -367,13 +387,13 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	// can know if it should support segmentation
 	// the segmentation state machines need access to some device
 	// information cache, usually shared with the application
-	a.smap, err = bacgopes.NewStateMachineAccessPoint(a.log, localDevice.LocalDeviceObject, bacgopes.WithStateMachineAccessPointDeviceInfoCache(bacgopes.NewDeviceInfoCache(a.log))) // TODO: this is not quite right as we unwrap here
+	a.smap, err = NewStateMachineAccessPoint(a.log, localDevice.LocalDeviceObject, WithStateMachineAccessPointDeviceInfoCache(NewDeviceInfoCache(a.log))) // TODO: this is not quite right as we unwrap here
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating state machine access point")
 	}
 
 	//  a network service access point will be needed
-	a.nsap, err = bacgopes.NewNetworkServiceAccessPoint(a.log)
+	a.nsap, err = NewNetworkServiceAccessPoint(a.log)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
@@ -383,19 +403,19 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
-	err = bacgopes.Bind(a.log, a.nse, a.nsap)
+	err = Bind(a.log, a.nse, a.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
 	//  bind the top layers
-	err = bacgopes.Bind(a.log, a, a.asap, a.smap, a.nsap)
+	err = Bind(a.log, a, a.asap, a.smap, a.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
 	//  create a node, added to the network
-	a.node, err = bacgopes.NewNode(a.log, a.address, bacgopes.WithNodeLan(vlan))
+	a.node, err = NewNode(a.log, a.address, WithNodeLan(vlan))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -415,65 +435,68 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	return a, nil
 }
 
-func (a *ApplicationLayerStateMachine) Indication(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (a *ApplicationLayerStateMachine) Indication(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	return a.Receive(args, bacgopes.NoKWArgs)
+	return a.Receive(args, NoKWArgs)
 }
 
-func (a *ApplicationLayerStateMachine) Confirmation(args bacgopes.Args, kwargs bacgopes.KWArgs) error {
+func (a *ApplicationLayerStateMachine) Confirmation(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
-	return a.Receive(args, bacgopes.NoKWArgs)
+	return a.Receive(args, NoKWArgs)
 }
 
 //go:generate plc4xGenerator -type=ApplicationNode
 type ApplicationNode struct {
-	*bacgopes.Application
-	*bacgopes.WhoIsIAmServices
-	*bacgopes.ReadWritePropertyServices
+	*Application
+	*WhoIsIAmServices
+	*ReadWritePropertyServices
 
 	name    string
-	address *bacgopes.Address `directSerialize:"true"`
-	asap    *bacgopes.ApplicationServiceAccessPoint
-	smap    *bacgopes.StateMachineAccessPoint
-	nsap    *bacgopes.NetworkServiceAccessPoint
+	address *Address `directSerialize:"true"`
+	asap    *ApplicationServiceAccessPoint
+	smap    *StateMachineAccessPoint
+	nsap    *NetworkServiceAccessPoint
 	nse     *_NetworkServiceElement
-	node    *bacgopes.Node
+	node    *Node
 
 	log zerolog.Logger
 }
 
-func NewApplicationNode(localLog zerolog.Logger, address string, vlan *bacgopes.Network) (*ApplicationNode, error) {
+func NewApplicationNode(localLog zerolog.Logger, address string, vlan *Network) (*ApplicationNode, error) {
 	a := &ApplicationNode{
 		log: localLog,
 	}
 
 	// build a name, save the address
 	a.name = fmt.Sprintf("app @ %s", address)
-	a.address = Address(address)
+	var err error
+	a.address, err = NewAddress(localLog, address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating address")
+	}
 
 	// build a local device object
 	localDevice := &TestDeviceObject{
-		LocalDeviceObject: &bacgopes.LocalDeviceObject{
+		LocalDeviceObject: &LocalDeviceObject{
 			ObjectName:       a.name,
 			ObjectIdentifier: "device:999",
 			VendorIdentifier: 999,
 		},
 	}
 
-	var err error
 	// continue with initialization
-	a.Application, err = bacgopes.NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	a.Application, err = NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}
 
-	a.WhoIsIAmServices, err = bacgopes.NewWhoIsIAmServices(localLog, a, bacgopes.WithWhoIsIAmServicesLocalDevice(localDevice.LocalDeviceObject)) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	a.WhoIsIAmServices, err = NewWhoIsIAmServices(localLog, a, WithWhoIsIAmServicesLocalDevice(localDevice.LocalDeviceObject)) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building WhoIsIAmServices")
 	}
 
 	// include a application decoder
-	a.asap, err = bacgopes.NewApplicationServiceAccessPoint(localLog)
+	a.asap, err = NewApplicationServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application service access point")
 	}
@@ -482,13 +505,13 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *bacgopes.
 	// can know if it should support segmentation
 	// the segmentation state machines need access to the same device
 	// information cache as the application
-	a.smap, err = bacgopes.NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, bacgopes.WithStateMachineAccessPointDeviceInfoCache(a.GetDeviceInfoCache())) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	a.smap, err = NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, WithStateMachineAccessPointDeviceInfoCache(a.GetDeviceInfoCache())) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building state machine access point")
 	}
 
 	// a network service access point will be needed
-	a.nsap, err = bacgopes.NewNetworkServiceAccessPoint(localLog)
+	a.nsap, err = NewNetworkServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
@@ -498,19 +521,19 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *bacgopes.
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
-	err = bacgopes.Bind(localLog, a.nse, a.nsap)
+	err = Bind(localLog, a.nse, a.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
 	// bind the top layers
-	err = bacgopes.Bind(localLog, a, a.asap, a.smap, a.nsap)
+	err = Bind(localLog, a, a.asap, a.smap, a.nsap)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
 	// create a node, added to the network
-	a.node, err = bacgopes.NewNode(a.log, a.address, bacgopes.WithNodeLan(vlan))
+	a.node, err = NewNode(a.log, a.address, WithNodeLan(vlan))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -527,7 +550,7 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *bacgopes.
 }
 
 func xtob(s string) []byte {
-	bytes, err := bacgopes.Xtob(s)
+	bytes, err := Xtob(s)
 	if err != nil {
 		panic(err)
 	}
